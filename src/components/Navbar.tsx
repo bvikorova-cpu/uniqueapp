@@ -22,9 +22,11 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <img src={megatalentLogo} alt="Megatalent" className="h-10 w-10" />
+            <div className="h-10 w-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">U</span>
+            </div>
             <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Megatalent
+              Unique
             </span>
           </Link>
 
