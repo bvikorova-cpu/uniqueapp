@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import CreatePost from "@/components/feed/CreatePost";
 import PostCard from "@/components/feed/PostCard";
@@ -19,6 +21,8 @@ interface Post {
 }
 
 const Feed = () => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -48,6 +52,25 @@ const Feed = () => {
   };
 
   useEffect(() => {
+    // Check authentication
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!session) {
+          navigate("/auth");
+        } else {
+          setUser(session.user);
+        }
+      }
+    );
+
     fetchPosts();
 
     // Subscribe to new posts
@@ -68,8 +91,9 @@ const Feed = () => {
 
     return () => {
       supabase.removeChannel(channel);
+      subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-background py-8">

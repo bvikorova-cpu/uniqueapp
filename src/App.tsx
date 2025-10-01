@@ -11,6 +11,7 @@ import Eshop from "./pages/Eshop";
 import Bazaar from "./pages/Bazaar";
 import Referral from "./pages/Referral";
 import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/bazaar" element={<Bazaar />} />
           <Route path="/referral" element={<Referral />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

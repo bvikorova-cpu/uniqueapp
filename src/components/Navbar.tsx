@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare } from "lucide-react";
@@ -8,6 +10,27 @@ import megatalentLogo from "@/assets/megatalent-logo.png";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  };
 
   const navItems = [
     { path: "/", label: "Domov", icon: Crown },
@@ -57,8 +80,20 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-2">
-            <Button variant="outline">Prihlásiť sa</Button>
-            <Button variant="hero">Registrácia</Button>
+            {user ? (
+              <Button onClick={handleLogout} variant="outline">
+                Odhlásiť sa
+              </Button>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="outline">Prihlásiť sa</Button>
+                </Link>
+                <Link to="/auth">
+                  <Button variant="hero">Registrácia</Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -97,8 +132,20 @@ const Navbar = () => {
               );
             })}
             <div className="pt-4 space-y-2">
-              <Button variant="outline" className="w-full">Prihlásiť sa</Button>
-              <Button variant="hero" className="w-full">Registrácia</Button>
+              {user ? (
+                <Button onClick={handleLogout} variant="outline" className="w-full">
+                  Odhlásiť sa
+                </Button>
+              ) : (
+                <>
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="outline" className="w-full">Prihlásiť sa</Button>
+                  </Link>
+                  <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="hero" className="w-full">Registrácia</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}
