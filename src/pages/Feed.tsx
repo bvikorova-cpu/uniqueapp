@@ -1,0 +1,107 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import CreatePost from "@/components/feed/CreatePost";
+import PostCard from "@/components/feed/PostCard";
+import { Card } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
+
+interface Post {
+  id: string;
+  content: string;
+  created_at: string;
+  user_id: string;
+  media: Array<{
+    id: string;
+    file_url: string;
+    file_type: string;
+  }>;
+}
+
+const Feed = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  const fetchPosts = async () => {
+    try {
+      const { data: postsData, error: postsError } = await supabase
+        .from("posts")
+        .select(`
+          *,
+          media (*)
+        `)
+        .order("created_at", { ascending: false });
+
+      if (postsError) throw postsError;
+
+      setPosts(postsData || []);
+    } catch (error: any) {
+      toast({
+        title: "Chyba pri načítaní príspevkov",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+
+    // Subscribe to new posts
+    const channel = supabase
+      .channel("posts-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "posts",
+        },
+        () => {
+          fetchPosts();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-background py-8">
+      <div className="container mx-auto px-4 max-w-2xl">
+        <h1 className="text-4xl font-bold mb-8 bg-gradient-primary bg-clip-text text-transparent">
+          Feed
+        </h1>
+
+        <CreatePost onPostCreated={fetchPosts} />
+
+        <div className="mt-8 space-y-4">
+          {loading ? (
+            <Card className="p-8 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </Card>
+          ) : posts.length === 0 ? (
+            <Card className="p-8 text-center text-muted-foreground">
+              Zatiaľ žiadne príspevky. Buď prvý, kto niečo pridá!
+            </Card>
+          ) : (
+            posts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                onDelete={fetchPosts}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Feed;

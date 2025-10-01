@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, ShoppingBag, Store, User, Menu, X } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 
 const Navbar = () => {
@@ -11,6 +11,7 @@ const Navbar = () => {
 
   const navItems = [
     { path: "/", label: "Domov", icon: Crown },
+    { path: "/feed", label: "Feed", icon: MessageSquare },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
     { path: "/eshop", label: "Eshop", icon: ShoppingBag },
     { path: "/bazaar", label: "Bazár", icon: Store },

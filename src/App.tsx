@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import Feed from "./pages/Feed";
 import Megatalent from "./pages/Megatalent";
 import Eshop from "./pages/Eshop";
 import Bazaar from "./pages/Bazaar";
@@ -23,6 +24,7 @@ const App = () => (
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/feed" element={<Feed />} />
           <Route path="/megatalent" element={<Megatalent />} />
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/bazaar" element={<Bazaar />} />
