@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 import Feed from "./pages/Feed";
 import Megatalent from "./pages/Megatalent";
 import Megaforum from "./pages/Megaforum";
-import OnlinePsychologist from "./pages/OnlinePsychologist";
+import Psychology from "./pages/Psychology";
 import Marketplace from "./pages/Marketplace";
 import Eshop from "./pages/Eshop";
 import Bazaar from "./pages/Bazaar";
@@ -32,7 +32,7 @@ const App = () => (
           <Route path="/feed" element={<Feed />} />
           <Route path="/megatalent" element={<Megatalent />} />
           <Route path="/megaforum" element={<Megaforum />} />
-          <Route path="/psychologist" element={<OnlinePsychologist />} />
+          <Route path="/psychologist" element={<Psychology />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/bazaar" element={<Bazaar />} />

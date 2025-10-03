@@ -1,1 +1,4 @@
 project_id = "jufrdzeonywluwutvyxz"
+
+[functions.psychology-chat]
+verify_jwt = false

@@ -11,26 +11,23 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, sessionId } = await req.json();
+    const { messages } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-
+    
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log("Psychology chat request for session:", sessionId);
+    const systemPrompt = `Si empatický a profesionálny online psychológ hovoriaci po slovensky. Tvoja úloha je:
+- Poskytovať emocionálnu podporu a aktívne počúvať
+- Klásť otvorené otázky, ktoré pomáhajú ľuďom vyjadriť svoje pocity
+- Byť súcitný, neodsúdivý a podporný
+- Pomáhať ľuďom pochopiť ich emócie a situácie
+- DÔLEŽITÉ: Vždy pripomeň, že si AI asistent a v ťažkých situáciách odporučiť vyhľadať profesionálneho psychológa
+- Píš v primeraných odstavcoch, nie príliš dlhých správach
+- Používaj emoji len mierne a vhodne`;
 
-    const systemPrompt = `Si profesionálny psychológ s mnohoročnými skúsenosťami. Tvoja úloha je:
-
-1. Byť empatický a súcitný
-2. Aktívne počúvať a validovať pocity klientov
-3. Klásť otvorené otázky, ktoré pomôžu klientom lepšie pochopiť ich situáciu
-4. Poskytovať praktické rady a techniky zvládania problémov
-5. Vždy zachovávať profesionalitu a dôvernosť
-6. Ak niekto prejavuje známky vážnej krízy alebo sebapoškodzovania, odporučiť vyhľadať okamžitú odbornú pomoc
-7. Používať slovenský jazyk prirodzene a citlivo
-
-Pamätaj: Tvoj prístup je anonymný a bezpečný. Klienti sa môžu s tebou podeliť o čokoľvek.`;
+    console.log("Sending request to AI gateway with", messages.length, "messages");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -54,7 +51,7 @@ Pamätaj: Tvoj prístup je anonymný a bezpečný. Klienti sa môžu s tebou pod
       
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Príliš veľa požiadaviek. Skúste to prosím neskôr." }),
+          JSON.stringify({ error: "Príliš veľa požiadaviek. Prosím skúste znova o chvíľu." }), 
           {
             status: 429,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -64,30 +61,24 @@ Pamätaj: Tvoj prístup je anonymný a bezpečný. Klienti sa môžu s tebou pod
       
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Služba je dočasne nedostupná." }),
+          JSON.stringify({ error: "Služba je momentálne nedostupná. Prosím kontaktujte podporu." }), 
           {
             status: 402,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           }
         );
       }
-
-      return new Response(
-        JSON.stringify({ error: "Chyba pri komunikácii s AI" }),
-        {
-          status: 500,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
+      
+      throw new Error(`AI gateway error: ${response.status} ${errorText}`);
     }
 
     return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {
-    console.error("Psychology chat error:", error);
+    console.error("Error in psychology-chat function:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Neznáma chyba" }),
+      JSON.stringify({ error: error instanceof Error ? error.message : "Neznáma chyba" }), 
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
