@@ -76,6 +76,48 @@ export type Database = {
           },
         ]
       }
+      megatalent_subscriptions: {
+        Row: {
+          bonus_votes: number | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          price: number
+          started_at: string
+          status: string | null
+          tier: Database["public"]["Enums"]["megatalent_tier"]
+          updated_at: string
+          user_id: string
+          win_chance_boost: number | null
+        }
+        Insert: {
+          bonus_votes?: number | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          price: number
+          started_at?: string
+          status?: string | null
+          tier?: Database["public"]["Enums"]["megatalent_tier"]
+          updated_at?: string
+          user_id: string
+          win_chance_boost?: number | null
+        }
+        Update: {
+          bonus_votes?: number | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          price?: number
+          started_at?: string
+          status?: string | null
+          tier?: Database["public"]["Enums"]["megatalent_tier"]
+          updated_at?: string
+          user_id?: string
+          win_chance_boost?: number | null
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           content: string | null
@@ -166,6 +208,74 @@ export type Database = {
         }
         Relationships: []
       }
+      talent_submissions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          media_type: string | null
+          media_url: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          votes_count: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          media_type?: string | null
+          media_url?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          votes_count?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          media_type?: string | null
+          media_url?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          votes_count?: number | null
+        }
+        Relationships: []
+      }
+      talent_votes: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "talent_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -174,6 +284,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      megatalent_tier: "basic" | "top_premium"
       skill_category:
         | "construction"
         | "repairs"
@@ -310,6 +421,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      megatalent_tier: ["basic", "top_premium"],
       skill_category: [
         "construction",
         "repairs",
