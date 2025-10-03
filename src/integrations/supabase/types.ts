@@ -263,6 +263,7 @@ export type Database = {
       }
       talent_submissions: {
         Row: {
+          category: Database["public"]["Enums"]["talent_category"]
           created_at: string
           description: string | null
           id: string
@@ -275,6 +276,7 @@ export type Database = {
           votes_count: number | null
         }
         Insert: {
+          category?: Database["public"]["Enums"]["talent_category"]
           created_at?: string
           description?: string | null
           id?: string
@@ -287,6 +289,7 @@ export type Database = {
           votes_count?: number | null
         }
         Update: {
+          category?: Database["public"]["Enums"]["talent_category"]
           created_at?: string
           description?: string | null
           id?: string
@@ -347,6 +350,12 @@ export type Database = {
         | "teaching"
         | "creative"
         | "other"
+      talent_category:
+        | "drawing"
+        | "funny_video"
+        | "life_advice"
+        | "tattoo"
+        | "training"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -484,6 +493,13 @@ export const Constants = {
         "teaching",
         "creative",
         "other",
+      ],
+      talent_category: [
+        "drawing",
+        "funny_video",
+        "life_advice",
+        "tattoo",
+        "training",
       ],
     },
   },

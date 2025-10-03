@@ -3,11 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const categories = [
+  { value: "drawing", label: "Kreslenie" },
+  { value: "funny_video", label: "Najsmiešnejšie video" },
+  { value: "life_advice", label: "Najlepšia rada do života" },
+  { value: "tattoo", label: "Najlepšie tetovanie" },
+  { value: "training", label: "Najlepší tréning" },
+];
+
 const Megatalent = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>("drawing");
   const { toast } = useToast();
 
   const handleSubscribe = () => {
@@ -140,6 +151,18 @@ const Megatalent = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vyberte kategóriu" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button variant="premium" className="w-full">
                   <Camera className="h-4 w-4" />
                   Nahrať foto
@@ -158,68 +181,82 @@ const Megatalent = () => {
 
           {/* Feed */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Najnovšie talenty</h2>
-              <Badge className="bg-gold text-gold-foreground">
-                <TrendingUp className="h-4 w-4 mr-1" />
-                Trending
-              </Badge>
-            </div>
+            <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+              <TabsList className="grid w-full grid-cols-5 mb-6">
+                {categories.map((cat) => (
+                  <TabsTrigger key={cat.value} value={cat.value} className="text-xs">
+                    {cat.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
 
-            {/* Sample Posts */}
-            {[1, 2, 3].map((post) => (
-              <Card key={post} className="overflow-hidden">
-                <CardHeader className="pb-3">
+              {categories.map((cat) => (
+                <TabsContent key={cat.value} value={cat.value} className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-primary rounded-full"></div>
-                      <div>
-                        <p className="font-semibold">Používateľ {post}</p>
-                        <p className="text-sm text-muted-foreground">pred 2 hodinami</p>
-                      </div>
-                    </div>
-                    <Badge variant="secondary">Tanec</Badge>
+                    <h2 className="text-2xl font-bold">{cat.label}</h2>
+                    <Badge className="bg-gold text-gold-foreground">
+                      <TrendingUp className="h-4 w-4 mr-1" />
+                      Trending
+                    </Badge>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="aspect-video bg-gradient-secondary rounded-lg flex items-center justify-center">
-                    <Video className="h-12 w-12 text-muted-foreground" />
-                  </div>
-                  <p className="text-sm">
-                    Môj najnovší tanečný cover na populárnu pieseň! 🎵 Dúfam, že sa vám páči!
-                  </p>
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center space-x-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleVote('like')}
-                        className="text-green-500 hover:text-green-600"
-                      >
-                        <Heart className="h-4 w-4 mr-1" />
-                        {Math.floor(Math.random() * 500) + 100}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleVote('dislike')}
-                        className="text-red-500 hover:text-red-600"
-                      >
-                        <Heart className="h-4 w-4 mr-1 transform rotate-180" />
-                        {Math.floor(Math.random() * 50) + 10}
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <MessageCircle className="h-4 w-4 mr-1" />
-                        {Math.floor(Math.random() * 50) + 5}
-                      </Button>
-                    </div>
-                    <Button variant="ghost" size="sm">
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+
+                  {/* Sample Posts */}
+                  {[1, 2, 3].map((post) => (
+                    <Card key={post} className="overflow-hidden">
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-gradient-primary rounded-full"></div>
+                            <div>
+                              <p className="font-semibold">Používateľ {post}</p>
+                              <p className="text-sm text-muted-foreground">pred 2 hodinami</p>
+                            </div>
+                          </div>
+                          <Badge variant="secondary">{cat.label}</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="aspect-video bg-gradient-secondary rounded-lg flex items-center justify-center">
+                          <Video className="h-12 w-12 text-muted-foreground" />
+                        </div>
+                        <p className="text-sm">
+                          Môj príspevok v kategórii {cat.label}! 🎵 Dúfam, že sa vám páči!
+                        </p>
+                        <div className="flex items-center justify-between pt-2">
+                          <div className="flex items-center space-x-4">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleVote('like')}
+                              className="text-green-500 hover:text-green-600"
+                            >
+                              <Heart className="h-4 w-4 mr-1" />
+                              {Math.floor(Math.random() * 500) + 100}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleVote('dislike')}
+                              className="text-red-500 hover:text-red-600"
+                            >
+                              <Heart className="h-4 w-4 mr-1 transform rotate-180" />
+                              {Math.floor(Math.random() * 50) + 10}
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                              <MessageCircle className="h-4 w-4 mr-1" />
+                              {Math.floor(Math.random() * 50) + 5}
+                            </Button>
+                          </div>
+                          <Button variant="ghost" size="sm">
+                            <Share2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </TabsContent>
+              ))}
+            </Tabs>
           </div>
 
           {/* Sidebar */}
