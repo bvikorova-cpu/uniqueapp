@@ -42,42 +42,84 @@ const Megatalent = () => {
               </p>
             </div>
 
-            <Card className="max-w-lg mx-auto bg-gradient-secondary border-border/50">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl">Premium Predplatné</CardTitle>
-                <div className="text-4xl font-bold text-gold">10 €<span className="text-lg">/mesiac</span></div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span>✨ Prístup do Megatalent súťaže</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+              {/* Premium Tier */}
+              <Card className="bg-gradient-secondary border-border/50">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">Premium</CardTitle>
+                  <div className="text-4xl font-bold text-gold">10 €<span className="text-lg">/mesiac</span></div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span>✨ Prístup do Megatalent súťaže</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>🎯 Šanca vyhrať 100.000 €</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>📱 Nahrávanie foto & video</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>👥 Hlasovanie a komentáre</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>🎁 Referenčný program 5 €</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>🎯 Šanca vyhrať 100.000 €</span>
+                  <Button 
+                    variant="hero" 
+                    size="lg" 
+                    className="w-full"
+                    onClick={handleSubscribe}
+                  >
+                    Aktivovať Premium
+                  </Button>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Mesačné predplatné sa automaticky obnovuje
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* TOP Premium Tier */}
+              <Card className="bg-gradient-primary border-gold/50 relative overflow-hidden">
+                <Badge className="absolute top-4 right-4 bg-gold text-gold-foreground">
+                  ODPORÚČANÉ
+                </Badge>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl">TOP Premium</CardTitle>
+                  <div className="text-4xl font-bold text-gold">25 €<span className="text-lg">/mesiac</span></div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-gold">Všetko z Premium +</p>
+                    <div className="flex items-center gap-2">
+                      <span>🏆 50% šanca na výhru</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>🎯 +100,000 hlasov automaticky</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>⭐ Prioritné zobrazenie</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span>💎 Exkluzívny badge</span>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>📱 Nahrávanie foto & video</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>👥 Hlasovanie a komentáre</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>🎁 Referenčný program 5 €</span>
-                  </div>
-                </div>
-                <Button 
-                  variant="hero" 
-                  size="lg" 
-                  className="w-full"
-                  onClick={handleSubscribe}
-                >
-                  Aktivovať Premium
-                </Button>
-                <p className="text-xs text-muted-foreground text-center">
-                  Mesačné predplatné sa automaticky obnovuje
-                </p>
-              </CardContent>
-            </Card>
+                  <Button 
+                    variant="hero" 
+                    size="lg" 
+                    className="w-full bg-gold hover:bg-gold/90"
+                    onClick={handleSubscribe}
+                  >
+                    Aktivovať TOP Premium
+                  </Button>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Mesačné predplatné sa automaticky obnovuje
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
