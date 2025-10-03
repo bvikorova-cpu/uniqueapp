@@ -14,6 +14,170 @@ export type Database = {
   }
   public: {
     Tables: {
+      dating_matches: {
+        Row: {
+          created_at: string
+          id: string
+          user1_id: string
+          user2_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user1_id: string
+          user2_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user1_id?: string
+          user2_id?: string
+        }
+        Relationships: []
+      }
+      dating_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean | null
+          match_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          match_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          match_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_messages_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "dating_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dating_profiles: {
+        Row: {
+          additional_photos: string[] | null
+          age: number
+          bio: string | null
+          created_at: string
+          display_name: string
+          gender: string
+          id: string
+          interests: string[] | null
+          is_active: boolean | null
+          location: string | null
+          looking_for: string
+          profile_photo_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          additional_photos?: string[] | null
+          age: number
+          bio?: string | null
+          created_at?: string
+          display_name: string
+          gender: string
+          id?: string
+          interests?: string[] | null
+          is_active?: boolean | null
+          location?: string | null
+          looking_for: string
+          profile_photo_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          additional_photos?: string[] | null
+          age?: number
+          bio?: string | null
+          created_at?: string
+          display_name?: string
+          gender?: string
+          id?: string
+          interests?: string[] | null
+          is_active?: boolean | null
+          location?: string | null
+          looking_for?: string
+          profile_photo_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dating_subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          price: number
+          started_at: string
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          price?: number
+          started_at?: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          price?: number
+          started_at?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dating_swipes: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          swiped_id: string
+          swiper_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          swiped_id: string
+          swiper_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          swiped_id?: string
+          swiper_id?: string
+        }
+        Relationships: []
+      }
       destination_photos: {
         Row: {
           created_at: string

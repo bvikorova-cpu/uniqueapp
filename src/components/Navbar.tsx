@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 
 const Navbar = () => {
@@ -39,6 +39,7 @@ const Navbar = () => {
     { path: "/megaforum", label: "Megafórum", icon: Users },
     { path: "/psychologist", label: "Psychológ", icon: Brain },
     { path: "/vacationer", label: "Vacationer", icon: Plane },
+    { path: "/dating", label: "Zoznamka", icon: Heart },
     { path: "/marketplace", label: "Ja spravím", icon: Briefcase },
     { path: "/eshop", label: "Eshop", icon: ShoppingBag },
     { path: "/bazaar", label: "Bazár", icon: Store },
