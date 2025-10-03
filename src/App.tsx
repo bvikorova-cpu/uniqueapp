@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Feed from "./pages/Feed";
 import Megatalent from "./pages/Megatalent";
+import Marketplace from "./pages/Marketplace";
 import Eshop from "./pages/Eshop";
 import Bazaar from "./pages/Bazaar";
 import Referral from "./pages/Referral";
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/feed" element={<Feed />} />
           <Route path="/megatalent" element={<Megatalent />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/bazaar" element={<Bazaar />} />
           <Route path="/referral" element={<Referral />} />

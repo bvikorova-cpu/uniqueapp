@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      marketplace_subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          started_at: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          started_at?: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          started_at?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       media: {
         Row: {
           created_at: string
@@ -100,6 +127,45 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_offerings: {
+        Row: {
+          category: Database["public"]["Enums"]["skill_category"]
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean | null
+          location: string | null
+          price_per_hour: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["skill_category"]
+          created_at?: string
+          description: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          price_per_hour?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["skill_category"]
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          price_per_hour?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -108,7 +174,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      skill_category:
+        | "construction"
+        | "repairs"
+        | "cleaning"
+        | "gardening"
+        | "technology"
+        | "teaching"
+        | "creative"
+        | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -235,6 +309,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      skill_category: [
+        "construction",
+        "repairs",
+        "cleaning",
+        "gardening",
+        "technology",
+        "teaching",
+        "creative",
+        "other",
+      ],
+    },
   },
 } as const
