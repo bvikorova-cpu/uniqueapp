@@ -284,7 +284,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      megatalent_tier: "basic" | "top_premium"
+      megatalent_tier: "premium" | "top_premium"
       skill_category:
         | "construction"
         | "repairs"
@@ -421,7 +421,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      megatalent_tier: ["basic", "top_premium"],
+      megatalent_tier: ["premium", "top_premium"],
       skill_category: [
         "construction",
         "repairs",
