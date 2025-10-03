@@ -11,6 +11,7 @@ import Megaforum from "./pages/Megaforum";
 import Psychology from "./pages/Psychology";
 import Vacationer from "./pages/Vacationer";
 import Dating from "./pages/Dating";
+import FirstAid from "./pages/FirstAid";
 import Marketplace from "./pages/Marketplace";
 import Eshop from "./pages/Eshop";
 import Bazaar from "./pages/Bazaar";
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/psychologist" element={<Psychology />} />
           <Route path="/vacationer" element={<Vacationer />} />
           <Route path="/dating" element={<Dating />} />
+          <Route path="/first-aid" element={<FirstAid />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/bazaar" element={<Bazaar />} />
