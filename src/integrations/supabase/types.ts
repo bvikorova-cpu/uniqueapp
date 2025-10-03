@@ -169,6 +169,59 @@ export type Database = {
         }
         Relationships: []
       }
+      psychology_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          session_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          session_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "psychology_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "psychology_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      psychology_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          last_activity: string
+          session_token: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_activity?: string
+          session_token: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_activity?: string
+          session_token?: string
+        }
+        Relationships: []
+      }
       skill_offerings: {
         Row: {
           category: Database["public"]["Enums"]["skill_category"]
