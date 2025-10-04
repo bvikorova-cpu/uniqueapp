@@ -223,7 +223,7 @@ const BestFriend = () => {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                24/7 priateľský chatbot, ktorý ti vždy vypočuje
+                24/7 kamarát, ktorý ti vždy vypočuje
               </p>
             </CardContent>
           </Card>
