@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift } from "lucide-react";
+import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroBg from "@/assets/hero-bg.jpg";
 
@@ -42,69 +42,273 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* All Services Section */}
       <section className="py-20 px-4">
-        <div className="container mx-auto max-w-6xl">
+        <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-4xl md:text-5xl font-bold">
-              Prečo{" "}
+              Naše{" "}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Megatalent?
+                služby
               </span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Viac ako sociálna sieť - je to tvoja cesta k úspechu
+              Kompletná platforma pre všetky tvoje potreby
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105">
-              <CardHeader>
-                <Crown className="h-12 w-12 text-gold mx-auto mb-4" />
-                <CardTitle>Megatalent súťaž</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Ukáž svoj talent a súťaž o 100.000 € každý mesiac
-                </p>
-              </CardContent>
-            </Card>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <Link to="/feed">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <MessageSquare className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Feed</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Zdieľaj momenty a komunikuj s priateľmi
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105">
-              <CardHeader>
-                <Gift className="h-12 w-12 text-success mx-auto mb-4" />
-                <CardTitle>Referenčný program</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Pozvi priateľa a získaj 5 € za každé predplatné
-                </p>
-              </CardContent>
-            </Card>
+            <Link to="/tiktok">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Video className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Videá</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Sleduj a vytváraj krátke videá
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105">
-              <CardHeader>
-                <ShoppingBag className="h-12 w-12 text-primary mx-auto mb-4" />
-                <CardTitle>Eshop</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Nakupuj exkluzívne produkty a merchandise
-                </p>
-              </CardContent>
-            </Card>
+            <Link to="/messenger">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <MessageCircle className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Messenger</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Chatuj so známymi v reálnom čase
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105">
-              <CardHeader>
-                <Store className="h-12 w-12 text-accent mx-auto mb-4" />
-                <CardTitle>Online bazár</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Predávaj a kupuj od ostatných používateľov
-                </p>
-              </CardContent>
-            </Card>
+            <Link to="/megatalent">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Crown className="h-12 w-12 text-gold mx-auto mb-4" />
+                  <CardTitle>Megatalent</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Súťaž o 100.000 € každý mesiac
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/megaforum">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Users className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Megaforum</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Diskutuj a zdieľaj názory s komunitou
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/psychologist">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Brain className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Online psychológ</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    AI asistent pre duševné zdravie 24/7
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/education">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <GraduationCap className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Vzdelávanie</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Online doučovanie, kvízy a kurzy
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/vacationer">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Plane className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Dovolenky</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Rezervuj dovolenky a zájazdy online
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/dating">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Heart className="h-12 w-12 text-destructive mx-auto mb-4" />
+                  <CardTitle>Dating</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Nájdi si partnera a nové priateľstvá
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/first-aid">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Cross className="h-12 w-12 text-destructive mx-auto mb-4" />
+                  <CardTitle>Prvá pomoc</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Návody na poskytnutie prvej pomoci
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/fit-slim">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Dumbbell className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Fit & Slim</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Cvičebné plány a zdravé recepty
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/marketplace">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <HomeIcon className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Nehnuteľnosti</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Predaj a kúpa nehnuteľností online
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/eshop">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <ShoppingBag className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Eshop</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Nakupuj exkluzívne produkty a merchandise
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/bazaar">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Store className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Bazár</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Predávaj a kupuj od ostatných používateľov
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/referral">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Gift className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Referenčný program</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Získaj 5 € za každého priateľa
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/games">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Gamepad2 className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Hry</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Hraj obľúbené online hry zadarmo
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/jobs">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Briefcase className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Práca</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Nájdi si prácu alebo zamestnanca
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/influ-king">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Radio className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>InfluKing</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Staň sa influencerom a zarábaj
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>
