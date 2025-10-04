@@ -1,0 +1,139 @@
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Gamepad2, Trophy, Star } from "lucide-react";
+import { CandyCrush } from "@/components/games/CandyCrush";
+import { BarbieGame } from "@/components/games/BarbieGame";
+import { MinecraftGame } from "@/components/games/MinecraftGame";
+
+const Games = () => {
+  const [activeGame, setActiveGame] = useState<string | null>(null);
+
+  if (activeGame === "candy") {
+    return <CandyCrush onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === "barbie") {
+    return <BarbieGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === "minecraft") {
+    return <MinecraftGame onBack={() => setActiveGame(null)} />;
+  }
+
+  return (
+    <div className="min-h-screen bg-background pt-20 pb-12">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+            Online Hry
+          </h1>
+          <p className="text-muted-foreground text-lg">
+            Vyber si svoju obľúbenú hru a hraj zadarmo!
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {/* Candy Crush Card */}
+          <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("candy")}>
+            <CardHeader>
+              <div className="h-40 bg-gradient-to-br from-pink-500 to-purple-500 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="grid grid-cols-3 gap-2">
+                  {["🍬", "🍭", "🍫"].map((candy, i) => (
+                    <div key={i} className="text-4xl animate-bounce" style={{ animationDelay: `${i * 0.1}s` }}>
+                      {candy}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                Candy Crush
+              </CardTitle>
+              <CardDescription>
+                Klasická 3-match hra s farebnými cukríkmi
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm text-muted-foreground">20 úrovní</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Gamepad2 className="h-4 w-4 mr-2" />
+                Hrať
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Barbie Card */}
+          <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("barbie")}>
+            <CardHeader>
+              <div className="h-40 bg-gradient-to-br from-pink-400 to-rose-400 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="text-6xl">👗</div>
+              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-pink-500" />
+                Barbie Fashion
+              </CardTitle>
+              <CardDescription>
+                Obliekacia hra s rôznymi outfitmi
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm text-muted-foreground">15 úrovní</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Gamepad2 className="h-4 w-4 mr-2" />
+                Hrať
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Minecraft Card */}
+          <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("minecraft")}>
+            <CardHeader>
+              <div className="h-40 bg-gradient-to-br from-green-600 to-emerald-700 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="grid grid-cols-3 gap-1">
+                  {["🟫", "🟩", "⬛"].map((block, i) => (
+                    <div key={i} className="text-3xl">
+                      {block}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-emerald-500" />
+                Mini Minecraft
+              </CardTitle>
+              <CardDescription>
+                Postav svoj svet z kociek
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm text-muted-foreground">10 úrovní</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Gamepad2 className="h-4 w-4 mr-2" />
+                Hrať
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Games;

@@ -19,6 +19,7 @@ import Marketplace from "./pages/Marketplace";
 import Eshop from "./pages/Eshop";
 import Bazaar from "./pages/Bazaar";
 import Referral from "./pages/Referral";
+import Games from "./pages/Games";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/eshop" element={<Eshop />} />
           <Route path="/bazaar" element={<Bazaar />} />
           <Route path="/referral" element={<Referral />} />
+          <Route path="/games" element={<Games />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
