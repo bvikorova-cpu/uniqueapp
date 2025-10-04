@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Heart, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import bestFriendBg from "@/assets/best-friend-bg.jpg";
 
 const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-chat`;
 
@@ -119,17 +120,21 @@ const BestFriend = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-8">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div 
+      className="min-h-screen pt-20 pb-8 bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: `url(${bestFriendBg})` }}
+    >
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+      <div className="container mx-auto px-4 max-w-4xl relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <Heart className="w-8 h-8 text-destructive animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
               Best Friend
             </h1>
           </div>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-white drop-shadow-md">
             Tvoj najlepší priateľ, ktorý je tu vždy pre teba
           </p>
         </div>

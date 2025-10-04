@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, Sparkles, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import aiGenerationBg from "@/assets/ai-generation-bg.jpg";
 
 const AIGeneration = () => {
   const [prompt, setPrompt] = useState("");
@@ -53,17 +54,21 @@ const AIGeneration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      <div className="container mx-auto px-4 py-8">
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: `url(${aiGenerationBg})` }}
+    >
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Hero Section */}
         <div className="text-center mb-12 pt-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <Sparkles className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
               AI Generovanie Obrázkov
             </h1>
           </div>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-white drop-shadow-md max-w-2xl mx-auto">
             Vytvorte úžasné obrázky pomocou AI. Stačí opísať, čo chcete vidieť.
           </p>
         </div>

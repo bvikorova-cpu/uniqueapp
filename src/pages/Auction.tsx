@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import auctionBg from "@/assets/auction-bg.jpg";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -169,17 +170,19 @@ const Auction = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-16">
-      <div className="container mx-auto px-4 py-8">
+    <div 
+      className="min-h-screen bg-cover bg-center bg-no-repeat relative pt-16"
+      style={{ backgroundImage: `url(${auctionBg})` }}
+    >
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Online Aukcia
-              </span>
+            <h1 className="text-4xl font-bold mb-2 text-white drop-shadow-lg">
+              Online Aukcia
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-white/80 drop-shadow-md">
               Kupuj a predávaj produkty v aukcii
             </p>
           </div>
