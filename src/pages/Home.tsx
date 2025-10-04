@@ -77,13 +77,13 @@ const Home = () => {
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input
                 type="text"
                 placeholder="Hľadaj služby... (napr. hry, vzdelávanie, dating)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 py-6 text-lg bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
+                className="pl-12 pr-4 py-6 text-lg text-black placeholder:text-gray-500 bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
               />
             </div>
           </form>
