@@ -95,9 +95,6 @@ const Home = () => {
                 Vstúp do súťaže
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="text-xl px-8 py-4 text-white border-white hover:bg-white hover:text-black">
-              Pozri si talenty
-            </Button>
           </div>
         </div>
       </section>
