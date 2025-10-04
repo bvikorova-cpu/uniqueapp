@@ -37,6 +37,7 @@ const Navbar = () => {
     { path: "/feed", label: "Feed", icon: MessageSquare },
     { path: "/tiktok", label: "Videá", icon: Video },
     { path: "/messenger", label: "Messenger", icon: Mail },
+    { path: "/jobs", label: "Práca", icon: Briefcase },
     { path: "/games", label: "Hry", icon: Gamepad2 },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
     { path: "/megaforum", label: "Megafórum", icon: Users },

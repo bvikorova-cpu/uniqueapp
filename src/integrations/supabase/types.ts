@@ -328,6 +328,116 @@ export type Database = {
         }
         Relationships: []
       }
+      job_applications: {
+        Row: {
+          applicant_id: string
+          cover_letter: string | null
+          created_at: string | null
+          id: string
+          job_id: string
+          resume_url: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          applicant_id: string
+          cover_letter?: string | null
+          created_at?: string | null
+          id?: string
+          job_id: string
+          resume_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          applicant_id?: string
+          cover_letter?: string | null
+          created_at?: string | null
+          id?: string
+          job_id?: string
+          resume_url?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_listings: {
+        Row: {
+          applications_count: number | null
+          benefits: string | null
+          category: Database["public"]["Enums"]["job_category"]
+          company_name: string
+          contact_email: string
+          country: string
+          created_at: string | null
+          description: string
+          employer_id: string
+          id: string
+          is_active: boolean | null
+          job_type: Database["public"]["Enums"]["job_type"]
+          location: string
+          requirements: string | null
+          salary_currency: string | null
+          salary_max: number | null
+          salary_min: number | null
+          title: string
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          applications_count?: number | null
+          benefits?: string | null
+          category: Database["public"]["Enums"]["job_category"]
+          company_name: string
+          contact_email: string
+          country: string
+          created_at?: string | null
+          description: string
+          employer_id: string
+          id?: string
+          is_active?: boolean | null
+          job_type: Database["public"]["Enums"]["job_type"]
+          location: string
+          requirements?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          title: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          applications_count?: number | null
+          benefits?: string | null
+          category?: Database["public"]["Enums"]["job_category"]
+          company_name?: string
+          contact_email?: string
+          country?: string
+          created_at?: string | null
+          description?: string
+          employer_id?: string
+          id?: string
+          is_active?: boolean | null
+          job_type?: Database["public"]["Enums"]["job_type"]
+          location?: string
+          requirements?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          title?: string
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: []
+      }
       marketplace_subscriptions: {
         Row: {
           created_at: string
@@ -705,6 +815,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       video_comments: {
         Row: {
           content: string
@@ -822,12 +953,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_conversation_participant: {
         Args: { conversation_id: string; user_id: string }
         Returns: boolean
       }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user" | "employer"
+      job_category:
+        | "it_software"
+        | "marketing_sales"
+        | "finance_accounting"
+        | "healthcare"
+        | "education"
+        | "engineering"
+        | "hospitality"
+        | "retail"
+        | "manufacturing"
+        | "construction"
+        | "transportation"
+        | "other"
+      job_type: "full_time" | "part_time" | "contract" | "internship" | "remote"
       megatalent_tier: "premium" | "top_premium"
       skill_category:
         | "construction"
@@ -971,6 +1124,22 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user", "employer"],
+      job_category: [
+        "it_software",
+        "marketing_sales",
+        "finance_accounting",
+        "healthcare",
+        "education",
+        "engineering",
+        "hospitality",
+        "retail",
+        "manufacturing",
+        "construction",
+        "transportation",
+        "other",
+      ],
+      job_type: ["full_time", "part_time", "contract", "internship", "remote"],
       megatalent_tier: ["premium", "top_premium"],
       skill_category: [
         "construction",

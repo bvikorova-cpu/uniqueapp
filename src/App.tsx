@@ -20,6 +20,7 @@ import Eshop from "./pages/Eshop";
 import Bazaar from "./pages/Bazaar";
 import Referral from "./pages/Referral";
 import Games from "./pages/Games";
+import Jobs from "./pages/Jobs";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/bazaar" element={<Bazaar />} />
           <Route path="/referral" element={<Referral />} />
           <Route path="/games" element={<Games />} />
+          <Route path="/jobs" element={<Jobs />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
