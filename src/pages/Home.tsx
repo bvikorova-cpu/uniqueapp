@@ -346,7 +346,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Tvoj priateľský AI spoločník, ktorý je vždy tu pre teba
+                    Tvoj priateľský spoločník, ktorý je vždy tu pre teba
                   </p>
                 </CardContent>
               </Card>
