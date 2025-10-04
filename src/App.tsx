@@ -30,6 +30,7 @@ import Education from "./pages/Education";
 import CourseDetail from "./pages/CourseDetail";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
+import BestFriend from "./pages/BestFriend";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -62,6 +63,7 @@ const App = () => (
           <Route path="/influ-king" element={<InfluKing />} />
           <Route path="/auction" element={<Auction />} />
           <Route path="/ai-generation" element={<AIGeneration />} />
+          <Route path="/best-friend" element={<BestFriend />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/reset-password" element={<ResetPassword />} />

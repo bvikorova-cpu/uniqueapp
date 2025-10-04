@@ -337,6 +337,20 @@ const Home = () => {
                 </CardContent>
               </Card>
             </Link>
+
+            <Link to="/best-friend">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Heart className="h-12 w-12 text-destructive mx-auto mb-4 animate-pulse" />
+                  <CardTitle>Best Friend</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Tvoj priateľský AI spoločník, ktorý je vždy tu pre teba
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         </div>
       </section>
