@@ -216,11 +216,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <HomeIcon className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>Nehnuteľnosti</CardTitle>
+                  <CardTitle>Ja urobím</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Predaj a kúpa nehnuteľností online
+                    Poskytovanie, predaj a kúpa služieb poskytovaných na celom svete
                   </p>
                 </CardContent>
               </Card>
