@@ -42,6 +42,7 @@ Deno.serve(async (req) => {
 
     console.log(`Importing jobs from Adzuna for country: ${country}, search: ${what}`);
     console.log(`App ID available: ${!!adzunaAppId}, App Key available: ${!!adzunaAppKey}`);
+    console.log(`App ID starts with: ${adzunaAppId?.substring(0, 4)}, App Key starts with: ${adzunaAppKey?.substring(0, 4)}`);
 
     // Adzuna API call
     const adzunaUrl = `https://api.adzuna.com/v1/api/jobs/${country}/search/1?app_id=${adzunaAppId}&app_key=${adzunaAppKey}&results_per_page=${results_per_page}&what=${encodeURIComponent(what)}`;
