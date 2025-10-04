@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
+import { LanguageSelector } from "./LanguageSelector";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -93,6 +94,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-2">
+            <LanguageSelector />
             {user ? (
               <Button onClick={handleLogout} variant="outline">
                 Odhlásiť sa
@@ -145,6 +147,9 @@ const Navbar = () => {
               );
             })}
             <div className="pt-4 space-y-2">
+              <div className="mb-2">
+                <LanguageSelector />
+              </div>
               {user ? (
                 <Button onClick={handleLogout} variant="outline" className="w-full">
                   Odhlásiť sa
