@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Video {
   id: string;
@@ -28,6 +30,14 @@ interface Profile {
   avatar_url: string | null;
 }
 
+interface Comment {
+  id: string;
+  video_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+}
+
 const TikTok = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -40,7 +50,11 @@ const TikTok = () => {
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadTitle, setUploadTitle] = useState("");
   const [uploadDescription, setUploadDescription] = useState("");
+  const [selectedVideoComments, setSelectedVideoComments] = useState<string | null>(null);
+  const [comments, setComments] = useState<Map<string, Comment[]>>(new Map());
+  const [newComment, setNewComment] = useState("");
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const viewedVideos = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -77,8 +91,23 @@ const TikTok = () => {
       (entries) => {
         entries.forEach((entry) => {
           const video = entry.target as HTMLVideoElement;
+          const videoId = video.getAttribute('data-video-id');
+          
           if (entry.isIntersecting) {
             video.play().catch(() => {});
+            
+            // Track view after 3 seconds
+            if (videoId && !viewedVideos.current.has(videoId)) {
+              setTimeout(async () => {
+                if (entry.isIntersecting) {
+                  viewedVideos.current.add(videoId);
+                  await supabase
+                    .from("videos")
+                    .update({ views_count: videos.find(v => v.id === videoId)!.views_count + 1 })
+                    .eq("id", videoId);
+                }
+              }, 3000);
+            }
           } else {
             video.pause();
           }
@@ -254,6 +283,62 @@ const TikTok = () => {
     }
   };
 
+  const fetchComments = async (videoId: string) => {
+    const { data } = await supabase
+      .from("video_comments")
+      .select("*")
+      .eq("video_id", videoId)
+      .order("created_at", { ascending: false });
+
+    if (data) {
+      setComments(prev => new Map(prev).set(videoId, data));
+    }
+  };
+
+  const addComment = async (videoId: string) => {
+    if (!newComment.trim()) return;
+
+    const { error } = await supabase
+      .from("video_comments")
+      .insert({
+        video_id: videoId,
+        user_id: user.id,
+        content: newComment.trim(),
+      });
+
+    if (!error) {
+      setNewComment("");
+      fetchComments(videoId);
+      fetchVideos();
+      toast({
+        title: "Komentár pridaný",
+      });
+    }
+  };
+
+  const shareVideo = async (video: Video) => {
+    const shareUrl = `${window.location.origin}/tiktok?video=${video.id}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: video.title || "Pozri si toto video!",
+          text: video.description || "",
+          url: shareUrl,
+        });
+      } catch (err) {
+        // User cancelled share
+      }
+    } else {
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(shareUrl);
+      toast({
+        title: "Odkaz skopírovaný",
+        description: "Odkaz bol skopírovaný do schránky",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pt-16">
       <div className="fixed top-16 right-4 z-50">
@@ -321,6 +406,7 @@ const TikTok = () => {
                 <video
                   ref={(el) => (videoRefs.current[index] = el)}
                   src={video.video_url}
+                  data-video-id={video.id}
                   className="w-full h-full object-contain"
                   loop
                   playsInline
@@ -371,14 +457,62 @@ const TikTok = () => {
                     <span className="text-sm font-semibold">{video.likes_count}</span>
                   </button>
 
-                  <button className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110">
-                    <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
-                      <MessageCircle className="h-7 w-7" />
-                    </div>
-                    <span className="text-sm font-semibold">{video.comments_count}</span>
-                  </button>
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <button 
+                        onClick={() => {
+                          setSelectedVideoComments(video.id);
+                          fetchComments(video.id);
+                        }}
+                        className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
+                      >
+                        <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
+                          <MessageCircle className="h-7 w-7" />
+                        </div>
+                        <span className="text-sm font-semibold">{video.comments_count}</span>
+                      </button>
+                    </SheetTrigger>
+                    <SheetContent side="bottom" className="h-[70vh]">
+                      <SheetHeader>
+                        <SheetTitle>Komentáre ({video.comments_count})</SheetTitle>
+                      </SheetHeader>
+                      <ScrollArea className="h-[calc(70vh-140px)] mt-4">
+                        <div className="space-y-4 pr-4">
+                          {(comments.get(video.id) || []).map((comment) => {
+                            const commentProfile = profiles.get(comment.user_id);
+                            return (
+                              <div key={comment.id} className="flex gap-3">
+                                <Avatar className="h-8 w-8">
+                                  <AvatarImage src={commentProfile?.avatar_url || undefined} />
+                                  <AvatarFallback>{commentProfile?.full_name?.[0] || "U"}</AvatarFallback>
+                                </Avatar>
+                                <div className="flex-1">
+                                  <p className="text-sm font-semibold">{commentProfile?.full_name || "Používateľ"}</p>
+                                  <p className="text-sm text-muted-foreground">{comment.content}</p>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </ScrollArea>
+                      <div className="absolute bottom-4 left-4 right-4 flex gap-2">
+                        <Input
+                          placeholder="Napíš komentár..."
+                          value={newComment}
+                          onChange={(e) => setNewComment(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && addComment(video.id)}
+                        />
+                        <Button onClick={() => addComment(video.id)} size="icon">
+                          <Send className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
 
-                  <button className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110">
+                  <button 
+                    onClick={() => shareVideo(video)}
+                    className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
+                  >
                     <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
                       <Share2 className="h-7 w-7" />
                     </div>
