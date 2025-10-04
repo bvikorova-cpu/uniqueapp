@@ -6,6 +6,9 @@ import { Gamepad2, Trophy, Star } from "lucide-react";
 import { CandyCrush } from "@/components/games/CandyCrush";
 import { BarbieGame } from "@/components/games/BarbieGame";
 import { MinecraftGame } from "@/components/games/MinecraftGame";
+import { StarTrekGame } from "@/components/games/StarTrekGame";
+import { CSIGame } from "@/components/games/CSIGame";
+import { AngryBirdsGame } from "@/components/games/AngryBirdsGame";
 
 const Games = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
@@ -20,6 +23,18 @@ const Games = () => {
 
   if (activeGame === "minecraft") {
     return <MinecraftGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === "startrek") {
+    return <StarTrekGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === "csi") {
+    return <CSIGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === "angrybirds") {
+    return <AngryBirdsGame onBack={() => setActiveGame(null)} />;
   }
 
   return (
@@ -115,6 +130,93 @@ const Games = () => {
               </CardTitle>
               <CardDescription>
                 Postav svoj svet z kociek
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm text-muted-foreground">10 úrovní</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Gamepad2 className="h-4 w-4 mr-2" />
+                Hrať
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Star Trek Card */}
+          <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("startrek")}>
+            <CardHeader>
+              <div className="h-40 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="text-6xl">🚀</div>
+              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-purple-500" />
+                Star Trek
+              </CardTitle>
+              <CardDescription>
+                Vesmírne misie a bitky s nepriateľmi
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm text-muted-foreground">10 úrovní</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Gamepad2 className="h-4 w-4 mr-2" />
+                Hrať
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* CSI Card */}
+          <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("csi")}>
+            <CardHeader>
+              <div className="h-40 bg-gradient-to-br from-slate-700 to-blue-800 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="text-6xl">🔍</div>
+              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-blue-500" />
+                CSI Detektív
+              </CardTitle>
+              <CardDescription>
+                Vyšetruj prípady a hľadaj stopy
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm text-muted-foreground">10 úrovní</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Gamepad2 className="h-4 w-4 mr-2" />
+                Hrať
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Angry Birds Card */}
+          <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("angrybirds")}>
+            <CardHeader>
+              <div className="h-40 bg-gradient-to-br from-sky-400 to-cyan-600 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="flex gap-2">
+                  <div className="text-5xl">🐦</div>
+                  <div className="text-5xl">🐷</div>
+                </div>
+              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-red-500" />
+                Angry Birds
+              </CardTitle>
+              <CardDescription>
+                Odpaľuj vtáky na prasiatka a ich stavby
               </CardDescription>
             </CardHeader>
             <CardContent>
