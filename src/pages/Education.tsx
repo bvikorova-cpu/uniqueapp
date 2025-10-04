@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BookOpen, Brain, GraduationCap, Send, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -190,6 +191,7 @@ const courseCategories = [
 ];
 
 export default function Education() {
+  const navigate = useNavigate();
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -231,10 +233,7 @@ export default function Education() {
   };
 
   const handleEnrollCourse = (courseName: string) => {
-    toast({
-      title: "Kurz",
-      description: `Záujem o kurz: ${courseName}`,
-    });
+    navigate(`/course/${encodeURIComponent(courseName)}`);
   };
 
   return (
