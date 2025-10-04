@@ -28,6 +28,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Terms from "./pages/Terms";
 import Education from "./pages/Education";
 import CourseDetail from "./pages/CourseDetail";
+import Auction from "./pages/Auction";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -58,6 +59,7 @@ const App = () => (
           <Route path="/games" element={<Games />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/influ-king" element={<InfluKing />} />
+          <Route path="/auction" element={<Auction />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/reset-password" element={<ResetPassword />} />

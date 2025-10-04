@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      auction_bids: {
+        Row: {
+          auction_id: string
+          bid_amount: number
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          auction_id: string
+          bid_amount: number
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          auction_id?: string
+          bid_amount?: number
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auction_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      auction_items: {
+        Row: {
+          buyout_price: number | null
+          category: string
+          condition: string
+          created_at: string
+          current_price: number
+          description: string
+          ends_at: string
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          starting_price: number
+          title: string
+          updated_at: string
+          user_id: string
+          winner_id: string | null
+        }
+        Insert: {
+          buyout_price?: number | null
+          category: string
+          condition: string
+          created_at?: string
+          current_price: number
+          description: string
+          ends_at: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          starting_price: number
+          title: string
+          updated_at?: string
+          user_id: string
+          winner_id?: string | null
+        }
+        Update: {
+          buyout_price?: number | null
+          category?: string
+          condition?: string
+          created_at?: string
+          current_price?: number
+          description?: string
+          ends_at?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          starting_price?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
