@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.tutoring-chat]
 verify_jwt = false
+
+[functions.import-recipes]
+verify_jwt = false
