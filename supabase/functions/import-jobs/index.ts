@@ -41,13 +41,20 @@ Deno.serve(async (req) => {
     const { country = 'sk', what = '', results_per_page = 50 } = await req.json();
 
     console.log(`Importing jobs from Adzuna for country: ${country}, search: ${what}`);
+    console.log(`App ID available: ${!!adzunaAppId}, App Key available: ${!!adzunaAppKey}`);
 
     // Adzuna API call
     const adzunaUrl = `https://api.adzuna.com/v1/api/jobs/${country}/search/1?app_id=${adzunaAppId}&app_key=${adzunaAppKey}&results_per_page=${results_per_page}&what=${encodeURIComponent(what)}`;
     
+    console.log(`Calling Adzuna API for country: ${country}`);
+    
     const response = await fetch(adzunaUrl);
     
+    console.log(`Adzuna API response status: ${response.status}`);
+    
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Adzuna API error response: ${errorText}`);
       throw new Error(`Adzuna API error: ${response.statusText}`);
     }
 
