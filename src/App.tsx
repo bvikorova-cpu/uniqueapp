@@ -31,6 +31,7 @@ import CourseDetail from "./pages/CourseDetail";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
 import BestFriend from "./pages/BestFriend";
+import Cooking from "./pages/Cooking";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ const App = () => (
           <Route path="/auction" element={<Auction />} />
           <Route path="/ai-generation" element={<AIGeneration />} />
           <Route path="/best-friend" element={<BestFriend />} />
+          <Route path="/cooking" element={<Cooking />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
