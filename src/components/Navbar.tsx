@@ -33,7 +33,6 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { path: "/", label: "Domov", icon: Crown },
     { path: "/feed", label: "Feed", icon: MessageSquare },
     { path: "/tiktok", label: "Videá", icon: Video },
     { path: "/messenger", label: "Messenger", icon: Mail },
