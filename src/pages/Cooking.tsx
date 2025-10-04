@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ChefHat, Search, X, Download, Plus } from "lucide-react";
+import { Clock, Users, ChefHat, Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -59,9 +59,6 @@ const Cooking = () => {
   const [totalRecipes, setTotalRecipes] = useState(0);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isImporting, setIsImporting] = useState(false);
-  const [importCategory, setImportCategory] = useState("Seafood");
-  const [importLimit, setImportLimit] = useState(20);
 
   useEffect(() => {
     fetchRecipes();
@@ -99,33 +96,6 @@ const Cooking = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleImportRecipes = async () => {
-    setIsImporting(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('import-recipes', {
-        body: { category: importCategory, limit: importLimit }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Import úspešný!",
-        description: `Importovaných: ${data.imported} receptov, Chyby: ${data.errors}`,
-      });
-
-      // Refresh recipes list
-      fetchRecipes();
-    } catch (error) {
-      console.error('Import error:', error);
-      toast({
-        title: "Chyba pri importe",
-        description: "Nepodarilo sa importovať recepty",
-        variant: "destructive",
-      });
-    } finally {
-      setIsImporting(false);
-    }
-  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -157,7 +127,7 @@ const Cooking = () => {
             Varenie a recepty
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Objavte tisíce receptov pre každú príležitosť - od rýchlych jedál až po gurmánske pokrmy
+            Objavte recepty pre každú príležitosť - od rýchlych jedál až po gurmánske pokrmy
           </p>
           <Badge variant="secondary" className="mt-4 text-lg px-4 py-2">
             {totalRecipes}+ receptov
@@ -193,60 +163,6 @@ const Cooking = () => {
           </Dialog>
         </div>
 
-        {/* Import Section */}
-        <Card className="max-w-2xl mx-auto mb-8 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
-          <CardContent className="p-6">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-2">
-                <Download className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-semibold">Import receptov z TheMealDB</h3>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Select value={importCategory} onValueChange={setImportCategory}>
-                  <SelectTrigger className="w-full sm:w-[200px]">
-                    <SelectValue placeholder="Kategória" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Beef">Beef (Hovädzie)</SelectItem>
-                    <SelectItem value="Breakfast">Breakfast (Raňajky)</SelectItem>
-                    <SelectItem value="Chicken">Chicken (Kura)</SelectItem>
-                    <SelectItem value="Dessert">Dessert (Dezerty)</SelectItem>
-                    <SelectItem value="Goat">Goat (Koza)</SelectItem>
-                    <SelectItem value="Lamb">Lamb (Jahňa)</SelectItem>
-                    <SelectItem value="Miscellaneous">Miscellaneous (Rôzne)</SelectItem>
-                    <SelectItem value="Pasta">Pasta (Cestoviny)</SelectItem>
-                    <SelectItem value="Pork">Pork (Bravčové)</SelectItem>
-                    <SelectItem value="Seafood">Seafood (Morské plody)</SelectItem>
-                    <SelectItem value="Side">Side (Prílohy)</SelectItem>
-                    <SelectItem value="Starter">Starter (Predjedlá)</SelectItem>
-                    <SelectItem value="Vegan">Vegan</SelectItem>
-                    <SelectItem value="Vegetarian">Vegetarian (Vegetariánske)</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Input
-                  type="number"
-                  min="1"
-                  max="50"
-                  value={importLimit}
-                  onChange={(e) => setImportLimit(parseInt(e.target.value) || 20)}
-                  className="w-full sm:w-[120px]"
-                  placeholder="Počet"
-                />
-                <Button 
-                  onClick={handleImportRecipes} 
-                  disabled={isImporting}
-                  className="gap-2 bg-gradient-primary hover:opacity-90"
-                >
-                  <Download className="h-4 w-4" />
-                  {isImporting ? "Importujem..." : "Importovať"}
-                </Button>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Importujte recepty s detailnými ingredienciami a postupmi z TheMealDB API
-              </p>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Categories */}
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
