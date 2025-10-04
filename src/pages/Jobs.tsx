@@ -81,6 +81,8 @@ const Jobs = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showApplyDialog, setShowApplyDialog] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
+  const [showImportDialog, setShowImportDialog] = useState(false);
+  const [importCountry, setImportCountry] = useState("gb");
 
   // Form states for creating job
   const [newJob, setNewJob] = useState({
@@ -290,6 +292,7 @@ const Jobs = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      setShowImportDialog(false);
       toast({
         title: "✅ Import úspešný",
         description: `Naimportované ${data.imported} z ${data.total} pracovných ponúk`,
@@ -303,6 +306,28 @@ const Jobs = () => {
       });
     },
   });
+
+  const ADZUNA_COUNTRIES = {
+    at: "Rakúsko",
+    au: "Austrália",
+    be: "Belgicko",
+    br: "Brazília",
+    ca: "Kanada",
+    ch: "Švajčiarsko",
+    de: "Nemecko",
+    es: "Španielsko",
+    fr: "Francúzsko",
+    gb: "Veľká Británia",
+    in: "India",
+    it: "Taliansko",
+    mx: "Mexiko",
+    nl: "Holandsko",
+    nz: "Nový Zéland",
+    pl: "Poľsko",
+    sg: "Singapur",
+    us: "USA",
+    za: "Južná Afrika",
+  };
 
   if (!user) {
     return (
@@ -337,14 +362,46 @@ const Jobs = () => {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button 
-              variant="outline"
-              onClick={() => importJobsMutation.mutate({ country: 'sk', searchQuery: '' })}
-              disabled={importJobsMutation.isPending}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              {importJobsMutation.isPending ? "Importujem..." : "Import z Adzuna"}
-            </Button>
+            <Dialog open={showImportDialog} onOpenChange={setShowImportDialog}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Download className="h-4 w-4 mr-2" />
+                  Import z Adzuna
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Importovať pracovné ponuky</DialogTitle>
+                  <DialogDescription>
+                    Vyberte krajinu pre import ponúk z Adzuna API
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="import-country">Krajina</Label>
+                    <Select value={importCountry} onValueChange={setImportCountry}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(ADZUNA_COUNTRIES).map(([code, name]) => (
+                          <SelectItem key={code} value={code}>
+                            {name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button
+                    className="w-full"
+                    onClick={() => importJobsMutation.mutate({ country: importCountry, searchQuery: '' })}
+                    disabled={importJobsMutation.isPending}
+                  >
+                    {importJobsMutation.isPending ? "Importujem..." : "Importovať ponuky"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
             {isEmployer ? (
               <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogTrigger asChild>
