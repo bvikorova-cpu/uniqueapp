@@ -3,12 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { ShoppingCart, Search, Filter, Star, Heart } from "lucide-react";
+import { ShoppingCart, Search, Filter, Star, Heart, X, Trash2, Plus, Minus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Separator } from "@/components/ui/separator";
+
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
 
 const Eshop = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const { toast } = useToast();
 
   const categories = [
@@ -89,27 +108,158 @@ const Eshop = () => {
     return matchesSearch && matchesCategory;
   });
 
-  const handleAddToCart = (productName: string) => {
+  const handleAddToCart = (product: { id: number; name: string; price: number; image: string }) => {
+    setCart(prevCart => {
+      const existingItem = prevCart.find(item => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
     toast({
       title: "Pridané do košíka",
-      description: `${productName} bol pridaný do košíka`,
+      description: `${product.name} bol pridaný do košíka`,
     });
   };
+
+  const updateQuantity = (id: number, delta: number) => {
+    setCart(prevCart => {
+      return prevCart.map(item =>
+        item.id === id
+          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
+          : item
+      ).filter(item => item.quantity > 0);
+    });
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart(prevCart => prevCart.filter(item => item.id !== id));
+    toast({
+      title: "Odstránené z košíka",
+      description: "Produkt bol odstránený z košíka",
+    });
+  };
+
+  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const cartItemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
-        <div className="text-center space-y-4 mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold">
-            Megatalent{" "}
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
-              Eshop
-            </span>
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Exkluzívne produkty a merchandise pre našu komunitu
-          </p>
+        {/* Header with Cart */}
+        <div className="flex justify-between items-start mb-12">
+          <div className="text-center space-y-4 flex-1">
+            <h1 className="text-4xl md:text-5xl font-bold">
+              Megatalent{" "}
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                Eshop
+              </span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Exkluzívne produkty a merchandise pre našu komunitu
+            </p>
+          </div>
+          
+          <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                {cartItemsCount > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-primary">
+                    {cartItemsCount}
+                  </Badge>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-full sm:max-w-lg">
+              <SheetHeader>
+                <SheetTitle>Nákupný košík</SheetTitle>
+                <SheetDescription>
+                  {cartItemsCount} {cartItemsCount === 1 ? 'produkt' : cartItemsCount < 5 ? 'produkty' : 'produktov'} v košíku
+                </SheetDescription>
+              </SheetHeader>
+              
+              <div className="flex flex-col h-full mt-6">
+                <div className="flex-1 overflow-y-auto">
+                  {cart.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                      <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
+                      <p className="text-lg text-muted-foreground">Košík je prázdny</p>
+                      <p className="text-sm text-muted-foreground mt-2">Pridajte produkty do košíka</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {cart.map((item) => (
+                        <div key={item.id} className="flex gap-4 border-b pb-4">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-20 h-20 object-cover rounded-lg"
+                          />
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{item.name}</h4>
+                            <p className="text-sm text-primary font-semibold">€{item.price}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-7 w-7"
+                                onClick={() => updateQuantity(item.id, -1)}
+                              >
+                                <Minus className="h-3 w-3" />
+                              </Button>
+                              <span className="w-8 text-center">{item.quantity}</span>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                className="h-7 w-7"
+                                onClick={() => updateQuantity(item.id, 1)}
+                              >
+                                <Plus className="h-3 w-3" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 ml-auto text-destructive"
+                                onClick={() => removeFromCart(item.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                {cart.length > 0 && (
+                  <div className="border-t pt-4 mt-4 space-y-4">
+                    <div className="flex justify-between text-lg font-semibold">
+                      <span>Celkom:</span>
+                      <span className="text-primary">€{cartTotal.toFixed(2)}</span>
+                    </div>
+                    <Button 
+                      className="w-full" 
+                      size="lg"
+                      onClick={() => {
+                        toast({
+                          title: "Pokračovanie k platbe",
+                          description: "Platobná brána bude čoskoro dostupná",
+                        });
+                      }}
+                    >
+                      Pokračovať k platbe
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
 
         {/* Search and Filter */}
@@ -222,7 +372,12 @@ const Eshop = () => {
 
                 <Button 
                   className="w-full"
-                  onClick={() => handleAddToCart(product.name)}
+                  onClick={() => handleAddToCart({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image
+                  })}
                 >
                   <ShoppingCart className="h-4 w-4 mr-2" />
                   Do košíka
