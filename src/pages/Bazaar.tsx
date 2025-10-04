@@ -5,13 +5,42 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search, MapPin, Clock, User, MessageCircle } from "lucide-react";
+import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Bazaar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Súbor je príliš veľký",
+          description: "Maximálna veľkosť obrázka je 5MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview("");
+  };
 
   const categories = [
     { id: "all", name: "Všetko" },
@@ -150,8 +179,50 @@ const Bazaar = () => {
                 <Input placeholder="Cena (€)" type="number" />
                 <Input placeholder="Lokalita" />
                 <Textarea placeholder="Popis produktu..." className="min-h-20" />
-                <Button variant="hero" className="w-full">
-                  Zverejniť inzerát
+                
+                {/* Image Upload */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Obrázok produktu</label>
+                  {imagePreview ? (
+                    <div className="relative">
+                      <img 
+                        src={imagePreview} 
+                        alt="Náhľad" 
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={removeImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-input rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground">
+                          Kliknite pre nahratie obrázka
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Max. 5MB (JPG, PNG, WEBP)
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                      />
+                    </label>
+                  )}
+                </div>
+
+                <Button variant="hero" className="w-full" disabled={uploading}>
+                  {uploading ? "Nahrávam..." : "Zverejniť inzerát"}
                 </Button>
               </div>
             </DialogContent>
