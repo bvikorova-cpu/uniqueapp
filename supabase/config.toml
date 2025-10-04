@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.import-recipes]
 verify_jwt = false
+
+[functions.import-jobs]
+verify_jwt = false

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe } from "lucide-react";
+import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Download } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface JobListing {
@@ -278,6 +278,32 @@ const Jobs = () => {
     },
   });
 
+  // Import jobs from Adzuna
+  const importJobsMutation = useMutation({
+    mutationFn: async ({ country, searchQuery }: { country: string; searchQuery: string }) => {
+      const { data, error } = await supabase.functions.invoke('import-jobs', {
+        body: { country, what: searchQuery, results_per_page: 50 }
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      toast({
+        title: "✅ Import úspešný",
+        description: `Naimportované ${data.imported} z ${data.total} pracovných ponúk`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "❌ Chyba pri importe",
+        description: error.message || "Nepodarilo sa importovať pracovné ponuky",
+        variant: "destructive",
+      });
+    },
+  });
+
   if (!user) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
@@ -310,14 +336,23 @@ const Jobs = () => {
               Nájdite svoju vysnívanú prácu z celého sveta
             </p>
           </div>
-          {isEmployer ? (
-            <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Pridať pozíciu
-                </Button>
-              </DialogTrigger>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline"
+              onClick={() => importJobsMutation.mutate({ country: 'sk', searchQuery: '' })}
+              disabled={importJobsMutation.isPending}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {importJobsMutation.isPending ? "Importujem..." : "Import z Adzuna"}
+            </Button>
+            {isEmployer ? (
+              <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Pridať pozíciu
+                  </Button>
+                </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle>Pridať pracovnú pozíciu</DialogTitle>
@@ -477,12 +512,13 @@ const Jobs = () => {
                 </div>
               </DialogContent>
             </Dialog>
-          ) : (
-            <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending}>
-              <Building2 className="h-4 w-4 mr-2" />
-              {registerEmployerMutation.isPending ? "Registrujem..." : "Registrovať ako zamestnávateľ"}
-            </Button>
-          )}
+            ) : (
+              <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending}>
+                <Building2 className="h-4 w-4 mr-2" />
+                {registerEmployerMutation.isPending ? "Registrujem..." : "Registrovať ako zamestnávateľ"}
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Filters */}
