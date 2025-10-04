@@ -1,7 +1,11 @@
+import { useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Award, Download, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import { toast } from "sonner";
 
 interface CertificateProps {
   userName: string;
@@ -11,10 +15,41 @@ interface CertificateProps {
 
 export const Certificate = ({ userName, courseName, completionDate }: CertificateProps) => {
   const navigate = useNavigate();
+  const certificateRef = useRef<HTMLDivElement>(null);
   const certificateNumber = `UNIQUE-${Date.now().toString().slice(-8)}`;
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPDF = async () => {
+    if (!certificateRef.current) return;
+
+    try {
+      toast.loading("Generujem PDF...");
+      
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`certifikat-${userName.replace(/\s+/g, "-")}-${Date.now()}.pdf`);
+      
+      toast.dismiss();
+      toast.success("Certifikát bol úspešne stiahnutý!");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      toast.dismiss();
+      toast.error("Nepodarilo sa vygenerovať PDF");
+    }
   };
 
   return (
@@ -24,14 +59,15 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
           <Home className="mr-2 h-4 w-4" />
           Späť na vzdelávanie
         </Button>
-        <Button onClick={handlePrint}>
+        <Button onClick={handleDownloadPDF}>
           <Download className="mr-2 h-4 w-4" />
-          Stiahnuť certifikát
+          Stiahnuť PDF
         </Button>
       </div>
 
-      <Card className="bg-white text-black border-8 border-double border-primary">
-        <CardContent className="p-12 space-y-8">
+      <div ref={certificateRef}>
+        <Card className="bg-white text-black border-8 border-double border-primary">
+          <CardContent className="p-12 space-y-8">
           {/* Header with seal */}
           <div className="flex items-center justify-between">
             <div className="flex-1">
@@ -88,6 +124,11 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
           <div className="pt-8 mt-8 border-t-2 border-muted">
             <div className="flex justify-between items-end">
               <div className="text-center flex-1">
+                <div className="mb-4">
+                  <div className="font-signature text-4xl text-primary mb-2">
+                    Beáta Vikorová
+                  </div>
+                </div>
                 <div className="border-b-2 border-black w-48 mx-auto mb-2"></div>
                 <p className="font-semibold">Mgr. Beáta Vikorová</p>
                 <p className="text-sm">MBA, LL.M, MSc.</p>
@@ -113,6 +154,7 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };
