@@ -5,8 +5,10 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ChefHat, Search } from "lucide-react";
+import { Clock, Users, ChefHat, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Recipe {
   id: string;
@@ -47,6 +49,8 @@ const Cooking = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalRecipes, setTotalRecipes] = useState(0);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchRecipes();
@@ -95,6 +99,11 @@ const Cooking = () => {
       default:
         return "";
     }
+  };
+
+  const handleRecipeClick = (recipe: Recipe) => {
+    setSelectedRecipe(recipe);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -185,7 +194,11 @@ const Cooking = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <Badge variant="outline">{recipe.calories} kcal</Badge>
-                          <Button size="sm" variant="premium">
+                          <Button 
+                            size="sm" 
+                            variant="premium"
+                            onClick={() => handleRecipeClick(recipe)}
+                          >
                             Pozrieť recept
                           </Button>
                         </div>
@@ -252,6 +265,100 @@ const Cooking = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Recipe Detail Dialog */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-3xl max-h-[90vh]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold">
+                {selectedRecipe?.title}
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedRecipe && (
+              <ScrollArea className="h-[70vh] pr-4">
+                <div className="space-y-6">
+                  {/* Recipe Image */}
+                  <div className="relative w-full h-64 rounded-lg overflow-hidden">
+                    <img
+                      src={selectedRecipe.image_url}
+                      alt={selectedRecipe.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <Badge 
+                      className={`absolute top-4 right-4 ${getDifficultyColor(selectedRecipe.difficulty)}`}
+                    >
+                      {selectedRecipe.difficulty}
+                    </Badge>
+                  </div>
+
+                  {/* Recipe Info */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Clock className="w-5 h-5" />
+                      <span>{selectedRecipe.time}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Users className="w-5 h-5" />
+                      <span>{selectedRecipe.servings} porcie</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{selectedRecipe.calories} kcal</Badge>
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <p className="text-muted-foreground">{selectedRecipe.description}</p>
+                  </div>
+
+                  {/* Tags */}
+                  {selectedRecipe.tags && selectedRecipe.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedRecipe.tags.map((tag, index) => (
+                        <Badge key={index} variant="secondary">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Ingredients */}
+                  {selectedRecipe.ingredients && selectedRecipe.ingredients.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-semibold mb-4">Ingrediencie</h3>
+                      <ul className="space-y-2">
+                        {selectedRecipe.ingredients.map((ingredient, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-primary mt-1">•</span>
+                            <span>{ingredient}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Instructions */}
+                  {selectedRecipe.instructions && selectedRecipe.instructions.length > 0 && (
+                    <div>
+                      <h3 className="text-xl font-semibold mb-4">Postup prípravy</h3>
+                      <ol className="space-y-3">
+                        {selectedRecipe.instructions.map((instruction, index) => (
+                          <li key={index} className="flex gap-3">
+                            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-primary text-white flex items-center justify-center text-sm font-semibold">
+                              {index + 1}
+                            </span>
+                            <span className="flex-1 pt-0.5">{instruction}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
