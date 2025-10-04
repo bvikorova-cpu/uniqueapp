@@ -2,3 +2,6 @@ project_id = "jufrdzeonywluwutvyxz"
 
 [functions.psychology-chat]
 verify_jwt = false
+
+[functions.tutoring-chat]
+verify_jwt = false
