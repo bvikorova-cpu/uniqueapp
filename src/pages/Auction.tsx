@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Gavel, Clock, TrendingUp, Plus, Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Gavel, Clock, TrendingUp, Plus, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface AuctionItem {
@@ -26,41 +28,38 @@ interface AuctionItem {
 }
 
 const Auction = () => {
-  const [auctions, setAuctions] = useState<AuctionItem[]>([]);
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const navigate = useNavigate();
+  const [auctions, setAuctions] = useState<AuctionItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
-  const [newAuction, setNewAuction] = useState({
-    title: "",
-    description: "",
-    starting_price: "",
-    buyout_price: "",
-    category: "elektronika",
-    condition: "nove",
-    ends_at: "",
-  });
+  // Form states
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [startingPrice, setStartingPrice] = useState("");
+  const [buyoutPrice, setBuyoutPrice] = useState("");
+  const [category, setCategory] = useState("");
+  const [condition, setCondition] = useState("");
+  const [duration, setDuration] = useState("24");
 
   useEffect(() => {
+    checkUser();
     fetchAuctions();
-  }, [selectedCategory]);
+  }, []);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  };
 
   const fetchAuctions = async () => {
-    setIsLoading(true);
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from("auction_items")
         .select("*")
         .eq("is_active", true)
-        .gt("ends_at", new Date().toISOString())
         .order("created_at", { ascending: false });
-
-      if (selectedCategory !== "all") {
-        query = query.eq("category", selectedCategory);
-      }
-
-      const { data, error } = await query;
 
       if (error) throw error;
       setAuctions(data || []);
@@ -68,50 +67,40 @@ const Auction = () => {
       console.error("Error fetching auctions:", error);
       toast.error("Nepodarilo sa načítať aukcie");
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleCreateAuction = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+  const handleCreateAuction = async (e: React.FormEvent) => {
+    e.preventDefault();
     
     if (!user) {
-      toast.error("Musíte byť prihlásený pre vytvorenie aukcie");
+      toast.error("Musíte byť prihlásený");
       navigate("/auth");
       return;
     }
 
-    if (!newAuction.title || !newAuction.description || !newAuction.starting_price || !newAuction.ends_at) {
-      toast.error("Vyplňte všetky povinné polia");
-      return;
-    }
-
     try {
+      const endsAt = new Date();
+      endsAt.setHours(endsAt.getHours() + parseInt(duration));
+
       const { error } = await supabase.from("auction_items").insert({
-        title: newAuction.title,
-        description: newAuction.description,
-        starting_price: parseFloat(newAuction.starting_price),
-        current_price: parseFloat(newAuction.starting_price),
-        buyout_price: newAuction.buyout_price ? parseFloat(newAuction.buyout_price) : null,
-        category: newAuction.category,
-        condition: newAuction.condition,
-        ends_at: newAuction.ends_at,
         user_id: user.id,
+        title,
+        description,
+        starting_price: parseFloat(startingPrice),
+        current_price: parseFloat(startingPrice),
+        buyout_price: buyoutPrice ? parseFloat(buyoutPrice) : null,
+        category,
+        condition,
+        ends_at: endsAt.toISOString(),
       });
 
       if (error) throw error;
 
-      toast.success("Aukcia bola úspešne vytvorená!");
-      setIsCreateDialogOpen(false);
-      setNewAuction({
-        title: "",
-        description: "",
-        starting_price: "",
-        buyout_price: "",
-        category: "elektronika",
-        condition: "nove",
-        ends_at: "",
-      });
+      toast.success("Aukcia bola vytvorená!");
+      setCreateDialogOpen(false);
+      resetForm();
       fetchAuctions();
     } catch (error) {
       console.error("Error creating auction:", error);
@@ -119,20 +108,28 @@ const Auction = () => {
     }
   };
 
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setStartingPrice("");
+    setBuyoutPrice("");
+    setCategory("");
+    setCondition("");
+    setDuration("24");
+  };
+
   const handleBid = async (auctionId: string, currentPrice: number) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
     if (!user) {
-      toast.error("Musíte byť prihlásený pre podanie ponuky");
+      toast.error("Musíte byť prihlásený");
       navigate("/auth");
       return;
     }
 
-    const bidAmount = prompt(`Zadajte sumu (aktuálna cena: ${currentPrice} €):`);
+    const bidAmount = prompt(`Zadajte vašu ponuku (aktuálna cena: ${currentPrice}€):`);
     if (!bidAmount) return;
 
     const amount = parseFloat(bidAmount);
-    if (isNaN(amount) || amount <= currentPrice) {
+    if (amount <= currentPrice) {
       toast.error("Ponuka musí byť vyššia ako aktuálna cena");
       return;
     }
@@ -146,11 +143,11 @@ const Auction = () => {
 
       if (error) throw error;
 
-      toast.success("Ponuka bola úspešne podaná!");
+      toast.success("Ponuka bola úspešne pridaná!");
       fetchAuctions();
     } catch (error) {
       console.error("Error placing bid:", error);
-      toast.error("Nepodarilo sa podať ponuku");
+      toast.error("Nepodarilo sa pridať ponuku");
     }
   };
 
@@ -159,105 +156,88 @@ const Auction = () => {
     const end = new Date(endsAt);
     const diff = end.getTime() - now.getTime();
 
-    if (diff <= 0) return "Ukončená";
+    if (diff <= 0) return "Ukončené";
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-    if (days > 0) return `${days}d ${hours}h`;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
+    if (hours > 24) {
+      const days = Math.floor(hours / 24);
+      return `${days}d ${hours % 24}h`;
+    }
+    return `${hours}h ${minutes}m`;
   };
 
   return (
     <div className="min-h-screen bg-background pt-16">
-      {/* Hero Section */}
-      <section className="bg-gradient-primary py-20 px-4">
-        <div className="container mx-auto max-w-6xl text-center space-y-6">
-          <Gavel className="h-16 w-16 mx-auto text-white" />
-          <h1 className="text-4xl md:text-6xl font-bold text-white">
-            Online Aukcie
-          </h1>
-          <p className="text-xl text-gray-200 max-w-2xl mx-auto">
-            Ponúkaj, vydražuj a zárobok na predaji produktov z celého sveta
-          </p>
-        </div>
-      </section>
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                Online Aukcia
+              </span>
+            </h1>
+            <p className="text-muted-foreground">
+              Kupuj a predávaj produkty v aukcii
+            </p>
+          </div>
 
-      {/* Filters and Create Button */}
-      <section className="py-8 px-4 border-b">
-        <div className="container mx-auto max-w-6xl flex flex-col sm:flex-row gap-4 justify-between items-center">
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-full sm:w-64">
-              <SelectValue placeholder="Všetky kategórie" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Všetky kategórie</SelectItem>
-              <SelectItem value="elektronika">Elektronika</SelectItem>
-              <SelectItem value="mobil">Mobilné telefóny</SelectItem>
-              <SelectItem value="oblecenie">Oblečenie</SelectItem>
-              <SelectItem value="domacnost">Domácnosť</SelectItem>
-              <SelectItem value="sport">Šport</SelectItem>
-              <SelectItem value="auto">Auto & Moto</SelectItem>
-              <SelectItem value="knihy">Knihy</SelectItem>
-              <SelectItem value="ostatne">Ostatné</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
             <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
+              <Button size="lg">
+                <Plus className="mr-2 h-5 w-5" />
                 Vytvoriť aukciu
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Vytvoriť novú aukciu</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <form onSubmit={handleCreateAuction} className="space-y-4">
                 <div>
-                  <Label htmlFor="title">Názov *</Label>
+                  <Label htmlFor="title">Názov</Label>
                   <Input
                     id="title"
-                    value={newAuction.title}
-                    onChange={(e) => setNewAuction({ ...newAuction, title: e.target.value })}
-                    placeholder="Názov produktu"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Popis *</Label>
+                  <Label htmlFor="description">Popis</Label>
                   <Textarea
                     id="description"
-                    value={newAuction.description}
-                    onChange={(e) => setNewAuction({ ...newAuction, description: e.target.value })}
-                    placeholder="Podrobný popis produktu"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     rows={4}
+                    required
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="starting_price">Počiatočná cena (€) *</Label>
+                    <Label htmlFor="startingPrice">Východzia cena (€)</Label>
                     <Input
-                      id="starting_price"
+                      id="startingPrice"
                       type="number"
-                      value={newAuction.starting_price}
-                      onChange={(e) => setNewAuction({ ...newAuction, starting_price: e.target.value })}
-                      placeholder="10.00"
+                      step="0.01"
+                      value={startingPrice}
+                      onChange={(e) => setStartingPrice(e.target.value)}
+                      required
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="buyout_price">Kúp teraz cena (€)</Label>
+                    <Label htmlFor="buyoutPrice">Ihneď kúpiť (€)</Label>
                     <Input
-                      id="buyout_price"
+                      id="buyoutPrice"
                       type="number"
-                      value={newAuction.buyout_price}
-                      onChange={(e) => setNewAuction({ ...newAuction, buyout_price: e.target.value })}
-                      placeholder="100.00"
+                      step="0.01"
+                      value={buyoutPrice}
+                      onChange={(e) => setBuyoutPrice(e.target.value)}
                     />
                   </div>
                 </div>
@@ -265,28 +245,28 @@ const Auction = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="category">Kategória</Label>
-                    <Select value={newAuction.category} onValueChange={(value) => setNewAuction({ ...newAuction, category: value })}>
+                    <Select value={category} onValueChange={setCategory} required>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Vyber kategóriu" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="elektronika">Elektronika</SelectItem>
-                        <SelectItem value="mobil">Mobilné telefóny</SelectItem>
                         <SelectItem value="oblecenie">Oblečenie</SelectItem>
-                        <SelectItem value="domacnost">Domácnosť</SelectItem>
+                        <SelectItem value="nabytok">Nábytok</SelectItem>
                         <SelectItem value="sport">Šport</SelectItem>
-                        <SelectItem value="auto">Auto & Moto</SelectItem>
                         <SelectItem value="knihy">Knihy</SelectItem>
-                        <SelectItem value="ostatne">Ostatné</SelectItem>
+                        <SelectItem value="hracky">Hračky</SelectItem>
+                        <SelectItem value="auto">Auto-moto</SelectItem>
+                        <SelectItem value="ine">Iné</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
                     <Label htmlFor="condition">Stav</Label>
-                    <Select value={newAuction.condition} onValueChange={(value) => setNewAuction({ ...newAuction, condition: value })}>
+                    <Select value={condition} onValueChange={setCondition} required>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue placeholder="Vyber stav" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="nove">Nové</SelectItem>
@@ -298,97 +278,240 @@ const Auction = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="ends_at">Koniec aukcie *</Label>
-                  <Input
-                    id="ends_at"
-                    type="datetime-local"
-                    value={newAuction.ends_at}
-                    onChange={(e) => setNewAuction({ ...newAuction, ends_at: e.target.value })}
-                  />
+                  <Label htmlFor="duration">Trvanie (hodiny)</Label>
+                  <Select value={duration} onValueChange={setDuration}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="24">24 hodín</SelectItem>
+                      <SelectItem value="48">48 hodín</SelectItem>
+                      <SelectItem value="72">3 dni</SelectItem>
+                      <SelectItem value="168">7 dní</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                <Button onClick={handleCreateAuction} className="w-full">
+                <Button type="submit" className="w-full">
                   Vytvoriť aukciu
                 </Button>
-              </div>
+              </form>
             </DialogContent>
           </Dialog>
         </div>
-      </section>
 
-      {/* Auctions Grid */}
-      <section className="py-12 px-4">
-        <div className="container mx-auto max-w-6xl">
-          {isLoading ? (
-            <div className="text-center py-20">
-              <p className="text-muted-foreground">Načítavam aukcie...</p>
-            </div>
-          ) : auctions.length === 0 ? (
-            <div className="text-center py-20">
-              <Gavel className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Žiadne aktívne aukcie</h3>
-              <p className="text-muted-foreground">Vytvorte prvú aukciu!</p>
-            </div>
-          ) : (
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Aktívne aukcie</CardTitle>
+              <Gavel className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{auctions.length}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Končia dnes</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {auctions.filter(a => {
+                  const hours = (new Date(a.ends_at).getTime() - new Date().getTime()) / (1000 * 60 * 60);
+                  return hours <= 24 && hours > 0;
+                }).length}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Priemerná cena</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {auctions.length > 0 
+                  ? (auctions.reduce((sum, a) => sum + parseFloat(a.current_price.toString()), 0) / auctions.length).toFixed(2)
+                  : "0"
+                }€
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Auctions Grid */}
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList>
+            <TabsTrigger value="all">Všetky</TabsTrigger>
+            <TabsTrigger value="ending">Končia čoskoro</TabsTrigger>
+            <TabsTrigger value="new">Nové</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="all" className="mt-6">
+            {loading ? (
+              <div className="text-center py-12">Načítavam aukcie...</div>
+            ) : auctions.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                Žiadne aktívne aukcie
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {auctions.map((auction) => (
+                  <Card key={auction.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
+                        {auction.image_url ? (
+                          <img src={auction.image_url} alt={auction.title} className="w-full h-full object-cover rounded-md" />
+                        ) : (
+                          <Upload className="h-12 w-12 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-xl">{auction.title}</CardTitle>
+                        <Badge variant="outline">{auction.category}</Badge>
+                      </div>
+                      <CardDescription className="line-clamp-2">
+                        {auction.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Aktuálna cena:</span>
+                        <span className="text-2xl font-bold text-primary">
+                          {parseFloat(auction.current_price.toString()).toFixed(2)}€
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Stav:</span>
+                        <Badge variant="secondary">{auction.condition}</Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Zostáva:</span>
+                        <span className="text-sm font-semibold">
+                          {getTimeRemaining(auction.ends_at)}
+                        </span>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex gap-2">
+                      <Button 
+                        className="flex-1"
+                        onClick={() => handleBid(auction.id, parseFloat(auction.current_price.toString()))}
+                      >
+                        <Gavel className="mr-2 h-4 w-4" />
+                        Prihodiť
+                      </Button>
+                      {auction.buyout_price && (
+                        <Button variant="outline" className="flex-1">
+                          Kúpiť za {parseFloat(auction.buyout_price.toString()).toFixed(2)}€
+                        </Button>
+                      )}
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="ending" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {auctions.map((auction) => (
-                <Card key={auction.id} className="hover:shadow-glow transition-all duration-300">
+              {auctions
+                .filter(a => {
+                  const hours = (new Date(a.ends_at).getTime() - new Date().getTime()) / (1000 * 60 * 60);
+                  return hours <= 24 && hours > 0;
+                })
+                .map((auction) => (
+                  <Card key={auction.id} className="hover:shadow-lg transition-shadow">
+                    <CardHeader>
+                      <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
+                        {auction.image_url ? (
+                          <img src={auction.image_url} alt={auction.title} className="w-full h-full object-cover rounded-md" />
+                        ) : (
+                          <Upload className="h-12 w-12 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-xl">{auction.title}</CardTitle>
+                        <Badge variant="outline">{auction.category}</Badge>
+                      </div>
+                      <CardDescription className="line-clamp-2">
+                        {auction.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Aktuálna cena:</span>
+                        <span className="text-2xl font-bold text-primary">
+                          {parseFloat(auction.current_price.toString()).toFixed(2)}€
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Zostáva:</span>
+                        <span className="text-sm font-semibold">
+                          {getTimeRemaining(auction.ends_at)}
+                        </span>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex gap-2">
+                      <Button 
+                        className="flex-1"
+                        onClick={() => handleBid(auction.id, parseFloat(auction.current_price.toString()))}
+                      >
+                        <Gavel className="mr-2 h-4 w-4" />
+                        Prihodiť
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="new" className="mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {auctions.slice(0, 6).map((auction) => (
+                <Card key={auction.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <CardTitle className="text-lg">{auction.title}</CardTitle>
-                      <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">
-                        {auction.category}
-                      </span>
+                    <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
+                      {auction.image_url ? (
+                        <img src={auction.image_url} alt={auction.title} className="w-full h-full object-cover rounded-md" />
+                      ) : (
+                        <Upload className="h-12 w-12 text-muted-foreground" />
+                      )}
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-xl">{auction.title}</CardTitle>
+                      <Badge variant="outline">{auction.category}</Badge>
                     </div>
                     <CardDescription className="line-clamp-2">
                       {auction.description}
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Aktuálna cena:</span>
-                      <span className="font-bold text-xl text-primary">
-                        {auction.current_price.toFixed(2)} €
+                  <CardContent className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Aktuálna cena:</span>
+                      <span className="text-2xl font-bold text-primary">
+                        {parseFloat(auction.current_price.toString()).toFixed(2)}€
                       </span>
                     </div>
-
-                    {auction.buyout_price && (
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Kúp teraz:</span>
-                        <span className="font-semibold">
-                          {auction.buyout_price.toFixed(2)} €
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>Zostáva:</span>
-                      </div>
-                      <span className="font-semibold">{getTimeRemaining(auction.ends_at)}</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <User className="h-4 w-4" />
-                      <span>Stav: {auction.condition}</span>
-                    </div>
                   </CardContent>
-                  <CardFooter>
-                    <Button
-                      onClick={() => handleBid(auction.id, auction.current_price)}
-                      className="w-full"
+                  <CardFooter className="flex gap-2">
+                    <Button 
+                      className="flex-1"
+                      onClick={() => handleBid(auction.id, parseFloat(auction.current_price.toString()))}
                     >
-                      <TrendingUp className="h-4 w-4 mr-2" />
-                      Podať ponuku
+                      <Gavel className="mr-2 h-4 w-4" />
+                      Prihodiť
                     </Button>
                   </CardFooter>
                 </Card>
               ))}
             </div>
-          )}
-        </div>
-      </section>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
