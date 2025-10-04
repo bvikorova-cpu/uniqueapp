@@ -5,10 +5,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ChefHat, Search, X, Download } from "lucide-react";
+import { Clock, Users, ChefHat, Search, X, Download, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { AddRecipeForm } from "@/components/recipes/AddRecipeForm";
 import {
   Select,
   SelectContent,
@@ -175,6 +176,21 @@ const Cooking = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
+        </div>
+
+        {/* Add Recipe Button */}
+        <div className="max-w-2xl mx-auto mb-8 flex justify-center">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="lg" className="gap-2 bg-gradient-primary hover:opacity-90">
+                <Plus className="h-5 w-5" />
+                Pridať vlastný recept
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+              <AddRecipeForm onSuccess={fetchRecipes} />
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Import Section */}
