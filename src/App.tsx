@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Feed from "./pages/Feed";
+import Messenger from "./pages/Messenger";
 import Megatalent from "./pages/Megatalent";
 import Megaforum from "./pages/Megaforum";
 import Psychology from "./pages/Psychology";
@@ -34,6 +35,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/feed" element={<Feed />} />
+          <Route path="/messenger" element={<Messenger />} />
           <Route path="/megatalent" element={<Megatalent />} />
           <Route path="/megaforum" element={<Megaforum />} />
           <Route path="/psychologist" element={<Psychology />} />
