@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Star, Search, CheckCircle } from "lucide-react";
@@ -90,11 +90,20 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
 
   const caseData = CASES[currentLevel];
 
-  useState(() => {
-    generateHiddenClues();
-  });
+  const generateHiddenClues = () => {
+    const clues = caseData.clues.map((clue) => ({
+      clue,
+      x: Math.random() * 80,
+      y: Math.random() * 70,
+    }));
+    setHiddenClues(clues);
+  };
 
-  useState(() => {
+  useEffect(() => {
+    generateHiddenClues();
+  }, [currentLevel]);
+
+  useEffect(() => {
     if (timeLeft <= 0) {
       toast({
         title: "⏰ Čas vypršal!",
@@ -110,16 +119,7 @@ export const CSIGame = ({ onBack }: CSIGameProps) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  });
-
-  const generateHiddenClues = () => {
-    const clues = caseData.clues.map((clue) => ({
-      clue,
-      x: Math.random() * 80,
-      y: Math.random() * 70,
-    }));
-    setHiddenClues(clues);
-  };
+  }, [timeLeft]);
 
   const handleClueClick = (clue: string) => {
     if (foundClues.includes(clue)) return;
