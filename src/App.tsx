@@ -29,6 +29,7 @@ import Terms from "./pages/Terms";
 import Education from "./pages/Education";
 import CourseDetail from "./pages/CourseDetail";
 import Auction from "./pages/Auction";
+import AIGeneration from "./pages/AIGeneration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/influ-king" element={<InfluKing />} />
           <Route path="/auction" element={<Auction />} />
+          <Route path="/ai-generation" element={<AIGeneration />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/reset-password" element={<ResetPassword />} />
