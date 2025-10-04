@@ -1,11 +1,56 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
+import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const services = [
+    { name: "Feed", path: "/feed", keywords: ["feed", "príspevky", "zdieľanie", "sociálna sieť"] },
+    { name: "Videá", path: "/tiktok", keywords: ["videá", "tiktok", "krátke videá"] },
+    { name: "Messenger", path: "/messenger", keywords: ["messenger", "chat", "správy", "komunikácia"] },
+    { name: "Megatalent", path: "/megatalent", keywords: ["megatalent", "súťaž", "talent", "výhra"] },
+    { name: "Megaforum", path: "/megaforum", keywords: ["megaforum", "diskusia", "fórum"] },
+    { name: "Online psychológ", path: "/psychologist", keywords: ["psychológ", "psycholog", "duševné zdravie", "poradenstvo"] },
+    { name: "Vzdelávanie", path: "/education", keywords: ["vzdelávanie", "kurzy", "doučovanie", "kvízy"] },
+    { name: "Dovolenky", path: "/vacationer", keywords: ["dovolenky", "cestovanie", "zájazdy"] },
+    { name: "Dating", path: "/dating", keywords: ["dating", "zoznamka", "láska", "priateľstvá"] },
+    { name: "Prvá pomoc", path: "/first-aid", keywords: ["prvá pomoc", "zdravie", "pomoc"] },
+    { name: "Fit & Slim", path: "/fit-slim", keywords: ["fit", "slim", "cvičenie", "zdravé recepty"] },
+    { name: "Ja urobím", path: "/marketplace", keywords: ["služby", "marketplace", "ja urobím"] },
+    { name: "Eshop", path: "/eshop", keywords: ["eshop", "nákupy", "merchandise"] },
+    { name: "Bazár", path: "/bazaar", keywords: ["bazár", "bazar", "predaj", "nákup"] },
+    { name: "Referenčný program", path: "/referral", keywords: ["referral", "odmeny", "priateľ"] },
+    { name: "Hry", path: "/games", keywords: ["hry", "games", "zábava"] },
+    { name: "Práca", path: "/jobs", keywords: ["práca", "job", "zamestnanec", "kariéra"] },
+    { name: "InfluKing", path: "/influ-king", keywords: ["influking", "influencer", "zarábaš"] },
+    { name: "Online Aukcie", path: "/auction", keywords: ["aukcie", "auction", "dražba"] },
+    { name: "AI Generovanie", path: "/ai-generation", keywords: ["ai", "generovanie", "obrázky"] },
+    { name: "Best Friend", path: "/best-friend", keywords: ["best friend", "priateľ", "chatbot"] },
+  ];
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    const query = searchQuery.toLowerCase();
+    const foundService = services.find(service => 
+      service.name.toLowerCase().includes(query) || 
+      service.keywords.some(keyword => keyword.includes(query))
+    );
+
+    if (foundService) {
+      navigate(foundService.path);
+      setSearchQuery("");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pt-16">
       {/* Hero Section */}
@@ -28,6 +73,21 @@ const Home = () => {
             Sociálna sieť, kde tvoj talent môže zmeniť tvoj život. Súťaž, hlasuj, 
             nakupuj a zarábaj s priateľmi!
           </p>
+          
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Hľadaj služby... (napr. hry, vzdelávanie, dating)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 pr-4 py-6 text-lg bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
+              />
+            </div>
+          </form>
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/megatalent">
               <Button variant="hero" size="lg" className="text-xl px-8 py-4">
