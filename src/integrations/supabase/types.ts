@@ -822,7 +822,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_conversation_participant: {
+        Args: { conversation_id: string; user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       megatalent_tier: "premium" | "top_premium"
