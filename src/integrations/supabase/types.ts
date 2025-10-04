@@ -328,6 +328,168 @@ export type Database = {
         }
         Relationships: []
       }
+      influencer_followers: {
+        Row: {
+          created_at: string | null
+          follower_id: string
+          id: string
+          influencer_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          follower_id: string
+          id?: string
+          influencer_id: string
+        }
+        Update: {
+          created_at?: string | null
+          follower_id?: string
+          id?: string
+          influencer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_followers_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_post_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_posts: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          id: string
+          influencer_id: string
+          is_active: boolean | null
+          likes_count: number | null
+          media_type: string | null
+          media_url: string | null
+          title: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          influencer_id: string
+          is_active?: boolean | null
+          likes_count?: number | null
+          media_type?: string | null
+          media_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          id?: string
+          influencer_id?: string
+          is_active?: boolean | null
+          likes_count?: number | null
+          media_type?: string | null
+          media_url?: string | null
+          title?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_posts_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_profiles: {
+        Row: {
+          bio: string | null
+          category: string
+          cover_photo_url: string | null
+          created_at: string | null
+          display_name: string
+          followers_count: number | null
+          id: string
+          is_active: boolean | null
+          is_verified: boolean | null
+          profile_photo_url: string | null
+          social_links: Json | null
+          total_likes: number | null
+          total_views: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          category: string
+          cover_photo_url?: string | null
+          created_at?: string | null
+          display_name: string
+          followers_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          profile_photo_url?: string | null
+          social_links?: Json | null
+          total_likes?: number | null
+          total_views?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          category?: string
+          cover_photo_url?: string | null
+          created_at?: string | null
+          display_name?: string
+          followers_count?: number | null
+          id?: string
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          profile_photo_url?: string | null
+          social_links?: Json | null
+          total_likes?: number | null
+          total_views?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       job_applications: {
         Row: {
           applicant_id: string
