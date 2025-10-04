@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -173,8 +175,51 @@ const sampleRecipes: Recipe[] = [
 const Cooking = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Všetko");
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const filteredRecipes = sampleRecipes.filter((recipe) => {
+  useEffect(() => {
+    fetchRecipes();
+  }, []);
+
+  const fetchRecipes = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('recipes')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const formattedRecipes: Recipe[] = (data || []).map((recipe: any) => ({
+        id: recipe.id,
+        title: recipe.title,
+        category: recipe.category,
+        difficulty: recipe.difficulty as "Ľahké" | "Stredné" | "Náročné",
+        time: recipe.time,
+        servings: recipe.servings,
+        calories: recipe.calories,
+        imageUrl: recipe.image_url,
+        description: recipe.description,
+      }));
+
+      setRecipes(formattedRecipes);
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa načítať recepty",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredRecipes = recipes.filter((recipe) => {
     const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "Všetko" || recipe.category === selectedCategory;
     return matchesSearch && matchesCategory;
@@ -241,8 +286,15 @@ const Cooking = () => {
           </TabsList>
 
           <TabsContent value={selectedCategory} className="mt-8">
-            {/* Recipe Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Načítavam recepty...</p>
+              </div>
+            ) : (
+              <>
+                {/* Recipe Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredRecipes.map((recipe) => (
                 <Card key={recipe.id} className="group hover:shadow-elegant transition-all duration-300 overflow-hidden">
                   <div className="relative overflow-hidden">
@@ -292,6 +344,8 @@ const Cooking = () => {
                 </p>
               </div>
             )}
+          </>
+        )}
           </TabsContent>
         </Tabs>
 

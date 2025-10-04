@@ -932,6 +932,60 @@ export type Database = {
         }
         Relationships: []
       }
+      recipes: {
+        Row: {
+          calories: number
+          category: string
+          created_at: string
+          description: string
+          difficulty: string
+          id: string
+          image_url: string
+          ingredients: string[]
+          instructions: string[]
+          is_active: boolean | null
+          servings: number
+          tags: string[] | null
+          time: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          calories: number
+          category: string
+          created_at?: string
+          description: string
+          difficulty: string
+          id?: string
+          image_url: string
+          ingredients?: string[]
+          instructions?: string[]
+          is_active?: boolean | null
+          servings: number
+          tags?: string[] | null
+          time: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          calories?: number
+          category?: string
+          created_at?: string
+          description?: string
+          difficulty?: string
+          id?: string
+          image_url?: string
+          ingredients?: string[]
+          instructions?: string[]
+          is_active?: boolean | null
+          servings?: number
+          tags?: string[] | null
+          time?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       skill_offerings: {
         Row: {
           category: Database["public"]["Enums"]["skill_category"]
