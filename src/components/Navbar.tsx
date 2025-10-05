@@ -4,7 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { LanguageSelector } from "./LanguageSelector";
 
@@ -33,14 +39,17 @@ const Navbar = () => {
     navigate("/auth");
   };
 
-  const navItems = [
+  const mainNavItems = [
     { path: "/feed", label: "Feed", icon: MessageSquare },
-    { path: "/tiktok", label: "Videá", icon: Video },
-    { path: "/messenger", label: "Messenger", icon: Mail },
     { path: "/jobs", label: "Práca", icon: Briefcase },
-    { path: "/influ-king", label: "Influ-King", icon: Star },
     { path: "/games", label: "Hry", icon: Gamepad2 },
     { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
+  ];
+
+  const otherServices = [
+    { path: "/tiktok", label: "Videá", icon: Video },
+    { path: "/messenger", label: "Messenger", icon: Mail },
+    { path: "/influ-king", label: "Influ-King", icon: Star },
     { path: "/megaforum", label: "Megafórum", icon: Users },
     { path: "/psychologist", label: "Psychológ", icon: Brain },
     { path: "/vacationer", label: "Vacationer", icon: Plane },
@@ -54,6 +63,8 @@ const Navbar = () => {
     { path: "/education", label: "Vzdelávanie", icon: GraduationCap },
     { path: "/terms", label: "Podmienky", icon: FileText },
   ];
+
+  const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-50">
@@ -69,8 +80,8 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => {
+          <div className="hidden lg:flex items-center space-x-1">
+            {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
               
@@ -91,9 +102,33 @@ const Navbar = () => {
                 </Link>
               );
             })}
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={isOtherServiceActive ? "premium" : "ghost"}>
+                  <MoreHorizontal className="h-4 w-4" />
+                  Ostatné služby
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                {otherServices.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path;
+                  
+                  return (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full cursor-pointer">
+                        <Icon className="h-4 w-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
-          <div className="hidden md:flex items-center space-x-2">
+          <div className="hidden lg:flex items-center space-x-2">
             <LanguageSelector />
             {user ? (
               <>
@@ -122,7 +157,7 @@ const Navbar = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -131,10 +166,11 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 space-y-2">
-            {navItems.map((item) => {
+          <div className="lg:hidden py-4 space-y-2">
+            {[...mainNavItems, ...otherServices].map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
+              const isPremium = 'premium' in item && item.premium;
               
               return (
                 <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
@@ -144,7 +180,7 @@ const Navbar = () => {
                   >
                     <Icon className="h-4 w-4" />
                     {item.label}
-                    {item.premium && (
+                    {isPremium && (
                       <Badge variant="secondary" className="ml-auto bg-gold text-gold-foreground">
                         Premium
                       </Badge>
