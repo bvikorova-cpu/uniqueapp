@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Wand2, Image as ImageIcon, Video, Music, Upload } from "lucide-react";
+import { Sparkles, Wand2, Image as ImageIcon, Video, Music, Upload, Loader2, Download } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import swayDanceImg from "@/assets/effects/sway-dance.jpg";
 import waveDanceImg from "@/assets/effects/wave-dance.jpg";
@@ -43,13 +44,50 @@ const AIGeneration = () => {
   const [activeTab, setActiveTab] = useState<"video" | "image">("video");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [resultImage, setResultImage] = useState<string | null>(null);
 
   const filteredEffects = selectedCategory === "all" 
     ? aiEffects 
     : aiEffects.filter(effect => effect.category === selectedCategory);
 
-  const handleEffectClick = (effect: AIEffect) => {
-    toast.info(`${effect.name} efekt bude čoskoro dostupný!`);
+  const handleEffectClick = async (effect: AIEffect) => {
+    if (!uploadedFile || !previewUrl) {
+      toast.error("Najprv nahrajte obrázok alebo video!");
+      return;
+    }
+
+    if (uploadedFile.type.startsWith('video/')) {
+      toast.info("Video efekty budú čoskoro dostupné!");
+      return;
+    }
+
+    setIsProcessing(true);
+    setResultImage(null);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('apply-ai-effect', {
+        body: {
+          imageUrl: previewUrl,
+          effectId: effect.id,
+          effectName: effect.name
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.imageUrl) {
+        setResultImage(data.imageUrl);
+        toast.success(`${effect.name} efekt úspešne aplikovaný!`);
+      } else {
+        throw new Error('Nepodarilo sa aplikovať efekt');
+      }
+    } catch (error: any) {
+      console.error('Error applying effect:', error);
+      toast.error(error.message || 'Chyba pri aplikovaní efektu');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,27 +170,72 @@ const AIGeneration = () => {
         </div>
 
         {/* Effects Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-7xl mx-auto">
-          {filteredEffects.map((effect) => (
-            <Card
-              key={effect.id}
-              className="cursor-pointer hover:shadow-elegant transition-all group"
-              onClick={() => handleEffectClick(effect)}
-            >
-              <CardContent className="p-4">
-                <div className="aspect-square bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg mb-3 overflow-hidden group-hover:scale-105 transition-transform">
+        {isProcessing && (
+          <div className="text-center py-8">
+            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+            <p className="text-muted-foreground">Aplikujem efekt na váš súbor...</p>
+          </div>
+        )}
+
+        {!isProcessing && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 max-w-7xl mx-auto">
+            {filteredEffects.map((effect) => (
+              <Card
+                key={effect.id}
+                className="cursor-pointer hover:shadow-elegant transition-all group"
+                onClick={() => handleEffectClick(effect)}
+              >
+                <CardContent className="p-4">
+                  <div className="aspect-square bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg mb-3 overflow-hidden group-hover:scale-105 transition-transform">
+                    <img 
+                      src={effect.image} 
+                      alt={effect.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <h3 className="font-semibold text-sm text-center mb-1">{effect.name}</h3>
+                  <p className="text-xs text-muted-foreground text-center">{effect.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Result Section */}
+        {resultImage && (
+          <div className="mt-8 max-w-4xl mx-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle>Výsledok</CardTitle>
+                <CardDescription>Váš obrázok s aplikovaným AI efektom</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="relative group">
                   <img 
-                    src={effect.image} 
-                    alt={effect.name}
-                    className="w-full h-full object-cover"
+                    src={resultImage} 
+                    alt="Result" 
+                    className="w-full rounded-lg"
                   />
+                  <Button
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = resultImage;
+                      link.download = `ai-effect-${Date.now()}.png`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                    className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    size="sm"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Stiahnuť
+                  </Button>
                 </div>
-                <h3 className="font-semibold text-sm text-center mb-1">{effect.name}</h3>
-                <p className="text-xs text-muted-foreground text-center">{effect.description}</p>
               </CardContent>
             </Card>
-          ))}
-        </div>
+          </div>
+        )}
 
         {/* Upload Section */}
         <div className="mt-12 max-w-4xl mx-auto">

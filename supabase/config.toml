@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.generate-avatar]
 verify_jwt = false
+
+[functions.apply-ai-effect]
+verify_jwt = false
