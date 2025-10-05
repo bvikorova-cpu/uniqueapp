@@ -30,11 +30,19 @@ interface Post {
   content: string;
   created_at: string;
   user_id: string;
+  likes_count: number;
+  comments_count: number;
+  shares_count: number;
   media: Array<{
     id: string;
     file_url: string;
     file_type: string;
   }>;
+  profiles: {
+    id: string;
+    full_name: string | null;
+    avatar_url: string | null;
+  };
 }
 
 const Profile = () => {
@@ -78,7 +86,18 @@ const Profile = () => {
           .order("created_at", { ascending: false });
 
         if (postsError) throw postsError;
-        setPosts(postsData || []);
+        
+        // Add profiles data to posts
+        const postsWithProfiles = (postsData || []).map(post => ({
+          ...post,
+          profiles: {
+            id: profileData.id,
+            full_name: profileData.full_name,
+            avatar_url: profileData.avatar_url
+          }
+        }));
+        
+        setPosts(postsWithProfiles);
       } catch (error: any) {
         toast({
           title: "Chyba pri načítaní profilu",
@@ -94,7 +113,7 @@ const Profile = () => {
   }, [userId, toast]);
 
   const handleRefresh = async () => {
-    if (!userId) return;
+    if (!userId || !profile) return;
     
     const { data: postsData } = await supabase
       .from("posts")
@@ -105,7 +124,17 @@ const Profile = () => {
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
-    setPosts(postsData || []);
+    // Add profiles data to posts
+    const postsWithProfiles = (postsData || []).map(post => ({
+      ...post,
+      profiles: {
+        id: profile.id,
+        full_name: profile.full_name,
+        avatar_url: profile.avatar_url
+      }
+    }));
+    
+    setPosts(postsWithProfiles);
   };
 
   if (loading) {

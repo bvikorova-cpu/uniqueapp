@@ -24,8 +24,8 @@ interface Post {
   }>;
   profiles: {
     id: string;
-    full_name: string;
-    avatar_url: string;
+    full_name: string | null;
+    avatar_url: string | null;
   };
 }
 
@@ -42,18 +42,29 @@ const Feed = () => {
         .from("posts")
         .select(`
           *,
-          media (*),
-          profiles (
-            id,
-            full_name,
-            avatar_url
-          )
+          media (*)
         `)
         .order("created_at", { ascending: false });
 
       if (postsError) throw postsError;
 
-      setPosts(postsData || []);
+      // Fetch profiles separately
+      const postsWithProfiles = await Promise.all(
+        (postsData || []).map(async (post) => {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url")
+            .eq("id", post.user_id)
+            .single();
+          
+          return {
+            ...post,
+            profiles: profile || { id: post.user_id, full_name: null, avatar_url: null }
+          };
+        })
+      );
+
+      setPosts(postsWithProfiles);
     } catch (error: any) {
       toast({
         title: "Chyba pri načítaní príspevkov",

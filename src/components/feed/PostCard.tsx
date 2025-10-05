@@ -1,12 +1,22 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { 
+  Trash2, 
+  Heart, 
+  MessageCircle, 
+  Share2, 
+  Smile 
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { Trash2, Heart, MessageCircle, Share2, Smile, Flame, Laugh, AlertCircle, Frown, ThumbsUp, PartyPopper, Sparkles } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { sk } from "date-fns/locale";
 
@@ -26,224 +36,46 @@ interface PostCardProps {
     }>;
     profiles: {
       id: string;
-      full_name: string;
-      avatar_url: string;
+      full_name: string | null;
+      avatar_url: string | null;
     };
   };
   onDelete: () => void;
 }
 
-interface Comment {
-  id: string;
-  content: string;
-  created_at: string;
-  user_id: string;
-  profiles?: {
-    full_name: string;
-    avatar_url: string;
-  };
-}
-
-interface Reaction {
-  reaction_type: string;
-  count: number;
-  userReacted: boolean;
-}
-
-const reactionIcons = {
-  heart: Heart,
-  fire: Flame,
-  laugh: Laugh,
-  wow: AlertCircle,
-  sad: Frown,
-  angry: AlertCircle,
-  thumbsup: ThumbsUp,
-  clap: ThumbsUp,
-  party: PartyPopper,
-  sparkle: Sparkles,
-};
-
 const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [deleting, setDeleting] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
-  const [showComments, setShowComments] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
   const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
-  const [showReactions, setShowReactions] = useState(false);
-  const [reactions, setReactions] = useState<Reaction[]>([]);
+  const [showComments, setShowComments] = useState(false);
+  const [comments, setComments] = useState<any[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    checkIfLiked();
-    fetchReactions();
-  }, [post.id]);
-
-  const checkIfLiked = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { data } = await supabase
-      .from("post_likes")
-      .select("id")
-      .eq("post_id", post.id)
-      .eq("user_id", user.id)
-      .single();
-
-    setLiked(!!data);
-  };
-
-  const fetchReactions = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    const { data: reactionsData } = await supabase
-      .from("post_reactions")
-      .select("reaction_type, user_id")
-      .eq("post_id", post.id);
-
-    if (reactionsData) {
-      const grouped = reactionsData.reduce((acc, r) => {
-        if (!acc[r.reaction_type]) {
-          acc[r.reaction_type] = { count: 0, userReacted: false };
-        }
-        acc[r.reaction_type].count++;
-        if (user && r.user_id === user.id) {
-          acc[r.reaction_type].userReacted = true;
-        }
-        return acc;
-      }, {} as Record<string, { count: number; userReacted: boolean }>);
-
-      setReactions(
-        Object.entries(grouped).map(([type, data]) => ({
-          reaction_type: type,
-          count: data.count,
-          userReacted: data.userReacted,
-        }))
-      );
-    }
-  };
-
-  const handleLike = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({ title: "Musíš byť prihlásený", variant: "destructive" });
-      return;
-    }
-
-    try {
-      if (liked) {
-        await supabase
-          .from("post_likes")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("user_id", user.id);
-        setLikesCount(prev => prev - 1);
-        setLiked(false);
-      } else {
-        await supabase
-          .from("post_likes")
-          .insert({ post_id: post.id, user_id: user.id });
-        setLikesCount(prev => prev + 1);
-        setLiked(true);
-      }
-    } catch (error: any) {
-      toast({ title: "Chyba", description: error.message, variant: "destructive" });
-    }
-  };
-
-  const handleReaction = async (reactionType: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({ title: "Musíš byť prihlásený", variant: "destructive" });
-      return;
-    }
-
-    try {
-      const existing = reactions.find(r => r.reaction_type === reactionType);
-      
-      if (existing?.userReacted) {
-        await supabase
-          .from("post_reactions")
-          .delete()
-          .eq("post_id", post.id)
-          .eq("user_id", user.id)
-          .eq("reaction_type", reactionType);
-      } else {
-        await supabase
-          .from("post_reactions")
-          .insert({ post_id: post.id, user_id: user.id, reaction_type: reactionType });
-      }
-      
-      fetchReactions();
-      setShowReactions(false);
-    } catch (error: any) {
-      toast({ title: "Chyba", description: error.message, variant: "destructive" });
-    }
-  };
-
-  const fetchComments = async () => {
-    const { data } = await supabase
-      .from("post_comments")
-      .select(`
-        *,
-        profiles (
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq("post_id", post.id)
-      .order("created_at", { ascending: false });
-
-    if (data) setComments(data);
-  };
-
-  const handleComment = async () => {
-    if (!newComment.trim()) return;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({ title: "Musíš byť prihlásený", variant: "destructive" });
-      return;
-    }
-
-    try {
-      await supabase
-        .from("post_comments")
-        .insert({ post_id: post.id, user_id: user.id, content: newComment });
-      
-      setNewComment("");
-      setCommentsCount(prev => prev + 1);
-      fetchComments();
-      
-      toast({ title: "Komentár pridaný" });
-    } catch (error: any) {
-      toast({ title: "Chyba", description: error.message, variant: "destructive" });
-    }
-  };
-
-  const handleShare = async () => {
-    const url = `${window.location.origin}/feed?post=${post.id}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({ url });
-      } catch (error) {
-        await navigator.clipboard.writeText(url);
-        toast({ title: "Odkaz skopírovaný" });
-      }
-    } else {
-      await navigator.clipboard.writeText(url);
-      toast({ title: "Odkaz skopírovaný" });
-    }
-  };
+  const reactions = [
+    { type: "heart", emoji: "❤️", label: "Láska" },
+    { type: "fire", emoji: "🔥", label: "Bomba" },
+    { type: "laugh", emoji: "😂", label: "Smiech" },
+    { type: "wow", emoji: "😮", label: "Wow" },
+    { type: "sad", emoji: "😢", label: "Smutné" },
+    { type: "angry", emoji: "😡", label: "Nahnevaný" },
+    { type: "thumbsup", emoji: "👍", label: "Like" },
+    { type: "clap", emoji: "👏", label: "Potlesk" },
+    { type: "party", emoji: "🎉", label: "Party" },
+    { type: "sparkle", emoji: "✨", label: "Iskra" },
+  ];
 
   const handleDelete = async () => {
     if (!confirm("Naozaj chceš zmazať tento príspevok?")) return;
 
     setDeleting(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (user?.id !== post.user_id) {
         toast({
@@ -275,12 +107,167 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     }
   };
 
+  const handleLike = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      if (liked) {
+        await supabase
+          .from("post_likes")
+          .delete()
+          .eq("post_id", post.id)
+          .eq("user_id", user.id);
+        setLiked(false);
+        setLikesCount((prev) => prev - 1);
+      } else {
+        await supabase
+          .from("post_likes")
+          .insert({ post_id: post.id, user_id: user.id });
+        setLiked(true);
+        setLikesCount((prev) => prev + 1);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleReaction = async (reactionType: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      if (selectedReaction === reactionType) {
+        await supabase
+          .from("post_reactions")
+          .delete()
+          .eq("post_id", post.id)
+          .eq("user_id", user.id)
+          .eq("reaction_type", reactionType);
+        setSelectedReaction(null);
+      } else {
+        if (selectedReaction) {
+          await supabase
+            .from("post_reactions")
+            .delete()
+            .eq("post_id", post.id)
+            .eq("user_id", user.id);
+        }
+        await supabase
+          .from("post_reactions")
+          .insert({ post_id: post.id, user_id: user.id, reaction_type: reactionType });
+        setSelectedReaction(reactionType);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchComments = async () => {
+    setLoadingComments(true);
+    try {
+      const { data, error } = await supabase
+        .from("post_comments")
+        .select(`
+          *,
+          profiles:user_id (
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq("post_id", post.id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setComments(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingComments(false);
+    }
+  };
+
+  const handleComment = async () => {
+    if (!newComment.trim()) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from("post_comments")
+        .insert({ post_id: post.id, user_id: user.id, content: newComment });
+
+      if (error) throw error;
+
+      setNewComment("");
+      setCommentsCount((prev) => prev + 1);
+      fetchComments();
+
+      toast({
+        title: "Úspech",
+        description: "Komentár bol pridaný",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Príspevok",
+          text: post.content || "",
+          url: window.location.href,
+        });
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Úspech",
+          description: "Odkaz bol skopírovaný",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleComments = () => {
+    setShowComments(!showComments);
+    if (!showComments && comments.length === 0) {
+      fetchComments();
+    }
+  };
+
   return (
     <Card className="p-6">
       <div className="flex items-start gap-3 mb-4">
         <Avatar>
-          <AvatarImage src={post.profiles?.avatar_url} />
-          <AvatarFallback>{post.profiles?.full_name?.charAt(0) || "U"}</AvatarFallback>
+          <AvatarImage src={post.profiles?.avatar_url || undefined} />
+          <AvatarFallback>
+            {post.profiles?.full_name?.charAt(0) || "U"}
+          </AvatarFallback>
         </Avatar>
         <div className="flex-1">
           <div className="flex items-center justify-between">
@@ -334,115 +321,107 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         </div>
       )}
 
-      <Separator className="my-4" />
+      <div className="flex items-center gap-6 pt-4 border-t">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleLike}
+          className="gap-2"
+        >
+          <Heart className={`h-5 w-5 ${liked ? "fill-red-500 text-red-500" : ""}`} />
+          <span>{likesCount}</span>
+        </Button>
 
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex gap-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLike}
-            className={liked ? "text-red-500" : ""}
-          >
-            <Heart className={`h-5 w-5 mr-1 ${liked ? "fill-current" : ""}`} />
-            {likesCount}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              setShowComments(!showComments);
-              if (!showComments) fetchComments();
-            }}
-          >
-            <MessageCircle className="h-5 w-5 mr-1" />
-            {commentsCount}
-          </Button>
-          <Button variant="ghost" size="sm" onClick={handleShare}>
-            <Share2 className="h-5 w-5 mr-1" />
-            Zdieľať
-          </Button>
-        </div>
-        
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowReactions(!showReactions)}
-          >
-            <Smile className="h-5 w-5" />
-          </Button>
-          {showReactions && (
-            <div className="absolute bottom-full right-0 mb-2 bg-card border rounded-lg shadow-lg p-2 flex gap-1">
-              {Object.entries(reactionIcons).map(([type, Icon]) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleComments}
+          className="gap-2"
+        >
+          <MessageCircle className="h-5 w-5" />
+          <span>{commentsCount}</span>
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleShare}
+          className="gap-2"
+        >
+          <Share2 className="h-5 w-5" />
+        </Button>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="sm" className="gap-2">
+              <Smile className="h-5 w-5" />
+              {selectedReaction && <span>{reactions.find(r => r.type === selectedReaction)?.emoji}</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-2">
+            <div className="grid grid-cols-5 gap-2">
+              {reactions.map((reaction) => (
                 <Button
-                  key={type}
+                  key={reaction.type}
                   variant="ghost"
                   size="sm"
-                  onClick={() => handleReaction(type)}
-                  className="h-8 w-8 p-0"
+                  onClick={() => handleReaction(reaction.type)}
+                  className={`text-2xl p-2 ${
+                    selectedReaction === reaction.type ? "bg-accent" : ""
+                  }`}
+                  title={reaction.label}
                 >
-                  <Icon className="h-4 w-4" />
+                  {reaction.emoji}
                 </Button>
               ))}
             </div>
-          )}
-        </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
-      {reactions.length > 0 && (
-        <div className="flex gap-2 mb-4 flex-wrap">
-          {reactions.map((reaction) => {
-            const Icon = reactionIcons[reaction.reaction_type as keyof typeof reactionIcons];
-            return (
-              <div
-                key={reaction.reaction_type}
-                className={`flex items-center gap-1 px-2 py-1 rounded-full border text-sm ${
-                  reaction.userReacted ? "bg-primary/10 border-primary" : "bg-secondary"
-                }`}
-              >
-                <Icon className="h-3 w-3" />
-                {reaction.count}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
       {showComments && (
-        <div className="mt-4 space-y-4">
+        <div className="mt-4 pt-4 border-t space-y-4">
           <div className="flex gap-2">
             <Textarea
+              placeholder="Napíš komentár..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Napíš komentár..."
-              className="flex-1"
-              rows={2}
+              className="min-h-[60px]"
             />
             <Button onClick={handleComment} disabled={!newComment.trim()}>
-              Pridať
+              Odoslať
             </Button>
           </div>
 
           <div className="space-y-3">
-            {comments.map((comment) => (
-              <div key={comment.id} className="flex gap-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={comment.profiles?.avatar_url} />
-                  <AvatarFallback>{comment.profiles?.full_name?.charAt(0) || "U"}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 bg-secondary rounded-lg p-3">
-                  <p className="font-semibold text-sm">{comment.profiles?.full_name || "Používateľ"}</p>
-                  <p className="text-sm">{comment.content}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formatDistanceToNow(new Date(comment.created_at), {
-                      addSuffix: true,
-                      locale: sk,
-                    })}
-                  </p>
+            {loadingComments ? (
+              <p className="text-sm text-muted-foreground">Načítavam...</p>
+            ) : comments.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Zatiaľ žiadne komentáre</p>
+            ) : (
+              comments.map((comment) => (
+                <div key={comment.id} className="flex gap-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={comment.profiles?.avatar_url || undefined} />
+                    <AvatarFallback>
+                      {comment.profiles?.full_name?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">
+                      {comment.profiles?.full_name || "Používateľ"}
+                    </p>
+                    <p className="text-sm">{comment.content}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formatDistanceToNow(new Date(comment.created_at), {
+                        addSuffix: true,
+                        locale: sk,
+                      })}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       )}
