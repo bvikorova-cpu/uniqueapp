@@ -141,7 +141,7 @@ const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
                     <DropdownMenuItem asChild>
-                      <Link to="/profile" className="w-full cursor-pointer">
+                      <Link to={`/profile/${user.id}`} className="w-full cursor-pointer">
                         <UserCircle className="h-4 w-4 mr-2" />
                         Zobraziť profil
                       </Link>
