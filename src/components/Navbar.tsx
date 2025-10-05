@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 
 const Navbar = () => {
@@ -58,6 +58,9 @@ const Navbar = () => {
     { path: "/cooking", label: "Varenie", icon: ChefHat },
     { path: "/marketplace", label: "Ja spravím", icon: Briefcase },
     { path: "/bazaar", label: "Bazár", icon: Store },
+    { path: "/ai-generation", label: "AI Generovanie", icon: Sparkles },
+    { path: "/auction", label: "Online aukcie", icon: Gavel },
+    { path: "/best-friend", label: "Best Friend", icon: UserPlus },
     { path: "/referral", label: "Pozvi priateľa", icon: User },
     { path: "/education", label: "Vzdelávanie", icon: GraduationCap },
     { path: "/terms", label: "Podmienky", icon: FileText },
