@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type LanguageCode = 'sk' | 'cs' | 'en' | 'de' | 'es' | 'fr' | 'it' | 'pl' | 'ru' | 'uk' | 'hu' | 'ro' | 'hr' | 'sr' | 'bg' | 'sl' | 'nl' | 'pt' | 'sv' | 'no' | 'da' | 'fi' | 'el' | 'tr' | 'ar' | 'he' | 'zh' | 'ja' | 'ko' | 'hi' | 'th' | 'vi' | 'id' | 'ms' | 'tl' | 'fa' | 'ur' | 'bn' | 'sw' | 'af' | 'am' | 'az' | 'ka' | 'hy' | 'kk' | 'uz' | 'lt' | 'lv' | 'et' | 'is' | string;
+type LanguageCode = string;
 
 interface LanguageContextType {
   language: LanguageCode;
@@ -52,7 +52,7 @@ export const LanguageProvider = ({ children }: LanguageProviderProps) => {
 
 // Translation function
 const getTranslations = (lang: LanguageCode): Record<string, string> => {
-  const baseTranslations: Partial<Record<LanguageCode, Record<string, string>>> = {
+  const baseTranslations: Record<string, Record<string, string>> = {
     sk: {
       // Navbar
       'nav.feed': 'Feed',
