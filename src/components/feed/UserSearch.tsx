@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -14,6 +15,7 @@ interface Profile {
 }
 
 const UserSearch = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Profile[]>([]);
   const [searching, setSearching] = useState(false);
@@ -73,6 +75,7 @@ const UserSearch = () => {
             {searchResults.map((profile) => (
               <div
                 key={profile.id}
+                onClick={() => navigate(`/profile/${profile.id}`)}
                 className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent transition-colors cursor-pointer"
               >
                 <Avatar>
