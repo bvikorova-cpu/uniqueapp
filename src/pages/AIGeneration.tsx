@@ -4,6 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sparkles, Wand2, Image as ImageIcon, Video, Music, Upload } from "lucide-react";
 import { toast } from "sonner";
+import swayDanceImg from "@/assets/effects/sway-dance.jpg";
+import waveDanceImg from "@/assets/effects/wave-dance.jpg";
+import ghibliImg from "@/assets/effects/ghibli.jpg";
+import minecraftImg from "@/assets/effects/minecraft.jpg";
+import earthZoomImg from "@/assets/effects/earth-zoom.jpg";
+import boxMeImg from "@/assets/effects/box-me.jpg";
+import paperFallImg from "@/assets/effects/paper-fall.jpg";
+import styleMeImg from "@/assets/effects/style-me.jpg";
+import napMeImg from "@/assets/effects/nap-me.jpg";
+import spin360Img from "@/assets/effects/spin-360.jpg";
 
 type EffectCategory = "all" | "dance" | "appearance" | "entertainment" | "fanciful" | "emotions";
 
@@ -16,16 +26,16 @@ interface AIEffect {
 }
 
 const aiEffects: AIEffect[] = [
-  { id: "sway-dance", name: "Sway Dance", category: "dance", image: "🕺", description: "Tancujte so štýlom" },
-  { id: "wave-dance", name: "Wave Dance", category: "dance", image: "🌊", description: "Vlnový tanec" },
-  { id: "ghibli", name: "Ghibli štýl", category: "appearance", image: "🎨", description: "Transformácia do Ghibli štýlu" },
-  { id: "minecraft", name: "Minecraft", category: "entertainment", image: "⛏️", description: "Minecraft transformácia" },
-  { id: "earth-zoom", name: "Earth Zoom", category: "fanciful", image: "🌍", description: "Zem priblíženie/oddialenie" },
-  { id: "box-me", name: "Box Me", category: "entertainment", image: "📦", description: "Box efekt" },
-  { id: "paper-fall", name: "Paper Fall", category: "fanciful", image: "📄", description: "Padajúci papier" },
-  { id: "style-me", name: "Style Me", category: "appearance", image: "✨", description: "Štýlová transformácia" },
-  { id: "nap-me", name: "Nap Me", category: "emotions", image: "😴", description: "Relaxačný efekt" },
-  { id: "spin-360", name: "Spin 360", category: "fanciful", image: "🔄", description: "360° rotácia" },
+  { id: "sway-dance", name: "Sway Dance", category: "dance", image: swayDanceImg, description: "Tancujte so štýlom" },
+  { id: "wave-dance", name: "Wave Dance", category: "dance", image: waveDanceImg, description: "Vlnový tanec" },
+  { id: "ghibli", name: "Ghibli štýl", category: "appearance", image: ghibliImg, description: "Transformácia do Ghibli štýlu" },
+  { id: "minecraft", name: "Minecraft", category: "entertainment", image: minecraftImg, description: "Minecraft transformácia" },
+  { id: "earth-zoom", name: "Earth Zoom", category: "fanciful", image: earthZoomImg, description: "Zem priblíženie/oddialenie" },
+  { id: "box-me", name: "Box Me", category: "entertainment", image: boxMeImg, description: "Box efekt" },
+  { id: "paper-fall", name: "Paper Fall", category: "fanciful", image: paperFallImg, description: "Padajúci papier" },
+  { id: "style-me", name: "Style Me", category: "appearance", image: styleMeImg, description: "Štýlová transformácia" },
+  { id: "nap-me", name: "Nap Me", category: "emotions", image: napMeImg, description: "Relaxačný efekt" },
+  { id: "spin-360", name: "Spin 360", category: "fanciful", image: spin360Img, description: "360° rotácia" },
 ];
 
 const AIGeneration = () => {
@@ -130,8 +140,12 @@ const AIGeneration = () => {
               onClick={() => handleEffectClick(effect)}
             >
               <CardContent className="p-4">
-                <div className="aspect-square bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg mb-3 flex items-center justify-center text-5xl group-hover:scale-105 transition-transform">
-                  {effect.image}
+                <div className="aspect-square bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg mb-3 overflow-hidden group-hover:scale-105 transition-transform">
+                  <img 
+                    src={effect.image} 
+                    alt={effect.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <h3 className="font-semibold text-sm text-center mb-1">{effect.name}</h3>
                 <p className="text-xs text-muted-foreground text-center">{effect.description}</p>
