@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const languages = [
   { code: 'sk', name: 'Slovenčina', flag: '🇸🇰' },
@@ -64,19 +65,19 @@ export const languages = [
 ];
 
 export const LanguageSelector = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
+  const { language, setLanguage, t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const selectedLanguage = languages.find(lang => lang.code === language) || languages[0];
 
   const filteredLanguages = languages.filter(lang =>
     lang.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     lang.code.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleLanguageChange = (language: typeof languages[0]) => {
-    setSelectedLanguage(language);
+  const handleLanguageChange = (languageObj: typeof languages[0]) => {
+    setLanguage(languageObj.code as any);
     setSearchTerm("");
-    // Here you can add logic to actually change the app language
-    console.log("Language changed to:", language.code);
   };
 
   return (
@@ -91,7 +92,7 @@ export const LanguageSelector = () => {
       <DropdownMenuContent align="end" className="w-64 max-h-96 overflow-y-auto bg-background z-50">
         <div className="p-2 sticky top-0 bg-background z-10">
           <Input
-            placeholder="Hľadať jazyk..."
+            placeholder={t('common.search_language')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="h-8"
@@ -113,7 +114,7 @@ export const LanguageSelector = () => {
           ))}
           {filteredLanguages.length === 0 && (
             <div className="p-2 text-center text-sm text-muted-foreground">
-              Žiadny jazyk sa nenašiel
+              {t('common.no_language_found')}
             </div>
           )}
         </div>
