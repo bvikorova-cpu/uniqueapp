@@ -9,12 +9,52 @@ import swayDanceImg from "@/assets/effects/sway-dance.jpg";
 import waveDanceImg from "@/assets/effects/wave-dance.jpg";
 import ghibliImg from "@/assets/effects/ghibli.jpg";
 import minecraftImg from "@/assets/effects/minecraft.jpg";
-import earthZoomImg from "@/assets/effects/earth-zoom.jpg";
+import earthZoomOutImg from "@/assets/effects/earth-zoom-out.jpg";
+import earthZoomInImg from "@/assets/effects/earth-zoom-in.jpg";
 import boxMeImg from "@/assets/effects/box-me.jpg";
 import paperFallImg from "@/assets/effects/paper-fall.jpg";
 import styleMeImg from "@/assets/effects/style-me.jpg";
 import napMeImg from "@/assets/effects/nap-me.jpg";
 import spin360Img from "@/assets/effects/spin-360.jpg";
+import aiCoupleHuggingImg from "@/assets/effects/ai-couple-hugging.jpg";
+import myGirlfriendsssssImg from "@/assets/effects/my-girlfriendssss.jpg";
+import myBoyfriendssssImg from "@/assets/effects/my-boyfriendssss.jpg";
+import sexyMeImg from "@/assets/effects/sexy-me.jpg";
+import genderSwapImg from "@/assets/effects/gender-swap.jpg";
+import smileImg from "@/assets/effects/smile.jpg";
+import bodyshakeImg from "@/assets/effects/bodyshake.jpg";
+import meltImg from "@/assets/effects/melt.jpg";
+import bloomMagicImg from "@/assets/effects/bloom-magic.jpg";
+import papermanImg from "@/assets/effects/paperman.jpg";
+import flyingImg from "@/assets/effects/flying.jpg";
+import balloonFlyawayImg from "@/assets/effects/balloon-flyaway.jpg";
+import expansionImg from "@/assets/effects/expansion.jpg";
+import petLoversImg from "@/assets/effects/pet-lovers.jpg";
+import flameCarpetImg from "@/assets/effects/flame-carpet.jpg";
+import fashionStrideImg from "@/assets/effects/fashion-stride.jpg";
+import sendRosesImg from "@/assets/effects/send-roses.jpg";
+import fingerHeartImg from "@/assets/effects/finger-heart.jpg";
+import cartoonDollImg from "@/assets/effects/cartoon-doll.jpg";
+import beastCompanionImg from "@/assets/effects/beast-companion.jpg";
+import bloomDoorobearImg from "@/assets/effects/bloom-doorobear.jpg";
+import frenchKissImg from "@/assets/effects/french-kiss.jpg";
+import whosArrestedImg from "@/assets/effects/whos-arrested.jpg";
+import warmthOfJesusImg from "@/assets/effects/warmth-of-jesus.jpg";
+import wildLaughImg from "@/assets/effects/wild-laugh.jpg";
+import surprisedImg from "@/assets/effects/surprised.jpg";
+import explosionImg from "@/assets/effects/explosion.jpg";
+import facePunchImg from "@/assets/effects/face-punch.jpg";
+import aiKissImg from "@/assets/effects/ai-kiss.jpg";
+import kungfuClubImg from "@/assets/effects/kungfu-club.jpg";
+import holyWingsImg from "@/assets/effects/holy-wings.jpg";
+import sheepCurlsImg from "@/assets/effects/sheep-curls.jpg";
+import aiMuscleGeneratorImg from "@/assets/effects/ai-muscle-generator.jpg";
+import squishItImg from "@/assets/effects/squish-it.jpg";
+import hairGrowthMagicImg from "@/assets/effects/hair-growth-magic.jpg";
+import becomeMaleImg from "@/assets/effects/become-male.jpg";
+import aliveArtImg from "@/assets/effects/alive-art.jpg";
+import becomeFemaleImg from "@/assets/effects/become-female.jpg";
+import anythingRobotImg from "@/assets/effects/anything-robot.jpg";
 
 type EffectCategory = "all" | "interactions" | "pets" | "appearance" | "entertainment" | "heroes" | "fanciful" | "dance" | "emotions";
 
@@ -29,55 +69,55 @@ interface AIEffect {
 
 const aiEffects: AIEffect[] = [
   { id: "sway-dance", name: "Sway Dance", category: "dance", image: swayDanceImg, description: "Tancujte so štýlom" },
-  { id: "my-girlfriendssss", name: "My Girlfriendssss", category: "interactions", image: swayDanceImg, description: "Vytvorte romantický moment" },
-  { id: "my-boyfriendssss", name: "My Boyfriendssss", category: "interactions", image: swayDanceImg, description: "Vytvorte romantický moment" },
-  { id: "earth-zoom-out", name: "Earth Zoom Out", category: "fanciful", image: earthZoomImg, description: "Oddialenie Zeme" },
+  { id: "my-girlfriendssss", name: "My Girlfriendssss", category: "interactions", image: myGirlfriendsssssImg, description: "Vytvorte romantický moment" },
+  { id: "my-boyfriendssss", name: "My Boyfriendssss", category: "interactions", image: myBoyfriendssssImg, description: "Vytvorte romantický moment" },
+  { id: "earth-zoom-out", name: "Earth Zoom Out", category: "fanciful", image: earthZoomOutImg, description: "Oddialenie Zeme" },
   { id: "wave-dance", name: "Wave Dance", category: "dance", image: waveDanceImg, description: "Vlnový tanec" },
-  { id: "earth-zoom-in", name: "Earth Zoom In", category: "fanciful", image: earthZoomImg, description: "Priblíženie Zeme" },
+  { id: "earth-zoom-in", name: "Earth Zoom In", category: "fanciful", image: earthZoomInImg, description: "Priblíženie Zeme" },
   { id: "minecraft", name: "Minecraft", category: "entertainment", image: minecraftImg, description: "Minecraft transformácia" },
   { id: "box-me", name: "Box Me", category: "entertainment", image: boxMeImg, description: "Box efekt" },
   { id: "paper-fall", name: "Paper Fall", category: "fanciful", image: paperFallImg, description: "Padajúci papier" },
   { id: "style-me", name: "Style Me", category: "appearance", image: styleMeImg, description: "Štýlová transformácia" },
   { id: "ghibli", name: "Ghibli", category: "appearance", image: ghibliImg, description: "Ghibli štýl transformácia" },
-  { id: "ai-couple-hugging", name: "AI Couple Hugging", category: "interactions", image: swayDanceImg, description: "Objímanie páru" },
+  { id: "ai-couple-hugging", name: "AI Couple Hugging", category: "interactions", image: aiCoupleHuggingImg, description: "Objímanie páru" },
   { id: "nap-me", name: "Nap Me", category: "emotions", image: napMeImg, description: "Relaxačný efekt" },
   { id: "spin-360", name: "Spin 360", category: "fanciful", image: spin360Img, description: "360° rotácia" },
-  { id: "sexy-me", name: "Sexy Me", category: "appearance", image: styleMeImg, description: "Sexi transformácia" },
-  { id: "gender-swap", name: "Gender Swap", category: "appearance", image: styleMeImg, description: "Výmena pohlavia" },
-  { id: "smile", name: "Smile", category: "emotions", image: napMeImg, description: "Úsmev efekt" },
-  { id: "bodyshake", name: "Bodyshake", category: "dance", image: waveDanceImg, description: "Trasenie telom" },
-  { id: "melt", name: "Melt", category: "fanciful", image: paperFallImg, description: "Topenie sa" },
-  { id: "bloom-magic", name: "Bloom Magic", category: "fanciful", image: paperFallImg, description: "Kúzlo kvitnutia", isHot: true },
-  { id: "paperman", name: "Paperman", category: "heroes", image: boxMeImg, description: "Papierový muž" },
-  { id: "flying", name: "Flying", category: "fanciful", image: paperFallImg, description: "Lietanie", isHot: true },
-  { id: "balloon-flyaway", name: "Balloon Flyaway", category: "fanciful", image: paperFallImg, description: "Balóny odletia" },
-  { id: "expansion", name: "Expansion", category: "fanciful", image: earthZoomImg, description: "Expanzia" },
-  { id: "pet-lovers", name: "Pet Lovers", category: "pets", image: swayDanceImg, description: "Milovníci zvierat" },
-  { id: "flame-carpet", name: "Flame Carpet", category: "fanciful", image: paperFallImg, description: "Plameňový koberec" },
-  { id: "fashion-stride", name: "Fashion Stride", category: "appearance", image: styleMeImg, description: "Módny krok" },
-  { id: "send-roses", name: "Send Roses", category: "interactions", image: swayDanceImg, description: "Poslať ruže", isHot: true },
-  { id: "finger-heart", name: "Finger Heart", category: "emotions", image: napMeImg, description: "Prstové srdce" },
-  { id: "cartoon-doll", name: "Cartoon Doll", category: "appearance", image: ghibliImg, description: "Kreslená bábika" },
-  { id: "beast-companion", name: "Beast Companion", category: "pets", image: swayDanceImg, description: "Spoločník zviera" },
-  { id: "bloom-doorobear", name: "Bloom Doorobear", category: "pets", image: swayDanceImg, description: "Dooro medveď" },
-  { id: "french-kiss", name: "French Kiss", category: "interactions", image: swayDanceImg, description: "Francúzsky bozk" },
-  { id: "whos-arrested", name: "Who's arrested?", category: "entertainment", image: boxMeImg, description: "Kto je zatknutý?" },
-  { id: "warmth-of-jesus", name: "Warmth of Jesus", category: "heroes", image: paperFallImg, description: "Teplo Ježiša", isHot: true },
-  { id: "wild-laugh", name: "Wild Laugh", category: "emotions", image: napMeImg, description: "Divý smiech" },
-  { id: "surprised", name: "Surprised", category: "emotions", image: napMeImg, description: "Prekvapený" },
-  { id: "explosion", name: "Explosion", category: "fanciful", image: paperFallImg, description: "Explózia" },
-  { id: "face-punch", name: "Face Punch", category: "entertainment", image: boxMeImg, description: "Facka" },
-  { id: "ai-kiss", name: "AI Kiss", category: "interactions", image: swayDanceImg, description: "AI bozk" },
-  { id: "kungfu-club", name: "Kungfu Club", category: "entertainment", image: boxMeImg, description: "Kung-fu klub", isHot: true },
-  { id: "holy-wings", name: "Holy Wings", category: "heroes", image: paperFallImg, description: "Sväté krídla" },
-  { id: "sheep-curls", name: "Sheep Curls", category: "pets", image: swayDanceImg, description: "Ovčie kučery", isHot: true },
-  { id: "ai-muscle-generator", name: "AI Muscle Generator", category: "appearance", image: styleMeImg, description: "AI generátor svalov", isHot: true },
-  { id: "squish-it", name: "Squish It", category: "fanciful", image: boxMeImg, description: "Stlač to", isHot: true },
-  { id: "hair-growth-magic", name: "Hair Growth Magic", category: "appearance", image: styleMeImg, description: "Kúzlo rastu vlasov", isHot: true },
-  { id: "become-male", name: "Become Male", category: "appearance", image: styleMeImg, description: "Staň sa mužom" },
-  { id: "alive-art", name: "Alive Art", category: "fanciful", image: ghibliImg, description: "Živé umenie" },
-  { id: "become-female", name: "Become Female", category: "appearance", image: styleMeImg, description: "Staň sa ženou" },
-  { id: "anything-robot", name: "Anything, Robot", category: "entertainment", image: minecraftImg, description: "Čokoľvek, robot", isHot: true },
+  { id: "sexy-me", name: "Sexy Me", category: "appearance", image: sexyMeImg, description: "Sexi transformácia" },
+  { id: "gender-swap", name: "Gender Swap", category: "appearance", image: genderSwapImg, description: "Výmena pohlavia" },
+  { id: "smile", name: "Smile", category: "emotions", image: smileImg, description: "Úsmev efekt" },
+  { id: "bodyshake", name: "Bodyshake", category: "dance", image: bodyshakeImg, description: "Trasenie telom" },
+  { id: "melt", name: "Melt", category: "fanciful", image: meltImg, description: "Topenie sa" },
+  { id: "bloom-magic", name: "Bloom Magic", category: "fanciful", image: bloomMagicImg, description: "Kúzlo kvitnutia", isHot: true },
+  { id: "paperman", name: "Paperman", category: "heroes", image: papermanImg, description: "Papierový muž" },
+  { id: "flying", name: "Flying", category: "fanciful", image: flyingImg, description: "Lietanie", isHot: true },
+  { id: "balloon-flyaway", name: "Balloon Flyaway", category: "fanciful", image: balloonFlyawayImg, description: "Balóny odletia" },
+  { id: "expansion", name: "Expansion", category: "fanciful", image: expansionImg, description: "Expanzia" },
+  { id: "pet-lovers", name: "Pet Lovers", category: "pets", image: petLoversImg, description: "Milovníci zvierat" },
+  { id: "flame-carpet", name: "Flame Carpet", category: "fanciful", image: flameCarpetImg, description: "Plameňový koberec" },
+  { id: "fashion-stride", name: "Fashion Stride", category: "appearance", image: fashionStrideImg, description: "Módny krok" },
+  { id: "send-roses", name: "Send Roses", category: "interactions", image: sendRosesImg, description: "Poslať ruže", isHot: true },
+  { id: "finger-heart", name: "Finger Heart", category: "emotions", image: fingerHeartImg, description: "Prstové srdce" },
+  { id: "cartoon-doll", name: "Cartoon Doll", category: "appearance", image: cartoonDollImg, description: "Kreslená bábika" },
+  { id: "beast-companion", name: "Beast Companion", category: "pets", image: beastCompanionImg, description: "Spoločník zviera" },
+  { id: "bloom-doorobear", name: "Bloom Doorobear", category: "pets", image: bloomDoorobearImg, description: "Dooro medveď" },
+  { id: "french-kiss", name: "French Kiss", category: "interactions", image: frenchKissImg, description: "Francúzsky bozk" },
+  { id: "whos-arrested", name: "Who's arrested?", category: "entertainment", image: whosArrestedImg, description: "Kto je zatknutý?" },
+  { id: "warmth-of-jesus", name: "Warmth of Jesus", category: "heroes", image: warmthOfJesusImg, description: "Teplo Ježiša", isHot: true },
+  { id: "wild-laugh", name: "Wild Laugh", category: "emotions", image: wildLaughImg, description: "Divý smiech" },
+  { id: "surprised", name: "Surprised", category: "emotions", image: surprisedImg, description: "Prekvapený" },
+  { id: "explosion", name: "Explosion", category: "fanciful", image: explosionImg, description: "Explózia" },
+  { id: "face-punch", name: "Face Punch", category: "entertainment", image: facePunchImg, description: "Facka" },
+  { id: "ai-kiss", name: "AI Kiss", category: "interactions", image: aiKissImg, description: "AI bozk" },
+  { id: "kungfu-club", name: "Kungfu Club", category: "entertainment", image: kungfuClubImg, description: "Kung-fu klub", isHot: true },
+  { id: "holy-wings", name: "Holy Wings", category: "heroes", image: holyWingsImg, description: "Sväté krídla" },
+  { id: "sheep-curls", name: "Sheep Curls", category: "pets", image: sheepCurlsImg, description: "Ovčie kučery", isHot: true },
+  { id: "ai-muscle-generator", name: "AI Muscle Generator", category: "appearance", image: aiMuscleGeneratorImg, description: "AI generátor svalov", isHot: true },
+  { id: "squish-it", name: "Squish It", category: "fanciful", image: squishItImg, description: "Stlač to", isHot: true },
+  { id: "hair-growth-magic", name: "Hair Growth Magic", category: "appearance", image: hairGrowthMagicImg, description: "Kúzlo rastu vlasov", isHot: true },
+  { id: "become-male", name: "Become Male", category: "appearance", image: becomeMaleImg, description: "Staň sa mužom" },
+  { id: "alive-art", name: "Alive Art", category: "fanciful", image: aliveArtImg, description: "Živé umenie" },
+  { id: "become-female", name: "Become Female", category: "appearance", image: becomeFemaleImg, description: "Staň sa ženou" },
+  { id: "anything-robot", name: "Anything, Robot", category: "entertainment", image: anythingRobotImg, description: "Čokoľvek, robot", isHot: true },
 ];
 
 const AIGeneration = () => {
