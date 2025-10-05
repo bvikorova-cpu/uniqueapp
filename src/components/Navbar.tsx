@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 
 const Navbar = () => {
@@ -133,11 +133,27 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-2">
             {user ? (
               <>
-                <Link to="/edit-profile">
-                  <Button variant="ghost" size="icon">
-                    <UserCircle className="h-5 w-5" />
-                  </Button>
-                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <UserCircle className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="w-full cursor-pointer">
+                        <UserCircle className="h-4 w-4 mr-2" />
+                        Zobraziť profil
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/edit-profile" className="w-full cursor-pointer">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Upraviť profil
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <Button onClick={handleLogout} variant="outline">
                   Odhlásiť sa
                 </Button>
