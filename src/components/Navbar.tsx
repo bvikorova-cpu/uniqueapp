@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { LanguageSelector } from "./LanguageSelector";
 
@@ -97,9 +97,16 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-2">
             <LanguageSelector />
             {user ? (
-              <Button onClick={handleLogout} variant="outline">
-                Odhlásiť sa
-              </Button>
+              <>
+                <Link to="/edit-profile">
+                  <Button variant="ghost" size="icon">
+                    <UserCircle className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <Button onClick={handleLogout} variant="outline">
+                  Odhlásiť sa
+                </Button>
+              </>
             ) : (
               <>
                 <Link to="/auth">
@@ -152,9 +159,17 @@ const Navbar = () => {
                 <LanguageSelector />
               </div>
               {user ? (
-                <Button onClick={handleLogout} variant="outline" className="w-full">
-                  Odhlásiť sa
-                </Button>
+                <>
+                  <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <UserCircle className="h-4 w-4 mr-2" />
+                      Môj profil
+                    </Button>
+                  </Link>
+                  <Button onClick={handleLogout} variant="outline" className="w-full">
+                    Odhlásiť sa
+                  </Button>
+                </>
               ) : (
                 <>
                   <Link to="/auth" onClick={() => setIsMenuOpen(false)}>

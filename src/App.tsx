@@ -33,6 +33,7 @@ import AIGeneration from "./pages/AIGeneration";
 import BestFriend from "./pages/BestFriend";
 import Cooking from "./pages/Cooking";
 import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -74,6 +75,7 @@ const App = () => (
           <Route path="/education" element={<Education />} />
           <Route path="/course/:courseName" element={<CourseDetail />} />
           <Route path="/profile/:userId" element={<Profile />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
