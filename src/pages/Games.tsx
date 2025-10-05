@@ -12,6 +12,7 @@ import { AngryBirdsGame } from "@/components/games/AngryBirdsGame";
 import { FashionDesignerGame } from "@/components/games/FashionDesignerGame";
 import { DreamhouseGame } from "@/components/games/DreamhouseGame";
 import { MorningMayhemGame } from "@/components/games/MorningMayhemGame";
+import { GlitterMakeupGame } from "@/components/games/GlitterMakeupGame";
 
 const Games = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
@@ -50,6 +51,10 @@ const Games = () => {
 
   if (activeGame === "morning") {
     return <MorningMayhemGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === "glitter") {
+    return <GlitterMakeupGame onBack={() => setActiveGame(null)} />;
   }
 
   return (
@@ -323,6 +328,34 @@ const Games = () => {
                 <div className="flex items-center gap-2">
                   <Trophy className="h-4 w-4 text-yellow-500" />
                   <span className="text-sm text-muted-foreground">10 úloh</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Gamepad2 className="h-4 w-4 mr-2" />
+                Hrať
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Barbie Glitter Makeup Card */}
+          <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("glitter")}>
+            <CardHeader>
+              <div className="h-40 bg-gradient-to-br from-pink-400 via-purple-400 to-blue-400 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="text-6xl">✨</div>
+              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-pink-500" />
+                Barbie Glitter Makeup
+              </CardTitle>
+              <CardDescription>
+                Trblietavý make-up a krása s Barbie
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm text-muted-foreground">Kreatívna hra</span>
                 </div>
               </div>
               <Button className="w-full" variant="default">
