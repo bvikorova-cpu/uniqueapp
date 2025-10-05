@@ -66,9 +66,22 @@ const AIGeneration = () => {
     setResultImage(null);
 
     try {
+      // Convert file to base64
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(uploadedFile);
+      });
+
+      const base64Image = await base64Promise;
+
       const { data, error } = await supabase.functions.invoke('apply-ai-effect', {
         body: {
-          imageUrl: previewUrl,
+          imageUrl: base64Image,
           effectId: effect.id,
           effectName: effect.name
         }
