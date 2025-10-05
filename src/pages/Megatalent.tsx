@@ -99,7 +99,7 @@ const Megatalent = () => {
                 </Badge>
                 <CardHeader className="text-center">
                   <CardTitle className="text-2xl">TOP Premium</CardTitle>
-                  <div className="text-4xl font-bold text-gold">25 €<span className="text-lg">/mesiac</span></div>
+                  <div className="text-4xl font-bold text-gold">15 €<span className="text-lg">/mesiac</span></div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
