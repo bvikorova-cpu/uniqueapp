@@ -10,6 +10,7 @@ import { StarTrekGame } from "@/components/games/StarTrekGame";
 import { CSIGame } from "@/components/games/CSIGame";
 import { AngryBirdsGame } from "@/components/games/AngryBirdsGame";
 import { FashionDesignerGame } from "@/components/games/FashionDesignerGame";
+import { DreamhouseGame } from "@/components/games/DreamhouseGame";
 
 const Games = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
@@ -40,6 +41,10 @@ const Games = () => {
 
   if (activeGame === "fashion") {
     return <FashionDesignerGame onBack={() => setActiveGame(null)} />;
+  }
+
+  if (activeGame === "dreamhouse") {
+    return <DreamhouseGame onBack={() => setActiveGame(null)} />;
   }
 
   return (
@@ -257,6 +262,34 @@ const Games = () => {
                 <div className="flex items-center gap-2">
                   <Trophy className="h-4 w-4 text-yellow-500" />
                   <span className="text-sm text-muted-foreground">Neobmedzené dizajny</span>
+                </div>
+              </div>
+              <Button className="w-full" variant="default">
+                <Gamepad2 className="h-4 w-4 mr-2" />
+                Hrať
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Barbie Dreamhouse Card */}
+          <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("dreamhouse")}>
+            <CardHeader>
+              <div className="h-40 bg-gradient-to-br from-pink-300 to-purple-400 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="text-6xl">🏠</div>
+              </div>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-pink-500" />
+                Barbie Dreamhouse
+              </CardTitle>
+              <CardDescription>
+                Dobrodružstvá v Barbieinom dome snov
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Trophy className="h-4 w-4 text-yellow-500" />
+                  <span className="text-sm text-muted-foreground">18 aktivít</span>
                 </div>
               </div>
               <Button className="w-full" variant="default">
