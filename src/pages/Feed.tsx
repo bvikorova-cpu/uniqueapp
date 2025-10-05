@@ -14,11 +14,19 @@ interface Post {
   content: string;
   created_at: string;
   user_id: string;
+  likes_count: number;
+  comments_count: number;
+  shares_count: number;
   media: Array<{
     id: string;
     file_url: string;
     file_type: string;
   }>;
+  profiles: {
+    id: string;
+    full_name: string;
+    avatar_url: string;
+  };
 }
 
 const Feed = () => {
@@ -34,7 +42,12 @@ const Feed = () => {
         .from("posts")
         .select(`
           *,
-          media (*)
+          media (*),
+          profiles (
+            id,
+            full_name,
+            avatar_url
+          )
         `)
         .order("created_at", { ascending: false });
 
