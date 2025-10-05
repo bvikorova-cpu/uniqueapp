@@ -92,10 +92,10 @@ const Games = () => {
               </div>
               <CardTitle className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-pink-500" />
-                Barbie Fashion
+                Barbie Summer Nails
               </CardTitle>
               <CardDescription>
-                Obliekacia hra s rôznymi outfitmi
+                Umelecký dizajn nechtov na leto
               </CardDescription>
             </CardHeader>
             <CardContent>
