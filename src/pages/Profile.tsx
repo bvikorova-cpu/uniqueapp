@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit } from "lucide-react";
+import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, Activity } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
 
@@ -53,6 +53,14 @@ const Profile = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [friendshipStatus, setFriendshipStatus] = useState<'none' | 'pending_sent' | 'pending_received' | 'accepted'>('none');
+  const [friends, setFriends] = useState<Profile[]>([]);
+  const [stats, setStats] = useState({
+    postsCount: 0,
+    likesGiven: 0,
+    commentsCount: 0,
+    friendsCount: 0
+  });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -98,6 +106,66 @@ const Profile = () => {
         }));
         
         setPosts(postsWithProfiles);
+
+        // Fetch friendship status if viewing someone else's profile
+        if (currentUserId && currentUserId !== userId) {
+          const { data: friendshipData } = await supabase
+            .from("friendships")
+            .select("*")
+            .or(`and(user_id.eq.${currentUserId},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUserId})`)
+            .single();
+
+          if (friendshipData) {
+            if (friendshipData.status === 'accepted') {
+              setFriendshipStatus('accepted');
+            } else if (friendshipData.user_id === currentUserId) {
+              setFriendshipStatus('pending_sent');
+            } else {
+              setFriendshipStatus('pending_received');
+            }
+          }
+        }
+
+        // Fetch friends list
+        const { data: friendsData } = await supabase
+          .from("friendships")
+          .select("user_id, friend_id")
+          .eq("status", "accepted")
+          .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
+
+        if (friendsData) {
+          const friendIds = friendsData.map(f => 
+            f.user_id === userId ? f.friend_id : f.user_id
+          );
+
+          if (friendIds.length > 0) {
+            const { data: friendProfiles } = await supabase
+              .from("profiles")
+              .select("*")
+              .in("id", friendIds);
+
+            setFriends(friendProfiles || []);
+          }
+        }
+
+        // Fetch activity statistics
+        const { count: likesCount } = await supabase
+          .from("post_likes")
+          .select("*", { count: 'exact', head: true })
+          .eq("user_id", userId);
+
+        const { count: commentsCount } = await supabase
+          .from("post_comments")
+          .select("*", { count: 'exact', head: true })
+          .eq("user_id", userId);
+
+        setStats({
+          postsCount: postsData?.length || 0,
+          likesGiven: likesCount || 0,
+          commentsCount: commentsCount || 0,
+          friendsCount: friendsData?.length || 0
+        });
+
       } catch (error: any) {
         toast({
           title: "Chyba pri načítaní profilu",
@@ -110,7 +178,7 @@ const Profile = () => {
     };
 
     fetchProfileAndPosts();
-  }, [userId, toast]);
+  }, [userId, currentUserId, toast]);
 
   const handleRefresh = async () => {
     if (!userId || !profile) return;
@@ -135,6 +203,82 @@ const Profile = () => {
     }));
     
     setPosts(postsWithProfiles);
+  };
+
+  const handleAddFriend = async () => {
+    if (!currentUserId || !userId) return;
+
+    try {
+      const { error } = await supabase
+        .from("friendships")
+        .insert({
+          user_id: currentUserId,
+          friend_id: userId,
+          status: "pending"
+        });
+
+      if (error) throw error;
+
+      setFriendshipStatus('pending_sent');
+      toast({
+        title: "Žiadosť o priateľstvo odoslaná",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleAcceptFriend = async () => {
+    if (!currentUserId || !userId) return;
+
+    try {
+      const { error } = await supabase
+        .from("friendships")
+        .update({ status: "accepted" })
+        .eq("user_id", userId)
+        .eq("friend_id", currentUserId);
+
+      if (error) throw error;
+
+      setFriendshipStatus('accepted');
+      toast({
+        title: "Priateľstvo prijaté",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleRemoveFriend = async () => {
+    if (!currentUserId || !userId) return;
+
+    try {
+      const { error } = await supabase
+        .from("friendships")
+        .delete()
+        .or(`and(user_id.eq.${currentUserId},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUserId})`);
+
+      if (error) throw error;
+
+      setFriendshipStatus('none');
+      toast({
+        title: "Priateľstvo zrušené",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   if (loading) {
@@ -184,12 +328,41 @@ const Profile = () => {
                 <h1 className="text-3xl font-bold">
                   {profile.full_name || "Bez mena"}
                 </h1>
-                {currentUserId === userId && (
-                  <Button variant="outline" size="sm" onClick={() => navigate("/edit-profile")}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    Upraviť profil
-                  </Button>
-                )}
+                <div className="flex gap-2">
+                  {currentUserId === userId ? (
+                    <Button variant="outline" size="sm" onClick={() => navigate("/edit-profile")}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Upraviť profil
+                    </Button>
+                  ) : (
+                    <>
+                      {friendshipStatus === 'none' && (
+                        <Button variant="outline" size="sm" onClick={handleAddFriend}>
+                          <UserPlus className="h-4 w-4 mr-2" />
+                          Pridať priateľa
+                        </Button>
+                      )}
+                      {friendshipStatus === 'pending_sent' && (
+                        <Button variant="outline" size="sm" disabled>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Žiadosť odoslaná
+                        </Button>
+                      )}
+                      {friendshipStatus === 'pending_received' && (
+                        <Button variant="outline" size="sm" onClick={handleAcceptFriend}>
+                          <UserCheck className="h-4 w-4 mr-2" />
+                          Prijať žiadosť
+                        </Button>
+                      )}
+                      {friendshipStatus === 'accepted' && (
+                        <Button variant="outline" size="sm" onClick={handleRemoveFriend}>
+                          <UserCheck className="h-4 w-4 mr-2" />
+                          Priatelia
+                        </Button>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
               
               {profile.occupation && (
@@ -262,6 +435,61 @@ const Profile = () => {
             </>
           )}
         </Card>
+
+        {/* Activity Statistics */}
+        <Card className="p-6 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Activity className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-semibold">Štatistika aktivity</h3>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{stats.postsCount}</div>
+              <div className="text-sm text-muted-foreground">Príspevky</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{stats.likesGiven}</div>
+              <div className="text-sm text-muted-foreground">Lajky</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{stats.commentsCount}</div>
+              <div className="text-sm text-muted-foreground">Komentáre</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">{stats.friendsCount}</div>
+              <div className="text-sm text-muted-foreground">Priatelia</div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Friends List */}
+        {friends.length > 0 && (
+          <Card className="p-6 mb-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Users className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">Priatelia ({friends.length})</h3>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {friends.map((friend) => (
+                <div
+                  key={friend.id}
+                  className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-accent cursor-pointer transition-colors"
+                  onClick={() => navigate(`/profile/${friend.id}`)}
+                >
+                  <Avatar className="h-16 w-16">
+                    <AvatarImage src={friend.avatar_url || undefined} />
+                    <AvatarFallback>
+                      {friend.full_name?.[0]?.toUpperCase() || friend.email?.[0]?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="text-sm font-medium text-center truncate w-full">
+                    {friend.full_name || "Bez mena"}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
 
         <h2 className="text-xl font-semibold mb-4">Príspevky</h2>
         
