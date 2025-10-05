@@ -7,10 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
@@ -50,13 +52,13 @@ const Auth = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Chyba pri registrácii",
+        title: t('auth.error_register'),
         description: error.message,
       });
     } else {
       toast({
-        title: "Registrácia úspešná!",
-        description: "Skontrolujte svoj email pre potvrdenie.",
+        title: t('auth.success_register'),
+        description: t('auth.success_register_desc'),
       });
     }
   };
@@ -79,12 +81,12 @@ const Auth = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Chyba pri prihlásení",
+        title: t('auth.error_login'),
         description: error.message,
       });
     } else {
       toast({
-        title: "Prihlásenie úspešné!",
+        title: t('auth.success_login'),
       });
       navigate("/feed");
     }
@@ -106,13 +108,13 @@ const Auth = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Chyba",
+        title: t('auth.error'),
         description: error.message,
       });
     } else {
       toast({
-        title: "Email bol odoslaný!",
-        description: "Skontrolujte svoj email pre odkaz na obnovenie hesla.",
+        title: t('auth.success_reset'),
+        description: t('auth.success_reset_desc'),
       });
       setShowForgotPassword(false);
     }
@@ -122,8 +124,8 @@ const Auth = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/20 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Vitajte</CardTitle>
-          <CardDescription>Prihláste sa alebo vytvorte nový účet</CardDescription>
+          <CardTitle>{t('auth.welcome')}</CardTitle>
+          <CardDescription>{t('auth.description')}</CardDescription>
         </CardHeader>
         <CardContent>
           {showForgotPassword ? (
@@ -133,45 +135,45 @@ const Auth = () => {
                 onClick={() => setShowForgotPassword(false)}
                 className="mb-4"
               >
-                ← Späť na prihlásenie
+                {t('auth.back_to_login')}
               </Button>
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="reset-email">Email</Label>
+                  <Label htmlFor="reset-email">{t('auth.email')}</Label>
                   <Input
                     id="reset-email"
                     name="email"
                     type="email"
-                    placeholder="vas@email.com"
+                    placeholder={t('auth.email_placeholder')}
                     required
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? "Odesilanie..." : "Odoslať odkaz na obnovenie"}
+                  {loading ? t('auth.loading_reset') : t('auth.reset_link')}
                 </Button>
               </form>
             </div>
           ) : (
             <Tabs defaultValue="login">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Prihlásenie</TabsTrigger>
-                <TabsTrigger value="signup">Registrácia</TabsTrigger>
+                <TabsTrigger value="login">{t('auth.login_tab')}</TabsTrigger>
+                <TabsTrigger value="signup">{t('auth.register_tab')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="login">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
+                    <Label htmlFor="login-email">{t('auth.email')}</Label>
                     <Input
                       id="login-email"
                       name="email"
                       type="email"
-                      placeholder="vas@email.com"
+                      placeholder={t('auth.email_placeholder')}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="login-password">Heslo</Label>
+                    <Label htmlFor="login-password">{t('auth.password')}</Label>
                     <Input
                       id="login-password"
                       name="password"
@@ -185,10 +187,10 @@ const Auth = () => {
                     className="px-0 text-sm"
                     onClick={() => setShowForgotPassword(true)}
                   >
-                    Zabudli ste heslo?
+                    {t('auth.forgot_password')}
                   </Button>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Prihlasovanie..." : "Prihlásiť sa"}
+                    {loading ? t('auth.loading_login') : t('auth.login_btn')}
                   </Button>
                 </form>
               </TabsContent>
@@ -196,27 +198,27 @@ const Auth = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Celé meno</Label>
+                    <Label htmlFor="signup-name">{t('auth.full_name')}</Label>
                     <Input
                       id="signup-name"
                       name="fullName"
                       type="text"
-                      placeholder="Vaše meno"
+                      placeholder={t('auth.name_placeholder')}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email">{t('auth.email')}</Label>
                     <Input
                       id="signup-email"
                       name="email"
                       type="email"
-                      placeholder="vas@email.com"
+                      placeholder={t('auth.email_placeholder')}
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Heslo</Label>
+                    <Label htmlFor="signup-password">{t('auth.password')}</Label>
                     <Input
                       id="signup-password"
                       name="password"
@@ -225,7 +227,7 @@ const Auth = () => {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? "Registrácia..." : "Registrovať sa"}
+                    {loading ? t('auth.loading_register') : t('auth.register_btn')}
                   </Button>
                 </form>
               </TabsContent>
