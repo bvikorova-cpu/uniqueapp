@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import CreatePost from "@/components/feed/CreatePost";
 import PostCard from "@/components/feed/PostCard";
+import UserSearch from "@/components/feed/UserSearch";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
@@ -101,6 +102,8 @@ const Feed = () => {
         <h1 className="text-4xl font-bold mb-8 bg-gradient-primary bg-clip-text text-transparent">
           Feed
         </h1>
+
+        <UserSearch />
 
         <CreatePost onPostCreated={fetchPosts} />
 
