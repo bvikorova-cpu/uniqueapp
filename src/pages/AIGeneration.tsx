@@ -16,7 +16,7 @@ import styleMeImg from "@/assets/effects/style-me.jpg";
 import napMeImg from "@/assets/effects/nap-me.jpg";
 import spin360Img from "@/assets/effects/spin-360.jpg";
 
-type EffectCategory = "all" | "dance" | "appearance" | "entertainment" | "fanciful" | "emotions";
+type EffectCategory = "all" | "interactions" | "pets" | "appearance" | "entertainment" | "heroes" | "fanciful" | "dance" | "emotions";
 
 interface AIEffect {
   id: string;
@@ -24,19 +24,60 @@ interface AIEffect {
   category: EffectCategory;
   image: string;
   description: string;
+  isHot?: boolean;
 }
 
 const aiEffects: AIEffect[] = [
   { id: "sway-dance", name: "Sway Dance", category: "dance", image: swayDanceImg, description: "Tancujte so štýlom" },
+  { id: "my-girlfriendssss", name: "My Girlfriendssss", category: "interactions", image: swayDanceImg, description: "Vytvorte romantický moment" },
+  { id: "my-boyfriendssss", name: "My Boyfriendssss", category: "interactions", image: swayDanceImg, description: "Vytvorte romantický moment" },
+  { id: "earth-zoom-out", name: "Earth Zoom Out", category: "fanciful", image: earthZoomImg, description: "Oddialenie Zeme" },
   { id: "wave-dance", name: "Wave Dance", category: "dance", image: waveDanceImg, description: "Vlnový tanec" },
-  { id: "ghibli", name: "Ghibli štýl", category: "appearance", image: ghibliImg, description: "Transformácia do Ghibli štýlu" },
+  { id: "earth-zoom-in", name: "Earth Zoom In", category: "fanciful", image: earthZoomImg, description: "Priblíženie Zeme" },
   { id: "minecraft", name: "Minecraft", category: "entertainment", image: minecraftImg, description: "Minecraft transformácia" },
-  { id: "earth-zoom", name: "Earth Zoom", category: "fanciful", image: earthZoomImg, description: "Zem priblíženie/oddialenie" },
   { id: "box-me", name: "Box Me", category: "entertainment", image: boxMeImg, description: "Box efekt" },
   { id: "paper-fall", name: "Paper Fall", category: "fanciful", image: paperFallImg, description: "Padajúci papier" },
   { id: "style-me", name: "Style Me", category: "appearance", image: styleMeImg, description: "Štýlová transformácia" },
+  { id: "ghibli", name: "Ghibli", category: "appearance", image: ghibliImg, description: "Ghibli štýl transformácia" },
+  { id: "ai-couple-hugging", name: "AI Couple Hugging", category: "interactions", image: swayDanceImg, description: "Objímanie páru" },
   { id: "nap-me", name: "Nap Me", category: "emotions", image: napMeImg, description: "Relaxačný efekt" },
   { id: "spin-360", name: "Spin 360", category: "fanciful", image: spin360Img, description: "360° rotácia" },
+  { id: "sexy-me", name: "Sexy Me", category: "appearance", image: styleMeImg, description: "Sexi transformácia" },
+  { id: "gender-swap", name: "Gender Swap", category: "appearance", image: styleMeImg, description: "Výmena pohlavia" },
+  { id: "smile", name: "Smile", category: "emotions", image: napMeImg, description: "Úsmev efekt" },
+  { id: "bodyshake", name: "Bodyshake", category: "dance", image: waveDanceImg, description: "Trasenie telom" },
+  { id: "melt", name: "Melt", category: "fanciful", image: paperFallImg, description: "Topenie sa" },
+  { id: "bloom-magic", name: "Bloom Magic", category: "fanciful", image: paperFallImg, description: "Kúzlo kvitnutia", isHot: true },
+  { id: "paperman", name: "Paperman", category: "heroes", image: boxMeImg, description: "Papierový muž" },
+  { id: "flying", name: "Flying", category: "fanciful", image: paperFallImg, description: "Lietanie", isHot: true },
+  { id: "balloon-flyaway", name: "Balloon Flyaway", category: "fanciful", image: paperFallImg, description: "Balóny odletia" },
+  { id: "expansion", name: "Expansion", category: "fanciful", image: earthZoomImg, description: "Expanzia" },
+  { id: "pet-lovers", name: "Pet Lovers", category: "pets", image: swayDanceImg, description: "Milovníci zvierat" },
+  { id: "flame-carpet", name: "Flame Carpet", category: "fanciful", image: paperFallImg, description: "Plameňový koberec" },
+  { id: "fashion-stride", name: "Fashion Stride", category: "appearance", image: styleMeImg, description: "Módny krok" },
+  { id: "send-roses", name: "Send Roses", category: "interactions", image: swayDanceImg, description: "Poslať ruže", isHot: true },
+  { id: "finger-heart", name: "Finger Heart", category: "emotions", image: napMeImg, description: "Prstové srdce" },
+  { id: "cartoon-doll", name: "Cartoon Doll", category: "appearance", image: ghibliImg, description: "Kreslená bábika" },
+  { id: "beast-companion", name: "Beast Companion", category: "pets", image: swayDanceImg, description: "Spoločník zviera" },
+  { id: "bloom-doorobear", name: "Bloom Doorobear", category: "pets", image: swayDanceImg, description: "Dooro medveď" },
+  { id: "french-kiss", name: "French Kiss", category: "interactions", image: swayDanceImg, description: "Francúzsky bozk" },
+  { id: "whos-arrested", name: "Who's arrested?", category: "entertainment", image: boxMeImg, description: "Kto je zatknutý?" },
+  { id: "warmth-of-jesus", name: "Warmth of Jesus", category: "heroes", image: paperFallImg, description: "Teplo Ježiša", isHot: true },
+  { id: "wild-laugh", name: "Wild Laugh", category: "emotions", image: napMeImg, description: "Divý smiech" },
+  { id: "surprised", name: "Surprised", category: "emotions", image: napMeImg, description: "Prekvapený" },
+  { id: "explosion", name: "Explosion", category: "fanciful", image: paperFallImg, description: "Explózia" },
+  { id: "face-punch", name: "Face Punch", category: "entertainment", image: boxMeImg, description: "Facka" },
+  { id: "ai-kiss", name: "AI Kiss", category: "interactions", image: swayDanceImg, description: "AI bozk" },
+  { id: "kungfu-club", name: "Kungfu Club", category: "entertainment", image: boxMeImg, description: "Kung-fu klub", isHot: true },
+  { id: "holy-wings", name: "Holy Wings", category: "heroes", image: paperFallImg, description: "Sväté krídla" },
+  { id: "sheep-curls", name: "Sheep Curls", category: "pets", image: swayDanceImg, description: "Ovčie kučery", isHot: true },
+  { id: "ai-muscle-generator", name: "AI Muscle Generator", category: "appearance", image: styleMeImg, description: "AI generátor svalov", isHot: true },
+  { id: "squish-it", name: "Squish It", category: "fanciful", image: boxMeImg, description: "Stlač to", isHot: true },
+  { id: "hair-growth-magic", name: "Hair Growth Magic", category: "appearance", image: styleMeImg, description: "Kúzlo rastu vlasov", isHot: true },
+  { id: "become-male", name: "Become Male", category: "appearance", image: styleMeImg, description: "Staň sa mužom" },
+  { id: "alive-art", name: "Alive Art", category: "fanciful", image: ghibliImg, description: "Živé umenie" },
+  { id: "become-female", name: "Become Female", category: "appearance", image: styleMeImg, description: "Staň sa ženou" },
+  { id: "anything-robot", name: "Anything, Robot", category: "entertainment", image: minecraftImg, description: "Čokoľvek, robot", isHot: true },
 ];
 
 const AIGeneration = () => {
@@ -165,10 +206,13 @@ const AIGeneration = () => {
         <div className="flex flex-wrap gap-2 justify-center mb-8">
           {[
             { id: "all", label: "Všetky" },
-            { id: "dance", label: "Tanec" },
+            { id: "interactions", label: "Interakcie" },
+            { id: "pets", label: "Zvieratá" },
             { id: "appearance", label: "Vzhľad" },
             { id: "entertainment", label: "Zábava" },
+            { id: "heroes", label: "Hrdinovia" },
             { id: "fanciful", label: "Fantazijné" },
+            { id: "dance", label: "Tanec" },
             { id: "emotions", label: "Emócie" },
           ].map((category) => (
             <Button
@@ -195,19 +239,25 @@ const AIGeneration = () => {
             {filteredEffects.map((effect) => (
               <Card
                 key={effect.id}
-                className="cursor-pointer hover:shadow-elegant transition-all group"
+                className="cursor-pointer hover:shadow-elegant transition-all group relative overflow-hidden"
                 onClick={() => handleEffectClick(effect)}
               >
-                <CardContent className="p-4">
-                  <div className="aspect-square bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg mb-3 overflow-hidden group-hover:scale-105 transition-transform">
+                <CardContent className="p-0">
+                  <div className="aspect-square bg-gradient-to-br from-primary/20 to-secondary/20 overflow-hidden">
                     <img 
                       src={effect.image} 
                       alt={effect.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                   </div>
-                  <h3 className="font-semibold text-sm text-center mb-1">{effect.name}</h3>
-                  <p className="text-xs text-muted-foreground text-center">{effect.description}</p>
+                  {effect.isHot && (
+                    <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                      HOT
+                    </div>
+                  )}
+                  <div className="p-3 bg-background">
+                    <h3 className="font-semibold text-sm text-center">{effect.name}</h3>
+                  </div>
                 </CardContent>
               </Card>
             ))}
