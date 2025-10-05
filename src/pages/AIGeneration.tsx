@@ -31,6 +31,8 @@ const aiEffects: AIEffect[] = [
 const AIGeneration = () => {
   const [selectedCategory, setSelectedCategory] = useState<EffectCategory>("all");
   const [activeTab, setActiveTab] = useState<"video" | "image">("video");
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const filteredEffects = selectedCategory === "all" 
     ? aiEffects 
@@ -38,6 +40,34 @@ const AIGeneration = () => {
 
   const handleEffectClick = (effect: AIEffect) => {
     toast.info(`${effect.name} efekt bude čoskoro dostupný!`);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+    const validVideoTypes = ['video/mp4', 'video/mov', 'video/avi'];
+    
+    const isValidImage = validImageTypes.includes(file.type);
+    const isValidVideo = validVideoTypes.includes(file.type);
+
+    if (!isValidImage && !isValidVideo) {
+      toast.error("Nepodporovaný formát súboru. Použite JPG, PNG, MP4 alebo MOV.");
+      return;
+    }
+
+    if (file.size > 50 * 1024 * 1024) { // 50MB limit
+      toast.error("Súbor je príliš veľký. Maximálna veľkosť je 50MB.");
+      return;
+    }
+
+    setUploadedFile(file);
+    
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    
+    toast.success("Súbor úspešne nahratý!");
   };
 
   return (
@@ -122,16 +152,63 @@ const AIGeneration = () => {
                 Nahrajte svoj obrázok alebo video pre aplikáciu AI efektov
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
-                <Wand2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground mb-2">
-                  Kliknite pre nahranie alebo presuňte súbory sem
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Podporované formáty: JPG, PNG, MP4, MOV
-                </p>
-              </div>
+            <CardContent className="space-y-4">
+              <label htmlFor="file-upload" className="block">
+                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
+                  <Wand2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Kliknite pre nahranie alebo presuňte súbory sem
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Podporované formáty: JPG, PNG, MP4, MOV (max 50MB)
+                  </p>
+                </div>
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/jpg,image/webp,video/mp4,video/mov,video/avi"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+
+              {/* Preview */}
+              {previewUrl && uploadedFile && (
+                <div className="border rounded-lg p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-1">
+                      <p className="font-medium mb-2">{uploadedFile.name}</p>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                      {uploadedFile.type.startsWith('image/') && (
+                        <img
+                          src={previewUrl}
+                          alt="Preview"
+                          className="max-h-64 rounded-lg object-contain"
+                        />
+                      )}
+                      {uploadedFile.type.startsWith('video/') && (
+                        <video
+                          src={previewUrl}
+                          controls
+                          className="max-h-64 rounded-lg"
+                        />
+                      )}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setUploadedFile(null);
+                        setPreviewUrl(null);
+                      }}
+                    >
+                      Odstrániť
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
