@@ -16,7 +16,7 @@ import Dating from "./pages/Dating";
 import FirstAid from "./pages/FirstAid";
 import FitSlim from "./pages/FitSlim";
 import Marketplace from "./pages/Marketplace";
-import Eshop from "./pages/Eshop";
+
 import Bazaar from "./pages/Bazaar";
 import Referral from "./pages/Referral";
 import Games from "./pages/Games";
@@ -58,7 +58,7 @@ const App = () => (
           <Route path="/first-aid" element={<FirstAid />} />
           <Route path="/fit-slim" element={<FitSlim />} />
           <Route path="/marketplace" element={<Marketplace />} />
-          <Route path="/eshop" element={<Eshop />} />
+          
           <Route path="/bazaar" element={<Bazaar />} />
           <Route path="/referral" element={<Referral />} />
           <Route path="/games" element={<Games />} />
