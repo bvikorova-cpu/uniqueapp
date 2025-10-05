@@ -6,7 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, Activity } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
 
@@ -58,7 +59,7 @@ const Profile = () => {
   const [stats, setStats] = useState({
     postsCount: 0,
     likesGiven: 0,
-    commentsCount: 0,
+    commentsGiven: 0,
     friendsCount: 0
   });
 
@@ -113,7 +114,7 @@ const Profile = () => {
             .from("friendships")
             .select("*")
             .or(`and(user_id.eq.${currentUserId},friend_id.eq.${userId}),and(user_id.eq.${userId},friend_id.eq.${currentUserId})`)
-            .single();
+            .maybeSingle();
 
           if (friendshipData) {
             if (friendshipData.status === 'accepted') {
@@ -133,19 +134,17 @@ const Profile = () => {
           .eq("status", "accepted")
           .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
 
-        if (friendsData) {
+        if (friendsData && friendsData.length > 0) {
           const friendIds = friendsData.map(f => 
             f.user_id === userId ? f.friend_id : f.user_id
           );
 
-          if (friendIds.length > 0) {
-            const { data: friendProfiles } = await supabase
-              .from("profiles")
-              .select("*")
-              .in("id", friendIds);
+          const { data: friendProfiles } = await supabase
+            .from("profiles")
+            .select("*")
+            .in("id", friendIds);
 
-            setFriends(friendProfiles || []);
-          }
+          setFriends(friendProfiles || []);
         }
 
         // Fetch activity statistics
@@ -162,7 +161,7 @@ const Profile = () => {
         setStats({
           postsCount: postsData?.length || 0,
           likesGiven: likesCount || 0,
-          commentsCount: commentsCount || 0,
+          commentsGiven: commentsCount || 0,
           friendsCount: friendsData?.length || 0
         });
 
@@ -179,31 +178,6 @@ const Profile = () => {
 
     fetchProfileAndPosts();
   }, [userId, currentUserId, toast]);
-
-  const handleRefresh = async () => {
-    if (!userId || !profile) return;
-    
-    const { data: postsData } = await supabase
-      .from("posts")
-      .select(`
-        *,
-        media (*)
-      `)
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false });
-
-    // Add profiles data to posts
-    const postsWithProfiles = (postsData || []).map(post => ({
-      ...post,
-      profiles: {
-        id: profile.id,
-        full_name: profile.full_name,
-        avatar_url: profile.avatar_url
-      }
-    }));
-    
-    setPosts(postsWithProfiles);
-  };
 
   const handleAddFriend = async () => {
     if (!currentUserId || !userId) return;
@@ -245,6 +219,32 @@ const Profile = () => {
       if (error) throw error;
 
       setFriendshipStatus('accepted');
+      
+      // Refresh friends list and stats
+      const { data: friendsData } = await supabase
+        .from("friendships")
+        .select("user_id, friend_id")
+        .eq("status", "accepted")
+        .or(`user_id.eq.${userId},friend_id.eq.${userId}`);
+
+      if (friendsData && friendsData.length > 0) {
+        const friendIds = friendsData.map(f => 
+          f.user_id === userId ? f.friend_id : f.user_id
+        );
+
+        const { data: friendProfiles } = await supabase
+          .from("profiles")
+          .select("*")
+          .in("id", friendIds);
+
+        setFriends(friendProfiles || []);
+      }
+
+      setStats(prev => ({
+        ...prev,
+        friendsCount: friendsData?.length || 0
+      }));
+
       toast({
         title: "Priateľstvo prijaté",
       });
@@ -269,6 +269,12 @@ const Profile = () => {
       if (error) throw error;
 
       setFriendshipStatus('none');
+      setFriends([]);
+      setStats(prev => ({
+        ...prev,
+        friendsCount: 0
+      }));
+
       toast({
         title: "Priateľstvo zrušené",
       });
@@ -279,6 +285,30 @@ const Profile = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleRefresh = async () => {
+    if (!userId || !profile) return;
+    
+    const { data: postsData } = await supabase
+      .from("posts")
+      .select(`
+        *,
+        media (*)
+      `)
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    const postsWithProfiles = (postsData || []).map(post => ({
+      ...post,
+      profiles: {
+        id: profile.id,
+        full_name: profile.full_name,
+        avatar_url: profile.avatar_url
+      }
+    }));
+    
+    setPosts(postsWithProfiles);
   };
 
   if (loading) {
@@ -356,7 +386,7 @@ const Profile = () => {
                       )}
                       {friendshipStatus === 'accepted' && (
                         <Button variant="outline" size="sm" onClick={handleRemoveFriend}>
-                          <UserCheck className="h-4 w-4 mr-2" />
+                          <Users className="h-4 w-4 mr-2" />
                           Priatelia
                         </Button>
                       )}
@@ -437,77 +467,83 @@ const Profile = () => {
         </Card>
 
         {/* Activity Statistics */}
-        <Card className="p-6 mb-6">
+        <Card className="p-6 mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-semibold">Štatistika aktivity</h3>
+            <TrendingUp className="h-5 w-5 text-primary" />
+            <h2 className="text-xl font-semibold">Štatistiky aktivity</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{stats.postsCount}</div>
-              <div className="text-sm text-muted-foreground">Príspevky</div>
+              <div className="text-3xl font-bold text-primary">{stats.postsCount}</div>
+              <div className="text-sm text-muted-foreground">Príspevkov</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{stats.likesGiven}</div>
-              <div className="text-sm text-muted-foreground">Lajky</div>
+              <div className="text-3xl font-bold text-primary">{stats.friendsCount}</div>
+              <div className="text-sm text-muted-foreground">Priateľov</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{stats.commentsCount}</div>
-              <div className="text-sm text-muted-foreground">Komentáre</div>
+              <div className="text-3xl font-bold text-primary">{stats.likesGiven}</div>
+              <div className="text-sm text-muted-foreground">Lajkov</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{stats.friendsCount}</div>
-              <div className="text-sm text-muted-foreground">Priatelia</div>
+              <div className="text-3xl font-bold text-primary">{stats.commentsGiven}</div>
+              <div className="text-sm text-muted-foreground">Komentárov</div>
             </div>
           </div>
         </Card>
 
-        {/* Friends List */}
-        {friends.length > 0 && (
-          <Card className="p-6 mb-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Users className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold">Priatelia ({friends.length})</h3>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {friends.map((friend) => (
-                <div
-                  key={friend.id}
-                  className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-accent cursor-pointer transition-colors"
-                  onClick={() => navigate(`/profile/${friend.id}`)}
-                >
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={friend.avatar_url || undefined} />
-                    <AvatarFallback>
-                      {friend.full_name?.[0]?.toUpperCase() || friend.email?.[0]?.toUpperCase() || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="text-sm font-medium text-center truncate w-full">
-                    {friend.full_name || "Bez mena"}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        )}
+        <Tabs defaultValue="posts" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="posts">Príspevky</TabsTrigger>
+            <TabsTrigger value="friends">Priatelia ({friends.length})</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="posts" className="space-y-4 mt-4">
+            {posts.length === 0 ? (
+              <Card className="p-8 text-center text-muted-foreground">
+                Tento používateľ zatiaľ nemá žiadne príspevky
+              </Card>
+            ) : (
+              posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  onDelete={handleRefresh}
+                />
+              ))
+            )}
+          </TabsContent>
 
-        <h2 className="text-xl font-semibold mb-4">Príspevky</h2>
-        
-        <div className="space-y-4">
-          {posts.length === 0 ? (
-            <Card className="p-8 text-center text-muted-foreground">
-              Tento používateľ zatiaľ nemá žiadne príspevky
-            </Card>
-          ) : (
-            posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                onDelete={handleRefresh}
-              />
-            ))
-          )}
-        </div>
+          <TabsContent value="friends" className="mt-4">
+            {friends.length === 0 ? (
+              <Card className="p-8 text-center text-muted-foreground">
+                Zatiaľ žiadni priatelia
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {friends.map((friend) => (
+                  <Card 
+                    key={friend.id} 
+                    className="p-4 cursor-pointer hover:bg-accent transition-colors"
+                    onClick={() => navigate(`/profile/${friend.id}`)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Avatar>
+                        <AvatarImage src={friend.avatar_url || undefined} />
+                        <AvatarFallback>
+                          {friend.full_name?.[0]?.toUpperCase() || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-semibold">{friend.full_name || "Bez mena"}</div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
