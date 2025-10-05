@@ -138,10 +138,7 @@ const AIGeneration = () => {
       return;
     }
 
-    if (uploadedFile.type.startsWith('video/')) {
-      toast.info("Video efekty budú čoskoro dostupné!");
-      return;
-    }
+    const isVideo = uploadedFile.type.startsWith('video/');
 
     setIsProcessing(true);
     setResultImage(null);
@@ -158,13 +155,14 @@ const AIGeneration = () => {
         reader.readAsDataURL(uploadedFile);
       });
 
-      const base64Image = await base64Promise;
+      const base64Data = await base64Promise;
 
       const { data, error } = await supabase.functions.invoke('apply-ai-effect', {
         body: {
-          imageUrl: base64Image,
+          imageUrl: base64Data,
           effectId: effect.id,
-          effectName: effect.name
+          effectName: effect.name,
+          isVideo: isVideo
         }
       });
 
@@ -310,20 +308,29 @@ const AIGeneration = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Výsledok</CardTitle>
-                <CardDescription>Váš obrázok s aplikovaným AI efektom</CardDescription>
+                <CardDescription>Váš súbor s aplikovaným AI efektom</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="relative group">
-                  <img 
-                    src={resultImage} 
-                    alt="Result" 
-                    className="w-full rounded-lg"
-                  />
+                  {uploadedFile?.type.startsWith('video/') && resultImage.startsWith('data:video') ? (
+                    <video 
+                      src={resultImage} 
+                      controls
+                      className="w-full rounded-lg"
+                    />
+                  ) : (
+                    <img 
+                      src={resultImage} 
+                      alt="Result" 
+                      className="w-full rounded-lg"
+                    />
+                  )}
                   <Button
                     onClick={() => {
                       const link = document.createElement('a');
                       link.href = resultImage;
-                      link.download = `ai-effect-${Date.now()}.png`;
+                      const extension = uploadedFile?.type.startsWith('video/') ? 'mp4' : 'png';
+                      link.download = `ai-effect-${Date.now()}.${extension}`;
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);
