@@ -122,7 +122,6 @@ const aiEffects: AIEffect[] = [
 
 const AIGeneration = () => {
   const [selectedCategory, setSelectedCategory] = useState<EffectCategory>("all");
-  const [activeTab, setActiveTab] = useState<"video" | "image">("video");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -134,11 +133,9 @@ const AIGeneration = () => {
 
   const handleEffectClick = async (effect: AIEffect) => {
     if (!uploadedFile || !previewUrl) {
-      toast.error("Najprv nahrajte obrázok alebo video!");
+      toast.error("Najprv nahrajte obrázok!");
       return;
     }
-
-    const isVideo = uploadedFile.type.startsWith('video/');
 
     setIsProcessing(true);
     setResultImage(null);
@@ -155,14 +152,13 @@ const AIGeneration = () => {
         reader.readAsDataURL(uploadedFile);
       });
 
-      const base64Data = await base64Promise;
+      const base64Image = await base64Promise;
 
       const { data, error } = await supabase.functions.invoke('apply-ai-effect', {
         body: {
-          imageUrl: base64Data,
+          imageUrl: base64Image,
           effectId: effect.id,
-          effectName: effect.name,
-          isVideo: isVideo
+          effectName: effect.name
         }
       });
 
@@ -187,18 +183,14 @@ const AIGeneration = () => {
     if (!file) return;
 
     const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
-    const validVideoTypes = ['video/mp4', 'video/mov', 'video/avi'];
     
-    const isValidImage = validImageTypes.includes(file.type);
-    const isValidVideo = validVideoTypes.includes(file.type);
-
-    if (!isValidImage && !isValidVideo) {
-      toast.error("Nepodporovaný formát súboru. Použite JPG, PNG, MP4 alebo MOV.");
+    if (!validImageTypes.includes(file.type)) {
+      toast.error("Nepodporovaný formát. Použite JPG, PNG alebo WEBP.");
       return;
     }
 
-    if (file.size > 50 * 1024 * 1024) { // 50MB limit
-      toast.error("Súbor je príliš veľký. Maximálna veľkosť je 50MB.");
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      toast.error("Obrázok je príliš veľký. Maximálna veľkosť je 10MB.");
       return;
     }
 
@@ -207,7 +199,7 @@ const AIGeneration = () => {
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
     
-    toast.success("Súbor úspešne nahratý!");
+    toast.success("Obrázok úspešne nahratý!");
   };
 
   return (
@@ -218,27 +210,13 @@ const AIGeneration = () => {
           <div className="inline-flex items-center gap-2 mb-4">
             <Sparkles className="w-8 h-8 text-primary" />
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              AI Efekty
+              AI Efekty na Obrázky
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Transformujte svoje videá a obrázky pomocou AI efektov
+            Transformujte svoje fotky pomocou pokročilých AI efektov
           </p>
         </div>
-
-        {/* Tabs for Video/Image */}
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "video" | "image")} className="mb-8">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-            <TabsTrigger value="video" className="gap-2">
-              <Video className="w-4 h-4" />
-              Video
-            </TabsTrigger>
-            <TabsTrigger value="image" className="gap-2">
-              <ImageIcon className="w-4 h-4" />
-              Obrázok
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
 
         {/* Category Filters */}
         <div className="flex flex-wrap gap-2 justify-center mb-8">
@@ -308,29 +286,20 @@ const AIGeneration = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Výsledok</CardTitle>
-                <CardDescription>Váš súbor s aplikovaným AI efektom</CardDescription>
+                <CardDescription>Váš obrázok s aplikovaným AI efektom</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="relative group">
-                  {uploadedFile?.type.startsWith('video/') && resultImage.startsWith('data:video') ? (
-                    <video 
-                      src={resultImage} 
-                      controls
-                      className="w-full rounded-lg"
-                    />
-                  ) : (
-                    <img 
-                      src={resultImage} 
-                      alt="Result" 
-                      className="w-full rounded-lg"
-                    />
-                  )}
+                  <img 
+                    src={resultImage} 
+                    alt="Result" 
+                    className="w-full rounded-lg"
+                  />
                   <Button
                     onClick={() => {
                       const link = document.createElement('a');
                       link.href = resultImage;
-                      const extension = uploadedFile?.type.startsWith('video/') ? 'mp4' : 'png';
-                      link.download = `ai-effect-${Date.now()}.${extension}`;
+                      link.download = `ai-effect-${Date.now()}.png`;
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);
@@ -364,16 +333,16 @@ const AIGeneration = () => {
                 <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
                   <Wand2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground mb-2">
-                    Kliknite pre nahranie alebo presuňte súbory sem
+                    Kliknite pre nahratie obrázka alebo ho presuňte sem
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Podporované formáty: JPG, PNG, MP4, MOV (max 50MB)
+                    Podporované formáty: JPG, PNG, WEBP (max 10MB)
                   </p>
                 </div>
                 <input
                   id="file-upload"
                   type="file"
-                  accept="image/jpeg,image/png,image/jpg,image/webp,video/mp4,video/mov,video/avi"
+                  accept="image/jpeg,image/png,image/jpg,image/webp"
                   onChange={handleFileUpload}
                   className="hidden"
                 />
@@ -388,20 +357,11 @@ const AIGeneration = () => {
                       <p className="text-sm text-muted-foreground mb-4">
                         {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
                       </p>
-                      {uploadedFile.type.startsWith('image/') && (
-                        <img
-                          src={previewUrl}
-                          alt="Preview"
-                          className="max-h-64 rounded-lg object-contain"
-                        />
-                      )}
-                      {uploadedFile.type.startsWith('video/') && (
-                        <video
-                          src={previewUrl}
-                          controls
-                          className="max-h-64 rounded-lg"
-                        />
-                      )}
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="max-h-64 rounded-lg object-contain"
+                      />
                     </div>
                     <Button
                       variant="outline"

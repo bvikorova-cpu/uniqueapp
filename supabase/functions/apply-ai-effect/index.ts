@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { imageUrl, effectId, effectName, isVideo } = await req.json();
+    const { imageUrl, effectId, effectName } = await req.json();
 
     if (!imageUrl || !effectId) {
       return new Response(
@@ -79,12 +79,9 @@ serve(async (req) => {
       'anything-robot': 'Transform into a futuristic android/robot version with metallic surfaces, glowing LED lights, mechanical joints, and sci-fi cybernetic appearance'
     };
 
-    const basePrompt = effectPrompts[effectId] || `Apply ${effectName} effect to this image`;
-    const prompt = isVideo 
-      ? `${basePrompt}. Create this as an animated, dynamic video effect with smooth movement and motion that brings the effect to life with realistic animation.`
-      : basePrompt;
+    const prompt = effectPrompts[effectId] || `Apply ${effectName} effect to this image`;
 
-    console.log('Applying effect:', effectId, 'with prompt:', prompt, 'isVideo:', isVideo);
+    console.log('Applying effect:', effectId, 'with prompt:', prompt);
 
     // Call Lovable AI for image editing
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
