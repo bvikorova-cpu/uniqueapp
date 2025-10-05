@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
-import { LanguageSelector } from "./LanguageSelector";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -129,7 +128,6 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:flex items-center space-x-2">
-            <LanguageSelector />
             {user ? (
               <>
                 <Link to="/edit-profile">
@@ -190,9 +188,6 @@ const Navbar = () => {
               );
             })}
             <div className="pt-4 space-y-2">
-              <div className="mb-2">
-                <LanguageSelector />
-              </div>
               {user ? (
                 <>
                   <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
