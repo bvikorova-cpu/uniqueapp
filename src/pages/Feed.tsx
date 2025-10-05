@@ -97,9 +97,9 @@ const Feed = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-background py-8">
+    <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-2xl">
-        <h1 className="text-4xl font-bold mb-8 bg-gradient-primary bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-8 bg-gradient-primary bg-clip-text text-transparent text-center">
           Feed
         </h1>
 
