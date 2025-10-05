@@ -13,6 +13,7 @@ import { FashionDesignerGame } from "@/components/games/FashionDesignerGame";
 import { DreamhouseGame } from "@/components/games/DreamhouseGame";
 import { MorningMayhemGame } from "@/components/games/MorningMayhemGame";
 import { GlitterMakeupGame } from "@/components/games/GlitterMakeupGame";
+import barbieSummerNailsImage from "@/assets/barbie-summer-nails.jpg";
 
 const Games = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
@@ -107,8 +108,8 @@ const Games = () => {
           {/* Barbie Card */}
           <Card className="hover:shadow-elegant transition-all cursor-pointer group" onClick={() => setActiveGame("barbie")}>
             <CardHeader>
-              <div className="h-40 bg-gradient-to-br from-pink-400 to-rose-400 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
-                <div className="text-6xl">👗</div>
+              <div className="h-40 rounded-lg mb-4 overflow-hidden group-hover:scale-105 transition-transform">
+                <img src={barbieSummerNailsImage} alt="Barbie Summer Nails" className="w-full h-full object-cover" />
               </div>
               <CardTitle className="flex items-center gap-2">
                 <Star className="h-5 w-5 text-pink-500" />
