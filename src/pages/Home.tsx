@@ -6,34 +6,32 @@ import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import heroBg from "@/assets/hero-bg.jpg";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const Home = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const { t } = useLanguage();
 
   const services = [
-    { name: "Feed", path: "/feed", keywords: ["feed", "príspevky", "zdieľanie", "sociálna sieť", "posts", "sharing", "social network"] },
-    { name: "Videá", path: "/tiktok", keywords: ["videá", "tiktok", "krátke videá", "videos", "short videos"] },
-    { name: "Messenger", path: "/messenger", keywords: ["messenger", "chat", "správy", "komunikácia", "messages", "communication"] },
-    { name: "Megatalent", path: "/megatalent", keywords: ["megatalent", "súťaž", "talent", "výhra", "competition", "win"] },
-    { name: "Megaforum", path: "/megaforum", keywords: ["megaforum", "diskusia", "fórum", "discussion", "forum"] },
-    { name: "Online psychológ", path: "/psychologist", keywords: ["psychológ", "psycholog", "duševné zdravie", "poradenstvo", "psychologist", "mental health", "counseling"] },
-    { name: "Vzdelávanie", path: "/education", keywords: ["vzdelávanie", "kurzy", "doučovanie", "kvízy", "education", "courses", "tutoring", "quizzes"] },
-    { name: "Dovolenky", path: "/vacationer", keywords: ["dovolenky", "cestovanie", "zájazdy", "holidays", "travel", "trips"] },
-    { name: "Dating", path: "/dating", keywords: ["dating", "zoznamka", "láska", "priateľstvá", "love", "friendships"] },
-    { name: "Prvá pomoc", path: "/first-aid", keywords: ["prvá pomoc", "zdravie", "pomoc", "first aid", "health", "help"] },
-    { name: "Fit & Slim", path: "/fit-slim", keywords: ["fit", "slim", "cvičenie", "zdravé recepty", "workout", "healthy recipes"] },
-    { name: "Ja urobím", path: "/marketplace", keywords: ["služby", "marketplace", "ja urobím", "services", "i will do"] },
-    { name: "Bazár", path: "/bazaar", keywords: ["bazár", "bazar", "predaj", "nákup", "bazaar", "sell", "buy"] },
-    { name: "Referenčný program", path: "/referral", keywords: ["referral", "odmeny", "priateľ", "rewards", "friend"] },
-    { name: "Hry", path: "/games", keywords: ["hry", "games", "zábava", "entertainment"] },
-    { name: "Práca", path: "/jobs", keywords: ["práca", "job", "zamestnanec", "kariéra", "work", "employee", "career"] },
-    { name: "InfluKing", path: "/influ-king", keywords: ["influking", "influencer", "zarábaš", "earn"] },
-    { name: "Online Aukcie", path: "/auction", keywords: ["aukcie", "auction", "dražba", "bidding"] },
-    { name: "AI Generovanie", path: "/ai-generation", keywords: ["ai", "generovanie", "obrázky", "generation", "images"] },
-    { name: "Best Friend", path: "/best-friend", keywords: ["best friend", "priateľ", "chatbot", "friend"] },
+    { name: "Feed", path: "/feed", keywords: ["feed", "príspevky", "zdieľanie", "sociálna sieť"] },
+    { name: "Videá", path: "/tiktok", keywords: ["videá", "tiktok", "krátke videá"] },
+    { name: "Messenger", path: "/messenger", keywords: ["messenger", "chat", "správy", "komunikácia"] },
+    { name: "Megatalent", path: "/megatalent", keywords: ["megatalent", "súťaž", "talent", "výhra"] },
+    { name: "Megaforum", path: "/megaforum", keywords: ["megaforum", "diskusia", "fórum"] },
+    { name: "Online psychológ", path: "/psychologist", keywords: ["psychológ", "psycholog", "duševné zdravie", "poradenstvo"] },
+    { name: "Vzdelávanie", path: "/education", keywords: ["vzdelávanie", "kurzy", "doučovanie", "kvízy"] },
+    { name: "Dovolenky", path: "/vacationer", keywords: ["dovolenky", "cestovanie", "zájazdy"] },
+    { name: "Dating", path: "/dating", keywords: ["dating", "zoznamka", "láska", "priateľstvá"] },
+    { name: "Prvá pomoc", path: "/first-aid", keywords: ["prvá pomoc", "zdravie", "pomoc"] },
+    { name: "Fit & Slim", path: "/fit-slim", keywords: ["fit", "slim", "cvičenie", "zdravé recepty"] },
+    { name: "Ja urobím", path: "/marketplace", keywords: ["služby", "marketplace", "ja urobím"] },
+    { name: "Bazár", path: "/bazaar", keywords: ["bazár", "bazar", "predaj", "nákup"] },
+    { name: "Referenčný program", path: "/referral", keywords: ["referral", "odmeny", "priateľ"] },
+    { name: "Hry", path: "/games", keywords: ["hry", "games", "zábava"] },
+    { name: "Práca", path: "/jobs", keywords: ["práca", "job", "zamestnanec", "kariéra"] },
+    { name: "InfluKing", path: "/influ-king", keywords: ["influking", "influencer", "zarábaš"] },
+    { name: "Online Aukcie", path: "/auction", keywords: ["aukcie", "auction", "dražba"] },
+    { name: "AI Generovanie", path: "/ai-generation", keywords: ["ai", "generovanie", "obrázky"] },
+    { name: "Best Friend", path: "/best-friend", keywords: ["best friend", "priateľ", "chatbot"] },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -62,16 +60,17 @@ const Home = () => {
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative z-10 text-center space-y-8 px-4">
           <Badge className="bg-gold text-gold-foreground animate-glow text-lg px-4 py-2">
-            {t('home.hero.badge')}
+            💰 Vyhraj až 100.000 € každý mesiac!
           </Badge>
           <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
-            {t('home.hero.title')}{" "}
+            Vitaj v{" "}
             <span className="bg-gradient-gold bg-clip-text text-transparent">
               Megatalent
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">
-            {t('home.hero.subtitle')}
+            Sociálna sieť, kde tvoj talent môže zmeniť tvoj život. Súťaž, hlasuj, 
+            nakupuj a zarábaj s priateľmi!
           </p>
           
           {/* Search Bar */}
@@ -80,7 +79,7 @@ const Home = () => {
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input
                 type="text"
-                placeholder={t('home.hero.search')}
+                placeholder="Hľadaj služby... (napr. hry, vzdelávanie, dating)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 pr-4 py-6 text-lg text-black placeholder:text-gray-500 bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
@@ -92,7 +91,7 @@ const Home = () => {
             <Link to="/megatalent">
               <Button variant="hero" size="lg" className="text-xl px-8 py-4">
                 <Crown className="h-6 w-6 mr-2" />
-                {t('home.hero.cta')}
+                Vstúp do súťaže
               </Button>
             </Link>
           </div>
@@ -104,13 +103,13 @@ const Home = () => {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-4xl md:text-5xl font-bold">
-              {t('home.services.title')}{" "}
+              Naše{" "}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
-                {t('home.services.title2')}
+                služby
               </span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('home.services.subtitle')}
+              Kompletná platforma pre všetky tvoje potreby
             </p>
           </div>
 
@@ -123,7 +122,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.feed')}
+                    Zdieľaj momenty a komunikuj s priateľmi
                   </p>
                 </CardContent>
               </Card>
@@ -133,11 +132,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Video className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>{t('nav.videos')}</CardTitle>
+                  <CardTitle>Videá</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.videos')}
+                    Sleduj a vytváraj krátke videá
                   </p>
                 </CardContent>
               </Card>
@@ -151,7 +150,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.messenger')}
+                    Chatuj so známymi v reálnom čase
                   </p>
                 </CardContent>
               </Card>
@@ -165,7 +164,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.megatalent')}
+                    Súťaž o 100.000 € každý mesiac
                   </p>
                 </CardContent>
               </Card>
@@ -179,7 +178,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.megaforum')}
+                    Diskutuj a zdieľaj názory s komunitou
                   </p>
                 </CardContent>
               </Card>
@@ -189,11 +188,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Brain className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>{t('nav.psychologist')}</CardTitle>
+                  <CardTitle>Online psychológ</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.psychologist')}
+                    AI asistent pre duševné zdravie 24/7
                   </p>
                 </CardContent>
               </Card>
@@ -203,11 +202,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <GraduationCap className="h-12 w-12 text-success mx-auto mb-4" />
-                  <CardTitle>{t('nav.education')}</CardTitle>
+                  <CardTitle>Vzdelávanie</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.education')}
+                    Online doučovanie, kvízy a kurzy
                   </p>
                 </CardContent>
               </Card>
@@ -217,11 +216,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Plane className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <CardTitle>{t('nav.vacationer')}</CardTitle>
+                  <CardTitle>Dovolenky</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.vacationer')}
+                    Rezervuj dovolenky a zájazdy online
                   </p>
                 </CardContent>
               </Card>
@@ -235,7 +234,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.dating')}
+                    Nájdi si partnera a nové priateľstvá
                   </p>
                 </CardContent>
               </Card>
@@ -245,11 +244,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Cross className="h-12 w-12 text-destructive mx-auto mb-4" />
-                  <CardTitle>{t('nav.first_aid')}</CardTitle>
+                  <CardTitle>Prvá pomoc</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.first_aid')}
+                    Návody na poskytnutie prvej pomoci
                   </p>
                 </CardContent>
               </Card>
@@ -263,7 +262,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.fit_slim')}
+                    Cvičebné plány a zdravé recepty
                   </p>
                 </CardContent>
               </Card>
@@ -273,11 +272,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <HomeIcon className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>{t('nav.marketplace')}</CardTitle>
+                  <CardTitle>Ja urobím</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.marketplace')}
+                    Poskytovanie, predaj a kúpa služieb poskytovaných na celom svete
                   </p>
                 </CardContent>
               </Card>
@@ -287,11 +286,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Store className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>{t('nav.bazaar')}</CardTitle>
+                  <CardTitle>Bazár</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.bazaar')}
+                    Predávaj a kupuj od ostatných používateľov
                   </p>
                 </CardContent>
               </Card>
@@ -301,11 +300,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Gift className="h-12 w-12 text-success mx-auto mb-4" />
-                  <CardTitle>{t('nav.referral')}</CardTitle>
+                  <CardTitle>Referenčný program</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.referral')}
+                    Získaj 5 € za každého priateľa
                   </p>
                 </CardContent>
               </Card>
@@ -315,11 +314,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Gamepad2 className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <CardTitle>{t('nav.games')}</CardTitle>
+                  <CardTitle>Hry</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.games')}
+                    Hraj obľúbené online hry zadarmo
                   </p>
                 </CardContent>
               </Card>
@@ -329,11 +328,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Briefcase className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>{t('nav.jobs')}</CardTitle>
+                  <CardTitle>Práca</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.jobs')}
+                    Nájdi si prácu alebo zamestnanca
                   </p>
                 </CardContent>
               </Card>
@@ -347,7 +346,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.influ_king')}
+                    Staň sa influencerom a zarábaj
                   </p>
                 </CardContent>
               </Card>
@@ -357,11 +356,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Gavel className="h-12 w-12 text-gold mx-auto mb-4" />
-                  <CardTitle>{t('nav.auction') || 'Online Aukcie'}</CardTitle>
+                  <CardTitle>Online Aukcie</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.auction')}
+                    Ponúkaj a vydražuj produkty z celého sveta
                   </p>
                 </CardContent>
               </Card>
@@ -371,11 +370,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Sparkles className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <CardTitle>{t('nav.ai_generation') || 'AI Generovanie'}</CardTitle>
+                  <CardTitle>AI Generovanie</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.ai_generation')}
+                    Vytváraj obrázky pomocou umelej inteligencie
                   </p>
                 </CardContent>
               </Card>
@@ -389,7 +388,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.best_friend')}
+                    Tvoj AI priateľ, ktorý ťa nikdy neopustí
                   </p>
                 </CardContent>
               </Card>
@@ -399,11 +398,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Package className="h-12 w-12 text-success mx-auto mb-4" />
-                  <CardTitle>{t('nav.cooking')}</CardTitle>
+                  <CardTitle>Varenie</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('home.services.cooking')}
+                    Zdravé recepty a jedálnické lístky
                   </p>
                 </CardContent>
               </Card>

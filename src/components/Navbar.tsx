@@ -13,14 +13,12 @@ import {
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { LanguageSelector } from "./LanguageSelector";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState<SupabaseUser | null>(null);
-  const { t } = useLanguage();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -42,28 +40,28 @@ const Navbar = () => {
   };
 
   const mainNavItems = [
-    { path: "/feed", label: t('nav.feed'), icon: MessageSquare },
-    { path: "/jobs", label: t('nav.jobs'), icon: Briefcase },
-    { path: "/games", label: t('nav.games'), icon: Gamepad2 },
-    { path: "/megatalent", label: t('nav.megatalent'), icon: Crown, premium: true },
+    { path: "/feed", label: "Feed", icon: MessageSquare },
+    { path: "/jobs", label: "Práca", icon: Briefcase },
+    { path: "/games", label: "Hry", icon: Gamepad2 },
+    { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
   ];
 
   const otherServices = [
-    { path: "/tiktok", label: t('nav.videos'), icon: Video },
-    { path: "/messenger", label: t('nav.messenger'), icon: Mail },
-    { path: "/influ-king", label: t('nav.influ_king'), icon: Star },
-    { path: "/megaforum", label: t('nav.megaforum'), icon: Users },
-    { path: "/psychologist", label: t('nav.psychologist'), icon: Brain },
-    { path: "/vacationer", label: t('nav.vacationer'), icon: Plane },
-    { path: "/dating", label: t('nav.dating'), icon: Heart },
-    { path: "/first-aid", label: t('nav.first_aid'), icon: Activity },
-    { path: "/fit-slim", label: t('nav.fit_slim'), icon: Apple },
-    { path: "/cooking", label: t('nav.cooking'), icon: ChefHat },
-    { path: "/marketplace", label: t('nav.marketplace'), icon: Briefcase },
-    { path: "/bazaar", label: t('nav.bazaar'), icon: Store },
-    { path: "/referral", label: t('nav.referral'), icon: User },
-    { path: "/education", label: t('nav.education'), icon: GraduationCap },
-    { path: "/terms", label: t('nav.terms'), icon: FileText },
+    { path: "/tiktok", label: "Videá", icon: Video },
+    { path: "/messenger", label: "Messenger", icon: Mail },
+    { path: "/influ-king", label: "Influ-King", icon: Star },
+    { path: "/megaforum", label: "Megafórum", icon: Users },
+    { path: "/psychologist", label: "Psychológ", icon: Brain },
+    { path: "/vacationer", label: "Vacationer", icon: Plane },
+    { path: "/dating", label: "Zoznamka", icon: Heart },
+    { path: "/first-aid", label: "Prvá pomoc", icon: Activity },
+    { path: "/fit-slim", label: "Fit & Slim", icon: Apple },
+    { path: "/cooking", label: "Varenie", icon: ChefHat },
+    { path: "/marketplace", label: "Ja spravím", icon: Briefcase },
+    { path: "/bazaar", label: "Bazár", icon: Store },
+    { path: "/referral", label: "Pozvi priateľa", icon: User },
+    { path: "/education", label: "Vzdelávanie", icon: GraduationCap },
+    { path: "/terms", label: "Podmienky", icon: FileText },
   ];
 
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
@@ -97,7 +95,7 @@ const Navbar = () => {
                     {item.label}
                     {item.premium && (
                       <Badge variant="secondary" className="ml-1 bg-gold text-gold-foreground">
-                        {t('nav.premium')}
+                        Premium
                       </Badge>
                     )}
                   </Button>
@@ -109,7 +107,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant={isOtherServiceActive ? "premium" : "ghost"}>
                   <MoreHorizontal className="h-4 w-4" />
-                  {t('nav.other_services')}
+                  Ostatné služby
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -140,16 +138,16 @@ const Navbar = () => {
                   </Button>
                 </Link>
                 <Button onClick={handleLogout} variant="outline">
-                  {t('nav.logout')}
+                  Odhlásiť sa
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/auth">
-                  <Button variant="outline">{t('nav.login')}</Button>
+                  <Button variant="outline">Prihlásiť sa</Button>
                 </Link>
                 <Link to="/auth">
-                  <Button variant="hero">{t('nav.register')}</Button>
+                  <Button variant="hero">Registrácia</Button>
                 </Link>
               </>
             )}
@@ -184,7 +182,7 @@ const Navbar = () => {
                     {item.label}
                     {isPremium && (
                       <Badge variant="secondary" className="ml-auto bg-gold text-gold-foreground">
-                        {t('nav.premium')}
+                        Premium
                       </Badge>
                     )}
                   </Button>
@@ -200,20 +198,20 @@ const Navbar = () => {
                   <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <UserCircle className="h-4 w-4 mr-2" />
-                      {t('nav.my_profile')}
+                      Môj profil
                     </Button>
                   </Link>
                   <Button onClick={handleLogout} variant="outline" className="w-full">
-                    {t('nav.logout')}
+                    Odhlásiť sa
                   </Button>
                 </>
               ) : (
               <>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">{t('nav.login')}</Button>
+                  <Button variant="outline" className="w-full">Prihlásiť sa</Button>
                 </Link>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="hero" className="w-full">{t('nav.register')}</Button>
+                  <Button variant="hero" className="w-full">Registrácia</Button>
                 </Link>
                 </>
               )}
