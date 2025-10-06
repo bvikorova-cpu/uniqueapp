@@ -18,7 +18,7 @@ const FitSlim = () => {
       difficulty: "Stredná",
       calories: "150 kcal",
       thumbnail: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/ml6cT4AZdqI",
+      videoUrl: "https://www.youtube.com/embed/ml6cT4AZdqI?autoplay=1&rel=0",
     },
     {
       id: 2,
@@ -27,7 +27,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       calories: "120 kcal",
       thumbnail: "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/gC_L9qAHVJ8",
+      videoUrl: "https://www.youtube.com/embed/gC_L9qAHVJ8?autoplay=1&rel=0",
     },
     {
       id: 3,
@@ -36,7 +36,7 @@ const FitSlim = () => {
       difficulty: "Náročná",
       calories: "250 kcal",
       thumbnail: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/UItWltVZZmE",
+      videoUrl: "https://www.youtube.com/embed/UItWltVZZmE?autoplay=1&rel=0",
     },
     {
       id: 4,
@@ -45,7 +45,7 @@ const FitSlim = () => {
       difficulty: "Náročná",
       calories: "300 kcal",
       thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/20LH4dEeWg0",
+      videoUrl: "https://www.youtube.com/embed/20LH4dEeWg0?autoplay=1&rel=0",
     },
     {
       id: 5,
@@ -54,7 +54,7 @@ const FitSlim = () => {
       difficulty: "Stredná",
       calories: "100 kcal",
       thumbnail: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/1919eTCoESo",
+      videoUrl: "https://www.youtube.com/embed/1919eTCoESo?autoplay=1&rel=0",
     },
     {
       id: 6,
@@ -63,7 +63,7 @@ const FitSlim = () => {
       difficulty: "Stredná",
       calories: "200 kcal",
       thumbnail: "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/cbKkB3POqaY",
+      videoUrl: "https://www.youtube.com/embed/cbKkB3POqaY?autoplay=1&rel=0",
     },
   ];
 
@@ -75,7 +75,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       benefit: "Energia a flexibilita",
       thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/v7AYKMP6rOE",
+      videoUrl: "https://www.youtube.com/embed/v7AYKMP6rOE?autoplay=1&rel=0",
     },
     {
       id: 2,
@@ -84,7 +84,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       benefit: "Úľava od bolesti",
       thumbnail: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/qULTwquOuT4",
+      videoUrl: "https://www.youtube.com/embed/qULTwquOuT4?autoplay=1&rel=0",
     },
     {
       id: 3,
@@ -93,7 +93,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       benefit: "Zníženie stresu",
       thumbnail: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/inpok4MKVLM",
+      videoUrl: "https://www.youtube.com/embed/inpok4MKVLM?autoplay=1&rel=0",
     },
     {
       id: 4,
@@ -102,7 +102,7 @@ const FitSlim = () => {
       difficulty: "Stredná",
       benefit: "Spevnenie jadra",
       thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/K56Z12XH6WY",
+      videoUrl: "https://www.youtube.com/embed/K56Z12XH6WY?autoplay=1&rel=0",
     },
     {
       id: 5,
@@ -111,7 +111,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       benefit: "Posilnenie kĺbov",
       thumbnail: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/AXcJRHYfz5U",
+      videoUrl: "https://www.youtube.com/embed/AXcJRHYfz5U?autoplay=1&rel=0",
     },
     {
       id: 6,
@@ -120,7 +120,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       benefit: "Odstránenie napätia",
       thumbnail: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/3j_jHMy5JBQ",
+      videoUrl: "https://www.youtube.com/embed/3j_jHMy5JBQ?autoplay=1&rel=0",
     },
   ];
 
