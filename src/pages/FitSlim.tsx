@@ -2,10 +2,13 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Play, Clock, ChefHat, Heart } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Play, Clock, ChefHat, Heart, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const FitSlim = () => {
   const [activeTab, setActiveTab] = useState("weight-loss-videos");
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
   const weightLossVideos = [
     {
@@ -15,6 +18,7 @@ const FitSlim = () => {
       difficulty: "Stredná",
       calories: "150 kcal",
       thumbnail: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/ml6cT4AZdqI",
     },
     {
       id: 2,
@@ -23,6 +27,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       calories: "120 kcal",
       thumbnail: "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/gC_L9qAHVJ8",
     },
     {
       id: 3,
@@ -31,6 +36,34 @@ const FitSlim = () => {
       difficulty: "Náročná",
       calories: "250 kcal",
       thumbnail: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/UItWltVZZmE",
+    },
+    {
+      id: 4,
+      title: "Tabata tréning - intenzívne spaľovanie kalórií",
+      duration: "25 min",
+      difficulty: "Náročná",
+      calories: "300 kcal",
+      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/20LH4dEeWg0",
+    },
+    {
+      id: 5,
+      title: "Cvičenie na chudnutie brucha",
+      duration: "12 min",
+      difficulty: "Stredná",
+      calories: "100 kcal",
+      thumbnail: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/1919eTCoESo",
+    },
+    {
+      id: 6,
+      title: "Bodyweight tréning na chudnutie",
+      duration: "18 min",
+      difficulty: "Stredná",
+      calories: "200 kcal",
+      thumbnail: "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/cbKkB3POqaY",
     },
   ];
 
@@ -42,6 +75,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       benefit: "Energia a flexibilita",
       thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/v7AYKMP6rOE",
     },
     {
       id: 2,
@@ -50,6 +84,7 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       benefit: "Úľava od bolesti",
       thumbnail: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/qULTwquOuT4",
     },
     {
       id: 3,
@@ -58,6 +93,34 @@ const FitSlim = () => {
       difficulty: "Ľahká",
       benefit: "Zníženie stresu",
       thumbnail: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/inpok4MKVLM",
+    },
+    {
+      id: 4,
+      title: "Pilates pre silné centrum tela",
+      duration: "20 min",
+      difficulty: "Stredná",
+      benefit: "Spevnenie jadra",
+      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/K56Z12XH6WY",
+    },
+    {
+      id: 5,
+      title: "Rehabilitačné cvičenia pre kolená",
+      duration: "14 min",
+      difficulty: "Ľahká",
+      benefit: "Posilnenie kĺbov",
+      thumbnail: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/AXcJRHYfz5U",
+    },
+    {
+      id: 6,
+      title: "Mobilita ramien a krku",
+      duration: "8 min",
+      difficulty: "Ľahká",
+      benefit: "Odstránenie napätia",
+      thumbnail: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&auto=format&fit=crop",
+      videoUrl: "https://www.youtube.com/embed/3j_jHMy5JBQ",
     },
   ];
 
@@ -86,6 +149,46 @@ const FitSlim = () => {
       time: "5 min",
       image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800&auto=format&fit=crop",
     },
+    {
+      id: 4,
+      title: "Zeleninová polievka so šošovicou",
+      calories: "210 kcal",
+      protein: "15g",
+      time: "35 min",
+      image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 5,
+      title: "Grilovaný losos s ružičkovým kelom",
+      calories: "340 kcal",
+      protein: "38g",
+      time: "25 min",
+      image: "https://images.unsplash.com/photo-1485704686097-ed47f7263ca4?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 6,
+      title: "Zeleninové wrap s hummusom",
+      calories: "290 kcal",
+      protein: "14g",
+      time: "15 min",
+      image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 7,
+      title: "Cottage cheese s uhorkou a paradajkami",
+      calories: "180 kcal",
+      protein: "20g",
+      time: "10 min",
+      image: "https://images.unsplash.com/photo-1609501676725-7186f017a4b0?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 8,
+      title: "Vajíčková omeleta so špenátom",
+      calories: "240 kcal",
+      protein: "22g",
+      time: "12 min",
+      image: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=800&auto=format&fit=crop",
+    },
   ];
 
   const healthyRecipes = [
@@ -112,6 +215,46 @@ const FitSlim = () => {
       benefit: "Zdravé tuky",
       time: "15 min",
       image: "https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 4,
+      title: "Grécky jogurt s orechmi a medom",
+      calories: "310 kcal",
+      benefit: "Probiotika",
+      time: "5 min",
+      image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 5,
+      title: "Kurací vývar s domácimi rezancami",
+      calories: "280 kcal",
+      benefit: "Posilnenie imunity",
+      time: "45 min",
+      image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 6,
+      title: "Smoothie bowl s chia semienkami",
+      calories: "330 kcal",
+      benefit: "Antioxidanty",
+      time: "8 min",
+      image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 7,
+      title: "Pečené sladké zemiaky s čiernou fazuľou",
+      calories: "390 kcal",
+      benefit: "Vláknina a vitamíny",
+      time: "40 min",
+      image: "https://images.unsplash.com/photo-1608039829572-78524f79c661?w=800&auto=format&fit=crop",
+    },
+    {
+      id: 8,
+      title: "Tuniakový šalát s avokádom",
+      calories: "360 kcal",
+      benefit: "Omega-3 a bielkoviny",
+      time: "12 min",
+      image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&auto=format&fit=crop",
     },
   ];
 
@@ -150,14 +293,18 @@ const FitSlim = () => {
           <TabsContent value="weight-loss-videos" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {weightLossVideos.map((video) => (
-                <Card key={video.id} className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer">
+                <Card 
+                  key={video.id} 
+                  className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
+                  onClick={() => setSelectedVideo(video.videoUrl)}
+                >
                   <div className="relative aspect-video">
                     <img
                       src={video.thumbnail}
                       alt={video.title}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-colors">
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center hover:bg-black/50 transition-colors">
                       <Play className="h-16 w-16 text-white" />
                     </div>
                     <Badge className="absolute top-2 right-2 bg-primary">
@@ -180,14 +327,18 @@ const FitSlim = () => {
           <TabsContent value="health-videos" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {healthVideos.map((video) => (
-                <Card key={video.id} className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer">
+                <Card 
+                  key={video.id} 
+                  className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
+                  onClick={() => setSelectedVideo(video.videoUrl)}
+                >
                   <div className="relative aspect-video">
                     <img
                       src={video.thumbnail}
                       alt={video.title}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-colors">
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center hover:bg-black/50 transition-colors">
                       <Play className="h-16 w-16 text-white" />
                     </div>
                     <Badge className="absolute top-2 right-2 bg-primary">
@@ -271,6 +422,36 @@ const FitSlim = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Video Player Dialog */}
+        <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Video prehrávač</DialogTitle>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-4 top-4"
+                onClick={() => setSelectedVideo(null)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogHeader>
+            <div className="aspect-video">
+              {selectedVideo && (
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={selectedVideo}
+                  title="Video player"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="rounded-lg"
+                />
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
