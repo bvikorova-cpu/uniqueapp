@@ -7,10 +7,10 @@ import { Heart, Phone, AlertTriangle, Droplet, Flame, Bone, Wind, Zap, Activity 
 
 const FirstAid = () => {
   const emergencyContacts = [
-    { name: "Záchranná zdravotná služba", number: "155", icon: Heart },
-    { name: "Hasiči", number: "150", icon: Flame },
-    { name: "Polícia", number: "158", icon: AlertTriangle },
-    { name: "Tiesňová linka", number: "112", icon: Phone },
+    { name: "Emergency Medical Services", number: "112", icon: Heart },
+    { name: "Fire Department", number: "112", icon: Flame },
+    { name: "Police", number: "112", icon: AlertTriangle },
+    { name: "Emergency Line", number: "112", icon: Phone },
   ];
 
   const firstAidCategories = [
@@ -20,117 +20,117 @@ const FirstAid = () => {
       icon: Heart,
       color: "text-red-500",
       steps: [
-        "Skontrolujte miesto – uistite sa, že je bezpečné",
-        "Skontrolujte vedomie – potriasť a nahlas osloviť",
-        "Zavolajte 155 alebo 112",
-        "Otvorte dýchacie cesty – zakloňte hlavu, zdvihnite bradu",
-        "Skontrolujte dýchanie – max 10 sekúnd",
-        "30 stlačení hrudníka – stred hrudnej kosti, hĺbka 5-6 cm, rýchlosť 100-120/min",
-        "2 vdychy – každý trvá 1 sekundu",
-        "Pokračujte v cykle 30:2 až do príchodu záchranky",
+        "Check the scene – ensure it is safe",
+        "Check consciousness – shake and call loudly",
+        "Call emergency services (112 or local emergency number)",
+        "Open airway – tilt head back, lift chin",
+        "Check breathing – maximum 10 seconds",
+        "30 chest compressions – center of chest, depth 5-6 cm, rate 100-120/min",
+        "2 rescue breaths – each lasting 1 second",
+        "Continue 30:2 cycle until emergency services arrive",
       ],
-      warning: "Ak máte k dispozícii AED (automatický externý defibrilátor), použite ho čo najskôr podľa pokynov prístroja.",
+      warning: "If an AED (Automated External Defibrillator) is available, use it as soon as possible following the device instructions.",
     },
     {
       id: "choking",
-      title: "Zadusenie (upchatá dýchacia cesta)",
+      title: "Choking (Blocked Airway)",
       icon: Wind,
       color: "text-blue-500",
       steps: [
-        "Spýtajte sa: 'Dusíte sa?' Ak nemôže hovoriť, je to vážne",
-        "Povzbuďte ku kašľu, ak dokáže kašľať",
-        "Ak nemôže kašľať alebo dýchať:",
-        "• 5 úderov medzi lopatky – zhora nadol",
-        "• 5 stlačení brucha (Heimlichov manéver) – päsť nad pupok, prudké stlačenia smerom hore",
-        "Striedajte 5 úderov a 5 stlačení",
-        "Ak stratí vedomie, začnite KPR",
-        "Zavolajte 155",
+        "Ask: 'Are you choking?' If they cannot speak, it's serious",
+        "Encourage coughing if they can cough",
+        "If they cannot cough or breathe:",
+        "• 5 back blows – between shoulder blades, downward motion",
+        "• 5 abdominal thrusts (Heimlich maneuver) – fist above navel, sharp upward thrusts",
+        "Alternate 5 back blows and 5 abdominal thrusts",
+        "If they lose consciousness, begin CPR",
+        "Call emergency services",
       ],
-      warning: "Pri tehotných ženách a malých deťoch používajte upravenou techniku.",
+      warning: "For pregnant women and small children, use modified technique.",
     },
     {
       id: "bleeding",
-      title: "Krvácanie",
+      title: "Bleeding",
       icon: Droplet,
       color: "text-red-600",
       steps: [
-        "Oblečte si rukavice (ak sú k dispozícii)",
-        "Priamy tlak – stlačte ranu čistým obväzom alebo látkou",
-        "Udržujte tlak aspoň 10 minút",
-        "Ak krv presiakne, pridajte ďalší obväz (neodstraňujte prvý)",
-        "Zdvihnite zranenú časť nad úroveň srdca (ak nie je zlomenina)",
-        "Pri silnom krvácaní – tlak na artériu medzi ranou a srdcom",
-        "Zavolajte 155 pri masívnom krvácaní",
-        "Nikdy neodstraňujte zapichnuté predmety – stabilizujte ich",
+        "Wear gloves (if available)",
+        "Direct pressure – press wound with clean bandage or cloth",
+        "Maintain pressure for at least 10 minutes",
+        "If blood soaks through, add another bandage (don't remove the first)",
+        "Elevate injured part above heart level (if no fracture)",
+        "For severe bleeding – pressure on artery between wound and heart",
+        "Call emergency services for massive bleeding",
+        "Never remove embedded objects – stabilize them",
       ],
-      warning: "Ak krv striekala alebo ide o amputáciu, použite turniket iba ako poslednú možnosť.",
+      warning: "If blood is spurting or there's an amputation, use a tourniquet only as a last resort.",
     },
     {
       id: "burns",
-      title: "Popáleniny",
+      title: "Burns",
       icon: Flame,
       color: "text-orange-500",
       steps: [
-        "Zastavte horenie – odstráňte zdroj tepla",
-        "Odstráňte šperky a voľné oblečenie (nie prilepené)",
-        "Chlaďte popáleninu vlažnou (nie studenou) vodou – 10-20 minút",
-        "Prikryte čistou, nepriľnavou látkou",
-        "Nedávajte ľad, masť, maslo ani zubná pasta",
-        "Pri veľkých popáleninách zavolajte 155",
-        "Sledujte príznaky šoku",
+        "Stop the burning – remove heat source",
+        "Remove jewelry and loose clothing (not stuck fabric)",
+        "Cool burn with lukewarm (not cold) water – 10-20 minutes",
+        "Cover with clean, non-stick cloth",
+        "Don't apply ice, ointment, butter or toothpaste",
+        "Call emergency services for large burns",
+        "Monitor for shock symptoms",
       ],
-      warning: "Stupeň popáleniny: 1. stupeň – začervenanie; 2. stupeň – pľuzgiere; 3. stupeň – zuhoľnatenie kože (vždy k lekárovi).",
+      warning: "Burn degrees: 1st degree – redness; 2nd degree – blisters; 3rd degree – charred skin (always seek medical care).",
     },
     {
       id: "fractures",
-      title: "Zlomeniny a vykĺbenia",
+      title: "Fractures and Dislocations",
       icon: Bone,
       color: "text-purple-500",
       steps: [
-        "Nepohybujte zraneným – ak nie je nevyhnutné",
-        "Stabilizujte zranenú časť v pozícii, v akej ju našli",
-        "Použite dlahy – môžu to byť palice, noviny, vankúše",
-        "Imobilizujte kĺby nad a pod zlomeninou",
-        "Priložte studený obklad (ľad v látke) na 20 minút",
-        "Sledujte prekrvenie – farba, citlivosť, pulz",
-        "Zavolajte 155 alebo transportujte k lekárovi",
+        "Don't move the injured person – unless absolutely necessary",
+        "Stabilize injured area in the position found",
+        "Use splints – can be sticks, newspapers, pillows",
+        "Immobilize joints above and below fracture",
+        "Apply cold compress (ice in cloth) for 20 minutes",
+        "Monitor circulation – color, sensitivity, pulse",
+        "Call emergency services or transport to doctor",
       ],
-      warning: "Nikdy sa nepokúšajte narovnať zlomenú kosť alebo vrátiť vykĺbený kĺb!",
+      warning: "Never attempt to straighten a broken bone or relocate a dislocated joint!",
     },
     {
       id: "shock",
-      title: "Šok",
+      title: "Shock",
       icon: Zap,
       color: "text-yellow-500",
       steps: [
-        "Položte osobu na chrbát",
-        "Zdvihnite nohy do výšky 30 cm (ak nie je zranenie hlavy, krku alebo chrbtice)",
-        "Udržujte v teple – prikryte dekou",
-        "Uvoľnite tesné oblečenie",
-        "Nepodávajte jedlo ani nápoje",
-        "Sledujte dýchanie a pulz",
-        "Zavolajte 155 okamžite",
-        "Ukľudňujte osobu",
+        "Lay person on their back",
+        "Elevate legs 30 cm (unless head, neck or spine injury)",
+        "Keep warm – cover with blanket",
+        "Loosen tight clothing",
+        "Don't give food or drinks",
+        "Monitor breathing and pulse",
+        "Call emergency services immediately",
+        "Reassure the person",
       ],
-      warning: "Príznaky šoku: bledá kožа, studený pot, rýchly pulz, plytké dýchanie, zmätenosť.",
+      warning: "Shock symptoms: pale skin, cold sweat, rapid pulse, shallow breathing, confusion.",
     },
     {
       id: "stroke",
-      title: "Mozgová mŕtvica (CMP)",
+      title: "Stroke",
       icon: Activity,
       color: "text-pink-500",
       steps: [
-        "Test FAST:",
-        "• F (Face) – Tvár: Požiadajte o úsmev, nesúmernosť?",
-        "• A (Arms) – Ruky: Zdvihnúť obe ruky, jedna klesá?",
-        "• S (Speech) – Reč: Povedať vetu, nejasná reč?",
-        "• T (Time) – Čas: Zavolajte 155 OKAMŽITE!",
-        "Položte na chrbát s mierne zdvihnutou hlavou",
-        "Nepodávajte jedlo, nápoje ani lieky",
-        "Sledujte životné funkcie",
-        "Poznačte si čas začiatku príznakov",
+        "FAST Test:",
+        "• F (Face) – Ask to smile, asymmetry?",
+        "• A (Arms) – Raise both arms, one drops?",
+        "• S (Speech) – Say a sentence, slurred speech?",
+        "• T (Time) – Call emergency services IMMEDIATELY!",
+        "Lay on back with head slightly elevated",
+        "Don't give food, drinks or medication",
+        "Monitor vital signs",
+        "Note the time symptoms began",
       ],
-      warning: "Každá minúta je kritická! Čím skôr sa začne liečba, tým lepšia prognóza.",
+      warning: "Every minute is critical! The sooner treatment begins, the better the prognosis.",
     },
   ];
 
@@ -141,13 +141,13 @@ const FirstAid = () => {
         <div className="text-center space-y-4 mb-12">
           <Badge className="bg-red-500 text-white">
             <Heart className="h-4 w-4 mr-1" />
-            Prvá pomoc
+            First Aid
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
-            Prvá pomoc
+            First Aid
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Kompletný sprievodca poskytovaním prvej pomoci v núdzových situáciách
+            Complete guide to providing first aid in emergency situations
           </p>
         </div>
 
@@ -155,10 +155,10 @@ const FirstAid = () => {
         <Alert className="mb-8 border-red-500 bg-red-50 dark:bg-red-950">
           <AlertTriangle className="h-5 w-5 text-red-500" />
           <AlertTitle className="text-red-700 dark:text-red-400 text-lg font-bold">
-            V prípade núdze VŽDY najprv zavolajte 155 alebo 112!
+            In case of emergency ALWAYS call 112 or your local emergency number first!
           </AlertTitle>
           <AlertDescription className="text-red-600 dark:text-red-300">
-            Tieto informácie slúžia ako pomocník, ale nenahrádzajú odbornú lekársku starostlivosť.
+            This information serves as a guide but does not replace professional medical care.
           </AlertDescription>
         </Alert>
 
@@ -210,14 +210,14 @@ const FirstAid = () => {
                       </div>
                       <div>
                         <CardTitle className="text-2xl">{category.title}</CardTitle>
-                        <CardDescription>Postupujte podľa uvedených krokov</CardDescription>
+                        <CardDescription>Follow the steps below</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     {/* Steps */}
                     <div className="space-y-3">
-                      <h3 className="font-semibold text-lg">Postup:</h3>
+                      <h3 className="font-semibold text-lg">Procedure:</h3>
                       <ol className="space-y-2">
                         {category.steps.map((step, index) => (
                           <li key={index} className={`flex gap-3 ${step.startsWith("•") ? "ml-4" : ""}`}>
@@ -235,7 +235,7 @@ const FirstAid = () => {
                     {/* Warning */}
                     <Alert className="border-yellow-500 bg-yellow-50 dark:bg-yellow-950">
                       <AlertTriangle className="h-5 w-5 text-yellow-500" />
-                      <AlertTitle className="text-yellow-700 dark:text-yellow-400">Dôležité!</AlertTitle>
+                      <AlertTitle className="text-yellow-700 dark:text-yellow-400">Important!</AlertTitle>
                       <AlertDescription className="text-yellow-600 dark:text-yellow-300">
                         {category.warning}
                       </AlertDescription>
@@ -250,48 +250,48 @@ const FirstAid = () => {
         {/* Additional Information */}
         <Card className="mt-12">
           <CardHeader>
-            <CardTitle>Často kladené otázky</CardTitle>
+            <CardTitle>Frequently Asked Questions</CardTitle>
           </CardHeader>
           <CardContent>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1">
-                <AccordionTrigger>Čo mám robiť, ak si nie som istý diagnózou?</AccordionTrigger>
+                <AccordionTrigger>What should I do if I'm not sure of the diagnosis?</AccordionTrigger>
                 <AccordionContent>
-                  Vždy zavolajte 155 alebo 112. Operátori vás prevedú situáciou a poskytnú vám presné pokyny.
-                  Lepšie je volať zbytočne ako neskoro.
+                  Always call 112 or your local emergency number. Operators will guide you through the situation and provide precise instructions.
+                  It's better to call unnecessarily than too late.
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-2">
-                <AccordionTrigger>Ako poznám, či je niekto v šoku?</AccordionTrigger>
+                <AccordionTrigger>How do I know if someone is in shock?</AccordionTrigger>
                 <AccordionContent>
-                  Príznaky šoku zahŕňajú: bledú a studenú pokožku, studený pot, slabý a rýchly pulz, 
-                  rýchle a plytké dýchanie, slabosť, zmätenosť, úzkosť a nevoľnosť.
+                  Shock symptoms include: pale and cold skin, cold sweat, weak and rapid pulse, 
+                  rapid and shallow breathing, weakness, confusion, anxiety and nausea.
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-3">
-                <AccordionTrigger>Môžem byť žalovaný za poskytnutie prvej pomoci?</AccordionTrigger>
+                <AccordionTrigger>Can I be sued for providing first aid?</AccordionTrigger>
                 <AccordionContent>
-                  Na Slovensku platí, že ak konáte v dobrej viere a snažíte sa pomôcť v núdzovej situácii, 
-                  ste chránený zákonom. Neposkytnutie pomoci je trestné.
+                  In most countries, Good Samaritan laws protect people who act in good faith to help in emergency situations. 
+                  Check your local laws, but generally you're protected when helping in emergencies.
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-4">
-                <AccordionTrigger>Čo by som mal mať v lekárničke prvej pomoci?</AccordionTrigger>
+                <AccordionTrigger>What should I have in a first aid kit?</AccordionTrigger>
                 <AccordionContent>
-                  Základná lekárnička by mala obsahovať: sterilné gázy, obväzy rôznych veľkostí, náplasti, 
-                  elastické obväzy, nožnice, rukavice, dezinfekciu, trojuholníkový šál, pinzetu, 
-                  teploměr a zoznam tiesňových telefónnych čísel.
+                  A basic first aid kit should contain: sterile gauze, bandages of various sizes, adhesive plasters, 
+                  elastic bandages, scissors, gloves, disinfectant, triangular bandage, tweezers, 
+                  thermometer and a list of emergency phone numbers.
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-5">
-                <AccordionTrigger>Ako často by som mal absolvovať kurz prvej pomoci?</AccordionTrigger>
+                <AccordionTrigger>How often should I take a first aid course?</AccordionTrigger>
                 <AccordionContent>
-                  Odporúča sa opakovať kurz prvej pomoci každé 2-3 roky, pretože postupy sa môžu meniť 
-                  a pravidelné opakovanie pomáha udržať zručnosti v pamäti.
+                  It's recommended to refresh your first aid training every 2-3 years, as procedures may change 
+                  and regular repetition helps maintain skills in memory.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -301,9 +301,9 @@ const FirstAid = () => {
         {/* Disclaimer */}
         <Alert className="mt-8">
           <AlertDescription className="text-center">
-            <strong>Upozornenie:</strong> Tieto informácie sú určené len na vzdelávacie účely a 
-            nenahrádzajú formálny výcvik prvej pomoci ani odbornú lekársku starostlivosť. 
-            V prípade akejkoľvek núdze vždy kontaktujte záchranné služby.
+            <strong>Warning:</strong> This information is for educational purposes only and 
+            does not replace formal first aid training or professional medical care. 
+            In case of any emergency, always contact emergency services.
           </AlertDescription>
         </Alert>
       </div>
