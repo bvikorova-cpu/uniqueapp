@@ -428,23 +428,19 @@ const FitSlim = () => {
           <DialogContent className="max-w-4xl">
             <DialogHeader>
               <DialogTitle>Video prehrávač</DialogTitle>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-4 top-4"
-                onClick={() => setSelectedVideo(null)}
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <DialogDescription>
+                Pozrite si tréningové video
+              </DialogDescription>
             </DialogHeader>
-            <div className="aspect-video">
+            <div className="aspect-video w-full">
               {selectedVideo && (
                 <iframe
                   width="100%"
                   height="100%"
                   src={selectedVideo}
                   title="Video player"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                   className="rounded-lg"
                 />
