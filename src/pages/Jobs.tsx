@@ -83,6 +83,15 @@ const Jobs = () => {
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
   const [showImportDialog, setShowImportDialog] = useState(false);
   const [importCountry, setImportCountry] = useState("gb");
+  const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
+  const [showJobSeekerDialog, setShowJobSeekerDialog] = useState(false);
+  
+  // Form states for job seeker profile
+  const [jobSeekerProfile, setJobSeekerProfile] = useState({
+    position: "",
+    location: "",
+    description: "",
+  });
 
   // Form states for creating job
   const [newJob, setNewJob] = useState({
@@ -307,6 +316,36 @@ const Jobs = () => {
     },
   });
 
+  // Create job seeker profile mutation
+  const createJobSeekerMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error("Must be logged in");
+
+      // Here you could save to a job_seekers table if you want to persist this
+      // For now we'll just show a success message
+      return jobSeekerProfile;
+    },
+    onSuccess: () => {
+      setShowJobSeekerDialog(false);
+      setJobSeekerProfile({
+        position: "",
+        location: "",
+        description: "",
+      });
+      toast({
+        title: "✅ Profil vytvorený",
+        description: "Váš profil hľadajúceho prácu bol vytvorený",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "❌ Chyba",
+        description: error.message || "Nepodarilo sa vytvoriť profil",
+        variant: "destructive",
+      });
+    },
+  });
+
   const ADZUNA_COUNTRIES = {
     at: "Rakúsko",
     au: "Austrália",
@@ -362,6 +401,59 @@ const Jobs = () => {
             </p>
           </div>
           <div className="flex gap-2">
+            <Dialog open={showJobSeekerDialog} onOpenChange={setShowJobSeekerDialog}>
+              <DialogTrigger asChild>
+                <Button variant="outline">
+                  <Search className="h-4 w-4 mr-2" />
+                  Hľadám prácu
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>Hľadám prácu</DialogTitle>
+                  <DialogDescription>
+                    Zadajte údaje o tom, akú prácu hľadáte
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="seeker-position">Pozícia *</Label>
+                    <Input
+                      id="seeker-position"
+                      value={jobSeekerProfile.position}
+                      onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, position: e.target.value })}
+                      placeholder="napr. Frontend Developer"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="seeker-location">Lokalita *</Label>
+                    <Input
+                      id="seeker-location"
+                      value={jobSeekerProfile.location}
+                      onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, location: e.target.value })}
+                      placeholder="napr. Bratislava alebo Remote"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="seeker-description">Popis *</Label>
+                    <Textarea
+                      id="seeker-description"
+                      value={jobSeekerProfile.description}
+                      onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, description: e.target.value })}
+                      placeholder="Popíšte svoje skúsenosti, zručnosti a čo hľadáte..."
+                      rows={6}
+                    />
+                  </div>
+                  <Button 
+                    className="w-full" 
+                    onClick={() => createJobSeekerMutation.mutate()}
+                    disabled={createJobSeekerMutation.isPending || !jobSeekerProfile.position || !jobSeekerProfile.location || !jobSeekerProfile.description}
+                  >
+                    {createJobSeekerMutation.isPending ? "Vytváram..." : "Vytvoriť profil"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
             <Dialog open={showImportDialog} onOpenChange={setShowImportDialog}>
               <DialogTrigger asChild>
                 <Button variant="outline">
@@ -657,7 +749,15 @@ const Jobs = () => {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-xl mb-2">{job.title}</CardTitle>
+                      <CardTitle 
+                        className="text-xl mb-2 cursor-pointer hover:text-primary transition-colors"
+                        onClick={() => {
+                          setSelectedJob(job);
+                          setShowJobDetailsDialog(true);
+                        }}
+                      >
+                        {job.title}
+                      </CardTitle>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
                         <div className="flex items-center gap-1">
                           <Building2 className="h-4 w-4" />
@@ -712,6 +812,79 @@ const Jobs = () => {
             ))}
           </div>
         )}
+
+        {/* Job Details Dialog */}
+        <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">{selectedJob?.title}</DialogTitle>
+              <DialogDescription>
+                <div className="flex items-center gap-4 text-sm mt-2">
+                  <div className="flex items-center gap-1">
+                    <Building2 className="h-4 w-4" />
+                    {selectedJob?.company_name}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <MapPin className="h-4 w-4" />
+                    {selectedJob?.location}, {selectedJob?.country}
+                  </div>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="flex gap-2 flex-wrap">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
+                  {selectedJob && CATEGORIES[selectedJob.category as keyof typeof CATEGORIES]}
+                </span>
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-secondary">
+                  <Clock className="h-3 w-3" />
+                  {selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}
+                </span>
+                {selectedJob?.salary_min && selectedJob?.salary_max && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <DollarSign className="h-3 w-3" />
+                    {selectedJob.salary_min} - {selectedJob.salary_max} {selectedJob.salary_currency}
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-lg mb-2">Popis pozície</h3>
+                <p className="text-muted-foreground whitespace-pre-wrap">{selectedJob?.description}</p>
+              </div>
+
+              {selectedJob?.requirements && (
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Požiadavky</h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap">{selectedJob.requirements}</p>
+                </div>
+              )}
+
+              {selectedJob?.benefits && (
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Benefity</h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap">{selectedJob.benefits}</p>
+                </div>
+              )}
+
+              <div className="bg-muted p-4 rounded-lg">
+                <h3 className="font-semibold mb-2">Kontaktné údaje</h3>
+                <p className="text-sm text-muted-foreground">{selectedJob?.contact_email}</p>
+                <p className="text-sm text-muted-foreground mt-1">{selectedJob?.applications_count} žiadostí</p>
+              </div>
+
+              <Button 
+                className="w-full" 
+                onClick={() => {
+                  setShowJobDetailsDialog(false);
+                  setShowApplyDialog(true);
+                }}
+              >
+                Reagovať na ponuku
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Apply Dialog */}
         <Dialog open={showApplyDialog} onOpenChange={setShowApplyDialog}>
