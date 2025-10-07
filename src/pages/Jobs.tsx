@@ -724,72 +724,156 @@ const Jobs = () => {
 
         {/* Job Details Dialog */}
         <Dialog open={showJobDetailsDialog} onOpenChange={setShowJobDetailsDialog}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl">{selectedJob?.title}</DialogTitle>
+              <DialogTitle className="text-3xl font-bold">{selectedJob?.title}</DialogTitle>
               <DialogDescription>
-                <div className="flex items-center gap-4 text-sm mt-2">
-                  <div className="flex items-center gap-1">
-                    <Building2 className="h-4 w-4" />
-                    {selectedJob?.company_name}
+                <div className="flex flex-col gap-2 mt-3">
+                  <div className="flex items-center gap-2 text-base">
+                    <Building2 className="h-5 w-5 text-primary" />
+                    <span className="font-semibold">{selectedJob?.company_name}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    {selectedJob?.location}, {selectedJob?.country}
+                  <div className="flex items-center gap-4 text-sm flex-wrap">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" />
+                      {selectedJob?.location}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Globe className="h-4 w-4" />
+                      {selectedJob?.country}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      Zverejnené: {selectedJob && new Date(selectedJob.created_at).toLocaleDateString('sk-SK')}
+                    </div>
                   </div>
                 </div>
               </DialogDescription>
             </DialogHeader>
-            <div className="space-y-6">
+            
+            <div className="space-y-6 mt-4">
+              {/* Badges Section */}
               <div className="flex gap-2 flex-wrap">
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
+                <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
                   {selectedJob && CATEGORIES[selectedJob.category as keyof typeof CATEGORIES]}
                 </span>
-                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-secondary">
-                  <Clock className="h-3 w-3" />
+                <span className="inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium bg-secondary border border-secondary-foreground/20">
+                  <Clock className="h-4 w-4" />
                   {selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}
                 </span>
                 {selectedJob?.salary_min && selectedJob?.salary_max && (
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                    <DollarSign className="h-3 w-3" />
+                  <span className="inline-flex items-center gap-1 px-4 py-2 rounded-full text-sm font-medium bg-green-100 text-green-800 border border-green-200">
+                    <DollarSign className="h-4 w-4" />
                     {selectedJob.salary_min} - {selectedJob.salary_max} {selectedJob.salary_currency}
                   </span>
                 )}
               </div>
 
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Popis pozície</h3>
-                <p className="text-muted-foreground whitespace-pre-wrap">{selectedJob?.description}</p>
+              {/* Job Description */}
+              <div className="bg-muted/50 p-6 rounded-lg border border-border">
+                <h3 className="font-bold text-xl mb-3 flex items-center gap-2">
+                  <Briefcase className="h-5 w-5 text-primary" />
+                  Popis pracovnej pozície
+                </h3>
+                <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                  {selectedJob?.description}
+                </p>
               </div>
 
+              {/* Requirements */}
               {selectedJob?.requirements && (
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Požiadavky</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap">{selectedJob.requirements}</p>
+                <div className="bg-muted/50 p-6 rounded-lg border border-border">
+                  <h3 className="font-bold text-xl mb-3 flex items-center gap-2">
+                    <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Požiadavky a kvalifikácia
+                  </h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                    {selectedJob.requirements}
+                  </p>
                 </div>
               )}
 
+              {/* Benefits */}
               {selectedJob?.benefits && (
-                <div>
-                  <h3 className="font-semibold text-lg mb-2">Benefity</h3>
-                  <p className="text-muted-foreground whitespace-pre-wrap">{selectedJob.benefits}</p>
+                <div className="bg-muted/50 p-6 rounded-lg border border-border">
+                  <h3 className="font-bold text-xl mb-3 flex items-center gap-2">
+                    <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                    </svg>
+                    Benefity a výhody
+                  </h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                    {selectedJob.benefits}
+                  </p>
                 </div>
               )}
 
-              <div className="bg-muted p-4 rounded-lg">
-                <h3 className="font-semibold mb-2">Kontaktné údaje</h3>
-                <p className="text-sm text-muted-foreground">{selectedJob?.contact_email}</p>
-                <p className="text-sm text-muted-foreground mt-1">{selectedJob?.applications_count} žiadostí</p>
+              {/* Salary Details */}
+              {selectedJob?.salary_min && selectedJob?.salary_max && (
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
+                  <h3 className="font-bold text-xl mb-3 flex items-center gap-2">
+                    <DollarSign className="h-5 w-5 text-green-700 dark:text-green-400" />
+                    Platové ohodnotenie
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Minimálny plat</p>
+                      <p className="text-lg font-semibold">{selectedJob.salary_min} {selectedJob.salary_currency}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Maximálny plat</p>
+                      <p className="text-lg font-semibold">{selectedJob.salary_max} {selectedJob.salary_currency}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-1">Mena</p>
+                      <p className="text-lg font-semibold">{selectedJob.salary_currency}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Contact and Application Info */}
+              <div className="bg-primary/5 p-6 rounded-lg border border-primary/20">
+                <h3 className="font-bold text-xl mb-4 flex items-center gap-2">
+                  <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Kontaktné informácie
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Email pre žiadosti</p>
+                    <p className="font-semibold text-lg">{selectedJob?.contact_email}</p>
+                  </div>
+                  <div className="flex items-center gap-6 text-sm pt-2 border-t border-border">
+                    <div>
+                      <p className="text-muted-foreground">Počet žiadostí</p>
+                      <p className="font-semibold text-lg">{selectedJob?.applications_count}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Typ úväzku</p>
+                      <p className="font-semibold">{selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground">Kategória</p>
+                      <p className="font-semibold">{selectedJob && CATEGORIES[selectedJob.category as keyof typeof CATEGORIES]}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
+              {/* Action Button */}
               <Button 
-                className="w-full" 
+                className="w-full py-6 text-lg" 
                 onClick={() => {
                   setShowJobDetailsDialog(false);
                   setShowApplyDialog(true);
                 }}
               >
-                Reagovať na ponuku
+                <Search className="h-5 w-5 mr-2" />
+                Reagovať na túto pozíciu
               </Button>
             </div>
           </DialogContent>
