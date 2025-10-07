@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Download } from "lucide-react";
+import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface JobListing {
@@ -81,8 +81,6 @@ const Jobs = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showApplyDialog, setShowApplyDialog] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
-  const [showImportDialog, setShowImportDialog] = useState(false);
-  const [importCountry, setImportCountry] = useState("gb");
   const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
   const [showJobSeekerDialog, setShowJobSeekerDialog] = useState(false);
   
@@ -289,33 +287,6 @@ const Jobs = () => {
     },
   });
 
-  // Import jobs from Adzuna
-  const importJobsMutation = useMutation({
-    mutationFn: async ({ country, searchQuery }: { country: string; searchQuery: string }) => {
-      const { data, error } = await supabase.functions.invoke('import-jobs', {
-        body: { country, what: searchQuery, results_per_page: 50 }
-      });
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-      setShowImportDialog(false);
-      toast({
-        title: "✅ Import úspešný",
-        description: `Naimportované ${data.imported} z ${data.total} pracovných ponúk`,
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "❌ Chyba pri importe",
-        description: error.message || "Nepodarilo sa importovať pracovné ponuky",
-        variant: "destructive",
-      });
-    },
-  });
-
   // Create job seeker profile mutation
   const createJobSeekerMutation = useMutation({
     mutationFn: async () => {
@@ -345,28 +316,6 @@ const Jobs = () => {
       });
     },
   });
-
-  const ADZUNA_COUNTRIES = {
-    at: "Rakúsko",
-    au: "Austrália",
-    be: "Belgicko",
-    br: "Brazília",
-    ca: "Kanada",
-    ch: "Švajčiarsko",
-    de: "Nemecko",
-    es: "Španielsko",
-    fr: "Francúzsko",
-    gb: "Veľká Británia",
-    in: "India",
-    it: "Taliansko",
-    mx: "Mexiko",
-    nl: "Holandsko",
-    nz: "Nový Zéland",
-    pl: "Poľsko",
-    sg: "Singapur",
-    us: "USA",
-    za: "Južná Afrika",
-  };
 
   if (!user) {
     return (
@@ -450,46 +399,6 @@ const Jobs = () => {
                     disabled={createJobSeekerMutation.isPending || !jobSeekerProfile.position || !jobSeekerProfile.location || !jobSeekerProfile.description}
                   >
                     {createJobSeekerMutation.isPending ? "Vytváram..." : "Vytvoriť profil"}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-            <Dialog open={showImportDialog} onOpenChange={setShowImportDialog}>
-              <DialogTrigger asChild>
-                <Button variant="outline">
-                  <Download className="h-4 w-4 mr-2" />
-                  Import z Adzuna
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Importovať pracovné ponuky</DialogTitle>
-                  <DialogDescription>
-                    Vyberte krajinu pre import ponúk z Adzuna API
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="import-country">Krajina</Label>
-                    <Select value={importCountry} onValueChange={setImportCountry}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.entries(ADZUNA_COUNTRIES).map(([code, name]) => (
-                          <SelectItem key={code} value={code}>
-                            {name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button
-                    className="w-full"
-                    onClick={() => importJobsMutation.mutate({ country: importCountry, searchQuery: '' })}
-                    disabled={importJobsMutation.isPending}
-                  >
-                    {importJobsMutation.isPending ? "Importujem..." : "Importovať ponuky"}
                   </Button>
                 </div>
               </DialogContent>
