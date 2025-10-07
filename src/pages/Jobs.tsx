@@ -699,11 +699,38 @@ const Jobs = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
-                    {job.description}
-                  </p>
-                  <div className="flex items-center justify-between">
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-sm mb-2">Popis pozície</h4>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                      {job.description}
+                    </p>
+                  </div>
+                  
+                  {job.requirements && (
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2">Požiadavky</h4>
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        {job.requirements}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {job.benefits && (
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2">Benefity</h4>
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        {job.benefits}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div className="bg-muted/50 p-3 rounded-lg">
+                    <h4 className="font-semibold text-sm mb-2">Kontakt</h4>
+                    <p className="text-sm text-muted-foreground">{job.contact_email}</p>
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-2 border-t border-border">
                     <span className="text-sm text-muted-foreground">
                       {job.applications_count} žiadostí
                     </span>
