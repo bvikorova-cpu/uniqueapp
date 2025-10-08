@@ -317,6 +317,18 @@ const FitSlim = () => {
       protein: "15g",
       time: "35 min",
       image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "150g červenej šošovice",
+        "2 mrkvy",
+        "1 zeler",
+        "1 cibuľa",
+        "2 strúčiky cesnaku",
+        "1 lyžica rajčinového pretlaku",
+        "1 lyžica olivového oleja",
+        "1l zeleninového vývaru",
+        "soľ, korenie, rasca"
+      ],
+      instructions: "1. Cibuľu a cesnak nakrájajte nadrobno a opražte na olivovom oleji.\n2. Pridajte nakrájanú mrkvu a zeler, opražte 5 minút.\n3. Pridajte rajčinový pretlak a šošovicu.\n4. Zalejte zeleninovým vývarom a varte 25-30 minút.\n5. Dochuťte soľou, korením a rascou.\n6. Podľa chuti môžete polievku rozmixovať alebo nechať s kúskami zeleniny."
     },
     {
       id: 5,
@@ -325,6 +337,16 @@ const FitSlim = () => {
       protein: "38g",
       time: "25 min",
       image: "https://images.unsplash.com/photo-1485704686097-ed47f7263ca4?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g lososa",
+        "300g ružičkového kelu",
+        "2 lyžice olivového oleja",
+        "1 citrón",
+        "2 strúčiky cesnaku",
+        "soľ, čierne korenie",
+        "čerstvý kôpor"
+      ],
+      instructions: "1. Rozohrejte trúbu na 200°C.\n2. Lososa okoreňte soľou, korením a potryte citrónom.\n3. Ružičkový kel rozrežte na polovice a premiešajte s olivovým olejom a prelisovaným cesnakom.\n4. Lososa aj ružičkový kel položte na plech vystlaný papierom na pečenie.\n5. Pečte 18-20 minút.\n6. Podávajte s čerstvým kôprom a plátkami citróna."
     },
     {
       id: 6,
@@ -333,6 +355,17 @@ const FitSlim = () => {
       protein: "14g",
       time: "15 min",
       image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&auto=format&fit=crop",
+      ingredients: [
+        "2 celozrnné tortilly",
+        "100g hummusu",
+        "1 paprika",
+        "1/2 uhorky",
+        "50g baby špenátu",
+        "50g červenej kapusty",
+        "1 mrkva",
+        "citrónová šťava"
+      ],
+      instructions: "1. Zeleninu umyte a nakrájajte na tenké pásiky.\n2. Tortilly rozložte a natrite hummusom.\n3. Na jednu polovicu tortilly rozložte špenát a nakrájanú zeleninu.\n4. Pokvapkajte citrónovou šťavou.\n5. Tortilly pevne zabaľte do rolky.\n6. Rozrežte na polovice a podávajte."
     },
     {
       id: 7,
@@ -341,6 +374,16 @@ const FitSlim = () => {
       protein: "20g",
       time: "10 min",
       image: "https://images.unsplash.com/photo-1609501676725-7186f017a4b0?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g cottage cheese",
+        "1 uhorka",
+        "2 paradajky",
+        "jarná cibuľka",
+        "čerstvý bazalka",
+        "olivový olej",
+        "soľ, korenie"
+      ],
+      instructions: "1. Uhorku a paradajky umyte a nakrájajte na kocky.\n2. Jarnú cibuľku nakrájajte na kolieska.\n3. V miske zmiešajte cottage cheese, nakrájanú zeleninu a cibuľku.\n4. Pridajte nasekanú bazalku.\n5. Ochuťte soľou, korením a kvapkou olivového oleja.\n6. Podávajte chladené."
     },
     {
       id: 8,
@@ -349,6 +392,15 @@ const FitSlim = () => {
       protein: "22g",
       time: "12 min",
       image: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=800&auto=format&fit=crop",
+      ingredients: [
+        "3 vajcia",
+        "100g čerstvého špenátu",
+        "30g syra feta",
+        "1 strúčik cesnaku",
+        "1 lyžica olivového oleja",
+        "soľ, korenie"
+      ],
+      instructions: "1. Vajcia rozšľahajte v miske, ochuťte soľou a korením.\n2. Špenát umyte a nakrájajte nahrubo.\n3. Na panvici rozohrejte olivový olej a opražte prelisovaný cesnak.\n4. Pridajte špenát a opražte 2 minúty.\n5. Nalejte rozšľahané vajcia a posypte rozdrobenou fetou.\n6. Pečte na miernom ohni 5-7 minút, až kým omeleta stuhne."
     },
     {
       id: 9,
@@ -357,6 +409,16 @@ const FitSlim = () => {
       protein: "30g",
       time: "10 min",
       image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&auto=format&fit=crop",
+      ingredients: [
+        "150g tuniaka v konzerve",
+        "1 avokádo",
+        "50g cherry paradajok",
+        "citrónová šťava",
+        "jarná cibuľka",
+        "soľ, korenie",
+        "čerstvá petržlen"
+      ],
+      instructions: "1. Tuniak sceďte a rozdeľte vidličkou.\n2. Avokádo rozpolte, odstráňte kôstku a nakrájajte na kocky.\n3. Cherry paradajky prekrojte na polovice.\n4. Jarnú cibuľku nakrájajte na kolieska.\n5. Všetky ingrediencie zmiešajte v miske.\n6. Ochuťte citrónovou šťavou, soľou a korením, posypte petržlenom."
     },
     {
       id: 10,
@@ -365,6 +427,17 @@ const FitSlim = () => {
       protein: "32g",
       time: "22 min",
       image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g kuracích pŕs",
+        "200g zelených fazuliek",
+        "1 chilli paprika",
+        "2 strúčiky cesnaku",
+        "zázvor",
+        "sójová omáčka",
+        "sezamový olej",
+        "soľ, korenie"
+      ],
+      instructions: "1. Kuracie mäso nakrájajte na kúsky a okoreňte.\n2. Zelené fazuľky očistite a nakrájajte.\n3. Na panvici rozohrejte sezamový olej.\n4. Opražte cesnak, zázvor a chilli.\n5. Pridajte kuracie mäso a opekajte 10 minút.\n6. Pridajte fazuľky, sójovú omáčku a duste 8 minút."
     },
     {
       id: 11,
@@ -373,6 +446,17 @@ const FitSlim = () => {
       protein: "16g",
       time: "28 min",
       image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g cícera (konzerva)",
+        "1 paprika",
+        "1 cuketa",
+        "1 cibuľa",
+        "400ml kokosového mléka",
+        "2 lyžice kari pasty",
+        "špenát",
+        "soľ, korenie"
+      ],
+      instructions: "1. Cibuľu nakrájajte a opražte na oleji.\n2. Pridajte kari pastu a opražte 1 minútu.\n3. Pridajte nakrájanú papriku a cuketu.\n4. Zalejte kokosovým mlékom a pridajte scedený cícer.\n5. Varte 15 minút na miernom ohni.\n6. Nakoniec pridajte špenát a dochuťte."
     },
     {
       id: 12,
@@ -381,6 +465,16 @@ const FitSlim = () => {
       protein: "34g",
       time: "20 min",
       image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g filé z tresy",
+        "1 citrón",
+        "2 strúčiky cesnaku",
+        "olivový olej",
+        "čerstvý tymián",
+        "soľ, korenie",
+        "cherry paradajky"
+      ],
+      instructions: "1. Rozohrejte trúbu na 200°C.\n2. Tresku položte na plech, pokvapkajte olivovým olejom.\n3. Ochuťte soľou, korením, prelisovaným cesnakom a tymiánom.\n4. Pridajte plátky citróna a cherry paradajky.\n5. Pečte 15-18 minút.\n6. Podávajte s čerstvým citrónom."
     },
     {
       id: 13,
@@ -389,6 +483,17 @@ const FitSlim = () => {
       protein: "18g",
       time: "25 min",
       image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      ingredients: [
+        "150g tofu",
+        "100g hnedej ryže",
+        "50g edamame",
+        "1 mrkva",
+        "červená kapusta",
+        "avokádo",
+        "sójová omáčka",
+        "sezamové semienka"
+      ],
+      instructions: "1. Hnedú ryžu uvarte podľa návodu.\n2. Tofu nakrájajte na kocky a opečte na panvici.\n3. Mrkvu nastrúhajte, kapustu nakrájajte na pásiky.\n4. Edamame uvarte 3-4 minúty.\n5. Do misky dajte ryžu, tofu a zeleninu.\n6. Polejte sójovou omáčkou a posypte sezamom."
     },
     {
       id: 14,
@@ -397,6 +502,17 @@ const FitSlim = () => {
       protein: "11g",
       time: "30 min",
       image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "400g brokolice",
+        "1 zemiák",
+        "1 cibuľa",
+        "2 strúčiky cesnaku",
+        "800ml zeleninového vývaru",
+        "100ml smotany na varenie",
+        "olivový olej",
+        "soľ, korenie"
+      ],
+      instructions: "1. Cibuľu a cesnak opražte na oleji.\n2. Pridajte nakrájané zemiaky a brokolicu.\n3. Zalejte zeleninovým vývarom a varte 20 minút.\n4. Polievku rozmixujte na hladko.\n5. Pridajte smotanu, dochuťte soľou a korením.\n6. Podávajte s krutónmi."
     },
     {
       id: 15,
@@ -405,6 +521,16 @@ const FitSlim = () => {
       protein: "36g",
       time: "40 min",
       image: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=800&auto=format&fit=crop",
+      ingredients: [
+        "250g kuracích stehien",
+        "rozmarín, tymián",
+        "3 strúčiky cesnaku",
+        "olivový olej",
+        "citrón",
+        "soľ, korenie",
+        "zemiaky"
+      ],
+      instructions: "1. Rozohrejte trúbu na 190°C.\n2. Kurča okoreňte soľou, korením, bylinkami a cesnakom.\n3. Pokvapkajte olivovým olejom a citrónom.\n4. Zemiaky nakrájajte na klinky a pridajte na plech.\n5. Pečte 35-40 minút, až kým nie je mäso zlatisté.\n6. Podávajte s čerstvými bylinkami."
     },
     {
       id: 16,
@@ -413,6 +539,17 @@ const FitSlim = () => {
       protein: "17g",
       time: "32 min",
       image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "150g zelenej čočky",
+        "2 paradajky",
+        "1 cuketa",
+        "1 cibuľa",
+        "2 strúčiky cesnaku",
+        "rajčinový pretlak",
+        "olivový olej",
+        "soľ, korenie, rasca"
+      ],
+      instructions: "1. Čočku uvarte podľa návodu.\n2. Cibuľu a cesnak opražte na oleji.\n3. Pridajte nakrájanú cuketu a paradajky.\n4. Pridajte rajčinový pretlak a duste 10 minút.\n5. Pridajte uvarenú čočku a premiešajte.\n6. Dochuťte soľou, korením a rascou."
     },
     {
       id: 17,
@@ -421,6 +558,16 @@ const FitSlim = () => {
       protein: "28g",
       time: "18 min",
       image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g morčacieho mäsa",
+        "200g bielej kapusty",
+        "1 mrkva",
+        "jarná cibuľka",
+        "citrónová šťava",
+        "olivový olej",
+        "soľ, korenie"
+      ],
+      instructions: "1. Morčacie mäso nakrájajte na kúsky a opečte.\n2. Kapustu a mrkvu nastrúhajte.\n3. Jarnú cibuľku nakrájajte.\n4. Zmiešajte zeleninu s opečeným mäsom.\n5. Pripravte dresing z oleja a citrónu.\n6. Premiešajte a podávajte."
     },
     {
       id: 18,
@@ -429,6 +576,17 @@ const FitSlim = () => {
       protein: "13g",
       time: "24 min",
       image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "150g ryžových rezancov",
+        "1 paprika",
+        "1 cuketa",
+        "huby",
+        "cherry paradajky",
+        "sójová omáčka",
+        "sezamový olej",
+        "cesnak, zázvor"
+      ],
+      instructions: "1. Ryžové rezance uvarte podľa návodu.\n2. Zeleninu nakrájajte a napichnite na špízy.\n3. Grilujte alebo pečte v trúbe 15 minút.\n4. Na panvici rozohrejte sezamový olej.\n5. Pridajte cesnak, zázvor a sójovú omáčku.\n6. Premiešajte s rezancami a podávajte so špízmi."
     },
   ];
 
@@ -440,6 +598,16 @@ const FitSlim = () => {
       benefit: "Energia na celý deň",
       time: "10 min",
       image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&auto=format&fit=crop",
+      ingredients: [
+        "80g ovosných vločiek",
+        "250ml mléka alebo rastlinného mléka",
+        "1 banán",
+        "50g čučoriedok",
+        "1 lyžica medu",
+        "škorica",
+        "orechy na posypanie"
+      ],
+      instructions: "1. Ovosné vločky zalejte mlékom a varte 5 minút.\n2. Pridajte med a škoricu.\n3. Nechajte mierne vychladnúť.\n4. Banán nakrájajte na kolieska.\n5. Kašu preložte do misky a ozdobte banánom, čučoriedkami a orechmi.\n6. Podávajte teplú."
     },
     {
       id: 2,
@@ -448,6 +616,16 @@ const FitSlim = () => {
       benefit: "Omega-3 mastné kyseliny",
       time: "25 min",
       image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&auto=format&fit=crop",
+      ingredients: [
+        "250g lososa",
+        "400g brokolice",
+        "3 lyžice olivového oleja",
+        "2 strúčiky cesnaku",
+        "citrón",
+        "soľ, korenie",
+        "sezamové semienka"
+      ],
+      instructions: "1. Rozohrejte trúbu na 200°C.\n2. Brokolicu rozdeľte na ružičky a premiešajte s polovicou oleja a cesnakom.\n3. Lososa okoreňte, potryte citrónom a olivovým olejom.\n4. Položte lososa a brokolicu na plech.\n5. Pečte 20-22 minút.\n6. Posypte sezamovými semienkami a podávajte."
     },
     {
       id: 3,
@@ -456,6 +634,16 @@ const FitSlim = () => {
       benefit: "Zdravé tuky",
       time: "15 min",
       image: "https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?w=800&auto=format&fit=crop",
+      ingredients: [
+        "2 plátky celozrnného chleba",
+        "1 avokádo",
+        "2 vajcia",
+        "citrónová šťava",
+        "cherry paradajky",
+        "soľ, korenie",
+        "čerstvá bazalka"
+      ],
+      instructions: "1. Chlieb opečte na hriankovači.\n2. Avokádo rozdrte vidličkou a premiešajte s citrónovou šťavou.\n3. Vajcia opražte alebo uvarte napolmäkko.\n4. Hrianky natrite avokádom.\n5. Pridajte vajce a cherry paradajky.\n6. Posypte soľou, korením a bazalkou."
     },
     {
       id: 4,
@@ -464,6 +652,15 @@ const FitSlim = () => {
       benefit: "Probiotika",
       time: "5 min",
       image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g gréckeho jogurtu",
+        "30g vlašských orechov",
+        "1 lyžica medu",
+        "1 lyžica chia semienok",
+        "čerstvé bobuľové ovocie",
+        "škorica"
+      ],
+      instructions: "1. Grécky jogurt preložte do misky.\n2. Orechy nasekajte nahrubo.\n3. Jogurt posypte orechmi a chia semienkami.\n4. Polejte medom.\n5. Pridajte čerstvé ovocie.\n6. Posypte škoricou a podávajte."
     },
     {
       id: 5,
@@ -472,6 +669,17 @@ const FitSlim = () => {
       benefit: "Posilnenie imunity",
       time: "45 min",
       image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "300g kuracích kúskov",
+        "2 mrkvy",
+        "1 zeler",
+        "1 cibuľa",
+        "2l vody",
+        "100g domácich rezancov",
+        "petržlenová vňať",
+        "soľ, korenie, bobkový list"
+      ],
+      instructions: "1. Kuracie mäso zalejte vodou a pridajte bobkový list.\n2. Varte 20 minút a zbierajte penu.\n3. Pridajte nakrájanú zeleninu a varte ďalších 15 minút.\n4. Mäso a zeleninu vyberme, vývar precedte.\n5. Do vývaru pridajte rezance a varte 5 minút.\n6. Pridajte späť mäso, dochuťte a posypte petržlenom."
     },
     {
       id: 6,
@@ -480,6 +688,16 @@ const FitSlim = () => {
       benefit: "Antioxidanty",
       time: "8 min",
       image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&auto=format&fit=crop",
+      ingredients: [
+        "1 zmrazený banán",
+        "100g zmrazených bobuľových plodov",
+        "150ml mandľového mléka",
+        "1 lyžica chia semienok",
+        "granola",
+        "čerstvé ovocie",
+        "kokosové lupienky"
+      ],
+      instructions: "1. Zmrazený banán, bobuľové ovocie a mléko mixujte na hladko.\n2. Smoothie nalejte do misky.\n3. Posypte chia semienkami.\n4. Pridajte granolu, čerstvé ovocie a kokosové lupienky.\n5. Ihneď podávajte.\n6. Môžete pridať aj med alebo arašidové maslo."
     },
     {
       id: 7,
@@ -488,6 +706,17 @@ const FitSlim = () => {
       benefit: "Vláknina a vitamíny",
       time: "40 min",
       image: "https://images.unsplash.com/photo-1608039829572-78524f79c661?w=800&auto=format&fit=crop",
+      ingredients: [
+        "2 sladké zemiaky",
+        "200g čiernej fazule (konzerva)",
+        "1 paprika",
+        "1 avokádo",
+        "jarná cibuľka",
+        "limetková šťava",
+        "olivový olej",
+        "soľ, korenie, rasca"
+      ],
+      instructions: "1. Rozohrejte trúbu na 200°C.\n2. Sladké zemiaky popichnite vidličkou a pečte 35-40 minút.\n3. Papriku nakrájajte a opražte s čiernou fazuľou.\n4. Pečené zemiaky rozkrojte a naplňte zmesou fazule a papriky.\n5. Pridajte avokádo a jarnú cibuľku.\n6. Pokvapkajte limetkovou šťavou a posypte rascou."
     },
     {
       id: 8,
@@ -496,6 +725,17 @@ const FitSlim = () => {
       benefit: "Omega-3 a bielkoviny",
       time: "12 min",
       image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&auto=format&fit=crop",
+      ingredients: [
+        "150g tuniaka v konzerve",
+        "1 avokádo",
+        "50g baby šalátov",
+        "cherry paradajky",
+        "uhorka",
+        "olivový olej",
+        "citrónová šťava",
+        "soľ, korenie"
+      ],
+      instructions: "1. Tuniak sceďte a rozdeľte.\n2. Avokádo nakrájajte na kocky.\n3. Cherry paradajky prekrojte, uhorku nakrájajte.\n4. Všetky ingrediencie zmiešajte v miske.\n5. Pripravte dresing z oleja a citrónu.\n6. Premiešajte a podávajte na šalátových lístkoch."
     },
     {
       id: 9,
@@ -504,6 +744,16 @@ const FitSlim = () => {
       benefit: "Komplexné sacharidy",
       time: "18 min",
       image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&auto=format&fit=crop",
+      ingredients: [
+        "100g celozrnnej múky",
+        "1 vajce",
+        "150ml mléka",
+        "1 lyžička prášku do pečiva",
+        "100g čerstvých bobuľových plodov",
+        "javorový sirup",
+        "kokosový olej na smaženie"
+      ],
+      instructions: "1. Zmiešajte múku, vajce, mléko a prášok do pečiva.\n2. Nechajte cesto 5 minút odležať.\n3. Na panvici rozohrejte kokosový olej.\n4. Naberajte cesto a pečte palacinky z oboch strán.\n5. Servírujte s čerstvými bobuľami.\n6. Polejte javorovým sirupom."
     },
     {
       id: 10,
@@ -512,6 +762,17 @@ const FitSlim = () => {
       benefit: "Omega-3 a minerály",
       time: "20 min",
       image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g čerstvého tuniaka",
+        "150g sushi ryže",
+        "avokádo",
+        "edamame",
+        "uhorka",
+        "wakame riasa",
+        "sójová omáčka",
+        "sezamové semienka"
+      ],
+      instructions: "1. Sushi ryžu uvarte podľa návodu.\n2. Tuniaka nakrájajte na kocky a marinujte v sójovej omáčke.\n3. Avokádo a uhorku nakrájajte.\n4. Edamame uvarte.\n5. Do misky dajte ryžu a postupne pridajte všetky ingrediencie.\n6. Posypte sezamom a polejte zvyšnou omáčkou."
     },
     {
       id: 11,
@@ -520,6 +781,16 @@ const FitSlim = () => {
       benefit: "Železo a vápnik",
       time: "50 min",
       image: "https://images.unsplash.com/photo-1511910849309-0dffb8785146?w=800&auto=format&fit=crop",
+      ingredients: [
+        "1 listové cesto",
+        "200g čerstvého špenátu",
+        "3 vajcia",
+        "150ml smotany",
+        "100g syra feta",
+        "cibuľa",
+        "soľ, korenie, muškátový oriešok"
+      ],
+      instructions: "1. Rozohrejte trúbu na 180°C.\n2. Listové cesto rozložte do koláčovej formy.\n3. Špenát a cibuľu opražte, nechajte vychladnúť.\n4. Zmiešajte vajcia, smotanu, soľ a korenie.\n5. Pridajte špenát a rozdrobenú fetu.\n6. Nalejte na cesto a pečte 35-40 minút."
     },
     {
       id: 12,
@@ -528,6 +799,16 @@ const FitSlim = () => {
       benefit: "Detoxikácia",
       time: "5 min",
       image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800&auto=format&fit=crop",
+      ingredients: [
+        "1 hrsť baby špenátu",
+        "1/2 uhorky",
+        "1 zelené jablko",
+        "1 banán",
+        "šťava z 1/2 citróna",
+        "200ml kokosovej vody",
+        "zázvor"
+      ],
+      instructions: "1. Všetky ingrediencie opláchnite.\n2. Jablko a uhorku nakrájajte.\n3. Vložte do mixéra špenát, uhorku, jablko a banán.\n4. Pridajte citrónovú šťavu, zázvor a kokosovú vodu.\n5. Mixujte 1-2 minúty na hladko.\n6. Ihneď podávajte."
     },
     {
       id: 13,
@@ -536,6 +817,17 @@ const FitSlim = () => {
       benefit: "Kompletný profil živín",
       time: "30 min",
       image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "100g quinoa",
+        "100g hummusu",
+        "pečená tekvica",
+        "pečené zemiaky",
+        "baby špenát",
+        "cherry paradajky",
+        "tahini",
+        "citrón"
+      ],
+      instructions: "1. Quinoa uvarte podľa návodu.\n2. Tekvicu a zemiaky nakrájajte a pečte 25 minút na 200°C.\n3. Do misky dajte quinoa ako základ.\n4. Postupne pridajte pečenú zeleninu, špenát a paradajky.\n5. Pridajte hummus.\n6. Polejte tahini a citrónovou šťavou."
     },
     {
       id: 14,
@@ -544,6 +836,15 @@ const FitSlim = () => {
       benefit: "Vláknina a omega-3",
       time: "10 min + chladenie",
       image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop",
+      ingredients: [
+        "3 lyžice chia semienok",
+        "200ml kokosového mléka",
+        "1 lyžica javorového sirupu",
+        "1 mango",
+        "kokosové lupienky",
+        "mäta"
+      ],
+      instructions: "1. Chia semienka zmiešajte s kokosovým mlékom a sirupom.\n2. Nechajte v chladničke minimálne 4 hodiny (ideálne cez noc).\n3. Mango olúpte a nakrájajte na kocky.\n4. Puding preložte do pohárov.\n5. Pridajte mango a kokosové lupienky.\n6. Ozdobte mätou."
     },
     {
       id: 15,
@@ -552,6 +853,17 @@ const FitSlim = () => {
       benefit: "Vitamín A a bielkoviny",
       time: "35 min",
       image: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=800&auto=format&fit=crop",
+      ingredients: [
+        "300g tekvice",
+        "100g quinoa",
+        "50g kozieho syra",
+        "30g vlašských orechov",
+        "olivový olej",
+        "med",
+        "tymián",
+        "soľ, korenie"
+      ],
+      instructions: "1. Rozohrejte trúbu na 200°C.\n2. Tekvicu nakrájajte na kocky a premiešajte s olejom a tymiánom.\n3. Pečte 25 minút.\n4. Quinoa uvarte podľa návodu.\n5. Zmiešajte quinoa s pečenou tekvicou.\n6. Pridajte rozdrobený kozí syr, orechy a kvapku medu."
     },
     {
       id: 16,
@@ -560,6 +872,17 @@ const FitSlim = () => {
       benefit: "Protizápalové účinky",
       time: "28 min",
       image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "2 lyžice zelenej kari pasty",
+        "400ml kokosového mléka",
+        "200g tofu alebo kuracieho mäsa",
+        "1 paprika",
+        "100g bambusových výhonkov",
+        "hrášok",
+        "bazalka",
+        "limetková šťava"
+      ],
+      instructions: "1. Kari pastu opražte na panvici 1 minútu.\n2. Pridajte kokosové mléko a premiešajte.\n3. Pridajte nakrájané tofu/kuracie mäso a zeleninu.\n4. Varte 15-20 minút na miernom ohni.\n5. Pridajte čerstvú bazalku a limetkovú šťavu.\n6. Podávajte s ryžou alebo rezancami."
     },
     {
       id: 17,
@@ -568,6 +891,16 @@ const FitSlim = () => {
       benefit: "Bielkoviny pre rast svalov",
       time: "15 min",
       image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&auto=format&fit=crop",
+      ingredients: [
+        "2 vajcia",
+        "1 banán",
+        "30g proteinového prášku",
+        "50g ovosných vločiek",
+        "škorica",
+        "kokosový olej",
+        "javorový sirup"
+      ],
+      instructions: "1. Banán rozmixujte s vajcami.\n2. Pridajte proteinový prášok, vločky a škoricu.\n3. Zmiešajte na hladké cesto.\n4. Na panvici rozohrejte kokosový olej.\n5. Pečte palacinky z oboch strán dohnieda.\n6. Podávajte s javorovým sirupom a čerstvým ovocím."
     },
     {
       id: 18,
@@ -576,6 +909,17 @@ const FitSlim = () => {
       benefit: "Zdravé tuky a minerály",
       time: "45 min",
       image: "https://images.unsplash.com/photo-1608039829572-78524f79c661?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g mrkvy",
+        "200g paštrnáku",
+        "200g celeru",
+        "2 červené cibule",
+        "4 lyžice olivového oleja",
+        "rozmarín, tymián",
+        "soľ, korenie",
+        "balkánsky syr"
+      ],
+      instructions: "1. Rozohrejte trúbu na 200°C.\n2. Všetku zeleninu olúpte a nakrájajte na hrubšie kúsky.\n3. Premiešajte s olivovým olejom a bylinkami.\n4. Rozložte na plech a okoreňte.\n5. Pečte 40-45 minút, občas premiešajte.\n6. Podávajte s balkánskym syrom."
     },
   ];
 
