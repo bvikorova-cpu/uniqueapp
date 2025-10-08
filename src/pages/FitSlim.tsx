@@ -6,6 +6,40 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Play, Clock, ChefHat, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+// Import recipe images
+import grilledChickenSalad from "@/assets/recipes/grilled-chicken-salad.jpg";
+import quinoaRoastedVegetables from "@/assets/recipes/quinoa-roasted-vegetables.jpg";
+import proteinSmoothie from "@/assets/recipes/protein-smoothie.jpg";
+import lentilSoup from "@/assets/recipes/lentil-soup.jpg";
+import grilledSalmonBrussels from "@/assets/recipes/grilled-salmon-brussels.jpg";
+import vegetableWrapHummus from "@/assets/recipes/vegetable-wrap-hummus.jpg";
+import cottageCheeseVegetables from "@/assets/recipes/cottage-cheese-vegetables.jpg";
+import spinachOmelette from "@/assets/recipes/spinach-omelette.jpg";
+import tunaAvocado from "@/assets/recipes/tuna-avocado.jpg";
+import chickenChiliBeans from "@/assets/recipes/chicken-chili-beans.jpg";
+import vegetableCurryChickpeas from "@/assets/recipes/vegetable-curry-chickpeas.jpg";
+import bakedCodLemon from "@/assets/recipes/baked-cod-lemon.jpg";
+import tofuBrownRiceBowl from "@/assets/recipes/tofu-brown-rice-bowl.jpg";
+import creamyBroccoliSoup from "@/assets/recipes/creamy-broccoli-soup.jpg";
+import herbRoastedChicken from "@/assets/recipes/herb-roasted-chicken.jpg";
+import lentilsTomatoesZucchini from "@/assets/recipes/lentils-tomatoes-zucchini.jpg";
+import cabbageSaladTurkey from "@/assets/recipes/cabbage-salad-turkey.jpg";
+import vegetableSkewersNoodles from "@/assets/recipes/vegetable-skewers-noodles.jpg";
+import oatmealFruit from "@/assets/recipes/oatmeal-fruit.jpg";
+import bakedSalmonBroccoli from "@/assets/recipes/baked-salmon-broccoli.jpg";
+import avocadoToastEgg from "@/assets/recipes/avocado-toast-egg.jpg";
+import greekYogurtNutsHoney from "@/assets/recipes/greek-yogurt-nuts-honey.jpg";
+import chickenNoodleSoup from "@/assets/recipes/chicken-noodle-soup.jpg";
+import smoothieBowlChia from "@/assets/recipes/smoothie-bowl-chia.jpg";
+import sweetPotatoBlackBeans from "@/assets/recipes/sweet-potato-black-beans.jpg";
+import tunaSaladAvocado from "@/assets/recipes/tuna-salad-avocado.jpg";
+import wholeGrainPancakes from "@/assets/recipes/whole-grain-pancakes.jpg";
+import tunaPokeBowl from "@/assets/recipes/tuna-poke-bowl.jpg";
+import spinachQuiche from "@/assets/recipes/spinach-quiche.jpg";
+import greenDetoxSmoothie from "@/assets/recipes/green-detox-smoothie.jpg";
+import buddhaBowlHummus from "@/assets/recipes/buddha-bowl-hummus.jpg";
+import chiaPuddingMango from "@/assets/recipes/chia-pudding-mango.jpg";
+
 const FitSlim = () => {
   const [activeTab, setActiveTab] = useState("weight-loss-videos");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
@@ -258,7 +292,7 @@ const FitSlim = () => {
       calories: "320 kcal",
       protein: "35g",
       time: "20 min",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      image: grilledChickenSalad,
       ingredients: [
         "200g kuracích pŕs",
         "100g mix zelených šalátov",
@@ -278,7 +312,7 @@ const FitSlim = () => {
       calories: "280 kcal",
       protein: "12g",
       time: "30 min",
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      image: quinoaRoastedVegetables,
       ingredients: [
         "150g quinoa",
         "1 červená paprika",
@@ -298,7 +332,7 @@ const FitSlim = () => {
       calories: "250 kcal",
       protein: "25g",
       time: "5 min",
-      image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800&auto=format&fit=crop",
+      image: proteinSmoothie,
       ingredients: [
         "1 banán",
         "150g zmrazených jahôd",
@@ -316,7 +350,7 @@ const FitSlim = () => {
       calories: "210 kcal",
       protein: "15g",
       time: "35 min",
-      image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      image: lentilSoup,
       ingredients: [
         "150g červenej šošovice",
         "2 mrkvy",
@@ -336,7 +370,7 @@ const FitSlim = () => {
       calories: "340 kcal",
       protein: "38g",
       time: "25 min",
-      image: "https://images.unsplash.com/photo-1485704686097-ed47f7263ca4?w=800&auto=format&fit=crop",
+      image: grilledSalmonBrussels,
       ingredients: [
         "200g lososa",
         "300g ružičkového kelu",
@@ -354,7 +388,7 @@ const FitSlim = () => {
       calories: "290 kcal",
       protein: "14g",
       time: "15 min",
-      image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&auto=format&fit=crop",
+      image: vegetableWrapHummus,
       ingredients: [
         "2 celozrnné tortilly",
         "100g hummusu",
@@ -373,7 +407,7 @@ const FitSlim = () => {
       calories: "180 kcal",
       protein: "20g",
       time: "10 min",
-      image: "https://images.unsplash.com/photo-1609501676725-7186f017a4b0?w=800&auto=format&fit=crop",
+      image: cottageCheeseVegetables,
       ingredients: [
         "200g cottage cheese",
         "1 uhorka",
@@ -391,7 +425,7 @@ const FitSlim = () => {
       calories: "240 kcal",
       protein: "22g",
       time: "12 min",
-      image: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=800&auto=format&fit=crop",
+      image: spinachOmelette,
       ingredients: [
         "3 vajcia",
         "100g čerstvého špenátu",
@@ -408,7 +442,7 @@ const FitSlim = () => {
       calories: "310 kcal",
       protein: "30g",
       time: "10 min",
-      image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&auto=format&fit=crop",
+      image: tunaAvocado,
       ingredients: [
         "150g tuniaka v konzerve",
         "1 avokádo",
@@ -426,7 +460,7 @@ const FitSlim = () => {
       calories: "295 kcal",
       protein: "32g",
       time: "22 min",
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      image: chickenChiliBeans,
       ingredients: [
         "200g kuracích pŕs",
         "200g zelených fazuliek",
@@ -445,7 +479,7 @@ const FitSlim = () => {
       calories: "265 kcal",
       protein: "16g",
       time: "28 min",
-      image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
+      image: vegetableCurryChickpeas,
       ingredients: [
         "200g cícera (konzerva)",
         "1 paprika",
@@ -464,7 +498,7 @@ const FitSlim = () => {
       calories: "260 kcal",
       protein: "34g",
       time: "20 min",
-      image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&auto=format&fit=crop",
+      image: bakedCodLemon,
       ingredients: [
         "200g filé z tresy",
         "1 citrón",
@@ -482,7 +516,7 @@ const FitSlim = () => {
       calories: "330 kcal",
       protein: "18g",
       time: "25 min",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      image: tofuBrownRiceBowl,
       ingredients: [
         "150g tofu",
         "100g hnedej ryže",
@@ -501,7 +535,7 @@ const FitSlim = () => {
       calories: "195 kcal",
       protein: "11g",
       time: "30 min",
-      image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      image: creamyBroccoliSoup,
       ingredients: [
         "400g brokolice",
         "1 zemiák",
@@ -520,7 +554,7 @@ const FitSlim = () => {
       calories: "305 kcal",
       protein: "36g",
       time: "40 min",
-      image: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=800&auto=format&fit=crop",
+      image: herbRoastedChicken,
       ingredients: [
         "250g kuracích stehien",
         "rozmarín, tymián",
@@ -538,7 +572,7 @@ const FitSlim = () => {
       calories: "245 kcal",
       protein: "17g",
       time: "32 min",
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      image: lentilsTomatoesZucchini,
       ingredients: [
         "150g zelenej čočky",
         "2 paradajky",
@@ -557,7 +591,7 @@ const FitSlim = () => {
       calories: "270 kcal",
       protein: "28g",
       time: "18 min",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      image: cabbageSaladTurkey,
       ingredients: [
         "200g morčacieho mäsa",
         "200g bielej kapusty",
@@ -575,7 +609,7 @@ const FitSlim = () => {
       calories: "285 kcal",
       protein: "13g",
       time: "24 min",
-      image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
+      image: vegetableSkewersNoodles,
       ingredients: [
         "150g ryžových rezancov",
         "1 paprika",
@@ -597,7 +631,7 @@ const FitSlim = () => {
       calories: "350 kcal",
       benefit: "Energia na celý deň",
       time: "10 min",
-      image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&auto=format&fit=crop",
+      image: oatmealFruit,
       ingredients: [
         "80g ovosných vločiek",
         "250ml mléka alebo rastlinného mléka",
@@ -615,7 +649,7 @@ const FitSlim = () => {
       calories: "420 kcal",
       benefit: "Omega-3 mastné kyseliny",
       time: "25 min",
-      image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&auto=format&fit=crop",
+      image: bakedSalmonBroccoli,
       ingredients: [
         "250g lososa",
         "400g brokolice",
@@ -633,7 +667,7 @@ const FitSlim = () => {
       calories: "380 kcal",
       benefit: "Zdravé tuky",
       time: "15 min",
-      image: "https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?w=800&auto=format&fit=crop",
+      image: avocadoToastEgg,
       ingredients: [
         "2 plátky celozrnného chleba",
         "1 avokádo",
@@ -651,7 +685,7 @@ const FitSlim = () => {
       calories: "310 kcal",
       benefit: "Probiotika",
       time: "5 min",
-      image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop",
+      image: greekYogurtNutsHoney,
       ingredients: [
         "200g gréckeho jogurtu",
         "30g vlašských orechov",
@@ -668,7 +702,7 @@ const FitSlim = () => {
       calories: "280 kcal",
       benefit: "Posilnenie imunity",
       time: "45 min",
-      image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      image: chickenNoodleSoup,
       ingredients: [
         "300g kuracích kúskov",
         "2 mrkvy",
@@ -687,7 +721,7 @@ const FitSlim = () => {
       calories: "330 kcal",
       benefit: "Antioxidanty",
       time: "8 min",
-      image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&auto=format&fit=crop",
+      image: smoothieBowlChia,
       ingredients: [
         "1 zmrazený banán",
         "100g zmrazených bobuľových plodov",
@@ -705,7 +739,7 @@ const FitSlim = () => {
       calories: "390 kcal",
       benefit: "Vláknina a vitamíny",
       time: "40 min",
-      image: "https://images.unsplash.com/photo-1608039829572-78524f79c661?w=800&auto=format&fit=crop",
+      image: sweetPotatoBlackBeans,
       ingredients: [
         "2 sladké zemiaky",
         "200g čiernej fazule (konzerva)",
@@ -724,7 +758,7 @@ const FitSlim = () => {
       calories: "360 kcal",
       benefit: "Omega-3 a bielkoviny",
       time: "12 min",
-      image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&auto=format&fit=crop",
+      image: tunaSaladAvocado,
       ingredients: [
         "150g tuniaka v konzerve",
         "1 avokádo",
@@ -743,7 +777,7 @@ const FitSlim = () => {
       calories: "340 kcal",
       benefit: "Komplexné sacharidy",
       time: "18 min",
-      image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&auto=format&fit=crop",
+      image: wholeGrainPancakes,
       ingredients: [
         "100g celozrnnej múky",
         "1 vajce",
@@ -761,7 +795,7 @@ const FitSlim = () => {
       calories: "410 kcal",
       benefit: "Omega-3 a minerály",
       time: "20 min",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      image: tunaPokeBowl,
       ingredients: [
         "200g čerstvého tuniaka",
         "150g sushi ryže",
@@ -780,7 +814,7 @@ const FitSlim = () => {
       calories: "365 kcal",
       benefit: "Železo a vápnik",
       time: "50 min",
-      image: "https://images.unsplash.com/photo-1511910849309-0dffb8785146?w=800&auto=format&fit=crop",
+      image: spinachQuiche,
       ingredients: [
         "1 listové cesto",
         "200g čerstvého špenátu",
@@ -798,7 +832,7 @@ const FitSlim = () => {
       calories: "220 kcal",
       benefit: "Detoxikácia",
       time: "5 min",
-      image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800&auto=format&fit=crop",
+      image: greenDetoxSmoothie,
       ingredients: [
         "1 hrsť baby špenátu",
         "1/2 uhorky",
@@ -816,7 +850,7 @@ const FitSlim = () => {
       calories: "385 kcal",
       benefit: "Kompletný profil živín",
       time: "30 min",
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      image: buddhaBowlHummus,
       ingredients: [
         "100g quinoa",
         "100g hummusu",
@@ -835,7 +869,7 @@ const FitSlim = () => {
       calories: "295 kcal",
       benefit: "Vláknina a omega-3",
       time: "10 min + chladenie",
-      image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop",
+      image: chiaPuddingMango,
       ingredients: [
         "3 lyžice chia semienok",
         "200ml kokosového mléka",
