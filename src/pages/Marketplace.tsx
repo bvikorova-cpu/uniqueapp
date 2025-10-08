@@ -163,8 +163,25 @@ const Marketplace = () => {
 
     setIsSendingResponse(true);
 
-    // Here you would typically send this to a backend or create a message
-    // For now, we'll just show a success toast
+    const { error } = await supabase
+      .from("marketplace_responses")
+      .insert({
+        offering_id: selectedOffering.id,
+        sender_id: user.id,
+        receiver_id: selectedOffering.user_id,
+        message: responseMessage.trim()
+      });
+
+    if (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa odoslať správu",
+        variant: "destructive"
+      });
+      setIsSendingResponse(false);
+      return;
+    }
+
     toast({
       title: "Správa odoslaná",
       description: "Váš záujem bol odoslaný poskytovateľovi služby"
