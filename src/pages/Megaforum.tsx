@@ -50,6 +50,7 @@ const Megaforum = () => {
     "Hudba",
     "Film & TV",
     "Hry",
+    "Zdravie",
     "Iné"
   ];
 
