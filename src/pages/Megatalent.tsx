@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,10 @@ const Megatalent = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("drawing");
   const [loading, setLoading] = useState(true);
+  const [uploadedFile, setUploadedFile] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -101,6 +105,54 @@ const Megatalent = () => {
       title: "Hlasovanie",
       description: `${type === 'like' ? 'Páči sa mi' : 'Nepáči sa mi'} - potrebné pripojenie databázy`,
     });
+  };
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'video') => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Musíte byť prihlásený pre nahrávanie súborov.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+      const bucket = type === 'image' ? 'media' : 'videos';
+
+      const { error: uploadError, data } = await supabase.storage
+        .from(bucket)
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from(bucket)
+        .getPublicUrl(fileName);
+
+      setUploadedFile({ url: publicUrl, type });
+      
+      toast({
+        title: "Úspešne nahrané!",
+        description: `${type === 'image' ? 'Fotka' : 'Video'} bolo úspešne nahrané.`,
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa nahrať súbor.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   if (loading) {
@@ -239,14 +291,51 @@ const Megatalent = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                <Button variant="premium" className="w-full">
+                
+                <input
+                  ref={photoInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFileSelect(e, 'image')}
+                />
+                <input
+                  ref={videoInputRef}
+                  type="file"
+                  accept="video/*"
+                  className="hidden"
+                  onChange={(e) => handleFileSelect(e, 'video')}
+                />
+                
+                <Button 
+                  variant="premium" 
+                  className="w-full"
+                  onClick={() => photoInputRef.current?.click()}
+                  disabled={uploading}
+                >
                   <Camera className="h-4 w-4" />
-                  Nahrať foto
+                  {uploading ? 'Nahrávam...' : 'Nahrať foto'}
                 </Button>
-                <Button variant="premium" className="w-full">
+                <Button 
+                  variant="premium" 
+                  className="w-full"
+                  onClick={() => videoInputRef.current?.click()}
+                  disabled={uploading}
+                >
                   <Video className="h-4 w-4" />
-                  Nahrať video
+                  {uploading ? 'Nahrávam...' : 'Nahrať video'}
                 </Button>
+                
+                {uploadedFile && (
+                  <div className="mt-4">
+                    {uploadedFile.type === 'image' ? (
+                      <img src={uploadedFile.url} alt="Uploaded" className="w-full rounded-lg" />
+                    ) : (
+                      <video src={uploadedFile.url} controls className="w-full rounded-lg" />
+                    )}
+                  </div>
+                )}
+                
                 <Textarea placeholder="Napíš popis svojho talentu..." className="min-h-20" />
                 <Button variant="hero" className="w-full">
                   Zverejniť
