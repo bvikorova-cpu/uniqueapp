@@ -27,13 +27,15 @@ const Megatalent = () => {
   const [submitting, setSubmitting] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [submissions, setSubmissions] = useState<any[]>([]);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     checkSubscription();
-  }, []);
+    fetchSubmissions();
+  }, [selectedCategory]);
 
   const checkSubscription = async () => {
     try {
@@ -56,6 +58,29 @@ const Megatalent = () => {
       console.error('Error checking subscription:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSubmissions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('talent_submissions')
+        .select(`
+          *,
+          profiles:user_id (
+            full_name,
+            avatar_url
+          )
+        `)
+        .eq('category', selectedCategory as any)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setSubmissions(data || []);
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
     }
   };
 
@@ -221,6 +246,9 @@ const Megatalent = () => {
       setTitle("");
       setDescription("");
       setUploadedFile(null);
+      
+      // Refresh submissions
+      fetchSubmissions();
     } catch (error) {
       console.error('Submit error:', error);
       toast({
@@ -464,60 +492,76 @@ const Megatalent = () => {
                     </Badge>
                   </div>
 
-                  {/* Sample Posts */}
-                  {[1, 2, 3].map((post) => (
-                    <Card key={post} className="overflow-hidden">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-primary rounded-full"></div>
-                            <div>
-                              <p className="font-semibold">Používateľ {post}</p>
-                              <p className="text-sm text-muted-foreground">pred 2 hodinami</p>
-                            </div>
-                          </div>
-                          <Badge variant="secondary">{cat.label}</Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="aspect-video bg-gradient-secondary rounded-lg flex items-center justify-center">
-                          <Video className="h-12 w-12 text-muted-foreground" />
-                        </div>
-                        <p className="text-sm">
-                          Môj príspevok v kategórii {cat.label}! 🎵 Dúfam, že sa vám páči!
-                        </p>
-                        <div className="flex items-center justify-between pt-2">
-                          <div className="flex items-center space-x-4">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleVote('like')}
-                              className="text-green-500 hover:text-green-600"
-                            >
-                              <Heart className="h-4 w-4 mr-1" />
-                              {Math.floor(Math.random() * 500) + 100}
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleVote('dislike')}
-                              className="text-red-500 hover:text-red-600"
-                            >
-                              <Heart className="h-4 w-4 mr-1 transform rotate-180" />
-                              {Math.floor(Math.random() * 50) + 10}
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <MessageCircle className="h-4 w-4 mr-1" />
-                              {Math.floor(Math.random() * 50) + 5}
-                            </Button>
-                          </div>
-                          <Button variant="ghost" size="sm">
-                            <Share2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </CardContent>
+                  {/* Real Posts from Database */}
+                  {submissions.length === 0 ? (
+                    <Card className="p-8 text-center">
+                      <p className="text-muted-foreground">
+                        Zatiaľ žiadne príspevky v tejto kategórii. Buďte prvý!
+                      </p>
                     </Card>
-                  ))}
+                  ) : (
+                    submissions.map((submission) => (
+                      <Card key={submission.id} className="overflow-hidden">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-white font-semibold">
+                                {submission.profiles?.full_name?.[0] || 'U'}
+                              </div>
+                              <div>
+                                <p className="font-semibold">
+                                  {submission.profiles?.full_name || 'Používateľ'}
+                                </p>
+                                <p className="text-sm text-muted-foreground">
+                                  {new Date(submission.created_at).toLocaleDateString('sk-SK')}
+                                </p>
+                              </div>
+                            </div>
+                            <Badge variant="secondary">{cat.label}</Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <h3 className="font-semibold text-lg">{submission.title}</h3>
+                          {submission.media_type === 'image' ? (
+                            <img 
+                              src={submission.media_url} 
+                              alt={submission.title}
+                              className="w-full aspect-video object-cover rounded-lg"
+                            />
+                          ) : (
+                            <video 
+                              src={submission.media_url} 
+                              controls
+                              className="w-full aspect-video rounded-lg"
+                            />
+                          )}
+                          <p className="text-sm">
+                            {submission.description}
+                          </p>
+                          <div className="flex items-center justify-between pt-2">
+                            <div className="flex items-center space-x-4">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleVote('like')}
+                                className="text-green-500 hover:text-green-600"
+                              >
+                                <Heart className="h-4 w-4 mr-1" />
+                                {submission.votes_count || 0}
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <MessageCircle className="h-4 w-4 mr-1" />
+                                0
+                              </Button>
+                            </div>
+                            <Button variant="ghost" size="sm">
+                              <Share2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
                 </TabsContent>
               ))}
             </Tabs>
