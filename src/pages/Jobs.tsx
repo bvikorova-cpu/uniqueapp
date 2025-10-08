@@ -352,7 +352,7 @@ const Jobs = () => {
           <div className="flex gap-2">
             <Dialog open={showJobSeekerDialog} onOpenChange={setShowJobSeekerDialog}>
               <DialogTrigger asChild>
-                <Button variant="outline">
+                <Button>
                   <Search className="h-4 w-4 mr-2" />
                   Hľadám prácu
                 </Button>
