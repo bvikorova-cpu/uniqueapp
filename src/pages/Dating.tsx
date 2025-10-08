@@ -38,6 +38,7 @@ interface Message {
   sender_id: string;
   content: string;
   created_at: string;
+  read_at?: string | null;
   read_at: string | null;
 }
 
@@ -89,6 +90,10 @@ const Dating = () => {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingAdditional, setUploadingAdditional] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [lastSwipe, setLastSwipe] = useState<{profile_id: string, action: string} | null>(null);
+  const [showGiftDialog, setShowGiftDialog] = useState(false);
+  const [gifts, setGifts] = useState<any[]>([]);
+  const [likesYou, setLikesYou] = useState<any[]>([]);
   const [showGiftDialog, setShowGiftDialog] = useState(false);
   const [availableGifts, setAvailableGifts] = useState<GiftType[]>([]);
   const [sentGifts, setSentGifts] = useState<SentGift[]>([]);
@@ -849,7 +854,7 @@ const Dating = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <Tabs defaultValue="swipe" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-4 max-w-3xl mx-auto mb-8">
             <TabsTrigger value="swipe">
               <Heart className="h-4 w-4 mr-2" />
               Swipe
@@ -858,9 +863,13 @@ const Dating = () => {
               <MessageCircle className="h-4 w-4 mr-2" />
               Matche ({matches.length})
             </TabsTrigger>
+            <TabsTrigger value="likes">
+              <Eye className="h-4 w-4 mr-2" />
+              Páčia sa ({likesYou.length})
+            </TabsTrigger>
             <TabsTrigger value="profile">
               <Settings className="h-4 w-4 mr-2" />
-              Môj profil
+              Profil
             </TabsTrigger>
           </TabsList>
 
