@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 
 const FitSlim = () => {
   const [activeTab, setActiveTab] = useState("weight-loss-videos");
-  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
 
   const weightLossVideos = [
     {
@@ -788,7 +787,10 @@ const FitSlim = () => {
                 <Card 
                   key={video.id} 
                   className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
-                  onClick={() => setSelectedVideo(video.videoUrl)}
+                  onClick={() => {
+                    const youtubeUrl = video.videoUrl.replace('/embed/', '/watch?v=').replace('?autoplay=1&rel=0', '');
+                    window.open(youtubeUrl, '_blank');
+                  }}
                 >
                   <div className="relative aspect-video">
                     <img
@@ -822,7 +824,10 @@ const FitSlim = () => {
                 <Card 
                   key={video.id} 
                   className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
-                  onClick={() => setSelectedVideo(video.videoUrl)}
+                  onClick={() => {
+                    const youtubeUrl = video.videoUrl.replace('/embed/', '/watch?v=').replace('?autoplay=1&rel=0', '');
+                    window.open(youtubeUrl, '_blank');
+                  }}
                 >
                   <div className="relative aspect-video">
                     <img
@@ -841,11 +846,7 @@ const FitSlim = () => {
                   <CardHeader>
                     <CardTitle className="text-lg">{video.title}</CardTitle>
                     <CardDescription className="flex items-center justify-between">
-                      <span>Náročnosť: {video.difficulty}</span>
-                      <span className="text-primary font-semibold flex items-center">
-                        <Heart className="h-3 w-3 mr-1" />
-                        {video.benefit}
-                      </span>
+                      <span>Benefit: {video.benefit}</span>
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -915,41 +916,6 @@ const FitSlim = () => {
           </TabsContent>
         </Tabs>
 
-        {/* Video Player Dialog */}
-        <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
-          <DialogContent className="max-w-5xl p-0 overflow-hidden">
-            <DialogHeader className="px-6 pt-6">
-              <DialogTitle>Video prehrávač</DialogTitle>
-              <DialogDescription>
-                Pozrite si tréningové video
-              </DialogDescription>
-            </DialogHeader>
-            <div className="w-full px-6 pb-6">
-              <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
-                {selectedVideo && (
-                  <iframe
-                    className="w-full h-full"
-                    src={selectedVideo}
-                    title="Video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                )}
-              </div>
-            </div>
-            <div className="px-6 pb-6">
-              <Button 
-                onClick={() => setSelectedVideo(null)} 
-                variant="outline" 
-                className="w-full"
-              >
-                <X className="h-4 w-4 mr-2" />
-                Zavrieť
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );
