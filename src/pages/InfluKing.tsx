@@ -440,10 +440,10 @@ const InfluKing = () => {
                       id="category"
                       value={newProfile.category}
                       onChange={(e) => setNewProfile({ ...newProfile, category: e.target.value })}
-                      className="w-full p-2 border rounded-md"
+                      className="w-full p-2 border rounded-md bg-black text-white"
                     >
                       {CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
+                        <option key={cat} value={cat} className="bg-black text-white">
                           {cat}
                         </option>
                       ))}
