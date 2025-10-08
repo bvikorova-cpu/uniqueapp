@@ -110,42 +110,6 @@ const FitSlim = () => {
       thumbnail: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&auto=format&fit=crop",
       videoUrl: "https://www.youtube.com/embed/pSHjTRCQxIw?autoplay=1&rel=0",
     },
-    {
-      id: 12,
-      title: "Low Impact Cardio - šetrné pre kĺby",
-      duration: "22 min",
-      difficulty: "Ľahká",
-      calories: "160 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/IlcJHwXnGh4?autoplay=1&rel=0",
-    },
-    {
-      id: 13,
-      title: "Boxing workout - sila a vytrvalosť",
-      duration: "18 min",
-      difficulty: "Náročná",
-      calories: "240 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/T2e4THaWgVw?autoplay=1&rel=0",
-    },
-    {
-      id: 14,
-      title: "Stair workout - schody ako posilňovňa",
-      duration: "12 min",
-      difficulty: "Stredná",
-      calories: "170 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1486218119243-13883505764c?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/WgeI7Mwhx8Q?autoplay=1&rel=0",
-    },
-    {
-      id: 15,
-      title: "Walking workout doma",
-      duration: "20 min",
-      difficulty: "Ľahká",
-      calories: "140 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&auto=format&fit=crop",
-      videoUrl: "https://www.youtube.com/embed/puh8TP0B9EY?autoplay=1&rel=0",
-    },
   ];
 
   const healthVideos = [
