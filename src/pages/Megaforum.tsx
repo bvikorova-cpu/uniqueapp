@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MessageSquare, ThumbsUp, Reply, Send, TrendingUp, Users, Trash2 } from "lucide-react";
+import { MessageSquare, ThumbsUp, Reply, Send, TrendingUp, Users, Trash2, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -40,6 +40,7 @@ const Megaforum = () => {
   const [selectedCategory, setSelectedCategory] = useState("Všeobecné");
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const categories = [
     "Všeobecné",
@@ -388,6 +389,11 @@ const Megaforum = () => {
     return `pred ${diffInDays} dňami`;
   };
 
+  const filteredPosts = posts.filter(post => 
+    post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    post.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
@@ -495,11 +501,22 @@ const Megaforum = () => {
 
             {/* Forum Posts */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <h2 className="text-2xl font-bold">Najnovšie diskusie</h2>
-                <Badge variant="secondary">
-                  {posts.length} príspevkov
-                </Badge>
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className="relative flex-1 sm:flex-initial sm:w-64">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Hľadať príspevky..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9"
+                    />
+                  </div>
+                  <Badge variant="secondary">
+                    {filteredPosts.length} príspevkov
+                  </Badge>
+                </div>
               </div>
 
               {isLoading ? (
@@ -508,14 +525,14 @@ const Megaforum = () => {
                     Načítavam príspevky...
                   </CardContent>
                 </Card>
-              ) : posts.length === 0 ? (
+              ) : filteredPosts.length === 0 ? (
                 <Card>
                   <CardContent className="pt-6 text-center text-muted-foreground">
-                    Zatiaľ nie sú žiadne príspevky. Buďte prvý kto niečo pridá!
+                    {searchQuery ? "Nenašli sa žiadne príspevky." : "Zatiaľ nie sú žiadne príspevky. Buďte prvý kto niečo pridá!"}
                   </CardContent>
                 </Card>
               ) : (
-                posts.map((post) => {
+                filteredPosts.map((post) => {
                   const isLiked = likedPosts.includes(post.id);
                   const profile = profiles[post.user_id];
                   return (
