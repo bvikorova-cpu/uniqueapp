@@ -593,15 +593,6 @@ const TikTok = () => {
                       </div>
                     </SheetContent>
                   </Sheet>
-
-                  <button 
-                    onClick={() => shareVideo(video)}
-                    className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
-                  >
-                    <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
-                      <Share2 className="h-7 w-7" />
-                    </div>
-                  </button>
                 </div>
               </div>
             );
