@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { MessageSquare, ThumbsUp, Reply, Send, TrendingUp, Users } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { MessageSquare, ThumbsUp, Reply, Send, TrendingUp, Users, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -292,6 +293,35 @@ const Megaforum = () => {
     },
   });
 
+  // Delete post mutation
+  const deletePostMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      if (!user) throw new Error("Must be logged in");
+
+      const { error } = await supabase
+        .from("forum_posts")
+        .delete()
+        .eq("id", postId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
+      toast({
+        title: "Príspevok vymazaný",
+        description: "Váš príspevok bol úspešne vymazaný",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa vymazať príspevok",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleCreatePost = () => {
     if (!user) {
       toast({
@@ -338,6 +368,10 @@ const Megaforum = () => {
     }
 
     likeCommentMutation.mutate(commentId);
+  };
+
+  const handleDeletePost = (postId: string) => {
+    deletePostMutation.mutate(postId);
   };
 
   const getTimeSince = (dateString: string) => {
@@ -487,7 +521,7 @@ const Megaforum = () => {
                   return (
                     <Card key={post.id} className="hover:shadow-lg transition-shadow">
                       <CardContent className="pt-6">
-                        <div className="flex gap-4">
+                          <div className="flex gap-4">
                           <Avatar className="h-12 w-12">
                             <AvatarImage src={profile?.avatar_url || undefined} />
                             <AvatarFallback className="bg-gradient-primary text-white">
@@ -497,7 +531,7 @@ const Megaforum = () => {
 
                           <div className="flex-1 space-y-3">
                             <div className="flex items-start justify-between">
-                              <div>
+                              <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                   <h3 className="font-semibold text-lg">{post.title}</h3>
                                   <Badge variant="outline" className="text-xs">
@@ -508,6 +542,32 @@ const Megaforum = () => {
                                   {profile?.full_name || "Používateľ"} • {getTimeSince(post.created_at)}
                                 </p>
                               </div>
+                              {user?.id === post.user_id && (
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Vymazať príspevok?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Táto akcia sa nedá vrátiť späť. Príspevok a všetky jeho komentáre budú natrvalo vymazané.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                                      <AlertDialogAction 
+                                        onClick={() => handleDeletePost(post.id)}
+                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      >
+                                        Vymazať
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              )}
                             </div>
 
                             <p className="text-foreground">{post.content}</p>
