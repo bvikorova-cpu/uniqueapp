@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Gavel, Clock, TrendingUp, Plus, Upload } from "lucide-react";
+import { Gavel, Clock, TrendingUp, Plus, Upload, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -42,6 +42,9 @@ const Auction = () => {
   const [category, setCategory] = useState("");
   const [condition, setCondition] = useState("");
   const [duration, setDuration] = useState("24");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     checkUser();
@@ -71,6 +74,27 @@ const Auction = () => {
     }
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Súbor je príliš veľký. Maximálna veľkosť je 5MB");
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview("");
+  };
+
   const handleCreateAuction = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -80,7 +104,26 @@ const Auction = () => {
       return;
     }
 
+    setUploading(true);
     try {
+      let imageUrl = null;
+      
+      // Upload image if selected
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from('bazaar_images')
+          .upload(fileName, imageFile);
+
+        if (uploadError) throw uploadError;
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from('bazaar_images')
+          .getPublicUrl(fileName);
+        imageUrl = publicUrl;
+      }
+
       const endsAt = new Date();
       endsAt.setHours(endsAt.getHours() + parseInt(duration));
 
@@ -94,6 +137,7 @@ const Auction = () => {
         category,
         condition,
         ends_at: endsAt.toISOString(),
+        image_url: imageUrl,
       });
 
       if (error) throw error;
@@ -105,6 +149,8 @@ const Auction = () => {
     } catch (error) {
       console.error("Error creating auction:", error);
       toast.error("Nepodarilo sa vytvoriť aukciu");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -116,6 +162,8 @@ const Auction = () => {
     setCategory("");
     setCondition("");
     setDuration("24");
+    setImageFile(null);
+    setImagePreview("");
   };
 
   const handleBid = async (auctionId: string, currentPrice: number) => {
@@ -292,8 +340,49 @@ const Auction = () => {
                   </Select>
                 </div>
 
-                <Button type="submit" className="w-full">
-                  Vytvoriť aukciu
+                {/* Image Upload */}
+                <div className="space-y-2">
+                  <Label>Obrázok produktu</Label>
+                  {imagePreview ? (
+                    <div className="relative">
+                      <img 
+                        src={imagePreview} 
+                        alt="Náhľad" 
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={removeImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-input rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground">
+                          Kliknite pre nahratie obrázka
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Max. 5MB (JPG, PNG, WEBP)
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleImageSelect}
+                      />
+                    </label>
+                  )}
+                </div>
+
+                <Button type="submit" className="w-full" disabled={uploading}>
+                  {uploading ? "Vytváram..." : "Vytvoriť aukciu"}
                 </Button>
               </form>
             </DialogContent>
