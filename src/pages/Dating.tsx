@@ -38,7 +38,6 @@ interface Message {
   sender_id: string;
   content: string;
   created_at: string;
-  read_at?: string | null;
   read_at: string | null;
 }
 
@@ -90,15 +89,11 @@ const Dating = () => {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingAdditional, setUploadingAdditional] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
-  const [lastSwipe, setLastSwipe] = useState<{profile_id: string, action: string} | null>(null);
-  const [showGiftDialog, setShowGiftDialog] = useState(false);
-  const [gifts, setGifts] = useState<any[]>([]);
-  const [likesYou, setLikesYou] = useState<any[]>([]);
   const [showGiftDialog, setShowGiftDialog] = useState(false);
   const [availableGifts, setAvailableGifts] = useState<GiftType[]>([]);
   const [sentGifts, setSentGifts] = useState<SentGift[]>([]);
   const [canRewind, setCanRewind] = useState(false);
-  const [lastSwipe, setLastSwipe] = useState<any>(null);
+  const [lastSwipe, setLastSwipe] = useState<{ swiped_profile_id: string; action: string } | null>(null);
   const [likesYouCount, setLikesYouCount] = useState(0);
   const [superLikesRemaining, setSuperLikesRemaining] = useState(5);
 
@@ -309,7 +304,7 @@ const Dating = () => {
       });
     
     setCanRewind(true);
-    setLastSwipe({ profile: currentCard, action: isSuper ? "super_like" : action });
+    setLastSwipe({ swiped_profile_id: currentCard.user_id, action: isSuper ? "super_like" : action });
 
     if (isSuper) {
       const { error: superError } = await supabase
@@ -640,7 +635,7 @@ const Dating = () => {
       .from("dating_swipes")
       .delete()
       .eq("swiper_id", user.id)
-      .eq("swiped_id", lastSwipe.profile.user_id);
+      .eq("swiped_id", lastSwipe.swiped_profile_id);
 
     if (error) {
       toast({
@@ -865,7 +860,7 @@ const Dating = () => {
             </TabsTrigger>
             <TabsTrigger value="likes">
               <Eye className="h-4 w-4 mr-2" />
-              Páčia sa ({likesYou.length})
+              Páčia sa ({likesYouCount})
             </TabsTrigger>
             <TabsTrigger value="profile">
               <Settings className="h-4 w-4 mr-2" />
