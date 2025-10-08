@@ -100,6 +100,35 @@ export type Database = {
         }
         Relationships: []
       }
+      auction_photos: {
+        Row: {
+          auction_id: string
+          created_at: string
+          id: string
+          photo_url: string
+        }
+        Insert: {
+          auction_id: string
+          created_at?: string
+          id?: string
+          photo_url: string
+        }
+        Update: {
+          auction_id?: string
+          created_at?: string
+          id?: string
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_photos_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auction_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bazaar_items: {
         Row: {
           category: string

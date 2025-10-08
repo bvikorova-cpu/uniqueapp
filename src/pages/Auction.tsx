@@ -45,9 +45,12 @@ const Auction = () => {
   const [category, setCategory] = useState("");
   const [condition, setCondition] = useState("");
   const [duration, setDuration] = useState("24");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>("");
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [detailDialogOpen, setDetailDialogOpen] = useState(false);
+  const [detailAuction, setDetailAuction] = useState<AuctionItem | null>(null);
+  const [auctionPhotos, setAuctionPhotos] = useState<string[]>([]);
 
   useEffect(() => {
     checkUser();
@@ -78,24 +81,35 @@ const Auction = () => {
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    const files = Array.from(e.target.files || []);
+    
+    if (imageFiles.length + files.length > 3) {
+      toast.error("Môžete nahrať maximálne 3 fotky");
+      return;
+    }
+
+    const validFiles = files.filter(file => {
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Súbor je príliš veľký. Maximálna veľkosť je 5MB");
-        return;
+        toast.error(`${file.name} je príliš veľký. Maximálna veľkosť je 5MB`);
+        return false;
       }
-      setImageFile(file);
+      return true;
+    });
+
+    setImageFiles(prev => [...prev, ...validFiles]);
+
+    validFiles.forEach(file => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
+        setImagePreviews(prev => [...prev, reader.result as string]);
       };
       reader.readAsDataURL(file);
-    }
+    });
   };
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview("");
+  const removeImage = (index: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleCreateAuction = async (e: React.FormEvent) => {
@@ -109,41 +123,51 @@ const Auction = () => {
 
     setUploading(true);
     try {
-      let imageUrl = null;
-      
-      // Upload image if selected
-      if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        const { error: uploadError } = await supabase.storage
-          .from('bazaar_images')
-          .upload(fileName, imageFile);
-
-        if (uploadError) throw uploadError;
-        
-        const { data: { publicUrl } } = supabase.storage
-          .from('bazaar_images')
-          .getPublicUrl(fileName);
-        imageUrl = publicUrl;
-      }
-
       const endsAt = new Date();
       endsAt.setHours(endsAt.getHours() + parseInt(duration));
 
-      const { error } = await supabase.from("auction_items").insert({
-        user_id: user.id,
-        title,
-        description,
-        starting_price: parseFloat(startingPrice),
-        current_price: parseFloat(startingPrice),
-        buyout_price: buyoutPrice ? parseFloat(buyoutPrice) : null,
-        category,
-        condition,
-        ends_at: endsAt.toISOString(),
-        image_url: imageUrl,
-      });
+      // Create auction first
+      const { data: auctionData, error: auctionError } = await supabase
+        .from("auction_items")
+        .insert({
+          user_id: user.id,
+          title,
+          description,
+          starting_price: parseFloat(startingPrice),
+          current_price: parseFloat(startingPrice),
+          buyout_price: buyoutPrice ? parseFloat(buyoutPrice) : null,
+          category,
+          condition,
+          ends_at: endsAt.toISOString(),
+          image_url: null,
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (auctionError) throw auctionError;
+
+      // Upload images if selected
+      if (imageFiles.length > 0) {
+        for (const file of imageFiles) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${user.id}-${Date.now()}-${Math.random()}.${fileExt}`;
+          const { error: uploadError } = await supabase.storage
+            .from('bazaar_images')
+            .upload(fileName, file);
+
+          if (uploadError) throw uploadError;
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from('bazaar_images')
+            .getPublicUrl(fileName);
+
+          // Save photo to auction_photos table
+          await supabase.from("auction_photos").insert({
+            auction_id: auctionData.id,
+            photo_url: publicUrl,
+          });
+        }
+      }
 
       toast.success("Aukcia bola vytvorená!");
       setCreateDialogOpen(false);
@@ -165,8 +189,8 @@ const Auction = () => {
     setCategory("");
     setCondition("");
     setDuration("24");
-    setImageFile(null);
-    setImagePreview("");
+    setImageFiles([]);
+    setImagePreviews([]);
   };
 
   const handleBid = async (auction: AuctionItem) => {
@@ -273,6 +297,40 @@ const Auction = () => {
       console.error("Error placing bid:", error);
       toast.error("Nepodarilo sa pridať ponuku");
     }
+  };
+
+  const handleDeleteAuction = async (auctionId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from("auction_items")
+        .delete()
+        .eq("id", auctionId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      toast.success("Aukcia bola zmazaná");
+      fetchAuctions();
+    } catch (error) {
+      console.error("Error deleting auction:", error);
+      toast.error("Nepodarilo sa zmazať aukciu");
+    }
+  };
+
+  const handleShowDetail = async (auction: AuctionItem) => {
+    setDetailAuction(auction);
+    
+    // Fetch photos for this auction
+    const { data: photos } = await supabase
+      .from("auction_photos")
+      .select("photo_url")
+      .eq("auction_id", auction.id)
+      .order("created_at", { ascending: true });
+
+    setAuctionPhotos(photos?.map(p => p.photo_url) || []);
+    setDetailDialogOpen(true);
   };
 
   const getTimeRemaining = (endsAt: string) => {
@@ -418,30 +476,37 @@ const Auction = () => {
 
                 {/* Image Upload */}
                 <div className="space-y-2">
-                  <Label>Obrázok produktu</Label>
-                  {imagePreview ? (
-                    <div className="relative">
-                      <img 
-                        src={imagePreview} 
-                        alt="Náhľad" 
-                        className="w-full h-48 object-cover rounded-lg"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2"
-                        onClick={removeImage}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                  <Label>Obrázky produktu (max 3)</Label>
+                  
+                  {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-3 gap-2">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative">
+                          <img 
+                            src={preview} 
+                            alt={`Náhľad ${index + 1}`} 
+                            className="w-full h-32 object-cover rounded-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6"
+                            onClick={() => removeImage(index)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
-                  ) : (
+                  )}
+
+                  {imagePreviews.length < 3 && (
                     <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-input rounded-lg cursor-pointer hover:bg-accent/50 transition-colors">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <Upload className="h-8 w-8 text-muted-foreground mb-2" />
                         <p className="text-sm text-muted-foreground">
-                          Kliknite pre nahratie obrázka
+                          Kliknite pre nahratie obrázkov ({imagePreviews.length}/3)
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Max. 5MB (JPG, PNG, WEBP)
@@ -451,6 +516,7 @@ const Auction = () => {
                         type="file"
                         className="hidden"
                         accept="image/*"
+                        multiple
                         onChange={handleImageSelect}
                       />
                     </label>
@@ -536,7 +602,12 @@ const Auction = () => {
                         )}
                       </div>
                       <div className="flex justify-between items-start">
-                        <CardTitle className="text-xl">{auction.title}</CardTitle>
+                        <CardTitle 
+                          className="text-xl cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => handleShowDetail(auction)}
+                        >
+                          {auction.title}
+                        </CardTitle>
                         <Badge variant="outline">{auction.category}</Badge>
                       </div>
                       <CardDescription className="line-clamp-2">
@@ -562,21 +633,33 @@ const Auction = () => {
                       </div>
                     </CardContent>
                     <CardFooter className="flex gap-2">
-                      <Button 
-                        className="flex-1"
-                        onClick={() => handleBid(auction)}
-                      >
-                        <Gavel className="mr-2 h-4 w-4" />
-                        Prihodiť
-                      </Button>
-                      {auction.buyout_price && (
+                      {user?.id === auction.user_id ? (
                         <Button 
-                          variant="outline" 
+                          variant="destructive"
                           className="flex-1"
-                          onClick={() => handleBuyout(auction)}
+                          onClick={() => handleDeleteAuction(auction.id)}
                         >
-                          Kúpiť za {parseFloat(auction.buyout_price.toString()).toFixed(2)}€
+                          Zmazať
                         </Button>
+                      ) : (
+                        <>
+                          <Button 
+                            className="flex-1"
+                            onClick={() => handleBid(auction)}
+                          >
+                            <Gavel className="mr-2 h-4 w-4" />
+                            Prihodiť
+                          </Button>
+                          {auction.buyout_price && (
+                            <Button 
+                              variant="outline" 
+                              className="flex-1"
+                              onClick={() => handleBuyout(auction)}
+                            >
+                              Kúpiť za {parseFloat(auction.buyout_price.toString()).toFixed(2)}€
+                            </Button>
+                          )}
+                        </>
                       )}
                     </CardFooter>
                   </Card>
@@ -717,6 +800,115 @@ const Auction = () => {
                   Prihodiť {bidAmount && `${parseFloat(bidAmount).toFixed(2)}€`}
                 </Button>
               </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Detail Dialog */}
+        <Dialog open={detailDialogOpen} onOpenChange={setDetailDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            {detailAuction && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>{detailAuction.title}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  {/* Photos Carousel */}
+                  {auctionPhotos.length > 0 && (
+                    <div className="space-y-2">
+                      {auctionPhotos.length === 1 ? (
+                        <img 
+                          src={auctionPhotos[0]} 
+                          alt={detailAuction.title} 
+                          className="w-full h-96 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <div className="grid grid-cols-1 gap-2">
+                          {auctionPhotos.map((photo, index) => (
+                            <img 
+                              key={index}
+                              src={photo} 
+                              alt={`${detailAuction.title} ${index + 1}`} 
+                              className="w-full h-64 object-cover rounded-lg"
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Details */}
+                  <div className="space-y-3">
+                    <div>
+                      <h3 className="font-semibold mb-1">Popis</h3>
+                      <p className="text-muted-foreground">{detailAuction.description}</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="font-semibold text-sm">Aktuálna cena</h4>
+                        <p className="text-2xl font-bold text-primary">
+                          {parseFloat(detailAuction.current_price.toString()).toFixed(2)}€
+                        </p>
+                      </div>
+                      {detailAuction.buyout_price && (
+                        <div>
+                          <h4 className="font-semibold text-sm">Kúpiť teraz</h4>
+                          <p className="text-2xl font-bold">
+                            {parseFloat(detailAuction.buyout_price.toString()).toFixed(2)}€
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="font-semibold text-sm">Kategória</h4>
+                        <Badge variant="outline">{detailAuction.category}</Badge>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm">Stav</h4>
+                        <Badge variant="secondary">{detailAuction.condition}</Badge>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold text-sm">Zostávajúci čas</h4>
+                      <p className="text-lg font-semibold text-primary">
+                        {getTimeRemaining(detailAuction.ends_at)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  {user?.id !== detailAuction.user_id && (
+                    <div className="flex gap-2 pt-4 border-t">
+                      <Button 
+                        className="flex-1"
+                        onClick={() => {
+                          setDetailDialogOpen(false);
+                          handleBid(detailAuction);
+                        }}
+                      >
+                        <Gavel className="mr-2 h-4 w-4" />
+                        Prihodiť
+                      </Button>
+                      {detailAuction.buyout_price && (
+                        <Button 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => {
+                            setDetailDialogOpen(false);
+                            handleBuyout(detailAuction);
+                          }}
+                        >
+                          Kúpiť za {parseFloat(detailAuction.buyout_price.toString()).toFixed(2)}€
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </DialogContent>
         </Dialog>
