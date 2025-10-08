@@ -15,11 +15,11 @@ export const BarbieGame = ({ onBack }: BarbieGameProps) => {
         </Button>
       </div>
       <iframe
-        src="https://sk.sgames.org/barbee-summer-nails/?embed=true"
+        src="https://storage.y8.com/y8-studio/html5/fabboxstudios/barbee_summer_nails/?key=y8&value=default"
         className="w-full h-full border-0"
         title="Barbie Summer Nails"
         allowFullScreen
-        sandbox="allow-scripts allow-same-origin allow-forms"
+        allow="autoplay"
       />
     </div>
   );
