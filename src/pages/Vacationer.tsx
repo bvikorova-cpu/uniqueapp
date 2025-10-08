@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plane, MapPin, Star, Plus, Camera, Send } from "lucide-react";
+import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -40,6 +40,8 @@ const Vacationer = () => {
     location: "",
     description: "",
   });
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const [newReview, setNewReview] = useState({
     rating: 5,
     comment: "",
@@ -96,28 +98,101 @@ const Vacationer = () => {
       return;
     }
 
-    const { error } = await supabase
-      .from("destinations")
-      .insert([{
-        ...newDestination,
-        user_id: user.id,
-      }]);
+    setIsUploading(true);
 
-    if (error) {
-      toast({
-        title: "Chyba",
-        description: "Nepodarilo sa pridať destináciu",
-        variant: "destructive",
-      });
-    } else {
+    try {
+      // Insert destination
+      const { data: destinationData, error: destError } = await supabase
+        .from("destinations")
+        .insert([{
+          ...newDestination,
+          user_id: user.id,
+        }])
+        .select()
+        .single();
+
+      if (destError) throw destError;
+
+      // Upload files if any
+      if (selectedFiles.length > 0) {
+        const uploadPromises = selectedFiles.map(async (file) => {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${user.id}/${Date.now()}-${Math.random()}.${fileExt}`;
+          
+          const { error: uploadError } = await supabase.storage
+            .from('destination-media')
+            .upload(fileName, file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('destination-media')
+            .getPublicUrl(fileName);
+
+          // Insert photo record
+          await supabase
+            .from('destination_photos')
+            .insert([{
+              destination_id: destinationData.id,
+              photo_url: publicUrl,
+            }]);
+        });
+
+        await Promise.all(uploadPromises);
+      }
+
       toast({
         title: "Úspech",
         description: "Destinácia bola pridaná",
       });
       setNewDestination({ name: "", location: "", description: "" });
+      setSelectedFiles([]);
       setIsAddDialogOpen(false);
       fetchDestinations();
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa pridať destináciu",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
     }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(file => {
+      const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
+      const isUnder10MB = file.size <= 10 * 1024 * 1024; // 10MB limit
+      
+      if (!isImage && !isVideo) {
+        toast({
+          title: "Neplatný súbor",
+          description: `${file.name} nie je obrázok ani video`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      
+      if (!isUnder10MB) {
+        toast({
+          title: "Súbor je príliš veľký",
+          description: `${file.name} presahuje limit 10MB`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      
+      return true;
+    });
+    
+    setSelectedFiles(prev => [...prev, ...validFiles].slice(0, 5)); // Max 5 files
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleAddReview = async () => {
@@ -223,9 +298,75 @@ const Vacationer = () => {
                     className="min-h-24"
                   />
                 </div>
-                <Button onClick={handleAddDestination} className="w-full">
+                <div>
+                  <label className="text-sm font-medium">Obrázky a videá (max 5, do 10MB)</label>
+                  <div className="mt-2 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="file"
+                        accept="image/*,video/*"
+                        multiple
+                        onChange={handleFileChange}
+                        className="hidden"
+                        id="media-upload"
+                        disabled={selectedFiles.length >= 5}
+                      />
+                      <label htmlFor="media-upload">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="cursor-pointer"
+                          asChild
+                          disabled={selectedFiles.length >= 5}
+                        >
+                          <span>
+                            <Upload className="h-4 w-4 mr-2" />
+                            Vybrať súbory
+                          </span>
+                        </Button>
+                      </label>
+                      <span className="text-sm text-muted-foreground">
+                        {selectedFiles.length}/5 súborov
+                      </span>
+                    </div>
+                    {selectedFiles.length > 0 && (
+                      <div className="grid grid-cols-3 gap-2">
+                        {selectedFiles.map((file, index) => (
+                          <div key={index} className="relative group">
+                            <div className="aspect-square bg-secondary rounded-lg overflow-hidden">
+                              {file.type.startsWith('image/') ? (
+                                <img
+                                  src={URL.createObjectURL(file)}
+                                  alt={file.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                  <Camera className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                              )}
+                            </div>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => removeFile(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                            <p className="text-xs text-muted-foreground mt-1 truncate">
+                              {file.name}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <Button onClick={handleAddDestination} className="w-full" disabled={isUploading}>
                   <Send className="h-4 w-4 mr-2" />
-                  Pridať destináciu
+                  {isUploading ? "Nahrávam..." : "Pridať destináciu"}
                 </Button>
               </div>
             </DialogContent>
