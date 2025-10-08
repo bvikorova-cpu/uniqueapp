@@ -309,13 +309,13 @@ const Megatalent = () => {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <div className="space-y-4">
               <Badge className="bg-gold text-gold-foreground animate-glow">
-                💰 Mesačná výhra 100.000 €
+                💰 Mesačná výhra 10.000 €
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 Vstup do Megatalent
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Prihláste sa do exkluzívnej súťaže kde môžete vyhrať až 100.000 € každý mesiac!
+                Prihláste sa do exkluzívnej súťaže kde môžete vyhrať až 10.000 € každý mesiac!
                 Zdieľajte svoj talent a súťažte s najlepšími.
               </p>
             </div>
@@ -333,7 +333,7 @@ const Megatalent = () => {
                       <span>✨ Prístup do Megatalent súťaže</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>🎯 Šanca vyhrať 100.000 €</span>
+                      <span>🎯 Šanca vyhrať 10.000 €</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span>📱 Nahrávanie foto & video</span>
@@ -619,7 +619,7 @@ const Megatalent = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-gold">100.000 €</div>
+                  <div className="text-3xl font-bold text-gold">10.000 €</div>
                   <p className="text-sm text-muted-foreground">Hlavná výhra</p>
                 </div>
                 <div className="space-y-2">
