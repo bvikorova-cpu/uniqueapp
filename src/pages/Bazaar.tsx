@@ -33,6 +33,8 @@ const Bazaar = () => {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<BazaarItem | null>(null);
   const [items, setItems] = useState<BazaarItem[]>([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -198,11 +200,16 @@ const Bazaar = () => {
     }
   };
 
-  const handleContact = (sellerName: string) => {
+  const handleContact = (item: BazaarItem) => {
     toast({
       title: "Kontakt predajcu",
-      description: `Kontaktovanie ${sellerName} - potrebné pripojenie k databáze`,
+      description: `Kontaktovanie predajcu - funkcia bude dostupná čoskoro`,
     });
+  };
+
+  const openDetail = (item: BazaarItem) => {
+    setSelectedItem(item);
+    setIsDetailOpen(true);
   };
 
   return (
@@ -401,7 +408,10 @@ const Bazaar = () => {
                 </div>
               </CardHeader>
               <CardContent className="p-4">
-                <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                <h3 
+                  className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2 cursor-pointer"
+                  onClick={() => openDetail(item)}
+                >
                   {item.title}
                 </h3>
                 
@@ -427,18 +437,79 @@ const Bazaar = () => {
                 <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
                   {item.description}
                 </p>
-
-                <Button 
-                  className="w-full"
-                  onClick={() => handleContact(item.profiles?.full_name || "Anonymný užívateľ")}
-                >
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Kontaktovať
-                </Button>
               </CardContent>
             </Card>
           ))}
         </div>
+
+        {/* Detail Dialog */}
+        <Dialog open={isDetailOpen} onOpenChange={setIsDetailOpen}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{selectedItem?.title}</DialogTitle>
+            </DialogHeader>
+            {selectedItem && (
+              <div className="space-y-6">
+                {selectedItem.image_url && (
+                  <img
+                    src={selectedItem.image_url}
+                    alt={selectedItem.title}
+                    className="w-full h-64 object-cover rounded-lg"
+                  />
+                )}
+                
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-3xl font-bold text-success mb-2">
+                      €{selectedItem.price}
+                    </div>
+                    <Badge>{selectedItem.condition}</Badge>
+                  </div>
+
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span>{selectedItem.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span>{getTimeAgo(selectedItem.created_at)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-muted-foreground" />
+                      <span>{selectedItem.profiles?.full_name || "Anonymný užívateľ"}</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-2">Kategória</h4>
+                    <p className="text-muted-foreground">
+                      {categories.find(c => c.id === selectedItem.category)?.name}
+                    </p>
+                  </div>
+
+                  {selectedItem.description && (
+                    <div>
+                      <h4 className="font-semibold mb-2">Popis</h4>
+                      <p className="text-muted-foreground whitespace-pre-wrap">
+                        {selectedItem.description}
+                      </p>
+                    </div>
+                  )}
+
+                  <Button 
+                    className="w-full" 
+                    size="lg"
+                    onClick={() => handleContact(selectedItem)}
+                  >
+                    <MessageCircle className="h-5 w-5 mr-2" />
+                    Kontaktovať predajcu
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {filteredItems.length === 0 && (
           <div className="text-center py-12">
