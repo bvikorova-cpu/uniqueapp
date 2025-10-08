@@ -208,6 +208,21 @@ const Auction = () => {
         })
         .eq("id", auction.id);
 
+      // Create notification for seller
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      await supabase.from("notifications").insert({
+        user_id: auction.user_id,
+        title: "Produkt bol zakúpený",
+        message: `${profileData?.full_name || "Používateľ"} zakúpil váš produkt "${auction.title}" za ${auction.buyout_price}€`,
+        type: "auction_buyout",
+        related_id: auction.id,
+      });
+
       toast.success("Produkt bol úspešne zakúpený!");
       fetchAuctions();
     } catch (error) {
@@ -233,6 +248,21 @@ const Auction = () => {
       });
 
       if (error) throw error;
+
+      // Create notification for seller
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      await supabase.from("notifications").insert({
+        user_id: selectedAuction.user_id,
+        title: "Nové prihodenie v aukcii",
+        message: `${profileData?.full_name || "Používateľ"} prihodel ${amount}€ na váš produkt "${selectedAuction.title}"`,
+        type: "auction_bid",
+        related_id: selectedAuction.id,
+      });
 
       toast.success("Ponuka bola úspešne pridaná!");
       setBidDialogOpen(false);
