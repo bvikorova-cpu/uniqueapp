@@ -702,7 +702,7 @@ const Jobs = () => {
                 <CardContent className="space-y-4">
                   <div>
                     <h4 className="font-semibold text-sm mb-2">Popis pozície</h4>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
                       {job.description}
                     </p>
                   </div>
@@ -710,7 +710,7 @@ const Jobs = () => {
                   {job.requirements && (
                     <div>
                       <h4 className="font-semibold text-sm mb-2">Požiadavky</h4>
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
                         {job.requirements}
                       </p>
                     </div>
@@ -719,7 +719,7 @@ const Jobs = () => {
                   {job.benefits && (
                     <div>
                       <h4 className="font-semibold text-sm mb-2">Benefity</h4>
-                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
                         {job.benefits}
                       </p>
                     </div>
