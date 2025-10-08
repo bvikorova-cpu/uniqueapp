@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -23,6 +24,9 @@ const Megatalent = () => {
   const [loading, setLoading] = useState(true);
   const [uploadedFile, setUploadedFile] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -152,6 +156,80 @@ const Megatalent = () => {
       });
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!title.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Prosím zadajte názov príspevku.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!description.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Prosím zadajte popis.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!uploadedFile) {
+      toast({
+        title: "Chyba",
+        description: "Prosím nahrajte foto alebo video.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Musíte byť prihlásený pre zverejnenie príspevku.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('talent_submissions')
+        .insert({
+          user_id: user.id,
+          title: title.trim(),
+          description: description.trim(),
+          category: selectedCategory as any,
+          media_url: uploadedFile.url,
+          media_type: uploadedFile.type,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspešne zverejnené!",
+        description: "Váš príspevok bol pridaný do súťaže.",
+      });
+
+      // Reset form
+      setTitle("");
+      setDescription("");
+      setUploadedFile(null);
+    } catch (error) {
+      console.error('Submit error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa zverejniť príspevok.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -336,9 +414,26 @@ const Megatalent = () => {
                   </div>
                 )}
                 
-                <Textarea placeholder="Napíš popis svojho talentu..." className="min-h-20" />
-                <Button variant="hero" className="w-full">
-                  Zverejniť
+                <Input 
+                  placeholder="Názov príspevku..."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  maxLength={100}
+                />
+                <Textarea 
+                  placeholder="Napíš popis svojho talentu..." 
+                  className="min-h-20"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  maxLength={500}
+                />
+                <Button 
+                  variant="hero" 
+                  className="w-full"
+                  onClick={handleSubmit}
+                  disabled={submitting || uploading}
+                >
+                  {submitting ? 'Zverejňujem...' : 'Zverejniť'}
                 </Button>
               </CardContent>
             </Card>
