@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Play, Clock, ChefHat, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import heroImage from "@/assets/hero-bg.jpg";
 
 const FitSlim = () => {
   const [activeTab, setActiveTab] = useState("weight-loss-videos");
@@ -17,7 +18,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Stredná",
       calories: "150 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/ml6cT4AZdqI?autoplay=1&rel=0",
     },
     {
@@ -26,7 +27,7 @@ const FitSlim = () => {
       duration: "15 min",
       difficulty: "Ľahká",
       calories: "120 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/gC_L9qAHVJ8?autoplay=1&rel=0",
     },
     {
@@ -35,7 +36,7 @@ const FitSlim = () => {
       duration: "20 min",
       difficulty: "Náročná",
       calories: "250 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/UItWltVZZmE?autoplay=1&rel=0",
     },
     {
@@ -44,7 +45,7 @@ const FitSlim = () => {
       duration: "25 min",
       difficulty: "Náročná",
       calories: "300 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/20LH4dEeWg0?autoplay=1&rel=0",
     },
     {
@@ -53,7 +54,7 @@ const FitSlim = () => {
       duration: "12 min",
       difficulty: "Stredná",
       calories: "100 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/1919eTCoESo?autoplay=1&rel=0",
     },
     {
@@ -62,7 +63,7 @@ const FitSlim = () => {
       duration: "18 min",
       difficulty: "Stredná",
       calories: "200 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/cbKkB3POqaY?autoplay=1&rel=0",
     },
     {
@@ -71,7 +72,7 @@ const FitSlim = () => {
       duration: "14 min",
       difficulty: "Stredná",
       calories: "180 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/2W4ZNSwoW_4?autoplay=1&rel=0",
     },
     {
@@ -80,7 +81,7 @@ const FitSlim = () => {
       duration: "30 min",
       difficulty: "Stredná",
       calories: "320 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/gCBsupdwdVw?autoplay=1&rel=0",
     },
     {
@@ -89,7 +90,7 @@ const FitSlim = () => {
       duration: "16 min",
       difficulty: "Náročná",
       calories: "220 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/SZ6IshIbWGc?autoplay=1&rel=0",
     },
     {
@@ -98,7 +99,7 @@ const FitSlim = () => {
       duration: "8 min",
       difficulty: "Ľahká",
       calories: "90 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1483721310020-03333e577078?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/3sEeVJEXTfY?autoplay=1&rel=0",
     },
     {
@@ -107,7 +108,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Stredná",
       calories: "110 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/pSHjTRCQxIw?autoplay=1&rel=0",
     },
   ];
@@ -119,7 +120,7 @@ const FitSlim = () => {
       duration: "15 min",
       difficulty: "Ľahká",
       benefit: "Energia a flexibilita",
-      thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/v7AYKMP6rOE?autoplay=1&rel=0",
     },
     {
@@ -128,7 +129,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Ľahká",
       benefit: "Úľava od bolesti",
-      thumbnail: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/qULTwquOuT4?autoplay=1&rel=0",
     },
     {
@@ -137,7 +138,7 @@ const FitSlim = () => {
       duration: "12 min",
       difficulty: "Ľahká",
       benefit: "Zníženie stresu",
-      thumbnail: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/inpok4MKVLM?autoplay=1&rel=0",
     },
     {
@@ -146,7 +147,7 @@ const FitSlim = () => {
       duration: "20 min",
       difficulty: "Stredná",
       benefit: "Spevnenie jadra",
-      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/K56Z12XH6WY?autoplay=1&rel=0",
     },
     {
@@ -155,7 +156,7 @@ const FitSlim = () => {
       duration: "14 min",
       difficulty: "Ľahká",
       benefit: "Posilnenie kĺbov",
-      thumbnail: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/AXcJRHYfz5U?autoplay=1&rel=0",
     },
     {
@@ -164,7 +165,7 @@ const FitSlim = () => {
       duration: "8 min",
       difficulty: "Ľahká",
       benefit: "Odstránenie napätia",
-      thumbnail: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/3j_jHMy5JBQ?autoplay=1&rel=0",
     },
     {
@@ -173,7 +174,7 @@ const FitSlim = () => {
       duration: "18 min",
       difficulty: "Ľahká",
       benefit: "Rovnováha a pokoj",
-      thumbnail: "https://images.unsplash.com/photo-1599447292470-2b4f1d6e4f4a?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/6w7IS8_UzHM?autoplay=1&rel=0",
     },
     {
@@ -182,7 +183,7 @@ const FitSlim = () => {
       duration: "12 min",
       difficulty: "Ľahká",
       benefit: "Uvoľnenie svalov",
-      thumbnail: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/IlMGY5yKS4o?autoplay=1&rel=0",
     },
     {
@@ -191,7 +192,7 @@ const FitSlim = () => {
       duration: "16 min",
       difficulty: "Stredná",
       benefit: "Správne držanie",
-      thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/RqcOCBb4arc?autoplay=1&rel=0",
     },
     {
@@ -200,7 +201,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Ľahká",
       benefit: "Lepší spánok",
-      thumbnail: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/ErZ_5-jC-Sg?autoplay=1&rel=0",
     },
     {
@@ -209,7 +210,7 @@ const FitSlim = () => {
       duration: "14 min",
       difficulty: "Ľahká",
       benefit: "Mobilita bedrových kĺbov",
-      thumbnail: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/YwO4GFrqXKc?autoplay=1&rel=0",
     },
     {
@@ -218,7 +219,7 @@ const FitSlim = () => {
       duration: "25 min",
       difficulty: "Ľahká",
       benefit: "Flexibilita",
-      thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/LcnFzJZID18?autoplay=1&rel=0",
     },
     {
@@ -227,7 +228,7 @@ const FitSlim = () => {
       duration: "15 min",
       difficulty: "Ľahká",
       benefit: "Mentálne zdravie",
-      thumbnail: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/ZToicYcHIOU?autoplay=1&rel=0",
     },
     {
@@ -236,7 +237,7 @@ const FitSlim = () => {
       duration: "8 min",
       difficulty: "Ľahká",
       benefit: "Zdravé zápästia",
-      thumbnail: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/fdD7CgN5FGg?autoplay=1&rel=0",
     },
     {
@@ -245,7 +246,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Ľahká",
       benefit: "Úľava pri sedení",
-      thumbnail: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
+      thumbnail: heroImage,
       videoUrl: "https://www.youtube.com/embed/M-8FvC3GD8c?autoplay=1&rel=0",
     },
   ];
@@ -257,7 +258,7 @@ const FitSlim = () => {
       calories: "320 kcal",
       protein: "35g",
       time: "20 min",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 2,
@@ -265,7 +266,7 @@ const FitSlim = () => {
       calories: "280 kcal",
       protein: "12g",
       time: "30 min",
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 3,
@@ -273,7 +274,7 @@ const FitSlim = () => {
       calories: "250 kcal",
       protein: "25g",
       time: "5 min",
-      image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 4,
@@ -281,7 +282,7 @@ const FitSlim = () => {
       calories: "210 kcal",
       protein: "15g",
       time: "35 min",
-      image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 5,
@@ -289,7 +290,7 @@ const FitSlim = () => {
       calories: "340 kcal",
       protein: "38g",
       time: "25 min",
-      image: "https://images.unsplash.com/photo-1485704686097-ed47f7263ca4?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 6,
@@ -297,7 +298,7 @@ const FitSlim = () => {
       calories: "290 kcal",
       protein: "14g",
       time: "15 min",
-      image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 7,
@@ -305,7 +306,7 @@ const FitSlim = () => {
       calories: "180 kcal",
       protein: "20g",
       time: "10 min",
-      image: "https://images.unsplash.com/photo-1609501676725-7186f017a4b0?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 8,
@@ -313,7 +314,7 @@ const FitSlim = () => {
       calories: "240 kcal",
       protein: "22g",
       time: "12 min",
-      image: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 9,
@@ -321,7 +322,7 @@ const FitSlim = () => {
       calories: "310 kcal",
       protein: "30g",
       time: "10 min",
-      image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 10,
@@ -329,7 +330,7 @@ const FitSlim = () => {
       calories: "295 kcal",
       protein: "32g",
       time: "22 min",
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 11,
@@ -337,7 +338,7 @@ const FitSlim = () => {
       calories: "265 kcal",
       protein: "16g",
       time: "28 min",
-      image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 12,
@@ -345,7 +346,7 @@ const FitSlim = () => {
       calories: "260 kcal",
       protein: "34g",
       time: "20 min",
-      image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 13,
@@ -353,7 +354,7 @@ const FitSlim = () => {
       calories: "330 kcal",
       protein: "18g",
       time: "25 min",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 14,
@@ -361,7 +362,7 @@ const FitSlim = () => {
       calories: "195 kcal",
       protein: "11g",
       time: "30 min",
-      image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 15,
@@ -369,7 +370,7 @@ const FitSlim = () => {
       calories: "305 kcal",
       protein: "36g",
       time: "40 min",
-      image: "https://images.unsplash.com/photo-1598103442097-8b74394b95c6?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 16,
@@ -377,7 +378,7 @@ const FitSlim = () => {
       calories: "245 kcal",
       protein: "17g",
       time: "32 min",
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 17,
@@ -385,7 +386,7 @@ const FitSlim = () => {
       calories: "270 kcal",
       protein: "28g",
       time: "18 min",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 18,
@@ -393,7 +394,7 @@ const FitSlim = () => {
       calories: "285 kcal",
       protein: "13g",
       time: "24 min",
-      image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
   ];
 
@@ -404,7 +405,7 @@ const FitSlim = () => {
       calories: "350 kcal",
       benefit: "Energia na celý deň",
       time: "10 min",
-      image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 2,
@@ -412,7 +413,7 @@ const FitSlim = () => {
       calories: "420 kcal",
       benefit: "Omega-3 mastné kyseliny",
       time: "25 min",
-      image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 3,
@@ -420,7 +421,7 @@ const FitSlim = () => {
       calories: "380 kcal",
       benefit: "Zdravé tuky",
       time: "15 min",
-      image: "https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 4,
@@ -428,7 +429,7 @@ const FitSlim = () => {
       calories: "310 kcal",
       benefit: "Probiotika",
       time: "5 min",
-      image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 5,
@@ -436,7 +437,7 @@ const FitSlim = () => {
       calories: "280 kcal",
       benefit: "Posilnenie imunity",
       time: "45 min",
-      image: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 6,
@@ -444,7 +445,7 @@ const FitSlim = () => {
       calories: "330 kcal",
       benefit: "Antioxidanty",
       time: "8 min",
-      image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 7,
@@ -452,7 +453,7 @@ const FitSlim = () => {
       calories: "390 kcal",
       benefit: "Vláknina a vitamíny",
       time: "40 min",
-      image: "https://images.unsplash.com/photo-1608039829572-78524f79c661?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 8,
@@ -460,7 +461,7 @@ const FitSlim = () => {
       calories: "360 kcal",
       benefit: "Omega-3 a bielkoviny",
       time: "12 min",
-      image: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 9,
@@ -468,7 +469,7 @@ const FitSlim = () => {
       calories: "340 kcal",
       benefit: "Komplexné sacharidy",
       time: "18 min",
-      image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 10,
@@ -476,7 +477,7 @@ const FitSlim = () => {
       calories: "410 kcal",
       benefit: "Omega-3 a minerály",
       time: "20 min",
-      image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 11,
@@ -484,7 +485,7 @@ const FitSlim = () => {
       calories: "365 kcal",
       benefit: "Železo a vápnik",
       time: "50 min",
-      image: "https://images.unsplash.com/photo-1511910849309-0dffb8785146?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 12,
@@ -492,7 +493,7 @@ const FitSlim = () => {
       calories: "220 kcal",
       benefit: "Detoxikácia",
       time: "5 min",
-      image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 13,
@@ -500,7 +501,7 @@ const FitSlim = () => {
       calories: "385 kcal",
       benefit: "Kompletný profil živín",
       time: "30 min",
-      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 14,
@@ -508,7 +509,7 @@ const FitSlim = () => {
       calories: "295 kcal",
       benefit: "Vláknina a omega-3",
       time: "10 min + chladenie",
-      image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 15,
@@ -516,7 +517,7 @@ const FitSlim = () => {
       calories: "345 kcal",
       benefit: "Vitamín A a bielkoviny",
       time: "35 min",
-      image: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 16,
@@ -524,7 +525,7 @@ const FitSlim = () => {
       calories: "370 kcal",
       benefit: "Protizápalové účinky",
       time: "28 min",
-      image: "https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 17,
@@ -532,7 +533,7 @@ const FitSlim = () => {
       calories: "325 kcal",
       benefit: "Bielkoviny pre rast svalov",
       time: "15 min",
-      image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
     {
       id: 18,
@@ -540,7 +541,7 @@ const FitSlim = () => {
       calories: "400 kcal",
       benefit: "Zdravé tuky a minerály",
       time: "45 min",
-      image: "https://images.unsplash.com/photo-1608039829572-78524f79c661?w=800&auto=format&fit=crop",
+      image: heroImage,
     },
   ];
 
