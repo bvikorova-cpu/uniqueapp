@@ -367,7 +367,7 @@ const Dating = () => {
             <div>
               <label className="text-sm font-medium">Pohlavie</label>
               <select 
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded bg-background text-foreground"
                 value={profileForm.gender}
                 onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
               >
@@ -379,7 +379,7 @@ const Dating = () => {
             <div>
               <label className="text-sm font-medium">Hľadám</label>
               <select 
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded bg-background text-foreground"
                 value={profileForm.looking_for}
                 onChange={(e) => setProfileForm({ ...profileForm, looking_for: e.target.value })}
               >
