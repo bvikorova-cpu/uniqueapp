@@ -5,9 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart, X, MessageCircle, User, Sparkles, Send } from "lucide-react";
+import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -50,6 +51,15 @@ const Dating = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [showProfileDialog, setShowProfileDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editForm, setEditForm] = useState({
+    display_name: "",
+    age: 18,
+    gender: "muž",
+    looking_for: "žena",
+    bio: "",
+    location: "",
+  });
   
   const [profileForm, setProfileForm] = useState({
     display_name: "",
@@ -98,6 +108,14 @@ const Dating = () => {
     
     if (data) {
       setCurrentProfile(data);
+      setEditForm({
+        display_name: data.display_name,
+        age: data.age,
+        gender: data.gender,
+        looking_for: data.looking_for,
+        bio: data.bio || "",
+        location: data.location || "",
+      });
     }
   };
 
@@ -285,6 +303,68 @@ const Dating = () => {
     }
   };
 
+  const handleUpdateProfile = async () => {
+    if (!user || !currentProfile || !editForm.display_name || !editForm.bio) {
+      toast({
+        title: "Neúplné údaje",
+        description: "Vyplňte všetky polia",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { error } = await supabase
+      .from("dating_profiles")
+      .update({
+        display_name: editForm.display_name,
+        age: editForm.age,
+        gender: editForm.gender,
+        looking_for: editForm.looking_for,
+        bio: editForm.bio,
+        location: editForm.location,
+      })
+      .eq("id", currentProfile.id);
+
+    if (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa aktualizovať profil",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Úspech",
+        description: "Profil bol aktualizovaný",
+      });
+      setShowEditDialog(false);
+      await loadUserProfile(user.id);
+    }
+  };
+
+  const handleDeleteProfile = async () => {
+    if (!user || !currentProfile) return;
+
+    const { error } = await supabase
+      .from("dating_profiles")
+      .delete()
+      .eq("id", currentProfile.id)
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa odstrániť profil",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Úspech",
+        description: "Profil bol odstránený",
+      });
+      setCurrentProfile(null);
+    }
+  };
+
   // Subscription landing page
   if (!isSubscribed) {
     return (
@@ -418,14 +498,18 @@ const Dating = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <Tabs defaultValue="swipe" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-8">
+          <TabsList className="grid w-full grid-cols-3 max-w-2xl mx-auto mb-8">
             <TabsTrigger value="swipe">
               <Heart className="h-4 w-4 mr-2" />
               Swipe
             </TabsTrigger>
             <TabsTrigger value="matches">
               <MessageCircle className="h-4 w-4 mr-2" />
-              Moje Matche ({matches.length})
+              Matche ({matches.length})
+            </TabsTrigger>
+            <TabsTrigger value="profile">
+              <Settings className="h-4 w-4 mr-2" />
+              Môj profil
             </TabsTrigger>
           </TabsList>
 
@@ -577,7 +661,169 @@ const Dating = () => {
               )}
             </div>
           </TabsContent>
+
+          {/* Profile Tab */}
+          <TabsContent value="profile">
+            <Card className="max-w-2xl mx-auto">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <h3 className="text-2xl font-bold">Môj profil</h3>
+                  <div className="flex gap-2">
+                    <Button variant="outline" onClick={() => setShowEditDialog(true)}>
+                      <Settings className="h-4 w-4 mr-2" />
+                      Upraviť
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="destructive">
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Odstrániť
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Odstrániť profil?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Táto akcia sa nedá vrátiť späť. Váš profil, všetky matche a správy budú natrvalo vymazané.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={handleDeleteProfile}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Odstrániť profil
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="flex items-start gap-6">
+                  <div className="h-32 w-32 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center flex-shrink-0">
+                    {currentProfile?.profile_photo_url ? (
+                      <img
+                        src={currentProfile.profile_photo_url}
+                        alt={currentProfile.display_name}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <User className="h-16 w-16 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className="space-y-3 flex-1">
+                    <div>
+                      <label className="text-sm text-muted-foreground">Meno</label>
+                      <p className="text-lg font-semibold">{currentProfile?.display_name}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm text-muted-foreground">Vek</label>
+                        <p className="font-medium">{currentProfile?.age} rokov</p>
+                      </div>
+                      <div>
+                        <label className="text-sm text-muted-foreground">Pohlavie</label>
+                        <p className="font-medium capitalize">{currentProfile?.gender}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm text-muted-foreground">Hľadám</label>
+                      <p className="font-medium capitalize">{currentProfile?.looking_for}</p>
+                    </div>
+                    {currentProfile?.location && (
+                      <div>
+                        <label className="text-sm text-muted-foreground">Lokalita</label>
+                        <p className="font-medium">{currentProfile.location}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {currentProfile?.bio && (
+                  <div>
+                    <label className="text-sm text-muted-foreground">O mne</label>
+                    <p className="mt-2 text-sm whitespace-pre-wrap">{currentProfile.bio}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
+
+        {/* Edit Profile Dialog */}
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Upraviť profil</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Meno</label>
+                <Input
+                  value={editForm.display_name}
+                  onChange={(e) => setEditForm({ ...editForm, display_name: e.target.value })}
+                  placeholder="Vaše meno"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Vek</label>
+                <Input
+                  type="number"
+                  value={editForm.age}
+                  onChange={(e) => setEditForm({ ...editForm, age: parseInt(e.target.value) })}
+                  min={18}
+                  max={100}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Pohlavie</label>
+                <select 
+                  className="w-full p-2 border rounded bg-background text-foreground"
+                  value={editForm.gender}
+                  onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
+                >
+                  <option value="muž">Muž</option>
+                  <option value="žena">Žena</option>
+                  <option value="iné">Iné</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Hľadám</label>
+                <select 
+                  className="w-full p-2 border rounded bg-background text-foreground"
+                  value={editForm.looking_for}
+                  onChange={(e) => setEditForm({ ...editForm, looking_for: e.target.value })}
+                >
+                  <option value="muž">Muža</option>
+                  <option value="žena">Ženu</option>
+                  <option value="iné">Iné</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">O mne</label>
+                <Textarea
+                  value={editForm.bio}
+                  onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                  placeholder="Napíšte niečo o sebe..."
+                  className="min-h-24"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Lokalita</label>
+                <Input
+                  value={editForm.location}
+                  onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                  placeholder="Mesto"
+                />
+              </div>
+              <Button onClick={handleUpdateProfile} className="w-full">
+                Uložiť zmeny
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
