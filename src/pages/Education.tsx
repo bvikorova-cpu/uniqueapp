@@ -16,11 +16,21 @@ const quizCategories = [
   { id: "geography", name: "Geografia", icon: "🌍" },
   { id: "history", name: "História", icon: "📜" },
   { id: "literature", name: "Literatura", icon: "📚" },
-  { id: "celebrity", name: "Celebrity", icon: "⭐" },
   { id: "english", name: "Angličtina", icon: "🇬🇧" },
   { id: "slovak", name: "Slovenčina", icon: "🇸🇰" },
   { id: "computer", name: "Informatika", icon: "💻" },
   { id: "art", name: "Umenie", icon: "🎨" },
+  { id: "celebrity", name: "Celebrity", icon: "⭐" },
+  { id: "sport", name: "Šport", icon: "⚽" },
+  { id: "movies", name: "Film a TV", icon: "🎬" },
+  { id: "music", name: "Hudba", icon: "🎵" },
+  { id: "food", name: "Jedlo a varenie", icon: "🍳" },
+  { id: "travel", name: "Cestovanie", icon: "✈️" },
+  { id: "fashion", name: "Móda", icon: "👗" },
+  { id: "nature", name: "Príroda", icon: "🌿" },
+  { id: "cars", name: "Automobily", icon: "🚗" },
+  { id: "gaming", name: "Gaming", icon: "🎮" },
+  { id: "business", name: "Biznis", icon: "💼" },
 ];
 
 const courseCategories = [
