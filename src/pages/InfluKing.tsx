@@ -556,6 +556,38 @@ const InfluKing = () => {
               <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>
                 Môj profil
               </Button>
+              <Button 
+                variant="destructive" 
+                onClick={async () => {
+                  if (!myProfile || !user) return;
+                  
+                  const confirmDelete = window.confirm('Naozaj chceš vymazať svoj influencer profil? Táto akcia je nevratná.');
+                  if (!confirmDelete) return;
+                  
+                  const { error } = await supabase
+                    .from('influencer_profiles')
+                    .delete()
+                    .eq('id', myProfile.id)
+                    .eq('user_id', user.id);
+                  
+                  if (error) {
+                    toast({
+                      title: "❌ Chyba",
+                      description: "Nepodarilo sa vymazať profil",
+                      variant: "destructive",
+                    });
+                  } else {
+                    queryClient.invalidateQueries({ queryKey: ["myInfluencerProfile"] });
+                    queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
+                    toast({
+                      title: "✅ Profil vymazaný",
+                      description: "Tvoj influencer profil bol odstránený",
+                    });
+                  }
+                }}
+              >
+                Vymazať profil
+              </Button>
             </div>
           ) : (
             <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
