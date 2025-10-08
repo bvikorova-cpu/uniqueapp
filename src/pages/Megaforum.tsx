@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageSquare, ThumbsUp, Reply, Send, TrendingUp, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +37,8 @@ const Megaforum = () => {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Všeobecné");
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [newComment, setNewComment] = useState("");
 
   const categories = [
     "Všeobecné",
@@ -97,6 +101,47 @@ const Megaforum = () => {
       return profileMap;
     },
     enabled: posts.length > 0,
+  });
+
+  // Fetch comments for selected post
+  const { data: comments = [] } = useQuery({
+    queryKey: ["forumComments", selectedPost],
+    queryFn: async () => {
+      if (!selectedPost) return [];
+      
+      const { data, error } = await supabase
+        .from("forum_comments")
+        .select("*")
+        .eq("post_id", selectedPost)
+        .eq("is_active", true)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedPost,
+  });
+
+  // Fetch comment profiles
+  const { data: commentProfiles = {} } = useQuery({
+    queryKey: ["commentProfiles", comments.map(c => c.user_id)],
+    queryFn: async () => {
+      const userIds = [...new Set(comments.map(c => c.user_id))];
+      if (userIds.length === 0) return {};
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", userIds);
+
+      if (error) throw error;
+      const profileMap: Record<string, Profile> = {};
+      data?.forEach(profile => {
+        profileMap[profile.id] = profile;
+      });
+      return profileMap;
+    },
+    enabled: comments.length > 0,
   });
 
   // Fetch liked posts
@@ -208,6 +253,60 @@ const Megaforum = () => {
 
     likeMutation.mutate(postId);
   };
+
+  // Add comment mutation
+  const addCommentMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      if (!user) throw new Error("Must be logged in");
+
+      const { error } = await supabase.from("forum_comments").insert([{
+        post_id: postId,
+        user_id: user.id,
+        content: newComment,
+      }]);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forumComments"] });
+      queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
+      setNewComment("");
+      toast({
+        title: "Komentár pridaný",
+        description: "Váš komentár bol úspešne pridaný",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa pridať komentár",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleAddComment = (postId: string) => {
+    if (!user) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Pre komentovanie sa musíte prihlásiť",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!newComment.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Komentár nemôže byť prázdny",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    addCommentMutation.mutate(postId);
+  };
+
 
   const getTimeAgo = (timestamp: string) => {
     const now = new Date();
@@ -394,19 +493,73 @@ const Megaforum = () => {
                             <p className="text-foreground">{post.content}</p>
 
                             <div className="flex items-center gap-4 pt-2 border-t">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleLike(post.id)}
-                                className={`hover:text-primary ${isLiked ? 'text-primary' : ''}`}
-                              >
-                                <ThumbsUp className={`h-4 w-4 mr-1 ${isLiked ? 'fill-current' : ''}`} />
-                                {post.likes_count}
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <Reply className="h-4 w-4 mr-1" />
-                                {post.replies_count} odpovedí
-                              </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleLike(post.id)}
+                              className={`hover:text-primary ${isLiked ? 'text-primary' : ''}`}
+                            >
+                              <ThumbsUp className={`h-4 w-4 mr-1 ${isLiked ? 'fill-current' : ''}`} />
+                              {post.likes_count}
+                            </Button>
+                            
+                            <Sheet>
+                              <SheetTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={() => setSelectedPost(post.id)}
+                                >
+                                  <Reply className="h-4 w-4 mr-1" />
+                                  {post.replies_count} odpovedí
+                                </Button>
+                              </SheetTrigger>
+                              <SheetContent side="bottom" className="h-[70vh]">
+                                <SheetHeader>
+                                  <SheetTitle>Komentáre ({post.replies_count})</SheetTitle>
+                                </SheetHeader>
+                                <ScrollArea className="h-[calc(70vh-140px)] mt-4">
+                                  <div className="space-y-4 pr-4">
+                                    {comments.map((comment) => {
+                                      const commentProfile = commentProfiles[comment.user_id];
+                                      return (
+                                        <div key={comment.id} className="flex gap-3">
+                                          <Avatar className="h-8 w-8">
+                                            <AvatarImage src={commentProfile?.avatar_url || undefined} />
+                                            <AvatarFallback>
+                                              {commentProfile?.full_name?.[0]?.toUpperCase() || "U"}
+                                            </AvatarFallback>
+                                          </Avatar>
+                                          <div className="flex-1">
+                                            <p className="text-sm font-semibold">
+                                              {commentProfile?.full_name || "Používateľ"}
+                                            </p>
+                                            <p className="text-sm text-muted-foreground">
+                                              {comment.content}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </ScrollArea>
+                                <div className="absolute bottom-4 left-4 right-4 flex gap-2">
+                                  <Input
+                                    placeholder="Napíš komentár..."
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    onKeyPress={(e) => e.key === 'Enter' && handleAddComment(post.id)}
+                                  />
+                                  <Button 
+                                    onClick={() => handleAddComment(post.id)} 
+                                    size="icon"
+                                    disabled={addCommentMutation.isPending}
+                                  >
+                                    <Send className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </SheetContent>
+                            </Sheet>
                             </div>
                           </div>
                         </div>
