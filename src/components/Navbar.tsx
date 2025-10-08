@@ -16,11 +16,16 @@ import megatalentLogo from "@/assets/megatalent-logo.png";
 interface NotificationData {
   id: string;
   message: string;
-  offering_id: string;
-  sender_id: string;
   created_at: string;
   is_read: boolean;
+  type: 'marketplace' | 'bazaar';
+  offering_id?: string;
+  item_id?: string;
+  sender_id: string;
   skill_offerings?: {
+    title: string;
+  };
+  bazaar_items?: {
     title: string;
   };
 }
@@ -57,7 +62,8 @@ const Navbar = () => {
   }, []);
 
   const loadNotifications = async (userId: string) => {
-    const { data } = await supabase
+    // Load marketplace notifications
+    const { data: marketplaceData } = await supabase
       .from("marketplace_responses")
       .select(`
         *,
@@ -70,19 +76,39 @@ const Navbar = () => {
       .order("created_at", { ascending: false })
       .limit(10);
 
-    if (data) {
-      setNotifications(data);
-      setUnreadCount(data.length);
-    }
+    // Load bazaar notifications
+    const { data: bazaarData } = await supabase
+      .from("bazaar_messages")
+      .select(`
+        *,
+        bazaar_items (
+          title
+        )
+      `)
+      .eq("receiver_id", userId)
+      .eq("is_read", false)
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    // Combine and sort notifications
+    const allNotifications: NotificationData[] = [
+      ...(marketplaceData?.map(n => ({ ...n, type: 'marketplace' as const })) || []),
+      ...(bazaarData?.map(n => ({ ...n, type: 'bazaar' as const })) || [])
+    ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    setNotifications(allNotifications);
+    setUnreadCount(allNotifications.length);
   };
 
-  const markAsRead = async (notificationId: string) => {
+  const markAsRead = async (notification: NotificationData) => {
     if (!user) return;
 
+    const table = notification.type === 'marketplace' ? 'marketplace_responses' : 'bazaar_messages';
+    
     await supabase
-      .from("marketplace_responses")
+      .from(table)
       .update({ is_read: true })
-      .eq("id", notificationId);
+      .eq("id", notification.id);
 
     loadNotifications(user.id);
   };
@@ -90,8 +116,16 @@ const Navbar = () => {
   const markAllAsRead = async () => {
     if (!user) return;
 
+    // Mark all marketplace notifications as read
     await supabase
       .from("marketplace_responses")
+      .update({ is_read: true })
+      .eq("receiver_id", user.id)
+      .eq("is_read", false);
+
+    // Mark all bazaar notifications as read
+    await supabase
+      .from("bazaar_messages")
       .update({ is_read: true })
       .eq("receiver_id", user.id)
       .eq("is_read", false);
@@ -239,12 +273,15 @@ const Navbar = () => {
                             key={notification.id}
                             className="flex flex-col items-start p-3 cursor-pointer"
                             onClick={() => {
-                              markAsRead(notification.id);
-                              navigate("/marketplace");
+                              markAsRead(notification);
+                              navigate(notification.type === 'marketplace' ? '/marketplace' : '/bazaar');
                             }}
                           >
                             <div className="font-medium text-sm">
-                              Nový záujem: {notification.skill_offerings?.title}
+                              {notification.type === 'marketplace' 
+                                ? `Nový záujem: ${notification.skill_offerings?.title}`
+                                : `Nová správa: ${notification.bazaar_items?.title}`
+                              }
                             </div>
                             <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
                               {notification.message}
