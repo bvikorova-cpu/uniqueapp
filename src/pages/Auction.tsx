@@ -33,6 +33,9 @@ const Auction = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [bidDialogOpen, setBidDialogOpen] = useState(false);
+  const [selectedAuction, setSelectedAuction] = useState<AuctionItem | null>(null);
+  const [bidAmount, setBidAmount] = useState("");
 
   // Form states
   const [title, setTitle] = useState("");
@@ -166,25 +169,30 @@ const Auction = () => {
     setImagePreview("");
   };
 
-  const handleBid = async (auctionId: string, currentPrice: number) => {
+  const handleBid = async (auction: AuctionItem) => {
     if (!user) {
       toast.error("Musíte byť prihlásený");
       navigate("/auth");
       return;
     }
 
-    const bidAmount = prompt(`Zadajte vašu ponuku (aktuálna cena: ${currentPrice}€):`);
-    if (!bidAmount) return;
+    setSelectedAuction(auction);
+    setBidAmount("");
+    setBidDialogOpen(true);
+  };
+
+  const submitBid = async () => {
+    if (!selectedAuction || !bidAmount) return;
 
     const amount = parseFloat(bidAmount);
-    if (amount <= currentPrice) {
+    if (amount <= selectedAuction.current_price) {
       toast.error("Ponuka musí byť vyššia ako aktuálna cena");
       return;
     }
 
     try {
       const { error } = await supabase.from("auction_bids").insert({
-        auction_id: auctionId,
+        auction_id: selectedAuction.id,
         user_id: user.id,
         bid_amount: amount,
       });
@@ -192,6 +200,9 @@ const Auction = () => {
       if (error) throw error;
 
       toast.success("Ponuka bola úspešne pridaná!");
+      setBidDialogOpen(false);
+      setBidAmount("");
+      setSelectedAuction(null);
       fetchAuctions();
     } catch (error) {
       console.error("Error placing bid:", error);
@@ -488,7 +499,7 @@ const Auction = () => {
                     <CardFooter className="flex gap-2">
                       <Button 
                         className="flex-1"
-                        onClick={() => handleBid(auction.id, parseFloat(auction.current_price.toString()))}
+                        onClick={() => handleBid(auction)}
                       >
                         <Gavel className="mr-2 h-4 w-4" />
                         Prihodiť
@@ -547,7 +558,7 @@ const Auction = () => {
                     <CardFooter className="flex gap-2">
                       <Button 
                         className="flex-1"
-                        onClick={() => handleBid(auction.id, parseFloat(auction.current_price.toString()))}
+                        onClick={() => handleBid(auction)}
                       >
                         <Gavel className="mr-2 h-4 w-4" />
                         Prihodiť
@@ -589,7 +600,7 @@ const Auction = () => {
                   <CardFooter className="flex gap-2">
                     <Button 
                       className="flex-1"
-                      onClick={() => handleBid(auction.id, parseFloat(auction.current_price.toString()))}
+                      onClick={() => handleBid(auction)}
                     >
                       <Gavel className="mr-2 h-4 w-4" />
                       Prihodiť
@@ -600,6 +611,46 @@ const Auction = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Bid Dialog */}
+        <Dialog open={bidDialogOpen} onOpenChange={setBidDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Prihodiť na aukciu</DialogTitle>
+            </DialogHeader>
+            {selectedAuction && (
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Aukcia: <strong>{selectedAuction.title}</strong>
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Aktuálna cena: <strong className="text-primary">{parseFloat(selectedAuction.current_price.toString()).toFixed(2)}€</strong>
+                  </p>
+                </div>
+                <div>
+                  <Label htmlFor="bidAmount">Koľko chcete prihodiť? (€)</Label>
+                  <Input
+                    id="bidAmount"
+                    type="number"
+                    step="0.01"
+                    value={bidAmount}
+                    onChange={(e) => setBidAmount(e.target.value)}
+                    placeholder={`Minimálne ${(parseFloat(selectedAuction.current_price.toString()) + 0.01).toFixed(2)}€`}
+                  />
+                </div>
+                <Button 
+                  onClick={submitBid} 
+                  className="w-full"
+                  disabled={!bidAmount || parseFloat(bidAmount) <= parseFloat(selectedAuction.current_price.toString())}
+                >
+                  <Gavel className="h-4 w-4 mr-2" />
+                  Prihodiť {bidAmount && `${parseFloat(bidAmount).toFixed(2)}€`}
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
