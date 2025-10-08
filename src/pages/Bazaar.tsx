@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -35,7 +36,9 @@ const Bazaar = () => {
   const [uploading, setUploading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<BazaarItem | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [items, setItems] = useState<BazaarItem[]>([]);
   const [formData, setFormData] = useState({
     title: "",
@@ -50,7 +53,13 @@ const Bazaar = () => {
 
   useEffect(() => {
     loadItems();
+    checkCurrentUser();
   }, []);
+
+  const checkCurrentUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setCurrentUserId(user?.id || null);
+  };
 
   const loadItems = async () => {
     const { data, error } = await supabase
@@ -218,6 +227,39 @@ const Bazaar = () => {
   const openDetail = (item: BazaarItem) => {
     setSelectedItem(item);
     setIsDetailOpen(true);
+  };
+
+  const handleDeleteClick = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedItem) return;
+
+    try {
+      const { error } = await supabase
+        .from('bazaar_items')
+        .delete()
+        .eq('id', selectedItem.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspech",
+        description: "Inzerát bol odstránený",
+      });
+
+      setIsDeleteDialogOpen(false);
+      setIsDetailOpen(false);
+      loadItems();
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa odstrániť inzerát",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -532,19 +574,49 @@ const Bazaar = () => {
                     </div>
                   )}
 
-                  <Button 
-                    className="w-full" 
-                    size="lg"
-                    onClick={() => handleContact(selectedItem)}
-                  >
-                    <MessageCircle className="h-5 w-5 mr-2" />
-                    Kontaktovať predajcu
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      className="flex-1" 
+                      size="lg"
+                      onClick={() => handleContact(selectedItem)}
+                    >
+                      <MessageCircle className="h-5 w-5 mr-2" />
+                      Kontaktovať predajcu
+                    </Button>
+                    
+                    {currentUserId === selectedItem.user_id && (
+                      <Button 
+                        variant="destructive"
+                        size="lg"
+                        onClick={handleDeleteClick}
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Odstrániť inzerát?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Táto akcia je nevratná. Inzerát bude trvale odstránený.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Odstrániť
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {filteredItems.length === 0 && (
           <div className="text-center py-12">
