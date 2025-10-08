@@ -10,28 +10,94 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
+
+interface NotificationData {
+  id: string;
+  message: string;
+  offering_id: string;
+  sender_id: string;
+  created_at: string;
+  is_read: boolean;
+  skill_offerings?: {
+    title: string;
+  };
+}
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        loadNotifications(session.user.id);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setUser(session?.user ?? null);
+        if (session?.user) {
+          loadNotifications(session.user.id);
+        } else {
+          setNotifications([]);
+          setUnreadCount(0);
+        }
       }
     );
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const loadNotifications = async (userId: string) => {
+    const { data } = await supabase
+      .from("marketplace_responses")
+      .select(`
+        *,
+        skill_offerings (
+          title
+        )
+      `)
+      .eq("receiver_id", userId)
+      .eq("is_read", false)
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    if (data) {
+      setNotifications(data);
+      setUnreadCount(data.length);
+    }
+  };
+
+  const markAsRead = async (notificationId: string) => {
+    if (!user) return;
+
+    await supabase
+      .from("marketplace_responses")
+      .update({ is_read: true })
+      .eq("id", notificationId);
+
+    loadNotifications(user.id);
+  };
+
+  const markAllAsRead = async () => {
+    if (!user) return;
+
+    await supabase
+      .from("marketplace_responses")
+      .update({ is_read: true })
+      .eq("receiver_id", user.id)
+      .eq("is_read", false);
+
+    loadNotifications(user.id);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -133,6 +199,66 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-2">
             {user ? (
               <>
+                {/* Notifications Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="relative">
+                      <Bell className="h-5 w-5" />
+                      {unreadCount > 0 && (
+                        <Badge 
+                          variant="destructive" 
+                          className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
+                        >
+                          {unreadCount}
+                        </Badge>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80">
+                    <div className="flex items-center justify-between p-2 border-b">
+                      <span className="font-semibold">Upozornenia</span>
+                      {unreadCount > 0 && (
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={markAllAsRead}
+                          className="text-xs h-auto p-1"
+                        >
+                          Označiť ako prečítané
+                        </Button>
+                      )}
+                    </div>
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-muted-foreground">
+                        Žiadne nové upozornenia
+                      </div>
+                    ) : (
+                      <div className="max-h-96 overflow-y-auto">
+                        {notifications.map((notification) => (
+                          <DropdownMenuItem
+                            key={notification.id}
+                            className="flex flex-col items-start p-3 cursor-pointer"
+                            onClick={() => {
+                              markAsRead(notification.id);
+                              navigate("/marketplace");
+                            }}
+                          >
+                            <div className="font-medium text-sm">
+                              Nový záujem: {notification.skill_offerings?.title}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                              {notification.message}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              {new Date(notification.created_at).toLocaleDateString('sk-SK')}
+                            </div>
+                          </DropdownMenuItem>
+                        ))}
+                      </div>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
