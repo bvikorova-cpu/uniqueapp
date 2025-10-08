@@ -546,7 +546,7 @@ const InfluKing = () => {
                         <CheckCircle className="h-6 w-6 text-blue-500 fill-blue-500" />
                       )}
                     </div>
-                    <Badge className="mb-3">{selectedInfluencer.category}</Badge>
+                    <Badge className="mb-3 bg-black text-white hover:bg-black/90">{selectedInfluencer.category}</Badge>
                     <p className="text-muted-foreground mb-4">{selectedInfluencer.bio}</p>
                     
                     <div className="flex items-center gap-6 mb-4">
