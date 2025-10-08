@@ -9,7 +9,13 @@ import { MessageSquare, ThumbsUp, Reply, Send, TrendingUp, Users } from "lucide-
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { User } from "@supabase/supabase-js";
+import { User as SupabaseUser } from "@supabase/supabase-js";
+
+interface Profile {
+  id: string;
+  full_name: string | null;
+  avatar_url: string | null;
+}
 
 interface ForumPost {
   id: string;
@@ -20,16 +26,12 @@ interface ForumPost {
   likes_count: number;
   replies_count: number;
   created_at: string;
-  profiles: {
-    full_name: string;
-    avatar_url: string;
-  };
 }
 
 const Megaforum = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Všeobecné");
@@ -65,24 +67,41 @@ const Megaforum = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("forum_posts")
-        .select(`
-          *,
-          profiles!forum_posts_user_id_fkey (
-            full_name,
-            avatar_url
-          )
-        `)
+        .select("*")
         .eq("is_active", true)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false});
 
       if (error) throw error;
       return data as ForumPost[];
     },
   });
 
-  // Check user likes
-  const { data: userLikes = [] } = useQuery({
-    queryKey: ["userForumLikes", user?.id],
+  // Fetch profiles for posts
+  const { data: profiles = {} } = useQuery({
+    queryKey: ["forumProfiles", posts.map(p => p.user_id)],
+    queryFn: async () => {
+      const userIds = [...new Set(posts.map(p => p.user_id))];
+      if (userIds.length === 0) return {};
+      
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", userIds);
+
+      if (error) throw error;
+      
+      const profileMap: Record<string, Profile> = {};
+      data?.forEach(profile => {
+        profileMap[profile.id] = profile;
+      });
+      return profileMap;
+    },
+    enabled: posts.length > 0,
+  });
+
+  // Fetch liked posts
+  const { data: likedPosts = [] } = useQuery({
+    queryKey: ["forumLikedPosts", user?.id],
     queryFn: async () => {
       if (!user) return [];
       const { data, error } = await supabase
@@ -133,7 +152,7 @@ const Megaforum = () => {
     mutationFn: async (postId: string) => {
       if (!user) throw new Error("Must be logged in");
 
-      const isLiked = userLikes.includes(postId);
+      const isLiked = likedPosts.includes(postId);
 
       if (isLiked) {
         const { error } = await supabase
@@ -150,8 +169,8 @@ const Megaforum = () => {
       }
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forumLikedPosts"] });
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
-      queryClient.invalidateQueries({ queryKey: ["userForumLikes"] });
     },
   });
 
@@ -159,8 +178,8 @@ const Megaforum = () => {
     if (!user) {
       toast({
         title: "Prihlásenie potrebné",
-        description: "Pre vytvorenie príspevku sa musíte prihlásiť",
-        variant: "destructive",
+        description: "Pre pridávanie príspevkov sa musíte prihlásiť.",
+        variant: "destructive"
       });
       return;
     }
@@ -181,8 +200,8 @@ const Megaforum = () => {
     if (!user) {
       toast({
         title: "Prihlásenie potrebné",
-        description: "Pre like sa musíte prihlásiť",
-        variant: "destructive",
+        description: "Pre označenie príspevku sa musíte prihlásiť.",
+        variant: "destructive"
       });
       return;
     }
@@ -190,15 +209,17 @@ const Megaforum = () => {
     likeMutation.mutate(postId);
   };
 
-  const getTimeSince = (dateString: string) => {
-    const date = new Date(dateString);
+  const getTimeAgo = (timestamp: string) => {
     const now = new Date();
-    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (seconds < 60) return "pred chvíľou";
-    if (seconds < 3600) return `pred ${Math.floor(seconds / 60)} min`;
-    if (seconds < 86400) return `pred ${Math.floor(seconds / 3600)} h`;
-    return `pred ${Math.floor(seconds / 86400)} d`;
+    const postTime = new Date(timestamp);
+    const diffInMs = now.getTime() - postTime.getTime();
+    const diffInMins = Math.floor(diffInMs / 60000);
+    
+    if (diffInMins < 60) return `pred ${diffInMins} minútami`;
+    const diffInHours = Math.floor(diffInMins / 60);
+    if (diffInHours < 24) return `pred ${diffInHours} hodinami`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `pred ${diffInDays} dňami`;
   };
 
   return (
@@ -252,6 +273,12 @@ const Megaforum = () => {
                     <span className="text-muted-foreground">Príspevky:</span>
                     <span className="font-semibold">{posts.length}</span>
                   </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Status:</span>
+                    <span className={`font-semibold ${user ? 'text-green-500' : 'text-muted-foreground'}`}>
+                      {user ? "Prihlásený" : "Neprihlásený"}
+                    </span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -268,6 +295,11 @@ const Megaforum = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {!user && (
+                  <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 text-sm">
+                    Pre pridávanie príspevkov sa musíte <a href="/auth" className="font-semibold underline">prihlásiť</a>.
+                  </div>
+                )}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Kategória</label>
                   <div className="flex flex-wrap gap-2">
@@ -287,18 +319,20 @@ const Megaforum = () => {
                   placeholder="Názov príspevku..."
                   value={newPostTitle}
                   onChange={(e) => setNewPostTitle(e.target.value)}
+                  disabled={!user || createPostMutation.isPending}
                 />
                 <Textarea
                   placeholder="Čo chcete zdieľať s komunitou?"
                   className="min-h-32"
                   value={newPostContent}
                   onChange={(e) => setNewPostContent(e.target.value)}
+                  disabled={!user || createPostMutation.isPending}
                 />
                 <Button 
                   variant="hero" 
                   className="w-full"
                   onClick={handleCreatePost}
-                  disabled={createPostMutation.isPending}
+                  disabled={!user || createPostMutation.isPending}
                 >
                   <Send className="h-4 w-4 mr-2" />
                   {createPostMutation.isPending ? "Zverejňujem..." : "Zverejniť príspevok"}
@@ -317,65 +351,69 @@ const Megaforum = () => {
 
               {isLoading ? (
                 <Card>
-                  <CardContent className="pt-6 text-center">
+                  <CardContent className="pt-6 text-center text-muted-foreground">
                     Načítavam príspevky...
                   </CardContent>
                 </Card>
               ) : posts.length === 0 ? (
                 <Card>
                   <CardContent className="pt-6 text-center text-muted-foreground">
-                    Zatiaľ nie sú žiadne príspevky. Buďte prvý kto niečo zdieľa!
+                    Zatiaľ nie sú žiadne príspevky. Buďte prvý kto niečo pridá!
                   </CardContent>
                 </Card>
               ) : (
-                posts.map((post) => (
-                  <Card key={post.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="pt-6">
-                      <div className="flex gap-4">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src={post.profiles?.avatar_url || undefined} />
-                          <AvatarFallback className="bg-gradient-primary text-white">
-                            {post.profiles?.full_name?.[0]?.toUpperCase() || "U"}
-                          </AvatarFallback>
-                        </Avatar>
+                posts.map((post) => {
+                  const isLiked = likedPosts.includes(post.id);
+                  const profile = profiles[post.user_id];
+                  return (
+                    <Card key={post.id} className="hover:shadow-lg transition-shadow">
+                      <CardContent className="pt-6">
+                        <div className="flex gap-4">
+                          <Avatar className="h-12 w-12">
+                            <AvatarImage src={profile?.avatar_url || undefined} />
+                            <AvatarFallback className="bg-gradient-primary text-white">
+                              {profile?.full_name?.charAt(0).toUpperCase() || "U"}
+                            </AvatarFallback>
+                          </Avatar>
 
-                        <div className="flex-1 space-y-3">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold text-lg">{post.title}</h3>
-                                <Badge variant="outline" className="text-xs">
-                                  {post.category}
-                                </Badge>
+                          <div className="flex-1 space-y-3">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-semibold text-lg">{post.title}</h3>
+                                  <Badge variant="outline" className="text-xs">
+                                    {post.category}
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground">
+                                  {profile?.full_name || "Používateľ"} • {getTimeAgo(post.created_at)}
+                                </p>
                               </div>
-                              <p className="text-sm text-muted-foreground">
-                                {post.profiles?.full_name || "Používateľ"} • {getTimeSince(post.created_at)}
-                              </p>
+                            </div>
+
+                            <p className="text-foreground">{post.content}</p>
+
+                            <div className="flex items-center gap-4 pt-2 border-t">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleLike(post.id)}
+                                className={`hover:text-primary ${isLiked ? 'text-primary' : ''}`}
+                              >
+                                <ThumbsUp className={`h-4 w-4 mr-1 ${isLiked ? 'fill-current' : ''}`} />
+                                {post.likes_count}
+                              </Button>
+                              <Button variant="ghost" size="sm">
+                                <Reply className="h-4 w-4 mr-1" />
+                                {post.replies_count} odpovedí
+                              </Button>
                             </div>
                           </div>
-
-                          <p className="text-foreground">{post.content}</p>
-
-                          <div className="flex items-center gap-4 pt-2 border-t">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleLike(post.id)}
-                              className={`hover:text-primary ${userLikes.includes(post.id) ? 'text-primary' : ''}`}
-                            >
-                              <ThumbsUp className={`h-4 w-4 mr-1 ${userLikes.includes(post.id) ? 'fill-current' : ''}`} />
-                              {post.likes_count}
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Reply className="h-4 w-4 mr-1" />
-                              {post.replies_count} odpovedí
-                            </Button>
-                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
+                      </CardContent>
+                    </Card>
+                  );
+                })
               )}
             </div>
           </div>
