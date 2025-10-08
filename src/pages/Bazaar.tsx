@@ -18,6 +18,7 @@ interface BazaarItem {
   description: string;
   category: string;
   condition: string;
+  listing_type: string;
   image_url: string | null;
   created_at: string;
   user_id: string;
@@ -43,6 +44,7 @@ const Bazaar = () => {
     description: "",
     category: "electronics",
     condition: "Ako nový",
+    listing_type: "sell",
   });
   const { toast } = useToast();
 
@@ -101,6 +103,11 @@ const Bazaar = () => {
   ];
 
   const conditions = ["Ako nový", "Veľmi dobré", "Dobré", "Použité"];
+
+  const listingTypes = [
+    { id: "sell", name: "Predám" },
+    { id: "buy", name: "Kúpim" },
+  ];
 
   const filteredItems = items.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -173,6 +180,7 @@ const Bazaar = () => {
           description: formData.description,
           category: formData.category,
           condition: formData.condition,
+          listing_type: formData.listing_type,
           image_url: imageUrl,
         });
 
@@ -183,7 +191,7 @@ const Bazaar = () => {
         description: "Inzerát bol pridaný",
       });
 
-      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Ako nový" });
+      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Ako nový", listing_type: "sell" });
       setImageFile(null);
       setImagePreview("");
       setIsDialogOpen(false);
@@ -241,7 +249,26 @@ const Bazaar = () => {
                 <DialogTitle>Nový inzerát</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                <Input 
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Typ inzerátu</label>
+                  <Select 
+                    value={formData.listing_type} 
+                    onValueChange={(value) => setFormData({...formData, listing_type: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {listingTypes.map((type) => (
+                        <SelectItem key={type.id} value={type.id}>
+                          {type.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Input
                   placeholder="Názov produktu" 
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
@@ -405,6 +432,9 @@ const Bazaar = () => {
                   <Badge className="absolute top-2 left-2 bg-background/90 text-foreground">
                     {item.condition}
                   </Badge>
+                  <Badge className="absolute top-2 right-2 bg-primary/90 text-primary-foreground">
+                    {listingTypes.find(t => t.id === item.listing_type)?.name}
+                  </Badge>
                 </div>
               </CardHeader>
               <CardContent className="p-4">
@@ -460,10 +490,15 @@ const Bazaar = () => {
                 
                 <div className="space-y-4">
                   <div>
-                    <div className="text-3xl font-bold text-success mb-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant={selectedItem.listing_type === 'sell' ? 'default' : 'secondary'}>
+                        {listingTypes.find(t => t.id === selectedItem.listing_type)?.name}
+                      </Badge>
+                      <Badge>{selectedItem.condition}</Badge>
+                    </div>
+                    <div className="text-3xl font-bold text-success">
                       €{selectedItem.price}
                     </div>
-                    <Badge>{selectedItem.condition}</Badge>
                   </div>
 
                   <div className="space-y-2 text-sm">
