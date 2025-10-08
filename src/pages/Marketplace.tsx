@@ -7,8 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Clock, Euro, Upload, X } from "lucide-react";
+import { Briefcase, MapPin, Clock, Euro, Upload, X, Send } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Profile {
   full_name: string | null;
@@ -47,6 +48,9 @@ const Marketplace = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedOffering, setSelectedOffering] = useState<SkillOffering | null>(null);
+  const [responseMessage, setResponseMessage] = useState("");
+  const [isSendingResponse, setIsSendingResponse] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -150,6 +154,23 @@ const Marketplace = () => {
   const removeImage = () => {
     setImageFile(null);
     setImagePreview(null);
+  };
+
+  const handleSendResponse = async () => {
+    if (!responseMessage.trim() || !selectedOffering || !user) return;
+
+    setIsSendingResponse(true);
+
+    // Here you would typically send this to a backend or create a message
+    // For now, we'll just show a success toast
+    toast({
+      title: "Správa odoslaná",
+      description: "Váš záujem bol odoslaný poskytovateľovi služby"
+    });
+
+    setResponseMessage("");
+    setSelectedOffering(null);
+    setIsSendingResponse(false);
   };
 
   const uploadImage = async (): Promise<string | null> => {
@@ -428,7 +449,12 @@ const Marketplace = () => {
               )}
               <CardHeader>
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl">{offering.title}</CardTitle>
+                  <CardTitle 
+                    className="text-xl cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => setSelectedOffering(offering)}
+                  >
+                    {offering.title}
+                  </CardTitle>
                   <Badge variant="secondary">
                     {CATEGORIES[offering.category as keyof typeof CATEGORIES]}
                   </Badge>
@@ -459,6 +485,13 @@ const Marketplace = () => {
                     <span>{new Date(offering.created_at).toLocaleDateString('sk-SK')}</span>
                   </div>
                 </div>
+                <Button 
+                  className="w-full mt-2" 
+                  onClick={() => setSelectedOffering(offering)}
+                >
+                  <Send className="w-4 h-4 mr-2" />
+                  Reagovať na ponuku
+                </Button>
               </CardContent>
             </Card>
           ))}
@@ -472,6 +505,80 @@ const Marketplace = () => {
           </div>
         )}
       </div>
+
+      {/* Offering Detail Dialog */}
+      <Dialog open={!!selectedOffering} onOpenChange={(open) => !open && setSelectedOffering(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          {selectedOffering && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl">{selectedOffering.title}</DialogTitle>
+                <DialogDescription>
+                  <Badge variant="secondary" className="mt-2">
+                    {CATEGORIES[selectedOffering.category as keyof typeof CATEGORIES]}
+                  </Badge>
+                </DialogDescription>
+              </DialogHeader>
+              
+              {selectedOffering.image_url && (
+                <div className="w-full h-64 overflow-hidden rounded-lg">
+                  <img 
+                    src={selectedOffering.image_url} 
+                    alt={selectedOffering.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold mb-2">Popis</h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap">{selectedOffering.description}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {selectedOffering.price_per_hour && (
+                    <div className="flex items-center gap-2 text-primary">
+                      <Euro className="w-5 h-5" />
+                      <span className="font-semibold text-lg">{selectedOffering.price_per_hour}€/hod</span>
+                    </div>
+                  )}
+                  {selectedOffering.location && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-5 h-5 text-muted-foreground" />
+                      <span>{selectedOffering.location}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Clock className="w-5 h-5" />
+                    <span>{new Date(selectedOffering.created_at).toLocaleDateString('sk-SK')}</span>
+                  </div>
+                </div>
+
+                <div className="border-t pt-4">
+                  <h3 className="font-semibold mb-2">Reagovať na ponuku</h3>
+                  <div className="space-y-3">
+                    <Textarea
+                      placeholder="Napíšte správu poskytovateľovi služby..."
+                      value={responseMessage}
+                      onChange={(e) => setResponseMessage(e.target.value)}
+                      rows={4}
+                    />
+                    <Button 
+                      onClick={handleSendResponse} 
+                      disabled={!responseMessage.trim() || isSendingResponse}
+                      className="w-full"
+                    >
+                      <Send className="w-4 h-4 mr-2" />
+                      {isSendingResponse ? "Odeosielam..." : "Odoslať správu"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
