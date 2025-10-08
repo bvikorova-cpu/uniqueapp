@@ -258,9 +258,13 @@ const Megatalent = () => {
           {/* Feed */}
           <div className="lg:col-span-2 space-y-6">
             <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-              <TabsList className="grid w-full grid-cols-5 mb-6">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-2 h-auto p-2 bg-card/50 mb-6">
                 {categories.map((cat) => (
-                  <TabsTrigger key={cat.value} value={cat.value} className="text-xs">
+                  <TabsTrigger 
+                    key={cat.value} 
+                    value={cat.value} 
+                    className="text-sm py-3 px-4 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  >
                     {cat.label}
                   </TabsTrigger>
                 ))}
