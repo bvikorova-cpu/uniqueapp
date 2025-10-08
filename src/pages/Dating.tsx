@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon } from "lucide-react";
+import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon, RotateCcw, Gift, Zap, Eye, Check, CheckCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -37,6 +37,21 @@ interface Message {
   id: string;
   sender_id: string;
   content: string;
+  created_at: string;
+  read_at: string | null;
+}
+
+interface GiftType {
+  id: string;
+  name: string;
+  icon: string;
+  price: number;
+}
+
+interface SentGift {
+  id: string;
+  sender_id: string;
+  gift: GiftType;
   created_at: string;
 }
 
@@ -74,6 +89,13 @@ const Dating = () => {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingAdditional, setUploadingAdditional] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [showGiftDialog, setShowGiftDialog] = useState(false);
+  const [availableGifts, setAvailableGifts] = useState<GiftType[]>([]);
+  const [sentGifts, setSentGifts] = useState<SentGift[]>([]);
+  const [canRewind, setCanRewind] = useState(false);
+  const [lastSwipe, setLastSwipe] = useState<any>(null);
+  const [likesYouCount, setLikesYouCount] = useState(0);
+  const [superLikesRemaining, setSuperLikesRemaining] = useState(5);
 
   useEffect(() => {
     checkAuth();
@@ -101,6 +123,9 @@ const Dating = () => {
       await loadUserProfile(userId);
       await loadProfiles();
       await loadMatches(userId);
+      await loadGifts();
+      await loadLikesYou(userId);
+      await checkLastSwipe(userId);
     }
   };
 
@@ -173,6 +198,28 @@ const Dating = () => {
       .order("created_at", { ascending: true });
 
     setMessages(data || []);
+    
+    // Mark messages as read
+    if (data && data.length > 0) {
+      await supabase
+        .from("dating_messages")
+        .update({ read_at: new Date().toISOString() })
+        .eq("match_id", matchId)
+        .neq("sender_id", user?.id || "")
+        .is("read_at", null);
+    }
+    
+    // Load sent gifts
+    const { data: gifts } = await supabase
+      .from("dating_sent_gifts")
+      .select(`
+        *,
+        gift:gift_id (*)
+      `)
+      .eq("match_id", matchId)
+      .order("created_at", { ascending: true });
+    
+    setSentGifts(gifts || []);
   };
 
   const handleSubscribe = async () => {
@@ -242,17 +289,54 @@ const Dating = () => {
     }
   };
 
-  const handleSwipe = async (action: "like" | "dislike") => {
+  const handleSwipe = async (action: "like" | "dislike", isSuper = false) => {
     if (!user || currentIndex >= profiles.length) return;
 
     const currentCard = profiles[currentIndex];
+
+    // Save last swipe for rewind
+    await supabase
+      .from("dating_last_swipe")
+      .upsert({
+        user_id: user.id,
+        swiped_profile_id: currentCard.user_id,
+        action: isSuper ? "super_like" : action,
+      });
+    
+    setCanRewind(true);
+    setLastSwipe({ profile: currentCard, action: isSuper ? "super_like" : action });
+
+    if (isSuper) {
+      const { error: superError } = await supabase
+        .from("dating_super_likes")
+        .insert([{
+          swiper_id: user.id,
+          swiped_id: currentCard.user_id,
+        }]);
+
+      if (superError) {
+        toast({
+          title: "Chyba",
+          description: "Nepodarilo sa odoslať Super Like",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "⭐ Super Like!",
+        description: `${currentCard.display_name} dostane notifikáciu!`,
+      });
+      
+      setSuperLikesRemaining(superLikesRemaining - 1);
+    }
 
     const { error } = await supabase
       .from("dating_swipes")
       .insert([{
         swiper_id: user.id,
         swiped_id: currentCard.user_id,
-        action,
+        action: isSuper ? "like" : action,
       }]);
 
     if (error) {
@@ -264,7 +348,15 @@ const Dating = () => {
       return;
     }
 
-    if (action === "like") {
+    if (action === "like" || isSuper) {
+      // Track in likes_you for the other person
+      await supabase
+        .from("dating_likes_you")
+        .insert([{
+          liker_id: user.id,
+          liked_id: currentCard.user_id,
+        }]);
+
       // Check if it's a match
       const { data } = await supabase
         .from("dating_matches")
@@ -494,6 +586,136 @@ const Dating = () => {
     }
   };
 
+  const loadGifts = async () => {
+    const { data } = await supabase
+      .from("dating_gifts")
+      .select("*")
+      .order("price", { ascending: true });
+    
+    setAvailableGifts(data || []);
+  };
+
+  const handleSendGift = async (giftId: string) => {
+    if (!selectedMatch || !user) return;
+
+    const otherId = selectedMatch.user1_id === user.id 
+      ? selectedMatch.user2_id 
+      : selectedMatch.user1_id;
+
+    const { error } = await supabase
+      .from("dating_sent_gifts")
+      .insert([{
+        sender_id: user.id,
+        receiver_id: otherId,
+        gift_id: giftId,
+        match_id: selectedMatch.id,
+      }]);
+
+    if (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa odoslať darček",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Darček odoslaný! 🎁",
+        description: "Váš darček bol doručený",
+      });
+      setShowGiftDialog(false);
+      await loadMessages(selectedMatch.id);
+    }
+  };
+
+  const handleRewind = async () => {
+    if (!user || !lastSwipe || !canRewind) return;
+
+    // Delete the last swipe
+    const { error } = await supabase
+      .from("dating_swipes")
+      .delete()
+      .eq("swiper_id", user.id)
+      .eq("swiped_id", lastSwipe.profile.user_id);
+
+    if (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa vrátiť swipe",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Go back to previous profile
+    setCurrentIndex(Math.max(0, currentIndex - 1));
+    setCanRewind(false);
+    setLastSwipe(null);
+
+    toast({
+      title: "Swipe vrátený!",
+      description: "Môžete si to rozmyslieť",
+    });
+  };
+
+  const checkLastSwipe = async (userId: string) => {
+    const { data } = await supabase
+      .from("dating_last_swipe")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
+    
+    if (data) {
+      setCanRewind(true);
+      setLastSwipe(data);
+    }
+  };
+
+  const loadLikesYou = async (userId: string) => {
+    const { data } = await supabase
+      .from("dating_likes_you")
+      .select("*")
+      .eq("liked_id", userId)
+      .eq("seen", false);
+    
+    setLikesYouCount(data?.length || 0);
+  };
+
+  const viewLikesYou = async () => {
+    if (!user) return;
+
+    const { data } = await supabase
+      .from("dating_likes_you")
+      .select(`
+        *,
+        liker:liker_id (
+          id,
+          dating_profiles (*)
+        )
+      `)
+      .eq("liked_id", user.id)
+      .eq("seen", false);
+
+    if (data && data.length > 0) {
+      // Mark as seen
+      await supabase
+        .from("dating_likes_you")
+        .update({ seen: true })
+        .eq("liked_id", user.id);
+      
+      toast({
+        title: `${data.length} ľudí vás lajklo!`,
+        description: "Pozrite si ich profily vo swipe sekcii",
+      });
+      
+      setLikesYouCount(0);
+    } else {
+      toast({
+        title: "Zatiaľ žiadne lajky",
+        description: "Pokračujte v swipovaní!",
+      });
+    }
+  };
+
   // Subscription landing page
   if (!isSubscribed) {
     return (
@@ -673,22 +895,57 @@ const Dating = () => {
                     {profiles[currentIndex].bio && (
                       <p className="text-sm">{profiles[currentIndex].bio}</p>
                     )}
-                    <div className="flex gap-4 justify-center pt-4">
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        className="rounded-full w-16 h-16 border-red-500 text-red-500 hover:bg-red-50"
-                        onClick={() => handleSwipe("dislike")}
-                      >
-                        <X className="h-8 w-8" />
-                      </Button>
-                      <Button
-                        size="lg"
-                        className="rounded-full w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
-                        onClick={() => handleSwipe("like")}
-                      >
-                        <Heart className="h-8 w-8" />
-                      </Button>
+                    <div className="space-y-4">
+                      <div className="flex gap-2 justify-end">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={!canRewind}
+                          onClick={handleRewind}
+                          className="gap-2"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                          Rewind
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={viewLikesYou}
+                          className="gap-2"
+                        >
+                          <Eye className="h-4 w-4" />
+                          Likes You ({likesYouCount})
+                        </Button>
+                      </div>
+                      <div className="flex gap-4 justify-center pt-4">
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="rounded-full w-16 h-16 border-red-500 text-red-500 hover:bg-red-50"
+                          onClick={() => handleSwipe("dislike")}
+                        >
+                          <X className="h-8 w-8" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="rounded-full w-16 h-16 border-blue-500 text-blue-500 hover:bg-blue-50"
+                          onClick={() => handleSwipe("like", true)}
+                          disabled={superLikesRemaining <= 0}
+                        >
+                          <Sparkles className="h-8 w-8" />
+                        </Button>
+                        <Button
+                          size="lg"
+                          className="rounded-full w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                          onClick={() => handleSwipe("like")}
+                        >
+                          <Heart className="h-8 w-8" />
+                        </Button>
+                      </div>
+                      <p className="text-center text-sm text-muted-foreground">
+                        Super Likes: {superLikesRemaining}/5 dnes
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -760,8 +1017,8 @@ const Dating = () => {
                         {messages.map((message) => (
                           <div
                             key={message.id}
-                            className={`flex ${
-                              message.sender_id === user?.id ? "justify-end" : "justify-start"
+                            className={`flex flex-col ${
+                              message.sender_id === user?.id ? "items-end" : "items-start"
                             }`}
                           >
                             <div
@@ -773,11 +1030,46 @@ const Dating = () => {
                             >
                               {message.content}
                             </div>
+                            {message.sender_id === user?.id && (
+                              <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                {message.read_at ? (
+                                  <>
+                                    <CheckCheck className="h-3 w-3 text-blue-500" />
+                                    Prečítané
+                                  </>
+                                ) : (
+                                  <>
+                                    <Check className="h-3 w-3" />
+                                    Doručené
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        {sentGifts.map((gift) => (
+                          <div
+                            key={gift.id}
+                            className={`flex ${
+                              gift.sender_id === user?.id ? "justify-end" : "justify-start"
+                            }`}
+                          >
+                            <div className="bg-accent p-4 rounded-lg text-center">
+                              <div className="text-4xl mb-2">{gift.gift.icon}</div>
+                              <p className="text-sm font-medium">{gift.gift.name}</p>
+                            </div>
                           </div>
                         ))}
                       </div>
                     </ScrollArea>
                     <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="icon"
+                        onClick={() => setShowGiftDialog(true)}
+                      >
+                        <Gift className="h-4 w-4" />
+                      </Button>
                       <Input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
@@ -1045,6 +1337,30 @@ const Dating = () => {
               >
                 <X className="h-6 w-6" />
               </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Gift Dialog */}
+        <Dialog open={showGiftDialog} onOpenChange={setShowGiftDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Pošlite darček 🎁</DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-2 gap-4">
+              {availableGifts.map((gift) => (
+                <Card
+                  key={gift.id}
+                  className="cursor-pointer hover:bg-accent transition-colors"
+                  onClick={() => handleSendGift(gift.id)}
+                >
+                  <CardContent className="p-6 text-center">
+                    <div className="text-5xl mb-3">{gift.icon}</div>
+                    <p className="font-semibold mb-1">{gift.name}</p>
+                    <p className="text-sm text-muted-foreground">{gift.price} €</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </DialogContent>
         </Dialog>

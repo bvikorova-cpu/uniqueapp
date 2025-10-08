@@ -150,6 +150,78 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_gifts: {
+        Row: {
+          created_at: string
+          icon: string
+          id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string
+          icon: string
+          id?: string
+          name: string
+          price?: number
+        }
+        Update: {
+          created_at?: string
+          icon?: string
+          id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
+      dating_last_swipe: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          swiped_profile_id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          swiped_profile_id: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          swiped_profile_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dating_likes_you: {
+        Row: {
+          created_at: string
+          id: string
+          liked_id: string
+          liker_id: string
+          seen: boolean
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          liked_id: string
+          liker_id: string
+          seen?: boolean
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          liked_id?: string
+          liker_id?: string
+          seen?: boolean
+        }
+        Relationships: []
+      }
       dating_matches: {
         Row: {
           created_at: string
@@ -178,6 +250,7 @@ export type Database = {
           id: string
           is_read: boolean | null
           match_id: string
+          read_at: string | null
           sender_id: string
         }
         Insert: {
@@ -186,6 +259,7 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           match_id: string
+          read_at?: string | null
           sender_id: string
         }
         Update: {
@@ -194,6 +268,7 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           match_id?: string
+          read_at?: string | null
           sender_id?: string
         }
         Relationships: [
@@ -257,6 +332,41 @@ export type Database = {
         }
         Relationships: []
       }
+      dating_sent_gifts: {
+        Row: {
+          created_at: string
+          gift_id: string
+          id: string
+          match_id: string
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          gift_id: string
+          id?: string
+          match_id: string
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          gift_id?: string
+          id?: string
+          match_id?: string
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dating_sent_gifts_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "dating_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dating_subscriptions: {
         Row: {
           created_at: string
@@ -287,6 +397,27 @@ export type Database = {
           status?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      dating_super_likes: {
+        Row: {
+          created_at: string
+          id: string
+          swiped_id: string
+          swiper_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          swiped_id: string
+          swiper_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          swiped_id?: string
+          swiper_id?: string
         }
         Relationships: []
       }
