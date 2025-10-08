@@ -634,31 +634,6 @@ const Megatalent = () => {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Top talenty</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {[1, 2, 3, 4, 5].map((rank) => (
-                  <div key={rank} className="flex items-center space-x-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      rank === 1 ? 'bg-gold text-gold-foreground' : 
-                      rank === 2 ? 'bg-gray-400 text-white' :
-                      rank === 3 ? 'bg-orange-400 text-white' :
-                      'bg-secondary text-secondary-foreground'
-                    }`}>
-                      {rank}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-sm">Talent {rank}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {Math.floor(Math.random() * 1000) + 500} hlasov
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
