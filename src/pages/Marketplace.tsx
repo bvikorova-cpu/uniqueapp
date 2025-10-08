@@ -7,7 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Clock, Euro } from "lucide-react";
+import { Briefcase, MapPin, Clock, Euro, Upload, X } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 interface Profile {
   full_name: string | null;
@@ -23,6 +24,7 @@ interface SkillOffering {
   location: string | null;
   user_id: string;
   created_at: string;
+  image_url: string | null;
   profiles?: Profile | Profile[] | null;
 }
 
@@ -42,6 +44,9 @@ const Marketplace = () => {
   const [offerings, setOfferings] = useState<SkillOffering[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -121,6 +126,61 @@ const Marketplace = () => {
     });
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Príliš veľký súbor",
+          description: "Maximálna veľkosť obrázka je 5 MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
+  const uploadImage = async (): Promise<string | null> => {
+    if (!imageFile || !user) return null;
+
+    try {
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('marketplace-images')
+        .upload(fileName, imageFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('marketplace-images')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Chyba pri nahrávaní",
+        description: "Nepodarilo sa nahrať obrázok",
+        variant: "destructive"
+      });
+      return null;
+    }
+  };
+
   const handleCreateOffering = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -133,6 +193,13 @@ const Marketplace = () => {
       return;
     }
 
+    setIsUploading(true);
+
+    let imageUrl: string | null = null;
+    if (imageFile) {
+      imageUrl = await uploadImage();
+    }
+
     const { error } = await supabase
       .from("skill_offerings")
       .insert([{
@@ -141,8 +208,11 @@ const Marketplace = () => {
         description: formData.description,
         category: formData.category as any,
         price_per_hour: formData.price_per_hour ? parseFloat(formData.price_per_hour) : null,
-        location: formData.location || null
+        location: formData.location || null,
+        image_url: imageUrl
       }]);
+
+    setIsUploading(false);
 
     if (error) {
       toast({
@@ -165,6 +235,8 @@ const Marketplace = () => {
       price_per_hour: "",
       location: ""
     });
+    setImageFile(null);
+    setImagePreview(null);
     setShowCreateForm(false);
     loadOfferings();
   };
@@ -263,6 +335,49 @@ const Marketplace = () => {
                     rows={4}
                   />
                 </div>
+                
+                {/* Image upload section */}
+                <div className="space-y-2">
+                  <Label>Obrázok ponuky (voliteľné)</Label>
+                  {imagePreview ? (
+                    <div className="relative">
+                      <img 
+                        src={imagePreview} 
+                        alt="Preview" 
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2"
+                        onClick={removeImage}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary transition-colors">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="hidden"
+                        id="image-upload"
+                      />
+                      <label htmlFor="image-upload" className="cursor-pointer">
+                        <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          Kliknutím vyberte obrázok
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Maximálna veľkosť: 5 MB
+                        </p>
+                      </label>
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Select
                     value={formData.category}
@@ -291,8 +406,8 @@ const Marketplace = () => {
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   />
                 </div>
-                <Button type="submit" className="w-full">
-                  Vytvoriť ponuku
+                <Button type="submit" className="w-full" disabled={isUploading}>
+                  {isUploading ? "Vytváranie..." : "Vytvoriť ponuku"}
                 </Button>
               </form>
             </CardContent>
@@ -301,7 +416,16 @@ const Marketplace = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {offerings.map((offering) => (
-            <Card key={offering.id} className="hover:shadow-lg transition-shadow">
+            <Card key={offering.id} className="hover:shadow-lg transition-shadow overflow-hidden">
+              {offering.image_url && (
+                <div className="w-full h-48 overflow-hidden">
+                  <img 
+                    src={offering.image_url} 
+                    alt={offering.title}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              )}
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl">{offering.title}</CardTitle>

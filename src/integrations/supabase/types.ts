@@ -1482,6 +1482,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          image_url: string | null
           is_active: boolean | null
           location: string | null
           price_per_hour: number | null
@@ -1494,6 +1495,7 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           location?: string | null
           price_per_hour?: number | null
@@ -1506,6 +1508,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_url?: string | null
           is_active?: boolean | null
           location?: string | null
           price_per_hour?: number | null
