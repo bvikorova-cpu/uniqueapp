@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2 } from "lucide-react";
+import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -22,6 +22,7 @@ interface DatingProfile {
   looking_for: string;
   location: string | null;
   profile_photo_url: string | null;
+  additional_photos: string[] | null;
   interests: string[] | null;
 }
 
@@ -69,6 +70,9 @@ const Dating = () => {
     bio: "",
     location: "",
   });
+
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [uploadingAdditional, setUploadingAdditional] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -362,6 +366,130 @@ const Dating = () => {
         description: "Profil bol odstránený",
       });
       setCurrentProfile(null);
+    }
+  };
+
+  const handleUploadProfilePhoto = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user || !currentProfile) return;
+
+    setUploadingPhoto(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}-profile-${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('dating_profiles')
+        .update({ profile_photo_url: publicUrl })
+        .eq('id', currentProfile.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Úspech",
+        description: "Profilová fotka bola nahratá",
+      });
+      
+      await loadUserProfile(user.id);
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa nahrať fotku",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
+  const handleUploadAdditionalPhotos = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || !user || !currentProfile) return;
+
+    setUploadingAdditional(true);
+
+    try {
+      const uploadedUrls: string[] = [];
+
+      for (const file of Array.from(files)) {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}-additional-${Date.now()}-${Math.random()}.${fileExt}`;
+        const filePath = `${user.id}/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('avatars')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(filePath);
+
+        uploadedUrls.push(publicUrl);
+      }
+
+      const currentPhotos = currentProfile.additional_photos || [];
+      const newPhotos = [...currentPhotos, ...uploadedUrls];
+
+      const { error: updateError } = await supabase
+        .from('dating_profiles')
+        .update({ additional_photos: newPhotos })
+        .eq('id', currentProfile.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Úspech",
+        description: `${uploadedUrls.length} fotiek bolo nahratých`,
+      });
+      
+      await loadUserProfile(user.id);
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa nahrať fotky",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingAdditional(false);
+    }
+  };
+
+  const handleRemoveAdditionalPhoto = async (photoUrl: string) => {
+    if (!user || !currentProfile) return;
+
+    const updatedPhotos = (currentProfile.additional_photos || []).filter(url => url !== photoUrl);
+
+    const { error } = await supabase
+      .from('dating_profiles')
+      .update({ additional_photos: updatedPhotos })
+      .eq('id', currentProfile.id);
+
+    if (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa odstrániť fotku",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Úspech",
+        description: "Fotka bola odstránená",
+      });
+      await loadUserProfile(user.id);
     }
   };
 
@@ -703,7 +831,7 @@ const Dating = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-start gap-6">
-                  <div className="h-32 w-32 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center flex-shrink-0">
+                  <div className="relative h-32 w-32 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center flex-shrink-0 group">
                     {currentProfile?.profile_photo_url ? (
                       <img
                         src={currentProfile.profile_photo_url}
@@ -713,6 +841,16 @@ const Dating = () => {
                     ) : (
                       <User className="h-16 w-16 text-muted-foreground" />
                     )}
+                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                      <Upload className="h-8 w-8 text-white" />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleUploadProfilePhoto}
+                        className="hidden"
+                        disabled={uploadingPhoto}
+                      />
+                    </label>
                   </div>
                   <div className="space-y-3 flex-1">
                     <div>
@@ -747,6 +885,58 @@ const Dating = () => {
                     <p className="mt-2 text-sm whitespace-pre-wrap">{currentProfile.bio}</p>
                   </div>
                 )}
+                
+                {/* Additional Photos Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-sm font-medium">Ďalšie fotky</label>
+                    <label className="cursor-pointer">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        disabled={uploadingAdditional}
+                        asChild
+                      >
+                        <span>
+                          <ImageIcon className="h-4 w-4 mr-2" />
+                          {uploadingAdditional ? "Nahrávam..." : "Pridať fotky"}
+                        </span>
+                      </Button>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handleUploadAdditionalPhotos}
+                        className="hidden"
+                        disabled={uploadingAdditional}
+                      />
+                    </label>
+                  </div>
+                  {currentProfile?.additional_photos && currentProfile.additional_photos.length > 0 && (
+                    <div className="grid grid-cols-3 gap-3">
+                      {currentProfile.additional_photos.map((photoUrl, index) => (
+                        <div key={index} className="relative aspect-square group">
+                          <img
+                            src={photoUrl}
+                            alt={`Additional photo ${index + 1}`}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                          <button
+                            onClick={() => handleRemoveAdditionalPhoto(photoUrl)}
+                            className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {(!currentProfile?.additional_photos || currentProfile.additional_photos.length === 0) && (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      Zatiaľ žiadne ďalšie fotky
+                    </p>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
