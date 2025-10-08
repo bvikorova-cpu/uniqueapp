@@ -22,9 +22,9 @@ interface SkillOffering {
   category: string;
   price_per_hour: number | null;
   location: string | null;
+  image_url: string | null;
   user_id: string;
   created_at: string;
-  image_url: string | null;
   profiles?: Profile | Profile[] | null;
 }
 
