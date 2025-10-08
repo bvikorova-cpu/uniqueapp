@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload, Eye } from "lucide-react";
+import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload, Eye, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -241,6 +242,34 @@ const Vacationer = () => {
     }
   };
 
+  
+  const handleDeleteDestination = async (destinationId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await supabase
+        .from("destinations")
+        .delete()
+        .eq("id", destinationId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspech",
+        description: "Destinácia bola odstránená",
+      });
+      setIsDetailDialogOpen(false);
+      fetchDestinations();
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa odstrániť destináciu",
+        variant: "destructive",
+      });
+    }
+  };
+
   const calculateAverageRating = (destination: Destination) => {
     if (!destination.reviews || destination.reviews.length === 0) return 0;
     const sum = destination.reviews.reduce((acc, review) => acc + review.rating, 0);
@@ -464,11 +493,41 @@ const Vacationer = () => {
         <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl">{selectedDestination?.name}</DialogTitle>
-              <CardDescription className="flex items-center gap-1 text-base">
-                <MapPin className="h-5 w-5" />
-                {selectedDestination?.location}
-              </CardDescription>
+              <div className="flex items-start justify-between">
+                <div>
+                  <DialogTitle className="text-2xl">{selectedDestination?.name}</DialogTitle>
+                  <CardDescription className="flex items-center gap-1 text-base">
+                    <MapPin className="h-5 w-5" />
+                    {selectedDestination?.location}
+                  </CardDescription>
+                </div>
+                {user?.id === selectedDestination?.user_id && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Odstrániť destináciu?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Táto akcia sa nedá vrátiť späť. Destinácia a všetky jej fotky a recenzie budú natrvalo vymazané.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                        <AlertDialogAction 
+                          onClick={() => selectedDestination && handleDeleteDestination(selectedDestination.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          Odstrániť
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
             </DialogHeader>
             
             {selectedDestination && (
