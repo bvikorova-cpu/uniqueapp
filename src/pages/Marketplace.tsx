@@ -85,15 +85,9 @@ const Marketplace = () => {
   };
 
   const loadOfferings = async () => {
-    const { data, error } = await supabase
+    const { data: offeringsData, error } = await supabase
       .from("skill_offerings")
-      .select(`
-        *,
-        profiles!skill_offerings_user_id_fkey (
-          full_name,
-          avatar_url
-        )
-      `)
+      .select("*")
       .eq("is_active", true)
       .order("created_at", { ascending: false });
 
@@ -102,7 +96,25 @@ const Marketplace = () => {
       return;
     }
 
-    setOfferings(data || []);
+    if (!offeringsData || offeringsData.length === 0) {
+      setOfferings([]);
+      return;
+    }
+
+    // Fetch profiles for all user_ids
+    const userIds = [...new Set(offeringsData.map(o => o.user_id))];
+    const { data: profilesData } = await supabase
+      .from("profiles")
+      .select("id, full_name, avatar_url")
+      .in("id", userIds);
+
+    // Combine offerings with profiles
+    const offeringsWithProfiles = offeringsData.map(offering => ({
+      ...offering,
+      profiles: profilesData?.find(p => p.id === offering.user_id) || null
+    }));
+
+    setOfferings(offeringsWithProfiles);
   };
 
   const handleSubscribe = async () => {
