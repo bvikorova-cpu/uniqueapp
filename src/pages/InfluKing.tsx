@@ -64,6 +64,10 @@ const InfluKing = () => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerProfile | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showPostDialog, setShowPostDialog] = useState(false);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
 
   const [newProfile, setNewProfile] = useState({
     display_name: "",
@@ -204,6 +208,114 @@ const InfluKing = () => {
       });
     },
   });
+
+  // Upload media to storage
+  const uploadMediaToStorage = async (file: File): Promise<string | null> => {
+    if (!user) return null;
+    
+    setUploadingMedia(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      
+      const { data, error } = await supabase.storage
+        .from('media')
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('media')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error: any) {
+      toast({
+        title: "Chyba pri nahrávaní",
+        description: error.message,
+        variant: "destructive",
+      });
+      return null;
+    } finally {
+      setUploadingMedia(false);
+    }
+  };
+
+  // Handle file upload
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const mediaType = file.type.startsWith('video/') ? 'video' : 'image';
+    const url = await uploadMediaToStorage(file);
+    
+    if (url) {
+      setNewPost({ ...newPost, media_url: url, media_type: mediaType });
+      toast({
+        title: "Súbor nahratý",
+        description: "Môžete pokračovať v pridávaní príspevku",
+      });
+    }
+  };
+
+  // Start recording
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: true, 
+        audio: true 
+      });
+      
+      const recorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm',
+      });
+      
+      const chunks: Blob[] = [];
+      
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
+      };
+      
+      recorder.onstop = async () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const file = new File([blob], `recording-${Date.now()}.webm`, { type: 'video/webm' });
+        
+        const url = await uploadMediaToStorage(file);
+        if (url) {
+          setNewPost({ ...newPost, media_url: url, media_type: 'video' });
+          toast({
+            title: "Nahrávka uložená",
+            description: "Video bolo úspešne nahrané",
+          });
+        }
+        
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+      setRecordedChunks([]);
+      
+    } catch (error: any) {
+      toast({
+        title: "Chyba kamery",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Stop recording
+  const stopRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+      setIsRecording(false);
+      setMediaRecorder(null);
+    }
+  };
 
   // Create post mutation
   const createPostMutation = useMutation({
@@ -376,21 +488,67 @@ const InfluKing = () => {
                         rows={4}
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="post-media">URL média (foto/video)</Label>
-                      <Input
-                        id="post-media"
-                        value={newPost.media_url}
-                        onChange={(e) => setNewPost({ ...newPost, media_url: e.target.value })}
-                        placeholder="https://..."
-                      />
+                    
+                    <div className="space-y-3">
+                      <Label>Foto/Video</Label>
+                      
+                      <div className="flex gap-2">
+                        <div className="flex-1">
+                          <Input
+                            type="file"
+                            accept="image/*,video/*"
+                            onChange={handleFileUpload}
+                            disabled={uploadingMedia || isRecording}
+                            className="cursor-pointer"
+                          />
+                        </div>
+                        
+                        {!isRecording ? (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={startRecording}
+                            disabled={uploadingMedia}
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            Spustiť kameru
+                          </Button>
+                        ) : (
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={stopRecording}
+                          >
+                            Zastaviť nahrávanie
+                          </Button>
+                        )}
+                      </div>
+                      
+                      {newPost.media_url && (
+                        <div className="mt-3">
+                          {newPost.media_type === 'video' ? (
+                            <video 
+                              src={newPost.media_url} 
+                              controls 
+                              className="w-full rounded-lg max-h-64"
+                            />
+                          ) : (
+                            <img 
+                              src={newPost.media_url} 
+                              alt="Preview" 
+                              className="w-full rounded-lg max-h-64 object-cover"
+                            />
+                          )}
+                        </div>
+                      )}
                     </div>
+                    
                     <Button 
                       className="w-full" 
                       onClick={() => createPostMutation.mutate()}
-                      disabled={createPostMutation.isPending}
+                      disabled={createPostMutation.isPending || uploadingMedia || isRecording}
                     >
-                      {createPostMutation.isPending ? "Pridávam..." : "Zverejniť"}
+                      {uploadingMedia ? "Nahrávam..." : createPostMutation.isPending ? "Pridávam..." : "Zverejniť"}
                     </Button>
                   </div>
                 </DialogContent>
