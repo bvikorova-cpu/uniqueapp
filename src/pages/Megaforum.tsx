@@ -159,6 +159,22 @@ const Megaforum = () => {
     enabled: !!user,
   });
 
+  // Fetch liked comments
+  const { data: likedComments = [] } = useQuery({
+    queryKey: ["forumLikedComments", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from("forum_comment_likes")
+        .select("comment_id")
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+      return data.map(like => like.comment_id);
+    },
+    enabled: !!user,
+  });
+
   // Create post mutation
   const createPostMutation = useMutation({
     mutationFn: async () => {
@@ -249,6 +265,33 @@ const Megaforum = () => {
     },
   });
 
+  // Like/unlike comment mutation
+  const likeCommentMutation = useMutation({
+    mutationFn: async (commentId: string) => {
+      if (!user) throw new Error("Must be logged in");
+
+      const isLiked = likedComments.includes(commentId);
+
+      if (isLiked) {
+        const { error } = await supabase
+          .from("forum_comment_likes")
+          .delete()
+          .eq("comment_id", commentId)
+          .eq("user_id", user.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("forum_comment_likes")
+          .insert([{ comment_id: commentId, user_id: user.id }]);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["forumComments"] });
+      queryClient.invalidateQueries({ queryKey: ["forumLikedComments"] });
+    },
+  });
+
   const handleCreatePost = () => {
     if (!user) {
       toast({
@@ -282,6 +325,19 @@ const Megaforum = () => {
     }
 
     likeMutation.mutate(postId);
+  };
+
+  const handleCommentLike = (commentId: string) => {
+    if (!user) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Pre like sa musíte prihlásiť",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    likeCommentMutation.mutate(commentId);
   };
 
   const getTimeSince = (dateString: string) => {
@@ -487,6 +543,7 @@ const Megaforum = () => {
                                     <div className="space-y-4 pr-4">
                                       {comments.map((comment: any) => {
                                         const commentProfile = commentProfiles[comment.user_id];
+                                        const isCommentLiked = likedComments.includes(comment.id);
                                         return (
                                           <div key={comment.id} className="flex gap-3">
                                             <Avatar className="h-8 w-8">
@@ -496,9 +553,21 @@ const Megaforum = () => {
                                             <div className="flex-1">
                                               <p className="text-sm font-semibold">{commentProfile?.full_name || "Používateľ"}</p>
                                               <p className="text-sm text-muted-foreground">{comment.content}</p>
-                                              <p className="text-xs text-muted-foreground mt-1">
-                                                {getTimeSince(comment.created_at)}
-                                              </p>
+                                              <div className="flex items-center gap-3 mt-1">
+                                                <p className="text-xs text-muted-foreground">
+                                                  {getTimeSince(comment.created_at)}
+                                                </p>
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  onClick={() => handleCommentLike(comment.id)}
+                                                  className={`h-6 px-2 hover:text-primary ${isCommentLiked ? 'text-primary' : ''}`}
+                                                  disabled={likeCommentMutation.isPending}
+                                                >
+                                                  <ThumbsUp className={`h-3 w-3 mr-1 ${isCommentLiked ? 'fill-current' : ''}`} />
+                                                  {comment.likes_count || 0}
+                                                </Button>
+                                              </div>
                                             </div>
                                           </div>
                                         );

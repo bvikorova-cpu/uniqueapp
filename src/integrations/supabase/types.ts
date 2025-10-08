@@ -414,12 +414,42 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_comment_likes: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_comment_likes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "forum_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forum_comments: {
         Row: {
           content: string
           created_at: string
           id: string
           is_active: boolean | null
+          likes_count: number | null
           post_id: string
           updated_at: string
           user_id: string
@@ -429,6 +459,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean | null
+          likes_count?: number | null
           post_id: string
           updated_at?: string
           user_id: string
@@ -438,6 +469,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_active?: boolean | null
+          likes_count?: number | null
           post_id?: string
           updated_at?: string
           user_id?: string
