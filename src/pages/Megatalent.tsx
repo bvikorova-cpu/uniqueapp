@@ -624,11 +624,55 @@ const Megatalent = () => {
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
+                    <span>Aktuálny mesiac:</span>
+                    <span className="font-semibold">
+                      {(() => {
+                        const now = new Date();
+                        const startDate = new Date('2026-01-01');
+                        
+                        if (now < startDate) {
+                          return 'Začína 01.01.2026';
+                        }
+                        
+                        const currentMonth = now.toLocaleDateString('sk-SK', { month: 'long', year: 'numeric' });
+                        return currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
+                      })()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
                     <span>Zostáva:</span>
-                    <span className="font-semibold">12 dní</span>
+                    <span className="font-semibold">
+                      {(() => {
+                        const now = new Date();
+                        const startDate = new Date('2026-01-01');
+                        
+                        if (now < startDate) {
+                          const daysUntilStart = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                          return `Štart o ${daysUntilStart} dní`;
+                        }
+                        
+                        const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+                        const daysLeft = Math.ceil((lastDayOfMonth.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+                        return `${daysLeft} ${daysLeft === 1 ? 'deň' : daysLeft < 5 ? 'dni' : 'dní'}`;
+                      })()}
+                    </span>
                   </div>
                   <div className="w-full bg-secondary rounded-full h-2">
-                    <div className="bg-gold h-2 rounded-full w-[60%]"></div>
+                    <div 
+                      className="bg-gold h-2 rounded-full transition-all" 
+                      style={{
+                        width: `${(() => {
+                          const now = new Date();
+                          const startDate = new Date('2026-01-01');
+                          
+                          if (now < startDate) return '0%';
+                          
+                          const currentDay = now.getDate();
+                          const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                          return `${(currentDay / daysInMonth) * 100}%`;
+                        })()}`
+                      }}
+                    ></div>
                   </div>
                 </div>
               </CardContent>
