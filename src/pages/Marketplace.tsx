@@ -7,9 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Clock, Euro, Upload, X, Send } from "lucide-react";
+import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 interface Profile {
   full_name: string | null;
@@ -51,6 +52,7 @@ const Marketplace = () => {
   const [selectedOffering, setSelectedOffering] = useState<SkillOffering | null>(null);
   const [responseMessage, setResponseMessage] = useState("");
   const [isSendingResponse, setIsSendingResponse] = useState(false);
+  const [offeringToDelete, setOfferingToDelete] = useState<string | null>(null);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -171,6 +173,33 @@ const Marketplace = () => {
     setResponseMessage("");
     setSelectedOffering(null);
     setIsSendingResponse(false);
+  };
+
+  const handleDeleteOffering = async () => {
+    if (!offeringToDelete) return;
+
+    const { error } = await supabase
+      .from("skill_offerings")
+      .delete()
+      .eq("id", offeringToDelete);
+
+    if (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa odstrániť ponuku",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "Úspech!",
+      description: "Ponuka bola odstránená"
+    });
+
+    setOfferingToDelete(null);
+    setSelectedOffering(null);
+    loadOfferings();
   };
 
   const uploadImage = async (): Promise<string | null> => {
@@ -448,16 +477,31 @@ const Marketplace = () => {
                 </div>
               )}
               <CardHeader>
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start gap-2">
                   <CardTitle 
-                    className="text-xl cursor-pointer hover:text-primary transition-colors"
+                    className="text-xl cursor-pointer hover:text-primary transition-colors flex-1"
                     onClick={() => setSelectedOffering(offering)}
                   >
                     {offering.title}
                   </CardTitle>
-                  <Badge variant="secondary">
-                    {CATEGORIES[offering.category as keyof typeof CATEGORIES]}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary">
+                      {CATEGORIES[offering.category as keyof typeof CATEGORIES]}
+                    </Badge>
+                    {user && offering.user_id === user.id && (
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOfferingToDelete(offering.id);
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <CardDescription className="flex items-center gap-1 text-sm">
                   Anonymný užívateľ
@@ -512,12 +556,26 @@ const Marketplace = () => {
           {selectedOffering && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-2xl">{selectedOffering.title}</DialogTitle>
-                <DialogDescription>
-                  <Badge variant="secondary" className="mt-2">
-                    {CATEGORIES[selectedOffering.category as keyof typeof CATEGORIES]}
-                  </Badge>
-                </DialogDescription>
+                <div className="flex justify-between items-start gap-4">
+                  <div className="flex-1">
+                    <DialogTitle className="text-2xl">{selectedOffering.title}</DialogTitle>
+                    <DialogDescription>
+                      <Badge variant="secondary" className="mt-2">
+                        {CATEGORIES[selectedOffering.category as keyof typeof CATEGORIES]}
+                      </Badge>
+                    </DialogDescription>
+                  </div>
+                  {user && selectedOffering.user_id === user.id && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setOfferingToDelete(selectedOffering.id)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Odstrániť
+                    </Button>
+                  )}
+                </div>
               </DialogHeader>
               
               {selectedOffering.image_url && (
@@ -579,6 +637,24 @@ const Marketplace = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!offeringToDelete} onOpenChange={(open) => !open && setOfferingToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Naozaj chcete odstrániť túto ponuku?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Táto akcia je nevratná. Ponuka bude natrvalo odstránená.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteOffering} className="bg-destructive hover:bg-destructive/90">
+              Odstrániť
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
