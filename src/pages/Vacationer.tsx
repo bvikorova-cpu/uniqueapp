@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload } from "lucide-react";
+import { Plane, MapPin, Star, Plus, Camera, Send, X, Upload, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -32,6 +32,7 @@ const Vacationer = () => {
   const [selectedDestination, setSelectedDestination] = useState<Destination | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isReviewDialogOpen, setIsReviewDialogOpen] = useState(false);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
 
   // Form states
@@ -377,28 +378,37 @@ const Vacationer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {destinations.map((destination) => (
             <Card key={destination.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="aspect-video bg-gradient-secondary rounded-lg flex items-center justify-center mb-4">
+              <CardHeader className="p-0">
+                <div className="aspect-video bg-gradient-secondary rounded-t-lg overflow-hidden">
                   {destination.photos && destination.photos.length > 0 ? (
                     <img
                       src={destination.photos[0].photo_url}
                       alt={destination.name}
-                      className="w-full h-full object-cover rounded-lg"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <Camera className="h-12 w-12 text-muted-foreground" />
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Camera className="h-12 w-12 text-muted-foreground" />
+                    </div>
                   )}
                 </div>
-                <CardTitle>{destination.name}</CardTitle>
-                <CardDescription className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  {destination.location}
-                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground line-clamp-3">
-                  {destination.description}
-                </p>
+              <CardContent className="p-4 space-y-3">
+                <div>
+                  <CardTitle 
+                    className="cursor-pointer hover:text-primary transition-colors line-clamp-1"
+                    onClick={() => {
+                      setSelectedDestination(destination);
+                      setIsDetailDialogOpen(true);
+                    }}
+                  >
+                    {destination.name}
+                  </CardTitle>
+                  <CardDescription className="flex items-center gap-1 mt-1">
+                    <MapPin className="h-4 w-4" />
+                    {destination.location}
+                  </CardDescription>
+                </div>
                 
                 {/* Rating */}
                 <div className="flex items-center gap-2">
@@ -415,92 +425,200 @@ const Vacationer = () => {
                     ))}
                   </div>
                   <span className="text-sm text-muted-foreground">
-                    {calculateAverageRating(destination)} ({destination.reviews?.length || 0} recenzií)
+                    {calculateAverageRating(destination)} ({destination.reviews?.length || 0})
                   </span>
                 </div>
 
-                {/* Reviews */}
-                {destination.reviews && destination.reviews.length > 0 && (
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {destination.reviews.slice(0, 3).map((review) => (
-                      <div key={review.id} className="bg-secondary/50 p-2 rounded text-sm">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Avatar className="h-6 w-6">
-                            <AvatarFallback>U</AvatarFallback>
-                          </Avatar>
-                          <span className="font-semibold text-xs">
-                            Používateľ
-                          </span>
-                          <div className="flex ml-auto">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <Star
-                                key={star}
-                                className={`h-3 w-3 ${
-                                  star <= review.rating
-                                    ? "fill-yellow-400 text-yellow-400"
-                                    : "text-gray-300"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-xs text-muted-foreground">{review.comment}</p>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => {
+                      setSelectedDestination(destination);
+                      setIsDetailDialogOpen(true);
+                    }}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Detail
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="flex-1"
+                    onClick={() => {
+                      setSelectedDestination(destination);
+                      setIsReviewDialogOpen(true);
+                    }}
+                  >
+                    <Star className="h-4 w-4 mr-2" />
+                    Recenzia
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Detail Dialog */}
+        <Dialog open={isDetailDialogOpen} onOpenChange={setIsDetailDialogOpen}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">{selectedDestination?.name}</DialogTitle>
+              <CardDescription className="flex items-center gap-1 text-base">
+                <MapPin className="h-5 w-5" />
+                {selectedDestination?.location}
+              </CardDescription>
+            </DialogHeader>
+            
+            {selectedDestination && (
+              <div className="space-y-6">
+                {/* Images Gallery */}
+                {selectedDestination.photos && selectedDestination.photos.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2">
+                    {selectedDestination.photos.map((photo) => (
+                      <div key={photo.id} className="aspect-video rounded-lg overflow-hidden">
+                        <img
+                          src={photo.photo_url}
+                          alt={selectedDestination.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                     ))}
                   </div>
                 )}
 
-                <Dialog open={isReviewDialogOpen && selectedDestination?.id === destination.id} onOpenChange={(open) => {
-                  setIsReviewDialogOpen(open);
-                  if (open) setSelectedDestination(destination);
-                }}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="w-full">
-                      <Star className="h-4 w-4 mr-2" />
+                {/* Rating */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-6 w-6 ${
+                          star <= Math.round(Number(calculateAverageRating(selectedDestination)))
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-lg font-semibold">
+                    {calculateAverageRating(selectedDestination)}
+                  </span>
+                  <span className="text-muted-foreground">
+                    ({selectedDestination.reviews?.length || 0} recenzií)
+                  </span>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">Popis</h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap">
+                    {selectedDestination.description}
+                  </p>
+                </div>
+
+                {/* Reviews */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-lg">
+                      Recenzie ({selectedDestination.reviews?.length || 0})
+                    </h3>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        setIsDetailDialogOpen(false);
+                        setIsReviewDialogOpen(true);
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
                       Pridať recenziu
                     </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Pridať recenziu - {destination.name}</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-sm font-medium">Hodnotenie</label>
-                        <div className="flex items-center gap-2 mt-2">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              className={`h-8 w-8 cursor-pointer ${
-                                star <= newReview.rating
-                                  ? "fill-yellow-400 text-yellow-400"
-                                  : "text-gray-300"
-                              }`}
-                              onClick={() => setNewReview({ ...newReview, rating: star })}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium">Komentár</label>
-                        <Textarea
-                          value={newReview.comment}
-                          onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                          placeholder="Napíšte svoju recenziu..."
-                          className="min-h-24"
-                        />
-                      </div>
-                      <Button onClick={handleAddReview} className="w-full">
-                        <Send className="h-4 w-4 mr-2" />
-                        Odoslať recenziu
-                      </Button>
+                  </div>
+                  
+                  {selectedDestination.reviews && selectedDestination.reviews.length > 0 ? (
+                    <div className="space-y-3">
+                      {selectedDestination.reviews.map((review) => (
+                        <Card key={review.id}>
+                          <CardContent className="pt-4">
+                            <div className="flex items-start gap-3">
+                              <Avatar className="h-10 w-10">
+                                <AvatarFallback>U</AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-semibold">Používateľ</span>
+                                  <div className="flex">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <Star
+                                        key={star}
+                                        className={`h-4 w-4 ${
+                                          star <= review.rating
+                                            ? "fill-yellow-400 text-yellow-400"
+                                            : "text-gray-300"
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                                <p className="text-sm text-muted-foreground">{review.comment}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
                     </div>
-                  </DialogContent>
-                </Dialog>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  ) : (
+                    <p className="text-center text-muted-foreground py-6">
+                      Zatiaľ žiadne recenzie. Buďte prvý, kto pridá recenziu!
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Review Dialog */}
+        <Dialog open={isReviewDialogOpen} onOpenChange={setIsReviewDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Pridať recenziu - {selectedDestination?.name}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Hodnotenie</label>
+                <div className="flex items-center gap-2 mt-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`h-8 w-8 cursor-pointer ${
+                        star <= newReview.rating
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300"
+                      }`}
+                      onClick={() => setNewReview({ ...newReview, rating: star })}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Komentár</label>
+                <Textarea
+                  value={newReview.comment}
+                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                  placeholder="Napíšte svoju recenziu..."
+                  className="min-h-24"
+                />
+              </div>
+              <Button onClick={handleAddReview} className="w-full">
+                <Send className="h-4 w-4 mr-2" />
+                Odoslať recenziu
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {destinations.length === 0 && (
           <div className="text-center py-12">
