@@ -278,7 +278,7 @@ export default function Education() {
           <TabsContent value="tutoring">
             <Card>
               <CardHeader>
-                <CardTitle>Online Doučovanie s AI</CardTitle>
+                <CardTitle>Online Doučovanie</CardTitle>
                 <CardDescription>
                   Opýtajte sa na čokoľvek a získajte okamžitú odpoveď
                 </CardDescription>
