@@ -3,20 +3,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Gamepad2, Trophy, Star, Heart, Zap, Brain, Dribbble, MapPin, Car } from "lucide-react";
-import { Y8GameWrapper } from "@/components/games/Y8GameWrapper";
-import { y8Games, getGamesByCategory, gameCategories, type GameCategory } from "@/data/y8games";
+import { GameDistributionWrapper } from "@/components/games/GameDistributionWrapper";
+import { gdGames, getGamesByCategory, gameCategories, type GameCategory } from "@/data/gdgames";
 
 const Games = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
 
   // If a specific game is active, show it
   if (activeGame) {
-    const game = y8Games.find(g => g.id === activeGame);
+    const game = gdGames.find(g => g.id === activeGame);
     if (game) {
       return (
-        <Y8GameWrapper 
-          slug={game.slug}
+        <GameDistributionWrapper 
+          gameId={game.gameId}
           title={game.title}
+          width={game.width}
+          height={game.height}
           onBack={() => setActiveGame(null)}
         />
       );
