@@ -248,6 +248,18 @@ const TikTok = () => {
       return;
     }
 
+    // Check file size (50MB limit for Supabase free tier)
+    const maxSizeInBytes = 50 * 1024 * 1024; // 50MB
+    if (uploadFile.size > maxSizeInBytes) {
+      const fileSizeInMB = (uploadFile.size / (1024 * 1024)).toFixed(2);
+      toast({
+        title: "Video je príliš veľké",
+        description: `Súbor má ${fileSizeInMB}MB. Maximálna veľkosť je 50MB.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       console.log("Starting upload process...");
       const fileExt = uploadFile.name.split('.').pop();
