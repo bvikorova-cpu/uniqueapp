@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
   { value: "drawing", label: "Kreslenie" },
@@ -19,13 +20,80 @@ const categories = [
 const Megatalent = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>("drawing");
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const handleSubscribe = () => {
-    toast({
-      title: "Potrebné pripojenie k Supabase",
-      description: "Pre platobné funkcie je potrebné pripojiť Supabase databázu.",
-    });
+  useEffect(() => {
+    checkSubscription();
+  }, []);
+
+  const checkSubscription = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('megatalent_subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .maybeSingle();
+
+      if (error) throw error;
+      setIsSubscribed(!!data);
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubscribe = async (tier: 'premium' | 'top_premium') => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Prihlásenie potrebné",
+          description: "Musíte byť prihlásený pre aktiváciu premium.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const price = tier === 'premium' ? 10 : 15;
+      const bonusVotes = tier === 'top_premium' ? 100000 : 0;
+      const winChanceBoost = tier === 'top_premium' ? 50 : 0;
+
+      const { error } = await supabase
+        .from('megatalent_subscriptions')
+        .insert({
+          user_id: user.id,
+          tier,
+          price,
+          bonus_votes: bonusVotes,
+          win_chance_boost: winChanceBoost,
+          status: 'active',
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspešne aktivované!",
+        description: `${tier === 'premium' ? 'Premium' : 'TOP Premium'} predplatné bolo aktivované.`,
+      });
+
+      setIsSubscribed(true);
+    } catch (error) {
+      console.error('Error subscribing:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa aktivovať predplatné.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleVote = (type: 'like' | 'dislike') => {
@@ -34,6 +102,14 @@ const Megatalent = () => {
       description: `${type === 'like' ? 'Páči sa mi' : 'Nepáči sa mi'} - potrebné pripojenie databázy`,
     });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
+        <p className="text-lg">Načítavam...</p>
+      </div>
+    );
+  }
 
   if (!isSubscribed) {
     return (
@@ -82,7 +158,7 @@ const Megatalent = () => {
                     variant="hero" 
                     size="lg" 
                     className="w-full"
-                    onClick={handleSubscribe}
+                    onClick={() => handleSubscribe('premium')}
                   >
                     Aktivovať Premium
                   </Button>
@@ -121,7 +197,7 @@ const Megatalent = () => {
                     variant="hero" 
                     size="lg" 
                     className="w-full bg-gold hover:bg-gold/90"
-                    onClick={handleSubscribe}
+                    onClick={() => handleSubscribe('top_premium')}
                   >
                     Aktivovať TOP Premium
                   </Button>
