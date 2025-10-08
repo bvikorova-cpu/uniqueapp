@@ -28,6 +28,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Terms from "./pages/Terms";
 import Education from "./pages/Education";
 import CourseDetail from "./pages/CourseDetail";
+import Quiz from "./pages/Quiz";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
 import BestFriend from "./pages/BestFriend";
@@ -74,6 +75,7 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/education" element={<Education />} />
           <Route path="/course/:courseName" element={<CourseDetail />} />
+          <Route path="/quiz" element={<Quiz />} />
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

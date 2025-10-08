@@ -13,10 +13,14 @@ const quizCategories = [
   { id: "biology", name: "Biológia", icon: "🧬" },
   { id: "physics", name: "Fyzika", icon: "⚛️" },
   { id: "chemistry", name: "Chémia", icon: "🧪" },
-  { id: "celebrity", name: "Celebrity", icon: "⭐" },
-  { id: "history", name: "História", icon: "📜" },
   { id: "geography", name: "Geografia", icon: "🌍" },
+  { id: "history", name: "História", icon: "📜" },
   { id: "literature", name: "Literatura", icon: "📚" },
+  { id: "celebrity", name: "Celebrity", icon: "⭐" },
+  { id: "english", name: "Angličtina", icon: "🇬🇧" },
+  { id: "slovak", name: "Slovenčina", icon: "🇸🇰" },
+  { id: "computer", name: "Informatika", icon: "💻" },
+  { id: "art", name: "Umenie", icon: "🎨" },
 ];
 
 const courseCategories = [
@@ -225,11 +229,8 @@ export default function Education() {
     }
   };
 
-  const handleStartQuiz = (category: string) => {
-    toast({
-      title: "Kvíz",
-      description: `Štartuje sa kvíz z kategórie: ${category}`,
-    });
+  const handleStartQuiz = (categoryId: string) => {
+    navigate(`/quiz?category=${categoryId}`);
   };
 
   const handleEnrollCourse = (courseName: string) => {
@@ -339,7 +340,7 @@ export default function Education() {
                   </CardHeader>
                   <CardContent>
                     <Button
-                      onClick={() => handleStartQuiz(category.name)}
+                      onClick={() => handleStartQuiz(category.id)}
                       className="w-full"
                     >
                       Štart
