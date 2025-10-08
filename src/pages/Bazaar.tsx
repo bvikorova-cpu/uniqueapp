@@ -15,6 +15,13 @@ const Bazaar = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    price: "",
+    location: "",
+    description: "",
+  });
   const { toast } = useToast();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,6 +146,65 @@ const Bazaar = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const handleSubmit = async () => {
+    if (!formData.title || !formData.price || !formData.location) {
+      toast({
+        title: "Chyba",
+        description: "Vyplňte všetky povinné polia",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Chyba",
+          description: "Musíte byť prihlásený",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      let imageUrl = null;
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${user.id}-${Date.now()}.${fileExt}`;
+        const { error: uploadError, data } = await supabase.storage
+          .from('bazaar_images')
+          .upload(fileName, imageFile);
+
+        if (uploadError) throw uploadError;
+        
+        const { data: { publicUrl } } = supabase.storage
+          .from('bazaar_images')
+          .getPublicUrl(fileName);
+        imageUrl = publicUrl;
+      }
+
+      toast({
+        title: "Úspech",
+        description: "Inzerát bol pridaný",
+      });
+
+      setFormData({ title: "", price: "", location: "", description: "" });
+      setImageFile(null);
+      setImagePreview("");
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa pridať inzerát",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleContact = (sellerName: string) => {
     toast({
       title: "Kontakt predajcu",
@@ -163,7 +229,7 @@ const Bazaar = () => {
             </p>
           </div>
           
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="hero" size="lg">
                 <Plus className="h-5 w-5 mr-2" />
@@ -175,10 +241,28 @@ const Bazaar = () => {
                 <DialogTitle>Nový inzerát</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-                <Input placeholder="Názov produktu" />
-                <Input placeholder="Cena (€)" type="number" />
-                <Input placeholder="Lokalita" />
-                <Textarea placeholder="Popis produktu..." className="min-h-20" />
+                <Input 
+                  placeholder="Názov produktu" 
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                />
+                <Input 
+                  placeholder="Cena (€)" 
+                  type="number"
+                  value={formData.price}
+                  onChange={(e) => setFormData({...formData, price: e.target.value})}
+                />
+                <Input 
+                  placeholder="Lokalita"
+                  value={formData.location}
+                  onChange={(e) => setFormData({...formData, location: e.target.value})}
+                />
+                <Textarea 
+                  placeholder="Popis produktu..." 
+                  className="min-h-20"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                />
                 
                 {/* Image Upload */}
                 <div className="space-y-2">
@@ -221,7 +305,7 @@ const Bazaar = () => {
                   )}
                 </div>
 
-                <Button variant="hero" className="w-full" disabled={uploading}>
+                <Button variant="hero" className="w-full" disabled={uploading} onClick={handleSubmit}>
                   {uploading ? "Nahrávam..." : "Zverejniť inzerát"}
                 </Button>
               </div>
