@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 const FitSlim = () => {
   const [activeTab, setActiveTab] = useState("weight-loss-videos");
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
 
   const weightLossVideos = [
     {
@@ -258,6 +259,18 @@ const FitSlim = () => {
       protein: "35g",
       time: "20 min",
       image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop",
+      ingredients: [
+        "200g kuracích pŕs",
+        "100g mix zelených šalátov",
+        "1 paradajka",
+        "1/2 uhorky",
+        "50g cherry paradajok",
+        "2 lyžice olivového oleja",
+        "1 lyžica citrónovej šťavy",
+        "soľ, čierne korenie",
+        "čerstvé bylinky podľa chuti"
+      ],
+      instructions: "1. Kuracie prsia okoreňte soľou a korením.\n2. Grilujte na panvici alebo grile 5-7 minút z každej strany.\n3. Zeleninu umyte a nakrájajte.\n4. V miske zmiešajte šaláty, nakrájanú paradajku, uhorku a cherry paradajky.\n5. Pripravte dresing z olivového oleja a citrónovej šťavy.\n6. Nakrájajte grilované kuracie mäso na plátky.\n7. Pridajte mäso k zelenine, polejte dresingom a posypte bylinkami."
     },
     {
       id: 2,
@@ -266,6 +279,18 @@ const FitSlim = () => {
       protein: "12g",
       time: "30 min",
       image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop",
+      ingredients: [
+        "150g quinoa",
+        "1 červená paprika",
+        "1 cuketa",
+        "1 baklažán",
+        "200g cherry paradajok",
+        "2 strúčiky cesnaku",
+        "3 lyžice olivového oleja",
+        "soľ, korenie",
+        "čerstvý tymián"
+      ],
+      instructions: "1. Quinoa opláchnite a uvarte podľa návodu na obale (zvyčajne 15 minút).\n2. Zeleninu nakrájajte na kocky.\n3. Rozohrejte trúbu na 200°C.\n4. Zeleninu premiešajte s olivovým olejom, prelisovaným cesnakom a korením.\n5. Rozložte na plech a pečte 20-25 minút.\n6. Uvarenej quinoe pridajte pečenú zeleninu.\n7. Dochuťte čerstvým tymiánom a podávajte teplé."
     },
     {
       id: 3,
@@ -274,6 +299,16 @@ const FitSlim = () => {
       protein: "25g",
       time: "5 min",
       image: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=800&auto=format&fit=crop",
+      ingredients: [
+        "1 banán",
+        "150g zmrazených jahôd",
+        "30g proteinového prášku (vanilka)",
+        "200ml mandľového mléka",
+        "1 lyžica chia semienok",
+        "1 lyžička medu",
+        "ľad podľa chuti"
+      ],
+      instructions: "1. Banán olúpte a rozlámte na kúsky.\n2. Do mixéra vložte banán, jahody, proteinový prášok a mandľové mléko.\n3. Pridajte chia semienka a med.\n4. Mixujte na vysokých otáčkach 1-2 minúty, kým nevznikne hladká konzistencia.\n5. Ak chcete chladnejší nápoj, pridajte ľad a znovu krátko premiešajte.\n6. Nalejte do pohára a ihneď podávajte."
     },
     {
       id: 4,
@@ -650,7 +685,11 @@ const FitSlim = () => {
           <TabsContent value="weight-loss-recipes" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {weightLossRecipes.map((recipe) => (
-                <Card key={recipe.id} className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer">
+                <Card 
+                  key={recipe.id} 
+                  className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
+                  onClick={() => setSelectedRecipe(recipe)}
+                >
                   <div className="relative aspect-video">
                     <img
                       src={recipe.image}
@@ -663,7 +702,9 @@ const FitSlim = () => {
                     </Badge>
                   </div>
                   <CardHeader>
-                    <CardTitle className="text-lg">{recipe.title}</CardTitle>
+                    <CardTitle className="text-lg hover:text-primary transition-colors">
+                      {recipe.title}
+                    </CardTitle>
                     <CardDescription>
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-primary font-semibold">{recipe.calories}</span>
@@ -679,7 +720,11 @@ const FitSlim = () => {
           <TabsContent value="healthy-recipes" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {healthyRecipes.map((recipe) => (
-                <Card key={recipe.id} className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer">
+                <Card 
+                  key={recipe.id} 
+                  className="overflow-hidden hover:shadow-elegant transition-all cursor-pointer"
+                  onClick={() => setSelectedRecipe(recipe)}
+                >
                   <div className="relative aspect-video">
                     <img
                       src={recipe.image}
@@ -692,7 +737,9 @@ const FitSlim = () => {
                     </Badge>
                   </div>
                   <CardHeader>
-                    <CardTitle className="text-lg">{recipe.title}</CardTitle>
+                    <CardTitle className="text-lg hover:text-primary transition-colors">
+                      {recipe.title}
+                    </CardTitle>
                     <CardDescription>
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-primary font-semibold">{recipe.calories}</span>
@@ -733,6 +780,71 @@ const FitSlim = () => {
                 )}
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Recipe Detail Dialog */}
+        <Dialog open={!!selectedRecipe} onOpenChange={() => setSelectedRecipe(null)}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            {selectedRecipe && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl">{selectedRecipe.title}</DialogTitle>
+                  <DialogDescription className="flex items-center gap-4 mt-2">
+                    <span className="flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {selectedRecipe.time}
+                    </span>
+                    <span className="text-primary font-semibold">{selectedRecipe.calories}</span>
+                    {selectedRecipe.protein && <span>Bielkoviny: {selectedRecipe.protein}</span>}
+                    {selectedRecipe.benefit && (
+                      <span className="flex items-center">
+                        <Heart className="h-4 w-4 mr-1" />
+                        {selectedRecipe.benefit}
+                      </span>
+                    )}
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="space-y-6">
+                  <div className="relative aspect-video rounded-lg overflow-hidden">
+                    <img
+                      src={selectedRecipe.image}
+                      alt={selectedRecipe.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {selectedRecipe.ingredients && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3 flex items-center">
+                        <ChefHat className="h-5 w-5 mr-2" />
+                        Ingrediencie
+                      </h3>
+                      <ul className="space-y-2">
+                        {selectedRecipe.ingredients.map((ingredient: string, index: number) => (
+                          <li key={index} className="flex items-start">
+                            <span className="text-primary mr-2">•</span>
+                            <span>{ingredient}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {selectedRecipe.instructions && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Postup prípravy</h3>
+                      <div className="prose prose-sm max-w-none">
+                        <p className="whitespace-pre-line text-muted-foreground leading-relaxed">
+                          {selectedRecipe.instructions}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </DialogContent>
         </Dialog>
       </div>
