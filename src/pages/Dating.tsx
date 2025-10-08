@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,7 @@ interface SentGift {
 
 const Dating = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [currentProfile, setCurrentProfile] = useState<DatingProfile | null>(null);
@@ -771,7 +773,11 @@ const Dating = () => {
   // Profile creation dialog
   if (!currentProfile) {
     return (
-      <Dialog open={showProfileDialog || !currentProfile} onOpenChange={setShowProfileDialog}>
+      <Dialog open={true} onOpenChange={(open) => {
+        if (!open) {
+          navigate('/');
+        }
+      }}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Vytvorte si profil</DialogTitle>
