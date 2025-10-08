@@ -220,7 +220,13 @@ const TikTok = () => {
   };
 
   const handleUpload = async () => {
-    console.log("handleUpload called", { uploadFile, user });
+    console.log("handleUpload called", { 
+      hasFile: !!uploadFile, 
+      fileName: uploadFile?.name,
+      fileSize: uploadFile?.size,
+      fileType: uploadFile?.type,
+      user: user?.id 
+    });
     
     if (!uploadFile) {
       console.log("No file selected");
@@ -243,20 +249,26 @@ const TikTok = () => {
     }
 
     try {
+      console.log("Starting upload process...");
       const fileExt = uploadFile.name.split('.').pop();
       const filePath = `${user.id}/${Date.now()}.${fileExt}`;
       
-      console.log("Uploading to storage:", filePath);
+      console.log("Uploading to storage:", { filePath, fileSize: uploadFile.size });
 
-      const { error: uploadError } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from("videos")
-        .upload(filePath, uploadFile);
+        .upload(filePath, uploadFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      console.log("Upload response:", { uploadData, uploadError });
 
       if (uploadError) {
         console.error("Storage upload error:", uploadError);
         toast({
           title: "Chyba pri nahrávaní",
-          description: uploadError.message || "Nepodarilo sa nahrať video",
+          description: uploadError.message || "Nepodarilo sa nahrať video do storage",
           variant: "destructive",
         });
         return;
@@ -270,20 +282,27 @@ const TikTok = () => {
 
       console.log("Public URL:", publicUrl);
 
-      const { error: dbError } = await supabase
+      const videoData = {
+        user_id: user.id,
+        title: uploadTitle || "Bez názvu",
+        description: uploadDescription || null,
+        video_url: publicUrl,
+      };
+
+      console.log("Inserting to database:", videoData);
+
+      const { data: dbData, error: dbError } = await supabase
         .from("videos")
-        .insert({
-          user_id: user.id,
-          title: uploadTitle || "Bez názvu",
-          description: uploadDescription,
-          video_url: publicUrl,
-        });
+        .insert(videoData)
+        .select();
+
+      console.log("Database insert response:", { dbData, dbError });
 
       if (dbError) {
         console.error("Database insert error:", dbError);
         toast({
           title: "Chyba pri ukladaní",
-          description: dbError.message || "Nepodarilo sa uložiť video",
+          description: dbError.message || "Nepodarilo sa uložiť video do databázy",
           variant: "destructive",
         });
         return;
@@ -293,7 +312,7 @@ const TikTok = () => {
 
       toast({
         title: "Úspech",
-        description: "Video bolo nahrané",
+        description: "Video bolo úspešne nahrané",
       });
 
       setUploadDialogOpen(false);
@@ -305,7 +324,7 @@ const TikTok = () => {
       console.error("Unexpected error:", error);
       toast({
         title: "Chyba",
-        description: "Neočakávaná chyba pri nahrávaní",
+        description: error instanceof Error ? error.message : "Neočakávaná chyba pri nahrávaní",
         variant: "destructive",
       });
     }
