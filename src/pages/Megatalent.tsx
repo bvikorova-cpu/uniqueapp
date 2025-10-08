@@ -21,6 +21,7 @@ const categories = [
 
 const Megatalent = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [subscriptionTier, setSubscriptionTier] = useState<'premium' | 'top_premium' | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("drawing");
   const [loading, setLoading] = useState(true);
   const [uploadedFile, setUploadedFile] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
@@ -29,6 +30,7 @@ const Megatalent = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [totalVotes, setTotalVotes] = useState(0);
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -37,6 +39,12 @@ const Megatalent = () => {
     checkSubscription();
     fetchSubmissions();
   }, [selectedCategory]);
+
+  useEffect(() => {
+    if (isSubscribed) {
+      fetchTotalVotes();
+    }
+  }, [isSubscribed, submissions]);
 
   const checkSubscription = async () => {
     try {
@@ -55,10 +63,34 @@ const Megatalent = () => {
 
       if (error) throw error;
       setIsSubscribed(!!data);
+      setSubscriptionTier(data?.tier || null);
     } catch (error) {
       console.error('Error checking subscription:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTotalVotes = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('talent_submissions')
+        .select('votes_count')
+        .eq('user_id', user.id)
+        .eq('is_active', true);
+
+      if (error) throw error;
+
+      const total = data?.reduce((sum, submission) => sum + (submission.votes_count || 0), 0) || 0;
+      
+      // Add bonus 100,000 votes for TOP Premium users
+      const bonusVotes = subscriptionTier === 'top_premium' ? 100000 : 0;
+      setTotalVotes(total + bonusVotes);
+    } catch (error) {
+      console.error('Error fetching total votes:', error);
     }
   };
 
@@ -384,6 +416,21 @@ const Megatalent = () => {
                   <Upload className="h-5 w-5" />
                   Nahrať obsah
                 </CardTitle>
+                {(subscriptionTier === 'premium' || subscriptionTier === 'top_premium') && (
+                  <div className="mt-3 p-3 rounded-lg bg-gradient-primary border border-gold/30">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">Celkový počet hlasov:</span>
+                      <Badge className="bg-gold text-gold-foreground text-base font-bold">
+                        {totalVotes.toLocaleString('sk-SK')}
+                      </Badge>
+                    </div>
+                    {subscriptionTier === 'top_premium' && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Obsahuje bonus +100,000 hlasov
+                      </p>
+                    )}
+                  </div>
+                )}
               </CardHeader>
               <CardContent className="space-y-4">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
