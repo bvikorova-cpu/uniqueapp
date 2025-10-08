@@ -181,6 +181,41 @@ const Auction = () => {
     setBidDialogOpen(true);
   };
 
+  const handleBuyout = async (auction: AuctionItem) => {
+    if (!user) {
+      toast.error("Musíte byť prihlásený");
+      navigate("/auth");
+      return;
+    }
+
+    if (!auction.buyout_price) return;
+
+    try {
+      const { error } = await supabase.from("auction_bids").insert({
+        auction_id: auction.id,
+        user_id: user.id,
+        bid_amount: auction.buyout_price,
+      });
+
+      if (error) throw error;
+
+      // Mark auction as sold/inactive
+      await supabase
+        .from("auction_items")
+        .update({ 
+          is_active: false,
+          winner_id: user.id 
+        })
+        .eq("id", auction.id);
+
+      toast.success("Produkt bol úspešne zakúpený!");
+      fetchAuctions();
+    } catch (error) {
+      console.error("Error buying out:", error);
+      toast.error("Nepodarilo sa zakúpiť produkt");
+    }
+  };
+
   const submitBid = async () => {
     if (!selectedAuction || !bidAmount) return;
 
@@ -505,7 +540,11 @@ const Auction = () => {
                         Prihodiť
                       </Button>
                       {auction.buyout_price && (
-                        <Button variant="outline" className="flex-1">
+                        <Button 
+                          variant="outline" 
+                          className="flex-1"
+                          onClick={() => handleBuyout(auction)}
+                        >
                           Kúpiť za {parseFloat(auction.buyout_price.toString()).toFixed(2)}€
                         </Button>
                       )}
