@@ -412,12 +412,8 @@ const Megatalent = () => {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Upload className="h-5 w-5" />
-                  Nahrať obsah
-                </CardTitle>
                 {(subscriptionTier === 'premium' || subscriptionTier === 'top_premium') && (
-                  <div className="mt-3 p-3 rounded-lg bg-gradient-primary border border-gold/30">
+                  <div className="p-4 rounded-lg bg-gradient-primary border border-gold/30">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">Celkový počet hlasov:</span>
                       <Badge className="bg-gold text-gold-foreground text-base font-bold">
