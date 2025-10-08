@@ -23,7 +23,7 @@ interface BazaarItem {
   user_id: string;
   profiles?: {
     full_name: string | null;
-  };
+  } | null;
 }
 
 const Bazaar = () => {
