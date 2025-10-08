@@ -220,26 +220,16 @@ const TikTok = () => {
   };
 
   const handleUpload = async () => {
-    console.log("handleUpload called", { 
-      hasFile: !!uploadFile, 
-      fileName: uploadFile?.name,
-      fileSize: uploadFile?.size,
-      fileType: uploadFile?.type,
-      user: user?.id 
-    });
-    
     if (!uploadFile) {
-      console.log("No file selected");
       toast({
         title: "Chyba",
-        description: "Prosím vyberte video súbor",
+        description: "Vyberte video súbor",
         variant: "destructive",
       });
       return;
     }
 
     if (!user) {
-      console.log("No user logged in");
       toast({
         title: "Chyba",
         description: "Musíte byť prihlásený",
@@ -248,24 +238,21 @@ const TikTok = () => {
       return;
     }
 
-    // Check file size (50MB limit for Supabase free tier)
-    const maxSizeInBytes = 50 * 1024 * 1024; // 50MB
+    // Check file size (50MB limit)
+    const maxSizeInBytes = 50 * 1024 * 1024;
     if (uploadFile.size > maxSizeInBytes) {
       const fileSizeInMB = (uploadFile.size / (1024 * 1024)).toFixed(2);
       toast({
         title: "Video je príliš veľké",
-        description: `Súbor má ${fileSizeInMB}MB. Maximálna veľkosť je 50MB.`,
+        description: `Súbor má ${fileSizeInMB}MB. Max. 50MB. Prosím zvýšte limit v Supabase Storage Settings.`,
         variant: "destructive",
       });
       return;
     }
 
     try {
-      console.log("Starting upload process...");
       const fileExt = uploadFile.name.split('.').pop();
       const filePath = `${user.id}/${Date.now()}.${fileExt}`;
-      
-      console.log("Uploading to storage:", { filePath, fileSize: uploadFile.size });
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("videos")
@@ -273,8 +260,6 @@ const TikTok = () => {
           cacheControl: '3600',
           upsert: false
         });
-
-      console.log("Upload response:", { uploadData, uploadError });
 
       if (uploadError) {
         console.error("Storage upload error:", uploadError);
