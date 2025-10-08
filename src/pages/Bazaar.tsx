@@ -37,6 +37,8 @@ const Bazaar = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [contactMessage, setContactMessage] = useState("");
   const [selectedItem, setSelectedItem] = useState<BazaarItem | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [items, setItems] = useState<BazaarItem[]>([]);
@@ -218,10 +220,26 @@ const Bazaar = () => {
   };
 
   const handleContact = (item: BazaarItem) => {
-    toast({
-      title: "Kontakt predajcu",
-      description: `Kontaktovanie predajcu - funkcia bude dostupná čoskoro`,
-    });
+    if (!currentUserId) {
+      toast({
+        title: "Chyba",
+        description: "Musíte byť prihlásený",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (currentUserId === item.user_id) {
+      toast({
+        title: "Upozornenie",
+        description: "Nemôžete kontaktovať seba",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSelectedItem(item);
+    setIsContactDialogOpen(true);
   };
 
   const openDetail = (item: BazaarItem) => {
@@ -231,6 +249,45 @@ const Bazaar = () => {
 
   const handleDeleteClick = () => {
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleSendMessage = async () => {
+    if (!selectedItem || !currentUserId || !contactMessage.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Vyplňte správu",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('bazaar_messages')
+        .insert({
+          item_id: selectedItem.id,
+          sender_id: currentUserId,
+          receiver_id: selectedItem.user_id,
+          message: contactMessage,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspech",
+        description: "Správa bola odoslaná predajcovi",
+      });
+
+      setContactMessage("");
+      setIsContactDialogOpen(false);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa odoslať správu",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDeleteConfirm = async () => {
@@ -606,7 +663,7 @@ const Bazaar = () => {
             <AlertDialogHeader>
               <AlertDialogTitle>Odstrániť inzerát?</AlertDialogTitle>
               <AlertDialogDescription>
-                Táto akcia je nevratná. Inzerát bude trvale odstránený.
+                Táto akcia je nevratná. Inzerát bude trvalo odstránený.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -617,6 +674,36 @@ const Bazaar = () => {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Contact Seller Dialog */}
+        <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Kontaktovať predajcu</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-muted-foreground mb-2">
+                  Pošlite správu predajcovi týkajúcu sa: <strong>{selectedItem?.title}</strong>
+                </p>
+                <Textarea
+                  placeholder="Napíšte vašu správu..."
+                  value={contactMessage}
+                  onChange={(e) => setContactMessage(e.target.value)}
+                  className="min-h-32"
+                />
+              </div>
+              <Button 
+                onClick={handleSendMessage} 
+                className="w-full"
+                disabled={!contactMessage.trim()}
+              >
+                <MessageCircle className="h-4 w-4 mr-2" />
+                Odoslať správu
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {filteredItems.length === 0 && (
           <div className="text-center py-12">
