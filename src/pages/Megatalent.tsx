@@ -16,6 +16,7 @@ const categories = [
   { value: "life_advice", label: "Najlepšia rada do života" },
   { value: "tattoo", label: "Najlepšie tetovanie" },
   { value: "training", label: "Najlepší tréning" },
+  { value: "best_selfie", label: "Najlepšie selfie" },
 ];
 
 const Megatalent = () => {
