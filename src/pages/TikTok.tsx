@@ -220,56 +220,95 @@ const TikTok = () => {
   };
 
   const handleUpload = async () => {
-    if (!uploadFile) return;
-
-    const fileExt = uploadFile.name.split('.').pop();
-    const filePath = `${user.id}/${Date.now()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("videos")
-      .upload(filePath, uploadFile);
-
-    if (uploadError) {
+    console.log("handleUpload called", { uploadFile, user });
+    
+    if (!uploadFile) {
+      console.log("No file selected");
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa nahrať video",
+        description: "Prosím vyberte video súbor",
         variant: "destructive",
       });
       return;
     }
 
-    const { data: { publicUrl } } = supabase.storage
-      .from("videos")
-      .getPublicUrl(filePath);
-
-    const { error: dbError } = await supabase
-      .from("videos")
-      .insert({
-        user_id: user.id,
-        title: uploadTitle,
-        description: uploadDescription,
-        video_url: publicUrl,
-      });
-
-    if (dbError) {
+    if (!user) {
+      console.log("No user logged in");
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa uložiť video",
+        description: "Musíte byť prihlásený",
         variant: "destructive",
       });
       return;
     }
 
-    toast({
-      title: "Úspech",
-      description: "Video bolo nahrané",
-    });
+    try {
+      const fileExt = uploadFile.name.split('.').pop();
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+      
+      console.log("Uploading to storage:", filePath);
 
-    setUploadDialogOpen(false);
-    setUploadFile(null);
-    setUploadTitle("");
-    setUploadDescription("");
-    fetchVideos();
+      const { error: uploadError } = await supabase.storage
+        .from("videos")
+        .upload(filePath, uploadFile);
+
+      if (uploadError) {
+        console.error("Storage upload error:", uploadError);
+        toast({
+          title: "Chyba pri nahrávaní",
+          description: uploadError.message || "Nepodarilo sa nahrať video",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("File uploaded successfully, getting public URL");
+
+      const { data: { publicUrl } } = supabase.storage
+        .from("videos")
+        .getPublicUrl(filePath);
+
+      console.log("Public URL:", publicUrl);
+
+      const { error: dbError } = await supabase
+        .from("videos")
+        .insert({
+          user_id: user.id,
+          title: uploadTitle || "Bez názvu",
+          description: uploadDescription,
+          video_url: publicUrl,
+        });
+
+      if (dbError) {
+        console.error("Database insert error:", dbError);
+        toast({
+          title: "Chyba pri ukladaní",
+          description: dbError.message || "Nepodarilo sa uložiť video",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log("Video saved to database successfully");
+
+      toast({
+        title: "Úspech",
+        description: "Video bolo nahrané",
+      });
+
+      setUploadDialogOpen(false);
+      setUploadFile(null);
+      setUploadTitle("");
+      setUploadDescription("");
+      fetchVideos();
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      toast({
+        title: "Chyba",
+        description: "Neočakávaná chyba pri nahrávaní",
+        variant: "destructive",
+      });
+    }
   };
 
   const togglePlayPause = (index: number) => {
