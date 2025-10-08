@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,23 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+interface BazaarItem {
+  id: string;
+  title: string;
+  price: number;
+  location: string;
+  description: string;
+  category: string;
+  condition: string;
+  image_url: string | null;
+  created_at: string;
+  user_id: string;
+  profiles?: {
+    full_name: string | null;
+  };
+}
 
 const Bazaar = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,13 +33,35 @@ const Bazaar = () => {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [items, setItems] = useState<BazaarItem[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     price: "",
     location: "",
     description: "",
+    category: "electronics",
+    condition: "Ako nový",
   });
   const { toast } = useToast();
+
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  const loadItems = async () => {
+    const { data, error } = await supabase
+      .from('bazaar_items')
+      .select('*, profiles(full_name)')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading items:', error);
+      return;
+    }
+
+    setItems(data || []);
+  };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -59,92 +98,29 @@ const Bazaar = () => {
     { id: "other", name: "Ostatné" },
   ];
 
-  const bazaarItems = [
-    {
-      id: 1,
-      title: "iPhone 13 Pro - ako nový",
-      price: 750,
-      location: "Bratislava",
-      timeAgo: "pred 2 hodinami",
-      seller: "Peter K.",
-      rating: 4.8,
-      category: "electronics",
-      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&h=300&fit=crop",
-      condition: "Ako nový",
-      description: "Predávam iPhone 13 Pro v perfektnom stave, používaný len 6 mesiacov..."
-    },
-    {
-      id: 2,
-      title: "Dámske zimné čižmy veľ. 38",
-      price: 45,
-      location: "Košice",
-      timeAgo: "pred 5 hodinami",
-      seller: "Anna M.",
-      rating: 4.6,
-      category: "clothing",
-      image: "https://images.unsplash.com/photo-1544966503-7adccccd7009?w=300&h=300&fit=crop",
-      condition: "Použité",
-      description: "Kvalitné zimné čižmy, nosené jednu sezónu..."
-    },
-    {
-      id: 3,
-      title: "Bicykel Cube - horský",
-      price: 320,
-      location: "Žilina",
-      timeAgo: "pred 1 dňom",
-      seller: "Michal T.",
-      rating: 4.9,
-      category: "sports",
-      image: "https://images.unsplash.com/photo-1544191696-15693072f9b8?w=300&h=300&fit=crop",
-      condition: "Veľmi dobré",
-      description: "Horský bicykel v skvelom stave, pravidelne servisovaný..."
-    },
-    {
-      id: 4,
-      title: "Kávovar DeLonghi",
-      price: 180,
-      location: "Trnava",
-      timeAgo: "pred 3 dňami",
-      seller: "Lucia V.",
-      rating: 4.7,
-      category: "home",
-      image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&h=300&fit=crop",
-      condition: "Dobré",
-      description: "Automatický kávovar, funguje perfektne..."
-    },
-    {
-      id: 5,
-      title: "Učebnice matematiky",
-      price: 15,
-      location: "Prešov",
-      timeAgo: "pred 1 týždňom",
-      seller: "Tomáš B.",
-      rating: 4.5,
-      category: "books",
-      image: "https://images.unsplash.com/photo-1509266272358-7701da638078?w=300&h=300&fit=crop",
-      condition: "Dobré",
-      description: "Kompletná sada učebníc pre stredoškolskú matematiku..."
-    },
-    {
-      id: 6,
-      title: "Gaming chair",
-      price: 120,
-      location: "Banská Bystrica",
-      timeAgo: "pred 2 týždňami",
-      seller: "Jakub S.",
-      rating: 4.4,
-      category: "other",
-      image: "https://images.unsplash.com/photo-1541558869434-2840d308329a?w=300&h=300&fit=crop",
-      condition: "Použité",
-      description: "Pohodlná gaming stolička, len malé známky používania..."
-    }
-  ];
+  const conditions = ["Ako nový", "Veľmi dobré", "Dobré", "Použité"];
 
-  const filteredItems = bazaarItems.filter(item => {
+  const filteredItems = items.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const getTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return "pred chvíľou";
+    if (diffInHours < 24) return `pred ${diffInHours} hodinami`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    if (diffInDays === 1) return "pred 1 dňom";
+    if (diffInDays < 7) return `pred ${diffInDays} dňami`;
+    const diffInWeeks = Math.floor(diffInDays / 7);
+    if (diffInWeeks === 1) return "pred 1 týždňom";
+    return `pred ${diffInWeeks} týždňami`;
+  };
 
   const handleSubmit = async () => {
     if (!formData.title || !formData.price || !formData.location) {
@@ -165,6 +141,7 @@ const Bazaar = () => {
           description: "Musíte byť prihlásený",
           variant: "destructive",
         });
+        setUploading(false);
         return;
       }
 
@@ -172,7 +149,7 @@ const Bazaar = () => {
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop();
         const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-        const { error: uploadError, data } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('bazaar_images')
           .upload(fileName, imageFile);
 
@@ -184,15 +161,31 @@ const Bazaar = () => {
         imageUrl = publicUrl;
       }
 
+      const { error: insertError } = await supabase
+        .from('bazaar_items')
+        .insert({
+          user_id: user.id,
+          title: formData.title,
+          price: parseFloat(formData.price),
+          location: formData.location,
+          description: formData.description,
+          category: formData.category,
+          condition: formData.condition,
+          image_url: imageUrl,
+        });
+
+      if (insertError) throw insertError;
+
       toast({
         title: "Úspech",
         description: "Inzerát bol pridaný",
       });
 
-      setFormData({ title: "", price: "", location: "", description: "" });
+      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Ako nový" });
       setImageFile(null);
       setImagePreview("");
       setIsDialogOpen(false);
+      loadItems();
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -263,6 +256,44 @@ const Bazaar = () => {
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                 />
+                
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Kategória</label>
+                  <Select 
+                    value={formData.category} 
+                    onValueChange={(value) => setFormData({...formData, category: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.filter(c => c.id !== "all").map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Stav</label>
+                  <Select 
+                    value={formData.condition} 
+                    onValueChange={(value) => setFormData({...formData, condition: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {conditions.map((cond) => (
+                        <SelectItem key={cond} value={cond}>
+                          {cond}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 
                 {/* Image Upload */}
                 <div className="space-y-2">
@@ -360,7 +391,7 @@ const Bazaar = () => {
               <CardHeader className="p-0">
                 <div className="relative">
                   <img
-                    src={item.image}
+                    src={item.image_url || "https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=300&h=300&fit=crop"}
                     alt={item.title}
                     className="w-full h-48 object-cover rounded-t-lg"
                   />
@@ -385,12 +416,11 @@ const Bazaar = () => {
                   </div>
                   <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4" />
-                    {item.timeAgo}
+                    {getTimeAgo(item.created_at)}
                   </div>
                   <div className="flex items-center gap-1">
                     <User className="h-4 w-4" />
-                    {item.seller} 
-                    <span className="text-gold">★ {item.rating}</span>
+                    {item.profiles?.full_name || "Anonymný užívateľ"}
                   </div>
                 </div>
 
@@ -400,7 +430,7 @@ const Bazaar = () => {
 
                 <Button 
                   className="w-full"
-                  onClick={() => handleContact(item.seller)}
+                  onClick={() => handleContact(item.profiles?.full_name || "Anonymný užívateľ")}
                 >
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Kontaktovať
