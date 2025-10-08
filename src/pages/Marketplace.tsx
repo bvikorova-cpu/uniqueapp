@@ -27,7 +27,7 @@ interface SkillOffering {
   image_url: string | null;
   user_id: string;
   created_at: string;
-  profiles?: Profile | Profile[] | null;
+  profiles: Profile | null;
 }
 
 const CATEGORIES = {
@@ -87,7 +87,13 @@ const Marketplace = () => {
   const loadOfferings = async () => {
     const { data, error } = await supabase
       .from("skill_offerings")
-      .select("*")
+      .select(`
+        *,
+        profiles!skill_offerings_user_id_fkey (
+          full_name,
+          avatar_url
+        )
+      `)
       .eq("is_active", true)
       .order("created_at", { ascending: false });
 
@@ -521,7 +527,7 @@ const Marketplace = () => {
                   </div>
                 </div>
                 <CardDescription className="flex items-center gap-1 text-sm">
-                  Anonymný užívateľ
+                  {offering.profiles?.full_name || "Anonymný užívateľ"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
