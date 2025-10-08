@@ -73,6 +73,7 @@ const Dating = () => {
 
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [uploadingAdditional, setUploadingAdditional] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -646,7 +647,10 @@ const Dating = () => {
             {currentIndex < profiles.length ? (
               <Card className="w-full max-w-sm">
                 <CardContent className="p-0">
-                  <div className="aspect-[3/4] bg-gradient-to-br from-pink-100 to-purple-100 rounded-t-lg flex items-center justify-center">
+                  <div 
+                    className="aspect-[3/4] bg-gradient-to-br from-pink-100 to-purple-100 rounded-t-lg flex items-center justify-center cursor-pointer"
+                    onClick={() => profiles[currentIndex].profile_photo_url && setLightboxImage(profiles[currentIndex].profile_photo_url)}
+                  >
                     {profiles[currentIndex].profile_photo_url ? (
                       <img
                         src={profiles[currentIndex].profile_photo_url}
@@ -831,7 +835,10 @@ const Dating = () => {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-start gap-6">
-                  <div className="relative h-32 w-32 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center flex-shrink-0 group">
+                  <div 
+                    className="relative h-32 w-32 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center flex-shrink-0 group cursor-pointer"
+                    onClick={() => currentProfile?.profile_photo_url && setLightboxImage(currentProfile.profile_photo_url)}
+                  >
                     {currentProfile?.profile_photo_url ? (
                       <img
                         src={currentProfile.profile_photo_url}
@@ -841,7 +848,9 @@ const Dating = () => {
                     ) : (
                       <User className="h-16 w-16 text-muted-foreground" />
                     )}
-                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <Upload className="h-8 w-8 text-white" />
                       <input
                         type="file"
@@ -919,10 +928,14 @@ const Dating = () => {
                           <img
                             src={photoUrl}
                             alt={`Additional photo ${index + 1}`}
-                            className="w-full h-full object-cover rounded-lg"
+                            className="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                            onClick={() => setLightboxImage(photoUrl)}
                           />
                           <button
-                            onClick={() => handleRemoveAdditionalPhoto(photoUrl)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveAdditionalPhoto(photoUrl);
+                            }}
                             className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <X className="h-3 w-3" />
@@ -1010,6 +1023,27 @@ const Dating = () => {
               </div>
               <Button onClick={handleUpdateProfile} className="w-full">
                 Uložiť zmeny
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Lightbox Dialog */}
+        <Dialog open={!!lightboxImage} onOpenChange={() => setLightboxImage(null)}>
+          <DialogContent className="max-w-4xl p-0 bg-transparent border-0">
+            <div className="relative">
+              <img
+                src={lightboxImage || ""}
+                alt="Náhľad"
+                className="w-full h-auto max-h-[90vh] object-contain rounded-lg"
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full"
+                onClick={() => setLightboxImage(null)}
+              >
+                <X className="h-6 w-6" />
               </Button>
             </div>
           </DialogContent>
