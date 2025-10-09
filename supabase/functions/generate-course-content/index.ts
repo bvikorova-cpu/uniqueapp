@@ -28,7 +28,7 @@ serve(async (req) => {
     const systemPrompt = `Si odborný vzdelávací asistent, ktorý vytvára detailné kurzy v slovenčine.
 Pre každý kurz vytvoríš 10 tém, kde každá téma má:
 - Názov (napr. "Téma 1: ...")
-- Obsah 800-1200 slov s konkrétnymi informáciami, príkladmi a podrobnosťami
+- Obsah 400-600 slov s konkrétnymi informáciami, príkladmi a podrobnosťami
 
 DÔLEŽITÉ: Obsah MUSÍ byť špecifický pre danú oblasť. Napríklad:
 - Pre "Marketing a reklama": konkrétne formy marketingu (digitálny, content, email marketing), stratégie, nástroje, metriky, príklady kampaní
@@ -44,7 +44,7 @@ Vrať JSON objekt s týmto formátom:
   "topics": [
     {
       "title": "Téma 1: ...",
-      "content": "detailný obsah 800-1200 slov..."
+      "content": "detailný obsah 400-600 slov..."
     },
     ... ďalších 9 tém
   ]
@@ -56,7 +56,7 @@ Každá téma musí obsahovať:
 1. Konkrétne informácie špecifické pre túto oblasť
 2. Praktické príklady a situácie
 3. Postupy a techniky
-4. 800-1200 slov
+4. 400-600 slov
 
 Postupnosť tém:
 1. Úvod a základy
