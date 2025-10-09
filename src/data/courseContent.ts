@@ -11505,14 +11505,14 @@ Plánovanie rozpočtu, správa úverov, vhodné investície a dôchodkové plán
 ✅ Plánujte na dôchodok
 ✅ Vzdelávajte sa
 
-    Finančná sloboda je dosiahnuteľná s disciplínou, vzdelaním a správnym plánovaním!`
+Finančná sloboda je dosiahnuteľná s disciplínou, vzdelaním a správnym plánovaním!`
   }
 ],
 
-"Masáže": [
-  {
-    title: "Téma 1: Úvod do masáží - História a význam",
-    content: `**Čo je masáž?**
+  "Masáže": [
+    {
+      title: "Téma 1: Úvod do masáží - História a význam",
+      content: `**Čo je masáž?**
 
 Masáž alebo masírovanie je súčasť mechanoterapie; sústava hmatov, ktorými sa mechanicky dráždia periférne nervy, cievy a svaly. **Cieľom je zvýšenie funkčnej zdatnosti, odstránenie únavy alebo liečenie.**
 
@@ -12153,6 +12153,6 @@ V každej kultúre existuje nejaká forma terapeutickej masáže. Opisy veľa me
 Existuje vyše **100 rôznych druhov masáží** vychádzajúcich z rôznych kultúrnych základov. Jednotlivé druhy masáží sa vzájomne prelínajú.
 
 Gratulujeme! Dokončili ste kurz o masážach a poznáte ich históriu, techniky, účinky aj bezpečnostné opatrenia.`
-  }
-]
+    }
+  ]
 };
