@@ -2792,6 +2792,976 @@ Dress code je neformálne pravidlo, ako sa obliecť pre danú príležitosť.
 Gratulujeme! Dokončili ste kurz Styling a móda a ste pripravení vytvoriť svoj vlastný jedinečný štýl!`
     }
   ],
+
+  "Nechtový dizajn": [
+    {
+      title: "Téma 1: Úvod do gélových nechtov",
+      content: `**Čo sú gélové nechty?**
+
+Gélové nechty sú skvelým riešením pre ľudí, ktorí hľadajú odolnú a elegantnú manikúru. Vďaka použitiu gélu vytvoríte krásny, dlhotrvajúci styling, ktorý bude odolný voči poškodeniu a poslúži ako pozadie pre tie najzložitejšie dekorácie.
+
+**Prečo zvoliť gélové nechty?**
+
+- Odolná a elegantná manikúra
+- Dlhotrvajúci styling
+- Odolné voči poškodeniu
+- Perfektné pozadie pre dekorácie
+- Profesionálny vzhľad
+
+**Čo sa naučíte v tomto kurze:**
+
+- Ako si vyrobiť gélové nechty krok za krokom
+- Ako si ich urobiť sami doma
+- Ako dosiahnuť profesionálny efekt
+- Užitočné rady a tipy
+- Zoznam potrebných produktov
+
+**Pre koho je tento kurz:**
+
+- Začiatočníkov, ktorí chcú začať s gélovými nechtami
+- Ľudí, ktorí chcú ušetriť čas a peniaze
+- Tých, čo chcú mať kontrolu nad svojim štýlom
+- Nadšencov nechtového dizajnu
+
+**Výhody domácej gélovej manikúry:**
+
+- Úspora času (nie je potrebné chodiť do salónu)
+- Úspora peňazí (jednorazová investícia)
+- Plná kontrola nad štýlom
+- Možnosť experimentovať
+- Spokojnosť z vlastnej tvorby`
+    },
+    {
+      title: "Téma 2: Čo je gélová manikúra",
+      content: `**Definícia gélovej manikúry:**
+
+Gélová manikúra je metóda úpravy nechtov, ktorá spočíva v nanesení špeciálneho gélu na nechtovú platničku a jej vytvrdnutí v UV alebo LED lampe.
+
+**Charakteristika gélových nechtov:**
+
+**Vzhľad:**
+- Prirodzený vzhľad
+- Hladký povrch
+- Lesklý finálny efekt
+- Možnosť rôznych dekorácií
+
+**Vlastnosti:**
+- Odolné a pevné
+- Menej náchylné na poškodenie
+- Flexibilné
+- Dlhotrvajúce
+
+**Pre koho sú gélové nechty ideálne?**
+
+**Ľudia s problémami s nechtami:**
+- Lámavé nechty
+- Tenké nechty
+- Pomaly rastúce nechty
+- Nechty potrebujúce ochranu
+
+**Estetické dôvody:**
+- Rýchle predĺženie nechtov
+- Krásny, upravený vzhľad
+- Možnosť rôznych štýlov
+- Profesionálny výzor
+
+**Hlavná výhoda - trvanlivosť:**
+
+Jednou z najdôležitejších výhod gélovej manikúry je jej trvanlivosť. Tento štýl môže trvať až niekoľko týždňov, aj keď je vystavený každodenným "dobrodružstvám".
+
+**Ako dlho vydrží gélová manikúra?**
+
+- 2-4 týždne v priemere
+- Závisí od rastu nechtov
+- Závisí od starostlivosti
+- Závisí od typu činností
+
+**Porovnanie s inými typmi manikúry:**
+
+**Gélové nechty vs. klasický lak:**
+- Gél: 2-4 týždne
+- Lak: 3-7 dní
+
+**Gélové nechty vs. akrylové:**
+- Gél: Prirodzenejší vzhľad, flexibilnejšie
+- Akryl: Tvrdšie, náchylnejšie na poškodenie`
+    },
+    {
+      title: "Téma 3: Domáca gélová manikúra - je to možné?",
+      content: `**Môže sa gélová manikúra robiť doma?**
+
+Gélové nechty je samozrejme možné robiť aj doma! Čoraz viac ľudí sa rozhoduje pre gélovú manikúru sami, pretože im to umožňuje ušetriť čas a peniaze, ktoré by sme zvyčajne minuli v salóne.
+
+**Výhody domácej gélovej manikúry:**
+
+**Úspora času:**
+- Nie je potrebné cestovať do salónu
+- Žiadne čakanie na termín
+- Manikúra kedykoľvek potrebujete
+- Flexibilný harmonogram
+
+**Úspora peňazí:**
+- Jednorazová investícia do pomôcok
+- Návrat investície po 2-3 manikúrach
+- Dlhodobé úspory
+- Možnosť opakovať bez ďalších nákladov
+
+**Plná kontrola:**
+- Výber farieb a štýlov
+- Tempo práce
+- Kvalita produktov
+- Experimenty s dizajnom
+
+**Pre začiatočníkov:**
+
+Pre začiatočníkov to môže znieť trochu komplikovane, no so správnou prípravou a pomôckami sa celý proces výrazne zjednoduší.
+
+**Čo potrebujete na začiatok:**
+
+**Štartovacia sada:**
+- Základné produkty
+- Navzájom perfektne kombinované
+- Rýchly a príjemný proces
+- Všetko potrebné na jednom mieste
+
+**Základné nástroje:**
+- Pilník na nechty
+- Leštiaci blok
+- Odstraňovač nechtovej kožičky
+- Drevenej tyčinky
+- Štetce
+
+**Ako dlho trvá výroba gélových nechtov?**
+
+**Pre skúseného stylistu:**
+- 30-60 minút
+- Rýchla aplikácia
+- Precízna práca
+
+**Pre začiatočníka:**
+- 60-120 minút
+- Viac času na prípravu
+- Učenie sa techniky
+- Postupné zrýchľovanie
+
+**Nebojte sa riskovať:**
+
+Je to naozaj skvelá zábava a efekt bude stáť za čas, ktorý musíte stráviť. Vlastná tvorba gélových nechtov vám dáva veľkú spokojnosť a umožňuje vám plnú kontrolu nad štýlom a vzhľadom vašej manikúry.`
+    },
+    {
+      title: "Téma 4: Potrebné pomôcky a produkty",
+      content: `**Čo potrebujete na výrobu gélových nechtov?**
+
+Ak chcete urobiť gélové nechty doma, potrebujete správne nástroje a produkty, ktoré vám pomôžu dosiahnuť profesionálny efekt.
+
+**1. UV alebo LED lampa:**
+
+**Účel:**
+- Vytvrdenie gélu na nechtoch
+- Nevyhnutná pre gélové nechty
+
+**Výber:**
+- UV lampa: klasická možnosť
+- LED lampa: rýchlejšie vytvrdenie
+- Obe možnosti fungujú dobre
+
+**Parametre:**
+- Minimálne 36W pre UV
+- Minimálne 48W pre LED
+- Časovač
+- Automatické zapnutie
+
+**2. Stavebný gél:**
+
+**Základný prípravok:**
+- Základ tvorby gélových nechtov
+- Rôzne typy a konzistencie
+
+**Typy gélov:**
+- **Samonivelačné gély:** Automaticky sa vyrovnávajú
+- **Tekuté pamäťové gély:** Držia tvar
+- **Želé gély:** Hustejšia konzistencia
+- **Riedke gély:** Ľahšia aplikácia
+
+**Farby:**
+- Priehľadný/prirodzený
+- Ružový (cover pink)
+- Farebné (tyrkysový, limetkový, atď.)
+- Podľa preferencií
+
+**3. Základný a vrchný lak:**
+
+**Báza (Base coat):**
+- Pomôže gélu lepšie priľnúť
+- Flexibilný produkt
+- Prvá vrstva aplikácie
+- **Dôležité:** Gél je tvrdý materiál a bez bázy rýchlo popraská
+
+**Vrchný lak (Top coat):**
+- Dodá nechtom lesk
+- Dodatočná ochrana
+- Možnosť s trblietkami
+- Možnosť matný efekt
+
+**4. Pilník 180/180:**
+
+**Účel:**
+- Tvarovanie nechtov
+- Vyhladzovanie povrchu
+- Príprava na nanesenie gélu
+- Korekcie
+
+**5. Degreaser a Ultrabond:**
+
+**Nail Prep (Degreaser):**
+- Odmasťovací prípravok
+- Odstraňuje prírodné oleje
+- Odstraňuje nečistoty
+- Lepšia priľnavosť gélu
+- Nevyžaduje vytvrdzovanie
+
+**Ultrabond:**
+- Tzv. "obojstranná páska"
+- Zvyšuje priľnavosť podkladu k nechtu
+- Aplikuje sa pred bázou
+- Prírodné odparenie (pár sekúnd)
+
+**6. Šablóny:**
+
+**Účel:**
+- Predĺženie nechtov
+- Stavba kostry
+- Celá nechtová architektúra
+
+**Typy:**
+- Klasické papierové
+- Transparentné gélové
+- Jednorazové použitie
+
+**7. Gélový štetec:**
+
+**Charakteristika:**
+- Presné nanášanie gélu
+- Správny tvar a hrúbka
+- Rôzne veľkosti
+
+**Odporúčanie:**
+- Obojstranná gélová kefa
+- Nanášanie materiálu
+- Vyrovnávanie gélu
+
+**Doplnkové produkty:**
+
+- Vatové tampóny
+- Čistiace utierky bez vlákien
+- Špachtľa na kožičku
+- Odstraňovač kožičky
+- Olej na nechtovú kožičku
+
+**Investícia:**
+
+S týmto príslušenstvom máte všetko, čo potrebujete, aby ste mohli začať svoje dobrodružstvo s gélovými nechtami. Pamätajte, že prax robí majstra!`
+    },
+    {
+      title: "Téma 5: Príprava nechtov a kožičky",
+      content: `**Príprava - základ úspechu:**
+
+Prvým krokom, nielen pri gélových nechtoch, je starostlivá príprava nechtovej platničky a nechtovej kožičky. Ide o veľmi dôležitú fázu, ktorá zaisťuje dobrú priľnavosť gélu a zabraňuje vypadávaniu produktu z nechtu.
+
+**Prečo je príprava tak dôležitá?**
+
+- Zabezpečuje dobrú priľnavosť
+- Predchádza odlupovaniu gélu
+- Dlhšia trvanlivosť manikúry
+- Profesionálny výsledok
+
+**Krok 1: Odstraňovanie a zmäkčovanie kožičky:**
+
+**Aplikácia odstraňovača:**
+1. Naneste odstraňovač kožičky na každý necht
+2. Nechajte pôsobiť 2-3 minúty
+3. Jemne zmäkčuje aj najodolnejšiu kožičku
+4. Uľahčuje odstránenie
+
+**Odstránenie kožičky:**
+1. Použite špachtľu alebo drevenú tyčinku
+2. Jemne odtlačte kožičku
+3. Odstráňte uvoľnenú kožičku
+4. **Dôležité:** Keratolytikum neutralizujte vodou!
+
+**Pozor:**
+- Nepoužívajte príliš veľa sily
+- Buďte šetrní
+- Nepoškoďte nechtové lôžko
+
+**Krok 2: Matovanie nechtovej platničky:**
+
+**Účel:**
+- Lepšia priľnavosť bázy a gélu
+- Odstránenie lesklej vrstvy
+- Príprava povrchu
+
+**Postup:**
+1. Použite jemný pilník (180 grit)
+2. Alebo leštiaci blok
+3. Jemne zmatujte celú platničku
+4. Odstráňte prach
+
+**Pozor:**
+- Nepilujte príliš silno
+- Nechcete poškodiť necht
+- Len jemné zmatenie povrchu
+
+**Krok 3: Odmasťovanie:**
+
+**Prečo odmasťovať?**
+- Odstránenie prírodných olejov
+- Odstránenie nečistôt
+- Lepšia priľnavosť produktu
+- Čistý povrch pre aplikáciu
+
+**Aplikácia Nail Prep:**
+1. Naneste na vatový tampón
+2. Pretrite každý necht
+3. Nechajte prírodne odpa riť (10-20 sekúnd)
+4. Nedotýkajte sa nechtov prstami
+
+**Zloženie:**
+- Tri alkoholy
+- Mimoriadne účinný
+- Ľahká aplikácia
+
+**Krok 4: Bonder (Ultrabond):**
+
+**Čo je Ultrabond?**
+- Magická "obojstranná páska"
+- Nenahraditeľná ochrana obkladu
+- Ochrana pred kontamináciou vzducha
+
+**Aplikácia:**
+1. Naneste tenkú vrstvu na každý necht
+2. Nechajte prírodne odpariť (10-15 sekúnd)
+3. Nevytvrduje v lampe
+4. Pripravené na aplikáciu bázy
+
+**Časté chyby pri príprave:**
+
+- Nedostatočné odstránenie kožičky
+- Príliš silné matovanie
+- Dotýkanie sa nechtov po odmas tení
+- Preskočenie Ultrabondu
+- Nedostatočné vysušenie produktov
+
+**Po dôkladnej príprave:**
+
+Po dôkladnej príprave nechtov môžeme pokračovať k aplikácii gélu. Správna príprava je 50% úspechu vašej gélovej manikúry!`
+    },
+    {
+      title: "Téma 6: Predlžovanie nechtov pomocou šablóny",
+      content: `**Metóda šablóny - krok za krokom:**
+
+Predlžovanie nechtov sa môže zdať pre začiatočníkov komplikované. Táto metóda vyžaduje väčšiu presnosť a trpezlivosť ako klasická hybridná manikúra, ale výsledok stojí za to!
+
+**Typy šablón:**
+
+**1. Papierové šablóny:**
+- Klasická voľba
+- Jednoduché použitie
+- Dostupné v baleniach po 100 ks
+
+**2. Priehľadné (gélové) šablóny:**
+- Priesvitné
+- Lepšia kontrola pri aplikácii
+- Vhodné pre pokročilých
+
+**Krok 1: Základná aplikácia (Base coat):**
+
+**Výber správneho produktu:**
+- Gumová základňa je perfektná
+- Priehľadná gumová konzistencia
+- Flexibilná
+
+**Aplikácia:**
+1. Naneste bázu vo veľmi tenkej vrstve
+2. Votrite do nechtovej platničky
+3. Pokryte celý necht
+4. **Vytvrdzujte v lampe 30 sekúnd**
+
+**Prečo tenká vrstva?**
+- Lepšia priľnavosť
+- Rovnomernejšie pokrytie
+- Žiadne zbytočné hrúbky
+
+**Krok 2: Aplikácia šablóny:**
+
+**Správne umiestnenie:**
+1. Šablónu aplikujte pod voľný okraj nechtu
+2. Stabilne priľne k nechtovej platničke
+3. Žiadne voľné miesta
+
+**Úprava šablóny:**
+- V prípade potreby použite nožnice
+- Ostrihajte tak, aby perfektne sedela
+- Kontrolujte tesnosť
+
+**Krok 3: Nanášanie kostry:**
+
+**Čo je kostra?**
+- Prvá vrstva gélu na šablóne
+- Základ budúceho predĺženia
+- Určuje dĺžku a tvar
+
+**Aplikácia:**
+1. Štetcom naneste tenkú vrstvu gélu
+2. Jemne pripojte k platničke prírodného nechta
+3. Určite predĺženie na požadovanú dĺžku
+4. Rovnomerne rozložte gél
+
+**Pozor na:**
+- Správny uhol (C-krivka)
+- Rovnomerné pokrytie
+- Bez vzduchových bublín
+
+**Vytvrdzovanie:**
+- Položte ruku pod UV/LED lampu
+- 60 sekúnd podľa návodu výrobcu
+
+**Krok 4: Nanášanie následných vrstiev:**
+
+**Budovanie štruktúry:**
+1. Po vytvrdnutí kostry naneste ďalšie vrstvy
+2. Aplikujte na celý povrch nechtu
+3. Vytvorte správnu hrúbku a tvar
+4. **Buďte opatrní okolo kožičky!**
+
+**Správna štruktúra:**
+- **Apex:** Najvyšší bod nechta (stred)
+- **Tunel:** C-krivka nechta
+- **Voľný okraj:** Správna hrúbka na špičke
+
+**Krok 5: Modelácia a pilovanie:**
+
+**Po vytvrdnutí:**
+1. Umyte lepivú vrstvu
+2. Odstráňte šablónu
+3. Začnite pilovať
+
+**Pilovanie:**
+- Použite pilník 180 grit
+- Jemne a citlivo
+- Vytvorte požadovaný tvar
+- Správna hrúbka
+
+**Tvary nechtov:**
+- Štvorcový
+- Oválny
+- Mandľový
+- Stiletto
+
+**Krok 6: Finálne kroky:**
+
+Po dokončení tejto fázy môžete:
+- Pridať farbu na nechty
+- Vytvoriť francúzsky styling
+- Chrániť gél vrchným lakom
+- Pridať dekorácie`
+    },
+    {
+      title: "Téma 7: Predlžovanie nechtov pomocou tipov",
+      content: `**Metóda tipov - alternatívny spôsob:**
+
+Druhou možnosťou je predĺžiť si nechty pomocou tipov (umelých nechtových nástavcov). Táto metóda je rýchlejšia a jednoduchšia pre začiatočníkov.
+
+**Čo sú tipy na nechty?**
+
+- Umelé nechtové nástavce
+- Plastové alebo akrylové
+- Rôzne tvary a veľkosti
+- Prilepené na prirodzený necht
+
+**Výhody tipov:**
+
+- Rýchlejšia aplikácia
+- Jednoduchšie pre začiatočníkov
+- Okamžité predĺženie
+- Rovnomerný tvar
+
+**Nevýhody:**
+
+- Menej prirodzené
+- Tvrdší prechod
+- Náchylnejšie na zlomenie
+
+**Krok 1: Výber správnych tipov:**
+
+**Veľkosť:**
+- Vyberte tipy podľa šírky nechtov
+- Tip by mal pokrývať celú šírku
+- Ani príliš široký, ani úzky
+
+**Tvar:**
+- Rôzne tvary dostupné
+- Štvorcový, oválny, stiletto
+- Podľa preferencií
+
+**Krok 2: Lepenie nechtových tipov:**
+
+**Príprava:**
+1. Tipy majú byť čisté
+2. Pripravte lepidlo
+3. Pracujte tip po tipe
+
+**Aplikácia lepidla:**
+1. Naneste trochu lepidla na vnútornú stranu tipu
+2. Nie príliš veľa (rozleje sa)
+3. Rovnomerne rozotrite
+
+**Prilepenie:**
+1. Priložte tip na necht pod uhlom 45°
+2. Jemne pritlačte
+3. Podržte 5-10 sekúnd
+4. Kým lepidlo nezaschne
+
+**Pozor:**
+- Žiadne vzduchové bubliny
+- Pevné prilepenie
+- Správny uhol
+
+**Krok 3: Úprava dĺžky tipov:**
+
+**Skrátenie:**
+1. Použite nožnice na nechty (clipper)
+2. Alebo pilník
+3. Upravte na požadovanú dĺžku
+
+**Tvarovanie:**
+1. Pilníkom vytvorte požadovaný tvar
+2. Zaoblite okraje
+3. Vyhlad te prechodovú zónu
+
+**Krok 4: Zoslabenie prechodovej zóny:**
+
+**Prečo?**
+- Viditeľný prechod medzi tipom a nechtom
+- Potrebujeme ho vyrovnať
+
+**Ako:**
+1. Použite buffer alebo pilník
+2. Jemne pilujte prechodovú zónu
+3. Vytvorte hladký prechod
+4. Odstráňte prach
+
+**Krok 5: Nanášanie gélu:**
+
+**Prvá vrstva - báza:**
+1. Naneste tenkú vrstvu bázy
+2. Pokryte celý necht (prírodný + tip)
+3. Vytvrdzujte 30 sekúnd
+
+**Stavebný gél:**
+1. Naneste tenkú vrstvu gélu
+2. Pokryte celý povrch
+3. Rovnomerne rozotrieť
+4. Vytvorte správnu štruktúru
+
+**Vytvrdzovanie:**
+- 60 sekúnd v lampe
+
+**Krok 6: Modelovanie:**
+
+**Budovanie štruktúry:**
+1. Naneste ďalšiu vrstvu gélu
+2. Vytvorte apex (najvyšší bod)
+3. Správna hrúbka
+4. C-krivka (tunel)
+
+**Vytvrdzovanie a dokončenie:**
+1. Vytvrdzujte 60 sekúnd
+2. Umyte lepivú vrstvu
+3. Pilujte do požadovaného tvaru
+4. Aplikujte vrchný lak
+
+**Porovnanie metód:**
+
+**Šablóny:**
+- Prirodzenejší výsledok
+- Viac času a praxe
+- Flexibilnejšie
+- Pre pokročilých
+
+**Tipy:**
+- Rýchlejšia aplikácia
+- Jednoduchšie pre začiatočníkov
+- Rovnomerný tvar
+- Ideálne na začiatok`
+    },
+    {
+      title: "Téma 8: Starostlivosť a trvanlivosť",
+      content: `**Ako zabezpečiť, aby gélové nechty dlho vydržali?**
+
+Trvanlivosť gélových nechtov do značnej miery závisí od správnej prípravy a správnej starostlivosti po manikúre.
+
+**1. Dbajte na správnu prípravu:**
+
+**Nechtová platnička:**
+- Dôkladné vyčistenie
+- Správne odmastenie
+- Matovanie povrchu
+- Len dobre pripravené nechty zabezpečia priľnavosť
+
+**2. Použite bázu pod gél:**
+
+**Často kladená otázka:** Musím na gél naniesť bázu?
+
+**Odpoveď:** Áno!
+
+**Prečo:**
+- Báza zvyšuje priľnavosť
+- Gél lepšie priľne k nechtovej platničke
+- Ochrana prirodzeného nechta
+- Dlhšia trvanlivosť
+
+**Aplikácia:**
+- Nanášame pod gél
+- Priamo na necht (po Ultrabonde)
+- Tenká vrstva
+- Vytvrdzovanie v lampe
+
+**3. Vyhnite sa dlhodobému namáčaniu:**
+
+**Prečo je to problém?**
+- Dlhodobý kontakt s vodou
+- Spôsobuje odlupovanie gélu
+- Oslabuje štruktúru
+
+**Riešenie:**
+- Používajte ochranné rukavice
+- Pri umývaní riadu
+- Pri domácich prácach
+- Pri práci s vodou
+
+**4. Používajte olej na kožičku:**
+
+**Výhody:**
+- Pravidelné zvlhčovanie kožičky
+- Zvlhčovanie okolia nechtov
+- Udržiavanie zdravej pokožky
+- Predchádza mechanickému poškodeniu
+
+**Aplikácia:**
+- Olivový olej na kožičku
+- Každý večer pred spaním
+- Jemné vmasírovanie
+- Výživa a hydratácia
+
+**5. Vyhnite sa používaniu nechtov ako nástrojov:**
+
+**Nebezpečné činnosti:**
+- Otváranie obalov
+- Páčenie predmetov
+- Škrabanie povrchov
+- Ťahanie etikiet
+
+**Následky:**
+- Oslabenie štruktúry gélu
+- Odštiepenie
+- Pras knutie
+- Zničenie manikúry
+
+**Ako sa starať o gélové nechty:**
+
+**Dennná starostlivosť:**
+
+**1. Zvlhčovanie:**
+- Pravidelné používanie oleja
+- Krém na ruky
+- Hydratácia kožičky
+- Zdravé prostredie nechtov
+
+**2. Ochrana:**
+- Rukavice pri prácach
+- Vyhnite sa agresívnym chemikáliám
+- Šetrné zaobchádzanie
+- Ochrana pred nárazmi
+
+**3. Pravidelné dopĺňanie:**
+
+**Prečo:**
+- Nechty rastú
+- Viditeľný odras t
+- Oslabená štruktúra pri kožičke
+
+**Kedy:**
+- Každých 2-4 týždňov
+- Podľa rastu nechtov
+- Osvieženie stylingu
+- Predchádzanie odlupovaniu
+
+**Čo sa vyhnúť:**
+
+**Agresívne chemikálie:**
+- Čistiace prostriedky
+- Silné chemikálie
+- Oslabujú štruktúru gélu
+- Používajte ochranné rukavice
+
+**Nadmerný tlak:**
+- Gélové nechty sú odolné
+- Ale nie nezničiteľné
+- Šetrné zaobchádzanie
+- Predchádzanie štiepeniu
+
+**Dĺžka trvanlivosti:**
+
+Vďaka správnej starostlivosti:
+- Gélová manikúra vydrží 2-4 týždne
+- Pôsobí sviežo a elegantne
+- Odolné voči každodennému poškodeniu
+- Krásny vzhľad po celú dobu`
+    },
+    {
+      title: "Téma 9: Odstránenie gélových nechtov",
+      content: `**Ako odstrániť gélové nechty?**
+
+Odstránenie gélových nechtov je proces, ktorý si vyžaduje trpezlivosť a vhodné nástroje, aby nedošlo k poškodeniu prirodzenej nechtovej platničky.
+
+**Dôležité upozornenie:**
+
+**NIKDY netrhnite gél násilím!**
+- Poškodíte prirodzený necht
+- Bolestivé
+- Dlhotrvajúce následky
+- Oslabený necht
+
+**Metóda 1: Pilovanie (ručné):**
+
+**Pomôcky:**
+- Pilník 100-180 grit
+- Trpezlivosť
+- Čas
+
+**Postup:**
+1. Pomocou pilníka jemne pilujte vrstvy gélu
+2. Pracujte postupne, vrstvu po vrstve
+3. **Dávajte pozor na prirodzenú platničku!**
+4. Keď sa dostanete blízko k nechtu, buďte extra opatrní
+5. Poslednú tenkú vrstvu jemne zbrúste
+
+**Výhody:**
+- Bezpečná metóda
+- Kontrola nad procesom
+- Žiadne chemikálie
+
+**Nevýhody:**
+- Časovo náročné
+- Fyzicky náročné
+- Vyžaduje trpezlivosť
+
+**Metóda 2: Fréza (elektrická píla):**
+
+**Pomôcky:**
+- Elektrická fréza
+- Príslušné frézky
+- Skúsenosti s obsluhou
+
+**Postup:**
+1. Použite príslušnú frézku pre gél
+2. Rýchlo odstránite hlavnú časť gélu
+3. Opatrnosť pri kožičke a okrajoch
+4. Poslednú vrstvu jemne odstráňte pilníkom
+
+**Výhody:**
+- Rýchle
+- Efektívne
+- Profesionálny výsledok
+
+**Nevýhody:**
+- Vyžaduje skúsenosti
+- Riziko poškodenia pri nesprávnom použití
+- Investícia do frézy
+
+**Pozor:**
+- Nevyh rievajte necht
+- Správny uhol držania frézy
+- Kontrolujte rýchlosť
+- Buďte opatrní
+
+**Metóda 3: Kozmetický salón (odporúčané):**
+
+**Prečo zvoliť salón?**
+
+**Najbezpečnejšia metóda:**
+- Skúsený stylista
+- Profesionálne nástroje
+- Bez rizika poškodenia
+- Rýchle a bezpečné
+
+**Výhody:**
+- Odborná starostlivosť
+- Správna technika
+- Žiadne poškodenie nechta
+- Okamžitá regenerácia
+
+**Cena:**
+- 10-30 € v priemere
+- Závisí od salónu
+- Investícia do zdravia nechtov
+
+**Po odstránení - regenerácia:**
+
+**1. Hydratácia:**
+- Olivový olej na nechty
+- Olej na kožičku
+- Výživný krém na ruky
+- Intenzívna starostlivosť
+
+**2. Regenerácia:**
+- Nechajte nechty oddýchnuť
+- Minimálne 1-2 týždne bez gélu
+- Pravidelná hydratácia
+- Regeneračné prípravky
+
+**3. Posilnenie:**
+- Posilňujúce laky
+- Vitamíny na nechty
+- Biotin
+- Zdravá strava
+
+**Časté chyby pri odstraňovaní:**
+
+- Násilné trhanie gélu
+- Použitie nesprávnych nástrojov
+- Príliš agresívne pilovanie
+- Preskočenie regenerácie
+
+**Príprava na ďalšiu manikúru:**
+
+Po regenerácii:
+- Nechty sú pripravené na novú manikúru
+- Silnejšie a zdravšie
+- Lepšia priľnavosť gélu
+- Dlhšia trvanlivosť`
+    },
+    {
+      title: "Téma 10: Ceny, tipy a zhrnutie",
+      content: `**Koľko stoja gélové nechty?**
+
+Cena za gélové nechty závisí od mnohých faktorov.
+
+**V kozmetickom salóne:**
+
+**Faktory ovplyvňujúce cenu:**
+- Lokalita salónu
+- Skúsenosti stylistu
+- Použité produkty
+- Typ manikúry (s/bez predĺženia)
+- Dekorácie
+
+**Priemerné ceny (Slovensko):**
+
+**Základná gélová manikúra:**
+- 25-40 € (bez predĺženia)
+- Jen farba, žiadne dekorácie
+
+**S predĺžením:**
+- 35-60 € (šablóny/tipy)
+- Stavba štruktúry
+
+**S dekoráciami:**
+- +5-20 € navyše
+- Závisí od zložitosti
+
+**Dopĺňanie:**
+- 20-35 €
+- Každé 2-4 týždne
+
+**Domáca manikúra - náklady:**
+
+**Jednorazová investícia:**
+
+**Základná sada:**
+- UV/LED lampa: 20-60 €
+- Gély (báza, stavebný, vrchný): 20-40 €
+- Nástroje (pilníky, štetce): 10-20 €
+- Doplnky (odstraňovač, olej): 10-15 €
+
+**Celkom:** 60-135 €
+
+**Návratnosť investície:**
+- Po 2-3 manikúrach
+- Dlhodobé úspory
+- Neobmedzené používanie
+
+**Užitočné tipy na záver:**
+
+**1. Začnite jednoducho:**
+- Prvé nechty nemusí byť dokonalé
+- Cvičte na jednoduchých farbách
+- Postupne pridávajte dekorácie
+- Trpezlivosť je kľúčom
+
+**2. Investujte do kvality:**
+- Kvalitné produkty = lepší výsledok
+- Dlhšia trvanlivosť
+- Menej problémov
+- Zdravšie nechty
+
+**3. Vzdelávajte sa:**
+- Sledujte tutoriály
+- Čítajte články
+- Účastnite sa kurzov
+- Učte sa od iných
+
+**4. Prax robí majstra:**
+- Čím viac cvičíte, tým lepší výsledok
+- Nezúfajte pri prvých pokusoch
+- Každá manikúra vás posunie ďalej
+- Užívajte si proces
+
+**5. Starostlivosť je základ:**
+- Pravidelná hydratácia
+- Ochrana pred poškodením
+- Dopĺňanie včas
+- Regenerácia po odstránení
+
+**Zhrnutie kurzu:**
+
+**Čo ste sa naučili:**
+
+✓ Čo sú gélové nechty a ich výhody
+✓ Ako si pripraviť pomôcky
+✓ Správnu prípravu nechtov
+✓ Metódy predlžovania (šablóny vs. tipy)
+✓ Aplikáciu gélu krok za krokom
+✓ Starostlivosť o gélové nechty
+✓ Bezpečné odstránenie
+✓ Náklady a úspory
+
+**Kľúčové body:**
+
+- **Príprava je 50% úspechu**
+- **Kvalitné produkty sa oplatia**
+- **Trpezlivosť prináša výsledky**
+- **Starostlivosť predlžuje trvanlivosť**
+- **Prax robí majstra**
+
+**Čo ďalej?**
+
+- Experimentujte s farbami
+- Skúšajte dekorácie
+- Zdokonaľujte techniku
+- Tešte sa z krásnych nechtov
+- Šírite radosť z vlastnej tvorby
+
+**Záverečná rada:**
+
+Gélové nechty sú vynikajúcou voľbou pre ľudí, ktorí chcú odolnú a estetickú manikúru. Vďaka správnej príprave a použitiu kvalitných produktov môžete dosiahnuť efekt hodný salónu krásy.
+
+Nezáleží na tom, či ste začiatočník alebo pokročilý - každý môže vytvoriť krásne gélové nechty doma. Je to skvelá zábava a výsledok sa oplatí!
+
+Gratulujeme! Dokončili ste kurz Nechtový dizajn a ste pripravení vytvoriť si krásne gélové nechty v pohodlí domova!`
+    }
+  ],
   
   "Základy účtovníctva": [
     {
