@@ -2267,8 +2267,691 @@ E-commerce je biznis model, ktorý pomohol vyšľapať cestu úspechu nejednej v
 
 Úspešný e-commerce vyžaduje neustálu optimalizáciu, testovanie a prispôsobovanie sa zmenám na trhu. Sledujte svoje dáta, počúvajte zákazníkov a nebojte sa experimentovať!`
     }
+  ],
+
+  "Finančná gramotnosť": [
+    {
+      title: "Téma 1: Čo je finančná gramotnosť?",
+      content: `**Definícia**
+
+Finančná gramotnosť je schopnosť rozumne spravovať svoje financie, plánovať svoje budúce financie a robiť informované finančné rozhodnutia. Táto schopnosť nie je obmedzená len na výpočty a účtovníctvo; zahŕňa aj širší súbor znalostí a zručností, ktoré nám umožňujú efektívne riadiť naše peniaze a dosiahnuť finančné ciele.
+
+**Finančná gramotnosť zahŕňa nasledujúce aspekty:**
+
+**A. Rozpoznávanie a spravovanie financií**
+
+Schopnosť sledovať svoje príjmy a výdavky, vytvárať rozpočet a žiť v rámci svojich možností.
+
+**Kľúčové zručnosti:**
+- Vedenie domáceho rozpočtu
+- Sledovanie príjmov a výdavkov
+- Kategorizácia výdavkov
+- Plánovanie finančných cieľov
+
+**B. Pochopenie dlhu**
+
+Schopnosť rozumieť rôznym druhom dlhu, ako sú úvery a pôžičky, a vedieť, kedy a ako ich použiť zodpovedne.
+
+**Typy dlhu:**
+- Hypotéka
+- Spotrebiteľský úver
+- Kreditné karty
+- Kontokorent
+
+**C. Investovanie**
+
+Znalosť rôznych investičných možností a schopnosť vybrať tie, ktoré sú v súlade s našimi cieľmi a rizikovým profilom.
+
+**Investičné nástroje:**
+- Akcie
+- Dlhopisy
+- Podielové fondy
+- Nehnuteľnosti
+
+**D. Plánovanie dôchodku**
+
+Vnímanie potreby našich budúcich dôchodkových príjmov a vytváranie plánu na ich dosiahnutie.
+
+**E. Rozpoznávanie finančných rizík**
+
+Schopnosť identifikovať riziká a vedieť, ako sa pred nimi chrániť (napríklad cez poistenie).`
+    },
+    {
+      title: "Téma 2: Prečo je finančná gramotnosť dôležitá?",
+      content: `**Význam v dnešnom svete**
+
+Finančná gramotnosť má v dnešnom svete veľký význam a prináša mnoho výhod. Správne riadenie financií nám dáva väčšiu kontrolu nad naším životom a môže nám pomôcť dosiahnuť finančnú nezávislosť.
+
+**Hlavné výhody finančnej gramotnosti:**
+
+**1. Vyhýbanie sa finančným pasciam**
+
+Finančná gramotnosť nám pomáha rozpoznať a vyhýbať sa finančným pasciam:
+- Zadlženosť
+- Nekontrolované výdavky
+- Nízka úspora
+- Predražené produkty
+- Nevýhodné zmluvy
+
+**2. Aktívne plánovanie cieľov**
+
+S finančnou gramotnosťou môžeme aktívne plánovať svoje ciele:
+- Kúpa domu
+- Splatenie dlhov
+- Vytvorenie havarijného fondu
+- Investovanie do dôchodku
+- Vzdelanie detí
+- Cestovanie
+
+**3. Zníženie stresu**
+
+Keď vieme, že máme finančne zabezpečenú budúcnosť, môžeme žiť bez zbytočného stresu a obáv o peniaze.
+
+**Psychologické výhody:**
+- Lepší spánok
+- Menej úzkosti
+- Väčšia sebadôvera
+- Pocit kontroly
+
+**4. Efektívna alokácia zdrojov**
+
+Finančná gramotnosť nám umožňuje lepšie alokovať naše zdroje a dosiahnuť tak väčšiu efektívnosť.
+
+**Oblasti optimalizácie:**
+- Úspory na zbytočných výdavkoch
+- Lepšie investičné rozhodnutia
+- Výhodnejšie úvery
+- Nižšie poplatky
+
+**Záver:**
+
+Finančná gramotnosť je kľúčovým pilierom pre budúci finančný úspech a prosperitu jednotlivca i spoločnosti ako celku. V súčasnosti je náš svet stále komplexnejší a finančné rozhodnutia sa stávajú čoraz zložitejšími.`
+    },
+    {
+      title: "Téma 3: Finančná gramotnosť detí",
+      content: `**Prečo začať v ranom veku?**
+
+Preto je dôležité začať vzdelávať deti v oblasti finančnej gramotnosti od najútlejšieho veku.
+
+**Význam raného vzdelávania:**
+
+Rané detstvo je obdobím, kedy sa formujú návyky, presvedčenia a vzťahy, ktoré budú mať významný vplyv na finančné správanie jednotlivca v dospelosti. Preto je vzdelávanie detí v oblasti finančnej gramotnosti mimoriadne dôležité.
+
+**Prečo klásť dôraz na rozvoj finančnej gramotnosti v ranom veku?**
+
+**1. Prevencia finančných problémov**
+
+Vzdelávanie detí v oblasti finančnej gramotnosti v mladom veku môže pomôcť predchádzať finančným problémom v dospelosti.
+
+**Problémy, ktorým sa dá predísť:**
+- Dlhové problémy
+- Nekontrolovateľné výdavky
+- Nesprávne používanie úverov
+- Impulzívne nákupy
+
+**2. Rozvoj základných zručností**
+
+Vzdelávanie detí v oblasti finančnej gramotnosti umožňuje rozvoj základných finančných zručností:
+- Rozpoznávanie a správa financií
+- Rozpoznanie hodnoty peňazí
+- Pochopenie rôznych spôsobov investovania
+- Šetrenie a rozpočtovanie
+
+**3. Finančná nezávislosť**
+
+Finančná nezávislosť je cieľom mnohých ľudí. Vzdelávanie detí v oblasti finančnej gramotnosti ich pripravuje na efektívne riadenie svojich financií, čo môže viesť k skoršiemu dosiahnutiu finančnej nezávislosti.
+
+**4. Zodpovedné spotrebiteľstvo**
+
+Deti, ktoré sú finančne gramotné, majú tendenciu byť zodpovednejšími spotrebiteľmi a občanmi.
+
+**Charakteristiky:**
+- Rozumejú dôsledkom svojich finančných rozhodnutí
+- Snažia sa minimalizovať svoj ekologický vplyv
+- Majú sociálnu zodpovednosť
+- Sú kritickými spotrebiteľmi`
+    },
+    {
+      title: "Téma 4: Ako vzdelávať deti v oblasti financií",
+      content: `**Praktické metódy vzdelávania**
+
+**1. Začať v ranom detstve**
+
+Vzdelávanie v oblasti finančnej gramotnosti by malo začať už v ranom detstve.
+
+**Jednoduché učebné programy pre najmenšie deti:**
+- Rozpoznávanie mincí a bankoviek
+- Základné pojmy o úsporách
+- Základy rozpočtovania
+- Hry podporujúce pochopenie hodnoty peňazí
+
+**2. Prispôsobiť obsah veku**
+
+Obsah vzdelávania by mal byť prispôsobený veku a úrovni pochopenia detí.
+
+**Postupné zvyšovanie náročnosti:**
+
+**3-6 rokov:**
+- Rozlišovanie mincí
+- Pokladnička
+- Jednoduché počítanie
+
+**7-12 rokov:**
+- Vreckové
+- Šetrenie na cieľ
+- Rozdiel medzi potrebami a želaniami
+- Jednoduchý rozpočet
+
+**13-18 rokov:**
+- Bankové účty
+- Investovanie
+- Dlh a úvery
+- Plánovanie dôchodku
+
+**3. Zapojenie rodiny a školy**
+
+Rodina a škola majú dôležitú úlohu pri vývoji finančnej gramotnosti detí.
+
+**Úloha rodičov:**
+- Byť vzorom pre svoje deti
+- Zapájať deti do rodinných finančných rozhodnutí
+- Diskutovať o peniazoch otvorene
+- Umožniť deťom robiť finančné chyby v bezpečnom prostredí
+
+**Úloha školy:**
+- Integrovať finančnú gramotnosť do učebných programov
+- Praktické cvičenia
+- Odborníci ako hosťujúci prednášajúci
+
+**4. Interaktívne metódy**
+
+Interaktívne metódy vzdelávania môžu zlepšiť zapamätávanie a pochopenie finančných konceptov u detí.
+
+**Príklady:**
+- Hry (Monopoly, Life)
+- Simulácie
+- Diskusie
+- Projektové učenie
+
+**5. Praktické skúsenosti**
+
+Deti by mali mať príležitosť získavať praktické skúsenosti s riadením financií.
+
+**Príklady:**
+- Rodinné rozpočty
+- Investovanie do fiktívnych akcií
+- Správa vreckového
+- Malé podnikanie (napr. limonádový stánok)`
+    },
+    {
+      title: "Téma 5: Osobný rozpočet a plánovanie",
+      content: `**Tvorba osobného rozpočtu**
+
+**Prečo potrebujete rozpočet?**
+
+Rozpočet je základom finančnej gramotnosti. Pomáha vám:
+- Sledovať, kam idú vaše peniaze
+- Kontrolovať výdavky
+- Šetriť na ciele
+- Vyhnúť sa dlhom
+
+**Kroky k vytvoreniu rozpočtu:**
+
+**1. Zistite svoje príjmy**
+- Čistá mzda
+- Dividendy
+- Nájomné
+- Vedľajšie príjmy
+
+**2. Sledujte výdavky**
+
+**Fixné výdavky:**
+- Nájom/hypotéka
+- Energie
+- Poistenie
+- Telefón a internet
+
+**Variabilné výdavky:**
+- Potraviny
+- Doprava
+- Zábava
+- Oblečenie
+
+**3. Vytvorte kategórie**
+
+**Pravidlo 50/30/20:**
+- 50% - Potreby (bývanie, jedlo, doprava)
+- 30% - Želania (zábava, hobby)
+- 20% - Úspory a dlhy
+
+**4. Sledujte a upravujte**
+
+Pravidelne kontrolujte svoj rozpočet a upravujte ho podľa potreby.
+
+**Nástroje na rozpočtovanie:**
+- Excel
+- Aplikácie (YNAB, Mint, Wallet)
+- Papierový denník
+- Bankové aplikácie
+
+**Havarijný fond**
+
+**Prečo je dôležitý?**
+- Neočakávané výdavky
+- Strata zamestnania
+- Zdravotné problémy
+- Poruchy v dome/aute
+
+**Koľko šetriť?**
+- Ideálne 3-6 mesačných výdavkov
+- Minimálne 1000 €
+
+**Kde uchovávať?**
+- Sporiaci účet
+- Ľahko dostupné
+- Bezpečné miesto`
+    },
+    {
+      title: "Téma 6: Dlh a úvery",
+      content: `**Pochopenie dlhu**
+
+**Čo je dlh?**
+
+Dlh je pôžičané peniaze, ktoré musíte vrátiť s úrokmi.
+
+**Typy dlhu:**
+
+**Dobrý vs. zlý dlh:**
+
+**Dobrý dlh:**
+- Hypotéka (investícia do nehnuteľnosti)
+- Študentský úver (investícia do vzdelania)
+- Podnikateľský úver (investícia do podnikania)
+
+**Zlý dlh:**
+- Spotrebiteľské úvery na luxusný tovar
+- Kreditné karty s vysokými úrokmi
+- Payday loans (pôžičky do výplaty)
+
+**Úrokové sadzby**
+
+**RPMN (ročná percentuálna miera nákladov):**
+- Celkové náklady úveru
+- Zahŕňa všetky poplatky
+- Používajte na porovnanie
+
+**Kreditné karty**
+
+**Výhody:**
+- Pohodlné
+- Ochrana spotrebiteľa
+- Odmeny a cashback
+
+**Nevýhody:**
+- Vysoké úroky
+- Riziko zadlženia
+- Poplatky
+
+**Ako používať zodpovedne:**
+- Splácajte celú sumu každý mesiac
+- Nevyčerpajte limit
+- Sledujte výdavky
+
+**Hypotéka**
+
+**Typy:**
+- Fixná úroková sadzba
+- Variabilná úroková sadzba
+
+**Pred podpísaním:**
+- Porovnajte ponuky
+- Prečítajte si zmluvu
+- Pochopte všetky poplatky
+- Zvážte poistenie
+
+**Ako sa zbaviť dlhov**
+
+**Metóda snehovej gule:**
+1. Zoraďte dlhy od najmenšieho
+2. Splaťte minimum na všetky dlhy
+3. Extra peniaze dajte na najmenší dlh
+4. Keď splatíte najmenší, prejdite na ďalší
+
+**Metóda lavíny:**
+1. Zoraďte dlhy podľa úrokovej sadzby
+2. Splaťte minimum na všetky dlhy
+3. Extra peniaze dajte na dlh s najvyšším úrokom
+4. Postupujte smerom k najnižším úrokom`
+    },
+    {
+      title: "Téma 7: Sporenie a investovanie",
+      content: `**Sporenie**
+
+**Prečo šetriť?**
+- Núdzový fond
+- Krátkodobé ciele (dovolenka, auto)
+- Dlhodobé ciele (dom, dôchodok)
+- Finančná nezávislosť
+
+**Kde šetriť?**
+
+**Sporiaci účet:**
+- Nízke riziko
+- Nízky výnos
+- Ľahký prístup k peniazom
+
+**Termínovaný vklad:**
+- Vyšší úrok ako sporiaci účet
+- Peniaze viazané na určité obdobie
+
+**Investovanie**
+
+**Rozdiel medzi sporením a investovaním:**
+
+**Sporenie:**
+- Nízke riziko
+- Nízky výnos
+- Krátkodobé ciele
+
+**Investovanie:**
+- Vyššie riziko
+- Potenciál vyššieho výnosu
+- Dlhodobé ciele
+
+**Investičné nástroje:**
+
+**Akcie:**
+- Vlastníctvo časti spoločnosti
+- Vysoké riziko, vysoký potenciál výnosu
+- Dividendy
+
+**Dlhopisy:**
+- Pôžička vláde alebo firme
+- Nižšie riziko ako akcie
+- Pravidelný príjem
+
+**Podielové fondy:**
+- Diverzifikácia
+- Profesionálne riadenie
+- Rôzne typy (akciové, dlhopisové, zmiešané)
+
+**ETF (Exchange Traded Funds):**
+- Podobné podielovým fondom
+- Obchodované na burze
+- Nižšie poplatky
+
+**Nehnuteľnosti:**
+- Fyzický majetok
+- Nájomné príjmy
+- Dlhodobá investícia
+
+**Zlaté pravidlá investovania:**
+
+**1. Diverzifikácia**
+Nevsádzajte všetko na jednu kartu.
+
+**2. Dlhodobý horizont**
+Investujte na 5+ rokov.
+
+**3. Pravidelné investovanie**
+Využite dollar-cost averaging.
+
+**4. Poznajte svoj rizikový profil**
+Konzervatívny, vyvážený, alebo agresívny?
+
+**5. Vzdelávajte sa**
+Rozumejte tomu, do čoho investujete.`
+    },
+    {
+      title: "Téma 8: Dôchodkové plánovanie",
+      content: `**Prečo plánovať dôchodok?**
+
+**Realita:**
+- Štátny dôchodok nebude stačiť
+- Ľudia žijú dlhšie
+- Náklady na zdravotnú starostlivosť rastú
+
+**Kedy začať?**
+
+Čím skôr, tým lepšie!
+
+**Príklad sily zloženého úročenia:**
+
+**25-ročný:**
+- Mesačne odkladá 100 €
+- Do 65 rokov (40 rokov)
+- Pri 7% ročne: ~240 000 €
+
+**35-ročný:**
+- Mesačne odkladá 100 €
+- Do 65 rokov (30 rokov)
+- Pri 7% ročne: ~120 000 €
+
+**Piliere dôchodkového systému na Slovensku:**
+
+**I. pilier - Štátny dôchodok**
+- Povinný
+- Pay-as-you-go systém
+- Klesajúca hodnota
+
+**II. pilier - Starobné dôchodkové sporenie (DSS)**
+- Dobrovoľné (pre nových sporiteľov od 2013)
+- Správcovské spoločnosti
+- Vlastné prostriedky
+
+**III. pilier - Doplnkové dôchodkové sporenie (DDS)**
+- Dobrovoľné
+- Daňové zvýhodnenie
+- Flexibilné vklady
+
+**Stratégie dôchodkového sporenia:**
+
+**Mladí (20-40 rokov):**
+- Agresívne portfólio
+- Vyššie riziko
+- Akcie, rastové fondy
+
+**Stredný vek (40-55 rokov):**
+- Vyvážené portfólio
+- Postupné znižovanie rizika
+- Mix akcií a dlhopisov
+
+**Pred dôchodkom (55+):**
+- Konzervatívne portfólio
+- Ochrana kapitálu
+- Dlhopisy, stabilné fondy
+
+**Koľko potrebujete na dôchodku?**
+
+**Pravidlo 4%:**
+- Môžete ročne vybrať 4% svojich úspor
+- Úspory by mali vydržať 30 rokov
+
+**Príklad:**
+- Chcete 1000 € mesačne (12 000 € ročne)
+- Potrebujete: 12 000 € / 0,04 = 300 000 €`
+    },
+    {
+      title: "Téma 9: Poistenie a ochrana majetku",
+      content: `**Prečo poistenie?**
+
+Poistenie je nástroj na ochranu pred finančnými stratami.
+
+**Princíp:**
+- Platíte pravidelné poistné
+- V prípade škodovej udalosti dostanete odškodnenie
+- Rozložíte riziko medzi viacerých ľudí
+
+**Typy poistenia:**
+
+**1. Životné poistenie**
+
+**Rizikové životné poistenie:**
+- Ochrana rodiny v prípade smrti
+- Relatívne lacné
+- Na určité obdobie
+
+**Kapitálové životné poistenie:**
+- Kombinácia ochrany a sporenia
+- Drahšie
+- Nižšie výnosy
+
+**2. Zdravotné poistenie**
+
+**Povinné:**
+- Základné zdravotné poistenie
+- Platené cez odvody
+
+**Doplnkové:**
+- Lepšia zdravotná starostlivosť
+- Súkromné kliniky
+- Zubné ošetrovanie
+
+**3. Majetkové poistenie**
+
+**Poistenie nehnuteľnosti:**
+- Povinné pri hypotéke
+- Ochrana pred požiarom, povodňami
+- Zodpovednosť za škody
+
+**Poistenie domácnosti:**
+- Zariadenie bytu/domu
+- Cennosti
+- Elektronika
+
+**4. Poistenie vozidla**
+
+**Povinné ručenie (PZP):**
+- Zákonná povinnosť
+- Ochrana tretích osôb
+
+**Havarijné poistenie:**
+- Dobrovoľné
+- Ochrana vášho vozidla
+- Krádež, vandalizmus, nehoda
+
+**5. Cestovné poistenie**
+
+**Kryje:**
+- Zdravotné náklady v zahraničí
+- Storno zájazdu
+- Stratu batožiny
+- Zodpovednosť
+
+**Ako vybrať správne poistenie:**
+
+**1. Identifikujte riziká**
+- Čo by vás mohlo finančne zruinovať?
+
+**2. Porovnajte ponuky**
+- Porovnávače
+- Nezávislí makléri
+
+**3. Čítajte podmienky**
+- Co je kryté?
+- Čo je vylúčené?
+- Aké sú limity?
+
+**4. Neprepoisťujte sa**
+- Nekupujte zbytočné poistenie
+
+**5. Pravidelne aktualizujte**
+- Životné situácie sa menia`
+    },
+    {
+      title: "Téma 10: Finančné ciele a stratégie",
+      content: `**Stanovenie finančných cieľov**
+
+**SMART ciele:**
+
+**S - Specific (Špecifické)**
+- "Chcem ušetriť 10 000 €"
+- Nie: "Chcem viac peňazí"
+
+**M - Measurable (Merateľné)**
+- Môžete sledovať pokrok
+
+**A - Achievable (Dosiahnuteľné)**
+- Realistické vzhľadom na váš príjem
+
+**R - Relevant (Relevantné)**
+- Dôležité pre vás
+
+**T - Time-bound (Časovo ohraničené)**
+- "Do konca roku 2025"
+
+**Typy finančných cieľov:**
+
+**Krátkodobé (do 1 roka):**
+- Vytvorenie núdzového fondu
+- Splatenie kreditnej karty
+- Dovolenka
+
+**Strednodobé (1-5 rokov):**
+- Kúpa auta
+- Splatenie študentského úveru
+- Renovácia bytu
+
+**Dlhodobé (5+ rokov):**
+- Kúpa domu
+- Dôchodok
+- Vzdelanie detí
+
+**Stratégie na dosiahnutie cieľov:**
+
+**1. Automatizácia**
+- Automatické prevody na sporenie
+- Investičné plány
+- Odstraňuje pokušenie minúť
+
+**2. Zvýšenie príjmov**
+- Vedľajší príjem
+- Zvýšenie platu
+- Investície
+
+**3. Zníženie výdavkov**
+- Sledujte zbytočné výdavky
+- Porovnávajte ceny
+- DIY projekty
+
+**4. Vzdelávanie**
+- Čítajte knihy o financiách
+- Sledujte finančné blogy
+- Kurzy a semináre
+
+**Bežné finančné chyby:**
+
+**1. Život nad pomery**
+- Kupovanie vecí, ktoré si nemôžete dovoliť
+
+**2. Žiadne sporenie**
+- Minúť všetko, čo zarobíte
+
+**3. Impulzívne nákupy**
+- Emočné rozhodnutia
+
+**4. Ignorovanie dlhov**
+- Splácanie len minima
+
+**5. Nevzdelávanie sa**
+- Finančná negramotnosť
+
+**Záver:**
+
+Vzdelávanie detí v oblasti finančnej gramotnosti je nevyhnutné pre ich budúci finančný úspech a celkovú prosperitu spoločnosti. Investícia do finančnej gramotnosti detí je investíciou do lepšej budúcnosti, kedy sa z detí stanú dospelí schopní efektívnejšie riadiť svoje financie a dosahovať svoje ciele.
+
+**Kľúčové body:**
+- Začnite vzdelávať sa čo najskôr
+- Vytvorte si rozpočet
+- Budujte havarijný fond
+- Investujte do budúcnosti
+- Chráňte sa poistením
+- Stanovte si jasné ciele
+- Neustále sa vzdelávajte
+
+Finančná gramotnosť nie je cieľ, ale cesta. Každý deň sa môžete zlepšovať a robiť lepšie finančné rozhodnutia!`
+    }
   ]
-};
 
 // Generate default topics for courses not in the list
 export const generateDefaultTopics = (courseName: string): Topic[] => {
