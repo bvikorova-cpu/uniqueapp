@@ -38,7 +38,7 @@ const courseCategories = [
     name: "Ekonomické kurzy",
     icon: "💼",
     courses: [
-      "Základy účtovníctva", "Finančné plánovanie", "Investovanie pre začiatočníkov", "Daňová sústava",
+      "Základy účtovníctva", "Finančné plánovanie", "Investovanie pre začiatočníkov",
       "Marketing a reklama", "Podnikanie od A po Z", "E-commerce", "Finančná gramotnosť",
       "Manažment projektov", "Business plán", "Analýza trhu", "Osobné financie",
       "Kryptomeny", "Akciový trh", "Nehnuteľnosti", "Príjem z pasívnych zdrojov",
