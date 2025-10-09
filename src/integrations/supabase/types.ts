@@ -237,6 +237,47 @@ export type Database = {
           },
         ]
       }
+      completed_courses: {
+        Row: {
+          certificate_url: string | null
+          completion_date: string | null
+          course_name: string
+          created_at: string | null
+          id: string
+          test_score: number | null
+          time_spent_minutes: number | null
+          user_id: string
+        }
+        Insert: {
+          certificate_url?: string | null
+          completion_date?: string | null
+          course_name: string
+          created_at?: string | null
+          id?: string
+          test_score?: number | null
+          time_spent_minutes?: number | null
+          user_id: string
+        }
+        Update: {
+          certificate_url?: string | null
+          completion_date?: string | null
+          course_name?: string
+          created_at?: string | null
+          id?: string
+          test_score?: number | null
+          time_spent_minutes?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "completed_courses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -286,6 +327,79 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      course_progress: {
+        Row: {
+          completed_topics: number[] | null
+          course_name: string
+          created_at: string | null
+          current_topic: number | null
+          id: string
+          last_accessed_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_topics?: number[] | null
+          course_name: string
+          created_at?: string | null
+          current_topic?: number | null
+          id?: string
+          last_accessed_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_topics?: number[] | null
+          course_name?: string
+          created_at?: string | null
+          current_topic?: number | null
+          id?: string
+          last_accessed_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_statistics: {
+        Row: {
+          course_name: string
+          id: string
+          last_activity: string | null
+          time_spent_minutes: number | null
+          topics_completed: number | null
+          user_id: string
+        }
+        Insert: {
+          course_name: string
+          id?: string
+          last_activity?: string | null
+          time_spent_minutes?: number | null
+          topics_completed?: number | null
+          user_id: string
+        }
+        Update: {
+          course_name?: string
+          id?: string
+          last_activity?: string | null
+          time_spent_minutes?: number | null
+          topics_completed?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_statistics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dating_gifts: {
         Row: {

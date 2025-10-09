@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
+import { CourseHistory } from "@/components/profile/CourseHistory";
 
 interface Profile {
   id: string;
@@ -493,9 +494,10 @@ const Profile = () => {
         </Card>
 
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="posts">Príspevky</TabsTrigger>
             <TabsTrigger value="friends">Priatelia ({friends.length})</TabsTrigger>
+            <TabsTrigger value="education">Vzdelávanie</TabsTrigger>
           </TabsList>
           
           <TabsContent value="posts" className="space-y-4 mt-4">
@@ -542,6 +544,10 @@ const Profile = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="education" className="mt-4">
+            <CourseHistory />
           </TabsContent>
         </Tabs>
       </div>
