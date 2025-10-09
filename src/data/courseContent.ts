@@ -2952,6 +2952,7 @@ Vzdelávanie detí v oblasti finančnej gramotnosti je nevyhnutné pre ich budú
 Finančná gramotnosť nie je cieľ, ale cesta. Každý deň sa môžete zlepšovať a robiť lepšie finančné rozhodnutia!`
     }
   ]
+};
 
 // Generate default topics for courses not in the list
 export const generateDefaultTopics = (courseName: string): Topic[] => {
