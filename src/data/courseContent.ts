@@ -4,6 +4,722 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Komunikácia": [
+    {
+      title: "Téma 1: Čo je komunikácia?",
+      content: `**Stručná definícia komunikácie**
+
+Komunikácia je proces prenosu informácií, myšlienok, pocitov alebo zámerov medzi dvoma alebo viacerými subjektmi prostredníctvom spoločných signálov, symbolov alebo pravidiel. Zahrnuje odovzdávanie, prijímanie a porozumenie správ.
+
+**Základné prvky komunikácie:**
+
+**Odosielateľ (komunikátor):**
+- Osoba, ktorá iniciuje komunikáciu
+- Formuluje správu
+- Vysiela informácie
+
+**Správa:**
+- Obsah, ktorý sa prenáša
+- Informácie, myšlienky, pocity
+- Môže byť verbálna alebo neverbálna
+
+**Kanál:**
+- Prostriedok prenosu správy
+- Ústna reč, písmo, gestá
+- Moderné médiá a technológie
+
+**Príjemca:**
+- Osoba, ktorá správu prijíma
+- Dekóduje a interpretuje obsah
+- Reaguje na správu
+
+**Spätná väzba:**
+- Reakcia príjemcu na správu
+- Potvrdenie porozumenia
+- Pokračovanie v dialógu
+
+**Kontext:**
+- Prostredie, v ktorom komunikácia prebieha
+- Sociálne a kultúrne okolnosti
+- Vzťah medzi komunikujúcimi
+
+**Charakteristiky efektívnej komunikácie:**
+
+- Jasnosť a zrozumiteľnosť
+- Vzájomné porozumenie
+- Aktívna účasť oboch strán
+- Rešpekt a empatia
+- Prispôsobenie sa kontextu`
+    },
+    {
+      title: "Téma 2: Verbálna a neverbálna komunikácia",
+      content: `**Komunikácia je oveľa viac než len výmena slov**
+
+Zahŕňa neverbálne signály, ako sú reč tela, tón hlasu a výraz tváre, ktoré často prenášajú rovnako dôležité informácie ako samotné slová.
+
+**Verbálna komunikácia:**
+
+**Hovorené slovo:**
+- Priama konverzácia
+- Telefonické hovory
+- Prezentácie a prednášky
+- Diskusie a debaty
+
+**Písané slovo:**
+- E-maily a správy
+- Listy a dokumenty
+- Knihy a články
+- Sociálne siete
+
+**Charakteristiky verbálnej komunikácie:**
+- Používanie konkrétnych slov
+- Gramatická štruktúra
+- Tón a modulácia hlasu
+- Tempo a rytmus reči
+
+**Neverbálna komunikácia:**
+
+**Reč tela:**
+- Postoj a držanie tela
+- Gestá rukami
+- Pohyby hlavy
+- Fyzická vzdialenosť
+
+**Mimika tváre:**
+- Výraz tváre
+- Očný kontakt
+- Úsmev alebo zamračenie
+- Mikroexpresie
+
+**Paralingvistické prvky:**
+- Tón hlasu
+- Hlasitosť
+- Tempo reči
+- Pauzy a ticho
+
+**Výskum Alberta Mehrábiana:**
+
+Albert Mehrabian zistil, že pri prenose emócií:
+- 7% - samotné slová
+- 38% - tón hlasu
+- 55% - reč tela
+
+**Dôležité:**
+Tento výskum sa týka výlučne prenosu emócií a postojov, nie všetkej komunikácie.`
+    },
+    {
+      title: "Téma 3: Význam komunikácie v psychológii",
+      content: `**Komunikácia zohráva kľúčovú úlohu v psychológii**
+
+Je základom pre interpersonálne vzťahy, sociálne interakcie, emocionálny vývoj a psychické zdravie.
+
+**Úlohy komunikácie v psychológii:**
+
+**1. Budovanie vzťahov:**
+- Nevyhnutná pre budovanie a udržiavanie zdravých vzťahov
+- Vytváranie dôvery a intimity
+- Posilňovanie sociálnych väzieb
+- Prehlbovanie porozumenia
+
+**2. Riešenie konfliktov:**
+- Nástroj na riešenie nedorozumení
+- Vyjadrovanie rozdielnych názorov
+- Hľadanie kompromisov
+- Budovanie mostov medzi ľuďmi
+
+**3. Vyjadrovanie potrieb a pocitov:**
+- Vyjadrenie emócií
+- Komunikovanie potrieb
+- Zdieľanie skúseností
+- Sebavyjadrenie
+
+**4. Prenos kultúrnych noriem:**
+- Odovzdávanie hodnôt
+- Vzdelávanie a výchova
+- Sociálna integrácia
+- Kultúrna kontinuita
+
+**Komunikácia v klinickej psychológii:**
+
+**Terapeutický vzťah:**
+Efektívna komunikácia je základom terapeutického vzťahu medzi terapeutom a klientom.
+
+**Charakteristiky:**
+- Otvorená a úprimná komunikácia
+- Bezpečné prostredie pre vyjadrovanie
+- Empatické počúvanie
+- Profesionálne vedenie rozhovoru
+
+**Výsledky:**
+- Umožňuje klientovi preskúmať svoje myšlienky
+- Analyzovanie pocitov a správania
+- Získavanie nových perspektív
+- Terapeutický pokrok
+
+**Dôsledky porúch komunikácie:**
+
+**Psychické zdravie:**
+Poruchy komunikácie môžu mať vážne dôsledky:
+- Vznik úzkosti
+- Depresívne stavy
+- Sociálna izolácia
+- Problémy vo vzťahoch
+- Znížená kvalita života`
+    },
+    {
+      title: "Téma 4: Podmienky efektívnej komunikácie",
+      content: `**Čo robí komunikáciu efektívnou?**
+
+Úspešná komunikácia nastáva vtedy, keď odosielateľ aj príjemca zdieľajú rovnaké alebo podobné porozumenie prenášanej správe.
+
+**Kľúčové faktory efektívnej komunikácie:**
+
+**1. Jasnosť správy:**
+- Použitie zrozumiteľného jazyka
+- Štruktúrované myšlienky
+- Konkrétne a presné vyjadrenie
+- Vyhýbanie sa nejasnostiam
+
+**2. Kontext komunikácie:**
+- Zohľadnenie prostredia
+- Časový rámec
+- Sociálna situácia
+- Kultúrne pozadie
+
+**3. Vzťah medzi komunikujúcimi:**
+- Dôvera a rešpekt
+- Vzájomné poznanie
+- História vzťahu
+- Emocionálna blízkosť
+
+**4. Aktívna účasť:**
+- Pozorné počúvanie
+- Záujem o druhého
+- Spätná väzba
+- Potvrdenie porozumenia
+
+**Dynamický proces komunikácie:**
+
+**Charakteristiky:**
+- Je to dynamický proces
+- Neustále prebieha
+- Vyžaduje aktívnu účasť oboch strán
+- Mení sa v závislosti od situácie
+
+**Flexibilita:**
+- Prispôsobenie sa druhému
+- Reagovanie na spätnú väzbu
+- Úprava štýlu komunikácie
+- Citlivosť na potreby príjemcu
+
+**Obojsmerný proces:**
+- Nie je len o vysielaní správ
+- Zahŕňa aj prijímanie
+- Vyžaduje porozumenie
+- Potrebuje spätnú väzbu
+
+**Princíp spoločného porozumenia:**
+
+**Zdieľaný kód:**
+- Spoločný jazyk
+- Rovnaké symboly
+- Zhodné interpretácie
+- Kultúrne porozumenie
+
+**Overenie porozumenia:**
+- Kladenie otázok
+- Parafrázovanie
+- Zhrnutie hlavných bodov
+- Potvrdenie pochopenia`
+    },
+    {
+      title: "Téma 5: Komunikačné bariéry",
+      content: `**Prekážky efektívnej komunikácie**
+
+Komunikácia môže byť ovplyvnená rôznymi barierami, ktoré bránia úspešnému prenosu a porozumeniu správy.
+
+**Typy komunikačných bariér:**
+
+**1. Nedorozumenia:**
+- Nesprávna interpretácia slov
+- Odlišné chápanie kontextu
+- Jazykové bariéry
+- Rozdielne významy
+
+**2. Predsudky:**
+- Stereotypné myslenie
+- Predpojaté názory
+- Nálepkovanie ľudí
+- Selektívne vnímanie
+
+**3. Kultúrne rozdiely:**
+- Odlišné hodnoty a normy
+- Iné komunikačné štýly
+- Rozdiely v neverbálnej komunikácii
+- Jazykové nuansy
+
+**4. Emocionálne stavy:**
+- Hnev a frustrácia
+- Strach a úzkosť
+- Smútok a depresia
+- Nadmerné vzrušenie
+
+**5. Fyzické bariéry:**
+- Hluk a rušenie
+- Fyzická vzdialenosť
+- Technické problémy
+- Nedostatok súkromia
+
+**6. Psychologické bariéry:**
+- Nízke sebavedomie
+- Obavy z odmietnutia
+- Neochota počúvať
+- Defenzívne správanie
+
+**Prekonávanie komunikačných bariér:**
+
+**Uvedomenie:**
+- Rozpoznanie existencie bariér
+- Identifikácia konkrétnych prekážok
+- Pochopenie ich vplyvu
+- Analýza situácie
+
+**Stratégie:**
+- Aktívne počúvanie
+- Kladenie objasňujúcich otázok
+- Empatické prístupy
+- Trpezlivosť a porozumenie
+
+**Adaptácia:**
+- Prispôsobenie komunikačného štýlu
+- Použitie jednoduchšieho jazyka
+- Overenie porozumenia
+- Zohľadnenie kultúrnych rozdielov
+
+**Vytváranie podporného prostredia:**
+- Bezpečný priestor pre vyjadrenie
+- Rešpekt k názorm druhých
+- Pozitívna atmosféra
+- Dôvera a otvorenosť`
+    },
+    {
+      title: "Téma 6: Praktický príklad z praxe",
+      content: `**Príklad: Anna a Peter - Manželská komunikácia**
+
+Predstavte si manželský pár, Annu a Petra, ktorí sa neustále hádajú.
+
+**Problémová situácia:**
+
+**Annino vnímanie:**
+- Cíti sa nedocenená
+- Peter často pracuje dlho do noci
+- Nevenuje jej dostatok pozornosti
+- Má pocit osamelosti
+
+**Petrovo vnímanie:**
+- Cíti sa nepochopený
+- Snaží sa zabezpečiť rodinu
+- Nevie, ako vysvetliť dôležitosť práce
+- Cíti sa kritizovaný
+
+**Problematická komunikácia:**
+
+**Anna hovorí:**
+"Nikdy nie si doma! Staráš sa len o prácu!"
+
+**Charakteristiky:**
+- Obviňovanie
+- Používanie slova "nikdy"
+- Generalizácia
+- Útočný tón
+
+**Peter odpovedá:**
+"A ty si myslíš, že sa mi páči robiť nadčasy? Robím to pre teba a deti!"
+
+**Charakteristiky:**
+- Obranná reakcia
+- Ospravedlňovanie sa
+- Nepočúvanie potrieb
+- Eskalácia konfliktu
+
+**Dôsledky neefektívnej komunikácie:**
+- Ďalšie nedorozumenia
+- Zvýšená frustrácia
+- Prehlbovanie konfliktu
+- Odcudzenie sa
+
+**Konštruktívna alternatíva:**
+
+**Anna by mohla povedať:**
+"Cítim sa osamelá, keď si tak často preč. Potrebovala by som viac tvojej prítomnosti."
+
+**Charakteristiky:**
+- Vyjadrenie pocitov
+- Konkrétna potreba
+- Bez obviňovania
+- Konstruktívny tón
+
+**Peter by mohl odpovedať:**
+"Viem, že je to pre teba ťažké, a chcem, aby si vedela, že mi na tebe záleží. Skúsim si nájsť viac času na teba."
+
+**Charakteristiky:**
+- Empatické počúvanie
+- Uznanie pocitov
+- Konkrétny záväzok
+- Pozitívna reakcia
+
+**Výsledok konštruktívnej komunikácie:**
+- Vzájomné porozumenie
+- Riešenie problému
+- Posilnenie vzťahu
+- Nájdenie kompromisu`
+    },
+    {
+      title: "Téma 7: Teoretický kontext a pôvod",
+      content: `**História štúdia komunikácie**
+
+Štúdium komunikácie má korene v rôznych disciplínach, vrátane sociológie, lingvistiky, antropológie a psychológie.
+
+**Interdisciplinárny prístup:**
+
+**Sociológia:**
+- Sociálne interakcie
+- Skupinová komunikácia
+- Spoločenské normy
+- Kultúrne vplyvy
+
+**Lingvistika:**
+- Štruktúra jazyka
+- Sémantika a syntax
+- Jazykový vývoj
+- Komunikačné kódy
+
+**Antropológia:**
+- Kultúrne rozdiely
+- Interkultúrna komunikácia
+- Rituály a symbolika
+- Evolúcia komunikácie
+
+**Psychológia:**
+- Interpersonálne vzťahy
+- Sociálne interakcie
+- Kognitívne procesy
+- Emocionálne aspekty
+
+**Teoretické rámce:**
+
+**1. Sociálny konštruktivizmus:**
+- Realita je sociálne konštruovaná
+- Komunikácia vytvára významy
+- Jazyk formuje vnímanie
+- Spoločné budovanie reality
+
+**2. Teória systémov:**
+- Komunikácia ako súčasť komplexného systému
+- Vzájomné prepojenie prvkov
+- Zmena v jednej časti ovplyvňuje celok
+- Dynamické interakcie
+
+**3. Teória komunikácie (50. roky 20. storočia):**
+- Vznik samostatnej disciplíny
+- Identifikácia univerzálnych princípov
+- Modely komunikačného procesu
+- Štúdium efektívnosti
+
+**Moderné trendy výskumu:**
+
+**Súčasné zameranie:**
+- Vplyv médií na komunikáciu
+- Interkultúrna komunikácia
+- Organizačná komunikácia
+- Klinická komunikácia
+
+**Oblasti výskumu:**
+- Digitálna komunikácia
+- Neverbálne signály
+- Komunikačné kompetencie
+- Terapeutická komunikácia
+
+**Význam pre prax:**
+- Aplikácia teórií v reálnom živote
+- Zlepšovanie komunikačných zručností
+- Riešenie praktických problémov
+- Rozvoj nových metód`
+    },
+    {
+      title: "Téma 8: Kľúčové osobnosti a ich prínos",
+      content: `**Priekopníci výskumu komunikácie**
+
+**1. Paul Watzlawick (1921-2007)**
+
+**Prínos:**
+- Teória komunikácie v kontexte systémovej terapie
+- Axiomy komunikácie
+
+**Kľúčové zistenia:**
+- "Nie je možné nekomunikovať"
+- Každý prejav je forma komunikácie
+- Aj ticho je komunikácia
+- Neverbálne správanie komunikuje
+
+**Axiomy komunikácie:**
+- Nemožnosť nekomunikovať
+- Obsahová a vzťahová úroveň
+- Interpunkcia komunikačných sekvencií
+- Digitálna a analógová komunikácia
+- Symetrická a komplementárna interakcia
+
+**2. Virginia Satir (1916-1988)**
+
+**Prínos:**
+- Modely komunikácie v rodinnej terapii
+- Identifikácia komunikačných štýlov
+
+**Komunikačné štýly podľa Satirovej:**
+- Umierotvujúci
+- Obviňujúci
+- Superpočítač
+- Rozptyľujúci
+- Kongruentný (cieľový)
+
+**Význam:**
+- Pomáha identifikovať problematické vzorce
+- Umožňuje zmenu komunikácie
+- Zlepšuje rodinné vzťahy
+
+**3. Albert Mehrabian (nar. 1939)**
+
+**Prínos:**
+- Výskum neverbálnej komunikácie
+- Pravidlo 7-38-55
+
+**Zistenia:**
+Pri prenose emócií:
+- 7% - samotné slová
+- 38% - tón hlasu
+- 55% - reč tela
+
+**Dôležitá poznámka:**
+Tento výskum sa týka VÝLUČNE prenosu postojov a emócií, nie všetkej komunikácie!
+
+**4. Marshall Rosenberg (1934-2015)**
+
+**Prínos:**
+- Koncept nenásilnej komunikácie (NVC)
+- Model empatickej komunikácie
+
+**Nenásilná komunikácia - 4 kroky:**
+
+**1. Pozorovanie:**
+- Objektívny popis situácie
+- Bez hodnotenia
+- Konkrétne fakty
+
+**2. Pocity:**
+- Vyjadrenie vlastných emócií
+- Prijatie zodpovednosti za pocity
+- Rozpoznanie potrieb
+
+**3. Potreby:**
+- Identifikácia vlastných potrieb
+- Všeobecné ľudské potreby
+- Bez nárokov na druhých
+
+**4. Prosba:**
+- Konkrétna, uskutočniteľná prosba
+- Pozitívne formulovaná
+- Rešpektujúca slobodu druhého
+
+**Význam NVC:**
+- Zdôrazňuje empatiu
+- Porozumenie potrieb
+- Vyjadrovanie pocitov
+- Komunikácia bez kritiky a obviňovania`
+    },
+    {
+      title: "Téma 9: Typy a štýly komunikácie",
+      content: `**Rôzne formy a štýly komunikácie**
+
+**Typy komunikácie podľa kontextu:**
+
+**1. Intrapersonálna komunikácia:**
+- Vnútorný dialóg
+- Sebareflexia
+- Myšlienkové procesy
+- Rozhodovanie
+
+**2. Interpersonálna komunikácia:**
+- Komunikácia medzi dvoma ľuďmi
+- Osobný rozhovor
+- Priama interakcia
+- Vzájomná spätná väzba
+
+**3. Skupinová komunikácia:**
+- Komunikácia v malých skupinách
+- Tímové stretnutia
+- Rodinné diskusie
+- Pracovné porady
+
+**4. Verejná komunikácia:**
+- Prezentácie a prednášky
+- Vystúpenia pred publikom
+- Formálne prejavy
+- Jednosmerná komunikácia
+
+**5. Masová komunikácia:**
+- Médiá a noviny
+- Televízia a rozhlas
+- Internet a sociálne siete
+- Masový prenos informácií
+
+**Štýly komunikácie:**
+
+**1. Pasívny štýl:**
+
+**Charakteristiky:**
+- Nedostatočné vyjadrenie potrieb
+- Vyhýbanie sa konfliktom
+- Podriadenosť
+- Ťažkosti s odmietnutím
+
+**Dôsledky:**
+- Frustrácia
+- Potláčanie pocitov
+- Nízke sebavedomie
+- Nespokojnosť vo vzťahoch
+
+**2. Agresívny štýl:**
+
+**Charakteristiky:**
+- Dominantné správanie
+- Nátlak na druhých
+- Ignorovanie potrieb iných
+- Útočnosť
+
+**Dôsledky:**
+- Konflikty
+- Poškodené vzťahy
+- Strach u druhých
+- Izolácia
+
+**3. Pasívno-agresívny štýl:**
+
+**Charakteristiky:**
+- Nepriama komunikácia
+- Skrytá nepriateľskosť
+- Sarkazmus
+- Sabotovanie
+
+**Dôsledky:**
+- Nedôvera
+- Zmätok
+- Toxické vzťahy
+- Nedorozumenia
+
+**4. Asertívny štýl (ideálny):**
+
+**Charakteristiky:**
+- Jasné vyjadrenie potrieb
+- Rešpekt k sebe aj druhým
+- Schopnosť povedať nie
+- Otvorená komunikácia
+
+**Výhody:**
+- Zdravé vzťahy
+- Sebaúcta
+- Efektívna komunikácia
+- Riešenie konfliktov`
+    },
+    {
+      title: "Téma 10: Aktívne počúvanie a komunikačné zručnosti",
+      content: `**Kľúčové komunikačné zručnosti**
+
+**Aktívne počúvanie:**
+
+Aktívne počúvanie je technika počúvania, ktorá zahŕňa pozornosť, porozumenie, zapamätanie si a reagovanie na to, čo hovorí druhá osoba.
+
+**Prvky aktívneho počúvania:**
+
+**1. Plná pozornosť:**
+- Sústredenie sa na hovoriaceho
+- Eliminácia rozptýlenia
+- Očný kontakt
+- Otvorená reč tela
+
+**2. Neverbálne signály:**
+- Prikyvovanie
+- Úsmev
+- Zrkadlenie emócií
+- Vhodné gestá
+
+**3. Verbálne potvrdenie:**
+- "Rozumiem"
+- "Pokračuj"
+- "To muselo byť ťažké"
+- Povzbudzujúce zvuky
+
+**4. Parafrázovanie:**
+- Zopakovanie vlastnými slovami
+- Overenie porozumenia
+- "Ak dobre rozumiem..."
+- "Chceš povedať, že..."
+
+**5. Kladenie otázok:**
+- Objasňujúce otázky
+- Prehlbujúce pochopenie
+- Záujem o detaily
+- Otvorené otázky
+
+**6. Empatia:**
+- Vcítenie sa do pocitov
+- Prijatie emócií
+- Bez hodnotenia
+- Porozumenie perspektíve
+
+**Ďalšie komunikačné zručnosti:**
+
+**Asertivita:**
+- Schopnosť vyjadrovať potreby otvorene
+- Vyjadrovanie pocitov úprimne
+- Bez porušovania práv druhých
+- Sebavedomé správanie
+
+**Empatia:**
+- Schopnosť vcítiť sa do druhých
+- Porozumenie pocitom
+- Prijatie prežívania
+- Citlivosť na potreby
+
+**Spätná väzba:**
+- Konštruktívna kritika
+- Pozitívne hodnotenie
+- Konkrétne príklady
+- Rešpektujúca forma
+
+**Súvisiace pojmy:**
+
+**Verbálna komunikácia:**
+- Komunikácia pomocou slov
+- Hovorené alebo písané
+- Jasnosť vyjadrenia
+
+**Neverbálna komunikácia:**
+- Bez použitia slov
+- Gestá, výrazy tváre
+- Tón hlasu, držanie tela
+
+**Komunikačné bariéry:**
+- Nedorozumenia
+- Predsudky
+- Kultúrne rozdiely
+- Emocionálne stavy
+
+**Záver:**
+
+Efektívna komunikácia je zručnosť, ktorú sa dá naučiť a rozvíjať. Vyžaduje si prax, sebapoznanie a ochotu neustále sa zlepšovať. Aktívne počúvanie, empatia a asertivita sú kľúčové nástroje pre budovanie zdravých vzťahov a úspešnú komunikáciu v osobnom aj profesionálnom živote.`
+    }
+  ],
+  
   "Emocionálna inteligencia": [
     {
       title: "Téma 1: Úvod do emocionálnej inteligencie",
