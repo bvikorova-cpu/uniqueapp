@@ -111,8 +111,13 @@ Postupnosť tém:
     
     let topics;
     try {
-      const parsed = JSON.parse(content);
+      // Content is already JSON string, parse it
+      const parsed = typeof content === 'string' ? JSON.parse(content) : content;
       topics = parsed.topics;
+      
+      if (!topics || !Array.isArray(topics) || topics.length === 0) {
+        throw new Error('No topics in response');
+      }
     } catch (e) {
       console.error("Failed to parse AI response:", content);
       throw new Error("Invalid AI response format");
