@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface CourseProgress {
   id: string;
@@ -21,17 +21,54 @@ interface CourseStatistics {
   last_activity: string;
 }
 
+interface LocalProgress {
+  current_topic: number;
+  completed_topics: number[];
+  time_spent_minutes: number;
+}
+
 export const useCourseProgress = (courseName: string) => {
   const queryClient = useQueryClient();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<Date>(new Date());
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  // Fetch course progress
-  const { data: progress, isLoading } = useQuery({
+  // Check authentication
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setIsAuthenticated(!!user);
+    };
+    checkAuth();
+  }, []);
+
+  // Get local storage key
+  const getLocalStorageKey = () => `course_progress_${courseName}`;
+
+  // Load from localStorage
+  const loadLocalProgress = (): LocalProgress => {
+    const stored = localStorage.getItem(getLocalStorageKey());
+    if (stored) {
+      return JSON.parse(stored);
+    }
+    return {
+      current_topic: 0,
+      completed_topics: [],
+      time_spent_minutes: 0,
+    };
+  };
+
+  // Save to localStorage
+  const saveLocalProgress = (progress: LocalProgress) => {
+    localStorage.setItem(getLocalStorageKey(), JSON.stringify(progress));
+  };
+
+  // Fetch course progress (only if authenticated)
+  const { data: dbProgress, isLoading: dbLoading } = useQuery({
     queryKey: ["course-progress", courseName],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) return null;
 
       const { data, error } = await supabase
         .from("course_progress")
@@ -43,14 +80,15 @@ export const useCourseProgress = (courseName: string) => {
       if (error) throw error;
       return data as CourseProgress | null;
     },
+    enabled: isAuthenticated === true,
   });
 
-  // Fetch statistics
-  const { data: statistics } = useQuery({
+  // Fetch statistics (only if authenticated)
+  const { data: dbStatistics } = useQuery({
     queryKey: ["course-statistics", courseName],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) return null;
 
       const { data, error } = await supabase
         .from("course_statistics")
@@ -62,7 +100,18 @@ export const useCourseProgress = (courseName: string) => {
       if (error) throw error;
       return data as CourseStatistics | null;
     },
+    enabled: isAuthenticated === true,
   });
+
+  // Merge local and DB progress
+  const localProgress = loadLocalProgress();
+  const progress = isAuthenticated && dbProgress ? dbProgress : {
+    current_topic: localProgress.current_topic,
+    completed_topics: localProgress.completed_topics,
+  };
+  const statistics = isAuthenticated && dbStatistics ? dbStatistics : {
+    time_spent_minutes: localProgress.time_spent_minutes,
+  };
 
   // Update progress mutation
   const updateProgressMutation = useMutation({
@@ -71,8 +120,21 @@ export const useCourseProgress = (courseName: string) => {
       completed_topics: number[];
     }) => {
       console.log('updateProgressMutation called with:', data);
+      
+      // Always save to localStorage
+      const localData = loadLocalProgress();
+      saveLocalProgress({
+        ...localData,
+        current_topic: data.current_topic,
+        completed_topics: data.completed_topics,
+      });
+
+      // Also save to DB if authenticated
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) {
+        console.log('Not authenticated, saved to localStorage only');
+        return;
+      }
 
       console.log('User authenticated:', user.id);
 
@@ -93,12 +155,14 @@ export const useCourseProgress = (courseName: string) => {
         throw error;
       }
       
-      console.log('Progress updated successfully');
+      console.log('Progress updated successfully in DB');
     },
     onSuccess: () => {
       console.log('Invalidating queries...');
-      queryClient.invalidateQueries({ queryKey: ["course-progress", courseName] });
-      queryClient.refetchQueries({ queryKey: ["course-progress", courseName] });
+      if (isAuthenticated) {
+        queryClient.invalidateQueries({ queryKey: ["course-progress", courseName] });
+        queryClient.refetchQueries({ queryKey: ["course-progress", courseName] });
+      }
     },
     onError: (error) => {
       console.error('Error in updateProgressMutation:', error);
@@ -111,10 +175,18 @@ export const useCourseProgress = (courseName: string) => {
       time_spent_minutes?: number;
       topics_completed?: number;
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      // Always save to localStorage
+      const localData = loadLocalProgress();
+      saveLocalProgress({
+        ...localData,
+        time_spent_minutes: data.time_spent_minutes ?? localData.time_spent_minutes,
+      });
 
-      const currentStats = statistics || {
+      // Also save to DB if authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const currentStats = dbStatistics || {
         time_spent_minutes: 0,
         topics_completed: 0,
       };
@@ -134,7 +206,9 @@ export const useCourseProgress = (courseName: string) => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["course-statistics", courseName] });
+      if (isAuthenticated) {
+        queryClient.invalidateQueries({ queryKey: ["course-statistics", courseName] });
+      }
     },
   });
 
@@ -145,9 +219,12 @@ export const useCourseProgress = (courseName: string) => {
       user_name: string;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) {
+        console.log('Cannot save completed course - not authenticated');
+        return;
+      }
 
-      const timeSpent = statistics?.time_spent_minutes || 0;
+      const timeSpent = dbStatistics?.time_spent_minutes || localProgress.time_spent_minutes;
 
       const { error } = await supabase
         .from("completed_courses")
@@ -174,7 +251,7 @@ export const useCourseProgress = (courseName: string) => {
       );
 
       if (minutesElapsed > 0) {
-        const currentMinutes = statistics?.time_spent_minutes || 0;
+        const currentMinutes = (isAuthenticated && dbStatistics?.time_spent_minutes) || localProgress.time_spent_minutes || 0;
         updateStatisticsMutation.mutate({
           time_spent_minutes: currentMinutes + minutesElapsed,
         });
@@ -191,10 +268,13 @@ export const useCourseProgress = (courseName: string) => {
     };
   }, []);
 
+  const isLoading = isAuthenticated === null || (isAuthenticated && dbLoading);
+
   return {
     progress,
     statistics,
     isLoading,
+    isAuthenticated,
     updateProgress: (data: { current_topic: number; completed_topics: number[] }) => {
       return updateProgressMutation.mutateAsync(data);
     },
