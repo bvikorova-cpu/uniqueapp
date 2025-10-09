@@ -41,7 +41,7 @@ const courseCategories = [
       "Základy účtovníctva", "Finančné plánovanie", "Investovanie pre začiatočníkov",
       "Marketing a reklama", "Podnikanie od A po Z", "E-commerce", 
       "Manažment projektov", "Business plán", "Analýza trhu", "Osobné financie",
-      "Kryptomeny", "Akciový trh"
+      "Kryptomeny", "Logistika a dodávateľský reťazec"
     ]
   },
   {

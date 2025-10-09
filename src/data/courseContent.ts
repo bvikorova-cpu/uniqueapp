@@ -4983,6 +4983,813 @@ Svet kryptomien je fascinujúci a plný príležitostí, ale aj výziev. S potre
   }
 ];
 
+// Export the courseContent object with the Logistika a dodávateľský reťazec course
+courseContent["Logistika a dodávateľský reťazec"] = [
+  {
+    title: "Téma 1: Úvod do logistiky a dodávateľského reťazca",
+    content: `**Čo je logistika a dodávateľský reťazec?**
+
+Logistika je neoddeliteľnou súčasťou širšieho pojmu dodávateľského reťazca (supply chain).
+
+**Základný rozdiel:**
+
+- **Dodávateľský reťazec** zahŕňa všetky činnosti od získavania surovín, cez výrobu a distribúciu, až po dodanie hotového produktu k zákazníkovi
+- **Logistika** sa zameriava na efektívne riadenie a pohyb fyzického tovaru – od skladovania a prepravy až po doručenie
+
+**Význam v modernom podnikaní:**
+
+V globalizovanom svete je efektívne riadenie logistiky a dodávateľského reťazca kľúčové pre:
+- Konkurencieschopnosť firmy
+- Spokojnosť zákazníkov
+- Znižovanie nákladov
+- Rýchlosť dodania produktov
+
+**História vývoja:**
+
+- **Tradičná logistika** - Zameranie len na prepravu
+- **Integrovaná logistika** - Prepojenie všetkých procesov
+- **Digitálna logistika** - Automatizácia a AI
+
+**Kľúčové trendy:**
+
+- E-commerce a rýchle dodanie
+- Udržateľnosť a zelená logistika
+- Digitalizácia a Industry 4.0
+- Automatizácia skladov`
+  },
+  {
+    title: "Téma 2: Dodávateľský reťazec (Supply Chain)",
+    content: `**Čo je dodávateľský reťazec?**
+
+**Širší obraz:**
+
+Je to celá sieť vzťahov, ktoré umožňujú dostať produkt od výrobcu k spotrebiteľovi.
+
+**Procesy:**
+
+Zastrešuje celý proces:
+1. **Získavanie surovín** - Nákup materiálov od dodávateľov
+2. **Výroba** - Transformácia surovín na produkty
+3. **Skladovanie** - Uchovávanie zásob
+4. **Preprava** - Pohyb tovaru
+5. **Dodanie** - Doručenie konečnému zákazníkovi
+
+**Kľúčové prvky:**
+
+**1. Materiálové toky:**
+- Suroviny
+- Komponenty
+- Hotové výrobky
+- Obaly a pomocný materiál
+
+**2. Informačné toky:**
+- Objednávky
+- Komunikácia medzi partnermi
+- Sledovanie zásielok
+- Dáta o dopyte
+
+**3. Finančné toky:**
+- Platby dodávateľom
+- Náklady na skladovanie
+- Prepravné náklady
+- Príjmy z predaja
+
+**Aktéri v dodávateľskom reťazci:**
+
+- **Dodávatelia** - Poskytujú suroviny a komponenty
+- **Výrobcovia** - Vyrábajú produkty
+- **Distribútori** - Zabezpečujú distribúciu
+- **Maloobchodníci** - Predávajú zákazníkom
+- **Zákazníci** - Koncoví spotrebitelia
+
+**Hlavný cieľ:**
+
+Dodať produkt alebo službu zákazníkovi:
+- **Rýchlo** - V požadovanom čase
+- **Spoľahlivo** - Bez chýb a poškodení
+- **Za primerané náklady** - Efektívne
+
+**Výzvy v riadení dodávateľského reťazca:**
+
+- Koordinácia medzi partnermi
+- Prognózovanie dopytu
+- Riadenie rizík
+- Zmeny v dopyte
+- Globálne dodávateľské siete`
+  },
+  {
+    title: "Téma 3: Logistika - špecializovaná funkcia",
+    content: `**Čo je logistika?**
+
+**Špecializovaná funkcia:**
+
+Je to jedna z častí dodávateľského reťazca, ktorá sa zameriava na fyzické toky tovaru.
+
+**Hlavné činnosti:**
+
+Zabezpečuje:
+- **Efektívnu prepravu** - Optimálne trasy a spôsoby dopravy
+- **Skladovanie** - Riadenie skladových priestorov
+- **Manipulácia s materiálmi** - Nakladanie, vykladanie
+- **Nákladová efektívnosť** - Minimalizácia nákladov
+
+**Zameranie:**
+
+Optimalizuje pohyb tovaru a preklenutie priestoru a času medzi rôznymi etapami procesu.
+
+**Oblasti logistiky:**
+
+**1. Príchodzí logistika (Inbound Logistics):**
+- Príjem surovín a komponentov
+- Kontrola kvality
+- Uskladnenie vstupov
+
+**2. Vnútropodniková logistika:**
+- Pohyb materiálov vo výrobe
+- Medzioperačné skladovanie
+- Materiálový tok
+
+**3. Výstupná logistika (Outbound Logistics):**
+- Expedícia hotových výrobkov
+- Distribúcia k zákazníkom
+- Riadenie dopravy
+
+**4. Spätná logistika (Reverse Logistics):**
+- Vratky a reklamácie
+- Recyklácia
+- Likvidácia odpadu
+
+**Prínos logistiky:**
+
+Spája výrobcov, maloobchodníkov a poskytovateľov logistických služieb do efektívnej siete, ktorá je nevyhnutná pre úspech podniku.
+
+**Funkcie logistiky:**
+
+- **Preprava** - Pohyb tovaru
+- **Skladovanie** - Uchovávanie zásob
+- **Balenie** - Ochrana produktov
+- **Manipulácia** - Nakladanie/vykladanie
+- **Informácie** - Sledovanie zásielok
+
+**Logistické služby:**
+
+- Prepravné spoločnosti
+- Skladové centrá
+- 3PL poskytovatelia (Third Party Logistics)
+- 4PL poskytovatelia (Fourth Party Logistics)
+- Kuriérske služby`
+  },
+  {
+    title: "Téma 4: Doprava a preprava",
+    content: `**Dopravné módy**
+
+**1. Cestná doprava**
+
+**Výhody:**
+- Flexibilita
+- Door-to-door služby
+- Rýchlosť na krátke vzdialenosti
+- Široká dostupnosť
+
+**Nevýhody:**
+- Obmedzená kapacita
+- Environmentálny dopad
+- Dopravné zápchy
+- Vyššie náklady na dlhé vzdialenosti
+
+**Použitie:**
+- Distribúcia na krátke vzdialenosti
+- Rýchle dodávky
+- Just-in-time dodávky
+
+**2. Železničná doprava**
+
+**Výhody:**
+- Veľká kapacita
+- Nákladová efektívnosť
+- Environmentálne šetrná
+- Spoľahlivosť
+
+**Nevýhody:**
+- Nižšia flexibilita
+- Potreba infraštruktúry
+- Dlhšie dodacie lehoty
+
+**Použitie:**
+- Hromadné náklady
+- Dlhé vzdialenosti
+- Ťažké tovary
+
+**3. Lodná doprava**
+
+**Výhody:**
+- Najnižšie náklady
+- Najväčšia kapacita
+- Globálny dosah
+- Ekologická (na tonu)
+
+**Nevýhody:**
+- Pomalá rýchlosť
+- Závislosť od prístavov
+- Dlhé dodacie časy
+
+**Použitie:**
+- Medzinárodný obchod
+- Kontajnerová doprava
+- Hromadné tovary
+
+**4. Letecká doprava**
+
+**Výhody:**
+- Najrýchlejšia
+- Globálny dosah
+- Bezpečnosť
+- Spoľahlivosť
+
+**Nevýhody:**
+- Najdrahšia
+- Obmedzená kapacita
+- Environmentálny dopad
+
+**Použitie:**
+- Expresné zásielky
+- Vysoká hodnota tovaru
+- Verdibilný tovar
+- Urgentné dodávky
+
+**Multimodálna doprava:**
+
+- Kombinácia viacerých módov
+- Optimalizácia nákladov a času
+- Kontajnerová preprava
+
+**Výber dopravy:**
+
+Faktory:
+- Typ tovaru
+- Vzdialenosť
+- Čas
+- Náklady
+- Hodnota zásielky`
+  },
+  {
+    title: "Téma 5: Skladovanie a riadenie zásob",
+    content: `**Skladovanie**
+
+**Funkcie skladu:**
+
+**1. Uchovávanie zásob**
+- Ochrana pred poškodením
+- Klimatické podmienky
+- Bezpečnosť
+
+**2. Konsolidácia**
+- Zoskupovanie menších zásielok
+- Úspora nákladov
+
+**3. Rozdeľovanie**
+- Distribúcia k zákazníkom
+- Cross-docking
+
+**4. Pridaná hodnota**
+- Balenie
+- Etiketovanie
+- Montáž
+
+**Typy skladov:**
+
+**Podľa funkcie:**
+- **Distribučné centrá** - Rýchla distribúcia
+- **Fulfillment centrá** - E-commerce objednávky
+- **Regionálne sklady** - Lokálna distribúcia
+- **Centrálne sklady** - Hlavné zásoby
+
+**Podľa vlastníctva:**
+- **Vlastné sklady** - Kontrola, vyššie náklady
+- **Prenajímané** - Flexibilita, nižšie náklady
+- **3PL sklady** - Outsourcing
+
+**Skladové technológie:**
+
+**1. WMS (Warehouse Management System)**
+- Riadenie skladových operácií
+- Sledovanie zásob
+- Optimalizácia procesov
+
+**2. Automatizácia:**
+- **AS/RS** - Automatické skladové systémy
+- **AGV** - Automaticky vedené vozíky
+- **Robotika** - Kommisionovanie
+- **Dróny** - Inventúra
+
+**3. Technológie identifikácie:**
+- Čiarové kódy
+- RFID
+- QR kódy
+
+**Riadenie zásob:**
+
+**Dôvody držania zásob:**
+- Neistota dopytu
+- Časové oneskorenia dodávok
+- Sezónnosť
+- Množstevné zľavy
+
+**Náklady na zásoby:**
+- Obstarávacie náklady
+- Skladovacie náklady
+- Náklady na nedostatok
+- Zastarávanie
+
+**Stratégie:**
+- **JIT** (Just-in-Time)
+- **EOQ** (Economic Order Quantity)
+- **ABC analýza**
+- **Safety stock** (Bezpečnostná zásoba)`
+  },
+  {
+    title: "Téma 6: Informačné systémy v logistike",
+    content: `**Digitalizácia logistiky**
+
+**1. ERP systémy (Enterprise Resource Planning)**
+
+**Funkcie:**
+- Integrácia všetkých procesov
+- Centrálna databáza
+- Plánovanie zdrojov
+- Finančné riadenie
+
+**Príklady:**
+- SAP
+- Oracle
+- Microsoft Dynamics
+
+**2. TMS (Transportation Management System)**
+
+**Funkcie:**
+- Plánovanie prepravy
+- Optimalizácia trás
+- Výber dopravcov
+- Sledovanie zásielok
+
+**Výhody:**
+- Zníženie nákladov na dopravu
+- Lepšie využitie kapacít
+- Vyššia efektivita
+
+**3. WMS (Warehouse Management System)**
+
+**Funkcie:**
+- Riadenie skladových priestorov
+- Kommisionovanie
+- Inventúra
+- Sledovanie pohybu tovaru
+
+**4. Track & Trace**
+
+**Sledovanie zásielok:**
+- GPS lokalizácia
+- Real-time aktualizácie
+- Notifikácie zákazníkom
+- Predikcia dodania
+
+**5. IoT (Internet of Things)**
+
+**Aplikácie:**
+- Sledovanie teploty
+- Monitorovanie vlhkosti
+- Sledovanie vibrácií
+- Detekcia poškodenia
+
+**Senzory:**
+- Teplotné senzory
+- GPS trackery
+- RFID tagy
+- Tlakové senzory
+
+**6. Big Data a Analytics**
+
+**Využitie:**
+- Predikcia dopytu
+- Optimalizácia skladov
+- Analýza trendov
+- Identifikácia rizík
+
+**7. AI a Machine Learning**
+
+**Aplikácie:**
+- Automatické plánovanie trás
+- Predikcia porúch
+- Chatboti pre zákazníkov
+- Dynamické ceny
+
+**8. Blockchain**
+
+**Výhody:**
+- Transparentnosť
+- Bezpečnosť
+- Sledovateľnosť
+- Smart contracts
+
+**Integrácia systémov:**
+
+- API prepojenia
+- EDI (Electronic Data Interchange)
+- Cloudové riešenia
+- Mobilné aplikácie`
+  },
+  {
+    title: "Téma 7: E-commerce logistika",
+    content: `**Špecifiká e-commerce logistiky**
+
+**Výzvy:**
+
+**1. Vysoké očakávania zákazníkov**
+- Rýchle dodanie (same-day, next-day)
+- Sledovanie zásielky v reálnom čase
+- Flexibilné možnosti doručenia
+- Jednoduché vratky
+
+**2. Vysoký objem objednávok**
+- Sezónne výkyvy
+- Black Friday, Cyber Monday
+- Vianočné obdobie
+- Flash sales
+
+**3. Menšie zásielky**
+- Individuálne balíky
+- Vyššie náklady na balík
+- Viac dodávok
+
+**Last Mile Delivery:**
+
+**Výzva poslednej míle:**
+- Najdrahšia časť dodania (28-40% nákladov)
+- Najkomplexnejšia časť
+- Kľúčová pre zákaznícku spokojnosť
+
+**Riešenia:**
+
+**1. Zberné miesta (Pick-up Points)**
+- Zníženie nákladov
+- Flexibilita pre zákazníka
+- Nižšie zlyhanie doručenia
+
+**2. Balíkomaty**
+- 24/7 dostupnosť
+- Samoobslužné
+- Rýchle vyzdvihnutie
+
+**3. Same-day delivery**
+- Lokálne sklady
+- Kuriéri na požiadanie
+- Premium služba
+
+**4. Dróny a roboty**
+- Budúcnosť doručovania
+- Automatizácia
+- Zníženie nákladov
+
+**Fulfillment modely:**
+
+**1. In-house fulfillment**
+- Vlastné sklady a expedícia
+- Plná kontrola
+- Vyššie náklady
+
+**2. 3PL (Third Party Logistics)**
+- Outsourcing skladovania a expedície
+- Škálovateľnosť
+- Expertíza
+
+**3. Dropshipping**
+- Žiadne držanie zásob
+- Dodávateľ expeduje priamo
+- Nízke riziko
+
+**4. FBA (Fulfillment by Amazon)**
+- Využitie Amazon infraštruktúry
+- Prime eligibility
+- Poplatky
+
+**Vratky (Reverse Logistics):**
+
+**Dôležitosť:**
+- Až 30% e-commerce objednávok
+- Kľúčový faktor spokojnosti
+- Nákladová položka
+
+**Optimalizácia vrátok:**
+- Jednoduchý proces
+- Bezplatné vratky
+- Rýchle vybavenie
+- Možnosť výmeny`
+  },
+  {
+    title: "Téma 8: Udržateľná logistika",
+    content: `**Zelená logistika**
+
+**Environmentálne výzvy:**
+
+**1. Emisie CO2**
+- Doprava - hlavný zdroj emisií
+- Skladovanie - spotreba energie
+- Balenie - odpad
+
+**2. Spotreba zdrojov**
+- Palivo
+- Energia
+- Voda
+- Materiály
+
+**Stratégie udržateľnej logistiky:**
+
+**1. Optimalizácia dopravy**
+
+**Route Optimization:**
+- Kratšie trasy
+- Menej najazdených kilometrov
+- Nižšia spotreba paliva
+
+**Load Optimization:**
+- Plné využitie kapacity vozidiel
+- Konsolidácia zásielok
+- Backhauling (návratné náklady)
+
+**Modal Shift:**
+- Prechod na železnicu
+- Intermodálna doprava
+- Elektrické vozidlá
+
+**2. Zelené sklady**
+
+**Energetická efektívnosť:**
+- LED osvetlenie
+- Solárne panely
+- Izolované budovy
+- Smart HVAC systémy
+
+**Certifikácie:**
+- LEED (Leadership in Energy and Environmental Design)
+- BREEAM
+- Green Globes
+
+**3. Udržateľné balenie**
+
+**Materiály:**
+- Recyklované materiály
+- Biodegradovateľné obaly
+- Minimalizácia obalu
+- Opätovne použiteľné obaly
+
+**4. Alternatívne palivá**
+
+**Typy:**
+- Elektrické vozidlá
+- Vodíkové palivové články
+- CNG (Compressed Natural Gas)
+- Biopalivá
+
+**5. Spätná logistika**
+
+**Circular Economy:**
+- Recyklácia
+- Repasovanie
+- Opätovné použitie
+- Bezodpadová výroba
+
+**Výhody udržateľnej logistiky:**
+
+**Environmentálne:**
+- Nižšie emisie
+- Menší odpad
+- Ochrana prírody
+
+**Ekonomické:**
+- Úspora nákladov
+- Efektívnosť
+- Konkurenčná výhoda
+
+**Sociálne:**
+- Pozitívny imidž značky
+- Zákaznícka lojalita
+- Atraktivita pre investorov
+
+**ESG (Environmental, Social, Governance):**
+- Reportovanie udržateľnosti
+- Transparentnosť
+- Zodpovednosť`
+  },
+  {
+    title: "Téma 9: Globálna logistika a obchod",
+    content: `**Medzinárodná logistika**
+
+**Výzvy globálneho obchodu:**
+
+**1. Colné predpisy**
+- Dovozné a vývozné clo
+- Dokumentácia
+- Compliance
+- Tarify a kvóty
+
+**2. Medzinárodné zmluvy**
+- Incoterms (International Commercial Terms)
+- Definícia zodpovedností
+- Prenos rizika
+- Nákladov rozdelenie
+
+**Hlavné Incoterms:**
+
+**EXW (Ex Works):**
+- Minimálna zodpovednosť predajcu
+- Kupujúci preberá všetko
+
+**FCA (Free Carrier):**
+- Odovzdanie dopravcovi
+- Rozdelená zodpovednosť
+
+**FOB (Free on Board):**
+- Pre námornú dopravu
+- Náklad na lodi
+
+**CIF (Cost, Insurance, Freight):**
+- Náklady + poistenie + preprava
+- Do cieľového prístavu
+
+**DDP (Delivered Duty Paid):**
+- Maximálna zodpovednosť predajcu
+- Door-to-door
+
+**3. Dokumentácia**
+
+**Potrebné dokumenty:**
+- Faktúra
+- Balný list
+- Nákladný list (Bill of Lading)
+- Certifikát pôvodu
+- Colné prehlásenie
+- EUR1 (preferenčný pôvod)
+
+**4. Logistické náklady**
+
+**Zložky:**
+- Prepravné náklady
+- Clo a dane
+- Poistenie
+- Skladovanie
+- Manipulácia
+- Dokumentácia
+
+**Globálne logistické uzly:**
+
+**1. Námorne prístavy:**
+- Rotterdam (Európa)
+- Shanghai (Ázia)
+- Singapore (Ásia)
+- Los Angeles (USA)
+
+**2. Letecké huby:**
+- Hong Kong
+- Memphis (FedEx)
+- Dubai
+- Frankfurt
+
+**3. Železničné koridory:**
+- Trans-Siberian Railway
+- China-Europe Railway
+- Silk Road
+
+**Kontajnerová doprava:**
+
+**Typy kontajnerov:**
+- 20' kontajner (TEU)
+- 40' kontajner (FEU)
+- High Cube
+- Refrigerated (Reefer)
+- Open Top
+- Flat Rack
+
+**FCL vs LCL:**
+- **FCL** (Full Container Load) - Celý kontajner
+- **LCL** (Less than Container Load) - Zdieľaný
+
+**Riziká v globálnej logistike:**
+
+- Geopolitické riziká
+- Prírodné katastrofy
+- Pirátstvo
+- Výmenné kurzy
+- Colné zmeny`
+  },
+  {
+    title: "Téma 10: Budúcnosť logistiky a zhrnutie",
+    content: `**Trendy budúcnosti**
+
+**1. Automatizácia a robotizácia**
+
+**Sklady:**
+- Plne automatizované sklady
+- Roboty na kommisionovanie
+- AGV (Automated Guided Vehicles)
+- Dróny na inventúru
+
+**Doprava:**
+- Autonómne vozidlá
+- Platoon driving (konvoje)
+- Dróny na dodávky
+- Hyperloop pre náklad
+
+**2. Umelá inteligencia**
+
+**Aplikácie:**
+- Prediktívna analytika
+- Optimalizácia trás v reálnom čase
+- Automatické plánovanie
+- Chatboti pre zákaznícky servis
+
+**3. 3D tlač**
+
+**Výhody:**
+- On-demand výroba
+- Menšie zásoby
+- Lokálna výroba
+- Customizácia
+
+**4. Blockchain**
+
+**Použitie:**
+- Transparentný supply chain
+- Smart contracts
+- Overenie pôvodu
+- Sledovateľnosť
+
+**5. 5G sieť**
+
+**Výhody:**
+- Rýchlejšia komunikácia
+- IoT zariadenia
+- Real-time tracking
+- Vzdialené riadenie
+
+**Zhrnutie kurzu:**
+
+**Kľúčové poznatky:**
+
+**1. Dodávateľský reťazec:**
+- Širší koncept od surovín po zákazníka
+- Integrácia všetkých procesov
+- Materiálové, informačné a finančné toky
+
+**2. Logistika:**
+- Špecializovaná funkcia na fyzické toky
+- Preprava, skladovanie, manipulácia
+- Optimalizácia času a nákladov
+
+**3. Doprava:**
+- Rôzne módy dopravy
+- Multimodálna preprava
+- Výber podľa potrieb
+
+**4. Skladovanie:**
+- Riadenie zásob
+- Automatizácia
+- WMS systémy
+
+**5. Digitalizácia:**
+- Informačné systémy
+- IoT a AI
+- Big Data
+
+**6. E-commerce:**
+- Last mile delivery
+- Fulfillment modely
+- Vratky
+
+**7. Udržateľnosť:**
+- Zelená logistika
+- Circular economy
+- ESG
+
+**8. Globalizácia:**
+- Medzinárodný obchod
+- Incoterms
+- Dokumentácia
+
+**Kariérne možnosti:**
+
+- Logistický manažér
+- Supply chain analytik
+- Skladový manažér
+- Dopravný koordinátor
+- Nákupca
+- Distribučný manažér
+
+**Budúcnosť:**
+
+Logistika a dodávateľský reťazec budú naďalej kľúčové pre úspech podnikov v globalizovanom a digitalizovanom svete.`
+  }
+];
+
 // Export the courseContent object with the new course
 courseContent["Osobné financie"] = [
   {
