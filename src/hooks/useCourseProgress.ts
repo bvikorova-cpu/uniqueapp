@@ -98,6 +98,10 @@ export const useCourseProgress = (courseName: string) => {
     onSuccess: () => {
       console.log('Invalidating queries...');
       queryClient.invalidateQueries({ queryKey: ["course-progress", courseName] });
+      queryClient.refetchQueries({ queryKey: ["course-progress", courseName] });
+    },
+    onError: (error) => {
+      console.error('Error in updateProgressMutation:', error);
     },
   });
 
@@ -191,7 +195,9 @@ export const useCourseProgress = (courseName: string) => {
     progress,
     statistics,
     isLoading,
-    updateProgress: updateProgressMutation.mutate,
+    updateProgress: (data: { current_topic: number; completed_topics: number[] }) => {
+      return updateProgressMutation.mutateAsync(data);
+    },
     updateStatistics: updateStatisticsMutation.mutate,
     saveCompletedCourse: saveCompletedCourseMutation.mutate,
   };

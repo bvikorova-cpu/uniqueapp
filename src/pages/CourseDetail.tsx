@@ -214,7 +214,10 @@ Po úspešnom zvládnutí tejto témy budete pripravení na záverečný test a 
   ];
 
   useEffect(() => {
-    if (courseProgress) return;
+    if (courseProgress) {
+      console.log('Course progress already exists:', courseProgress);
+      return;
+    }
     
     // Initialize progress for new users
     console.log('Initializing course progress...');
@@ -224,7 +227,7 @@ Po úspešnom zvládnutí tejto témy budete pripravení na záverečný test a 
     });
   }, [courseProgress, updateProgress]);
 
-  const handleTopicComplete = (index: number) => {
+  const handleTopicComplete = async (index: number) => {
     console.log('handleTopicComplete called with index:', index);
     console.log('Current courseProgress:', courseProgress);
     
@@ -240,7 +243,8 @@ Po úspešnom zvládnutí tejto témy budete pripravení na záverečný test a 
     const nextTopic = index === 9 ? 9 : index + 1;
     console.log('Next topic will be:', nextTopic);
 
-    updateProgress({
+    // Call updateProgress and wait for it
+    await updateProgress({
       current_topic: nextTopic,
       completed_topics: newCompletedTopics,
     });
