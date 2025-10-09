@@ -2415,7 +2415,94 @@ Kapsulový šatník je minimalistický prístup k obliekaniu založený na malej
 **Krok 2:** Vytrieďte (ponechať/darovať/opraviť)
 **Krok 3:** Určite chýbajúce základy
 **Krok 4:** Nakupujte premyslene
-**Krok 5:** Udržiavajte (1 kus dnu = 1 kus von)`
+**Krok 5:** Udržiavajte (1 kus dnu = 1 kus von)
+
+**Ako vyzerať elegantne s jednoduchými kusmi?**
+
+**Malé čierne šaty - kráľovná elegance:**
+
+Každá žena, ktorá chce vyzerať štýlovo každý deň, by mala mať jeden univerzálny outfit na každú príležitosť. A čo môže byť v tomto prípade klasickejšie a elegantnejšie ako nesmrteľné malé čierne šaty?
+
+**Prečo čierne šaty?**
+
+- Nadčasová trieda
+- Vhodné prakticky na každú príležitosť
+- Umožňujú experimentovať
+- Všetko závisí od výberu doplnkov
+
+**Aké čierne šaty si vybrať:**
+
+**Dĺžka:**
+- Tesne pod kolenom ALEBO takmer úplne zakrýva koleno
+- Nie príliš krátke (napriek názvu "malé")
+
+**Strih:**
+- Rovný strih je najuniverzálnejší
+- Pre hruškovú/jabĺčkovú postavu: výstrih A s rukávmi
+- Vyvážite proporcie postavy
+
+**Biela košeľa - nadčasový kus:**
+
+Okrem malých čiernych šiat by vo vašom šatníku nemala chýbať klasická biela košeľa.
+
+**Prečo je biela košeľa nevyhnutná?**
+
+- Umožňuje vytvoriť štýlový vzhľad prakticky bez námahy
+- Nadčasová elegancia
+- Univerzálna kombinovateľnosť
+
+**Ako si vybrať perfektnú bielu košeľu:**
+
+**Kvalita materiálu:**
+- Dobre strihaná a vypasovaná
+- Vyrobená z najkvalitnejšej bavlny
+- Dobre sedí na tele
+- Umožní pokožke dýchať
+
+**Podľa postavy:**
+
+**Drobné postavy:**
+- Košeľa so stojačikom
+- Opticky predĺži postavu
+
+**Štíhle a vysoké:**
+- Košeľa s vysokým golierom
+- Štýlový a vznešený vzhľad
+
+**Nízke dámy:**
+- Vyhnite sa vysokému golierom
+- Neskráti tvar krku a tela
+
+**Ako nosiť:**
+
+Vyskúšajte bielu látkovú košeľu s ozdobnými gombíkmi v odtieni špinavého striebra. Oversized strih v kombinácii s čiernymi, priliehavými koženými nohavicami s bežným pásom a klasickými vysokými podpätkami vytvorí elegantný vzhľad s nádychom odvahy.
+
+**Uvoľnený štýl s eleganciou:**
+
+Klasická elegancia je predovšetkým schopnosť vybrať si ten správny outfit podľa okolností.
+
+**Ležérna elegancia:**
+
+**Základ:**
+- Pohodlné džínsy (tmavomodrá - univerzálna aj klasická)
+- Biela blúzka s krátkym rukávom
+- Ružové sako bez zapínania
+
+**Doplnky:**
+- Šedý šál s orientálnym vzorom
+- Náramok zo šnúrok
+- Sivé vysoké podpätky (ak máte ružové sako)
+- Kožená taška v sivej farbe
+
+**Najdôležitejšie pravidlo:**
+
+Nezáleží na tom, aké klasické a nadčasové oblečenie si vyberiete, aký štýlový outfit vytvoríte, ak zabudnete na správnu starostlivosť o svoje oblečenie. 
+
+**Vždy dbajte na:**
+- Žehlené oblečenie
+- Čisté a prané kusy
+- Žiadne vyblednutie ani zažltnutie
+- Správna údržba zabezpečí elegantnú štylizáciu`
     },
     {
       title: "Téma 8: Doplnky a ako ich nosiť",
