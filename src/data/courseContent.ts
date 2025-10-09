@@ -4279,6 +4279,711 @@ export const generateDefaultTopics = (courseName: string): Topic[] => {
 };
 
 // Export the courseContent object with the new course
+courseContent["Kryptomeny"] = [
+  {
+    title: "Téma 1: Úvod do kryptomien",
+    content: `**Čo je to kryptomena?**
+
+Kryptomena je digitálna alebo virtuálna mena, ktorá využíva kryptografiu na zabezpečenie transakcií. Je decentralizovaná, čo znamená, že nie je riadená žiadnou centrálnou bankou alebo vládou.
+
+**Hlavné charakteristiky kryptomien:**
+
+- **Digitálna forma** - Existuje len v elektronickej podobe
+- **Decentralizácia** - Nie je riadená centrálnou autoritou
+- **Kryptografické zabezpečenie** - Používa šifrovanie na ochranu transakcií
+- **Transparentnosť** - Všetky transakcie sú verejne dostupné
+- **Anonymita** - Identita používateľov je chránená
+
+**História kryptomien:**
+
+Prvá kryptomena, Bitcoin, vznikla v roku 2009. Vytvoril ju neznámy autor pod pseudonymom Satoshi Nakamoto. Od tej doby vznikli tisíce rôznych kryptomien.
+
+**Základné pojmy:**
+
+- **Peňaženka (Wallet)** - Miesto, kde sa uchovávajú kryptomeny
+- **Súkromný kľúč (Private Key)** - Heslo na prístup k peňaženke
+- **Verejný kľúč (Public Key)** - Adresa peňaženky na prijímanie platieb
+- **Transakcia** - Prevod kryptomeny medzi peňaženkami
+
+**Účel kryptomien:**
+
+- Alternatíva k tradičným financiám
+- Medzinárodné platby bez sprostredkovateľov
+- Investičný nástroj
+- Ochrana pred infláciou`
+  },
+  {
+    title: "Téma 2: Blockchain technológia",
+    content: `**Ako funguje kryptomena?**
+
+Kryptomeny fungujú na technológii zvanej blockchain. Blockchain je decentralizovaná sieť, ktorá zaznamenáva všetky transakcie, a tým zabezpečuje ich transparentnosť a bezpečnosť.
+
+**Čo je blockchain?**
+
+Blockchain je v podstate digitálna kniha (ledger), ktorá obsahuje záznamy o všetkých transakciách. Je rozdelená do blokov, ktoré sú navzájom prepojené do reťaze (chain).
+
+**Ako funguje blockchain:**
+
+**1. Transakcia**
+- Používateľ iniciuje transakciu
+- Transakcia je odoslaná do siete
+
+**2. Overenie**
+- Sieť počítačov (uzlov) overuje transakciu
+- Kontroluje sa, či má odosielateľ dostatok prostriedkov
+
+**3. Vytvorenie bloku**
+- Overené transakcie sa zoskupia do bloku
+- Každý blok obsahuje hash (digitálny odtlačok)
+
+**4. Pridanie do reťaze**
+- Nový blok je pripojený k existujúcej reťazi
+- Blok je navždy zaznamenaný v blockchaine
+
+**Proces overovania transakcie:**
+
+Keď niekto odošle kryptomenu, táto transakcia je overená sieťou počítačov, ktoré ju pridajú do verejného záznamu – blockchainu.
+
+**Výhody blockchain technológie:**
+
+- **Decentralizácia** - Žiadny centrálny bod zlyhania
+- **Transparentnosť** - Všetky transakcie sú viditeľné
+- **Bezpečnosť** - Kryptografická ochrana
+- **Nemennosť** - Raz zapísané údaje sa nedajú zmeniť
+- **Efektivita** - Rýchle spracovanie transakcií
+
+**Typy blockchainov:**
+
+- **Verejný blockchain** - Otvorený pre každého (Bitcoin, Ethereum)
+- **Súkromný blockchain** - Riadený organizáciou
+- **Hybridný blockchain** - Kombinácia oboch`
+  },
+  {
+    title: "Téma 3: Bitcoin - prvá kryptomena",
+    content: `**Bitcoin - revolúcia vo financiách**
+
+Najznámejšou kryptomenou je Bitcoin, ktorý vznikol v roku 2009.
+
+**História Bitcoinu:**
+
+- **2008** - Satoshi Nakamoto publikuje white paper "Bitcoin: A Peer-to-Peer Electronic Cash System"
+- **2009** - Vytvorený prvý Bitcoin blok (Genesis Block)
+- **2010** - Prvá reálna transakcia (nákup pizzy za 10 000 BTC)
+- **2017** - Bitcoin dosiahol hodnotu takmer 20 000 USD
+- **2021** - Rekordná hodnota nad 60 000 USD
+
+**Ako funguje Bitcoin:**
+
+**Mining (ťažba):**
+- Počítače riešia zložité matematické úlohy
+- Za vyriešenie úlohy dostanú odmenu v Bitcoinoch
+- Tento proces zabezpečuje sieť
+
+**Obmedzenosť:**
+- Celkový počet Bitcoinov je obmedzený na 21 miliónov
+- V súčasnosti je vytvorených približne 19 miliónov
+- Posledný Bitcoin bude vytvorený okolo roku 2140
+
+**Halving:**
+- Odmena za ťažbu sa každé 4 roky zníži na polovicu
+- Tento proces kontroluje infláciu
+
+**Charakteristiky Bitcoinu:**
+
+**Výhody:**
+- Prvá a najznámejšia kryptomena
+- Najväčšia trhová kapitalizácia
+- Najviac akceptovaná kryptomena
+- Decentralizovaný systém
+
+**Nevýhody:**
+- Pomalé transakcie (7 transakcií za sekundu)
+- Vysoká spotreba energie pri ťažbe
+- Volatilita ceny
+- Nízka škálovateľnosť
+
+**Použitie Bitcoinu:**
+
+- Platobný prostriedok
+- Investičný nástroj ("digitálne zlato")
+- Ochrana pred infláciou
+- Medzinárodné prevody`
+  },
+  {
+    title: "Téma 4: Ďalšie významné kryptomeny",
+    content: `**Altcoiny - alternatívy k Bitcoinu**
+
+Odvtedy však vznikli stovky ďalších kryptomien, ako napríklad Ethereum, Litecoin alebo Ripple.
+
+**Ethereum (ETH)**
+
+**Čo je to:**
+- Založený v roku 2015 Vitalikom Buterinom
+- Druhá najväčšia kryptomena podľa tržnej kapitalizácie
+
+**Kľúčové vlastnosti:**
+- **Smart Contracts** - Samovykonávajúce sa zmluvy
+- **DApps** - Decentralizované aplikácie
+- **DeFi** - Decentralizované financie
+- **NFT** - Non-fungible tokens (jedinečné digitálne aktíva)
+
+**Ethereum 2.0:**
+- Prechod z Proof of Work na Proof of Stake
+- Nižšia spotreba energie
+- Vyššia škálovateľnosť
+
+**Litecoin (LTC)**
+
+**Charakteristika:**
+- Vytvorený v roku 2011 Charlieho Leem
+- "Striebro" ku "zlatu" Bitcoinu
+
+**Výhody:**
+- Rýchlejšie transakcie (2,5 minúty vs 10 minút Bitcoin)
+- Nižšie poplatky
+- Väčšia škálovateľnosť
+
+**Ripple (XRP)**
+
+**Špecifické vlastnosti:**
+- Zameraný na bankový sektor
+- Veľmi rýchle transakcie (3-5 sekúnd)
+- Nízke poplatky
+- Partnerstvá s bankami
+
+**Ďalšie významné kryptomeny:**
+
+**Cardano (ADA):**
+- Akademický prístup k vývoju
+- Proof of Stake konsenzus
+- Silný dôraz na bezpečnosť
+
+**Binance Coin (BNB):**
+- Token burzy Binance
+- Zľavy na poplatky
+- Široké využitie v ekosystéme
+
+**Solana (SOL):**
+- Veľmi rýchle transakcie
+- Nízke náklady
+- Rastúci ekosystém DeFi a NFT
+
+**Polkadot (DOT):**
+- Interoperabilita medzi blockchainmi
+- Parachain technológia
+- Vysoká škálovateľnosť`
+  },
+  {
+    title: "Téma 5: Výhody kryptomien",
+    content: `**Prečo používať kryptomeny?**
+
+Kryptomeny prinášajú množstvo výhod v porovnaní s tradičnými financiami.
+
+**1. Decentralizácia**
+
+Žiadna vláda ani banka nemá nad nimi priamu kontrolu.
+
+**Čo to znamená:**
+- Nikto nemôže zmraziť váš účet
+- Žiadna cenzúra platieb
+- Ochrana pred politickou nestabilitou
+- Kontrola nad vlastnými peniazmi
+
+**2. Rýchlosť a nízke náklady**
+
+Medzinárodné prevody sú rýchlejšie a lacnejšie než tradičné bankové prevody.
+
+**Výhody:**
+- Transakcie za minúty namiesto dní
+- Nízke poplatky (najmä pri väčších sumách)
+- Žiadne víkendové prestávky
+- 24/7 dostupnosť
+
+**Porovnanie:**
+- **Tradičný prevod:** 3-5 dní, poplatky 20-50 EUR
+- **Kryptomena:** minúty, poplatky 1-5 EUR
+
+**3. Bezpečnosť**
+
+Kryptografické zabezpečenie a transparentnosť blockchainu minimalizujú riziko podvodov.
+
+**Ochrana:**
+- Silné šifrovanie
+- Nemenné záznamy
+- Verejná overiteľnosť
+- Ochrana súkromia
+
+**4. Finančná inklúzia**
+
+- Prístup pre ľudí bez bankového účtu
+- Nízke vstupné požiadavky
+- Dostupnosť pre každého s internetom
+
+**5. Transparentnosť**
+
+- Všetky transakcie sú verejné
+- Overiteľnosť pohybov
+- Ochrana pred manipuláciou
+
+**6. Programovateľnosť**
+
+- Smart contracts
+- Automatizácia procesov
+- DeFi aplikácie
+
+**7. Ochrana pred infláciou**
+
+- Obmedzená ponuka (napr. Bitcoin)
+- Ochrana hodnoty
+- Alternatíva k fiatovým menám
+
+**8. Vlastníctvo a kontrola**
+
+- Plná kontrola nad prostriedkami
+- Žiadni sprostredkovatelia
+- Self-custody možnosti`
+  },
+  {
+    title: "Téma 6: Riziká a nevýhody kryptomien",
+    content: `**Riziká investovania do kryptomien**
+
+Je dôležité poznať aj riziká a nevýhody spojené s kryptomenami.
+
+**1. Kolísanie ceny (Volatilita)**
+
+Ceny kryptomien môžu dramaticky kolísať, čo z nich robí rizikovú investíciu.
+
+**Príklady volatility:**
+- Bitcoin za rok 2021: +60% až -50%
+- Denné výkyvy +/- 10% nie sú nezvyčajné
+- Možnosť straty celej investície
+
+**Dôvody volatility:**
+- Špekulatívna povaha trhu
+- Nízka likvidita
+- Správy a sentiment
+- Regulačné zmeny
+
+**2. Daňové komplikácie**
+
+Druhou nevýhodou je, že v mnohých krajinách kryptomeny stále nie sú plne regulované, čo môže priniesť právne a daňové komplikácie.
+
+**Problémy:**
+- Nejednoznačné daňové predpisy
+- Povinnosť viesť záznamy
+- Daň z príjmu z obchodovania
+- Rôzne pravidlá v rôznych krajinách
+
+**3. Bezpečnostné riziká**
+
+**Hrozby:**
+- **Hackerské útoky** - Krádeže z búrz
+- **Phishing** - Podvodné e-maily a weby
+- **Malware** - Vírusy kradnúce kryptomeny
+- **Strata kľúčov** - Nenávratná strata prístupu
+
+**4. Nedostatok regulácie**
+
+**Riziká:**
+- Žiadna ochrana spotrebiteľa
+- Možné podvody a scamy
+- Pyramid schemes
+- Pump and dump schémy
+
+**5. Technické bariéry**
+
+- Zložitosť pre začiatočníkov
+- Potreba technických znalostí
+- Riziko chyby pri transakcii
+
+**6. Škálovateľnosť**
+
+- Pomalé transakcie pri veľkom zaťažení
+- Vysoké poplatky v špičkách
+- Limity siete
+
+**7. Environmentálne obavy**
+
+- Vysoká spotreba energie (Bitcoin mining)
+- Uhlíková stopa
+- Udržateľnosť
+
+**8. Nezvratnosť transakcií**
+
+- Chybné transakcie sa nedajú vrátiť
+- Žiadna zákaznícka podpora
+- Riziko omylu
+
+**Ako minimalizovať riziká:**
+
+✅ Investovať len to, čo si môžete dovoliť stratiť
+✅ Diverzifikovať portfólio
+✅ Používať bezpečné peňaženky
+✅ Vzdelávať sa
+✅ Byť opatrní voči podvodom`
+  },
+  {
+    title: "Téma 7: Ako kúpiť a uchovávať kryptomeny",
+    content: `**Začíname s kryptomenami**
+
+**Krok 1: Výber burzy (Exchange)**
+
+**Populárne burzy:**
+- **Binance** - Najväčšia globálna burza
+- **Coinbase** - Používateľsky prívetivá
+- **Kraken** - Vysoká bezpečnosť
+- **Bitfinex** - Pre pokročilých
+
+**Kritériá výberu:**
+- Bezpečnosť a reputácia
+- Poplatky
+- Dostupnosť v krajine
+- Používateľské rozhranie
+- Podporované kryptomeny
+
+**Krok 2: Registrácia a verifikácia**
+
+**Proces:**
+1. Vytvorenie účtu
+2. Overenie emailu
+3. Nastavenie 2FA (dvojfaktorová autentifikácia)
+4. KYC verifikácia (Know Your Customer)
+   - Nahratie osobného dokladu
+   - Selfie s dokladom
+   - Potvrdenie adresy
+
+**Krok 3: Vklad peňazí**
+
+**Možnosti:**
+- **Bankový prevod** - Nízke poplatky, pomalšie
+- **Platobná karta** - Rýchle, vyššie poplatky
+- **PayPal** - Pohodlné, nie všade dostupné
+- **P2P trading** - Priamy nákup od iných používateľov
+
+**Krok 4: Nákup kryptomeny**
+
+**Typy objednávok:**
+- **Market Order** - Okamžitý nákup za aktuálnu cenu
+- **Limit Order** - Nákup za stanovenú cenu
+- **Stop-Loss** - Automatický predaj pri poklese ceny
+
+**Krok 5: Uchovávanie kryptomien**
+
+**Typy peňaženiek:**
+
+**1. Hot Wallets (Online peňaženky)**
+- Burzy (Exchange wallets)
+- Mobilné aplikácie
+- Webové peňaženky
+
+**Výhody:** Pohodlné, rýchly prístup
+**Nevýhody:** Menej bezpečné, riziko hackovania
+
+**2. Cold Wallets (Offline peňaženky)**
+
+**Hardware peňaženky:**
+- Ledger Nano S/X
+- Trezor
+- SafePal
+
+**Výhody:** Najvyššia bezpečnosť
+**Nevýhody:** Cena, menej pohodlné
+
+**Paper Wallet:**
+- Vytlačené súkromné kľúče
+- Úplne offline
+- Riziko poškodenia/straty papiera
+
+**Bezpečnostné odporúčania:**
+
+✅ Používať silné heslá
+✅ Zapnúť 2FA
+✅ Zálohovať súkromné kľúče
+✅ Neuchovávať veľké sumy na burzách
+✅ Používať hardware peňaženku pre väčšie sumy`
+  },
+  {
+    title: "Téma 8: Mining a ťažba kryptomien",
+    content: `**Ťažba kryptomien (Mining)**
+
+**Čo je mining?**
+
+Mining je proces, pri ktorom sa vytvárajú nové kryptomeny a overujú transakcie v blockchaine.
+
+**Ako funguje mining:**
+
+**1. Proof of Work (PoW)**
+
+- Počítače riešia zložité matematické úlohy
+- Prvý, kto nájde riešenie, získa odmenu
+- Nový blok je pridaný do blockchainu
+- Používa Bitcoin, Litecoin, Ethereum (pred 2.0)
+
+**Proces:**
+1. Zhromažďovanie transakcií
+2. Vytváranie bloku
+3. Riešenie kryptografickej úlohy (hash)
+4. Overenie inou sieťou
+5. Pridanie do blockchainu
+6. Odmena v kryptomene
+
+**2. Proof of Stake (PoS)**
+
+- Validátori uzamknú svoje mince ako záloh
+- Náhodný výber validátora
+- Nižšia spotreba energie
+- Používa Ethereum 2.0, Cardano
+
+**Typy miningu:**
+
+**Solo Mining:**
+- Ťažba na vlastnom hardvéri
+- Celá odmena pre minera
+- Nízka šanca na úspech
+
+**Pool Mining:**
+- Spojenie viacerých minerov
+- Zdieľanie odmeny podľa príspevku
+- Stabilnejší príjem
+
+**Cloud Mining:**
+- Prenájom výpočtového výkonu
+- Žiadny vlastný hardware
+- Riziko podvodov
+
+**Potrebný hardware:**
+
+**GPU Mining:**
+- Grafické karty (RTX 3080, RX 6800)
+- Stredná investícia
+- Univerzálnosť
+
+**ASIC Mining:**
+- Špecializované zariadenia
+- Vysoká efektivita
+- Drahé, jednoúčelové
+
+**CPU Mining:**
+- Procesor počítača
+- Nízka efektivita
+- Len pre niektoré mince
+
+**Náklady a ziskovosť:**
+
+**Faktory:**
+- Cena elektriny
+- Cena kryptomeny
+- Ťažkosť ťažby (difficulty)
+- Výkon hardvéru
+
+**Kalkulácia ziskovosti:**
+- Online kalkulačky (WhatToMine, NiceHash)
+- Zohľadnenie všetkých nákladov
+- Sledovanie trendov
+
+**Alternatívy k miningu:**
+
+- **Staking** - Uzamknutie mincí za odmenu
+- **Yield Farming** - DeFi protokoly
+- **Nákup a držanie** - Buy and hold stratégia`
+  },
+  {
+    title: "Téma 9: Regulácia a daňové aspekty",
+    content: `**Právny rámec kryptomien**
+
+**Regulácia v rôznych krajinách:**
+
+**Slovenská republika:**
+- Kryptomeny nie sú legálne platidlo
+- Nie sú regulované ako finančné nástroje
+- Daňové povinnosti existujú
+
+**Európska únia:**
+- MiCA (Markets in Crypto-Assets) - nový regulačný rámec
+- AML (Anti-Money Laundering) predpisy
+- Snaha o jednotnú reguláciu
+
+**USA:**
+- SEC považuje niektoré kryptomeny za cenné papiere
+- Prísna regulácia búrz
+- Vysoké daňové povinnosti
+
+**Čína:**
+- Zákaz obchodovania a miningu
+- Vývoj vlastnej digitálnej meny (CBDC)
+
+**Daňové povinnosti:**
+
+**1. Daň z príjmu**
+
+**Zdaniteľné udalosti:**
+- Predaj kryptomeny za fiat menu
+- Výmena medzi kryptomenami
+- Platba kryptomenou za služby/tovar
+
+**Slovensko:**
+- Príjem z predaja kryptomien = daň z príjmu
+- 19% alebo 25% podľa výšky príjmu
+- Potreba evidencie transakcií
+
+**2. Daň z pridanej hodnoty (DPH)**
+
+- Nákup/predaj kryptomien = oslobodené od DPH
+- Podľa rozhodnutia Európskeho súdneho dvora
+
+**3. Vedenie evidencie**
+
+**Povinné záznamy:**
+- Dátum transakcie
+- Typ transakcie
+- Suma v kryptomene
+- Hodnota v EUR v čase transakcie
+- Účel transakcie
+
+**Nástroje na evidenciu:**
+- CoinTracking
+- Koinly
+- CryptoTaxCalculator
+- Excel tabuľky
+
+**4. Daňové priznanie**
+
+**Postup:**
+1. Výpočet zisku/straty
+2. Započítanie do príjmov
+3. Vyplnenie daňového priznania
+4. Zaplatenie dane
+
+**Legálne otázky:**
+
+**AML (Anti-Money Laundering):**
+- Povinnosť identifikácie (KYC)
+- Sledovanie podozrivých transakcií
+- Limity pre anonymné transakcie
+
+**Ochrana investorov:**
+- Žiadna štátna garancia
+- Vlastná zodpovednosť
+- Opatrnosť pri investovaní
+
+**Budúcnosť regulácie:**
+
+**Trendy:**
+- Harmonizácia pravidiel v EÚ
+- Prísnejšia regulácia búrz
+- CBDC (Central Bank Digital Currencies)
+- Jasnejšie daňové pravidlá
+
+**Odporúčania:**
+
+✅ Konzultovať s daňovým poradcom
+✅ Viesť podrobné záznamy
+✅ Plniť daňové povinnosti
+✅ Sledovať zmeny v legislatíve
+✅ Používať regulované burzy`
+  },
+  {
+    title: "Téma 10: Budúcnosť kryptomien a záver",
+    content: `**Kam smerujú kryptomeny?**
+
+**Kľúčové trendy:**
+
+**1. Masové prijatie**
+
+**Pozitívne signály:**
+- Veľké spoločnosti akceptujú platby (Tesla, PayPal)
+- Inštitucionálni investori vstupujú na trh
+- El Salvador prijal Bitcoin ako legálne platidlo
+- Rastúci počet používateľov globálne
+
+**2. DeFi (Decentralizované financie)**
+
+**Revolúcia vo financiách:**
+- Úvery bez bánk
+- Decentralizované burzy (DEX)
+- Yield farming a staking
+- Automatizované protokoly
+
+**Potenciál:**
+- Finančné služby pre všetkých
+- Transparentnosť
+- Nižšie náklady
+- Inovácie
+
+**3. NFT (Non-Fungible Tokens)**
+
+**Použitie:**
+- Digitálne umenie
+- Herné predmety
+- Virtuálne nehnuteľnosti
+- Ticketing a certifikáty
+
+**4. CBDC (Central Bank Digital Currencies)**
+
+**Digitálne meny centrálnych bánk:**
+- Digitálne euro
+- Digitálny yuan
+- Kombinácia výhod kryptomien a tradičných mien
+
+**5. Web3 a Metaverse**
+
+- Decentralizovaný internet
+- Virtuálne svety
+- Blockchain integrácia
+- Nové ekonomické modely
+
+**Výzvy:**
+
+**1. Technologické:**
+- Škálovateľnosť
+- Rýchlosť transakcií
+- Energetická efektívnosť
+- Interoperabilita
+
+**2. Regulačné:**
+- Jasné právne rámce
+- Ochrana spotrebiteľa
+- Daňové pravidlá
+- Medzinárodná koordinácia
+
+**3. Adopcia:**
+- Vzdelávanie verejnosti
+- Jednoduchosť používania
+- Dôvera v technológiu
+
+**Zhrnutie kurzu:**
+
+**Kľúčové poznatky:**
+
+✅ **Základy:** Kryptomeny sú digitálne, decentralizované meny
+✅ **Technológia:** Blockchain zabezpečuje transparentnosť a bezpečnosť
+✅ **Výhody:** Rýchlosť, nízke náklady, decentralizácia
+✅ **Riziká:** Volatilita, regulačné nejasnosti, bezpečnostné hrozby
+✅ **Praktické:** Ako kúpiť, uchovávať a používať kryptomeny
+
+**Odporúčania:**
+
+1. **Vzdelávajte sa** - Neustále sa učte o novinkách
+2. **Investujte opatrne** - Len to, čo si môžete dovoliť stratiť
+3. **Diverzifikujte** - Rozložte riziko
+4. **Buďte bezpeční** - Používajte bezpečné peňaženky
+5. **Sledujte reguláciu** - Buďte v obraze s právnymi zmenami
+
+**Budúcnosť:**
+
+Kryptomeny predstavujú revolučnú zmenu vo svete financií, no je dôležité porozumieť ich výhodám aj rizikám.
+
+Či už sa stanú hlavným platobným prostriedkom alebo zostanú alternatívnou investíciou, blockchain technológia už teraz mení svet.
+
+**Záver:**
+
+Svet kryptomien je fascinujúci a plný príležitostí, ale aj výziev. S potrebnými znalosťami a opatrnosťou môžete byť súčasťou tejto finančnej revolúcie.
+
+Úspech v kryptomenách závisí od vzdelávania, trpezlivosti a zodpovedného prístupu k investovaniu.`
+  }
+];
+
+// Export the courseContent object with the new course
 courseContent["Osobné financie"] = [
   {
     title: "Téma 1: Úvod do osobných financií",
