@@ -10466,6 +10466,468 @@ Aromaterapia môže byť skvelou metódou na zlepšenie zdravia a pohody, ak sa 
 - Bezpečnostné protokoly a kontraindikácie
 - Etické a udržateľné používanie prírodných zdrojov`
     }
+  ],
+  "Jóga": [
+    {
+      title: "Téma 1: Úvod do jogy a jej miesto v indickej filozofii",
+      content: `**Čo je to jóga?**
+
+Jóga je starobylá duchovná disciplína založená na mimoriadne jemnom systéme, ktorá sa zameriava na dosiahnutie harmónie medzi mysľou a telom. Je to umenie a veda zdravého života. Slovo "jóga" pochádza z sanskrtu a znamená spájať alebo zjednocovať, symbolizujúc spojenie individuálneho vedomia s univerzálnym vedomím.
+
+**Praktiky jogy v rôznych náboženstvách**
+
+Praktiky jogy používa aj budhizmus a džinizmus. Na západe mnohí ľudia pod pojmom joga chápu len telesné cviky, tzv. ásany, vedúce okrem iného k prečisteniu tela a mysle.
+
+Osoba vyznávajúca/praktikujúca jogu sa nazýva jogín alebo jog.
+
+**Miesto v indickej filozofii**
+
+Jóga je jeden zo šiestich ortodoxných systémov či škôl staroindickej filozofie (tzv. dáršany - daršana v sanskrite znamená filozofia). Hlavným cieľom všetkých ľudských skutkov má byť úplné oslobodenie od hmotnej existencie, smrti a narodenia. 
+
+Dvoma základnými podmienkami tohto oslobodenia sú:
+- **Vairágja** (bezžiadostivosť, vzdialenie sa od sveta) 
+- **Joga** (vlastné rozjímanie, zamerané na zastavenie procesov psychického a vedomého života)
+
+K prvej vedie presvedčenie o márnosti svetského života, plného zla a utrpenia. Druhá vzniká z presvedčenia o potrebe poznať najvyššiu pravdu – Boha.
+
+Na rozdiel od iných systémov indickej filozofie pokladá joga za mimoriadne dôležité zdokonaľovať telo a zmyslové orgány.`
+    },
+    {
+      title: "Téma 2: Cieľ jogy a energia Vibhúti",
+      content: `**Základný cieľ jogy**
+
+Základným cieľom jogy je – podobne ako pri veľmi podobnej filozofii sánkhja, ktorá je však na rozdiel od jogy ateistická – oslobodenie duše od hmoty (telesnosti), aby sa duša priviedla do stavu čistého vedomia.
+
+Ako sám názov naznačuje, ide o získanie jednoty alebo stotožnenia s božskou či spirituálnou podstatou.
+
+**Prostriedky k dosiahnutiu cieľa**
+
+Prostriedkom k tomuto cieľu je:
+- **Sebaovládanie** - kontrola nad vlastnými reakciami a emóciami
+- **Sebazdokonaľovanie** ľudskej psychiky a psychofyziológie
+- **Meditácia** - hlboké sústredenie a kontemplácia
+- **Askéza** - disciplína a odopieranie
+- **Telesné cvičenia** - ásany pre prečistenie tela
+
+**Sily Vibhúti**
+
+Počas výcviku sa jogista stretáva so silami Vibhúti. Tieto nadprirodzené schopnosti sú vedľajším produktom hlbokej meditácie a pokročilej praxe jogy. 
+
+Vibhúti predstavujú:
+- Zvláštne schopnosti mysle
+- Duchovné sily
+- Prejavy pokročilého stavu vedomia
+
+Je dôležité vedieť, že tieto sily nie sú samotným cieľom jogy, ale len prejavom pokroku na duchovnej ceste. Pravý jogín sa týmito silami nenechá odlákať od hlavného cieľa - dosiahnutia samádhi a oslobodenia.`
+    },
+    {
+      title: "Téma 3: Dejiny jogy",
+      content: `**Vek jogy**
+
+Vek jogy je neistý. Prvýkrát sa spomína v stredných upanišadách (diela komentujúce a vysvetlujúce védy). To znamená, že teoretické a filozofické základy jogy sú vo védach, najstarších indických svätých spisoch z doby okolo 3500 pred Kr.
+
+**Archeologické nálezy**
+
+Počas vykopávok v povodí rieky Indus boli nájdené predmety z čias Harrapskej kultúry (2500 – 1500 pred Kr.), na ktorých sú vyobrazené postavy sediace v podobných pozíciách ako sa cvičia v joge.
+
+Tieto nálezy dokazujú, že praktiky podobné joge sa používali už v starovekých civilizáciách:
+- Postavy v meditačných pozíciách
+- Symboly súvisiace s duchovnými praktikami
+- Náznaky rituálov a cvičení
+
+**Jóga na západe**
+
+Európania sa o joge dozvedeli v čase, keď Angličania a Francúzi kolonizovali Indiu. Od tej doby sa jóga postupne rozšírila po celom svete.
+
+**Vývoj jogy v modernej dobe:**
+- 19. storočie - prvé kontakty západných kultúr s jogou
+- 20. storočie - systematické rozšírenie jogy na západ
+- Súčasnosť - jóga je praktizovaná po celom svete v rôznych formách a štýloch
+
+Dnešná jóga si zachováva svoje starobylé princípy, ale adaptuje sa na potreby moderného človeka.`
+    },
+    {
+      title: "Téma 4: Osem stupňov jogy - Aštangajoga",
+      content: `**Pataňdžaliho osemstupňová joga**
+
+Pataňdžali spísal ucelený systém, ktorý sa nazýva osemstupňová joga – **Aštangajoga**. Tento systém predstavuje kompletný sprievodca duchovnou cestou.
+
+**1. Jama (správne jednanie) - Sebaovládanie:**
+- **Ahimsa** - nenásilie
+- **Satja** - pravdivosť
+- **Astéja** - nekradnutie
+- **Brahmačarja** - zdržanlivosť
+- **Aparigraha** - nehromadenie
+
+**2. Nijama (správne hodnoty) - Sebavýchova:**
+- **Šaučá** - mentálna a telesná čistota
+- **Santóša** - skromnosť a spokojnosť
+- **Tapas** - disciplína
+- **Svádjaja** - vzdelávanie a sebareflexia
+- **Íšvarapránidhána** - oddanosť svojej podstate alebo láska k Bohu
+
+**3. Ásana (sed)**
+Rôzne pozície tela, telesné cvičenie spojené so správnym dýchaním a sústredením sa na jednotlivé časti tela.
+
+**4. Pránajáma**
+Ovládanie dýchania - kontrola životnej energie prostredníctvom dychových techník.
+
+**5. Pratjahára**
+Ovládanie zmyslov - odtiahnutie mysle od objektov zmyslových orgánov.
+
+**6. Dháraná (držanie)**
+Koncentrácia – myseľ sústredí svoju pozornosť na jeden predmet pozorovania.
+
+**7. Dhjána**
+Meditácia - myseľ nehybne zostáva pri jednom predmete pozorovania, trvalá koncentrácia.
+
+**8. Samádhi (zjednotenie mysle)**
+Dokonalé pohrúženie, zjednotenie pozorovateľa a pozorovaného predmetu alebo kontemplácia – toto je cieľ všetkých jóg.`
+    },
+    {
+      title: "Téma 5: Druhy jogy - Rôzne cesty k oslobodeniu",
+      content: `**Hlavné cesty jogy**
+
+Podľa druhu človeka hľadajúceho boha existujú viaceré spôsoby/cesty/oblasti jogy:
+
+**Karmajoga** (joga nesebeckého konania)
+Cesta milosrdenstva a dobrých skutkov. Zameriava sa na konanie bez očakávania odmeny.
+
+**Bhaktijoga** (joga oddanej lásky k bohu)
+Cesta lásky obsahujúca oddanosť človeku a ostatným živým tvorom ako smerovanie k Bohu.
+
+**Krijajoga** (joga činu)
+Cesta pre tých, ktorých priťahujú rituály a náboženská poslušnosť.
+
+**Džnánajoga** (joga intelektuálneho poznania)
+Táto joga je intelektuálna cesta a preto vyžaduje pochopenie Véd a upanišád.
+
+**Sahadža joga** (joga spontánnej sebarealizácia)
+Spontánne prebudenie vnútornej energie.
+
+**Marmajoga** (joga spojenia biologických rytmov)
+V tejto joge sa technicky presne zaujaté pózy vnímajú ako test, pri ktorom dávam svojmu telu šancu sa so mnou rozprávať. Predpokladom je pravidelné poddanie sa najhlbším želaniam srdca.
+
+**Dhanajoga**
+Mentálne meditačné cvičenie.
+
+**Lajajoga**
+Pokúša sa aktivovať čakry spievaním a recitovaním mantier.
+
+**Mantrajoga**
+Podobne ako predchádzajúca aktivuje vyššie telo prostredníctvom vibrácií spevu a mantry.
+
+**Hathajoga** (joga duševnej a telesnej harmonizácie)
+Táto forma je najrozšírenejšia na západe a slúži najmä na zlepšenie telesného zdravia. Je známa najmä prostredníctvom ásany – fyzických cvičení pútajúcich telo k mysli. Cieľom je uviesť protikladné sily organizmu do súladu.
+
+**Kundalinijoga** (joga na spôsobenie stúpania sily kundalini v tele)
+Cesta pre tých, ktorí sú netrpezliví dosiahnuť sámadhí. Používajú ju mnohí tantristi. Dnešným predstaviteľom je jogín Bhadžan.
+
+**Rádžajoga** (kráľovská joga)
+Zhŕňa všetky menované jogy pri hľadaní osvietenia.`
+    },
+    {
+      title: "Téma 6: Cvičenia jogy a jogové techniky",
+      content: `**Spôsoby cvičenia jogy**
+
+Joga sa cvičí rôznymi spôsobmi, v závislosti od typu školy a pripravenosti žiakov. Cvičenia jogy v zásade majú celostný prístup, ktorý má dostať telo, ducha a dušu súčasne do súladu.
+
+**Typická vyučovacia hodina:**
+
+Na hodine sa používajú **krije** (rad cvičení) so statickými i dynamickými ásanami, spojené s fázami hlbokého uvoľnenia. 
+
+Štruktúra hodiny:
+1. Úvodné rozvičenie
+2. Dychové cvičenia
+3. Koncentrácia
+4. Meditácie
+
+**Kundalinijoga - príklad komplexnej praxe:**
+
+V kundalinijoge sa energia kundalini stimuluje kombináciou:
+- **Póz tela** - rôzne ásany
+- **Pohybov** - dynamické sekvencie
+- **Vnútorných koncentračných bodov** - zameranie pozornosti
+- **Dýchania** - pránajáma techniky
+- **Mantier** - meditačné slová a zvuky
+- **Mudrier** - gestá rúk
+
+Všetky tieto prvky pracujú spolu, aby energia začala prúdiť cez čakry (energetické centrá).
+
+**Jogové pomôcky:**
+
+Pri cvičení niektorých štýlov jogy a jogovej terapii sa používajú:
+- Popruhy
+- Joga bolstre (vankúše)
+- Bloky
+- Vankúše
+- Stoličky
+- Kolesá
+- Valce
+
+**Účel pomôcok:**
+- Pomáhajú prehĺbiť pozície
+- Stabilizovať telo v ásanách
+- Pomôcť zotrvať v pozícii pri zdravotných problémoch
+- Umožniť prax aj začiatočníkom alebo ľuďom s obmedzenou pohyblivosťou
+
+**Tibetská jóga:**
+
+Existuje aj tibetská liečivá joga **Kum nje**, ktorá má svoje špecifické charakteristiky a liečivé účinky.
+
+**Najčastejšie formy na západe:**
+- Hathajoga
+- Marmajoga
+- Kundalinijoga`
+    },
+    {
+      title: "Téma 7: Dôležité texty jogy",
+      content: `**Základné spisy jogy**
+
+Joga má bohatú písomnú tradíciu. Najdôležitejšie texty poskytujú teoretický základ a praktické návody.
+
+**Upanišady**
+Zaoberajú sa džnanajogou (jogou poznania). Sú to filozofické texty, ktoré komentujú a vysvetlujú védy. Poskytujú hlboké duchovné učenia o podstate reality a sebapoznania.
+
+**Bhagavadgíta** (Spev vznešeného)
+Obsiahnutý v epose Mahábhárata. Zaoberá sa všetkými cestami jogy, najmä však:
+- **Karmajogou** - jogou činu
+- **Bhaktijogou** - jogou oddanosti
+
+Je to dialóg medzi princom Ardžunom a bohom Krišnom na bojisku Kurukšétra, kde sa rozoberajú najhlbšie otázky života, smrti a zmyslu konania.
+
+**Hathajoga pradipika**
+Základný text hathajogy. Zaoberá sa:
+- Hathajogou - telesnou jogou
+- Kundalinijogou - jogou energie
+- Detailnými popismi ásán
+- Pránajámou
+- Očistnými technikami
+
+**Jógasútry od mudrca Pataňdžaliho**
+Napísané v 2. alebo 1. storočí pred Kr. (presný dátum nie je známy).
+
+**Základné dielo jogy obsahuje:**
+- Základné poučky jogy
+- Systém osemstupňovej jogy
+- Filozofické základy
+- Praktické návody
+
+**Dôležité komentáre:**
+- Komentár od Vjaasu (7. alebo 8. storočie)
+- Komentár od Vacaspatimišru (9. storočie)
+
+Tieto komentáre objasňujú a rozširujú Pataňdžaliho pôvodné výroky, robia ich zrozumiteľnejšími pre praktikujúcich.
+
+**Význam textov:**
+
+Štúdium týchto textov je dôležité pre:
+- Pochopenie hlbších princípov jogy
+- Správnu prax
+- Duchovný rast
+- Uvedomenie si cieľa jogového učenia`
+    },
+    {
+      title: "Téma 8: Účinky jogy na zdravie a život",
+      content: `**Ako jóga pôsobí**
+
+Účinok jogy sa dosahuje sebazdokonaľovaním, premýšľaním, cvičením techník jogy v dennom živote. Tým získavame schopnosť neznervózňovať sa, prijímať veci tak, ako sú, brať ich ako prirodzený proces, a tým získať silu a schopnosť problémové situácie vyriešiť správne.
+
+**1. Joga dáva zdravie:**
+
+Prostredníctvom jogy možno získať alebo udržať si dobré zdravie. Je dôležité vedieť, že:
+- Jogovými cvičeniami nenahradíme operácie
+- Neodstránime mechanické defekty tela
+- Nevyliečime vrodené poruchy
+
+Ale môžeme ovplyvniť **psychogénne ochorenia** - choroby, ktoré si spôsobujeme sami:
+- Negatívnym myslením
+- Negatívnym prístupom k životu
+- Stresovými situáciami
+- Disharmonickými medziľudskými vzťahmi
+
+**Fyziologické účinky:**
+
+Jogovým cvičením môžeme rozšíriť schopnosť ovládať niektoré systémy, ktoré bežne neovládame, pretože pracujú autonómne, mimo našej vôle:
+- Rôzne polohy tela pôsobia na žľazy s vnútornou sekréciou
+- Stimulujú tvorbu hormónov
+- Udržujú nervovú sústavu v bdelom stave
+
+**Pránajáma** (dýchacie techniky) ovplyvňuje priaznivo:
+- Celý telesný metabolizmus
+- Krvný obeh
+- Okysličenie tela
+- Detoxikáciu organizmu
+
+**2. Joga rozvíja koncentráciu**
+Pravidelná prax zlepšuje schopnosť sústrediť sa a udržať pozornosť.
+
+**3. Joga pomáha získať sebadôveru**
+Zvládnutie náročných ásán a meditácií posilňuje sebavedomie.
+
+**4. Joga pomáha udržiavať fyzickú a psychickú integritu**
+Harmonizuje telo a myseľ.
+
+**5. Joga zosúlaďuje vnútorné a vonkajšie aktivity**
+Pomáha nájsť rovnováhu v dennom živote.
+
+**6. Joga dáva schopnosť prekonať zlozvyky**
+Pomáha oslobodiť sa od:
+- Pripútaností
+- Závislostí
+- Nezdravých návykov
+
+**7. Joga umožňuje sebarealizáciu**
+Vedie k poznaniu vlastnej pravej podstaty a naplneniu potenciálu.`
+    },
+    {
+      title: "Téma 9: Názory filozofov a učiteľov na jogu",
+      content: `**Rôzne perspektívy na jogu**
+
+Rôzni učitelia a filozofi vnímajú jogu z rôznych uhlov pohľadu. Každý prináša jedinečný vhľad do tejto starobylej praxe.
+
+**Egon Bondy:**
+
+Podľa Bondyho joga sama o sebe nie je a nikdy ani nebola nijakou filozofiou, ale **systémom poučiek pre praktickú cestu k oslobodeniu**.
+
+Je to praktická disciplína, nie len teoretický systém. Joga je nástroj, nie cieľ sám o sebe.
+
+**Jiddu Krišnamurti:**
+
+Podľa Krišnamurta je joga súbor cvičení a dýchaní, ktoré sa vyvinuli asi v Indii pred mnoho tisíc rokmi.
+
+**Ciele jogy podľa Krišnamurtiho:**
+- Udržiavať zdravé funkcie žliaz, nervov a celého telesného systému bez medicíny
+- Dosiahnuť veľkú vnímavosť tela
+
+**Kľúčové výroky:**
+"Telo musí byť vnímavé, inak by ste nemohli mať jasný mozog."
+
+Človek potrebuje:
+- Veľmi zdravé, citlivé a bdelé telo
+- Veľmi jasne fungujúci mozog
+- Mozog pracujúci bez emócií a bez osobného zaujatia
+
+Taký mozog potom dokáže byť **absolútne tichý** - čo je podľa Krišnamurtiho základ pre pravé poznanie.
+
+**Kuvalajananda a Vinekar:**
+
+Títo vedci skúmali terapeutické účinky jogy. Podľa nich joga:
+- Pomáha odstraňovať psychofyzické napätie
+- Toto napätie pretrváva u pacientov aj vtedy, keď sa vyliečili z mentálnych a nervových porúch
+- Joga preto môže byť účinná v rehabilitácii a prevencii
+
+**Pataňdžali:**
+
+V Pataňdžaliho jogasútrach sa joga opisuje ako **"čitta vritti niródha"** - zastavenie zmien mysle.
+
+To znamená:
+- Ovládnutie myslenia a emócií
+- Zastavenie neustálych vĺn mysle
+- Zjednotenie sa zo svojou podstatou
+- Dosiahnutie vnútorného pokoja
+
+**Spoločné témy:**
+
+Napriek rôznym prístupom sa všetci učitelia zhodujú v týchto bodoch:
+- Joga je praktická disciplína
+- Vedie k transformácii vedomia
+- Vyžaduje pravidelné cvičenie
+- Cieľom je vnútorný pokoj a oslobodenie`
+    },
+    {
+      title: "Téma 10: Praktická aplikácia jogy v modernom živote",
+      content: `**Jóga v 21. storočí**
+
+Hoci jóga má tisícročnú tradíciu, jej princípy sú stále aktuálne a aplikovateľné v modernom živote. Dnešný svet prináša nové výzvy, ale jóga ponúka osvedčené riešenia.
+
+**Začatie s jogou:**
+
+**Pre začiatočníkov:**
+1. Začnite s hathajogou - je najprístupnejšia
+2. Vyhľadajte kvalifikovaného učiteľa
+3. Cvičte pravidelne, najlepšie denne
+4. Začnite s krátkymi seansami (15-20 minút)
+5. Postupne zvyšujte intenzitu a trvanie
+
+**Bezpečnosť pri cvičení:**
+- Neprekračujte svoje limity
+- Počúvajte svoje telo
+- Pri zdravotných problémoch konzultujte s lekárom
+- Nejedzte 2-3 hodiny pred cvičením
+- Cvičte na prázdny žalúdok
+
+**Denná prax jogy:**
+
+**Ranná rutina (15-30 minút):**
+1. Pránajáma - dychové cvičenia (5 min)
+2. Pozdrav slnku - Surya Namaskar (10 min)
+3. Krátka meditácia (5-10 min)
+
+**Večerná rutina (10-20 minút):**
+1. Jemné natiahnutie
+2. Relaxačné ásany
+3. Joga nidra (jogový spánok)
+
+**Jóga pre moderné problémy:**
+
+**Stres a vyhorenie:**
+- Pravidelná meditácia
+- Dychové cvičenia
+- Relaxačné techniky
+
+**Bolesti chrbta (kancelárska práca):**
+- Ásany na posilnenie chrbtice
+- Natiahnutie
+- Správne držanie tela
+
+**Nespavosť:**
+- Večerná joga nidra
+- Relaxačné ásany
+- Dychové cvičenia pred spaním
+
+**Úzkosť a depresia:**
+- Pravidelná prax
+- Meditácia všímavosti
+- Pránajáma techniky
+
+**Integrácia jamy a nijamy do života:**
+
+**V práci:**
+- Satja (pravdivosť) - čestnosť v konaní
+- Ahimsa (nenásilie) - láskavosť ku kolegom
+- Santóša (spokojnosť) - vďačnosť za to, co máte
+
+**Vo vzťahoch:**
+- Ahimsa - nežné a láskavé správanie
+- Satja - otvorená a úprimná komunikácia
+- Aparigraha - nezištnosť
+
+**Zdroje a komunita:**
+
+**Knihy pre začiatočníkov:**
+- Svetlo jogy - B.K.S. Iyengar
+- Jógasútry - Pataňdžali
+- Autobiografia jogína - Paramahansa Yogananda
+
+**Online zdroje:**
+- Videá s návodmi na ásany
+- Meditačné aplikácie
+- Online kurzy a workshopy
+
+**Komunitá:**
+- Jogové štúdiá a centrá
+- Jogové retreaty
+- Online jogové skupiny
+
+**Záver:**
+
+Jóga nie je len cvičenie, ale životný štýl. S pravidelnou praxou, trpezlivosťou a oddanosťou môže transformovať váš život na všetkých úrovniach - fyzickej, mentálnej, emocionálnej a duchovnej.
+
+Začnite pomaly, buďte trpezliví sami so sebou a nechajte jogu, aby sa stala prirodzenou súčasťou vášho života. Cesta tisíc míľ začína prvým krokom.
+
+**Namaste** 🙏`
+    }
   ]
 };
 
