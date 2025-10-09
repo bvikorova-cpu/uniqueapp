@@ -1089,93 +1089,536 @@ Najznámejšia stratégia založená na základnú orientáciu firmy na trhu, vy
 
   "Investovanie pre začiatočníkov": [
     {
-      title: "Téma 1: Čo je akcia a čo znamená vlastniť akciu",
-...
-      - Diverzifikovať portfólio
-      - Mať dlhodobú perspektívu`
+      title: "Téma 1: Základy investovania",
+      content: `Tento kurz je v príprave. Obsah bude čoskoro dostupný.`
+    }
+  ],
+
+  "Podnikanie od A po Z": [
+    {
+      title: "Téma 1: (Ne)máte nápad na podnikanie?",
+      content: `**Prvý krok - nápad**
+
+Prvým krokom na začiatku akéhokoľvek podnikania je nápad. Samotný nápad ale zvyčajne tvorí iba malé percento z úspechu a tú dôležitejšiu časť zohráva jeho realizácia.
+
+**Kľúčové vlastnosti nápadu**
+
+Kľúčové je, aby podnikateľský nápad budúcim zákazníkom riešil ich problém. Nápad nemusí byť unikátny, ani jeho prevedenie nemusí byť dokonalé. Nevyhnutné ale je, aby ste zákazníkovi priniesli pridanú hodnotu a aby vaše riešenie bolo lepšie ako to, ktoré ponúka konkurencia.
+
+**Vlastnosti úspešného podnikateľa**
+
+Byť podnikateľom si tiež vyžaduje mať určitý súbor vlastností:
+- Vytrvalosť
+- Schopnosť odolávať (často aj existenčnému) tlaku
+- Flexibilita
+- Vynaliezavosť
+- Vnútorná sila
+- Schopnosť odosobniť sa
+
+**Dôležitosť overovania**
+
+Práve táto posledná vlastnosť je veľmi dôležitá najmä v začiatkoch podnikania, keď si potrebujete overiť, či váš nápad bude fungovať.
+
+**Kde hľadať inšpiráciu?**
+
+Ak nemáte nápad, inšpiráciu, v čom začať podnikať možno nájsť všade:
+- V zahraničí
+- Pri venovaní sa svojim koníčkom
+- V ponuke franšízingových konceptov`
     },
     {
-      title: "Téma 9: Ako začať investovať - praktické rady",
-      content: `**Dostupnosť investovania dnes**
+      title: "Téma 2: Potrebujete biznis plán?",
+      content: `**Štatistiky a realita**
 
-Investovanie na burze je dnes dostupné takmer pre každého a to vďaka internetu. Netreba ale zabúdať na to, že obchodovanie na burze je rizikové.
+Štatistiky vravia, že takmer polovica začínajúcich firiem na Slovensku sa nedožije svojich piatych narodenín a mnohé dokonca končia už po prvom roku.
 
-**Potenciál a riziko**
+**Prečo firmy zlyhávajú?**
 
-Úspešná investícia vám môžu priniesť veľký zisk, ale ak neviete, ako investovať alebo ako funguje burza, môžete o všetky svoje peniaze veľmi ľahko prísť.
+Začínajúci podnikatelia majú často „veľké oči", podceňujú financie a preceňujú vlastné schopnosti. Často si dostatočne nepremyslia biznis model a neotestujú svoj nápad ešte pred vstupom na trh.
 
-**Prečo investujeme?**
+**Význam biznis plánu**
 
-Pri investovaní myslíme na budúcnosť, aby sme sa v budúcnosti mali lepšie. Z investície nemáme okamžitý prospech, ten sa dostaví až po určitom čase.
+Predísť týmto chybám pomáha biznis plán. Nemusí ísť o siahodlhý dokument, dôležité je najmä premyslieť si kľúčové body a dať ich na papier.
 
-**Realita investovania**
-
-Je pravda že, nie vždy sa investícia vyplatí, a preto je nutné k investovaniu pristupovať zodpovedne a investuje len do toho, čomu rozumieme.
-
-**Vzdelanie pred investíciou**
-
-Pred tým, než sa rozhodnete svoje peniaze investovať, je dôležité mať o investovaní nejaké vedomosti:
-
-**1. Samostatné štúdium**
-- Naštudujte si investičné stratégie a postupy
-- Prečítajte knihy o investovaní
-- Sledujte finančné správy
-- Učte sa z chýb iných
-
-**2. Profesionálna pomoc**
-- Oslovte skúseného brokera
-- Využite finančného poradcu
-- Konzultujte s odborníkmi
-
-**Poznanie vlastného rizikového profilu**
-
-Ak sa už rozhodnete investovať do akcií, je veľmi dôležité si uvedomovať riziko a vybrať si takú investíciu, ktorá zodpovedá vášmu rizikovému profilu, aby ste prípadné straty vedeli ustáť.
-
-**Realita ziskov a strát**
-
-Na akciách môžete zarobiť ale aj, naopak, prerobiť. Je dôležité:
-- Byť pripravený na obe možnosti
-- Investovať len peniaze, ktoré si môžete dovoliť stratiť
-- Mať finančnú rezervu mimo investícií`
+**Čo biznis plán prináša:**
+- Overenie reálnosti nápadu
+- Finančné predpoklady
+- Identifikáciu rizík
+- Jasný akčný plán
+- Podklad pre investorov`
     },
     {
-      title: "Téma 10: Zásady a tipy pre začínajúcich investorov",
-      content: `**Diverzifikácia - kľúčová zásada**
+      title: "Téma 3: Príprava na začiatok podnikania",
+      content: `**Základy prípravy**
 
-Medzi veľmi dôležitú zásadu pri investovaní patrí diverzifikácia, aby ste znížili investičné riziko. To znamená rozloženie peňažných prostriedkov do viacerých finančných nástrojov. Cieľom je zníženie rizika spojeného s investíciou.
+Začiatky podnikania bývajú ťažké, hlavne ak sa na ne nepripravíte. Ak si poviete – chcem začať podnikať, zrejme máte veľa entuziazmu a tiež času a chuti do práce. Túto energiu by ste však mali využiť aj na dôslednú prípravu, ktorá vám začiatok podnikania výrazne uľahčí.
 
-**Kedy NEINVESTOVAŤ do akcií?**
+**Krok 1: Pracujte na sebe**
 
-Do akcií by ste nemali investovať, ak:
-- **Máte krátkodobé finančné ciele** - akcie sú vhodné pre dlhodobé investovanie
-- **Chcete rýchly zisk** - úspešné investovanie vyžaduje trpezlivosť
-- **Nechcete niesť riziko** - akcie sú rizikové aktíva
-- **Nemáte finančnú rezervu** - najprv si vytvorte núdzový fond
-- **Máte dlhy** - najprv splaťte vysokoúročené dlhy
-- **Nerozumiete akciám** - najprv sa vzdelávajte
+Skôr než začnete, učte sa. Mnohí svetoví biznis žraloci síce nedokončili školy, no vzdelávajú sa neustále.
 
-**TIP NA DLHODOBÉ INVESTOVANIE**
+**Ako sa vzdelávať:**
+- Čítajte knihy o podnikaní
+- Počúvajte biznis podcasty
+- Sledujte rôzne internetové zdroje (biznisové magazíny)
+- Navštevujte podujatia a workshopy na podnikateľské témy
 
-Pri pravidelnom investovaní počas dostatočne dlhého obdobia sa dá vytvoriť slušná suma, ktorá môže byť základom vašej mesačnej renty a nemusíte sa spoliehať iba na štát.
+**Krok 2: Stretávajte sa s biznis komunitou**
 
-**Varovanie pred nečinnosťou**
+Ak ste začínajúcim podnikateľom, potrebujete nabrať prax. Nemusíte sa nutne učiť iba na vlastných chybách.
 
-Ak k investovaniu do budúcnosti budete ľahostajní, neskôr zistíte, že od štátu toho veľa nedostanete a že počas vašich produktívnych rokov by ste sa bez päťdesiatky alebo stovky mesačne zaobišli s vidinou slušného života aj v dôchodkovom veku.
+**Možnosti networking:**
+- Podnikateľské akcelerátory či inkubátory
+- Biznis mentor
+- Podnikateľské združenia (napr. Združenie podnikateľov Slovenska, Akčné ženy)
+- Odborne orientované združenia a asociácie
 
-**Zhrnutie kľúčových zásad**
+**Krok 3: Otestujte si myšlienku**
 
-**1. Vzdelávajte sa** - neustále rozširujte svoje znalosti
-**2. Diverzifikujte** - nevsádzajte všetko na jednu kartu
-**3. Buďte trpezliví** - úspech prichádza s časom
-**4. Investujte pravidelne** - využite efekt priemerovania nákladov
-**5. Nepanikárte** - v poklesoch zachovajte chladnú hlavu
-**6. Majte stratégiu** - vedzte, čo robíte a prečo
-**7. Kontrolujte emócie** - nerozhodujte sa impulzívne
-**8. Mysli na budúcnosť** - investujte do svojho dôchodku
+Overte si, či bude o váš produkt alebo o vašu službu záujem.
 
-**Cesta k úspechu**
+**Spôsoby testovania:**
+- Vytvorte si skúšobnú webstránku
+- Spustite predpredaj
+- Spravte prieskum
 
-Úspešné investovanie nie je o šťastí, ale o vzdelaní, stratégii, disciplíne a trpezlivosti. Začnite čím skôr a investujte pravidelne!`
+Zistite, či bude po vašom podnikaní dopyt a ak nie, produkt/službu upravte alebo hľadajte nový nápad.
+
+**Krok 4: Začnite podnikať**
+
+Keď už viete, v čom budete podnikať a svoju myšlienku ste si otestovali, neotáľajte donekonečna. Ktosi múdry raz povedal, že cieľ bez dátumu exspirácie je iba sen.
+
+**Praktické kroky:**
+- Stanovte si pevné dátumy
+- Spíšte si kroky, ktoré musíte urobiť
+- Nekonečné zdokonaľovanie vás nikam nezavedie
+- Stopercentná pripravenosť neexistuje`
+    },
+    {
+      title: "Téma 4: Ako si vytvoriť biznis plán - Cieľová skupina",
+      content: `**Význam biznis plánu**
+
+Aby ste zvládli prípravnú fázu dobre, nezabudnite na podnikateľský plán. Nie je to iba zdrap papiera alebo slohová práca, ktorú odložíte do zásuvky, práve naopak. Ide o pomôcku, ktorá je pre podnikateľa akousi cestovnou mapou.
+
+**Kto sú vaši zákazníci?**
+
+Častou chybou začínajúcich podnikateľov je, že chcú predávať svoj produkt alebo službu úplne všetkým. Špecifikovanie si cieľovej skupiny je však alfou a omegou podnikania.
+
+**Realita cieľovej skupiny:**
+- Len veľmi málo firiem si môže povedať, že ich zákazníkom je každý
+- Väčšina podnikateľov musí nájsť svojich zákazníkov a cielene ich oslovovať
+- Táto úloha veľmi úzko súvisí aj s neskorším cielením marketingu
+
+**Marketingové persóny**
+
+Inšpirovať sa môžete marketingovými agentúrami, ktoré odporúčajú podnikateľom vypracovať si tzv. marketingové persóny.
+
+**Charakteristiky persóny:**
+- Vek, pohlavie
+- Lokalita, kde zákazník žije
+- Príjem
+- Nákupné správanie
+- Názory a hodnoty
+- (Ne)prítomnosť na sociálnych sieťach
+- Zručnosti
+
+**Riešenie problému zákazníka**
+
+Ujasnite si tiež:
+- Aký problém zákazníkovi riešite
+- Prečo by mal nakúpiť práve u vás
+- Prečo nie u vašej konkurencie
+- Nevymýšľajte produkty a služby, ktoré zákazníci nepotrebujú
+- Váš zákazník musí byť ochotný za váš produkt alebo službu zaplatiť
+
+**Príklad kaviarní**
+
+Dve kaviarne v blízkosti detského ihriska:
+- **Kaviareň A:** prebaľovací pult, detský kútik, bezkofeínová káva s bezlaktózovým mliekom
+- **Kaviareň B:** nižšie ceny a WiFi zadarmo
+
+Zákazníčkami sú hlavne mamičky s deťmi. Ktorá bude úspešnejšia?`
+    },
+    {
+      title: "Téma 5: Biznis model a stratégia",
+      content: `**Aký bude váš biznis model?**
+
+Na čom budete zarábať a aká je vaša biznisová stratégia? Podnikanie bez platiacich zákazníkov a tržieb nie je podnikanie, ale skôr hobby.
+
+**Zdroje príjmov**
+
+Príjem firmy nemusí pochádzať iba zo samotných produktov alebo služieb, ale aj z rôznych doplnkových zdrojov.
+
+**Príklady doplnkových služieb:**
+- K elektronike: inštalácia, predaj na splátky
+- K oblečeniu: e-book o osobnom stylingu
+- K softvéru: školenie zamestnancov, ročná správa
+
+**Predajné techniky**
+
+**Up-selling:**
+- Ponuka produktov vyššej cenovej kategórie
+
+**Cross-selling:**
+- Predaj súvisiaceho tovaru
+
+**Subscription model:**
+- Mesačné/ročné členské poplatky
+- Opakovanie príjmov
+
+**Sekundárne zdroje príjmu:**
+- Reklama
+- Affiliate (partnerský) systém
+
+**Biznisová stratégia**
+
+Z pohľadu stratégie sa zamyslite hlavne nad tým, ako chcete prilákať budúcich zákazníkov.
+
+**Faktory rozhodnutia zákazníka:**
+- Nie len cena!
+- Pridaná hodnota
+- Zákaznícka skúsenosť
+- Rýchlosť doručenia
+- Kvalita produktu/služby
+
+**Varovanie pred cenovou stratégiou:**
+
+Ak zvolíte stratégiu najnižšej ceny, stanete sa veľmi ľahkým terčom konkurencie. Ak tá ponúkne ešte nižšiu cenu, zákazník odíde a už sa nikdy nevráti.
+
+**Freemium model:**
+
+Ak sa bojíte ceny za váš produkt:
+- Ponúknite freemium verziu
+- Prvých pár dní zadarmo
+- Po vyskúšaní platba (jednorazová alebo predplatné)
+
+**Príklady freemium:**
+- Softvérové spoločnosti
+- Aplikácie
+- Online kníhkupectvá s ukážkami
+- Streamovacie platformy`
+    },
+    {
+      title: "Téma 6: Firemné financie",
+      content: `**Oplatí sa podnikať?**
+
+Ešte pred štartom podnikania by ste si mali spočítať, či sa s vaším nápadom vôbec oplatí podnikať.
+
+**Čo začínajúci podnikatelia zabúdajú:**
+- Započítať svoju vlastnú prácu
+- Zohľadniť iné možnosti sebarealizácie
+- Porovnať s výnosom z alternatívnych činností (napr. zamestnanie)
+
+**Realita tržieb**
+
+Hlavne začínajúci podnikatelia sú často prehnane optimistickí:
+- Neodhadnú výšku tržieb
+- Nerátajú s tým, že prídu neskôr
+
+**Optimizmus vs. realizmus**
+
+Pri plánovaní biznisu by ste mali:
+- Byť optimisti
+- Ale rátať aj s pesimistickým scenárom
+- Pripraviť sa na horšie časy
+
+**Čo počítať vo finančnom pláne:**
+
+**1. Výnosy a náklady**
+
+**Tržby:**
+- Koľko zarobíte
+- S akou maržou budete predávať
+- Odkiaľ potečú vaše príjmy
+
+**Náklady fixné:**
+- Nájom za prevádzku
+- Nákup materiálov na výrobu
+- Telefóny
+- Pohonné hmoty
+- Kuriérske služby
+
+**Náklady variabilné:**
+- Sezónna reklama
+- Profesionálny softvér nad určitý počet užívateľov
+
+**Bod zlomu:**
+- Kedy výnosy presiahnu náklady
+- Kedy začnete zarábať
+
+**2. Cash-flow**
+
+Tok firemných financií na mesačnej báze:
+- Aké výdavky musíte kedy platiť
+- Aké príjmy môžete kedy očakávať
+
+**Bežné problémy:**
+- Výdavky prichádzajú skôr ako príjmy
+- Zákazníci chcú dlhšie splatnosti
+- Dodávatelia chcú kratšie splatnosti
+- Firma má tržby, ale nemá z čoho platiť účty
+
+**3. Zdroje na štart**
+
+Začiatok podnikania je najnáročnejší:
+- Náklady na založenie firmy
+- Náklady nábehovej fázy
+- Náklady na zásoby/tovar
+- Technológie a stroje
+- Mnohé náklady vznikajú ešte pred spustením
+
+**Príklad:**
+Otvárate obchod s oblečením:
+- Musíte si zariadiť prevádzku
+- Zaplatiť nájom (často 3 mesiace dopredu)
+- Nakúpiť tovar
+- To všetko pred prvým zákazníkom`
+    },
+    {
+      title: "Téma 7: SWOT analýza a ďalšie úvahy",
+      content: `**Čo všetko ešte vziať do úvahy?**
+
+Podnikateľský plán môže mať podobu jednoduchého dokumentu, môžete ho vytvoriť pomocou online aplikácie alebo použiť Excel. Dôležité je nedržať ho iba v hlave.
+
+**SWOT analýza**
+
+Nezabudnite sa zamyslieť nad:
+
+**Strengths (Silné stránky):**
+- Čo robíte lepšie ako konkurencia?
+- Vaše jedinečné výhody
+- Kvalifikácia tímu
+
+**Weaknesses (Slabé stránky):**
+- Kde ste slabší?
+- Čo potrebujete zlepšiť?
+- Oblasti na rozvoj
+
+**Opportunities (Príležitosti):**
+- Aké príležitosti trh ponúka?
+- Nové trendy
+- Neobsadené segmenty
+
+**Threats (Riziká):**
+- Neovplyvní váš biznis napríklad kríza?
+- Konkurencia
+- Legislatívne zmeny
+
+**Ľudské zdroje**
+
+Užitočné môže byť zamyslieť sa nad:
+
+**Potreba zamestnancov:**
+- Budete potrebovať zamestnancov?
+- Kedy ich budete potrebovať?
+- Kde a ako ich získate?
+
+**Legislatíva:**
+- Čo pre vás znamená zamestnávanie z legislatívneho hľadiska?
+- Koľko vás budú stáť výplaty?
+- Aké sú povinné odvody?
+
+**Online nástroje na biznis plán:**
+- Upmetrics
+- LivePlan
+- Excel šablóny`
+    },
+    {
+      title: "Téma 8: Financovanie začiatkov podnikania",
+      content: `**Ako začať podnikať bez peňazí?**
+
+V niektorých prípadoch sa to dá aj bez veľkej sumy peňazí, no všetko závisí od typu biznisu.
+
+**Príklady podľa typu:**
+
+**Nízke náklady:**
+- Konzultant/konzultantka
+- Potrebné: počítač a pár stoviek eur
+
+**Vysoké náklady:**
+- Výrobná firma
+- Potrebné: stroje, technológie, sklady, mzdy
+
+**Možnosti financovania:**
+
+**1. Vlastné úspory**
+- Najčastejší zdroj
+- Žiadne úroky
+- Plná kontrola
+
+**2. Investori**
+- Hľadajú unikátne príležitosti
+- Globálne uplatnenie
+- Vysoký potenciál zárobku
+- Schopný tím
+
+**3. Crowdfunding**
+- Testovanie životaschopnosti nápadu
+- Špecializované portály
+- "Predpredaj"
+- Získanie peňazí aj spätnej väzby
+
+**4. Finančné dotácie od štátu**
+- Využíva len zlomok podnikateľov
+- Dôvody: byrokracia, nízka flexibilita
+
+**5. Bankové úvery**
+- Klasický spôsob
+- Potrebný biznis plán
+- Úroky a splátky
+
+**6. Business angels**
+- Súkromní investori
+- Okrem peňazí aj know-how
+- Podiel v spoločnosti
+
+**Výber správneho zdroja:**
+
+Závisí od:
+- Typu podnikania
+- Výšky potrebných financií
+- Ochoty deliť sa o vlastníctvo
+- Časového horizontu návratnosti`
+    },
+    {
+      title: "Téma 9: Výber právnej formy podnikania",
+      content: `**Základné otázky**
+
+**Počet zakladateľov:**
+- Budete podnikať sami?
+- So spoločníkom?
+- S viacerými partnermi?
+
+**Rozsah podnikania:**
+- Privyrobenie popri zamestnaní?
+- Podnikanie vo veľkom?
+- Fulltimeová živnosť?
+
+**Hlavné právne formy na Slovensku:**
+
+**1. Živnosť (SZČO - Samostatne zárobkovo činná osoba)**
+
+**Výhody:**
+- Jednoduchá administratíva
+- Nízke náklady na založenie
+- Rýchle založenie
+- Vhodné na začiatok
+
+**Nevýhody:**
+- Ručenie celým majetkom
+- Vyššie odvody pri vysokých príjmoch
+- Limitované možnosti rastu
+
+**2. s.r.o. (Spoločnosť s ručením obmedzeným)**
+
+**Výhody:**
+- Obmedzené ručenie (len do výšky vkladu)
+- Profesionálnejší imidž
+- Vhodné pre väčšie projekty
+- Možnosť viacerých spoločníkov
+
+**Nevýhody:**
+- Vyššie náklady na založenie (min. 5000 € základné imanie)
+- Zložitejšia administratíva
+- Potreba účtovníka
+
+**3. a.s. (Akciová spoločnosť)**
+
+**Výhody:**
+- Najlepšia pre veľké projekty
+- Možnosť získať kapitál vydaním akcií
+- Obmedzené ručenie
+
+**Nevýhody:**
+- Vysoké náklady na založenie (min. 25 000 €)
+- Veľmi zložitá administratíva
+- Vhodné len pre veľké firmy
+
+**4. v.o.s. (Verejná obchodná spoločnosť)**
+
+**Charakteristika:**
+- Minimálne 2 spoločníci
+- Všetci ručia celým majetkom
+- Menej bežná forma
+
+**Rozhodovanie:**
+
+Pri výbere zvážte:
+- Výšku počiatočnej investície
+- Potrebu ochrany majetku
+- Počet zakladateľov
+- Plánovaný obrat
+- Administratívnu náročnosť`
+    },
+    {
+      title: "Téma 10: Názov firmy a ďalšie kroky",
+      content: `**Výber názvu firmy**
+
+Názov firmy je dôležitá súčasť vašej identity.
+
+**Základné pravidlá:**
+
+**1. Jedinečnosť**
+- Skontrolujte si, či nie je obsadený
+- Registre: orsr.sk, zrsr.sk
+- Overenie domén
+
+**2. Zapamätateľnosť**
+- Krátky a výstižný
+- Ľahko vysloviteľný
+- Zrozumiteľný
+
+**3. Relevantnosť**
+- Súvislosť s vašim biznisom
+- Neobmedzuje budúci rozvoj
+
+**4. Dostupnosť domény**
+- Overenie dostupnosti .sk, .com
+- Sociálne siete (Facebook, Instagram)
+
+**Ochranné známky:**
+- Zvážte registráciu ochrannej známky
+- Ochrana pred konkurenciou
+- Dlhodobá investícia
+
+**Ďalšie kroky po výbere právnej formy:**
+
+**1. Registrácia**
+- Živnostenský úrad (SZČO)
+- Obchodný register (s.r.o., a.s.)
+
+**2. Daňový úrad**
+- Registrácia na daňovom úrade
+- Získanie DIČ
+
+**3. Sociálna a zdravotná poisťovňa**
+- Registrácia do 8 dní od začiatku podnikania
+
+**4. DPH**
+- Dobrovoľná alebo povinná registrácia
+- Povinná pri obrate nad 50 000 €
+
+**5. Bankový účet**
+- Otvorenie firemného účtu
+- Výber vhodnej banky
+
+**6. Účtovníctvo**
+- Jednoduché účtovníctvo (SZČO do 100 000 €)
+- Podvojné účtovníctvo (s.r.o., a.s., SZČO nad 100 000 €)
+
+**7. Poistenie**
+- Zodpovednosti
+- Majetku
+- Príp. ďalšie podľa potrieb
+
+**Zhrnutie:**
+
+Podnikanie od A po Z nie je jednoduché, ale s dobrou prípravou, biznis plánom a správnym výberom právnej formy máte veľkú šancu na úspech. Nezabudnite:
+- Vzdelávať sa
+- Testovať nápad
+- Pripraviť si financie
+- Vybrať správnu právnu formu
+- A hlavne - začať!`
     }
   ]
 };
