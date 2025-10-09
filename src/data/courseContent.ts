@@ -4277,3 +4277,588 @@ export const generateDefaultTopics = (courseName: string): Topic[] => {
     { title: `Téma 10: Zhrnutie a certifikácia`, content: `Zhrnutie kľúčových poznatkov a informácie o certifikácii.` }
   ];
 };
+
+// Export the courseContent object with the new course
+courseContent["Osobné financie"] = [
+  {
+    title: "Téma 1: Úvod do osobných financií",
+    content: `**Čo sú osobné financie?**
+
+Osobné financie predstavujú kľúčový aspekt ekonomickej oblasti investovania. Zameriavajú sa na riadenie osobných finančných prostriedkov, vrátane plánovania rozpočtu, správy úverov a investícií.
+
+**Význam osobných financií:**
+
+Efektívne riadenie osobných financií je kľúčové pre dosiahnutie finančnej stability a dosahovanie individuálnych cieľov.
+
+**Hlavné oblasti osobných financií:**
+
+1. **Plánovanie rozpočtu**
+   - Sledovanie príjmov a výdavkov
+   - Finančná disciplína
+
+2. **Správa úverov**
+   - Riadenie dlhov
+   - Budovanie kreditnej histórie
+
+3. **Investície**
+   - Zhodnocovanie úspor
+   - Budovanie majetku
+
+4. **Finančné rezervy**
+   - Núdzový fond
+   - Zabezpečenie na budúcnosť
+
+5. **Dôchodkové plánovanie**
+   - Zabezpečenie na starobu
+   - Dlhodobé investície
+
+**Prečo je to důležité?**
+
+- Finančná stabilita a nezávislosť
+- Dosiahnutie životných cieľov
+- Ochrana pred neočakávanými situáciami
+- Kvalitný život v dôchodku`
+  },
+  {
+    title: "Téma 2: Plánovanie rozpočtu",
+    content: `**Základy rozpočtovania**
+
+Plánovanie rozpočtu je základom efektívneho riadenia osobných financií.
+
+**Prečo plánovať rozpočet?**
+
+Spotrebitelia by mali stanoviť rozumný rozpočet, ktorý zohľadňuje príjmy a výdavky. Tento postup pomáha:
+- Sledovať finančnú stabilitu
+- Dosahovať dlhodobé ciele
+- Predchádzať dlhovým problémom
+- Kontrolovať výdavky
+
+**Postup pri plánovaní rozpočtu:**
+
+**1. Zistenie príjmov**
+- Čistá mzda
+- Ostatné príjmy (prenájom, investície)
+- Nepravidelné príjmy
+
+**2. Kategorizácia výdavkov**
+
+**Fixné výdavky:**
+- Nájomné/hypotéka
+- Energie
+- Poistenie
+- Splátky úverov
+
+**Variabilné výdavky:**
+- Potraviny
+- Doprava
+- Oblečenie
+- Zábava
+
+**3. Pravidlo 50/30/20**
+
+Odporúčané rozdelenie príjmov:
+- **50%** - Nevyhnutné výdavky
+- **30%** - Osobné želania
+- **20%** - Úspory a investície
+
+**4. Sledovanie a úprava**
+
+- Pravidelné kontroly rozpočtu
+- Úprava podľa skutočnosti
+- Identifikácia oblastí na šetrenie`
+  },
+  {
+    title: "Téma 3: Správa úverov",
+    content: `**Úvod do správy úverov**
+
+Správa úverov je dôležitou súčasťou osobných financií.
+
+**Čo zahŕňa efektívne riadenie úverov:**
+
+**1. Monitorovanie kreditného skóre**
+- Pravidelná kontrola kreditnej histórie
+- Oprava chýb v záznamoch
+- Pochopenie faktorov ovplyvňujúcich skóre
+
+**2. Pravidelné splácanie záväzkov**
+- Splácanie aspoň minimálnej splátky
+- Ideálne viac než minimum
+- Včasné platby (pred termínom splatnosti)
+
+**3. Minimalizovanie dlhového zaťaženia**
+- Udržiavanie nižšieho pomeru dlhu k príjmu
+- Vyhýbanie sa novým úverom pri vysokom zaťažení
+- Prioritizácia splácania drahších úverov
+
+**Typy úverov:**
+
+**Spotrebiteľské úvery:**
+- Kontokorentné úvery
+- Kreditné karty
+- Spotrebiteľské pôžičky
+
+**Zabezpečené úvery:**
+- Hypotéky
+- Autokredity
+
+**Stratégie splácania dlhov:**
+
+**Metóda snehovej gule:**
+- Splácanie najmenšieho dlhu ako prvého
+- Psychologická motivácia
+
+**Metóda lavíny:**
+- Splácanie najdrahšieho dlhu (s najvyšším úrokom)
+- Finančne efektívnejšie
+
+**Udržanie dobrej finančnej povesti:**
+
+Týmto spôsobom je možné udržať si dobrú finančnú povesť a prístup k výhodným úverom v budúcnosti.`
+  },
+  {
+    title: "Téma 4: Investície a zhodnocovanie",
+    content: `**Úvod do investícií**
+
+Investície predstavujú ďalší dôležitý aspekt osobných financií.
+
+**Čo je investovanie?**
+
+Efektívne zhodnocovanie financií zahŕňa výber vhodných investičných nástrojov, diverzifikáciu portfólia a sledovanie vývoja finančných trhov.
+
+**Hlavný cieľ:**
+
+Cieľom je dosiahnuť optimálny výnos pri akceptovateľnom riziku.
+
+**Typy investičných nástrojov:**
+
+**1. Akcie**
+- Podiel na vlastníctve spoločnosti
+- Vyšší potenciálny výnos
+- Vyššie riziko
+
+**2. Dlhopisy**
+- Úverový nástroj
+- Nižšie riziko
+- Stabilnejší výnos
+
+**3. Investičné fondy**
+- Diverzifikované portfólio
+- Profesionálne riadenie
+- Dostupné pre menších investorov
+
+**4. Nehnuteľnosti**
+- Hmotný majetok
+- Príjem z prenájmu
+- Potenciál rastu hodnoty
+
+**5. Komodity a alternatívne investície**
+- Zlato, striebro
+- Kryptomeny
+- Umelecké diela
+
+**Princípy investovania:**
+
+**Diverzifikácia:**
+- Rozloženie rizika
+- Investície do rôznych tried aktív
+- Geografická diverzifikácia
+
+**Časový horizont:**
+- Dlhodobé vs. krátkodobé investície
+- Akcie lepšie dlhodobo
+- Dlhopisy stabilnejšie krátkodobo
+
+**Riziko vs. výnos:**
+- Vyššie riziko = vyšší potenciálny výnos
+- Zhodnotenie vlastnej rizikovej tolerancie
+- Prispôsobenie portfólia veku a cieľom`
+  },
+  {
+    title: "Téma 5: Núdzový fond a finančná rezerva",
+    content: `**Význam núdzového fondu**
+
+Núdzový fond je neoddeliteľnou súčasťou riadenia osobných financií.
+
+**Čo je núdzový fond?**
+
+Vytvorenie finančnej rezervy pomáha kryť neočakávané výdavky a chrániť spotrebiteľa pred finančnými ťažkosťami v prípade:
+- Straty príjmu
+- Zdravotných problémov
+- Núdzových opráv (auto, dom)
+- Iných nečakaných situácií
+
+**Koľko ušetriť?**
+
+**Základné odporúčanie:**
+- Minimum 3-6 mesiacov výdavkov
+- Pre menej stabilné zamestnanie: 6-12 mesiacov
+- Pre živnostníkov: až 12 mesiacov
+
+**Ako vybudovať núdzový fond:**
+
+**1. Stanovenie cieľa**
+- Vypočítanie mesačných výdavkov
+- Určenie cieľovej sumy
+- Rozdelenie na menšie míľniky
+
+**2. Automatizácia úspor**
+- Pravidelný prevod na sporiaci účet
+- "Zaplať sám seba najprv"
+- Využitie automatických prevodov
+
+**3. Postupné budovanie**
+- Začať s menšími sumami
+- Zvyšovanie pri raste príjmov
+- Využitie nečakaných príjmov (prémie)
+
+**Kde uložiť núdzový fond:**
+
+**Ideálne miesto:**
+- Ľahko dostupné
+- Bezpečné
+- S minimálnym výnosom (sporiaci účet)
+- NEinvestovať do rizikových aktív
+
+**Kedy použiť núdzový fond:**
+
+✅ Strata zamestnania
+✅ Vážne zdravotné problémy
+✅ Núdzové opravy
+✅ Nečakané rodinné výdavky
+
+❌ Dovolenka
+❌ Nákup luxusného tovaru
+❌ Bežné neplánované výdavky`
+  },
+  {
+    title: "Téma 6: Dôchodkové plánovanie",
+    content: `**Význam dôchodkového plánovania**
+
+Dôchodkové plánovanie je kľúčovým faktorom pre zabezpečenie finančnej stability v dôchodkovom veku.
+
+**Prečo plánovať na dôchodok?**
+
+- Pokles príjmov v dôchodku
+- Rastúce náklady na zdravotnú starostlivosť
+- Predĺžená dĺžka života
+- Neistota verejného dôchodkového systému
+
+**Tri piliere dôchodkového zabezpečenia:**
+
+**1. pilier - Povinné dôchodkové poistenie**
+- Štátny dôchodok
+- Základné zabezpečenie
+- Často nedostatočné
+
+**2. pilier - Starobné dôchodkové sporenie (DDS)**
+- Dobrovoľné
+- Daňové zvýhodnenie
+- Investície do dôchodkových fondov
+
+**3. pilier - Doplnkové dôchodkové sporenie (DDS III)**
+- Súkromné sporenie
+- Vlastné investície
+- Maximálna flexibilita
+
+**Správne plánovanie:**
+
+Správne plánovanie zahŕňa:
+- Pravidelné investovanie do dôchodkových fondov
+- Sledovanie ich výkonnosti
+- Úprava stratégie podľa veku
+
+**Stratégie podľa veku:**
+
+**20-30 rokov:**
+- Agresívne portfólio (viac akcií)
+- Dlhý časový horizont
+- Vyššie riziko
+
+**30-50 rokov:**
+- Vyvážené portfólio
+- Kombinácia akcií a dlhopisov
+- Stredné riziko
+
+**50+ rokov:**
+- Konzervatívne portfólio
+- Viac dlhopisov a hotovosti
+- Nižšie riziko
+
+**Výpočet potrebnej sumy:**
+
+1. Odhad výdavkov v dôchodku
+2. Očakávaný príjem zo štátneho dôchodku
+3. Výpočet rozdiel
+4. Určenie potrebných úspor`
+  },
+  {
+    title: "Téma 7: Finančná gramotnosť",
+    content: `**Význam finančného vzdelávania**
+
+Osobné financie sú úzko spojené s finančnou gramotnosťou.
+
+**Čo je finančná gramotnosť?**
+
+Schopnosť rozumieť a efektívne využívať rôzne finančné zručnosti vrátane:
+- Osobného finančného riadenia
+- Rozpočtovania
+- Investovania
+
+**Prečo je dôležitá?**
+
+Spotrebitelia by mali investovať do svojho finančného vzdelávania, aby lepšie porozumeli:
+- Investičným možnostiam
+- Riadeniu dlhov
+- Efektívnemu plánovaniu rozpočtu
+- Daňovej optimalizácii
+- Ochrane pred podvodmi
+
+**Oblasti finančnej gramotnosti:**
+
+**1. Základné finančné pojmy**
+- Úrok (jednoduchý vs. zložený)
+- Inflácia
+- Diverzifikácia
+- Likvidita
+
+**2. Bankové produkty**
+- Bežné účty
+- Sporiacie účty
+- Termínované vklady
+- Investičné účty
+
+**3. Úverové produkty**
+- Hypotéky
+- Spotrebiteľské úvery
+- Kreditné karty
+- Leasing
+
+**4. Investičné produkty**
+- Akcie
+- Dlhopisy
+- Fondy
+- ETF
+
+**Kde získať finančné vzdelanie:**
+
+- Online kurzy a webináre
+- Knihy o osobných financiách
+- Finančné blogy a podcasty
+- Konzultácie s finančnými poradcami
+- Kurzy finančnej gramotnosti
+
+**Výhody finančnej gramotnosti:**
+
+✅ Lepšie finančné rozhodnutia
+✅ Vyhnutie sa dlhovým pascám
+✅ Efektívnejšie investovanie
+✅ Vyššia finančná istota
+✅ Dosiahnutie finančných cieľov`
+  },
+  {
+    title: "Téma 8: Daňová optimalizácia",
+    content: `**Daňová optimalizácia v osobných financiách**
+
+Efektívne riadenie daní môže významně zvýšiť vašu finančnú situáciu.
+
+**Čo je daňová optimalizácia?**
+
+Legálne využívanie daňových úľav a odpočtov na zníženie daňovej povinnosti.
+
+**Daňové odpočty v SR:**
+
+**1. Nezdaniteľná časť základu dane**
+- Základná nezdaniteľná časť
+- Na manželku/manžela
+- Príspevky na dôchodkové sporenie
+
+**2. Daňový bonus**
+- Na vyživované dieťa
+- Podmienky nároku
+
+**3. Odpočítateľné položky**
+- Hypotekárne úroky (za určitých podmienok)
+- Príspevky na životné poistenie
+- Dary charít
+
+**Daňovo efektívne sporenie:**
+
+**Doplnkové dôchodkové sporenie (DDS):**
+- Daňový odpočet z príspevkov
+- Zvýhodnenie výnosov
+
+**Životné poistenie:**
+- Daňový odpočet (do určitého limitu)
+- Kombinácia sporenia a ochrany
+
+**Investovanie do nehnuteľností:**
+- Odpočet úrokov z hypotéky
+- Daňové úľavy pri prenájme
+
+**Časté chyby:**
+
+❌ Nevyužitie nezdaniteľných častí
+❌ Nevedenie evidencie výdavkov
+❌ Nekonzultácia s daňovým poradcom
+❌ Nelegálne praktiky (daňové úniky)
+
+**Odporúčania:**
+
+✅ Vedenie prehľadnej finančnej evidencie
+✅ Využitie všetkých zákonných odpočtov
+✅ Pravidelná konzultácia s odborníkom
+✅ Plánovanie daňových povinností vopred`
+  },
+  {
+    title: "Téma 9: Poistenie a riadenie rizík",
+    content: `**Ochrana vašich financií**
+
+Poistenie je kľúčovou súčasťou ochrany osobných financií.
+
+**Prečo potrebujete poistenie?**
+
+- Ochrana pred finančnými stratami
+- Krytie neočakávaných nákladov
+- Zabezpečenie rodiny
+- Právne požiadavky
+
+**Typy poistenia:**
+
+**1. Životné poistenie**
+
+**Rizikové životné poistenie:**
+- Ochrana rodiny v prípade úmrtia
+- Nízke náklady
+- Žiadna sporiacka zložka
+
+**Kapitálové životné poistenie:**
+- Kombinácia ochrany a sporenia
+- Vyššie náklady
+- Zhodnotenie prostriedkov
+
+**2. Zdravotné poistenie**
+- Povinné zákonné poistenie
+- Doplnkové komerčné poistenie
+- Krytie nadštandardnej starostlivosti
+
+**3. Majetkové poistenie**
+
+**Poistenie nehnuteľnosti:**
+- Poistenie domu/bytu
+- Poistenie domácnosti
+- Krytie živelných udalostí
+
+**Poistenie vozidla:**
+- Povinné zmluvné poistenie (PZP)
+- Havarijné poistenie
+- Asistenčné služby
+
+**4. Úrazové poistenie**
+- Krytie následkov úrazu
+- Jednorázové plnenie
+- Denné odškodnenie
+
+**Ako vybrať správne poistenie:**
+
+1. **Zhodnotenie potrieb**
+   - Rodinná situácia
+   - Majetok
+   - Riziká
+
+2. **Porovnanie ponúk**
+   - Porovnávače poistení
+   - Podmienky poistenia
+   - Výšky poistného
+
+3. **Pravidelná aktualizácia**
+   - Zmeny životnej situácie
+   - Úprava poistných súm
+   - Zhodnotenie zmluvy
+
+**Častí chyby:**
+
+❌ Podpoistenie
+❌ Nadpoistenie
+❌ Nevhodné produkty
+❌ Nepozorné čítanie podmienok`
+  },
+  {
+    title: "Téma 10: Zhrnutie a dlhodobý finančný plán",
+    content: `**Komplexný prístup k osobným financiám**
+
+Efektívne riadenie osobných financií je kľúčové pre dosiahnutie finančnej stability a dosahovanie individuálnych cieľov.
+
+**Kľúčové oblasti osobných financií:**
+
+**1. Plánovanie rozpočtu**
+- Základ finančného zdravia
+- Sledovanie príjmov a výdavkov
+- Pravidlo 50/30/20
+
+**2. Správa úverov**
+- Monitorovanie kreditného skóre
+- Pravidelné splácanie
+- Minimalizácia dlhov
+
+**3. Investície**
+- Vhodné investičné nástroje
+- Diverzifikácia portfólia
+- Optimálny výnos pri akceptovateľnom riziku
+
+**4. Finančné rezervy**
+- Núdzový fond (3-6 mesiacov výdavkov)
+- Ochrana pred neočakávanými situáciami
+
+**5. Dôchodkové plánovanie**
+- Tri piliere dôchodkového systému
+- Pravidelné investovanie
+- Prispôsobenie stratégie veku
+
+**6. Finančná gramotnosť**
+- Kontinuálne vzdelávanie
+- Pochopenie finančných produktov
+- Informované rozhodovanie
+
+**Vytvorenie osobného finančného plánu:**
+
+**Krok 1: Stanovenie cieľov**
+- Krátkodobé (do 1 roka)
+- Strednodobé (1-5 rokov)
+- Dlhodobé (5+ rokov)
+
+**Krok 2: Analýza súčasnej situácie**
+- Príjmy a výdavky
+- Aktíva a pasíva
+- Čisté imanie
+
+**Krok 3: Stratégia dosiahnutia cieľov**
+- Rozpočet
+- Sporenie
+- Investovanie
+- Poistenie
+
+**Krok 4: Implementácia**
+- Automatizácia platieb
+- Pravidelné investície
+- Monitoring pokroku
+
+**Krok 5: Pravidelné hodnotenie**
+- Kvartálne kontroly
+- Ročné zhodnotenie
+- Úprava plánu podľa zmien
+
+**Záverečné odporúčania:**
+
+Plánovanie rozpočtu, správa úverov, vhodné investície a dôchodkové plánovanie sú všetko dôležité aspekty, ktoré by mali byť súčasťou každého osobného finančného plánu.
+
+**Začnite dnes:**
+
+✅ Vytvorte si rozpočet
+✅ Založte núdzový fond
+✅ Začnite investovať
+✅ Plánujte na dôchodok
+✅ Vzdelávajte sa
+
+Finančná sloboda je dosiahnuteľná s disciplínou, vzdelaním a správnym plánovaním!`
+  }
+];
