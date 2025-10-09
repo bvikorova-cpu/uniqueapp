@@ -10928,6 +10928,832 @@ Začnite pomaly, buďte trpezliví sami so sebou a nechajte jogu, aby sa stala p
 
 **Namaste** 🙏`
     }
+  ],
+
+  "Pilates": [
+    {
+      title: "Téma 1: Úvod do Pilates - Čo je pilates",
+      content: `**Čo je pilates?**
+
+Pilates je efektívna metóda cvičenia, ktorá vytvára rovnováhu svalových skupín prostredníctvom ladných a koordinovaných pohybov tela s maximálnou koncentráciou mysle.
+
+**Zameranie metódy:**
+
+Metóda je zameraná na posilnenie „centra tela", niekedy známym pod menom „core, powerhouse". Centrum tela zabezpečuje celkovú dynamickú rovnováhu tela počas každodenných pohybových činností. Reaguje na zmenu polohy tela a pozície končatín voči gravitačnej sile.
+
+**Obnovenie rovnováhy:**
+
+Pravidelným cvičením sa postupne nadobúda a obnovuje narušená rovnováha, ktorá je výsledkom:
+- Nesprávnych pohybových návykov
+- Zranení
+- Pooperačných stavov
+
+**Kĺby a svaly:**
+
+Cvičením sa obnovuje rozsah pohybov v kĺboch a zvýši sa pružnosť svalov.
+
+**Pre koho je pilates vhodný?**
+
+Pilates cvičenie môže byť prispôsobené akejkoľvek fyzickej zdatnosti:
+- Začiatočníci
+- Pokročilí cvičenci
+- Vrcholoví športovci
+- Ľudia s bolesťami svalov
+- Po operáciách
+- Po úrazoch`
+    },
+    {
+      title: "Téma 2: Cvičebné pomôcky a stroje",
+      content: `**Cvičenie na podložke:**
+
+Cvičenie prebieha na podložke s použitím rôznych cvičebných pomôcok.
+
+**Cvičebné pomôcky:**
+
+**Fit lopta**
+- Posilňuje stabilizačné svaly
+- Pomáha rozvíjať rovnováhu
+- Využíva sa pri rôznych cvikoch
+
+**Over ball**
+- Menšia lopta na cielené cvičenia
+- Ideálna na aktiváciu hlbokých svalov
+- Používa sa pri brušných a chrbtových cvikoch
+
+**Pilates kruh**
+- Pomáha pri posilňovaní vnútorných stehenných svalov
+- Využíva sa pri cvičení horných končatín
+- Pridáva odpor pri cvičení
+
+**Valec (roller)**
+- Masážny a posilňovací nástroj
+- Uvoľňuje napäté svaly
+- Zlepšuje rovnováhu
+
+**Arc**
+- Špeciálny oblúk na strečing a posilňovanie
+- Podporuje chrbticu pri ohyboch
+
+**Flowing tone**
+- Flexibilný posilňovací nástroj
+- Vhodný na celotělové posilňovanie
+
+**Toning balls**
+- Malé závažia
+- Pridávajú odpor pri cvičení rúk
+
+**Pilates pás**
+- Pomáha pri strečingu
+- Zlepšuje dosah
+
+**Thera band**
+- Elastická guma
+- Poskytuje odpor pri cvičení
+- Dostupná v rôznych silách
+
+**Cvičebné stroje:**
+
+**Reformer**
+- Hlavný pilates stroj
+- Umožňuje široké spektrum cvikov
+- Pracuje s odporom prameňov
+
+**Exo chair**
+- Kompaktný cvičebný stroj
+- Intenzívne posilňovanie
+
+**Pilates panel**
+- Vertikálny cvičebný nástroj
+- Na pokročilé cvičenia`
+    },
+    {
+      title: "Téma 3: Filozofia Pilates cvičenia",
+      content: `**Základná filozofia:**
+
+Filozofia cvičenia spočíva v nastolení fyzickej a psychickej rovnováhy človeka prostredníctvom vykonávania vedomých a kontrolovaných pohybov celého tela.
+
+**Unikátnosť metódy:**
+
+Pilates je unikátna metóda cvičenia, ktorá bola vyvinutá ako prostriedok predchádzania bolestiam a zraneniam.
+
+**Komplexný prístup:**
+
+**Začleňuje svaly celého tela:**
+- Zlepšuje ich silu
+- Zvyšuje pružnosť
+- Vytvára svalovú symetriu
+
+**Rehabilitačný význam:**
+
+Pilates je vysokohodnotný rehabilitačný prostriedok na dosiahnutie:
+- Stabilizácie tela
+- Zlepšenia kĺbových rozsahov
+- Realizácie prostredníctvom vedomých pohybov tela
+
+**Kľúčové princípy:**
+
+**1. Koncentrácia**
+- Maximálna pozornosť pri každom cviku
+- Spojenie mysle a tela
+
+**2. Kontrola**
+- Každý pohyb je kontrolovaný
+- Žiadne náhodné alebo prudké pohyby
+
+**3. Centrum (Core)**
+- Všetky pohyby vychádzajú z centra tela
+- Aktivácia powerhouse
+
+**4. Plynulosť**
+- Ladné a koordinované pohyby
+- Bez prerušení
+
+**5. Presnosť**
+- Správna technika je dôležitejšia ako počet opakovaní
+- Kvalita pred kvantitou
+
+**6. Dýchanie**
+- Správne dýchanie podporuje pohyb
+- Okysličuje telo počas cvičenia`
+    },
+    {
+      title: "Téma 4: Pozitívne účinky pilates - Pružnosť a sila",
+      content: `**Pružný svalový systém:**
+
+**Význam pružnosti:**
+
+Pružný svalový systém je základom správneho používania svalov a vedie k efektívnemu pohybu.
+
+**Koordinácia a koncentrácia:**
+
+Koordinácia spolu s koncentráciou vytvárajú ucelený systém, čo spôsobuje:
+- Lepšie vykonanie pohybu
+- Prenos do každodenného života
+- Zvládanie životných situácií
+
+**Správne držanie tela:**
+
+**Zlepšenie chybného držania:**
+
+Pilates cielene pracuje na korekcii držania tela, čo vedie k:
+- Zmenšeniu bolestí chrbtice
+- Lepšiemu postoju
+- Vyššej sebadôvere
+
+**Posilňovanie a naťahovanie:**
+
+**Dvojitý účinok:**
+
+Pilates cvičením sa svaly posilňujú a zároveň aj naťahujú. Týmto:
+- Nadobúdajú svaly správny tvar
+- Zachovávajú si svoju funkciu
+- Neprebuildovávajú sa nadmerne
+
+**Trénovanie rozsahu pohybu:**
+
+**Kontrola pohybu:**
+
+Pravidelným cvičením sa trénuje ovládanie rozsahu pohybu, či už väčšieho alebo menšieho.
+
+**Viditeľné výsledky:**
+
+Rozsah pohybu je viditeľný už po niekoľkých lekciách:
+- Zlepšená flexibilita
+- Väčší kĺbový rozsah
+- Lepšia mobilita
+
+**Rovnomerné posilňovanie:**
+
+**Celé telo:**
+
+Počas cvičenia je celé telo posilňované rovnomerne, čím sa pracuje na odstránení svalovej nerovnováhy.
+
+**Bez presilnenia:**
+
+Nedochádza tak k nadmernému posilňovaniu iba vybraných svalových skupín, čo je časté pri iných formách cvičenia.`
+    },
+    {
+      title: "Téma 5: Pilates v rehabilitácii",
+      content: `**Pilates ako rehabilitačná metóda:**
+
+**Uznanie v medicíne:**
+
+Rehabilitácia prijala Pilates medzi svoje liečebné metodiky.
+
+**Dôvody začlenenia:**
+
+**1. Správne dýchanie**
+- Základom každého cviku
+- Podporuje liečebný proces
+- Okysličuje telo
+
+**2. Aktivácia hlbokého brušného svalstva**
+- Stabilizácia centra tela
+- Ochrana chrbtice
+- Podpora vnútorných orgánov
+
+**3. Dôraz na správne prevedené pohyby**
+- Kvalita pred kvantitou
+- Predchádzanie ďalším zraneniam
+- Správne pohybové vzorce
+
+**4. Správne držanie tela**
+- Bolo u J.H Pilatesa na prvom mieste
+- Základ všetkých cvikov
+- Prevencia bolestí
+
+**Aplikácie v rehabilitácii:**
+
+**Po operáciách:**
+- Postupná obnova mobility
+- Šetrné posilňovanie
+- Bezpečný návrat k pohybu
+
+**Po úrazoch:**
+- Cielené cvičenie postihnutej oblasti
+- Obnova svalovej sily
+- Prevencia kompenzačných mechanizmov
+
+**Pri chronických bolestiach:**
+- Uvoľnenie napätých svalov
+- Posilnenie oslabených partií
+- Zlepšenie držania tela
+
+**Bolesti chrbtice:**
+- Stabilizácia chrbtice
+- Posilnenie hlbokých svalov
+- Zlepšenie pohyblivosti
+
+**Pre rôzne diagnózy:**
+
+**Ortopedické problémy:**
+- Skolióza
+- Kyfóza
+- Lordóza
+
+**Neurologické ochorenia:**
+- Rehabilitácia po cievnej príhode
+- Parkinsonova choroba
+- Skleróza multiplex
+
+**Prístup v rehabilitácii:**
+
+Cvičenie je vždy prispôsobené:
+- Individuálnym potrebám
+- Aktuálnemu stavu pacienta
+- Postupnému zlepšovaniu`
+    },
+    {
+      title: "Téma 6: Pilates a šport",
+      content: `**Pilates ako doplnkový tréning:**
+
+**Vhodnosť pre športovcov:**
+
+Pilates je vhodný druh cvičenia, ktorý môže byť zaradený do tréningového procesu športovca.
+
+**Čo Pilates buduje:**
+
+**1. Silný stred tela - Core**
+- Powerhouse pre všetky pohyby
+- Stabilita pri športových výkonoch
+- Ochrana chrbtice
+
+**2. Vnútorná sila**
+- Funkčná sila
+- Vytrvalosť svalov
+- Svalová kontrola
+
+**3. Pružnosť**
+- Prevencia zranení
+- Lepší rozsah pohybu
+- Rýchlejšia regenerácia
+
+**4. Vytrvalosť**
+- Svalová vytrvalosť
+- Mentálna vytrvalosť
+- Dychová kapacita
+
+**Prečo športovci cvičia Pilates:**
+
+**Profesionálny šport vyžaduje:**
+- Silu
+- Pružnosť
+- Koordináciu
+- Rovnováhu
+- Kontrolu tela
+
+Všetky tieto zložky Pilates rozvíja.
+
+**Rastúci trend:**
+
+Rastúci počet profesionálnych športovcov zaraďuje pilates do svojho programu práve pre:
+- Zlepšenie pružnosti tela
+- Zvýšenie sily
+- Rozvoj koordinácie
+
+**Výhody pre športovcov:**
+
+**Výborný doplnkový program:**
+- Zlepší výkon
+- Pomôže predchádzať prípadným zraneniam
+- Urýchli regeneráciu
+- Vyvážи svalové disbalancie
+
+**Pilates pre konkrétne športy:**
+
+**Futbalisti:**
+- Stabilita centra pri kopoch
+- Rovnováha pri zmenách smeru
+- Prevencia zranení kolenných kĺbov
+
+**Hokejisti:**
+- Rotačná sila
+- Flexibilita bedier
+- Ochrana chrbtice
+
+**Lyžiari:**
+- Rovnováha a kontrola
+- Sila dolných končatín
+- Stabilita centra
+
+**Plavci:**
+- Rotačná sila ramien
+- Flexibilita chrbtice
+- Dychová technika
+
+**Golfisti:**
+- Rotačná mobilita
+- Stabilita počas švihu
+- Prevencia bolestí chrbta
+
+**Integrácıa do tréningu:**
+
+Pilates je ideálne zaradiť:
+- 2-3x týždenne
+- Ako doplnok k hlavnému tréningu
+- V regeneračných dňoch
+- Pred sezónou na prípravu`
+    },
+    {
+      title: "Téma 7: Základné princípy Pilates cvičenia",
+      content: `**Šesť základných princípov Pilates:**
+
+**1. KONCENTRÁCIA (Concentration)**
+
+**Význam:**
+Maximálna pozornost pri každom cviku. Myseľ musí byť plne prítomná a zameraná na vykonávaný pohyb.
+
+**Aplikácia:**
+- Sústreďte sa na každý detail pohybu
+- Vnímajte pracujúce svaly
+- Eliminujte rozptýlenie
+- Spojte myseľ s telom
+
+**2. KONTROLA (Control)**
+
+**Podstata:**
+Každý pohyb je kontrolovaný a vedomý. Žiadne náhodné alebo prudké pohyby.
+
+**V praxi:**
+- Plná kontrola nad každým pohybom
+- Pomalé a presné vykonanie
+- Vyhýbanie sa švihom a nárazom
+- Bezpečnosť pred rýchlosťou
+
+**3. CENTRUM (Centering)**
+
+**Core/Powerhouse:**
+Všetky pohyby vychádzajú z centra tela - oblasti medzi rebrami a panvou.
+
+**Aktivácia centra:**
+- Zapojenie hlbokých brušných svalov
+- Stabilizácia panvového dna
+- Podpora chrbtice
+- Základ každého pohybu
+
+**4. PLYNULOSŤ (Flow)**
+
+**Charakteristika:**
+Ladné a koordinované pohyby bez prerušení.
+
+**Realizácia:**
+- Pohyby plynú jeden do druhého
+- Rovnomerné tempo
+- Gracióznosť pohybu
+- Prirodzený rytmus
+
+**5. PRESNOSŤ (Precision)**
+
+**Kľúčový princíp:**
+Správna technika je dôležitejšia ako počet opakovaní. Kvalita pred kvantitou.
+
+**Dôraz na:**
+- Správne vyrovnanie tela
+- Presné pozície
+- Detaily vykonania
+- Optimálne zapojenie svalov
+
+**6. DÝCHANIE (Breathing)**
+
+**Význam dýchania:**
+Správne dýchanie podporuje pohyb a okysličuje telo počas cvičenia.
+
+**Technika:**
+- Dýchanie do rebier (laterálne)
+- Výdych pri námane
+- Nádych pri relaxácii
+- Synchronizácia s pohybom
+
+**Dodatočné princípy:**
+
+**7. RELAXÁCIA**
+- Uvoľnenie nepracujúcich svalov
+- Minimalizácia napätia
+
+**8. VYTRVALOSŤ**
+- Postupné budovanie kondície
+- Pravidelná prax
+
+**9. HARMONIZÁCIA**
+- Rovnováha medzi silou a flexibilitou
+- Symetria tela`
+    },
+    {
+      title: "Téma 8: Centrum tela - Core/Powerhouse",
+      content: `**Čo je centrum tela?**
+
+**Definícia:**
+
+Centrum tela (core, powerhouse) je oblasť medzi rebrami a panvou, ktorá zahŕňa:
+- Hlboké brušné svaly
+- Chrbtové svaly
+- Panvové dno
+- Bránica
+
+**Význam centra:**
+
+**Dynamická rovnováha:**
+
+Centrum tela zabezpečuje celkovú dynamickú rovnováhu tela počas každodenných pohybových činností.
+
+**Reakcia na zmeny:**
+
+Reaguje na:
+- Zmenu polohy tela
+- Pozície končatín voči gravitačnej sile
+- Neočakávané pohyby
+- Vonkajšie sily
+
+**Svaly centra tela:**
+
+**1. Priečny brušný sval (Transversus abdominis)**
+- Najhlbší brušný sval
+- "Prírodný korzet"
+- Stabilizuje chrbticu
+
+**2. Vnútorné a vonkajšie šikmé brušné svaly**
+- Rotácia trupu
+- Ohýbanie do strán
+- Stabilizácia
+
+**3. Priamy brušný sval (Rectus abdominis)**
+- "Kocky"
+- Ohýbanie trupu
+- Podpora držania
+
+**4. Multifidus**
+- Hlboké chrbtové svaly
+- Stabilizácia stavcov
+- Ochrana chrbtice
+
+**5. Panvové dno**
+- Podpora vnútorných orgánov
+- Kontinencia
+- Stabilita panvy
+
+**6. Bránica**
+- Hlavný dychový sval
+- Podpora vnútra brucha
+- Stabilizácia centra
+
+**Aktivácia centra:**
+
+**Technika aktivácie:**
+
+1. **Nádych:**
+   - Dýchajte do rebier
+   - Rozšírte hrudník do strán
+
+2. **Výdych:**
+   - Zatiahnite pupok k chrbtici
+   - Aktivujte panvové dno
+   - Predstavte si "korzet" okolo pása
+
+3. **Udržanie:**
+   - Udržujte aktiváciu počas celého cviku
+   - 30-40% maximálnej kontrakcie
+   - Stále dýchajte
+
+**Praktické cviky na aktiváciu:**
+
+**Cvik 1: Základná aktivácia**
+- V ľahu na chrbte
+- Kolená ohnuté
+- Aktivujte centrum pri výdychu
+
+**Cvik 2: Dead bug**
+- Udržanie aktivácie pri pohybe končatín
+- Kontrola stability
+
+**Cvik 3: Plank**
+- Izometrická sila centra
+- Celkové napätie tela
+
+**Benefity silného centra:**
+
+**Zdravie:**
+- Ochrana chrbtice
+- Prevencia bolestí chrbta
+- Lepšie držanie tela
+
+**Výkon:**
+- Lepší prenos sily
+- Stabilita pri pohybe
+- Efektívnejší pohyb
+
+**Každodenný život:**
+- Bezpečné zdvíhanie bremien
+- Lepšia rovnováha
+- Viac energie`
+    },
+    {
+      title: "Téma 9: Dýchanie v Pilates",
+      content: `**Význam správneho dýchania:**
+
+**Prečo je dýchanie dôležité?**
+
+Správne dýchanie je základom Pilates metódy:
+- Okysličuje svaly
+- Podporuje pohyb
+- Pomáha aktivovať centrum
+- Uvoľňuje napätie
+
+**Typy dýchania:**
+
+**Laterálne (rebrové) dýchanie:**
+
+**Charakteristika:**
+- Rozširovanie rebier do strán a dozadu
+- Nie do brucha smerom hore
+
+**Výhody:**
+- Umožňuje udržať aktivované centrum
+- Lepšia stabilizácia
+- Efektívnejšie okysličenie
+
+**Technika laterálneho dýchania:**
+
+**Nácvik:**
+
+1. **Pozícia:**
+   - Sadnite si alebo stojte vzpriamene
+   - Ruky položte na rebra po stranách
+
+2. **Nádych:**
+   - Vdýchnite nosom
+   - Cíťte, ako sa rebra rozširujú do strán
+   - Plecia zostávajú dole
+
+3. **Výdych:**
+   - Vydýchnite ústami
+   - Rebra sa vracajú do pôvodnej pozície
+   - Aktivujte centrum
+
+4. **Prax:**
+   - Opakujte 5-10x
+   - Vnímajte pohyb rebier
+
+**Synchronizácia dýchania s pohybom:**
+
+**Základné pravidlo:**
+
+**Výdych pri námane:**
+- Keď sa svaly kontrahujú
+- Pri ťažkej fáze cviku
+- Pri zdvíhaní, ohýbaní
+
+**Nádych pri relaxácii:**
+- Pri návrate do pôvodnej pozície
+- Pri ľahkej fáze cviku
+- Pri naťahovaní
+
+**Príklady:**
+
+**Hundred:**
+- Nádych na 5 úderov
+- Výdych na 5 úderov
+
+**Roll Up:**
+- Nádych v ľahu
+- Výdych pri zdvíhaní
+- Nádych hore
+- Výdych pri návrate
+
+**Single Leg Stretch:**
+- Výdych pri zmene nôh
+- Nádych počas držania
+
+**Časté chyby pri dýchaní:**
+
+**1. Zadržiavanie dychu:**
+- Najčastejšia chyba
+- Spôsobuje napätie
+- Riešenie: Vedome dýchajte
+
+**2. Dýchanie do brucha:**
+- Deaktivuje centrum
+- Riešenie: Laterálne dýchanie
+
+**3. Zdvíhanie pliec:**
+- Napätie v krku
+- Riešenie: Plecia dole a dozadu
+
+**4. Plytké dýchanie:**
+- Nedostatočné okysličenie
+- Riešenie: Hlboké, plné nádechy
+
+**Benefity správneho dýchania:**
+
+**Fyzické:**
+- Lepšia okysličenie svalov
+- Efektívnejší pohyb
+- Väčšia sila
+
+**Mentálne:**
+- Relaxácia
+- Lepšia koncentrácia
+- Zníženie stresu
+
+**Cvičenie:**
+- Lepší výkon
+- Väčšia vytrvalosť
+- Kontrola pohybu
+
+**Prax dýchania:**
+
+**Denne:**
+- 5 minút laterálneho dýchania
+- Ráno po prebudení
+- Večer pred spánkom
+
+**Pri cvičení:**
+- Vždy sledujte dýchanie
+- Nenechajte ho zájsť do úzadia
+- Je to časť každého cviku`
+    },
+    {
+      title: "Téma 10: Začíname s Pilates - Praktické rady",
+      content: `**Pre začiatočníkov:**
+
+**Prvé kroky:**
+
+**1. Nájdite kvalifikovaného inštruktora:**
+- Certifikovaný Pilates tréner
+- Skúsenosti s výučbou
+- Individuálny prístup
+
+**2. Začnite s mat Pilates:**
+- Cvičenie na podložke
+- Základné cviky
+- Bez pomôcok na začiatok
+
+**3. Malé skupiny alebo individuál:**
+- Lepšia kontrola techniky
+- Osobná pozornosť inštruktora
+- Bezpečnejší začiatok
+
+**Frekvencia cvičenia:**
+
+**Odporúčanie:**
+- 2-3x týždenne na začiatku
+- Postupne zvyšujte na 3-4x
+- Pravidelnosť je kľúčová
+
+**Dĺžka lekcie:**
+- 45-60 minút
+- Kvalita pred kvantitou
+- Počúvajte svoje telo
+
+**Čo potrebujete:**
+
+**Základné vybavenie:**
+
+**1. Podložka (mat):**
+- Hrubšia než na jógu (10-15mm)
+- Dostatočne veľká
+- Protišmyková
+
+**2. Pohodlné oblečenie:**
+- Elastické
+- Neobmedzujúce pohyb
+- Nie príliš voľné (inštruktor musí vidieť držanie)
+
+**3. Voda:**
+- Hydratácia
+- Malé dúšky počas cvičenia
+
+**Postupnosť učenia:**
+
+**Fáza 1: Základy (1-3 mesiace)**
+- Aktivácia centra
+- Správne dýchanie
+- Základné držanie tela
+- Jednoduché cviky
+
+**Fáza 2: Stredne pokročilí (3-6 mesiacov)**
+- Komplexnejšie cviky
+- Pridanie pomôcok
+- Dlhšie sekvencie
+- Plynulosť pohybov
+
+**Fáza 3: Pokročilí (6+ mesiacov)**
+- Náročné cviky
+- Cvičebné stroje
+- Kreatívne kombinácie
+- Vlastná prax
+
+**Dôležité rady:**
+
+**POČÚVAJTE SVOJE TELO:**
+- Rozlišujte medzi výzvou a bolesťou
+- Neprekračujte hranice
+- Komunikujte s inštruktorom
+
+**BUĎTE TRPEZLIVÍ:**
+- Výsledky prichádzajú postupne
+- Kvalita je dôležitejšia než rýchlosť
+- Každý napreduje svojím tempom
+
+**KONCENTRUJTE SA:**
+- Kvalita > kvantita
+- 10 správne vykonaných opakovaní je lepších než 50 nesprávnych
+- Myseľ a telo spoločne
+
+**PRAVIDELNOSŤ:**
+- Lepšie kratšie a častejšie
+- Než dlhé a sporadické
+- Vytvorte si rutínu
+
+**Čo očakávať:**
+
+**Po prvých lekciách:**
+- Svalová bolesť (prirodzená)
+- Únava (normálna)
+- Zvýšené vedomie tela
+
+**Po mesiaci:**
+- Lepšie držanie tela
+- Väčšia sila centra
+- Zlepšená flexibilita
+
+**Po 3 mesiacoch:**
+- Viditeľné zmeny postavy
+- Výrazne lepšie držanie
+- Viac energie
+- Menšie bolesti chrbta
+
+**Po 6 mesiacoch:**
+- Transformácia tela
+- Pevné centrum
+- Pružné svaly
+- Gráciovité pohyby
+
+**Bezpečnosť:**
+
+**Kedy konzultovať lekára:**
+- Chronické bolesti
+- Po operácii
+- Gravidita
+- Osteoporóza
+- Iné zdravotné problémy
+
+**Kontraindikácie:**
+- Akútne zápaly
+- Horúčka
+- Čerstvé zranenia
+- Nestabilné zdravotné stavy
+
+**Motivácia:**
+
+**Citát J.H. Pilatesa:**
+"Po 10 lekciách pocítite rozdiel, po 20 lekciách rozdiel uvidíte, po 30 lekciách budete mať úplne nové telo."
+
+**Záver:**
+
+Pilates je cesta, nie cieľ. Užívajte si každú lekciu, buďte trpezliví a výsledky prídu. Najdôležitejšie je začať a byť pravidelný.
+
+**Vitajte vo svete Pilates! 🧘‍♀️**`
+    }
   ]
 };
 
