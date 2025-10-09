@@ -352,6 +352,448 @@ Gratulujeme! Dokončili ste kurz základov líčenia a ste pripravení vytvoriť
     }
   ],
   
+  "Starostlivosť o pleť": [
+    {
+      title: "Téma 1: Úvod do starostlivosti o pleť",
+      content: `**Čo je starostlivosť o pleť?**
+
+Starostlivosť o pleť spočíva v dôkladnom rannom a večernom čistení, hydratácii pomocou krémov a sér, ochrane pred slnkom s SPF a pravidelnom používaní masiek a peelingov raz až dvakrát týždenne.
+
+**Výber produktov:**
+
+Výber produktov je kľúčový a mal by zohľadňovať typ pleti (suchá, mastná, citlivá, zrelá) a jej individuálne potreby.
+
+**Základné princípy:**
+
+- Dôkladné ranné a večerné čistenie
+- Hydratácia pomocou krémov a sér
+- Ochrana pred slnkom s SPF
+- Pravidelné používanie masiek a peelingov
+- Konzistentnosť a pravidelnosť
+
+**Prečo je starostlivosť o pleť dôležitá?**
+
+Pleť je najväčší orgán tela a potrebuje pravidelné ošetrovanie. Správna starostlivosť pomáha udržať pleť zdravú, hydratovanú a chránenú pred vonkajšími vplyvmi.`
+    },
+    {
+      title: "Téma 2: Čistenie pleti",
+      content: `**Prvý krok: Čistenie**
+
+Čistenie je základom každej starostlivosti o pleť. Musí sa vykonávať dvakrát denne - ráno a večer.
+
+**Dôležité pravidlá:**
+
+**1. Dvakrát denne:**
+- Ráno: Odstránenie mazu a nečistôt nahromadených cez noc
+- Večer: Odstránenie make-upu, mazu a nečistôt z celého dňa
+
+**2. Dvojfázové čistenie:**
+- Prvá fáza: Produkt na olejovej báze (odstraňuje make-up a vodoodolné produkty)
+- Druhá fáza: Gél alebo pena (dôkladne vyčistí pleť)
+
+**3. Zlaté pravidlo:**
+**Nikdy nechoďte spať s make-upom na tvári**
+
+**Výber čistiaceho produktu:**
+
+- **Suchá pleť:** Čistiace mlieko alebo krém
+- **Mastná pleť:** Čistiaci gél alebo pena
+- **Citlivá pleť:** Jemné micelárne vody
+- **Zmiešaná pleť:** Gél s hydratačnými zložkami
+
+**Správna technika čistenia:**
+
+1. Navlhčite tvár vlažnou vodou
+2. Naneste čistiaci produkt jemnými krúživými pohybmi
+3. Vymasírujte 30-60 sekúnd
+4. Dôkladne opláchnite vlažnou vodou
+5. Osušte tvár jemným uterákom (netrieť, len pritlačiť)`
+    },
+    {
+      title: "Téma 3: Hydratácia pleti",
+      content: `**Druhý krok: Hydratácia**
+
+Hydratácia je nevyhnutná pre všetky typy pleti, vrátane mastnej.
+
+**Ranná hydratácia:**
+
+**Denný krém:**
+- Hydratuje pleť
+- Chráni pred vonkajšími vplyvmi
+- Pripravuje pleť na make-up
+- Mal by obsahovať SPF
+
+**Večerná hydratácia:**
+
+**Nočný krém:**
+- Regeneruje pleť počas spánku
+- Výživuje hlboké vrstvy pokožky
+- Obvykle hustejší ako denný krém
+- Podporuje obnovu buniek
+
+**Sérum - extra hydratácia:**
+
+Sérum s aktívnymi látkami poskytne extra hydratáciu a ochranu:
+
+**Kyselina hyalurónová:**
+- Intenzívna hydratácia
+- Vyplňuje jemné vrásky
+- Viaže vlhkosť v pleti
+
+**Vitamín C:**
+- Rozjasňuje pleť
+- Antioxidačná ochrana
+- Podporuje tvorbu kolagénu
+
+**Vitamín E:**
+- Ochrana pred voľnými radikálmi
+- Zmäkčuje pokožku
+- Podporuje regeneráciu
+
+**Aplikácia hydratačných produktov:**
+
+1. Sérum - najskôr (ak ho používate)
+2. Očný krém - jemne okolo očí
+3. Denný/nočný krém - celá tvár a krk
+4. Nanášajte od stredu tváre k okrajom`
+    },
+    {
+      title: "Téma 4: Ochrana pred slnkom",
+      content: `**Tretí krok: Ochrana pred slnkom**
+
+Ochrana pred UV žiarením je najdôležitejší krok v prevencii starnutia pleti.
+
+**Prečo je SPF dôležité?**
+
+- Chráni pred UV žiarením
+- Predchádza predčasnému starnutiu
+- Znižuje riziko rakoviny kože
+- Zabraňuje pigmentovým škvrnám
+- Udržuje pleť mladistvú
+
+**Denný krém by mal obsahovať:**
+
+**Ochranný slnečný faktor (SPF):**
+- Minimálne SPF 30
+- Široké spektrum (UVA + UVB)
+- Používať celoročne, nie len v lete
+- Aj pri zamračenom počasí
+
+**Správne používanie SPF:**
+
+**Množstvo:**
+- Aplikujte dostatočné množstvo (veľkosť lieskovca)
+- Nezabudnite na krk a dekolt
+
+**Reaplikácia:**
+- Každé 2 hodiny pri pobyte vonku
+- Po umytí tváre
+- Po športe alebo potení
+
+**Často zanedbávané miesta:**
+- Viečka
+- Uši
+- Krk
+- Dekolt
+- Chrbát rúk
+
+**Bežná chyba:**
+
+Mnohí ľudia si nanášajú ochranný krém len raz ráno a myslia si, že im vydrží celý deň. To je nesprávne! Krém s SPF musí vydržať maximálne 1 mesiac pri dennom používaní.`
+    },
+    {
+      title: "Téma 5: Doplnková starostlivosť - masky a peelingy",
+      content: `**Štvrtý krok: Doplnková starostlivosť**
+
+Okrem každodennej rutiny potrebuje pleť aj intenzívnejšiu starostlivosť.
+
+**Masky:**
+
+**Frekvencia:**
+- 1 až 2-krát týždenne
+
+**Typy masiek:**
+
+**Hydratačné masky:**
+- Pre všetky typy pleti
+- Dodávajú vlhkosť
+- Upokojujú pokožku
+
+**Čistiace masky:**
+- Ideálne pre mastnú pleť
+- Hĺbkové čistenie pórov
+- Odstránenie prebytočného mazu
+
+**Protivráskové masky:**
+- Pre zrelú pleť
+- Vyplňujú vrásky
+- Spevňujú pokožku
+
+**Peelingy:**
+
+**Frekvencia:**
+- 1 až 2-krát týždenne
+- Pri citlivej pleti 1-krát týždenne
+
+**POZOR - častá chyba:**
+**Príliš častý peeling** môže vašu pokožku podráždiť!
+
+**Typy peelingov:**
+
+**Mechanické peelingy:**
+- Obsahujú drobné zrnká
+- Fyzicky odstraňujú odumreté bunky
+
+**Chemické peelingy:**
+- AHA kyseliny (glykolová, mliečna)
+- BHA kyseliny (salicylová)
+- Rozpúšťajú odumreté bunky
+
+**Enzymatické peelingy:**
+- Najjemnejšie
+- Ideálne pre citlivú pleť
+- Obsahujú ovocné enzýmy
+
+**Aplikácia:**
+1. Na vyčistenú pleť
+2. Jemné krúživé pohyby
+3. Vyhnite sa očnému okoliu
+4. Opláchnite a hydratujte`
+    },
+    {
+      title: "Téma 6: Starostlivosť o očné okolie",
+      content: `**Očné krémy**
+
+Pokožka okolo očí je najcitlivejšia a najjemnejšia na celej tvári.
+
+**Prečo je potrebná osobitná starostlivosť?**
+
+- Pokožka je tu 10x tenšia
+- Menej mazových žliaz
+- Prvé vrásky sa objavujú práve tu
+- Vystavená častému pohybu (žmurkanie)
+
+**Očný krém vs. pleťový krém:**
+
+**NIE - nepoužívajte pleťový krém na oči:**
+- Príliš hutný
+- Môže spôsobiť opuchy
+- Dráždivý pre citlivé oko
+
+**ÁNO - používajte špeciálny očný krém:**
+- Jemnejšia konzistencia
+- Nie je dráždivý
+- Špeciálne zložky pre túto oblasť
+
+**Správna aplikácia očného krému:**
+
+**Technika poklepkávania:**
+1. Malú bodku krému naneste na prstenník
+2. Jemne poklepávajte okolo očí
+3. Začnite od vnútorného kútika
+4. Pokračujte k vonkajšiemu kútiku
+5. NIE - netrieť ani neťahať pokožku!
+
+**Častá chyba:**
+**Trenie a ťahanie pokožky** - robíme to denne bez premýšľania, od držania pokožky pri líčení až po vtieranie krému. Trením pokožka stráca elasticitu!
+
+**Kedy aplikovať:**
+- Ráno a večer
+- Po očistení, pred hydratačným krémom
+- Môžete použiť aj špeciálne sérum pod očný krém`
+    },
+    {
+      title: "Téma 7: Výber produktov podľa typu pleti",
+      content: `**Určenie typu pleti**
+
+**Suchá pleť:**
+- Ťahá, je napätá
+- Šupinatá, drsná na dotyk
+- Málo viditeľné póry
+- Sklonná k podráždeniu
+
+**Produkty pre suchú pleť:**
+- Krémové čistiace produkty
+- Bohaté výživné krémy
+- Hydratačné séra s kyselinou hyalurónovou
+- Výživné masky
+
+**Mastná pleť:**
+- Lesklá, mastiaca sa
+- Rozšírené póry
+- Náchylná na akné
+- Hrubšia štruktúra
+
+**Produkty pre mastnú pleť:**
+- Gélové čistiace produkty
+- Ľahké, nematujúce krémy
+- Séra s niacínamidom
+- Čistiace masky s ílovými minerálmi
+
+**DÔLEŽITÉ:**
+**Hydratáciu potrebuje každý typ pleti, vrátane tej mastnej!**
+
+**Citlivá pleť:**
+- Červená, podráždená
+- Pálenie, štípanie
+- Reaguje na kozmetiku
+- Tenké žilky (kuperóza)
+
+**Produkty pre citlivú pleť:**
+- Hypoalergénne produkty
+- Bez parfumov a farbív
+- Upokojujúce zložky (centellla, pantenol)
+- Minimalistická starostlivosť
+
+**Zmiešaná pleť:**
+- Mastná T-zóna (čelo, nos, brada)
+- Suchá líca
+- Najčastejší typ pleti
+
+**Produkty pre zmiešanú pleť:**
+- Jemné gélové čistenie
+- Ľahké hydratačné krémy
+- Možnosť "multimasking" - rôzne masky na rôzne časti tváre
+
+**Zrelá pleť:**
+- Vrásky a jemné linky
+- Strata elasticity
+- Pigmentové škvrny
+- Suchšia pokožka
+
+**Produkty pre zrelú pleť:**
+- Protivráskové krémy s retinolom
+- Výživné séra
+- Spevňujúce masky
+- Produkty s antioxidantmi`
+    },
+    {
+      title: "Téma 8: 10 najčastejších chýb v starostlivosti o pleť",
+      content: `**Chyba 1: Ponáranie prstov do téglikov**
+
+Aj keď sú vaše ruky čisté, mohli by ste nevedomky preniesť baktérie a kožný maz do vašich krémov.
+
+**Riešenie:** Pri každom použití použite špachtľu, odmerku alebo čerstvý vatový tampón.
+
+**Chyba 2: Trenie a ťahanie pokožky**
+
+Trenie a ťahanie tváre zaťažuje pokožku. Trením o pokožku, najmä o jemnú oblasť očí, stráca pokožka časom elasticitu.
+
+**Riešenie:** Naučte sa správne aplikovať očný krém poklepkávaním.
+
+**Chyba 3: Nečistenie mobilného telefónu**
+
+Zamyslite sa nad tým, koľkokrát za deň sa dotknete svojho mobilného telefónu.
+
+**Riešenie:** Utrite obrazovku aspoň raz týždenne, ak nie denne. Čistiace prostriedky pre domácnosť môžu poškodiť obrazovku vášho telefónu.
+
+**Chyba 4: Príliš častý peeling**
+
+Peeling pomáha zvýšiť bunkovú obnovu, ale každodenný peeling môže vašu pokožku podráždiť.
+
+**Riešenie:** Začnite exfoliáciou 2x týždenne. Ak máte citlivú pleť, voľte enzymatický peeling.
+
+**Chyba 5: Ignorovanie príznakov dehydratácie**
+
+Napätá, šupinatá pokožka je hlavným indikátorom dehydratácie.
+
+**Riešenie:** Zaveďte ráno do svojho rituálu hydratačný krém na báze kyseliny hyalurónovej a večer niečo trochu bohatšie.`
+    },
+    {
+      title: "Téma 9: Ďalších 5 chýb v starostlivosti o pleť",
+      content: `**Chyba 6: Nečistenie štetcov na make-up**
+
+Olej a mejkap sa hromadia na vašich štetcoch na líčenie.
+
+**Riešenie:** Umyte si štetce mydlom a vodou aspoň raz týždenne. Použite detský šampón alebo jemný čistiaci prostriedok.
+
+**Chyba 7: Aplikácia v nesprávnom poradí**
+
+Aplikácia produktov v správnom poradí vám pomôže vyťažiť z vašej starostlivosti o pleť maximum.
+
+**Správne poradie:**
+1. Čistenie
+2. Toner (voliteľné)
+3. Sérum
+4. Očný krém
+5. Hydratačný krém
+6. SPF (vždy posledný!)
+
+**Chyba 8: Neodstraňovanie make-upu pred spaním**
+
+Ponechanie make-upu cez noc ničí vašu pleť. Produkt sa usádza do jemných vrások a zabraňuje tomu, aby vaša pleť prešla nočným opravným cyklom.
+
+**Riešenie:** Každý večer vyčistite mastnotu, špinu a zvyšky z dňa.
+
+**Chyba 9: Šetrenie na SPF**
+
+Ochranný krém, ak sa ozaj používa, musí vydržať maximálne 1 mesiac.
+
+**Riešenie:** Aplikujte opaľovací krém denne na všetky exponované oblasti pokožky a nezabudnite reaplikovať. Vystavujete sa slnku každý deň bez toho, aby ste si to uvedomovali - v aute, pri okne, na prechádzke so psom.
+
+**Chyba 10: Používanie nesprávnych produktov**
+
+Suchá pleť potrebuje ošetrujúce zvláčňujúce zložky, zatiaľ čo mastná pleť potrebuje zložky, ktoré tvorbu mazu eliminujú.
+
+**Riešenie:** Zistite, aký je váš typ pleti, a vyberte si tú najlepšiu zostavu. **Pamätajte, že hydratáciu potrebuje každý typ pleti, vrátane tej mastnej!**`
+    },
+    {
+      title: "Téma 10: Tipy pre efektívnu starostlivosť a zhrnutie",
+      content: `**Tipy pre efektívnu starostlivosť:**
+
+**1. Vyberajte produkty podľa typu pleti:**
+- Suchá pleť
+- Mastná pleť
+- Citlivá pleť
+- Zmiešaná pleť
+- Zrelá pleť
+
+Každý typ má rôzne potreby a vyžaduje špecifické produkty.
+
+**2. Buďte dôslední:**
+- Rutinu si dodržiavajte konzistentne
+- Pravidelnosť je kľúčom k úspechu
+- Výsledky sa nedostavia okamžite
+- Dajte produktom čas (minimálne 4-6 týždňov)
+
+**3. Sledujte dátum spotreby:**
+- Nepoužívajte kozmetiku, ktorá je otvorená dlhšie ako rok
+- Produkty strácajú účinnosť
+- Môžu spôsobiť podráždenie
+- Sledujte symbol s otvorením a číslom mesiacov
+
+**Zhrnutie základných krokov:**
+
+**Ranná rutina:**
+1. Čistenie
+2. Toner (voliteľné)
+3. Sérum
+4. Očný krém
+5. Denný krém s SPF
+
+**Večerná rutina:**
+1. Odstránenie make-upu
+2. Dôkladné čistenie
+3. Toner (voliteľné)
+4. Sérum
+5. Očný krém
+6. Nočný krém
+
+**Týždenne:**
+- Peeling 1-2x
+- Maska 1-2x
+
+**Zlaté pravidlá:**
+✓ Nikdy nechoďte spať s make-upom
+✓ Používajte SPF každý deň
+✓ Hydratujte všetky typy pleti
+✓ Buďte jemní k svojej pleti
+✓ Konzistentnosť je kľúčom k úspechu
+
+Gratulujeme! Dokončili ste kurz Starostlivosť o pleť a ste pripravení starať sa o svoju pleť profesionálne!`
+    }
+  ],
+  
   "Základy účtovníctva": [
     {
       title: "Téma 1: Úvod do účtovníctva",

@@ -48,7 +48,7 @@ const courseCategories = [
     name: "Krása a zdravie",
     icon: "💄",
     courses: [
-      "Make-up pre začiatočníkov", "Profesionálny make-up", "Manikúra",
+      "Make-up pre začiatočníkov", "Starostlivosť o pleť", "Manikúra",
       "Pedikúra", "Gél laky", "Nechtový dizajn", "Vlasoví styling",
       "Masáže", "Aromaterapia", "Jóga", "Pilates", "Fitness tréning"
     ]
