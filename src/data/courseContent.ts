@@ -12246,7 +12246,7 @@ Oneskorená svalovica - bolesti svalov 24-72 hodín po tréningu.
     }
   ],
   
-  "Time management: Ako efektívne narábať s časom": [
+  "Time management": [
     {
       title: "Téma 1: Čo je time management?",
       content: `**Úvod do time managementu**
