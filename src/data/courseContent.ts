@@ -675,6 +675,350 @@ Rozdelenie rozpočtu podľa kanálov a cieľov.`
 **Záver:**
 Marketing sa neustále vyvíja. Kľúčom k úspechu je neustále vzdelávanie, testovanie nových prístupov a prispôsobovanie sa zmenám v správaní spotrebiteľov a technológiách.`
     }
+  ],
+  
+  "Finančné plánovanie": [
+    {
+      title: "Téma 1: Úvod do finančného plánovania",
+      content: `**Čo je finančné plánovanie?**
+
+Finančné plánovanie je činnosť vedúca k príprave finančného plánu. Teda stanovenie postupností budúcich dejov v oblasti financií, ktoré popíšu cestu k vytýčenému finančnému cieľu. Výsledkom finančného plánovania je finančný plán.
+
+**Výsledok finančného plánovania**
+
+Finančný plán je dokument, v ktorom sú proti sebe postavené súčasná a budúca potreba finančných prostriedkov (súčasné a budúce výdavky) a súčasné a budúce zdroje na ich krytie (súčasné a budúce príjmy).
+
+**Význam pre podnik**
+
+Pomocou finančného plánu vieme "predvídať" budúcnosť a predovšetkým domýšľať prípadné dôsledky pripravovaných rozhodnutí do budúcej finančnej kondície. Slúži k naplňovaniu základných cieľových poslaní podniku, t. j. zaisťovať rast hodnoty akcií, prípadne maximalizovať hodnotu firmy.
+
+**Kto využíva finančné plány?**
+
+O výsledky týchto budúcich rozhodnutí sa zaujímajú:
+- Investori a vlastníci
+- Potencionálni investori
+- Analytici pri príprave investičných rozhodnutí
+
+**Spojenie s históriou**
+
+Finančné plánovanie vychádza zo znalosti historických dát, ktoré sú organizáciami získavané z účtovných dokumentov. Dochádza k vytváraniu budúcich finančných rozpočtov, rozvahy, výkazu ziskov a strát, výkazu finančných tokov atď.`
+    },
+    {
+      title: "Téma 2: Finančné plánovanie ako kontinuálny proces",
+      content: `**Nie je to jednorazový proces**
+
+Na finančné plánovanie, tak ako na celý proces firemného plánovania sa nedá pozerať ako na diskrétny jednorazový proces. Ide o kontinuálny proces, lebo plánovaná projekcia sa nemôže nikdy považovať za finálny a posledný produkt.
+
+**Potreba revízie**
+
+Plán sa musí revidovať podľa toho, ako sa menia podmienky, plnia úlohy a ciele plánu. Informácie tohto charakteru poskytuje kontrolná činnosť, ktorá je úzko spätá s plánovacím procesom.
+
+**Úloha kontroly**
+
+Úlohou kontroly v plánovacej činnosti je:
+- Hodnotenie návrhu plánu
+- Sledovanie priebehu a stavu plnenia úloh
+- Vyhodnocovanie plnenia cieľov plánu
+
+**Funkcie kontroly**
+
+Kontrola v procese plánovania je teda nevyhnutná, pretože plní nielen funkciu poznávaciu, ale ovplyvňuje aj ďalšie plánové rozhodnutia v procese tvorby plánu.
+
+**Vzťah veľkosti podniku a časového horizontu**
+
+Medzi časovým horizontom a veľkosťou podniku je veľmi úzka spojitosť:
+- Menšie podniky spravidla plánujú na kratší časový horizont
+- Veľké podniky majú podstatne dlhšie plánovacie horizonty
+
+**Závislosť istoty a presnosti**
+
+Všeobecne platí, že čím je plánovací horizont kratší, tým vyšší je stupeň istoty a presnosti plánu.`
+    },
+    {
+      title: "Téma 3: Časové horizonty finančného plánovania",
+      content: `**Delenie z časového hľadiska**
+
+Z časového hľadiska rozlišujeme finančné plánovanie nasledovne:
+
+**1. Krátkodobé plánovanie**
+- Časový horizont do 1 roku
+- Najvyššia presnosť a istota
+- Detailné operatívne plány
+
+**2. Strednodobé plánovanie**
+- Časový horizont 1 – 5 rokov
+- Taktické rozhodnutia
+- Stredná úroveň detailnosti
+
+**3. Dlhodobé plánovanie**
+- Časový horizont 5 rokov a viac
+- Strategické rozhodnutia
+- Najvyššia úroveň neistoty
+
+**Vzťah k veľkosti podniku**
+
+Menšie podniky:
+- Kratší časový horizont
+- Jednoduchší plánovací systém
+- Menej zložiek v plánovaní
+
+Veľké podniky:
+- Dlhší časový horizont
+- Komplexný plánovací systém
+- Všetky zložky plánovania
+
+**Význam časového horizontu**
+
+Správne nastavenie časového horizontu je kľúčové pre:
+- Realistické ciele
+- Správne rozdelenie zdrojov
+- Efektívnu kontrolu plnenia`
+    },
+    {
+      title: "Téma 4: Zložky finančného plánu",
+      content: `**Základné zložky**
+
+Finančný plán má príjmovú a výdajovú zložku. Ale tieto zložky môžu byť riešené aj samostatnými plánmi.
+
+**Podrobnejšie plány**
+
+V niektorých prípadoch, napríklad v podnikovom prostredí, bývajú vytvárané aj podrobnejšie plány:
+- Plán investícií
+- Plán odpisov
+- Plán konkrétnych typov výdavkov
+- Plán konkrétnych typov príjmov
+
+**Hlavné finančné výkazy**
+
+V rámci bežného riadenia podniku je finančný plán súčasťou podnikového plánu. Skladá sa z nasledujúcich hlavných finančných výkazov:
+
+**1. Výsledovka**
+- Zachytáva výnosy a náklady
+- Ukazuje zisk alebo stratu
+- Meria výkonnosť podniku
+
+**2. Rozvaha**
+- Prehľad aktív a pasív
+- Finančná pozícia k danému dátumu
+- Bilancie majetku a zdrojov
+
+**3. Výkaz peňažných tokov (Cash flow)**
+- Sleduje pohyb hotovosti
+- Prevádzkové, investičné a finančné toky
+- Kľúčový pre likviditu
+
+**Syntéza plánov**
+
+Vytváranie finančného plánu završuje a spája tieto tvorivé plány z pohľadu výnosnosti a rizík.`
+    },
+    {
+      title: "Téma 5: Účel a ciele finančných plánov",
+      content: `**Základný zmysel**
+
+Zmyslom finančného plánovania je získanie kontroly nad financiami a riadením finančných rizík. Teda priamo stanoviť, či podporiť rozhodovanie pri stanovovaní konkrétneho správania subjektu v oblasti financií.
+
+**Hlavné funkcie**
+
+Finančné plánovanie pomáha:
+- Predvídať pravdepodobné budúce finančné situácie
+- Riadiť finančné riziká
+- Podporovať rozhodovanie
+- Stanovovať konkrétne správanie v oblasti financií
+
+**Typy finančného plánovania**
+
+Podľa subjektu rozlišujeme:
+
+**1. Korporátne (podnikové)**
+- Finančné plánovanie firiem
+- Strategické a taktické rozhodnutia
+
+**2. Verejné**
+- Štátny rozpočet
+- Rozpočty obcí a miest
+- Verejné inštitúcie
+
+**3. Osobné**
+- Individuálne finančné plánovanie
+- Osobné ciele a potreby
+
+**4. Rodinný rozpočet**
+- Plánovanie domácnosti
+- Spoločné príjmy a výdavky
+
+**Schopnosť obmedziť riziko**
+
+Finančné plánovanie má schopnosť obmedziť finančné riziko, ak je realizované dlhodobo a korektne. Môžeme ho považovať za včasné varovanie, pretože by malo predvídať problematické situácie skôr, ako nastanú.`
+    },
+    {
+      title: "Téma 6: Časté chyby a overenie uskutočniteľnosti",
+      content: `**Najčastejšie chyby pri zostavovaní**
+
+Medzi najčastejšie chyby pri zostavovaní finančného plánu môžeme zahrnúť:
+
+**1. Odloženie plánu na zajtrajšok**
+- Prokrastinácia
+- Strata času a príležitostí
+- Horšie výsledky
+
+**2. Nedotiahnuté Cash Flow**
+- Neúplné údaje
+- Nerealistické predpoklady
+- Chybné projekcie
+
+**3. Inflácia podnikateľskej myšlienky**
+- Prehnané očakávania
+- Nerealistické ciele
+- Nadhodnotenie príležitostí
+
+**4. Strach a obavy zo zostavovania**
+- Psychologická bariéra
+- Nedostatok znalostí
+- Obava z neúspechu
+
+**5. Vágne (neurčité) ciele**
+- Nejasné definície
+- Nemerateľné výsledky
+- Problematická kontrola
+
+**Overenie uskutočniteľnosti**
+
+Finančný plán takisto preveruje:
+- Uskutočniteľnosť ostatných častí plánu firmy
+- Obchodnú úspešnosť plánov
+- Reálnosť stanovených cieľov
+- Dostupnosť potrebných zdrojov`
+    },
+    {
+      title: "Téma 7: Zásady finančného plánovania",
+      content: `**Základné princípy**
+
+Aby finančné plány mohli plniť svoju úlohu, je nutné rešpektovať určité zásady:
+
+**1. Princíp preferencie peňažných tokov**
+Upozorňuje na to, aby súhrnné peňažné príjmy prevyšovali nad celkovými peňažnými výdavkami.
+
+**2. Princíp rešpektovania faktora času**
+Preferencie skoršieho príjmu pred neskorším, aj keď je nominálna hodnota porovnávaných príjmov rovnaká.
+
+**3. Princíp minimalizácie rizika**
+Rovnaké množstvo peňazí získaných s menším rizikom má byť preferované pred tým istým príjmom získaným za cenu vyššieho rizika.
+
+**4. Princíp optimalizácie kapitálovej štruktúry**
+- Zabezpečenie finančnej stability
+- Zníženie nákladov na kapitál
+- Zvýšenie ziskovosti
+- Dosiahnutie požadovanej hodnoty podniku
+
+**5. Zásada dlhodobosti**
+Krátkodobé finančné ciele podniku by mali byť podradené dlhodobým; nutnosť rešpektovať rozdielnosť vonkajšieho prostredia podniku.
+
+**6. Zásada hierarchického usporiadania**
+Musí byť len jeden hlavný cieľ medzi krátkodobými aj dlhodobými zámery pre určité plánovacie obdobie.
+
+**7. Zásada reálnej dosiahnuteľnosti**
+Je nutné vychádzať zo základných poznatkov získaných v analytickej fáze finančného plánovania; reálna dosiahnuteľnosť má dôležitý motivačný potenciál.`
+    },
+    {
+      title: "Téma 8: Ďalšie dôležité zásady",
+      content: `**Pokračovanie základných zásad**
+
+**8. Zásada programovej ziskovej orientácie**
+Najväčšia priorita sa skrýva v maximalizácii trhovej hodnoty podniku. Neznamená to, že by mala byť prehliadaná zisková orientácia firmy, pretože:
+- Zisk zaujíma v postupnosti podnikových finančných cieľov druhú najväčšiu položku
+- Je to ukazovateľ pre externé hodnotenie ekonomickej výkonnosti
+- Zisk ovplyvňuje trhovú hodnotu podniku
+
+**9. Zásada periodickej aktualizácie**
+Aj ten najlepšie zostavený plán sa postupne dostáva do problémov, a to väčšinou u viacročného časového horizontu. Stretáva sa podniková realita so situáciou vo vonkajšom okolí.
+
+**10. Zásada podstatnej zhody štruktúry**
+Štruktúra, forma a metódy zostavenia finančných plánov musí nadväzovať na štruktúru, formu a metódy transferového ekonomického reportingu. Tým dosiahneme:
+- Zabezpečiť porovnateľnosť výkazov
+- Možnosť kontroly plánovaných zámerov
+
+**11. Zásada jednoduchosti a transparentnosti**
+Mala by viesť podnikový manažment na uprednostnenie takých procedúr, ktoré:
+- Nemajú komplikovaný základ
+- Umožňujú rýchle zorientovanie
+- Sú ľahko pochopiteľné
+
+**12. Zásada relatívnej autonómie**
+Ide o možnosť čeliť eventuálnym pokusom o rozdelenie či opustenie vytýčených zámerov.`
+    },
+    {
+      title: "Téma 9: Strategické finančné plánovanie - Analýza",
+      content: `**Úvod do strategického plánovania**
+
+Strategické finančné plánovanie je neoddeliteľnou súčasťou podnikového strategického plánovania, kedy finančný plán tvorí určitý základný pilier strategického plánu.
+
+**Základné kroky tvorby**
+
+**1. Analýza a hodnotenie podniku**
+
+Kvalitné strategické plánovanie vyžaduje, aby boli získané a vyhodnotené určité súbory informácií, ktoré charakterizujú jednotlivé stránky podniku. V podstate ide o určitú diagnózu a o hodnotenie východiskovej situácie podniku.
+
+**Schopnosti podniku:**
+
+- **Vytvárať výrobky** - výskum, vývoj, technická príprava výrobkov
+- **Vyrábať výrobky** - výrobné kapacity, zvládnuté technológie, materiálne a subdodávateľské možnosti
+- **Predávať výrobky** - schopnosti odbytu, úroveň marketingu
+- **Zabezpečiť finančnú stabilitu** - reprodukcia a rozvoj podniku
+
+**Čiastkové analýzy:**
+
+- Analýza zdrojov podniku
+- Analýza a hodnotenie výrobného programu
+- Analýza ekonomickej a finančnej situácie
+- Analýza silných a slabých stránok podniku (SWOT)
+
+**Význam interných analýz**
+
+Interné analýzy poskytujú komplexný obraz o:
+- Aktuálnom stave podniku
+- Dostupných zdrojoch
+- Vnútorných procesoch
+- Konkurenčných výhodách`
+    },
+    {
+      title: "Téma 10: Strategické plánovanie - Okolie a stratégia",
+      content: `**Analýza prognózy vývoja okolia podniku**
+
+Pre kvalitnú tvorbu strategického plánu nemôže podnik vystačiť iba s internými analýzami, ale rozhodujúci vplyv budú mať v mnohých prípadoch analýzy externé.
+
+**Analýza makro okolia:**
+
+- Hospodárska a legislatívna politika vlády
+- Technológia okolia z hľadiska vedecko-technického rozvoja
+- Očakávaný vývoj medzinárodných politických a ekonomických podmienok
+- Vývoj na finančných trhoch
+
+**Analýza mikro okolia:**
+
+- Analýzy a prognózy trhovej situácie a jej vývoja
+- Konkurenčná situácia a faktory ovplyvňujúce túto situáciu
+- Dostupnosť a cenový vývoj na trhu surovín a energie
+
+**Stanovenie poslania a cieľov**
+
+Poslanie (vízia podniku, resp. misia) je určitý vrchol pyramídy podnikových cieľov a je spravidla všeobecným vyjadrením:
+- Hlavných smerov činnosti podniku
+- Určitou zjednocujúcou filozofiou
+- Vyjadrením toho, čím chce podnik byť
+- Prečo existuje
+- Aký je jeho rozsah pôsobnosti
+
+**Tvorba podnikateľskej stratégie**
+
+Podnikateľská stratégia, resp. jej komponenty týkajúce sa jednotlivých funkčných oblastí predstavuje spôsob dosahovania strategických cieľov, ktoré si podnik stanovil.
+
+**Porterov model:**
+
+Najznámejšia stratégia založená na základnú orientáciu firmy na trhu, vychádzajúci z Porterovho modelu správania firmy:
+- Nákladové líderstvo
+- Diferenciácia
+- Zameranie sa na segment`
+    }
   ]
 };
 
