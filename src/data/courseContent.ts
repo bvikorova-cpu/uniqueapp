@@ -3577,6 +3577,217 @@ Projektový manažment je základom úspechu pre firmy, ktoré chcú zvládnuť 
 
 Ak chcete dosiahnuť lepšie výsledky vo vašich projektoch, zvážte zavedenie profesionálneho projektového manažmentu a využitie nástrojov a metodík, ktoré sú dnes dostupné.`
     }
+  ],
+  "Business plán": [
+    {
+      title: "Téma 1: Úvod do Business plánu",
+      content: `**Čo je Business plán?**
+
+Business plán, alebo podnikateľský plán, je dokument, ktorý detailne popisuje váš podnikateľský zámer, ciele, stratégie, trh, konkurenciu, financie a riziká.
+
+**Účel Business plánu:**
+- Strategický manuál pre podnikateľa
+- Nástroj na získanie financií od investorov alebo bánk
+- Pomôcka pri hodnotení životaschopnosti podniku
+- Príprava na možné úskalia a riziká
+
+**Pre koho je určený?**
+- Pre samotného podnikateľa
+- Pre potenciálnych investorov
+- Pre banky a finančné institúcie
+- Pre obchodných partnerov`
+    },
+    {
+      title: "Téma 2: Executive Summary",
+      content: `**Executive Summary**
+
+Executive Summary je stručné zhrnutie celého business plánu. Hoci sa píše ako prvé v dokumente, vytvára sa až ako posledné.
+
+**Čo obsahuje:**
+- Stručný popis firmy a jej poslania
+- Hlavné produkty alebo služby
+- Cieľový trh a zákazníci
+- Konkurenčné výhody
+- Finančné požiadavky a projektované výnosy
+- Kľúčové míľniky
+
+**Dôležitosť:**
+Executive Summary je často prvá (a niekedy jediná) časť, ktorú investori čítajú. Musí byť presvedčivá a výstižná.`
+    },
+    {
+      title: "Téma 3: Popis spoločnosti",
+      content: `**Popis spoločnosti**
+
+Táto časť poskytuje podrobné informácie o vašej firme.
+
+**Čo zahŕňa:**
+- Názov a právna forma spoločnosti
+- Vízia a misia firmy
+- História a vznik spoločnosti
+- Umiestnenie a prevádzky
+- Vlastnícka štruktúra
+- Kľúčové hodnoty a firemná kultúra
+- Dlhodobé ciele a ambície
+
+**Vízia vs. Misia:**
+- Vízia = kde chcete byť v budúcnosti
+- Misia = čo robíte a prečo to robíte`
+    },
+    {
+      title: "Téma 4: Produkt a služby",
+      content: `**Produkt/Služba**
+
+Detailný popis toho, čo ponúkate vašim zákazníkom.
+
+**Obsah sekcie:**
+- Presný popis produktu/služby
+- Jedinečné vlastnosti a výhody
+- Vývojový cyklus produktu
+- Patenty, licencie, duševné vlastníctvo
+- Cenová stratégia
+- Plány budúceho rozvoja
+
+**Value Proposition:**
+Jasne definujte, akú hodnotu váš produkt/služba prináša zákazníkom a prečo je lepší ako konkurencia.`
+    },
+    {
+      title: "Téma 5: Analýza trhu",
+      content: `**Analýza trhu**
+
+Prieskum trhu, zákazníkov a konkurencie je kľúčovou časťou business plánu.
+
+**Obsah analýzy:**
+- Veľkosť a rast trhu
+- Segmentácia trhu
+- Cieľová skupina zákazníkov
+- Demografické a psychografické charakteristiky
+- Nákupné správanie zákazníkov
+
+**Konkurenčná analýza:**
+- Identifikácia hlavných konkurentov
+- Silné a slabé stránky konkurencie
+- Trhový podiel konkurentov
+- Vaša konkurenčná výhoda
+
+**Trendy na trhu:**
+Aktuálne trendy a budúci vývoj v odvetví.`
+    },
+    {
+      title: "Téma 6: Stratégia a implementácia",
+      content: `**Stratégia a implementácia**
+
+Táto časť popisuje, ako dosiahnete svoje podnikateľské ciele.
+
+**Marketingová stratégia:**
+- Produktová stratégia
+- Cenová stratégia
+- Distribučná stratégia
+- Komunikačná stratégia (reklama, PR)
+
+**Predajná stratégia:**
+- Predajné kanály
+- Predajný proces
+- Predajný tím a školenia
+
+**Implementačný plán:**
+- Časový harmonogram
+- Míľniky a kontrolné body
+- Zodpovednosti a úlohy
+- Merateľné ciele (KPI)`
+    },
+    {
+      title: "Téma 7: Finančná analýza",
+      content: `**Finančná analýza**
+
+Predpokladané náklady, príjmy, ziskovosť a potreba financií.
+
+**Obsahuje:**
+- Plán príjmov a výdavkov (P&L)
+- Peňažný tok (Cash Flow)
+- Súvaha (Balance Sheet)
+- Bod zvratu (Break-even analysis)
+- Finančné predpovede na 3-5 rokov
+
+**Finančné požiadavky:**
+- Celková potreba kapitálu
+- Použitie finančných prostriedkov
+- Zdroje financovania
+- Návratnosť investície (ROI)
+- Plán splácania úverov`
+    },
+    {
+      title: "Téma 8: Zamestnanci a tím",
+      content: `**Zamestnanci a tím**
+
+Informácie o kľúčových ľuďoch a ich úlohách v spoločnosti.
+
+**Manažérsky tím:**
+- Mená a pozície kľúčových osôb
+- Profesijné skúsenosti a kvalifikácia
+- Úlohy a zodpovednosti
+- Organizačná štruktúra
+
+**Personálny plán:**
+- Aktuálny počet zamestnancov
+- Plánovaný nábor
+- Vzdelávanie a rozvoj
+- Odmeňovanie a benefity
+
+**Poradné orgány:**
+- Dozorná rada
+- Poradcovia a mentori
+- Externí experti`
+    },
+    {
+      title: "Téma 9: Riziká a príležitosti (SWOT)",
+      content: `**SWOT Analýza**
+
+Identifikácia silných a slabých stránok, hrozieb a príležitostí.
+
+**Strengths (Silné stránky):**
+- Čo robíte dobre?
+- Aké máte výhody oproti konkurencii?
+
+**Weaknesses (Slabé stránky):**
+- Kde máte rezervy?
+- Čo by ste mohli zlepšiť?
+
+**Opportunities (Príležitosti):**
+- Aké príležitosti ponúka trh?
+- Kde vidíte potenciál rastu?
+
+**Threats (Hrozby):**
+- Aké riziká môžu ohroziť váš biznis?
+- Aká je konkurencia?
+
+**Riadenie rizík:**
+Plán na minimalizáciu identifikovaných rizík.`
+    },
+    {
+      title: "Téma 10: Zhrnutie a Prílohy",
+      content: `**Záver**
+
+Zhrnutie kľúčových bodov business plánu a výzva k akcii.
+
+**Prílohy:**
+Podporné dokumenty, ktoré dopĺňajú business plán:
+
+- Životopisy manažérskeho tímu
+- Detailné finančné výkazy
+- Prieskumy trhu
+- Právne dokumenty
+- Produktové katalógy
+- Referencie a odporúčania
+- Fotografie a vizualizácie
+
+**Tipy na záver:**
+- Buďte presvedčiví
+- Zdôraznite kľúčové výhody
+- Uveďte jasný plán ďalších krokov
+- Poskytnite kontaktné údaje
+
+Business plán je živý dokument, ktorý by sa mal pravidelne aktualizovať podľa vývoja firmy a trhu.`
+    }
   ]
 };
 
