@@ -14978,6 +14978,706 @@ Je normálne, že sa počas meditácie objavujú myšlienky. Kľúčom k úspech
 **Potrebujem na meditáciu špeciálne vybavenie?**
 Nie, meditácia si nevyžaduje špeciálne vybavenie. Môžete použiť vankúš alebo stoličku na sedenie.`
     }
+  ],
+
+  "Stres manažment": [
+    {
+      title: "Téma 1: Úvod do stres manažmentu",
+      content: `**Čo je stres?**
+
+Stres narúša emocionálnu rovnováhu, fyzické zdravie a bráni nám jasne premýšľať. Nedovoľte, aby vás ovládol. Naučte sa ho zvládnuť so stres manažmentom.
+
+**Základné charakteristiky stresu:**
+
+- Narušenie emocionálnej rovnováhy
+- Dopad na fyzické zdravie
+- Brzdenie jasného myslenia
+- Ovplyvňovanie každodenného fungovania
+
+**Prečo je stres manažment dôležitý:**
+
+V dnešnej uponáhľanej dobe je stres bežnou súčasťou života takmer každého človeka. Ak nie je pod kontrolou, môže viesť k vážnym zdravotným a psychickým problémom.
+
+**Čo sa naučíte:**
+
+V tomto kurze sa naučíte:
+- Identifikovať zdroje stresu
+- Rozpoznať príznaky stresu
+- Techniky na zvládanie stresu
+- Preventívne opatrenia
+- Vytvorenie zdravého životného štýlu
+
+**Cieľ kurzu:**
+
+Cieľom je poskytnúť vám nástroje a techniky, ktoré vám pomôžu:
+- Zvládnuť stresové situácie
+- Udržať emocionálnu rovnováhu
+- Zachovať si fyzické zdravie
+- Jasne premýšľať aj v náročných situáciách
+
+**Dôležité:**
+
+Stres je prirodzená reakcia tela, ale chronický stres je škodlivý. Naučte sa ho rozpoznať a efektívne zvládať.`
+    },
+    {
+      title: "Téma 2: Príznaky stresu - Emocionálne zmeny",
+      content: `**Stres neznamená len vyčerpanie a podráždenosť**
+
+Takmer každý dnes pociťuje stres. Tento stav je sprevádzaný mnohými znakmi, ktoré ovplyvňujú našu každodennú kvalitu života.
+
+**Emocionálne príznaky stresu:**
+
+**1. Neustály pocit úzkosti:**
+- Napätie a nervozita
+- Obavy o budúcnosť
+- Pocit ohrozenia
+- Nepokoj
+
+**2. Problémy s koncentráciou:**
+- Ťažkosti so sústredením
+- Zabúdanie
+- Nerozhodnosť
+- Chaos v myšlienkach
+
+**3. Podráždenie:**
+- Nízka tolerancia k frustrácii
+- Netrpezlivosť
+- Hnevlivosť
+- Napätie vo vzťahoch
+
+**4. Zmeny nálad:**
+- Náhle zmeny emócií
+- Depresívne stavy
+- Pocit preťaženia
+- Beznádej
+
+**5. Ďalšie emocionálne prejavy:**
+- Pocit izolácie
+- Neschopnosť relaxovať
+- Nízke sebavedomie
+- Pocit, že všetko je mimo kontroly
+
+**Rozpoznanie príznakov:**
+
+Je dôležité vedieť rozpoznať tieto príznaky včas, aby ste mohli včas zakročiť a predísť zhoršeniu stavu.
+
+**Varovaním znamenia:**
+
+Ak pociťujete viaceré z týchto príznakov súčasne alebo dlhodobo, je čas venovať pozornosť svojmu duševnému zdraviu a začať aplikovať techniky stres manažmentu.`
+    },
+    {
+      title: "Téma 3: Príznaky stresu - Fyzické zmeny",
+      content: `**Fyzické prejavy stresu:**
+
+Stres sa neprejavuje len na emocionálnych zmenách. Ak ste kontinuálne "pod tlakom", môžete pociťovať aj zhoršenie fyzického stavu.
+
+**Hlavné fyzické príznaky:**
+
+**1. Zmeny v trávení:**
+- Nechuť do jedla
+- Hnačky
+- Zápcha
+- Nevoľnosť
+- Bolesť žalúdka
+
+**2. Narušený spánkový režim:**
+- Nespavosť
+- Problémy so zaspávaním
+- Prerušovaný spánok
+- Ranná únava napriek spánku
+- Nočné mory
+
+**3. Strata sexuálneho apetítu:**
+- Znížené libido
+- Nezáujem o intímnosť
+- Problémy s výkonom
+
+**4. Ďalšie fyzické príznaky:**
+
+**Svalové napätie:**
+- Bolesť hlavy
+- Bolesť chrbta
+- Bolesť ramien a krku
+- Stiahnuté svaly
+
+**Kardiovaskulárne problémy:**
+- Zrýchlený tep
+- Vysoký krvný tlak
+- Tlak na hrudníku
+- Búšenie srdca
+
+**Oslabený imunitný systém:**
+- Častejšie prechladnutia
+- Pomalšie hojenie
+- Náchylnosť na infekcie
+
+**Kožné problémy:**
+- Akné
+- Ekzém
+- Svrbenie
+- Vyrážky
+
+**Varovaním:**
+
+Dlhodobý stres môže viesť k vážnym zdravotným problémom ako sú srdcové choroby, diabetes, depresie a ďalšie. Preto je dôležité brať fyzické príznaky vážne.`
+    },
+    {
+      title: "Téma 4: Identifikácia stresových faktorov",
+      content: `**Odblokujte stres vo svojej mysli**
+
+Najťažším krokom je jasne identifikovať stresové faktory. V bežný deň nás stresuje množstvo vecí ako práca, termíny, povinnosti.
+
+**Proces identifikácie:**
+
+Pri identifikovaní skutočnej príčiny je potrebné pozrieť sa na:
+- Vaše zvyky
+- Postoje
+- Výhovorky
+- Vzorce správania
+
+**Časté stresové faktory:**
+
+**1. Externé stresory:**
+- Práca a kariéra
+- Finančné problémy
+- Vzťahové ťažkosti
+- Rodinné povinnosti
+- Zmeny v živote
+
+**2. Interné stresory:**
+- Perfekcionizmus
+- Pesimizmus
+- Negatívny vnútorný dialóg
+- Nereálne očakávania
+- Nedostatok flexibility
+
+**Varovné signály:**
+
+Stres môžu spôsobiť aj nasledovné stavy:
+
+**"Mám milión vecí, ktoré musím stihnúť":**
+- Často používate túto vetu
+- V skutočnosti si však neviete spomenúť na konkrétne povinnosti
+- Všeobecný pocit preťaženia bez jasnej príčiny
+
+**"Vždy je tu blázinec":**
+- Pripúšťate, že stres je neoddeliteľnou súčasťou vašej práce
+- "Vždy nestíhame"
+- Akceptácia chaosu ako normálu
+
+**Stotožnenie sa so stresom:**
+- Stotožnili ste sa s faktom, že stres k vám jednoducho patrí
+- "Taký som"
+- "To sa nedá zmeniť"
+
+**Vidíte ten rozdiel?**
+
+Pri identifikovaní toho, čo vás skutočne stresuje je dôležité pozrieť sa aj na to, ako často sami seba uvádzate do tohto stavu aj vtedy, keď na to nie je dôvod.
+
+**Cvičenie:**
+
+Skúste sledovať, ako často hovoríte podobné vety a naučte sa ich zmeniť alebo úplne odstrániť.`
+    },
+    {
+      title: "Téma 5: Zmena vnímania a postojov",
+      content: `**Ako meníte svoje vnímanie stresu:**
+
+Spôsob, akým vnímame situácie, má obrovský vplyv na to, ako nás stresujú.
+
+**Negatívne vzorce myslenia:**
+
+**1. Katastrofizácia:**
+- Očakávanie najhoršieho scenára
+- Zveličovanie problémov
+- "Čo ak" myslenie
+
+**Riešenie:**
+- Realistické hodnotenie situácie
+- Hľadanie dôkazov
+- Zváženie pravdepodobnosti
+
+**2. Čierno-biele myslenie:**
+- Všetko alebo nič
+- Dokonalé alebo úplne zlé
+- Žiadna stredná cesta
+
+**Riešenie:**
+- Hľadanie odtieňov
+- Akceptovanie nedokonalosti
+- Oceňovanie pokroku
+
+**3. Personalizácia:**
+- Všetko beriete osobne
+- Cítite sa zodpovedný za veci mimo kontroly
+- Vina za všetko
+
+**Riešenie:**
+- Objektívne hodnotenie
+- Rozlíšenie zodpovednosti
+- Zdravé hranice
+
+**Pozitívne zmeny postojov:**
+
+**1. Sebaúcta:**
+- Buďte k sebe láskavý
+- Akceptujte nedokonalosti
+- Oceňujte svoje úspechy
+
+**2. Flexibilita:**
+- Prispôsobte sa zmenám
+- Hľadajte alternatívy
+- Otvorená myseľ
+
+**3. Pozitivita:**
+- Hľadajte príležitosti v výzvach
+- Vďačnosť za to, čo máte
+- Optimistický pohľad
+
+**Praktické kroky:**
+
+- Veďte denník myšlienok
+- Identifikujte negatívne vzorce
+- Aktívne ich nahraďte pozitívnymi
+- Cvičte pravidelne
+
+**Výsledok:**
+
+Zmenou vášho vnímania a postojov môžete výrazne znížiť vplyv stresu na váš život.`
+    },
+    {
+      title: "Téma 6: Čas pre seba a relaxácia",
+      content: `**Urobte si čas pre seba**
+
+Ak sa pohybujete v branži, ktorá si vyžaduje maximálne sústredenie a mnoho času aj mimo pracovnej doby, nájsť si pár minút pre seba môže byť extrémne náročné. Avšak o to je to dôležitejšie.
+
+**Základom je:**
+
+Zaradiť si do svojho denného rozvrhu čas na relaxáciu.
+
+**Nemusia to byť hodiny:**
+
+Stačí niekoľko minút v podobe:
+
+**1. Dychové cvičenia:**
+- Pár hlbokých nádychov
+- 5 minút kontrolovaného dýchania
+- Upokojenie nervového systému
+
+**2. Vedomé jedenie:**
+- Obed bez elektroniky
+- Jedlo si skutočne vychutnáte
+- Prítomnosť v momente
+
+**3. Fyzická aktivita:**
+- Pol hodiny behu
+- Jóga
+- Prechádzka v prírode
+- Akékoľvek pohyb
+
+**4. Kreatívne aktivity:**
+- Kreslenie
+- Písanie denníka
+- Hudba
+- Záhradkárstvo
+
+**Dôležitosť pravidelnosti:**
+
+- Každý deň si nájdite čas
+- Aj 10 minút robí rozdiel
+- Konzistentnosť je kľúčová
+- Neberte to ako luxus, ale ako nevyhnutnosť
+
+**Stanovenie hraníc:**
+
+**V práci:**
+- Jasné pracovné hodiny
+- Prestávky počas dňa
+- Odpojenie po práci
+
+**Doma:**
+- Priestor len pre vás
+- Komunikácia potrieb s rodinou
+- Rešpektovanie vlastného času
+
+**Cvičenie:**
+
+Vytvorte si denný rituál relaxácie:
+- Ranná meditácia (5-10 min)
+- Obedná prechádzka (15 min)
+- Večerné rozpínanie (10 min)
+
+**Výsledok:**
+
+Pravidelný čas pre seba vedie k:
+- Zníženiu stresu
+- Lepšej pohode
+- Väčšej produktivite
+- Zdravším vzťahom`
+    },
+    {
+      title: "Téma 7: Fyzické metódy na odbúranie stresu",
+      content: `**Podľa odborníkov sú pre odbúranie stresu ideálne:**
+
+**1. Masáž:**
+
+**Výhody:**
+- Uvoľnenie svalového napätia
+- Zlepšenie cirkulácie
+- Uvoľnenie endorfínov
+- Hlboká relaxácia
+
+**Typy masáží:**
+- Relaxačná masáž
+- Športová masáž
+- Aromaterapeutická masáž
+- Reflexná masáž chodidiel
+
+**Frekvencia:**
+- Ideálne 1x týždenne
+- Minimálne 1x mesačne
+- Aj krátka masáž pomáha
+
+**2. Cvičenie:**
+
+**Aeróbne cvičenie:**
+- Beh
+- Plávanie
+- Cyklistika
+- Tanec
+
+**Silové cvičenie:**
+- Posilňovanie
+- Crossfit
+- Funkčný tréning
+
+**Relaxačné cvičenie:**
+- Jóga
+- Tai chi
+- Pilates
+- Strečing
+
+**Výhody cvičenia:**
+- Uvoľnenie stresových hormónov
+- Produkcia endorfínov
+- Zlepšenie spánku
+- Zvýšenie energie
+
+**3. Dobrý spánok:**
+
+**Optimálny spánok:**
+- 7-9 hodín denne
+- Pravidelný režim
+- Kvalitné prostredie
+
+**Spánková hygiena:**
+- Tma a ticho
+- Optimálna teplota (18-20°C)
+- Pohodlný matrac
+- Bez elektroniky v spálni
+
+**Večerná rutina:**
+- Ukľudnenie pred spaním
+- Teplá sprcha
+- Čítanie knihy
+- Relaxácia
+
+**Vplyv spánku:**
+- Regenerácia tela
+- Spracovanie emócií
+- Upevnenie pamäti
+- Obnovenie energie
+
+**Kombinácia metód:**
+
+Pre maximálny účinok kombinujte všetky tri metódy:
+- Pravidelné cvičenie (3-5x týždenne)
+- Masáž (podľa možností)
+- Kvalitný spánok (každý deň)
+
+**Výsledok:**
+
+Fyzické metódy sú jednými z najúčinnejších spôsobov, ako zvládnuť stres a zlepšiť celkovú pohodu.`
+    },
+    {
+      title: "Téma 8: Bylinkové čaje a dekompresia",
+      content: `**Eliminovať pocit napätia pomôžu aj bylinkové čaje:**
+
+**Účinné bylinky proti stresu:**
+
+**1. Kamilka:**
+- Upokojujúce účinky
+- Zlepšenie spánku
+- Zníženie úzkosti
+- Podpora trávenia
+
+**Príprava:**
+- 1 čajová lyžička sušenej kamilky
+- 250 ml vriacej vody
+- Nechať lúhovať 5-10 minút
+
+**2. Valeriána:**
+- Silný upokojujúci účinok
+- Pomoc pri nespavosti
+- Zníženie napätia
+- Prirodzené sedatívum
+
+**Upozornenie:**
+- Nepoužívať dlhodobo
+- Konzultovať s lekárom
+- Nekombinovať s alkoholom
+
+**3. Levanduľa:**
+- Jemné upokojenie
+- Aromaterapeutický efekt
+- Zlepšenie nálady
+- Podpora relaxácie
+
+**Použitie:**
+- Čaj
+- Vankúšik s levanduľou
+- Éterický olej
+- Kúpeľ
+
+**4. Mučenka (Passiflora):**
+- Zníženie nervozity
+- Pomoc pri úzkosti
+- Zlepšenie spánku
+- Prirodzené upokojenie
+
+**Dekompresia - efektívna večerná metóda:**
+
+Ak sa vám nedarí vyčleniť si čas na relaxáciu počas dňa, účinným spôsobom je tzv. dekompresia.
+
+**Ako na to:**
+
+**1. Príprava:**
+- Teplý uterák
+- Tichý priestor
+- 10 minút času
+
+**2. Aplikácia:**
+- Položte teplý uterák na oči
+- Alebo na krk
+- Alebo na ramená
+- Alebo na všetky oblasti postupne
+
+**3. Čas:**
+- 10 minút
+- Pred spaním
+- V pokoji a tichu
+
+**4. Účinok:**
+- Vplyvom tepla sa uvoľnia svaly
+- V konečnom dôsledku sa uvoľníte aj vy
+- Príprava na kvalitný spánok
+
+**Kombinácia:**
+
+Pre maximálny efekt skombinujte:
+- Bylinkový čaj (30 min pred spaním)
+- Dekompresia (10 min)
+- Spánok
+
+**Ďalšie relaxačné techniky:**
+
+- Teplý kúpeľ s bylinkami
+- Aromaterapia
+- Jemná hudba
+- Čítanie
+
+**Pravidelnosť:**
+
+Robte si večerný relaxačný rituál každý deň pre najlepšie výsledky.`
+    },
+    {
+      title: "Téma 9: Time management a plánovanie",
+      content: `**Naučte sa plánovať**
+
+Pri veľkom množstve povinností je time management nesmierne dôležitý. Zoradiť si činnosti od najdôležitejšej po tú najmenej urgentnú je kľúčové k tomu, aby ste zostali výkonní, sústredení a mali veci pod kontrolou.
+
+**Ako na to?**
+
+**1. Nepreťažujte sa:**
+
+**Problém:**
+- Niektoré úlohy môžu trvať dlhšie, ako ste si mysleli
+- Ak máte nabitý program, môžete sa ľahko dostať do stresu
+- Pocit, že nestíhate
+
+**Riešenie:**
+- Radšej si stanovte minimálny počet dôležitých vecí
+- Také, ktoré skutočne stihnete za jeden deň
+- Realistické plánovanie
+
+**2. Urobte si zoznam úloh podľa dôležitosti:**
+
+**Prioritizácia:**
+- Položky s najvyššou prioritou si postavte na začiatok
+- Čo je naozaj dôležité a urgentné?
+- Čo môže počkať?
+
+**Eisenhowerova matica:**
+- Urgentné a dôležité - urob hneď
+- Dôležité, nie urgentné - naplánuj
+- Urgentné, nie dôležité - deleguj
+- Ani urgentné, ani dôležité - eliminuj
+
+**Zlaté pravidlo:**
+Ak vás čaká niečo mimoriadne nepríjemné alebo stresujúce, urobte to ako prvé. Zvyšok vášho dňa tak zvládnete oveľa lepšie.
+
+**3. Rozdeľte veľké úlohy:**
+
+**Problém:**
+- Veľké projekty sú ohromujúce
+- Neviete, kde začať
+- Prokrastinácia
+
+**Riešenie:**
+- Čaká vás dôležitá a náročná úloha?
+- Rozplánujte si ju na menšie kroky
+- Zamerajte sa postupne na každý krok
+
+**Výhody:**
+- Menej stresujúce vnímať čiastkovú záťaž
+- Širší uhol pohľadu na úlohu
+- Pocit postupu a úspechu
+
+**4. Časové bloky:**
+
+**Technika:**
+- Vyhraďte si čas pre konkrétne úlohy
+- Eliminujte rozptýlenie
+- Plná koncentrácia
+
+**Príklad:**
+- 9:00-11:00 - Dôležitý projekt
+- 11:00-11:15 - Prestávka
+- 11:15-12:30 - E-maily a komunikácia
+- 12:30-13:30 - Obed
+- 13:30-15:00 - Stretnutia
+
+**Nástroje na plánovanie:**
+
+- Denník úloh
+- Digitálne aplikácie
+- Kalendár
+- To-do listy
+- Projektové nástroje`
+    },
+    {
+      title: "Téma 10: Delegovanie a záver",
+      content: `**Naučte sa delegovať zodpovednosť:**
+
+Nie všetko musíte robiť sami. Naučte sa delegovať zodpovednosť, rozdeliť povinnosti či už doma, v škole alebo v práci.
+
+**Prečo delegovať:**
+
+**Výhody:**
+- Zníženie stresu
+- Efektívnejšie využitie času
+- Možnosť sústrediť sa na dôležité veci
+- Rozvoj ostatných
+
+**Bariéry delegovania:**
+
+**"Nikto to neurobí tak dobre ako ja":**
+- Perfekcionizmus
+- Nedôvera
+- Potreba kontroly
+
+**Riešenie:**
+- Akceptujte rôzne spôsoby vykonania
+- Dôverujte ostatným
+- Poskytujte jasné inštrukcie
+
+**Ako efektívne delegovať:**
+
+**1. Identifikujte úlohy:**
+- Čo môže urobiť niekto iný?
+- Čo nie je nutné, aby ste robili vy?
+- Čo pomôže rozvoju ostatných?
+
+**2. Vyberte správnu osobu:**
+- Schopnosti a zručnosti
+- Dostupnosť
+- Záujem
+
+**3. Jasná komunikácia:**
+- Vysvetlite úlohu
+- Stanovte očakávania
+- Určite termín
+- Poskytnite zdroje
+
+**4. Dôverujte a pustite:**
+- Nedohliadajte každý krok
+- Buďte k dispozícii na otázky
+- Nechajte priestor na vlastný prístup
+
+**5. Oceňte výsledok:**
+- Poďakovanie
+- Uznanie
+- Konštruktívna spätná väzba
+
+**Delegovanie doma:**
+
+- Domáce práce
+- Starostlivosť o deti
+- Nákupy
+- Varenie
+
+**Delegovanie v práci:**
+
+- Rutinné úlohy
+- Administratíva
+- Čiastkové projekty
+- Rešerše
+
+**Záver:**
+
+Stres je naozaj nebezpečný externý faktor, ktorý ovplyvňuje nielen naše citové a fyzické stavy, ale v konečnom dôsledku aj spôsob, akým fungujeme.
+
+**Kľúčové odporúčania:**
+
+**1. Nedovoľte, aby vás tempo dnešnej doby pohltilo:**
+- Spomaľte
+- Uvedomte si priority
+- Žite prítomnosťou
+
+**2. Neporovnávajte sa s ostatnými:**
+- Každý má svoj rytmus
+- Vaša cesta je jedinečná
+- Koľko kto stíha, nie je dôležité
+
+**3. Nepreťažujte sa:**
+- Zdravé hranice
+- Realistické ciele
+- Počúvajte svoje telo
+
+**4. Je v poriadku zvoľniť:**
+- Odpočinok nie je slabosť
+- Je súčasťou produktivity
+- Prevencia vyhorenia
+
+**5. Povedať nie:**
+- Neberte všetko na seba
+- Rešpektujte svoje limity
+- Jasná komunikácia
+
+**6. Venovať sa aj sami sebe:**
+- Nie je to egoizmus
+- Je to nevyhnutnosť
+- Starostlivosť o seba umožňuje starať sa o ostatných
+
+**Záverečné slová:**
+
+Zaslúžite si žiť bez neustáleho stresu. Implementujte techniky z tohto kurzu do svojho každodenného života a uvidíte rozdiel. Buďte trpezliví so sebou, zmena trvá čas.
+
+**Pamätajte:**
+
+Ste dôležití. Vaše zdravie je dôležité. Vaša pohoda je dôležitá.
+
+Zaslúžite si to.`
+    }
   ]
 };
 
