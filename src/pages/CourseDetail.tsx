@@ -3,100 +3,30 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Award, Loader2 } from "lucide-react";
+import { ArrowLeft, Award } from "lucide-react";
 import { CourseTest } from "@/components/courses/CourseTest";
 import { Certificate } from "@/components/courses/Certificate";
 import { CourseNavigation } from "@/components/courses/CourseNavigation";
 import { TopicContent } from "@/components/courses/TopicContent";
 import { useCourseProgress } from "@/hooks/useCourseProgress";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-
-interface Topic {
-  title: string;
-  content: string;
-}
+import { courseContent, generateDefaultTopics, type Topic } from "@/data/courseContent";
 
 const CourseDetail = () => {
   const { courseName } = useParams();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [showTest, setShowTest] = useState(false);
   const [testPassed, setTestPassed] = useState(false);
   const [userName, setUserName] = useState("");
-  const [topics, setTopics] = useState<Topic[]>([]);
-  const [isGeneratingContent, setIsGeneratingContent] = useState(false);
+  
+  // Get topics from courseContent or generate default ones
+  const topics = courseName 
+    ? (courseContent[courseName] || generateDefaultTopics(courseName))
+    : [];
 
   const { progress: courseProgress, statistics, isLoading, updateProgress, saveCompletedCourse } = useCourseProgress(courseName || "");
 
   const currentTopic = courseProgress?.current_topic || 0;
   const completedTopics = courseProgress?.completed_topics || [];
-
-  // Generate course content with AI
-  useEffect(() => {
-    const generateContent = async () => {
-      if (!courseName) return;
-      
-      // Check if we have cached content in localStorage
-      const cacheKey = `course_content_${courseName}`;
-      const cached = localStorage.getItem(cacheKey);
-      
-      if (cached) {
-        try {
-          const parsedTopics = JSON.parse(cached);
-          setTopics(parsedTopics);
-          return;
-        } catch (e) {
-          console.error('Failed to parse cached content:', e);
-        }
-      }
-
-      // Generate new content with AI
-      setIsGeneratingContent(true);
-      
-      try {
-        const { data, error } = await supabase.functions.invoke('generate-course-content', {
-          body: { courseName }
-        });
-
-        if (error) throw error;
-
-        if (data?.topics && Array.isArray(data.topics)) {
-          setTopics(data.topics);
-          // Cache the generated content
-          localStorage.setItem(cacheKey, JSON.stringify(data.topics));
-        } else {
-          throw new Error('Invalid response format');
-        }
-      } catch (error) {
-        console.error('Error generating course content:', error);
-        toast({
-          title: "Chyba pri generovaní obsahu",
-          description: "Nepodarilo sa vygenerovať obsah kurzu. Skúste to prosím neskôr.",
-          variant: "destructive",
-        });
-        
-        // Fallback to generic content
-        setTopics([
-          { title: "Téma 1: Úvod", content: "Obsah sa načítava..." },
-          { title: "Téma 2: Základy", content: "Obsah sa načítava..." },
-          { title: "Téma 3: Praktické aplikácie", content: "Obsah sa načítava..." },
-          { title: "Téma 4: Pokročilé techniky", content: "Obsah sa načítava..." },
-          { title: "Téma 5: Riešenie problémov", content: "Obsah sa načítava..." },
-          { title: "Téma 6: Prípadové štúdie", content: "Obsah sa načítava..." },
-          { title: "Téma 7: Najlepšie postupy", content: "Obsah sa načítava..." },
-          { title: "Téma 8: Nástroje a zdroje", content: "Obsah sa načítava..." },
-          { title: "Téma 9: Trendy a budúcnosť", content: "Obsah sa načítava..." },
-          { title: "Téma 10: Zhrnutie", content: "Obsah sa načítava..." },
-        ]);
-      } finally {
-        setIsGeneratingContent(false);
-      }
-    };
-
-    generateContent();
-  }, [courseName, toast]);
 
   useEffect(() => {
     if (courseProgress) {
@@ -159,14 +89,12 @@ const CourseDetail = () => {
 
   const progressPercentage = topics.length > 0 ? (completedTopics.length / topics.length) * 100 : 0;
 
-  if (isLoading || isGeneratingContent) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="animate-spin h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">
-            {isGeneratingContent ? "AI generuje obsah kurzu..." : "Načítavam kurz..."}
-          </p>
+          <div className="animate-spin h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Načítavam kurz...</p>
         </div>
       </div>
     );
