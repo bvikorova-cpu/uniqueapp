@@ -2951,6 +2951,632 @@ Vzdelávanie detí v oblasti finančnej gramotnosti je nevyhnutné pre ich budú
 
 Finančná gramotnosť nie je cieľ, ale cesta. Každý deň sa môžete zlepšovať a robiť lepšie finančné rozhodnutia!`
     }
+  ],
+  "Manažment projektov": [
+    {
+      title: "Téma 1: Úvod do projektového manažmentu",
+      content: `**Čo je projektový manažment?**
+
+Projektový manažment je proces, ktorým sa zabezpečuje úspešná realizácia projektov prostredníctvom plánovania, monitorovania, delegovania a riadenia projektových aktivít. Cieľom je dosiahnuť definované ciele v rámci stanoveného rozpočtu, časového rámca a žiadanej kvality.
+
+**Základné charakteristiky:**
+- Štruktúrovaný prístup k realizácii projektov
+- Jasné definovanie cieľov a výstupov
+- Efektívne využívanie zdrojov
+- Minimalizácia rizík
+- Maximalizácia efektivity
+
+**Úloha projektového manažéra:**
+
+Projektový manažér dohliada na celý proces od začiatku až po dokončenie projektu. Jeho hlavné zodpovednosti zahŕňajú:
+- Definovanie rozsahu projektu
+- Plánovanie a rozdelenie úloh
+- Koordinácia tímu
+- Komunikácia so zainteresovanými stranami
+- Monitorovanie postupu
+- Riešenie problémov
+
+**Prečo je projektový manažment dôležitý?**
+
+Projektový manažment umožňuje firmám implementovať projekty štruktúrovaným spôsobom, čím minimalizujú riziká a maximalizujú efektivitu. Bez správneho riadenia a plánovania môžu projekty naraziť na problémy, ktoré vedú k zlyhaniu.
+
+Projektový manažment je neoddeliteľnou súčasťou úspešného fungovania každej organizácie, ktorá chce dosiahnuť svoje ciele efektívne, včas a v rámci rozpočtu.`
+    },
+    {
+      title: "Téma 2: Iniciácia projektu",
+      content: `**Prvá fáza projektového manažmentu**
+
+Iniciácia projektu je kľúčovou prvou fázou, ktorá rozhoduje o tom, či projekt stojí za realizáciu. Táto fáza zahŕňa definovanie cieľov, identifikáciu zainteresovaných strán a posúdenie uskutočniteľnosti.
+
+**Definovanie cieľov projektu:**
+
+Ciele musia byť SMART:
+- **S**pecifické (konkrétne)
+- **M**erateľné (možno ich kvantifikovať)
+- **A**kceptovateľné (dosiahnuteľné)
+- **R**elevantné (zmysluplné)
+- **T**erminované (s jasným časovým rámcom)
+
+**Identifikácia zainteresovaných strán:**
+
+Zainteresované strany (stakeholders) sú jednotlivci alebo skupiny, ktoré majú záujem na úspechu projektu alebo sú ním ovplyvnené:
+- Sponzori projektu
+- Členovia tímu
+- Zákazníci
+- Dodávatelia
+- Vedenie spoločnosti
+- Koncoví používatelia
+
+**Analýza požiadaviek:**
+
+Dôkladná analýza požiadaviek zabezpečí jasné smerovanie projektu. Zahŕňa:
+- Zber požiadaviek od všetkých zainteresovaných strán
+- Dokumentáciu požiadaviek
+- Prioritizáciu požiadaviek
+- Validáciu s klientom
+
+**Posúdenie uskutočniteľnosti:**
+
+Pred schválením projektu je potrebné vyhodnotiť:
+- Technickú realizovateľnosť
+- Ekonomickú výhodnosť
+- Časovú realizovateľnosť
+- Dostupnosť zdrojov
+- Potenciálne riziká
+
+**Dokument o iniciácii projektu:**
+
+Výstupom tejto fázy je dokument (Project Charter), ktorý obsahuje:
+- Názov a popis projektu
+- Ciele a očakávané výstupy
+- Rozsah projektu
+- Identifikáciu zainteresovaných strán
+- Predbežný rozpočet a harmonogram
+- Kritériá úspechu`
+    },
+    {
+      title: "Téma 3: Plánovanie projektu",
+      content: `**Detailné plánovanie projektu**
+
+Plánovanie je kritickou fázou, kde sa detaily projektu starostlivo naplánujú. Kvalitné plánovanie je základom úspešnej realizácie projektu.
+
+**Vytvorenie časového harmonogramu:**
+
+Časový harmonogram definuje, kedy sa budú jednotlivé úlohy vykonávať:
+- Rozdelenie projektu na menšie úlohy (Work Breakdown Structure)
+- Určenie trvania každej úlohy
+- Identifikácia závislostí medzi úlohami
+- Stanovenie míľnikov
+- Vytvorenie Ganttovho grafu
+
+**Pridelenie zdrojov:**
+
+Efektívne pridelenie zdrojov zahŕňa:
+- **Ľudské zdroje:** Kto bude na projekte pracovať a v akom rozsahu
+- **Materiálne zdroje:** Aké materiály a vybavenie budú potrebné
+- **Finančné zdroje:** Koľko peňazí bude projekt vyžadovať
+- **Technologické zdroje:** Aké nástroje a technológie sa použijú
+
+**Určenie rozpočtu:**
+
+Rozpočet projektu zahŕňa:
+- Náklady na ľudské zdroje (mzdy, odmeny)
+- Náklady na materiál a vybavenie
+- Prevádzkové náklady
+- Rezerva na nepredvídané výdavky (obvykle 10-20%)
+- Náklady na externých dodávateľov
+
+**Identifikácia rizík:**
+
+Riadenie rizík začína už vo fáze plánovania:
+- Identifikácia potenciálnych rizík
+- Analýza pravdepodobnosti a dopadu
+- Vytvorenie stratégií na mitigáciu rizík
+- Definovanie kontingenčných plánov
+
+**Komunikačný plán:**
+
+Jasný komunikačný plán zabezpečuje:
+- Kto bude informovaný o postupe projektu
+- Ako často budú prebiehať aktualizácie
+- Aké formy komunikácie sa použijú
+- Kto je zodpovedný za komunikáciu
+
+**Definovanie úloh pre členov tímu:**
+
+Jasne definované úlohy pomáhajú zaručiť efektívnosť a koordináciu:
+- Pridelenie zodpovedností
+- Definovanie výstupov pre každú úlohu
+- Stanovenie termínov
+- Určenie kritérií kvality`
+    },
+    {
+      title: "Téma 4: Realizácia projektu",
+      content: `**Implementácia projektových úloh**
+
+Počas realizácie sa uskutočňuje implementácia naplánovaných úloh. Táto fáza vyžaduje aktívne vedenie, koordináciu a flexibilitu.
+
+**Zahájenie prác:**
+
+Na začiatku realizácie:
+- Kick-off meeting s celým tímom
+- Distribúcia úloh podľa plánu
+- Nastavenie pracovných procesov
+- Aktivácia komunikačných kanálov
+- Pridelenie prístupov a nástrojov
+
+**Distribúcia zdrojov:**
+
+Projektový manažér dohliada na:
+- Efektívne využívanie ľudských zdrojov
+- Dostupnosť materiálov a vybavenia
+- Správu finančných prostriedkov
+- Využívanie technológií a nástrojov
+
+**Koordinácia tímu:**
+
+Úspešná koordinácia zahŕňa:
+- Pravidelné tímové stretnutia
+- Sledovanie pokroku jednotlivých členov
+- Riešenie prekážok a problémov
+- Podpora tímovej spolupráce
+- Motivácia tímu
+
+**Komunikácia so zainteresovanými stranami:**
+
+Priebežná komunikácia je kľúčová:
+- Pravidelné reporty o postupe
+- Informovanie o významných míľnikoch
+- Riešenie požiadaviek a zmien
+- Získavanie spätnej väzby
+- Riadenie očakávaní
+
+**Riadenie zmien:**
+
+Projekty zriedka prebiehajú presne podľa plánu:
+- Formálny proces schvaľovania zmien
+- Analýza dopadu zmien na rozpočet a čas
+- Aktualizácia projektovej dokumentácie
+- Komunikácia zmien tímu a stakeholderom
+
+**Riešenie problémov:**
+
+Flexibilita pri riešení neočakávaných problémov:
+- Rýchla identifikácia problémov
+- Analýza príčin
+- Hľadanie riešení
+- Implementácia nápravných opatrení
+- Dokumentácia riešení pre budúce projekty
+
+**Zabezpečenie kvality:**
+
+Kontrola kvality počas realizácie:
+- Pravidelné kontroly výstupov
+- Testovanie a validácia
+- Dodržiavanie štandardov
+- Dokumentácia kvality`
+    },
+    {
+      title: "Téma 5: Monitorovanie a kontrola projektu",
+      content: `**Sledovanie pokroku a výkonu**
+
+Monitorovanie a kontrola prebieha súbežne s realizáciou projektu. Táto fáza zabezpečuje, že projekt zostáva na správnej ceste.
+
+**Sledovanie pokroku:**
+
+Pravidelné monitorovanie zahŕňa:
+- Sledovanie dokončenia úloh podľa harmonogramu
+- Porovnávanie skutočného pokroku s plánom
+- Identifikácia oneskorení a odchýlok
+- Meranie výkonnosti tímu
+- Sledovanie míľnikov
+
+**Kontrola rozpočtu:**
+
+Finančné monitorovanie projektu:
+- Porovnávanie skutočných výdavkov s plánovanými
+- Sledovanie cashflow projektu
+- Identifikácia prekročení rozpočtu
+- Analýza hodnoty za peniaze (Value for Money)
+- Prognózovanie konečných nákladov
+
+**Metriky a KPI:**
+
+Kľúčové ukazovatele výkonnosti:
+- **SPI (Schedule Performance Index):** Meria efektívnosť času
+- **CPI (Cost Performance Index):** Meria efektívnosť nákladov
+- **Percentuálne dokončenie:** Koľko % projektu je hotových
+- **Burndown chart:** Vizualizácia zostávajúcej práce
+- **Počet zmien:** Sledovanie stability projektu
+
+**Reportovanie:**
+
+Pravidelné reporty pre stakeholderov:
+- Statusové reporty (týždenné/mesačné)
+- Reporty o míľnikoch
+- Reporty o rizikách a problémoch
+- Finančné reporty
+- Reporty o kvalite
+
+**Nápravné opatrenia:**
+
+Keď vzniknú odchýlky od plánu:
+- Analýza príčin odchýlok
+- Návrh nápravných opatrení
+- Schválenie zmien
+- Implementácia úprav
+- Sledovanie účinnosti opatrení
+
+**Riadenie rizík:**
+
+Kontinuálne monitorovanie rizík:
+- Sledovanie identifikovaných rizík
+- Identifikácia nových rizík
+- Aktualizácia registra rizík
+- Implementácia mitigačných stratégií
+- Aktivácia kontingenčných plánov
+
+**Riadenie kvality:**
+
+Zabezpečenie kvality výstupov:
+- Kontrola dodržiavania štandardov
+- Testovanie a validácia
+- Audit kvality
+- Náprava nedostatkov
+- Dokumentácia kvality`
+    },
+    {
+      title: "Téma 6: Ukončenie projektu",
+      content: `**Formálne uzavretie projektu**
+
+Po úspešnom splnení úloh sa projekt uzavrie. Táto fáza je rovnako dôležitá ako predchádzajúce a zahŕňa hodnotenie výsledkov a získaných skúseností.
+
+**Odovzdanie výstupov:**
+
+Formálne odovzdanie projektu:
+- Finalizácia všetkých výstupov
+- Testovanie a validácia
+- Dokumentácia
+- Školenie používateľov (ak je potrebné)
+- Formálne schválenie od klienta/sponzora
+
+**Hodnotenie výsledkov:**
+
+Zhodnotenie úspešnosti projektu:
+- Splnenie cieľov projektu
+- Dodržanie rozpočtu
+- Dodržanie harmonogramu
+- Kvalita výstupov
+- Spokojnosť zainteresovaných strán
+
+**Lessons Learned:**
+
+Získavanie poznatkov pre budúce projekty:
+- Čo sa podarilo dobre?
+- Čo sa dalo urobiť lepšie?
+- Aké problémy sa vyskytli?
+- Ako boli riešené?
+- Odporúčania pre budúce projekty
+
+**Dokumentácia projektu:**
+
+Kompletná projektová dokumentácia:
+- Finálna projektová správa
+- Aktualizované projektové plány
+- Finančná správa
+- Register rizík a problémov
+- Zmluvy a dohody
+- Technická dokumentácia
+
+**Uvoľnenie zdrojov:**
+
+Formálne ukončenie angažovania:
+- Uvoľnenie členov tímu
+- Vrátenie prenajatého vybavenia
+- Uzavretie externých zmlúv
+- Archivovanie dokumentov
+- Ukončenie prístupov a licencií
+
+**Záverečná správa:**
+
+Prezentácia výsledkov:
+- Zhrnutie projektu
+- Dosiahnuté výsledky
+- Použité zdroje
+- Získané poznatky
+- Odporúčania
+
+**Oslava úspechu:**
+
+Ocenenie tímu:
+- Poďakovanie členom tímu
+- Oslava dokončenia projektu
+- Uznanie dosiahnutých výsledkov
+- Podpora tímového ducha`
+    },
+    {
+      title: "Téma 7: Význam projektového manažmentu pre firmy",
+      content: `**Prečo sú firmy úspešnejšie s projektovým manažmentom**
+
+Projektový manažment je pre firmy neoceniteľný nástroj, pretože umožňuje realizovať zložité úlohy efektívne a bez zbytočných komplikácií.
+
+**Efektívne využívanie zdrojov:**
+
+Projektové riadenie umožňuje lepšiu kontrolu nad zdrojmi:
+- **Čas:** Optimalizácia pracovného času tímu
+- **Financie:** Kontrola nákladov a prevencia prekročenia rozpočtu
+- **Ľudské zdroje:** Optimálne využitie schopností členov tímu
+- **Materiálne zdroje:** Zabránenie plytvaniu materiálov
+- **Technológie:** Efektívne využívanie nástrojov
+
+Tým sa zabezpečí, že sa žiadne zdroje nepremárnia, a to ani pri nepredvídaných problémoch.
+
+**Lepšia komunikácia:**
+
+Jasne definované ciele a pravidelné aktualizácie:
+- Lepšia koordinácia medzi tímami
+- Transparentnosť pre zainteresované strany
+- Predchádzanie nedorozumeniam
+- Rovnaké informácie pre všetkých účastníkov
+- Rýchlejšie riešenie problémov
+- Lepšia spolupráca
+
+**Riadenie rizík:**
+
+Včasná identifikácia potenciálnych problémov:
+- Proaktívny prístup k rizikám
+- Pripravené kontingenčné plány
+- Rýchla reakcia na problémy
+- Minimalizácia negatívnych dopadov
+- Zníženie pravdepodobnosti neúspechu
+- Ochrana investícií
+
+**Zlepšená produktivita:**
+
+Neustály dohľad na plnenie úloh:
+- Dodržiavanie stanovených termínov
+- Vyššia efektivita tímu
+- Lepšia organizácia práce
+- Zníženie zbytočných činností
+- Zvýšená kvalita výstupov
+- Spokojnosť zainteresovaných strán
+
+**Strategické výhody:**
+
+Projektový manažment prináša:
+- Lepšie plánovanie budúcich projektov
+- Budovanie znalostnej bázy
+- Zvyšovanie konkurencieschopnosti
+- Schopnosť riadiť viac projektov súčasne
+- Lepšie využitie príležitostí
+- Dlhodobý rozvoj firmy
+
+**Merateľné výsledky:**
+
+Projektový manažment umožňuje:
+- Jasné meranie úspešnosti
+- Objektívne hodnotenie výsledkov
+- Dátovo podložené rozhodovanie
+- Kontinuálne zlepšovanie procesov
+- ROI (Return on Investment) analýzu`
+    },
+    {
+      title: "Téma 8: Metodológia PRINCE2",
+      content: `**Najrozšírenejšia metodika projektového manažmentu**
+
+PRINCE2 (PRojects IN Controlled Environments) je celosvetovo najrozšírenejšia metodika projektového manažmentu. Ide o procesne orientovanú metodológiu, ktorá sa zameriava na kontrolu zdrojov a riadenie rizík.
+
+**Základné princípy PRINCE2:**
+
+Metodika stojí na 7 princípoch:
+1. **Kontinuálne obchodné odôvodnenie:** Projekt musí mať obchodný zmysel
+2. **Učenie sa zo skúseností:** Využívanie lessons learned
+3. **Definované úlohy a zodpovednosti:** Jasná štruktúra tímu
+4. **Riadenie po etapách:** Kontrola na konci každej fázy
+5. **Riadenie podľa výnimiek:** Eskalácia len pri odchýlkach
+6. **Zameranie na produkty:** Dôraz na výstupy projektu
+7. **Prispôsobenie prostrediu projektu:** Flexibilita metodiky
+
+**Sedem procesov PRINCE2:**
+
+1. **Starting Up a Project (SU):** Príprava projektu
+2. **Initiating a Project (IP):** Formálna iniciácia
+3. **Directing a Project (DP):** Riadenie projektovej rady
+4. **Controlling a Stage (CS):** Kontrola jednotlivých etáp
+5. **Managing Product Delivery (MP):** Riadenie dodávky produktov
+6. **Managing Stage Boundaries (SB):** Riadenie prechodu medzi etapami
+7. **Closing a Project (CP):** Ukončenie projektu
+
+**Témy PRINCE2:**
+
+Sedem tém, ktoré sa riešia počas celého projektu:
+- **Business Case:** Obchodné odôvodnenie
+- **Organization:** Organizačná štruktúra
+- **Quality:** Kvalita výstupov
+- **Plans:** Plánovanie
+- **Risk:** Riadenie rizík
+- **Change:** Riadenie zmien
+- **Progress:** Sledovanie pokroku
+
+**Rozdelenie na etapy:**
+
+Projekty sú rozdelené na fázy (stages):
+- Jasné míľniky medzi etapami
+- Kontrola na konci každej etapy
+- Rozhodnutie o pokračovaní
+- Hodnotenie výsledkov
+- Aktualizácia plánov
+
+**Flexibilita PRINCE2:**
+
+PRINCE2 umožňuje prispôsobovať metodiku:
+- Pre rôzne veľkosti projektov
+- Pre rôzne odvetvia
+- Pre rôzne typy projektov
+- Podľa kultúry organizácie
+- Podľa skúseností tímu
+
+**PRINCE2 certifikácia:**
+
+OMNICOM poskytuje kurzy:
+- **PRINCE2 Foundation:** Základný kurz
+- **PRINCE2 Practitioner:** Praktická aplikácia
+- **PRINCE2 Agile Foundation:** Kombinácia s agilnými metódami`
+    },
+    {
+      title: "Téma 9: Metodológia PMBOK a IPMA",
+      content: `**Ďalšie významné metodológie projektového manažmentu**
+
+**PMBOK (Project Management Body of Knowledge)**
+
+PMBOK je štandard projektového riadenia vytvorený organizáciou PMI (Project Management Institute). Nejde o konkrétnu metodiku, ale o súbor osvedčených postupov na riadenie projektov v rôznych odvetviach.
+
+**Päť fáz projektu podľa PMBOK:**
+
+1. **Iniciácia:** Definovanie a autorizácia projektu
+2. **Plánovanie:** Stanovenie rozsahu a cieľov
+3. **Realizácia:** Koordinácia ľudí a zdrojov
+4. **Monitorovanie a kontrola:** Sledovanie pokroku
+5. **Ukončenie:** Formálne dokončenie projektu
+
+**Desať oblastí znalostí PMBOK:**
+
+1. **Integrácia:** Koordinácia všetkých aspektov projektu
+2. **Rozsah:** Definovanie, čo projekt zahŕňa
+3. **Čas:** Riadenie harmonogramu
+4. **Náklady:** Rozpočtovanie a kontrola nákladov
+5. **Kvalita:** Zabezpečenie kvality výstupov
+6. **Zdroje:** Riadenie tímu a materiálov
+7. **Komunikácia:** Plánovanie a distribúcia informácií
+8. **Riziká:** Identifikácia a riadenie rizík
+9. **Obstarávanie:** Riadenie dodávateľov
+10. **Zainteresované strany:** Riadenie stakeholderov
+
+**IPMA (International Project Management Association)**
+
+IPMA je globálna organizácia, ktorá vyvinula systém certifikácie projektových manažérov na základe kompetenčného prístupu.
+
+**IPMA ICB (Individual Competence Baseline)**
+
+Metodika definuje tri hlavné oblasti kompetencií:
+
+**1. Perspektívne kompetencie:**
+- Strategické myslenie
+- Pochopenie kontextu projektu
+- Pochopenie organizácie
+- Governance projektu
+- Compliance a štandardy
+
+**2. Ľudské kompetencie:**
+- Vedenie tímu
+- Komunikácia
+- Riešenie konfliktov
+- Tímová spolupráca
+- Vyjednávanie
+- Sebareflexia
+- Etika a hodnoty
+- Osobný rozvoj
+
+**3. Technické kompetencie:**
+- Plánovanie projektu
+- Riadenie rizík
+- Riadenie kvality
+- Riadenie rozsahu
+- Harmonogram projektu
+- Náklady a financie
+- Zdroje projektu
+- Zmeny a riešenie problémov
+
+**Certifikačné úrovne IPMA:**
+
+- **Level A:** Certified Projects Director (riadenie portfólia)
+- **Level B:** Certified Senior Project Manager (komplexné projekty)
+- **Level C:** Certified Project Manager (menej komplexné projekty)
+- **Level D:** Certified Project Management Associate (členovia tímov)
+
+**Porovnanie metodológií:**
+
+- **PRINCE2:** Procesne orientovaná, jasná štruktúra
+- **PMBOK:** Súbor znalostí, flexibilná aplikácia
+- **IPMA:** Kompetenčný prístup, zameranie na ľudí`
+    },
+    {
+      title: "Téma 10: Nástroje a zhrnutie projektového manažmentu",
+      content: `**Nástroje pre efektívny projektový manažment**
+
+Moderný projektový manažment využíva rôzne nástroje a technológie:
+
+**Plánovacie nástroje:**
+- **Microsoft Project:** Komplexný nástroj pre plánovanie
+- **Primavera P6:** Pre veľké a komplexné projekty
+- **GanttProject:** Open-source alternatíva
+- **SmartSheet:** Online plánovanie a spolupráca
+
+**Nástroje pre agilný prístup:**
+- **Jira:** Najpoužívanejší nástroj pre Scrum a Kanban
+- **Trello:** Jednoduchý vizuálny nástroj
+- **Asana:** Riadenie úloh a projektov
+- **Monday.com:** Flexibilná platforma
+
+**Komunikačné nástroje:**
+- **Slack:** Tímová komunikácia
+- **Microsoft Teams:** Komplexná spolupráca
+- **Zoom:** Videokonferencie
+- **Miro:** Virtuálne whiteboard
+
+**Dokumentačné nástroje:**
+- **Confluence:** Projektová dokumentácia
+- **SharePoint:** Správa dokumentov
+- **Google Workspace:** Cloudová spolupráca
+- **Notion:** All-in-one workspace
+
+**Kľúčové zručnosti projektového manažéra:**
+
+**Tvrdé zručnosti:**
+- Plánovanie a organizácia
+- Riadenie rozpočtu
+- Analýza rizík
+- Znalosti metodológií
+- Technické znalosti
+
+**Mäkké zručnosti:**
+- Vedenie tímu
+- Komunikácia
+- Riešenie problémov
+- Vyjednávanie
+- Adaptabilita
+- Rozhodovanie
+
+**Zhrnutie:**
+
+Projektový manažment je základom úspechu pre firmy, ktoré chcú zvládnuť komplexné projekty efektívne a bez komplikácií. Význam správneho riadenia projektov je neoceniteľný, pretože prispieva k:
+
+✅ Lepšej organizácii práce
+✅ Efektívnemu využívaniu zdrojov
+✅ Zvyšovaniu produktivity
+✅ Minimalizácii rizík
+✅ Spokojnosti zákazníkov
+✅ Dosiahnutiu strategických cieľov
+
+**Odporúčania pre začiatočníkov:**
+
+1. **Začnite vzdelávaním:** Absolvujte certifikačný kurz (PRINCE2, PMP, IPMA)
+2. **Získajte prax:** Začnite s menšími projektmi
+3. **Používajte nástroje:** Naučte sa pracovať s PM software
+4. **Učte sa zo skúseností:** Aplikujte lessons learned
+5. **Rozvíjajte mäkké zručnosti:** Komunikácia je kľúčová
+6. **Sledujte trendy:** PM sa neustále vyvíja
+
+**Budúcnosť projektového manažmentu:**
+
+- Hybridné metodológie (kombiná­cia Waterfall a Agile)
+- Využívanie AI a automatizácie
+- Dôraz na udržateľnosť
+- Remote a hybridná práca
+- Dátovo riadené rozhodovanie
+
+Ak chcete dosiahnuť lepšie výsledky vo vašich projektoch, zvážte zavedenie profesionálneho projektového manažmentu a využitie nástrojov a metodík, ktoré sú dnes dostupné.`
+    }
   ]
 };
 
