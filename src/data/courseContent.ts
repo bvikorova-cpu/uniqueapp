@@ -4,6 +4,781 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Public speaking": [
+    {
+      title: "Téma 1: Čo je verejné rozprávanie?",
+      content: `**Definícia verejného rozprávanie**
+
+Public Speaking, tiež známy ako prednáška alebo orácia, tradične znamená akt priameho rozprávania, tvárou v tvár, so živým publikom.
+
+**Základné charakteristiky:**
+
+**1. Priama komunikácia:**
+- Tvárou v tvár s publikom
+- Živá interakcia
+- Bezprostredný kontakt
+- Dynamická výmena
+
+**2. Účel verejného prejavu:**
+
+Rečníctvo sa používa na rôzne účely, ale často ide o zmes:
+
+**Výučba (Teaching):**
+- Vzdelávanie publika
+- Odovzdávanie vedomostí
+- Vysvetľovanie konceptov
+- Školenia a workshopy
+
+**Presviedčanie (Persuading):**
+- Zmena postojov
+- Ovplyvňovanie názorov
+- Motivácia k činu
+- Obhajovanie myšlienok
+
+**Zábava (Entertaining):**
+- Príjemný zážitok
+- Udržanie pozornosti
+- Emocionálne zapojenie
+- Humor a príbehy
+
+**Moderné formy verejného prejavu:**
+
+Umenie verejného prejavu dnes premenili nové dostupné technológie:
+
+**Technologické zmeny:**
+- Videokonferencie
+- Multimediálne prezentácie
+- Online webináre
+- Hybridné eventy
+- Virtuálne prezentácie
+
+**Základné prvky zostávajú rovnaké:**
+- Jasná správa
+- Spojenie s publikom
+- Štruktúrovaný obsah
+- Efektívna komunikácia
+
+**Dôležitosť v modernom svete:**
+
+Ľudia so silnými rečníckymi schopnosťami majú veľa príležitostí rásť ako potenciálni kandidáti, ktorých vyhľadávajú veľké korporácie. Dynamickí a dobre pripravení rečníci sú vysoko cenení headhuntermi a dokážu zaujať vedúce pozície a kľúčové úlohy.`
+    },
+    {
+      title: "Téma 2: Prečo je verejné vystupovanie dôležité?",
+      content: `**Kľúčové výhody verejného vystupovania**
+
+**1. Vyhrajte nad svojím davom**
+
+Vedieť hovoriť a prezentovať svoje nápady súvisle a príťažlivo pred tisíckami ľudí prítomných na firemnom stretnutí alebo konferencii nie je jednoduché.
+
+**Výhody ovládnutia tejto zručnosti:**
+- Prekonanie strachu vystupovať na verejnosti
+- Budovanie dôvery
+- Efektívne odovzdávanie posolstva
+- Profesionálny rast
+- Uznanie od kolegov
+
+**Praktické prínosy:**
+- Úspech na firemných stretnutiach
+- Lepšie prezentácie projektov
+- Zvýšená viditeľnosť v organizácii
+- Kariérne príležitosti
+
+**2. Motivujte ľudí**
+
+Rečníci s vynikajúcimi rečníckými schopnosťami pomohli mnohým divákom urobiť zlomový bod v ich živote.
+
+**Sila motivácie:**
+To, čo sprostredkujú, môže ostatných:
+- Prinútiť niečo odvážne začať
+- Motivovať prestať s negatívnymi návykmi
+- Obnoviť vlastné ciele v živote
+- Nájsť novú inšpiráciu
+- Zmeniť perspektívu
+
+**Vplyv na publikum:**
+- Silná motivácia
+- Orientácia na budúcnosť
+- Zmena životného smerovania
+- Osobný rast poslucháčov
+
+**3. Rozvíjajte schopnosti kritického myslenia**
+
+Verejné rozprávanie núti váš mozog pracovať naplno, najmä schopnosť kriticky myslieť.
+
+**Charakteristiky kritického myslenia:**
+
+**Otvorená myseľ:**
+- Otvorenosť k novým názorom
+- Lepšie porozumenie iným
+- Schopnosť počúvať
+- Flexibilita v myslení
+
+**Objektívne videnie:**
+- Vidieť obe strany problému
+- Vyvážené hodnotenie
+- Spravodlivé posúdenie
+- Komplexný pohľad
+
+**Riešenie problémov:**
+- Vytváranie bipartistických riešení
+- Inovatívne prístupy
+- Konštruktívne návrhy
+- Win-win situácie`
+    },
+    {
+      title: "Téma 3: Typy verejného prejavu",
+      content: `**5 najbežnejších typov verejného vystupovania**
+
+Ak chcete byť úspešným rečníkom, musíte porozumieť sebe, ako aj pochopiť, aký typ verejného vystúpenia je pre vás najlepší.
+
+**1. Slávnostné rozprávanie (Ceremonial Speaking)**
+
+**Charakteristika:**
+- Formálne udalosti
+- Oslávy a ceremónie
+- Emotívny charakter
+- Tradičná štruktúra
+
+**Príklady:**
+- Svadobné príhovory
+- Pohrebné reči
+- Promócie
+- Ocenenia a vyznamenania
+
+**Cieľ:**
+- Vzdať hold
+- Oslavovať úspechy
+- Spájať ľudí
+- Vytvárať spomienky
+
+**2. Presvedčivé rozprávanie (Persuasive Speaking)**
+
+**Charakteristika:**
+- Zmena názorov a postojov
+- Argumentácia
+- Emocionálne zapojenie
+- Logické dôkazy
+
+**Príklady:**
+- Politické prejavy
+- Obchodné prezentácie
+- Marketingové pitche
+- Advokácia
+
+**Cieľ:**
+- Presvedčiť publikum
+- Zmeniť správanie
+- Získať podporu
+- Motivovať k činu
+
+**3. Informatívne rozprávanie (Informative Speaking)**
+
+**Charakteristika:**
+- Vzdelávací účel
+- Fakty a údaje
+- Jasná štruktúra
+- Objektívny prístup
+
+**Príklady:**
+- Prednášky
+- Školenia
+- Konferenčné prezentácie
+- Semináre
+
+**Cieľ:**
+- Vzdelávať
+- Odovzdávať vedomosti
+- Vysvetľovať koncepty
+- Zlepšovať porozumenie
+
+**4. Zábavné rozprávanie (Entertaining Speaking)**
+
+**Charakteristika:**
+- Záberný charakter
+- Humor a príbehy
+- Emotívne spojenie
+- Ľahký tón
+
+**Príklady:**
+- Stand-up comedy
+- Motivačné príbehy
+- After-dinner speeches
+- TEDx talks
+
+**Cieľ:**
+- Zabaviť publikum
+- Vytvoriť pozitívny zážitok
+- Udržať pozornosť
+- Inšpirovať
+
+**5. Demonštratívne rozprávanie (Demonstrative Speaking)**
+
+**Charakteristika:**
+- Praktické ukážky
+- Krok za krokom
+- Vizuálne pomôcky
+- Interaktívnosť
+
+**Príklady:**
+- Tutoriály
+- Kulinárske šou
+- Produktové demonštrácie
+- Workshop presentations
+
+**Cieľ:**
+- Naučiť proces
+- Ukázať techniku
+- Praktické zručnosti
+- Hands-on skúsenosti`
+    },
+    {
+      title: "Téma 4: Príklady vynikajúcich prejavov",
+      content: `**Inšpirácia od skvelých rečníkov**
+
+**1. Donovan Livingston - Kreativita pri doručovaní správ**
+
+**Kontext:**
+Donovan Livingston predniesol silný prejav na zvolaní Harvard Graduate School of Education.
+
+**Štruktúra prejavu:**
+
+**Začiatok:**
+- Začal bezpečne citátom
+- Technika nadužívaná po celé generácie
+- Vytvorenie dôveryhodnosti
+
+**Inovatívny zvrat:**
+Namiesto štandardných fráz a prianí sa pustil do hovorenej básne ako prejavu.
+
+**Výsledok:**
+- Na konci emotívne prekonané publikum
+- Viac ako 939,000 videní
+- Takmer 10,000 páčení
+
+**Kľúčová lekcia:**
+Nebojte sa byť kreatívni v spôsobe dodania správy. Tradičný začiatok môže viesť k inovatívnemu pokračovaniu.
+
+**2. Dan Gilbert - Simplify the Complex**
+
+**Téma:**
+"The Surprising Science of Happiness"
+
+**Kľúčová stratégia:**
+
+**Zjednodušenie zložitého:**
+Gilbert sa uistil, že ak sa rozhodol hovoriť o zložitejšej téme, rozdelil pojmy tak, aby im publikum ľahko porozumelo.
+
+**Techniky:**
+- Rozdelenie komplexných konceptov
+- Používanie príkladov
+- Analogie a metafory
+- Postupné budovanie porozumenia
+
+**Lekcia:**
+Aj najzložitejšie témy môžu byť zrozumiteľné, ak ich rozložíte na jednoduchšie časti.
+
+**3. Amy Morin - Make A Connection**
+
+**Téma:**
+"Tajomstvo byť duševne silný"
+
+**Kľúčová stratégia:**
+
+**Spojenie s publikom:**
+Rozprávanie skvelého príbehu funguje dobre pri priťahovaní publika k vám, ale ešte silnejšie je, keď vytvoríte spojenie medzi príbehom a vašim publikom.
+
+**Technika:**
+Amy Morin sa s poslucháčmi spojila otázkou na začiatku prejavu.
+
+**Výhody:**
+- Okamžité zapojenie
+- Personalizácia obsahu
+- Relevantnosť pre každého
+- Emocionálne spojenie
+
+**Dôležitá rada:**
+
+Pre začiatok nepremýšľajte o tom, kedy budete skvelí, ako v príkladoch vyššie, ale zamerajte sa na to, ako sa vyhnúť zlým chybám pri verejnom vystupovaní.`
+    },
+    {
+      title: "Téma 5: Dôvera a sebavedomie",
+      content: `**Základ úspešného prejavu**
+
+**Byť istí**
+
+Dôvera veľmi dobre pomáha prilákať opačnú osobu. Preto, keď veríte tomu, čo hovoríte, bude tiež jednoduchšie presvedčiť ostatných, aby verili tomu, čo hovoríte.
+
+**Čo je sebadôvera v public speaking:**
+
+**Definícia:**
+- Viera vo vlastné schopnosti
+- Istota v obsahu
+- Komfort na javisku
+- Prijatie vlastnej osobnosti
+
+**Prínosy sebadôvery:**
+
+**1. Presvedčivosť:**
+- Ľudia veria presvedčeným rečníkom
+- Autenticita rezonuje
+- Silnejší dopad správy
+- Dôveryhodnosť
+
+**2. Lepšia komunikácia:**
+- Plynulejší prejav
+- Jasnejšie myšlienky
+- Prirodzenejšie gestá
+- Pokojnejší tón
+
+**3. Lepšie zvládanie stresu:**
+- Menšia nervozita
+- Kontrola situácie
+- Schopnosť improvizovať
+- Resilencia pri problémoch
+
+**Ako budovať sebadôveru:**
+
+**1. Príprava:**
+- Dôkladné poznanie témy
+- Nacvičovanie prejavu
+- Príprava na otázky
+- Vizualizácia úspechu
+
+**2. Pozitívne sebaposilnenie:**
+- "Viem o čom hovorím"
+- "Mám hodnotný obsah"
+- "Zaslúžim si byť tu"
+- "Publikum ma chce počuť"
+
+**3. Skúsenosti:**
+- Každý prejav buduje dôveru
+- Začnite v menších skupinách
+- Postupne zvyšujte náročnosť
+- Učte sa z každej skúsenosti
+
+**4. Fyzická príprava:**
+- Relaxačné techniky
+- Hlboké dýchanie
+- Power poses
+- Cvičenie pred prejavom
+
+**Prekonávanie nedostatku sebadôvery:**
+
+**Glosofóbia (strach z verejného vystupovania):**
+Nebojte sa! Je to bežné a dá sa prekonať.
+
+**Techniky:**
+- Postupná expozícia
+- Pozitívna vizualizácia
+- Kognitívna reštrukturalizácia
+- Profesionálny tréning`
+    },
+    {
+      title: "Téma 6: Neverbálna komunikácia",
+      content: `**Sila reči tela**
+
+**Nadviažte očný kontakt a usmejte sa**
+
+Využitie očí na komunikáciu s niekým, čo i len na pár sekúnd, môže dať vašim sledovateľom pocit, že do ich zdieľania dávate celé svoje srdce a publikum to viac ocení.
+
+**Očný kontakt:**
+
+**Výhody:**
+- Budovanie spojenia
+- Prejavenie dôvery
+- Udržanie pozornosti
+- Vytvorenie intimity
+
+**Techniky:**
+- Striedanie pohľadov po celom publikum
+- 3-5 sekúnd s jednou osobou
+- Nebodať pohľadom
+- Prirodzené prechody
+
+**Úsmev:**
+
+**Sila úsmevu:**
+Úsmev je mocnou zbraňou na zapôsobenie na poslucháčov.
+
+**Kedy používať:**
+- Na začiatku prejavu
+- Pri pozitívnych bodoch
+- Pri interakcii s publikom
+- Pri záverečných slovách
+
+**Reč tela:**
+
+**Použite reč tela**
+
+Ako komunikačnú pomôcku by ste mali používať ruky. Mali by sa však používať v správnom čase, pričom sa treba vyhnúť situácii, keď príliš mávajú rukami a nohami, aby to divákom spôsobilo nepohodlie.
+
+**Efektívne gestá:**
+
+**1. Ruky:**
+- Otvorené dlane - úprimnosť
+- Ukazovacie gestá - zdôraznenie
+- Počítanie na prstoch - štruktúra
+- Prírodné pohyby
+
+**2. Postoj:**
+- Vzpriamené držanie tela
+- Rovnomerné rozloženie váhy
+- Stabilná pozícia
+- Otvorené postavenie
+
+**3. Pohyb:**
+- Účelový pohyb po javisku
+- Približovanie k publiku
+- Využitie priestoru
+- Nie bezdôvodné chodenie
+
+**4. Výraz tváre:**
+- Zodpovedajúci obsahu
+- Prirodzené emócie
+- Primeranosť
+- Autenticita
+
+**Čomu sa vyhnúť:**
+
+**Nervózne gestá:**
+- Hranie s predmetmi
+- Dotýkanie sa vlasov
+- Prekrížené ruky
+- Striedanie váhy
+
+**Uzavreté pozície:**
+- Ruky v vreckách
+- Ruky za chrbtom
+- Prekrížené nohy
+- Otočenie od publika`
+    },
+    {
+      title: "Téma 7: Začiatok a štruktúra prezentácie",
+      content: `**Začnite zaujímavým spôsobom**
+
+Odporúča sa začať prezentáciu niečím nesúvisiacim alebo príbehom, stavom prekvapenia atď. Udržte poslucháčov zvedavý na to, čo sa chystáte urobiť, a vytvorte počiatočnú pozornosť prejavu.
+
+**Techniky silného začiatku:**
+
+**1. Otázka:**
+- Rétorická otázka
+- Provokujúca otázka
+- Otázka na zamyslenie
+- Interaktívna otázka
+
+**Príklad:**
+"Koľkí z vás sa dnes ráno prebudili s nadšením do práce?"
+
+**2. Šokujúca štatistika:**
+- Prekvapivé číslo
+- Neočakávaný fakt
+- Kontroverzný údaj
+- Relevantná informácia
+
+**Príklad:**
+"70% ľudí má väčší strach z verejného vystupovania ako zo smrti."
+
+**3. Príbeh:**
+- Osobná skúsenosť
+- Relevantný príbeh
+- Emotívne zapojenie
+- Relatable situácia
+
+**4. Citát:**
+- Od uznávanej osobnosti
+- Inšpiratívny
+- Relevantný k téme
+- Podnetný k zamysleniu
+
+**5. Stav prekvapenia:**
+- Neočakávané tvrdenie
+- Paradox
+- Protirečenie
+- Zvláštny začiatok
+
+**Štruktúra efektívnej prezentácie:**
+
+**Úvod (10-15%):**
+- Upútanie pozornosti
+- Predstavenie témy
+- Stanovenie cieľa
+- Náčrt obsahu
+
+**Hlavná časť (70-80%):**
+- 3-5 hlavných bodov
+- Logická postupnosť
+- Podporné dôkazy
+- Príklady a príbehy
+
+**Záver (10-15%):**
+- Zhrnutie hlavných bodov
+- Call to action
+- Silná záverečná myšlienka
+- Memorabilný koniec
+
+**Prechody:**
+- Plynulé prepojenia
+- Jasné signály
+- Logické následnosti
+- Udržanie pozornosti`
+    },
+    {
+      title: "Téma 8: Interakcia s publikom",
+      content: `**Vytvorte emócie pri rozprávaní**
+
+Ak sa mimika hodí do prejavu, bude to živšie a publikum empatickejšie. Venovanie pozornosti fonetike a rytmu pri sprostredkovaní informácií urobí vaše verejné rozprávanie pútavejším!
+
+**Emocionálne zapojenie:**
+
+**1. Mimika:**
+- Výraz zodpovedajúci obsahu
+- Prejavenie emócií
+- Autenticita
+- Naturálnosť
+
+**2. Fonetika a rytmus:**
+
+**Variácia hlasu:**
+- Zmeny v tóne
+- Rôzna hlasitosť
+- Tempo reči
+- Pauzy pre efekt
+
+**Dôraz:**
+- Zdôraznenie kľúčových slov
+- Zmena tempa pri dôležitých bodoch
+- Ticho pre dramatický efekt
+- Vášeň v hlase
+
+**Interakcia s poslucháčmi**
+
+Komunikujte so svojimi poslucháčmi otázkami, ktoré vám pomôžu dozvedieť sa viac o potrebách vášho publika a vyriešiť problémy.
+
+**Techniky interakcie:**
+
+**1. Otázky:**
+
+**Rétorické otázky:**
+- Podnetné k zamysleniu
+- Nie vyžadujú odpoveď
+- Zapojenie mysle
+
+**Interaktívne otázky:**
+- Vyžadujú odpoveď
+- Zdvíhanie rúk
+- Hlasovanie
+- Zdieľanie skúseností
+
+**2. Aktivity:**
+- Skupinové diskusie
+- Párové cvičenia
+- Brainstorming
+- Hands-on úlohy
+
+**3. Príbehy publika:**
+- Požiadanie o zdieľanie
+- Využitie skúseností
+- Kolektívna múdrosť
+- Relevantné príklady
+
+**4. Živé príklady:**
+- Dobrovoľníci z publika
+- Demonštrácie
+- Rolové hry
+- Praktické ukážky
+
+**Výhody interakcie:**
+
+**Pre publikum:**
+- Aktívne zapojenie
+- Lepšie zapamätanie
+- Personalizovaný obsah
+- Zábavnejší zážitok
+
+**Pre rečníka:**
+- Poznanie publika
+- Prispôsobenie obsahu
+- Udržanie pozornosti
+- Späth väzba v reálnom čase`
+    },
+    {
+      title: "Téma 9: Plánovanie a príprava",
+      content: `**Príprava mimo javiska**
+
+Aby ste zažiarili na javisku, musíte sa nielen čo najlepšie snažiť rozprávať, ale aj mimo javiska sa dobre pripraviť.
+
+**Čas kontroly**
+
+Prejavy, ktoré sa riadia plánom, budú mať vyššiu úroveň úspechu. Ak je prejav príliš dlhý a rozvláčny, poslucháčov to už nebude zaujímať a budú sa tešiť na ďalšie časti.
+
+**Time management:**
+
+**1. Stanovenie časového rámca:**
+- Pridelený čas
+- Rezerva pre otázky
+- Buffer pre neočakávané
+- Rešpekt k času publika
+
+**2. Plánovanie obsahu:**
+- Časový limit pre každú časť
+- Úvod: 10-15%
+- Hlavná časť: 70-80%
+- Záver: 10-15%
+
+**3. Nacvičovanie:**
+- Meranie času pri cvičení
+- Úprava dĺžky
+- Identifikácia častí na skrátenie
+- Flexibilita v obsahu
+
+**Plán stavby B**
+
+Pripravte sa na možné rizikové situácie a urobte si vlastné riešenia. To vám pomôže zostať pokojný v neočakávaných situáciách.
+
+**Možné problémy a riešenia:**
+
+**1. Technické problémy:**
+
+**Problém:**
+- Nefungujúca prezentácia
+- Zlyhanie mikrofónu
+- Problémy s projektorom
+
+**Riešenie:**
+- Záložná kópia na USB/cloude
+- Tlačená verzia poznámok
+- Schopnosť hovoriť bez techniky
+- Kontakt na technickú podporu
+
+**2. Otázky z publika:**
+
+**Problém:**
+- Neviem odpoveď
+- Agresívna otázka
+- Mimo témy
+
+**Riešenie:**
+- "To je skvelá otázka, dovolím si na to vrátiť"
+- Presmerovanie späť na tému
+- Pozvanie na diskusiu po prejave
+- Úprimnosť pri neznalosti
+
+**3. Časové problémy:**
+
+**Problém:**
+- Menej času ako plánované
+- Viac času ako obsahu
+
+**Riešenie:**
+- Prioritizácia kľúčových bodov
+- Pripravené dodatočné príklady
+- Flexibilná štruktúra
+- Interaktívne aktivity
+
+**Fyzická príprava:**
+
+- Dostatočný spánok
+- Hydratácia
+- Ľahké jedlo pred prejavom
+- Cvičenie pre uvoľnenie`
+    },
+    {
+      title: "Téma 10: Zhrnutie a pokročilé tipy",
+      content: `**Komplexný prehľad úspešného public speaking**
+
+**Kľúčové zručnosti:**
+
+**1. Sebadôvera:**
+- Viera vo vlastné schopnosti
+- Presvedčivosť v obsahu
+- Komfort na javisku
+
+**2. Neverbálna komunikácia:**
+- Očný kontakt
+- Úsmev
+- Reč tela
+- Gestá
+
+**3. Emocionálne zapojenie:**
+- Mimika
+- Fonetika a rytmus
+- Autentické emócie
+
+**4. Štruktúra:**
+- Silný začiatok
+- Logická hlavná časť
+- Memorabilný záver
+
+**5. Interakcia:**
+- Otázky
+- Aktivity
+- Zapojenie publika
+
+**6. Príprava:**
+- Time management
+- Plán B
+- Fyzická kondícia
+
+**Pokročilé tipy:**
+
+**1. Storytelling:**
+- Použitie príbehov
+- Emocionálne prepojenie
+- Relevantnosť
+- Pamätateľnosť
+
+**2. Humor:**
+- Vhodné použitie
+- Prirodzený štýl
+- Nie na úkor druhých
+- Uvoľnenie atmosféry
+
+**3. Vizuálne pomôcky:**
+- Podpora, nie nahrádzanie
+- Jednoduché a jasné
+- Vysoká kvalita
+- Správne načasovanie
+
+**4. Adaptabilita:**
+- Čítanie publika
+- Prispôsobenie obsahu
+- Flexibilita v plánoch
+- Improvizácia
+
+**Kontinuálny rozvoj:**
+
+**Prax:**
+- Každá príležitosť sa počíta
+- Toastmasters kluby
+- Firemné prezentácie
+- Dobrovoľnícke vystúpenia
+
+**Vzdelávanie:**
+- Kurzy a workshopy
+- Sledovanie skvelých rečníkov
+- Čítanie kníh o public speaking
+- Online zdroje
+
+**Spätná väzba:**
+- Žiadanie o hodnotenie
+- Video nahrávky
+- Sebareflexia
+- Implementácia zlepšení
+
+**Finálna rada:**
+
+Verejné vystupovanie je zručnosť, nie talent. Každý sa ju môže naučiť s praxou, trpezlivosťou a odhodlaním. Začnite malými krokmi a postupne budujte svoju dôveru a schopnosti.
+
+**Pamätajte:**
+- Publikum chce, aby ste uspeli
+- Chyby sú prirodzené
+- Každý prejav vás robí lepším
+- Vaša správa má hodnotu
+
+Verejné vystupovanie otvára dvere k profesionálnemu rastu, osobnému rozvoju a schopnosti ovplyvňovať a inšpirovať druhých. Je to investícia, ktorá sa vám vráti v každej oblasti života.`
+    }
+  ],
+  
   "Asertivita": [
     {
       title: "Téma 1: Čo je asertivita?",
