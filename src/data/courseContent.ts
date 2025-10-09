@@ -793,6 +793,1164 @@ Každý typ má rôzne potreby a vyžaduje špecifické produkty.
 Gratulujeme! Dokončili ste kurz Starostlivosť o pleť a ste pripravení starať sa o svoju pleť profesionálne!`
     }
   ],
+
+  "Manikúra": [
+    {
+      title: "Téma 1: Úvod do manikúry",
+      content: `**Čo je manikúra?**
+
+Krásne nechty nie sú len o laku na nechty. Je to komplexná starostlivosť, ktorá zahŕňa tvarovanie, starostlivosť o kožičku, precízne lakovanie a záverečnú hydratáciu.
+
+**Prečo je manikúra důležitá?**
+
+- Zdravé a upravené nechty
+- Prevencia problémov s nechtami
+- Estetický vzhľad rúk
+- Relaxácia a sebapéča
+- Profesionálny dojem
+
+**Čo potrebujete vedieť pred začatím:**
+
+Manikúra vyžaduje trpezlivosť, správne nástroje a techniku. V tomto kurze sa naučíte všetko potrebné pre domácu manikúru ako zo salónu.
+
+**Základné pravidlá:**
+
+- Pracujte v čistom prostredí
+- Používajte dezinfikované nástroje
+- Buďte šetrní ku kožičke
+- Nechajte každú vrstvu laku zaschnúť
+- Pravidelná starostlivosť je kľúčom k úspechu`
+    },
+    {
+      title: "Téma 2: Potrebné pomôcky a nástroje",
+      content: `**Základné nástroje pre manikúru:**
+
+**Pilník na nechty:**
+- Sklenený alebo kartonový
+- Zrnitosť 180-240 grit pre prírodné nechty
+- Pilujte v jednom smere
+
+**Nožničky na nechty:**
+- Ostré a kvalitné
+- Pravidelne dezinfikujte
+- Strihajte rovno, nie okrúhlo
+
+**Zatláčadlo kožičky:**
+- Drevené alebo kovové
+- Zaoblený koniec
+- Nepoužívajte ostré predmety
+
+**Nožničky na kožičku (voliteľné):**
+- Veľmi ostré
+- Používajte opatrne
+- Len na uvoľnenú kožičku
+
+**Miska s teplou vodou:**
+- Na namáčanie rúk
+- Pridajte mydlo alebo soľ
+- Teplota má byť príjemná
+
+**Kozmetické produkty:**
+
+- Odlakovač (bez acetónu)
+- Základný lak
+- Farebný lak
+- Vrchný lak
+- Olejček na kožičku
+- Hydratačný krém na ruky
+
+**Dôležité tipy:**
+
+**Kvalitné nástroje:** Investujte do kvalitných manikúrových nástrojov. Uľahčia vám prácu a zabezpečia lepší výsledok.`
+    },
+    {
+      title: "Téma 3: Príprava - základ úspechu",
+      content: `**Krok 1: Odstránenie starého laku**
+
+Začnite dôkladným odstránením laku.
+
+**Správny postup:**
+1. Použite odlakovač bez acetónu
+2. Namočte vatový tampón
+3. Priložte na necht na 5 sekúnd
+4. Jemne pretrite
+5. Opakujte až do úplného odstránenia
+
+**Prečo bez acetónu?**
+- Acetón zbytočne nevysuší vaše nechty
+- Je šetrnejší k nechtovej platničke
+- Zachováva prirodzené oleje v nechte
+
+**Krok 2: Umývanie rúk**
+
+**Dôkladne si umyte ruky:**
+- Použite teplú vodu
+- Mydlo aplikujte na celú ruku
+- Dôkladne umyte aj medzi prstami
+- Opláchnite čistou vodou
+- Osušte hebkou utierkou
+
+**Účel umytia:**
+- Zbavíte sa nečistôt
+- Odstránite mastnotu
+- Pripravíte ruky na ošetrenie
+
+**Krok 3: Príprava pomôcok**
+
+Pripravte si všetky potrebné pomôcky na dosah:
+- Pilník na nechty
+- Nožničky na nechty
+- Zatláčadlo kožičky
+- Nožničky na kožičku (voliteľné)
+- Miska s teplou vodou
+- Mydlo
+- Olejček na kožičku
+- Základný lak
+- Farebný lak
+- Vrchný lak
+- Hydratačný krém na ruky
+
+**Dôležité:**
+Dezinfikujte všetky nástroje pred použitím!`
+    },
+    {
+      title: "Téma 4: Tvarovanie nechtov - zastrihávanie",
+      content: `**Zastrihávanie nechtov (ak je to potrebné)**
+
+**Kedy zastrihávať:**
+- Ak sú nechty príliš dlhé
+- Ak sú nechty poškodené
+- Ak chcete výrazne skrátiť dĺžku
+
+**Správna technika:**
+
+**1. Príprava:**
+- Použite ostré nožničky na nechty
+- Dezinfikujte nástroj
+- Zvoľte požadovanú dĺžku
+
+**2. Strihanie:**
+- **Strihajte rovno, nie okrúhlo!**
+- Začnite od jednej strany
+- Urobte malé striženie
+- Pokračujte k druhej strane
+- Nikdy nestrihajte príliš nakrátko
+
+**3. Ideálna dĺžka:**
+- 2-3 mm voľného okraja
+- Dostatočná dĺžka pre tvarovanie
+- Ochrana nechtového lôžka
+
+**POZOR - časté chyby:**
+
+**Okrúhly strig:**
+- Môže viesť k zarastaniu nechtov
+- Oslabuje necht
+- Nie je vhodný
+
+**Príliš krátke nechty:**
+- Bolestivé
+- Zvyšuje riziko infekcií
+- Necht nemá priestor na rast
+
+**Vyhnite sa okrúhlemu strihu, ktorý môže viesť k zarastaniu nechtov.**`
+    },
+    {
+      title: "Téma 5: Tvarovanie nechtov - pilovanie",
+      content: `**Pilovanie nechtov**
+
+Pilovanie je kľúčový krok, ktorý určuje konečný tvar vašich nechtov.
+
+**Správna technika pilovania:**
+
+**1. Držanie pilníka:**
+- Držte pilník pod 45-stupňovým uhlom
+- Pevne, ale nie príliš tvrdo
+- Kontrolujte tlak
+
+**2. Smer pilovania:**
+- **Pilujte v jednom smere!**
+- Nikdy tam a späť
+- Od okraja k stredu
+- Zabráni to rozstrapkaniu nechtov
+
+**3. Postup:**
+- Začnite na jednej strane nechta
+- Pilujte k stredu
+- Potom druhú stranu
+- Nakoniec upravte tvar
+
+**Najpopulárnejšie tvary nechtov:**
+
+**Okrúhly tvar:**
+- Prirodzený vzhľad
+- Vhodný pre kratšie nechty
+- Ideálny na každý deň
+- Najmenej náchylný na lámanie
+
+**Oválny tvar:**
+- Elegantný
+- Opticky predlžuje prsty
+- Vhodný pre stredné až dlhšie nechty
+- Klasický a nadčasový
+
+**Štvorcový tvar:**
+- Moderný vzhľad
+- Vyžaduje silnejšie nechty
+- Trendy a výrazný
+- Ideálny pre umelé nechty
+
+**Špicatý (stiletto):**
+- Dramatický efekt
+- Len pre dlhé nechty
+- Vyžaduje pravidelnú údržbu
+- Náchylný na lámanie
+
+**Vyberte si tvar, ktorý vyhovuje vašim prstom a životnému štýlu.**`
+    },
+    {
+      title: "Téma 6: Starostlivosť o kožičku - namáčanie",
+      content: `**Príprava kožičky na ošetrenie**
+
+Správne ošetrenie kožičky je jedným z najdôležitejších krokov manikúry.
+
+**Namočte si ruky:**
+
+**1. Príprava kúpeľa:**
+- Naplňte misku teplou vodou
+- Pridajte trochu mydla
+- Môžete pridať soľ alebo éterický olej
+- Teplota má byť príjemná, nie horúca
+
+**2. Čas namáčania:**
+- **5 až 10 minút** je ideálne
+- Tým sa kožička zmäkčí
+- Ľahšie sa s ňou pracuje
+- Zmäkne aj tvrdá koža okolo nechtov
+
+**3. Počas namáčania:**
+- Relaxujte
+- Masírujte ruky
+- Pripravte si nástroje
+- Užívajte si moment
+
+**Účinky namáčania:**
+
+**Zmäkčenie kožičky:**
+- Ľahšie odstránenie
+- Menšia bolesť
+- Menej riziko poranenia
+
+**Čistenie:**
+- Odstránenie nečistôt
+- Dezinfekcia
+- Príprava na ošetrenie
+
+**Relaxácia:**
+- Uvoľnenie napätia
+- Príprava rúk na masáž
+- Príjemný zážitok
+
+**Dodatky do kúpeľa:**
+
+- **Morská soľ:** Čistí a zmäkčuje
+- **Éterické oleje:** Levanduľa, tea tree
+- **Citrónová šťava:** Bielenie nechtov
+- **Olej z mandlí:** Extra hydratácia`
+    },
+    {
+      title: "Téma 7: Starostlivosť o kožičku - ošetrenie",
+      content: `**Ošetrenie kožičky**
+
+Po namočení je kožička pripravená na ošetrenie.
+
+**Krok 1: Zatlačenie kožičky**
+
+**Pomocou zatláčadla:**
+1. Osušte ruky
+2. Jemně zatlačte kožičku
+3. Pohybujte sa smerom k nechtovému lôžku
+4. **Netlačte príliš silno!**
+5. Opakujte na každom nechte
+
+**Prečo netlačiť silno?**
+- Môžete poškodiť nechtovú matricu
+- Matrica je miesto, kde necht rastie
+- Poškodenie vedie k deformáciám nechta
+- Môže to byť bolestivé
+
+**Krok 2: Odstránenie kožičky (voliteľné a veľmi opatrné)**
+
+**POZOR:** Tento krok vyžaduje opatrnosť!
+
+**Správny postup:**
+1. Použite ostré nožničky na kožičku
+2. Odstrihnite **len uvoľnenú kožičku**
+3. **Nestrihajte do živej kože!**
+4. Pracujte pomaly a precízne
+5. Ak si nie ste istí, tento krok vynechajte
+
+**Riziká:**
+- Nadmerné strihanie môže viesť k zápalom
+- Poškodenie nechtovej platničky
+- Krvácanie
+- Infekcie
+
+**Odporúčanie:**
+Pre začiatočníkov je lepšie kožičku len zatlačiť, nie strihať.
+
+**Krok 3: Nanášanie oleja na kožičku**
+
+**Po zastrihnutí alebo zatlačení:**
+1. Aplikujte olejček na kožičku
+2. Jemne vmasírujte
+3. Nechajte vstrebať
+4. Odstráňte prebytok
+
+**Účinky oleja:**
+- Vyživí kožičku
+- Zvlhčí okolie nechta
+- Zabráni zaschnutiu
+- Podporuje zdravý rast nechta`
+    },
+    {
+      title: "Téma 8: Lakovanie - príprava a podklad",
+      content: `**Príprava nechtov na lakovanie**
+
+V prípade, že je nechtová kožička poškodená, je dôležité ju správne nalakovať.
+
+**Krok 1: Odmastenie nechtov**
+
+**Prečo odmastovať?**
+- Zlepší sa priľnavosť laku
+- Lak vydrží dlhšie
+- Zabráni sa odlupovaniu
+
+**Ako na to:**
+1. Použite odlakovač
+2. Pretrite každý necht
+3. Nechajte úplne zaschnúť
+4. Netrieť prstami po nechte
+
+**Krok 2: Podkladový lak (base coat)**
+
+**Účel podkladového laku:**
+- Chráni nechty pred zafarbením
+- Vyrovnáva nerovnosti
+- Predlžuje trvanlivosť farebného laku
+- Posilňuje necht
+
+**Aplikácia:**
+
+**1. Príprava:**
+- Otvorte fľaštičku
+- Otraste (nie priveľa!)
+- Otrite štetec o okraj
+
+**2. Nanášanie:**
+- Začnite stredom nechta
+- Jeden ťah od kožičky k špičke
+- Potom pravá strana
+- Potom ľavá strana
+- Traja ťahy spolu
+
+**3. Schnutie:**
+- **Nechajte dôkladne zaschnúť!**
+- Minimálne 2-3 minúty
+- Testujte jemným dotykom
+- Lepšie čakať dlhšie
+
+**Typy podkladových lakov:**
+
+- **Klasický:** Základná ochrana
+- **Posilňujúci:** Pre slabé nechty
+- **Vyrovnávací:** Pre nerovné nechty
+- **Bielici:** Odstráni žltnutie`
+    },
+    {
+      title: "Téma 9: Lakovanie - farebný a vrchný lak",
+      content: `**Aplikácia farebného laku**
+
+**Krok 1: Prvá vrstva**
+
+**Technika nanášania:**
+1. Otvorte farebný lak
+2. Otraste fľaštičku
+3. Otrite štetec o okraj (odstráňte prebytok!)
+4. Aplikujte tenkú vrstvu
+5. Tri ťahy: stred, vpravo, vľavo
+6. **Nechajte dôkladne zaschnúť**
+
+**Prečo tenká vrstva?**
+- Rýchlejšie schne
+- Rovnomernejší výsledok
+- Menšie riziko pruhov
+- Lepšia trvanlivosť
+
+**Čas schnutia:**
+- Minimálne 5-10 minút
+- Závisí od typu laku
+- Testujte jemným dotykom
+- Trpezlivosť sa oplatí!
+
+**Krok 2: Druhá vrstva**
+
+**Postup:**
+1. Po úplnom zaschnutí prvej vrstvy
+2. Aplikujte druhú tenkú vrstvu
+3. Rovnaká technika ako prvá vrstva
+4. Pre sýtejšiu farbu
+5. Opäť nechajte dôkladne zaschnúť
+
+**Krok 3: Vrchný lak (top coat)**
+
+**Účel vrchného laku:**
+- Chráni farebný lak pred poškodením
+- Dodáva lesk
+- Predlžuje trvanlivosť
+- Urýchľuje schnutie
+
+**Aplikácia:**
+1. Počkajte, kým farebný lak úplne zaschne
+2. Naneste tenkú vrstvu vrchného laku
+3. Pokryte celý necht vrátane špičky
+4. **Špička je najdôležitejšia!**
+5. Nechajte zaschnúť
+
+**Typy vrchných lakov:**
+
+- **Klasický:** Základná ochrana
+- **Rýchloschnúci:** Schne za 60 sekúnd
+- **Vysoko lesklý:** Extra lesk
+- **Matný:** Trendy matný efekt
+- **Gélový efekt:** Imitácia gélových nechtov
+
+**Dôležitý tip:**
+**Trpezlivosť:** Nechajte každú vrstvu laku dôkladne zaschnúť. Zabránite tak rozmazaniu a zničeniu manikúry.`
+    },
+    {
+      title: "Téma 10: Záverečná starostlivosť a tipy",
+      content: `**Záverečná starostlivosť**
+
+**Navlhčite si ruky:**
+
+Po zaschnutí laku je čas na hydratáciu.
+
+**1. Aplikácia krému:**
+- Naneste hydratačný krém na ruky
+- Masírujte krúživými pohybmi
+- Venujte pozornosť každému prstu
+- Nezabudnite na chrbtovú stranu ruky
+
+**2. Výber krému:**
+- Výživný krém na ruky
+- S vitamínmi A, E
+- S glycerínom alebo pantenolom
+- Rýchlo sa vstrebaný
+
+**Starostlivosť o kožičku:**
+
+**Pravidelná aplikácia oleja:**
+- Ideálne každý večer pred spaním
+- Jemne vmasírujte
+- Posilní a vyživí kožičku
+- Zabráni zaschnutiu a trhlinám
+
+**Dôležité tipy pre dlhotrvajúcu manikúru:**
+
+**1. Kvalitné nástroje:**
+- Investujte do kvalitných manikúrových nástrojov
+- Uľahčia vám prácu
+- Zabezpečia lepší výsledok
+- Vydrží dlhšie
+
+**2. Trpezlivosť:**
+- Nechajte každú vrstvu laku dôkladne zaschnúť
+- Zabránite tak rozmazaniu
+- Manikúra vydrží dlhšie
+- Lepší výsledok
+
+**3. Pravidelná starostlivosť:**
+- Doprajte si manikúru aspoň raz týždenne
+- Pravidelná starostlivosť udrží vaše nechty zdravé a krásne
+- Prevencia problémov
+- Lepší vzhľad
+
+**4. Šetrné zaobchádzanie:**
+- Vyhnite sa hrubému zaobchádzaniu s nechtami
+- Šetrný prístup ku kožičkám
+- Používajte rukavice pri domácich prácach
+- Šetrný prístup je kľúčom k zdravým a krásnym nechtom
+
+**Ako udržať manikúru:**
+
+- Aplikujte vrchný lak každé 2-3 dni
+- Pravidelne hydratujte ruky
+- Noste rukavice pri čistení
+- Nepoužívajte nechty ako nástroj
+- Pravidelne aplikujte olejček na kožičku
+
+**Zhrnutie:**
+
+Krásne nechty sú vizitkou každej ženy! Nebojte sa experimentovať a nájsť si svoj vlastný štýl.
+
+Gratulujeme! Dokončili ste kurz Manikúra a ste pripravení vytvoriť si perfektnú domácu manikúru!`
+    }
+  ],
+
+  "Pedikúra": [
+    {
+      title: "Téma 1: Úvod do pedikúry",
+      content: `**Čo je pedikúra?**
+
+Pedikúra je kozmetické ošetrenie nôh a nechtov zamerané na zdravie a vzhľad chodidiel, ktoré zahŕňa úpravu nechtov, starostlivosť o kožu (odstránenie mozolov a otlakov), hydratáciu a relaxačnú masáž.
+
+**Prečo je pedikúra dôležitá?**
+
+- Zdravie nôh a nechtov
+- Prevencia problémov (zarastanie nechtov, plesne)
+- Odstránenie tvrdej kože a mozolov
+- Estetický vzhľad
+- Relaxácia a pohoda
+
+**Kedy potrebujete pedikúru?**
+
+- Pravidelne každé 3-4 týždne
+- Pri tvorbe mozolov a otlakov
+- Pred letnou sezónou
+- Po dlhom nosení uzavretej obuvi
+- Pre celkové zdravie nôh
+
+**Benefity pravidelnej pedikúry:**
+
+Pravidelná pedikúra pomáha predchádzať mnohým zdravotným problémom s nohami, vrátane:
+- Zarastania nechtov
+- Vzniku plesní
+- Tvorby bolestivých mozolov
+- Praskanej pokožky na pätách
+- Nepríjemného zápachu`
+    },
+    {
+      title: "Téma 2: Typy pedikúry",
+      content: `**Klasická pedikúra:**
+
+Najčastejší typ pedikúry, ktorý zahŕňa komplexnú starostlivosť o nohy.
+
+**Postup:**
+- Kúpeľ nôh na zmäkčenie kože
+- Úprava nechtov
+- Odstránenie tvrdej kože
+- Ošetrenie kutikúl
+- Masáž chodidiel
+- Aplikácia krému
+- Lakovanie nechtov (voliteľné)
+
+**Výhody:**
+- Komplexné ošetrenie
+- Relaxačný efekt
+- Vhodná pre všetkých
+- Príjemný zážitok
+
+**Mokrá pedikúra:**
+
+Pedikúra, ktorá využíva vodný kúpeľ na zmäkčenie pokožky pred ošetrením.
+
+**Charakteristika:**
+- Dlhší kúpeľ nôh (10-15 minút)
+- Príjemná a osviežujúca
+- Ideálna v lete
+- Zmäkčí tvrdú kožu
+
+**Výhody:**
+- Príjemný relaxačný efekt
+- Ľahšie odstránenie tvrdej kože
+- Hydratácia pokožky
+- Upokojenie unavených nôh
+
+**Medicinálna pedikúra (suchá metóda):**
+
+Profesionálne ošetrenie bez namáčania nôh, používané najmä v medicínskych zariadeniach.
+
+**Charakteristika:**
+- Ošetrenie prebieha bez namáčania nôh
+- Vysokootáčkový mikromotor s frézami
+- Obrusovanie zrohovatenej kože
+- Presné a šetrné
+
+**Výhody:**
+- Hygienickejšia metóda
+- Zabraňuje nadmernému rastu pokožky
+- Vhodná pre diabetikov
+- Vhodná pre problematické nechty
+- Dlhotrvajúci efekt
+
+**Kedy zvoliť medicinálnu pedikúru?**
+- Diabetes
+- Kožné ochorenia
+- Pliesňové infekcie
+- Zarastanie nechtov
+- Ťažké mozoly`
+    },
+    {
+      title: "Téma 3: Príprava a dezinfekcia",
+      content: `**Prvý krok: Príprava a dezinfekcia**
+
+Správna príprava je základom bezpečnej a účinnej pedikúry.
+
+**Dezinfekcia nôh:**
+
+**1. Umytie nôh:**
+- Umyte nohy teplou vodou a mydlom
+- Dôkladne vyčistite medzi prstami
+- Opláchnite a osušte
+- Venujte pozornosť každému mistu
+
+**2. Dezinfekcia:**
+- Použite dezinfekčný prostriedok
+- Aplikujte na celé chodidlá
+- Venujte pozornosť nechtom
+- Nechajte zaschnúť
+
+**Príprava kúpeľa (pre mokrú pedikúru):**
+
+**Ingrediencie:**
+- Teplá voda (nie horúca!)
+- Mydlo alebo kúpeľová soľ
+- Voliteľne éterické oleje
+- Dezinfekčný prípravok
+
+**Teplota a čas:**
+- Príjemná teplá voda (nie horúca)
+- 10-15 minút namáčania
+- Zmäkne tvrdá koža
+- Príprava na ošetrenie
+
+**Dezinfekcia nástrojov:**
+
+**Dôležité:**
+Všetky nástroje musia byť pred použitím dezinfikované!
+
+**Nástroje na dezinfekciu:**
+- Nožnice na nechty
+- Pilník
+- Tlačidlo na kožičku
+- Škrabka na päty
+- Nožnice na kožičku
+
+**Metódy dezinfekcie:**
+- Dezinfekčný roztok
+- UV sterilizátor
+- Alkohol 70%
+- Autoklávovanie (profesionálne)
+
+**Hygiena počas pedikúry:**
+
+- Používajte jednorazové rukavice (ak ošetrujete iné osoby)
+- Pracujte v čistom prostredí
+- Každý nástroj použite len raz
+- Pravidelne mýte ruky`
+    },
+    {
+      title: "Téma 4: Úprava nechtov na nohách",
+      content: `**Druhý krok: Úprava nechtov**
+
+Úprava nechtov na nohách vyžaduje osobitnú pozornosť.
+
+**Zastrihávanie nechtov:**
+
+**DÔLEŽITÉ PRAVIDLO:**
+**Nechty na nohách strihajte vždy ROVNO!**
+
+**Prečo rovno?**
+- Zabráni zarastaniu nechtov
+- Ochráni pred ingrown nail
+- Správna technika pre nohy
+- Zdravšie nechty
+
+**Správny postup:**
+
+**1. Príprava:**
+- Použite ostré nožnice alebo klieštiky na nechty
+- Dezinfikujte nástroj
+- Po namočení sú nechty mäkšie
+
+**2. Strihanie:**
+- Strihajte rovno naprieč
+- Nechajte mierne presahovať prsty
+- Nestrihajte príliš nakrátko
+- Nestrihajte do rohov
+
+**3. Ideálna dĺžka:**
+- 1-2 mm nad okraj prstu
+- Ochrana proti zarastaniu
+- Dostatočná dĺžka
+
+**Pilovanie nechtov:**
+
+**Po zastrihnutí:**
+1. Použite pilník na nechty
+2. Vyrovnajte ostré hrany
+3. Zaoblite len mierne rohy (nie príliš!)
+4. Odstráňte nerovnosti
+
+**Technika pilovania:**
+- Pilujte v jednom smere
+- Pod 90-stupňovým uhlom
+- Jemne, bez tlaku
+- Nepílte do rohov
+
+**Čistenie nechtov:**
+
+**Pod nechtami:**
+1. Použite špeciálnu čistiacu tyčinku
+2. Jemne vyčistite nečistoty
+3. Venujte pozornosť každému nechtu
+4. Buďte opatrní, aby ste neporanili kožu
+
+**Časté problémy:**
+
+- **Zarasté nechty:** Príliš krátko ostrihanné rohy
+- **Prasklé nechty:** Pilovánie tam a späť
+- **Pliesňové infekcie:** Nedostatočná hygiena`
+    },
+    {
+      title: "Téma 5: Odstránenie tvrdej kože",
+      content: `**Tretí krok: Odstránenie zrohovatenej kože**
+
+Odstránenie mozolov a otlakov je kľúčová časť pedikúry.
+
+**Identifikácia problémových miest:**
+
+**Kde sa tvorí tvrdá koža?**
+- Päty
+- Vonkajšia strana chodidla
+- Pod prstami
+- Na vrchnej časti prstov
+
+**Typy tvrdej kože:**
+
+**Mozol (callus):**
+- Väčšia plocha tvrdej kože
+- Vzniká tlakom a trením
+- Ochrana pred poškodením
+- Môže byť bolestivý
+
+**Otlak (corn):**
+- Menšia, hlbšia tvrdá koža
+- Bodový tlak
+- Často bolestivý
+- Vyžaduje osobitnú starostlivosť
+
+**Metódy odstránenia:**
+
+**1. Škrabka na päty (mokrá metóda):**
+- Po namočení nôh
+- Jemne škrabte tvrdú kožu
+- Pohybujte sa v jednom smere
+- Nepreháňajte to!
+
+**2. Pilník na päty:**
+- Mechanické pilníky
+- Elektrické pilníky
+- Jemnejšie ako škrabka
+- Vhodné pre pravidelnú údržbu
+
+**3. Fréza (medicinálna pedikúra):**
+- Vysokootáčkový mikromotor
+- Rôzne typy frézok
+- Presné obrusovanie
+- Profesionálne ošetrenie
+
+**Správny postup:**
+
+**1. Po namočení (mokrá metóda):**
+- Osušte nohy
+- Začnite s jemnými pohybmi
+- Odstráňte len vrchnú vrstvu
+- Nepokúšajte sa odstrániť všetko naraz
+
+**2. Bez namočenia (suchá metóda):**
+- Suché chodidlo
+- Fréza s rôznymi nástavcami
+- Presné a kontrolované
+- Šetrnejšie k pokožke
+
+**Bezpečnostné zásady:**
+
+- **NIKDY nepoužívajte žiletku!**
+- Neodstraňujte všetku tvrdú kožu
+- Ponechajte tenkú ochrannú vrstvu
+- Pri cukrovke konzultujte s odborníkom`
+    },
+    {
+      title: "Téma 6: Starostlivosť o kutikuly",
+      content: `**Štvrtý krok: Starostlivosť o nechty a okolie**
+
+Kutikuly (kožička) na nohách vyžadujú rovnako starostlivú starostlivosť ako na rukách.
+
+**Čo sú kutikuly?**
+
+- Ochranná vrstva pri základni nechta
+- Chráni pred infekciami
+- Prirodzená bariéra
+- Vyžaduje jemné zaobchádzanie
+
+**Ošetrenie kutikúl:**
+
+**1. Zmäkčenie:**
+- Po namočení sú kutikuly mäkké
+- Aplikujte špeciálny zmäkčovač kutikúl
+- Nechajte pôsobiť 2-3 minúty
+- Uľahčí odstránenie
+
+**2. Odtlačenie:**
+- Použite drevené alebo kovové zatláčadlo
+- Jemne odtlačte kutikulu k nechtovému lôžku
+- Krúživé pohyby
+- **Netlačte príliš silno!**
+
+**3. Odstránenie (voliteľné):**
+- Použite ostré nožnice
+- Odstráňte len uvoľnenú kožičku
+- **NIKDY neodstraňujte živú kožu!**
+- Pri nejistote radšej len odtlačte
+
+**Čistenie nechtov:**
+
+**Odstránenie nečistôt:**
+1. Pod nechtami
+2. V rohoch nechtov
+3. Okolo nechtového lôžka
+4. Použite čistú tyčinku
+
+**Aplikácia oleja:**
+
+**Olejček na kutikuly:**
+- Vyživuje a hydratuje
+- Podporuje zdravý rast nechta
+- Zabráni zaschnutiu
+- Aplikujte po každej pedikúre
+
+**Ako aplikovať:**
+1. Kvapnite malé množstvo
+2. Jemne vmasírujte do kutikuly
+3. Okolo celého nechta
+4. Nechajte vstrebať
+
+**Časté problémy:**
+
+- **Trhanie kutikúl:** Nedostatočná hydratácia
+- **Infekcie:** Príliš agresívne odstránenie
+- **Bolesť:** Nesprávna technika`
+    },
+    {
+      title: "Téma 7: Masáž chodidiel",
+      content: `**Piaty krok: Masáž a záverečná starostlivosť**
+
+Masáž je relaxačná a terapeutická časť pedikúry.
+
+**Prečo je masáž dôležitá?**
+
+- Podporuje krvný obeh
+- Uvoľňuje napätie
+- Zmäkčuje pokožku
+- Relaxuje celé telo
+- Zlepšuje pohyblivosť
+
+**Príprava na masáž:**
+
+**Výber produktu:**
+- Masážny olej
+- Krém na nohy
+- Výživné mlieko
+- S éterickými olejmi
+
+**Množstvo:**
+- Dostatočné množstvo pre kĺzanie
+- Nie príliš veľa
+- Podľa potreby pridávajte
+
+**Techniky masáže:**
+
+**1. Rozohriatie:**
+- Jemné krúživé pohyby
+- Po celom chodidle
+- 2-3 minúty
+- Príprava svalov
+
+**2. Hnetenie:**
+- Hlboké tlaky palcami
+- Od päty k prstom
+- Venujte pozornosť oblúku
+- Uvoľnite napätie
+
+**3. Tlakové body:**
+- Reflexná masáž
+- Body na chodidle
+- Jemný tlak 5-10 sekúnd
+- Celkový relaxačný efekt
+
+**4. Práca s prstami:**
+- Každý prst osobitne
+- Jemné ťahanie
+- Krúživé pohyby v kĺboch
+- Uvoľnenie napätia
+
+**5. Dokončenie:**
+- Jemné pohladenie
+- Od prstov k členku
+- Upokojenie
+- Relaxácia
+
+**Špeciálne techniky:**
+
+**Reflexológia:**
+- Body na chodidle zodpovedajú orgánom
+- Terapeutický efekt
+- Celkové zdravie
+- Vyžaduje znalosti
+
+**Benefity pravidelnej masáže:**
+
+- Lepší krvný obeh
+- Menší opuch nôh
+- Uvoľnenie napätia
+- Lepší spánok
+- Celková pohoda`
+    },
+    {
+      title: "Téma 8: Hydratácia a výživa",
+      content: `**Záverečná starostlivosť: Hydratácia**
+
+Hydratácia je posledný, ale nie menej dôležitý krok.
+
+**Výber krému:**
+
+**Krém na nohy vs. krém na ruky:**
+- Krém na nohy je hustejší
+- Obsahuje viac výživných látok
+- Často obsahuje močovinu (urea)
+- Intenzívnejšia hydratácia
+
+**Typy krémov:**
+
+**Hydratačné krémy:**
+- Pre normálnu pokožku
+- Dennná starostlivosť
+- Ľahká textúra
+- Rýchle vstrebávanie
+
+**Výživné krémy:**
+- Pre suchú pokožku
+- Husté textúry
+- S vitamínmi A, E
+- Hlboká výživa
+
+**Regeneračné krémy:**
+- Pre popraskané päty
+- S močovinou 10-25%
+- Špeciálne zložky
+- Intenzívna starostlivosť
+
+**Aplikácia krému:**
+
+**Správny postup:**
+1. Na čisté, suché nohy
+2. Dostatočné množstvo krému
+3. Masážnymi pohybmi
+4. Od prstov k členkom
+5. Venujte pozornosť pätám
+
+**Špeciálna starostlivosť o päty:**
+
+**Pre popraskané päty:**
+- Intenzívny regeneračný krém
+- Aplikujte večer
+- Oblečte si bavlnené ponožky
+- Nechajte pôsobiť cez noc
+
+**Prevencia:**
+- Pravidelná hydratácia
+- Denne, nie len po pedikúre
+- Vyhnite sa dlhému stániu
+- Správna obuv
+
+**Dodatočné produkty:**
+
+**Maska na nohy:**
+- 1-2x týždenne
+- Intenzívna hydratácia
+- Pôsobenie 15-20 minút
+- Extra starostlivosť
+
+**Exfoliačné ponožky:**
+- Odstránenie odumretej kože
+- Chemické zlupovanie
+- 1x za 2-3 mesiace
+- Hladké chodidlá
+
+**Olejček na nohy:**
+- Každý večer
+- Extra výživa
+- Jemné vmasírovanie
+- Regenerácia cez noc`
+    },
+    {
+      title: "Téma 9: Lakovanie nechtov (voliteľné)",
+      content: `**Lakovanie nechtov na nohách**
+
+Lakovanie je voliteľný, ale populárny záverečný krok pedikúry.
+
+**Príprava:**
+
+**1. Odmastenie:**
+- Odstráňte zvyšky krému z nechtov
+- Použite odlakovač
+- Dôkladne očistite každý necht
+- Zlepší sa priľnavosť laku
+
+**2. Separátory prstov:**
+- Použite penové separátory
+- Rozostúpia prsty
+- Uľahčia lakovanie
+- Zabránia rozmazaniu
+
+**Lakovanie:**
+
+**Postup:**
+
+**1. Podkladový lak:**
+- Tenká vrstva
+- Chráni necht pred zafarbením
+- Predlžuje trvanlivosť
+- Nechajte zaschnúť 3-5 minút
+
+**2. Farebný lak:**
+- Prvá tenká vrstva
+- Nechajte zaschnúť 5-10 minút
+- Druhá vrstva pre intenzitu
+- Opäť nechajte zaschnúť
+
+**3. Vrchný lak:**
+- Ochrana a lesk
+- Predlžuje trvanlivosť
+- Pokryte aj špičku nechta
+- Finálne schnutie
+
+**Technika nanášania:**
+
+**Tri ťahy:**
+1. Stred nechta
+2. Pravá strana
+3. Ľavá strana
+
+**Tipy pre perfektné lakovanie:**
+
+- Neklepajte fľaštičkou
+- Otrite štetec o okraj
+- Tenké vrstvy sú lepšie
+- Trpezlivosť pri schnutí
+
+**Časté chyby:**
+
+- Príliš hustý lak
+- Nedostatočné schnutie
+- Príliš hrubé vrstvy
+- Aplikácia na mastný necht
+
+**Údržba:**
+
+**Predĺženie trvanlivosti:**
+- Vrchný lak každé 3 dni
+- Vyhnite sa dlhému ponorom do vody
+- Noste správnu obuv
+- Pravidelná hydratácia`
+    },
+    {
+      title: "Téma 10: Prevencia a údržba, zhrnutie",
+      content: `**Prevencia problémov s nohami**
+
+**Správna obuv:**
+
+**Výber obuvi:**
+- Správna veľkosť
+- Dostatočný priestor pre prsty
+- Priedušné materiály
+- Nie príliš vysoké podpätky
+
+**Hygiena:**
+
+**Dennná starostlivosť:**
+- Umývanie nôh každý deň
+- Dôkladné osušenie (najmä medzi prstami)
+- Výmena ponožiek denne
+- Priedušná obuv
+
+**Prevencia plesní:**
+- Suché nohy
+- Bavlnené ponožky
+- Vyhnite sa zdieľaniu obuvi
+- Dezinfekcia obuvi
+
+**Pravidelná domáca starostlivosť:**
+
+**Týždenne:**
+- Peeling chodidiel
+- Masáž s krémom
+- Kontrola nechtov
+- Aplikácia masky
+
+**Denne:**
+- Hydratácia krémom
+- Kontrola pokožky
+- Olejček na kutikuly
+- Čisté ponožky
+
+**Kedy navštíviť profesionála:**
+
+**Zdravotné problémy:**
+- Zarasté nechty
+- Pliesňové infekcie
+- Diabetická noha
+- Bolestivé mozoly
+- Deformácie nôh
+
+**Zhrnutie pedikúry:**
+
+**Základné kroky:**
+1. Príprava a dezinfekcia
+2. Úprava nechtov (strihanie rovno!)
+3. Odstránenie tvrdej kože
+4. Starostlivosť o kutikuly
+5. Masáž chodidiel
+6. Hydratácia
+7. Lakovanie (voliteľné)
+
+**Frekvencia:**
+- Kompletná pedikúra: každé 3-4 týždne
+- Domáca starostlivosť: denne
+- Profesionálne ošetrenie pri problémoch
+
+**Benefity pravidelnej pedikúry:**
+
+- Zdravé a krásne nohy
+- Prevencia problémov
+- Relaxácia a pohoda
+- Sebadôvera
+- Celkové zdravie nôh
+
+**Zlaté pravidlá:**
+
+✓ Strihajte nechty rovno
+✓ Neodstraňujte všetku tvrdú kožu
+✓ Buďte šetrní ku kutikule
+✓ Hydratujte denne
+✓ Noste správnu obuv
+✓ Venujte pozornosť hygiene
+
+Gratulujeme! Dokončili ste kurz Pedikúra a ste pripravení starať sa o svoje nohy profesionálne!`
+    }
+  ],
   
   "Základy účtovníctva": [
     {
