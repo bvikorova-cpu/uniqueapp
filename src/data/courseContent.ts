@@ -11505,6 +11505,654 @@ Plánovanie rozpočtu, správa úverov, vhodné investície a dôchodkové plán
 ✅ Plánujte na dôchodok
 ✅ Vzdelávajte sa
 
-Finančná sloboda je dosiahnuteľná s disciplínou, vzdelaním a správnym plánovaním!`
+    Finančná sloboda je dosiahnuteľná s disciplínou, vzdelaním a správnym plánovaním!`
   }
-];
+],
+
+"Masáže": [
+  {
+    title: "Téma 1: Úvod do masáží - História a význam",
+    content: `**Čo je masáž?**
+
+Masáž alebo masírovanie je súčasť mechanoterapie; sústava hmatov, ktorými sa mechanicky dráždia periférne nervy, cievy a svaly. **Cieľom je zvýšenie funkčnej zdatnosti, odstránenie únavy alebo liečenie.**
+
+**Pôvod slova:**
+
+Slovo masáž pochádza z francúzskeho slova "massage" a to pravdepodobne:
+- z arabského "masa" = "dotknúť sa, ohmatať alebo manipulovať"
+- z latinského "massa" = "masa, cesto"
+- z hebrejčiny "me-sakj" = "pomazanie olejom"
+
+Staroveká gréčtina používala pre masáž slovo "anatripsis" a latinčina "frictio".
+
+**Definícia masáže:**
+
+Masáž predstavuje pôsobenie na telo a manipuláciu s telom pomocou tlakov:
+- Štruktúrovaných alebo neštrukturovaných
+- Stacionárnych alebo pohyblivých
+- Tlak, impulz či vibrácie
+
+**Spôsob vykonania:**
+- Ručne alebo pomocou mechanických pomôcok
+- Rukami, prstami, lakťami, kolenami, predlaktím a chodidlami
+
+**Cieľové tkanivá:**
+- Svaly
+- Šľachy
+- Väzy
+- Koža
+- Kĺby
+- Spojivové tkanivá
+- Lymfatické uzliny
+- Orgány tráviaceho systému
+
+**História masáží:**
+
+Záznamy o masáži boli objavené v mnohých starovekých civilizáciách:
+- Rím
+- Grécko
+- India
+- Japonsko
+- Čína
+- Egypt
+- Mezopotámia
+
+Existuje viac ako **100 rôznych známych masážnych techník.**`
+  },
+  {
+    title: "Téma 2: Moderná doba a vývoj masáží",
+    content: `**Vývoj masáží v modernej dobe**
+
+**ČÍNA:**
+
+V tomto období sa masáž v Číne vyvíja vstrebávaním západných myšlienok do tradičnej koncepcie.
+
+Charakteristiky:
+- Široko využívaná a vyučovaná v nemocniciach
+- Vyučuje sa v zdravotníckych školách
+- Dôležitá súčasť zdravotnej starostlivosti
+
+**SPOJENÉ ŠTÁTY:**
+
+**Začiatky (1800-1900):**
+- Masáž začala byť populárna medzi rokmi 1800-1900
+- Zaviedená dvoma lekármi v New Yorku
+- Založená na technike **Per Henrik Linga** vyvinutej vo Švédsku
+
+**30. a 40. roky 20. storočia:**
+- Záujem o masáže klesol
+- Dôvod: Lekárske pokroky v tomto období
+
+**70. roky 20. storočia:**
+- Záujem o masáž pozoruhodne rástol medzi športovcami
+
+**60. a 70. roky:**
+- Masáže využívali zdravotné sestry
+- Na zmiernenie bolestí pacientov
+- Pre lepší spánok pacientov
+
+**TERMINOLÓGIA V USA:**
+
+V Spojených štátoch sa využíva termín **"masážna terapia"**:
+- Aby vytvorili rozdiel medzi sexuálnymi a nesexuálnymi službami
+- Vo veľkej časti USA je nezákonné inzerovať sexuálne služby
+
+**MASÁŽ V ŠPORTE:**
+
+**Rok 1996:**
+- Prvýkrát ponúkaná masáž ako základná zdravotná služba
+- Na letných olympijských hrách v Atlante
+- Významný míľnik pre uznanie masáží`
+  },
+  {
+    title: "Téma 3: Zariadenie a pomôcky na masáže",
+    content: `**Profesionálne masérske vybavenie**
+
+**MASÉRSKE STOLY:**
+
+**Charakteristiky:**
+- Ľahko sa čistia
+- Majú rovný povrch
+- Otvor na tvár - umožňuje klientovi ľahko dýchať počas ležania tvárou dolu
+
+**Výhody pre maséra:**
+- Pomáha k tomu, aby klient nehybne ležal
+- Umožňuje uložiť klienta do potrebnej polohy
+
+**Doplnky:**
+- Ortopedický vankúš
+- Podhlavník
+- Na správne uloženie tela pri masáži
+
+**MASÉRSKE KRESLÁ:**
+
+**Charakteristiky:**
+- Slúžia podobne ako masérske stoly
+- Môžu byť pevné alebo prenosné
+
+**Výhody:**
+- Pre maséra ľahšie prenosné než masérsky stôl
+- Klienti sa nemusia vyzliekať
+- Vhodné na verejných miestach (obchodné domy)
+
+**MASÁŽNE OLEJE:**
+
+Používa sa nespočetné množstvo masážnych olejov:
+- Na regeneráciu
+- Odstraňovanie odumretej kože
+- Uvoľnenie svalov
+
+**MIESTO VYKONÁVANIA:**
+
+Masáž môže prebiehať:
+- Na masážnom stole
+- V masážnom kresle
+- Na podložke na podlahe
+
+**Oblečenie klienta:**
+- Úplne alebo čiastočne nahý
+- Časti tela môžu byť zakryté uterákmi či plachtami`
+  },
+  {
+    title: "Téma 4: Druhy masáží - Východné techniky",
+    content: `**Východné masážne techniky**
+
+**AKUPRESÚRA:**
+
+- Spojenie "akupunktúry" a "tlaku"
+- Tradičná čínska liečba pochádzajúca z akupunktúry
+- Aplikovaný fyzický tlak na akupunktúrne body
+- Vykonáva sa rukou, lakťom alebo s rôznymi špicatými pomôckami
+
+**ANMA:**
+
+- Tradičná japonská masáž
+- Zahŕňa miesenie a prácu s hlbokými tkanivami
+
+**AJURVÉDSKA MASÁŽ:**
+
+**Základy:**
+- Prírodná zdravotná starostlivosť pochádzajúca z Indie
+- Kombinuje masáž, jogu, meditáciu a liečivé bylinky
+
+**Známa aj ako "Abhyanga":**
+- Zvyčajne vykonávaná jedným alebo dvoma masérmi
+- Používajú teplé zmesi bylinných olejov
+
+**SHIATSU (指圧):**
+
+**Význam:**
+- "Shi" = prst
+- "Atsu" = tlak
+
+**Charakteristika:**
+- Tradičná japonská tlaková terapia
+- Vychádza z princípov tradičnej čínskej medicíny
+- Využíva palce, prsty, dlane, lakte, chodidlá
+- Vyvíjanie tlaku na akupunktúrne body
+- Energetické dráhy (meridiány)
+
+**Techniky:**
+- Strečing
+- Stláčanie a drobné údery
+- Zovretie, miesenie
+- Tlak vyvíjaný nohami maséra na klientov chrbát, nohy a chodidlá
+
+**THAJSKÁ MASÁŽ:**
+
+**V Thajsku známa ako:** นวดแผนโบราณ (Nuat Phaeno boran)
+- Význam: "stará/tradičná masáž"
+
+**Základy:**
+- Pochádza z Indie
+- Založená na ayuverde a jóge
+- Kombinuje masáž s jógou
+
+**Dva štýly:**
+- **Severný štýl:** Dôraz na strečing a naťahovanie
+- **Južný štýl:** Dôraz na akupresúru
+
+**TRADIČNÁ ČÍNSKA MASÁŽ:**
+
+**Dva typy:**
+
+**1. Tui na (推拿):**
+- Zameriava sa na stláčanie
+- Naťahovanie
+- Miesenie svalov
+
+**2. Zhi Ya (指压):**
+- Zameriava sa na stláchanie akupunktúrnych bodov
+
+Oba typy sú založené na princípoch tradičnej čínskej medicíny.`
+  },
+  {
+    title: "Téma 5: Druhy masáží - Západné a exotické techniky",
+    content: `**Západné a exotické masážne techniky**
+
+**ŠVÉDSKA MASÁŽ:**
+
+**Päť štýlov kĺzavých dlhých hmatov:**
+1. Kĺzanie
+2. Miesenie
+3. Tepanie
+4. Trenie
+5. Vibrovanie
+
+**Prospešné účinky:**
+- Uvoľňovanie bolesti
+- Uvoľnenie stuhnutých kĺbov
+- Zlepšenie stavu pri osteoartróze kolien (8 týždňov)
+- Užitočná u jedincov so zlým krvným obehom
+
+**História:** Vývoj sa pripisuje **Per Henrik Lingovi**
+- Termín "švédska masáž" nie je až tak známy vo Švédsku
+- Tam ju volajú "klasická masáž"
+
+**BALINÉSKA MASÁŽ:**
+
+**Techniky:**
+- Jemné techniky umožňujúce relaxáciu
+- Kĺzanie, miesenie, hladenie
+- Aplikácia aromatických olejov
+- Využívanie horúcich kameňov
+
+**Výsledky:**
+- Zlepšenie prúdenia krvi
+- Zvýšenie kyslíka v tele
+- Zlepšenie prúdenia energie
+
+**LOMI LOMI:**
+
+- Tradičná masáž pochádzajúca z Havaja
+- Slovo "lomilomi" sa využíva aj v:
+  - Samoe a východnej Futune
+  - Samoe: milimili
+  - Východná Futuna: fakasolosolo
+  - Tonga: fotofota
+  - Tahiti: rumirumi
+
+**BOWENOVA MASÁŽ:**
+
+**Technika vyvinutá Austrálčanom Tom Bowen:**
+- Kĺzavé pohyby po svaloch, väzoch, šľachách a kĺboch
+- Nie je potrebný hlboký alebo dlhodobý kontakt
+- Uvoľňuje svalové napätie
+- Obnovuje normálny lymfatický tok
+
+**HILOT:**
+
+**Tradičná liečebná technika z Filipín:**
+- Masážne techniky uvoľňovania svalového napätia
+- Manipulácia s kĺbmi
+- Obnova vykĺbených a vyvrtnutých kĺbov
+- Diagnóza a liečba ochorení pohybového aparátu
+- Liečba plodnosti
+
+**WATSU:**
+
+**Kombinácia hydroterapie a shiatsu:**
+- Vyvinutá Haroldom Dullom
+- Praktizuje sa vo vode s teplotou tela
+- Masér aj pacient sú vo vode
+- Hĺbka bazénu: 100-120 cm
+- Veľa pohybu vo vode
+- Aktivácia energetických línií zo shiatsu`
+  },
+  {
+    title: "Téma 6: Špeciálne masážne techniky",
+    content: `**Špeciálne a terapeutické masážne techniky**
+
+**REFLEXNÁ MASÁŽ:**
+
+**Princíp:**
+- Založená na princípoch reflexov
+- Reflexy uložené v rukách a nohách
+- Spojené s každým orgánom, žľazou, časťou tela
+
+**MYOFASCIÁLNA MASÁŽ:**
+
+**Technika:**
+- Uvoľňovanie a naťahovanie šľách a svalov
+- Stláčanie bodov
+- Eliminuje bolesť
+- Odstraňuje svalové napätie
+
+**TRIGGER POINT TERAPIA:**
+
+**Charakteristika:**
+- Vyradenie bodov spôsobujúcich lokálnu bolesť
+- Napríklad bolesti hlavy alebo iných častí tela
+- Fyzický tlak, vibrácie alebo iné liečby
+
+**História:**
+- Prvýkrát objavené a zmapované **Janet G. Travell** (doktorka presidenta Kennedyho)
+- David Simons
+
+**Účinky:**
+- Zmierňujú myofasciálnu bolesť
+
+**RUSKA MASÁŽ:**
+
+**Tri fázy:**
+
+**1. Prvá fáza:**
+- Jemná, pomalá a pokojná
+
+**2. Druhá fáza:**
+- Tvrdá, hlboká a rýchla
+
+**3. Tretia fáza:**
+- Podobná prvej
+- Pomalá a jemná
+
+**Aplikácia:** Maséri pri tejto masáži aplikujú na telo med
+
+**MASÁŽ KAMEŇMI:**
+
+**Charakteristika:**
+- Využíva studené alebo vodou zohriate kamene
+- Aplikácia tlaku a zohriatie organizmu
+- Terapeut môže využiť kamene natreté olejom
+
+**Horúce kamene:**
+- Zvyčajne riečne kamene
+- Extrémne vyleštené a vyhladené
+- Ukladané pozdĺž pacientovho chrbta
+- Udržiavajú teplo prenikajúce hlboko do svalov
+- Uvoľňujú napätie
+
+**LEKÁRSKA MASÁŽ:**
+
+**Využitie v lekárskom odvetví:**
+- Dekongestívna terapia pri lymfedéme
+- Používa sa v kombinácii s liečbou rakoviny prsníka
+
+**HOFFMANOVA MASÁŽ:**
+
+**Systém vyvinutý Bronsonom Bertschingerom:**
+- Intuitívne masáže a práce tela
+- Ľudia sú materiálne, emocionálne a duchovne založení
+- Techniky od veľmi hlbokých dotykov
+- Až po veľmi jemné energetické liečenie
+
+**BREEMA:**
+
+- Vykonáva sa na zemi
+- Pacient je oblečený
+- Rytmické, jemné prehyby a preťahovania
+
+**CHAMPISAGE:**
+
+- Masážna technika zameraná na hlavu, krk a tvár
+- Verí v rovnováhu čakier`
+  },
+  {
+    title: "Téma 7: Rozdelenie masáží podľa charakteru techniky",
+    content: `**Klasifikácia masáží podľa techniky vykonania**
+
+**PLOŠNÉ MASÁŽE:**
+
+Pri týchto sa používa trenie alebo posun tkaniva po spodných vrstvách:
+
+**1. Švédska masáž**
+- Základná západná technika
+
+**2. Reflexná masáž**
+- Práca s reflexnými bodmi
+
+**3. Aróma masáž**
+- Využitie aromatických olejov
+
+**4. Lymfatická masáž (lymfodrenáž)**
+- Používa rytmické miesenie
+- Zlepšuje tok tkanivového moku
+- Zmierňuje opuchy
+
+**5. Bowenova masáž (Bowenova technika)**
+- Veľmi jemná manipulácia s mäkkým tkanivom
+- Pohyb kože cez sval či šľachu
+- Veľmi jemný tlak (ako bezbolestný tlak na očnú guľu)
+- 2-minútové pauzy medzi procedúrami
+
+**6. Breuessová masáž**
+- Jemná energetická masáž akupresurných bodov a chrbtice
+- Uvoľňuje tlak na platničky
+- Uvoľňuje napäté svaly i šľachy
+- Používa olej z ľubovníka bodkovaného
+- Vyživujúci pre platničky chrbtice a kĺby
+
+**7. Medová masáž**
+- Ruská technika
+- Využíva priľnavosť medu nanášaného na kožu
+- Intenzívna práca s podkožím
+- Pumpovacích pohybov rúk
+- Vysajú sa usadeniny a jedy z hĺbky tkanív
+- Dodajú sa účinné látky z medu
+
+**8. Lomi lomi**
+- Havajská technika
+- Pracuje s tlakmi a trením vo vhodnom rytme
+
+**9. Vodná masáž**
+- Kombinuje hydroterapiu a masáž
+- Na ošetrenie bolestí svalov a kĺbov
+- Napríklad artritídy
+
+**10. Ajurvédska masáž**
+- Tradičný indický systém (1800 pred Kr.)
+- Kombinuje masáž s nanášaním aromatických olejov a bylín
+
+**11. Automasáž**
+- Masírovanie seba samého bez pomoci maséra
+
+**12. Klasická masáž**
+- Súbor hmatov stimulujúcich kožu
+- Vhodná pri poruchách nervového, pohybového a tráviaceho systému
+
+**TLAKOVÉ, BODOVÉ A LÍNIOVÉ MASÁŽE:**
+
+Tu sa používa tlak prstov a iných častí tela:
+
+**1. Akupresúra**
+- Tlak na akupunktúrne body
+
+**2. Reflexológia**
+- Práca s reflexnými zónami
+
+**3. Thajská masáž**
+- Kombinácia strečingu a akupresúry
+
+**4. Japonská masáž shiatsu**
+- Tlaková terapia na meridiány
+
+**5. Rolfing**
+- Technika pôvodom z USA
+- Dotyková mobilizácia hlbokých spojivových tkanív (fascií)
+- Obnovuje prirodzené vyváženie tela
+
+**6. Kraniosakrálna terapia**
+- Technika vyvinutá v roku 1977
+- Tvorcovia: chiropraktik John Upledger a doktor Ernest Retzlaff
+- Zameriava sa na mäkké tkanivá a telové tekutiny
+- Hlava, chrbtica a krížová kosť
+- Ľahký tlak (váha 5-korunovej mince)
+- Normalizuje prúdenie mozgovomiechového moku
+
+**7. Masáž horúcimi kameňmi**
+- Nahriaté lávové kamene
+- Dlho kumulujú teplo
+
+**8. Kladenie baniek (bankovanie)**
+- Vopred zahriate nádobky (sklenené)
+- Pri chladnutí vyvíjajú podtlak na kožu a podkožie
+- Poznámka: Nie sú vedecké dôkazy o zdravotných prínosoch`
+  },
+  {
+    title: "Téma 8: Priaznivé účinky jednej dávky masáže",
+    content: `**Vedecky dokázané účinky masáže**
+
+**ÚĽAVA BOLESTI:**
+
+**Hlavný priaznivý účinok masáže:**
+- Úľava od bolesti spôsobenej muskuloskeletálnym poranením
+- Pacienti s rakovinou po masáži pocítili úľavu od bolestivých symptómov
+
+**Špecializované techniky:**
+- **Akupresúra alebo tlakové body** môžu byť priaznivejšie než klasická švédska masáž
+- Špeciálne účinné na zmiernenie bolesti chrbta
+
+**Poznámka:**
+University of Illinois, Urbana-Champaign nenašli štatisticky významné uvoľnenie bolesti okamžite po aplikácii masáže
+
+**STAV ÚZKOSTI:**
+
+- Masáž sa ukázala ako prostriedok na znížení stavu úzkosti
+- Prechodné opatrenie pri stresovej situácii
+
+**KRVNÝ TLAK A PULZ:**
+
+- Bolo preukázané, že masáž dostatočne znižuje krvný tlak
+- Znižuje pulz
+
+**STIMULÁCIA IMUNITNÉHO SYSTÉMU:**
+
+**Účinky:**
+- Masáž stimuluje imunitný systém
+- Zvýšenie lymfocitov periférnej krvi
+
+**Špecifikácia:**
+- Tento účinok pozorovali iba pri **aromaterapickej masáži**
+- Zahŕňa:
+  - Sladký mandľový olej
+  - Levanduľový olej
+  - Cyprusový olej
+  - Sladký majoránový olej
+
+**Poznámka:** Nebolo preukázané, že tento účinok pretrváva dlhodobo`
+  },
+  {
+    title: "Téma 9: Dlhodobé účinky a liečebné využitie masáží",
+    content: `**Účinky viacerých dávok masáže**
+
+**ÚĽAVA BOLESTI - DLHODOBÉ ÚČINKY:**
+
+**Chronická bolesť spodnej časti chrbta:**
+- Masáž s kombináciou s cvičeniami môže pomôcť
+- Zmierňuje bolesť počas niektorých dní alebo týždňov po liečbe
+
+**PRÍZNAKY ÚZKOSTI:**
+
+- Masáž preukázala zníženie príznakov úzkosti
+- U osôb, ktoré sú všeobecne náchylné k úzkosti
+
+**DEPRESIA:**
+
+- Masáž sa ukázala ako prostriedok na redukovanie subklinickej depresie
+
+**CHOROBY - TERAPEUTICKÉ VYUŽITIE:**
+
+**Spastická diparéza:**
+- Masáž zahŕňajúca strečing
+- V menšej štúdii preukázala pomoc pri spastickej diparézii
+- Vyplývajúcej z mozgovej obrny
+- Vedci varujú: Výsledky štúdie by sa mali brať s rezervou
+
+**HIV pacienti:**
+- Masáž využitá na zlepšenie symptómov
+- Zlepšenie kvality života u pacientov s HIV
+- Táto liečba však nie je vedecky podporovaná
+
+**PRAKTICKÉ INFORMÁCIE:**
+
+**Miesta poskytovania masáží:**
+- Maséri pracujú v rôznych zdravotných a rekreačných strediskách
+- Cestovať do príbytkov klientov
+- Do firiem
+
+**Časová efektívnosť:**
+- Najviac uvedených dôvodov pre zavedenie masáže ako liečby:
+  - Dopyt klientov
+  - Vnímanie klinických účinkov`
+  },
+  {
+    title: "Téma 10: Kontraindikácie a bezpečnosť masáží",
+    content: `**Kedy masáž nie je vhodná**
+
+**KONTRAINDIKÁCIE MASÁŽE:**
+
+**Absolútne kontraindikácie (masáž zakázaná):**
+
+**1. Žilová trombóza**
+- Nebezpečenstvo uvoľnenia krvnej zrazeniny
+- Riziko vážnych komplikácií
+
+**2. Horúčka**
+- Oslabený organizmus
+- Riziko zhoršenia stavu
+
+**3. Akútne poškodenie ciev**
+- Riziko zhoršenia stavu
+- Možné vnútorné krvácanie
+
+**RELATÍVNE KONTRAINDIKÁCIE (vyžadujú konzultáciu s lekárom):**
+
+**1. Chudokrvnosť (anémia)**
+- Znížená schopnosť prenášať kyslík
+- Možné zhoršenie únavy
+
+**2. Oslabenie kostí**
+- Riziko zlomenín pri intenzívnej masáži
+
+**3. Zlomeniny**
+- V akútnej fáze hojenia absolútne zakázané
+- Neskôr len po konzultácii s lekárom
+
+**4. Osteoporóza**
+- Krehké kosti
+- Vyžaduje jemnú techniku
+- Konzultácia s odborníkom
+
+**BEZPEČNOSTNÉ OPATRENIA:**
+
+**Pred masážou:**
+- Vždy informujte maséra o zdravotných problémoch
+- Uveďte všetky lieky, ktoré užívate
+- Oznámte tehotenstvo
+- Uveďte akékoľvek alergie
+
+**Počas masáže:**
+- Komunikujte s masérom o intenzite tlaku
+- Ihneď oznámte akúkoľvek bolesť alebo nepohodlie
+- Nebojte sa požiadať o úpravu techniky
+
+**Po masáži:**
+- Vypite dostatok vody (podpora detoxikácie)
+- Vyhnite sa intenzívnej fyzickej aktivite
+- Doprajte telu odpočinok
+
+**DÔLEŽITÉ UPOZORNENIA:**
+
+❌ Nikdy sa nesnažte liečiť vážne zdravotné problémy len masážou
+❌ Masáž nie je náhradou lekárskej starostlivosti
+❌ Pri akýchkoľvek pochybnostiach konzultujte lekára
+
+✅ Masáž je skvelý doplnok k zdravému životnému štýlu
+✅ Pri správnom vykonávaní je bezpečná a prospešná
+✅ Profesionálny masér by mal poznať všetky kontraindikácie
+
+**ZHRNUTIE:**
+
+V každej kultúre existuje nejaká forma terapeutickej masáže. Opisy veľa metód, ktoré sa používajú dodnes, poznáme z najstarších zapísaných lekárskych textov. 
+
+**Čínsky rukopis z roku 2700 pred Kr.** odporúča každé ráno vykonávať automasáž:
+- Proti nachladnutiu
+- Na udržanie vláčnosti orgánov
+- Ako prevenciu proti zdravotným ťažkostiam
+
+Existuje vyše **100 rôznych druhov masáží** vychádzajúcich z rôznych kultúrnych základov. Jednotlivé druhy masáží sa vzájomne prelínajú.
+
+Gratulujeme! Dokončili ste kurz o masážach a poznáte ich históriu, techniky, účinky aj bezpečnostné opatrenia.`
+  }
+]
+};
