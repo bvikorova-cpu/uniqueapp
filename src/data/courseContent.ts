@@ -4,6 +4,735 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Asertivita": [
+    {
+      title: "Téma 1: Čo je asertivita?",
+      content: `**Stručná definícia asertivity**
+
+Asertivita predstavuje schopnosť jasně a primerane komunikovať vlastné potreby a názory, pričom rešpektujeme práva a pocity ostatných. Ide o rovnováhu medzi agresívnym presadzovaním vlastných záujmov a pasívnym podriaďovaním sa požiadavkám okolia.
+
+**Základná charakteristika:**
+
+Asertivita je schopnosť otvorene a priamo vyjadrovať svoje názory, potreby a pocity bez toho, aby sme porušovali práva iných ľudí. Je to zdravý spôsob komunikácie, ktorý podporuje rešpekt a porozumenie v medziľudských vzťahoch.
+
+**Kľúčové prvky asertivity:**
+
+**1. Jasná komunikácia:**
+- Priame vyjadrovanie potrieb
+- Používanie jasného jazyka
+- Konkrétne vyjadrenia
+- Zrozumiteľný obsah
+
+**2. Rešpekt k sebe:**
+- Uznanie vlastných práv
+- Uvedomenie si vlastných potrieb
+- Sebaúcta a sebavedomie
+- Ochrana vlastných hraníc
+
+**3. Rešpekt k druhým:**
+- Uznanie práv ostatných
+- Zohľadnenie ich pocitov
+- Empatický prístup
+- Spravodlivosť vo vzťahoch
+
+**4. Rovnováha:**
+- Medzi vlastnými a cudzími potrebami
+- Nie agresívne, ani pasívne
+- Vybalansované správanie
+- Konštruktívny prístup
+
+**Prečo je asertivita dôležitá:**
+
+- Zlepšuje komunikáciu
+- Buduje zdravé vzťahy
+- Posilňuje sebavedomie
+- Znižuje stres a konflikty
+- Podporuje psychickú pohodu`
+    },
+    {
+      title: "Téma 2: Ako sa prejavuje asertivita",
+      content: `**Asertivita nie je len o tom, čo hovoríme, ale aj ako to hovoríme**
+
+Zahŕňa používanie jasného a priameho jazyka, udržiavanie očného kontaktu a prejavovanie sebavedomia v reči tela.
+
+**Verbálne prejavy asertivity:**
+
+**1. Jasný a priamy jazyk:**
+- Používanie "Ja" výrokov
+- Konkrétne vyjadrenia
+- Priame pomenovanie potrieb
+- Bez okľukov a naznačovania
+
+**Príklady:**
+- "Potrebujem..."
+- "Cítim sa..."
+- "Moje stanovisko je..."
+- "Nechcem..."
+
+**2. Primeraný tón hlasu:**
+- Pokojný, ale pevný
+- Jasná artikulácia
+- Stredná hlasitosť
+- Bez agresivity či nejistoty
+
+**Neverbálne prejavy asertivity:**
+
+**1. Očný kontakt:**
+- Priamy, ale nie agresívny
+- Prirodzený
+- Udržiavaný počas rozhovoru
+- Prejavuje sebavedomie
+
+**2. Reč tela:**
+- Vzpriamené držanie tela
+- Otvorené gestá
+- Relaxované ramená
+- Pokojné pohyby
+
+**3. Výraz tváre:**
+- Pokojný
+- Priateľský, ale seriózny
+- Zodpovedajúci obsahu
+- Bez strachu či hnevu
+
+**4. Osobný priestor:**
+- Vhodná vzdialenosť
+- Nie príliš blízko (agresívne)
+- Nie príliš ďaleko (pasívne)
+- Rešpektovanie hraníc
+
+**Proces asertívneho správania:**
+
+Asertivita je proces, ktorý si vyžaduje:
+- Uvedomenie si vlastných práv a potrieb
+- Pochopenie, že aj ostatní majú rovnaké práva
+- Rovnováhu medzi sebou a druhými
+- Prax a cvičenie`
+    },
+    {
+      title: "Téma 3: Asertivita vs. Agresivita vs. Pasivita",
+      content: `**Tri základné komunikačné štýly**
+
+**Asertivita:**
+
+**Charakteristiky:**
+- Rešpekt k sebe aj druhým
+- Hľadanie riešení pre obe strany
+- Rovnováha medzi potrebami
+- Konštruktívna komunikácia
+
+**Výsledok:**
+- Vzájomné porozumenie
+- Win-win situácie
+- Zdravé vzťahy
+- Rast sebavedomia
+
+**Agresivita:**
+
+**Charakteristiky:**
+- Presadzovanie záujmov na úkor druhých
+- Ignorovanie práv ostatných
+- Dominancia a kontrola
+- Útočné správanie
+
+**Príklady správania:**
+- Kričanie, vyhrážky
+- Obviňovanie
+- Ponižovanie druhých
+- Porušovanie hraníc
+
+**Výsledok:**
+- Poškodené vzťahy
+- Strach a odpor u druhých
+- Krátkodobý "úspech"
+- Dlhodobá izolácia
+
+**Agresivita sa snaží presadiť vlastné záujmy na úkor druhých.**
+
+**Pasivita:**
+
+**Charakteristiky:**
+- Podriaďovanie sa požiadavkám okolia
+- Potláčanie vlastných potrieb
+- Ustupovanie
+- Vyhýbanie sa konfrontácii
+
+**Príklady správania:**
+- Neustále súhlasenie
+- Nemožnosť povedať "nie"
+- Skrývanie vlastných pocitov
+- Ospravedlňovanie sa
+
+**Výsledok:**
+- Frustrácia a nespokojnosť
+- Hromadenie napätia
+- Nízke sebavedomie
+- Možný výbuch emócií
+
+**Pasivita vedie k potláčaniu vlastných potrieb a pocitov, čo môže viesť k frustrácii a nespokojnosti.**
+
+**Porovnanie:**
+
+| Aspekt | Pasivita | Asertivita | Agresivita |
+|--------|----------|------------|------------|
+| Moje práva | Ignorujem | Obhajujem | Presadzujem |
+| Práva druhých | Uprednostňujem | Rešpektujem | Ignorujem |
+| Pocit | Bezmocnosť | Sebavedomie | Nadradenosť |
+| Vzťahy | Nerovnováha | Zdravé | Konfliktné |`
+    },
+    {
+      title: "Téma 4: Formy asertívneho správania",
+      content: `**Ako sa asertivita prejavuje v praxi**
+
+Asertivita sa prejavuje v rôznych formách v každodenných situáciách.
+
+**1. Odmietanie neprimeraných žiadostí:**
+
+**Asertívny prístup:**
+- Jasné a priame "nie"
+- Bez pocitu viny
+- Vysvetlenie dôvodov (ak chcete)
+- Rešpekt k sebe
+
+**Príklad:**
+"Ďakujem za ponuku, ale momentálne nemám čas. Neviem ti s tým pomôcť."
+
+**2. Vyjadrovanie nesúhlasu:**
+
+**Asertívny prístup:**
+- Pokojné vyjadrenie iného názoru
+- Bez útokov na druhého
+- Rešpekt k odlišným pohľadom
+- Konštruktívna diskusia
+
+**Príklad:**
+"Rozumiem tvojmu stanovisku, ale mám na to iný názor. Myslím si, že..."
+
+**3. Žiadanie o to, čo potrebujeme:**
+
+**Asertívny prístup:**
+- Jasné pomenovanie potreby
+- Konkrétna prosba
+- Bez manipulácie
+- Akceptovanie možnej odmietnutia
+
+**Príklad:**
+"Potrebujem tvoju pomoc s týmto projektom. Môžeš mi pomôcť v piatok?"
+
+**4. Vyjadrovanie pozitívnych pocitov:**
+
+**Asertívny prístup:**
+- Otvorené zdieľanie radosti
+- Vyjadrovanie vďaky
+- Oceňovanie druhých
+- Úprimnosť
+
+**Príklad:**
+"Ďakujem ti za pomoc. Veľmi si to cením a pomohlo mi to."
+
+**5. Vyjadrovanie negatívnych pocitov:**
+
+**Asertívny prístup:**
+- Pomenované vlastných emócií
+- "Ja" výroky
+- Bez obviňovania
+- Konštruktívne riešenie
+
+**Príklad:**
+"Keď to robíš, cítim sa frustrovaný. Môžeme o tom pohovoriť?"
+
+**6. Prijímanie komplimentov:**
+
+**Asertívny prístup:**
+- Jednoduché "Ďakujem"
+- Bez bagatelizovania
+- Prijatie pochvaly
+- Úprimnosť
+
+**7. Prijímanie kritiky:**
+
+**Asertívny prístup:**
+- Otvorená myseľ
+- Posúdenie oprávnenosti
+- Bez defenzívy
+- Konštruktívne využitie`
+    },
+    {
+      title: "Téma 5: Stanovenie hraníc",
+      content: `**Dôležitý aspekt asertivity**
+
+Dôležitým aspektom asertivity je aj schopnosť stanoviť si hranice a brániť si ich bez pocitu viny.
+
+**Čo są hranice:**
+
+**Definícia:**
+Hranice sú osobné limity, ktoré definujú, čo je pre nás prijateľné a čo nie v správaní druhých voči nám.
+
+**Typy hraníc:**
+
+**1. Fyzické hranice:**
+- Osobný priestor
+- Dotýkanie sa
+- Fyzická intimita
+- Súkromie
+
+**2. Emocionálne hranice:**
+- Aké emócie zdieľam
+- S kým sa otváram
+- Ochrana vlastných pocitov
+- Rešpekt k vlastným emóciám
+
+**3. Časové hranice:**
+- Koľko času venujem druhým
+- Práca vs. osobný život
+- Čas pre seba
+- Prioritizácia
+
+**4. Intelektuálne hranice:**
+- Rešpekt k mojim názorom
+- Právo na vlastné presvedčenie
+- Ochrana vlastných myšlienok
+- Sloboda prejavu
+
+**Ako stanoviť hranice:**
+
+**1. Uvedomenie si vlastných potrieb:**
+- Čo potrebujem?
+- Čo je pre mňa dôležité?
+- Kde sú moje limity?
+- Čo akceptujem a čo nie?
+
+**2. Jasná komunikácia:**
+- Priame vyjadrenie hraníc
+- Konkrétne vymedzenie
+- Pevné, ale rešpektujúce
+- Bez ospravedlňovania
+
+**3. Obhajovanie hraníc:**
+- Dôslednosť
+- Bez pocitu viny
+- Pevnosť v stanovisku
+- Rešpekt k sebe
+
+**Príklady stanovenia hraníc:**
+
+**V práci:**
+"Pracujem do 17:00. Po tejto hodine nie som k dispozícii pre pracovné veci."
+
+**Vo vzťahoch:**
+"Potrebujem čas pre seba. Strávim dnes večer sama/sám."
+
+**V rodine:**
+"Oceňujem tvoj záujem, ale toto rozhodnutie mi patrí."
+
+**Prečo sú hranice dôležité:**
+
+- Ochrana vlastného zdravia
+- Prevencia vyčerpania
+- Sebaúcta a sebavedomie
+- Zdravé vzťahy
+- Jasné očakávania`
+    },
+    {
+      title: "Téma 6: Význam asertivity v psychológii",
+      content: `**Asertivita a psychická pohoda**
+
+Asertivita zohráva kľúčovú úlohu v psychologickej pohode a zdravých medziľudských vzťahoch.
+
+**Nedostatok asertivity môže viesť k:**
+
+**1. Problémy s emocionálnou reguláciou:**
+- Hromadenie emócií
+- Ťažkosti s vyjadrením pocitov
+- Explózie hnevu
+- Potláčanie smútku či frustrácie
+
+**2. Nízke sebavedomie:**
+- Pochybnosti o vlastnej hodnote
+- Pocit menejcennosti
+- Neistota
+- Závislosť na druhých
+
+**3. Pocity bezmocnosti:**
+- Stratа kontroly nad životom
+- Rezignácia
+- Naučená bezmocnosť
+- Pasivita
+
+**4. Depresia:**
+- Chronická nespokojnosť
+- Strata zmyslu
+- Smútok
+- Emocionálne vyčerpanie
+
+**Výhody asertívneho správania:**
+
+**1. Posilnenie sebaúcty:**
+- Rešpekt k sebe
+- Uznanie vlastnej hodnoty
+- Sebavedomie
+- Pozitívny sebaobraz
+
+**2. Zníženie stresu:**
+- Menej konfliktov
+- Jasná komunikácia
+- Riešenie problémov
+- Pocit kontroly
+
+**3. Zlepšenie komunikácie:**
+- Jasnejšie vyjadrenie
+- Menej nedorozumení
+- Efektívnejší dialóg
+- Hlbšie vzťahy
+
+**4. Zdravšie vzťahy:**
+- Vzájomný rešpekt
+- Rovnováha
+- Dôvera
+- Spokojnosť
+
+**Dlhodobé benefity:**
+
+- Lepšie psychické zdravie
+- Vyššia kvalita života
+- Úspešnejšie kariéra
+- Spokojnejšie vzťahy
+- Osobný rast a rozvoj
+
+**Vedecké zistenia:**
+
+Výskumy ukazujú, že asertívni ľudia:
+- Majú nižšiu úroveň úzkosti
+- Menej trpia depresiou
+- Majú lepšie fyzické zdravie
+- Sú spokojnejší v živote`
+    },
+    {
+      title: "Téma 7: Asertivita v klinickej praxi",
+      content: `**Terapeutické využitie asertivity**
+
+V klinickej praxi sa asertivita často stáva cieľom terapeutických intervencií.
+
+**Kedy sa používa tréning asertivity:**
+
+**1. Úzkostné poruchy:**
+- Sociálna úzkosť
+- Generalizovaná úzkosť
+- Panická porucha
+- Špecifické fóbie
+
+**Ako pomáha:**
+- Znižuje strach z konfrontácie
+- Posilňuje sebavedomie
+- Učí efektívne stratégie
+- Znižuje vyhýbavé správanie
+
+**2. Sociálne fóbie:**
+- Strach z odmietnutia
+- Problémy v sociálnych situáciách
+- Vyhýbanie sa kontaktom
+- Izolácia
+
+**Ako pomáha:**
+- Postupné budovanie zručností
+- Expozícia v bezpečnom prostredí
+- Poznávacia reštrukturalizácia
+- Zlepšenie sociálnych schopností
+
+**3. Poruchy osobnosti:**
+- Závisla osobnosť
+- Vyhýbavá osobnosť
+- Pasívno-agresívne vzorce
+- Hraničná porucha osobnosti
+
+**4. Problémy vo vzťahoch:**
+- Partnerské konflikty
+- Rodičovské problémy
+- Pracovné ťažkosti
+- Priateľské vzťahy
+
+**Tréning asertivity:**
+
+**Čo zahŕňa:**
+
+**1. Identifikácia prekážok:**
+- Negatívne myšlienky
+- Strach z konfliktu
+- Pocity viny
+- Nenaučené zručnosti
+
+**2. Nové komunikačné stratégie:**
+- "Ja" výroky
+- Technika DESEC
+- Asertívne odmietanie
+- Vyjadrenie potrieb
+
+**3. Praktické techniky:**
+- Rolové hry
+- Behaviorálne cvičenia
+- Domáce úlohy
+- Postupná expozícia
+
+**4. Kognitívna reštrukturalizácia:**
+- Zmena presvedčení
+- Identifikácia práv
+- Zmena sebahodnotenia
+- Posilnenie sebavedomia
+
+**Ciele terapie:**
+
+- Naučiť asertívne správanie
+- Znížiť úzkosť
+- Zlepšiť vzťahy
+- Posilniť sebaúctu
+- Zvýšiť kvalitu života`
+    },
+    {
+      title: "Téma 8: Praktický príklad z praxe",
+      content: `**Situácia na pracovisku**
+
+Predstavte si situáciu, kedy vás kolega opakovane žiada o pomoc s projektom, hoci viete, že to presahuje vaše pracovné povinnosti a nemáte na to čas.
+
+**Tri možné reakcie:**
+
+**1. Pasívny prístup:**
+
+**Správanie:**
+- Súhlasiť s pomocou
+- Aj keď to predstavuje záťaž
+- Zanedbávať vlastné úlohy
+- Potláčať frustráciu
+
+**Vnútorný dialóg:**
+"Nemôžem mu odmietnuť, nebol by to pekné..."
+"Čo si o mne pomyslí?"
+"Musím pomáhať..."
+
+**Dôsledky:**
+- Stres a prepracovanosť
+- Nesplnenie vlastných termínov
+- Hromadenie frustrácie
+- Pokles výkonu
+- Možné vyhorenie
+
+**2. Agresívny prístup:**
+
+**Správanie:**
+- Podráždenná reakcia
+- Odmietnutie bez vysvetlenia
+- Útok na kolegu
+- Hrubé správanie
+
+**Verbálne vyjadrenie:**
+"Už ma s tým prestaň otravovať! Mám vlastnú prácu!"
+
+**Dôsledky:**
+- Poškodenie vzťahov
+- Nepríjemná atmosféra
+- Konflikty na pracovisku
+- Reputačné škody
+- Izolácia
+
+**3. Asertívny prístup (správny):**
+
+**Správanie:**
+- Súcitné vysvetlenie
+- Jasné stanovenie hraníc
+- Ponúknutie alternatív
+- Rešpekt k obom stranám
+
+**Verbálne vyjadrenie:**
+"Rozumiem, že potrebuješ pomoc a je mi ľúto, že sa nachádzaš v tejto situácii. Momentálne však nemám kapacitu ti pomôcť, pretože mám vlastné priority a termíny, ktoré musím dodržať."
+
+**Ponúknutie alternatívy:**
+"Mohol by si sa poradiť s kolegom Petrom, ktorý má skúsenosti s podobnými projektami. Alebo ti môžem odporučiť zdroje, kde by si mohol nájsť potrebnú pomoc."
+
+**Dôsledky:**
+- Zachovanie vzťahov
+- Ochrana vlastného času
+- Konštruktívne riešenie
+- Rešpekt oboch strán
+- Zdravé hranice
+
+**Porovnanie výsledkov:**
+
+Asertívny prístup zachováva rovnováhu medzi vlastnými potrebami a empatiu voči druhým, čo vedie k dlhodobo udržateľným a zdravým vzťahom.`
+    },
+    {
+      title: "Téma 9: Teoretický kontext a história",
+      content: `**Vývoj konceptu asertivity**
+
+Koncept asertivity sa začal rozvíjať v 50. rokoch 20. storočia v rámci behaviorálnej terapie.
+
+**Andrew Salter (40.-50. roky):**
+
+**Prínos:**
+- Považovaný za jedného z priekopníkov asertivity
+- Zdôrazňoval jej vrodený charakter
+- Význam pre psychické zdravie
+
+**Hlavné myšlienky:**
+Salter argumentoval, že asertivita je prirodzenou súčasťou ľudskej osobnosti, ktorá je však často potláčaná vplyvom spoločenských noriem a výchovy.
+
+**Teória:**
+- Asertivita ako prirodzená kvalita
+- Potlačenie kultúrnymi vplyvmi
+- Potreba obnovenia prirodzenosti
+- Terapeutické využitie
+
+**Manuel J. Smith (70. roky):**
+
+**Prínos:**
+- Spopularizoval koncept asertivity
+- Praktické techniky a stratégie
+- Kniha "When I Say No, I Feel Guilty"
+
+**Kľúčové techniky:**
+- Technika "zlomenej platne"
+- Negatívne tvrdenie
+- Negatívny dopyt
+- Asertívne práva
+
+**Asertívne práva podľa Smitha:**
+1. Máte právo byť sám sebe sudcom
+2. Máte právo neponúkať dôvody
+3. Máte právo povedať "Neviem"
+4. Máte právo povedať "Nerozumiem"
+5. Máte právo zmeniť názor
+
+**Patricia Jakubowski:**
+
+**Prínos:**
+- Významná autorka a terapeutka
+- Vývoj tréningových programov
+- Rozvoj asertivity a sebaúcty
+
+**Teoretické modely:**
+
+**1. Kognitívne procesy:**
+- Sebahodnotenie
+- Vnímanie vlastných práv
+- Presvedčenia ovplyvňujúce správanie
+- Myšlienkové vzorce
+
+**2. Emocionálne faktory:**
+- Kontrola úzkosti
+- Schopnosť vyjadrovať emócie
+- Emocionálna regulácia
+- Primeranosť prejavov
+
+**3. Sociokultúrny kontext:**
+- Normy a očakávania
+- Kultúrne rozdiely
+- Spoločenské vplyvy
+- Variabilita prejavov
+
+**Súčasné chápanie:**
+
+Asertivita je v súčasnosti vnímaná ako dôležitá zručnosť v kontexte:
+- Sociálnej inteligencie
+- Efektívnej komunikácie
+- Leadershipu a manažmentu
+- Psychického zdravia`
+    },
+    {
+      title: "Téma 10: Rozvoj asertivity - praktické techniky",
+      content: `**Ako sa stať asertívnejším**
+
+Asertivita je zručnosť, ktorú sa dá naučiť a rozvíjať.
+
+**Praktické techniky:**
+
+**1. Technika "Ja" výrokov:**
+
+**Štruktúra:**
+"Ja cítim... (emócia) keď... (situácia), pretože... (dôvod). Potrebujem... (prosba)."
+
+**Príklad:**
+"Cítim sa frustrovaný, keď prichádzaš neskoro, pretože musím čakať. Potrebujem, aby si prichádzal včas."
+
+**Výhody:**
+- Vyjadrenie vlastných pocitov
+- Bez obviňovania
+- Jasná prosba
+- Konštruktívny tón
+
+**2. Technika "Zlomená platňa":**
+
+**Princíp:**
+Pokojné opakovanie svojho stanoviska bez toho, aby ste sa nechali vyviesť z miery.
+
+**Príklad:**
+"Rozumiem, ale nemôžem."
+"Áno, ale stále nemôžem."
+"Je mi to ľúto, ale nemôžem."
+
+**3. Technika DESEC:**
+
+**D** - Describe (Popíš situáciu)
+**E** - Express (Vyjadrenie pocitov)
+**S** - Specify (Špecifikuj požiadavku)
+**E** - Effects (Účinky/dôsledky)
+**C** - Consequences (Následky)
+
+**Príklad:**
+D: "Keď mi neposlúchaš..."
+E: "Cítim sa ignorovaný..."
+S: "Potrebujem, aby si ma počúval..."
+E: "Potom budeme rozumieť..."
+C: "Inak budeme mať problémy..."
+
+**4. Fogging (Hmlovanie):**
+
+**Princíp:**
+Čiastočné súhlasenie s kritikou bez prijatia celého tvrdenia.
+
+**Príklad:**
+Kritika: "Vždy robíš chyby!"
+Odpoveď: "Je pravda, že niekedy robím chyby."
+
+**5. Negatívny dopyt:**
+
+**Princíp:**
+Žiadanie konkrétnej kritiky namiesto všeobecných útokov.
+
+**Príklad:**
+"Čo presne ti vadí na mojej práci?"
+
+**Praktické cvičenia:**
+
+**1. Rolové hry:**
+- Precvičovanie situácií
+- Bezpečné prostredie
+- Spätná väzba
+- Postupné budovanie zručností
+
+**2. Denník asertivity:**
+- Záznam situácií
+- Analýza reakcií
+- Plánovanie zlepšení
+- Sledovanie pokroku
+
+**3. Malé kroky:**
+- Začať s jednoduchými situáciami
+- Postupne zvyšovať náročnosť
+- Oslavovať úspechy
+- Učiť sa z chýb
+
+**Kľúčové zásady:**
+
+- Buďte trpezliví so sebou
+- Asertivita je zručnosť, nie osobnostná črta
+- Vyžaduje prax a čas
+- Každý pokrok sa počíta
+- Buďte láskavý k sebe
+
+**Záver:**
+
+Asertivita je cesta k zdravším vzťahom, vyššej sebaúcte a lepšej kvalite života. Nie je to egoizmus, ale rešpekt k sebe aj druhým.`
+    }
+  ],
+  
   "Komunikácia": [
     {
       title: "Téma 1: Čo je komunikácia?",
