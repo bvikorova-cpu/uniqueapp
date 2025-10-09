@@ -28,19 +28,19 @@ const CourseDetail = () => {
   const currentTopic = courseProgress?.current_topic || 0;
   const completedTopics = courseProgress?.completed_topics || [];
 
+  // Initialize or reset progress only once
   useEffect(() => {
-    if (courseProgress) {
-      console.log('Course progress already exists:', courseProgress);
-      return;
-    }
+    // Don't initialize if we already have progress from either source
+    const hasExistingProgress = courseProgress?.completed_topics && courseProgress.completed_topics.length > 0;
     
-    // Initialize progress for new users
-    console.log('Initializing course progress...');
-    updateProgress({
-      current_topic: 0,
-      completed_topics: [],
-    });
-  }, [courseProgress, updateProgress]);
+    if (!hasExistingProgress && courseProgress === undefined) {
+      console.log('Initializing fresh course progress...');
+      updateProgress({
+        current_topic: 0,
+        completed_topics: [],
+      });
+    }
+  }, []); // Empty dependency array - only run once on mount
 
   const handleTopicComplete = async (index: number) => {
     console.log('handleTopicComplete called with index:', index);
@@ -126,6 +126,7 @@ const CourseDetail = () => {
           </Button>
           <CourseTest
             courseName={courseName || ""}
+            topics={topics}
             onTestPass={handleTestPass}
           />
         </div>

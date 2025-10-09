@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,70 +6,27 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { CheckCircle, XCircle } from "lucide-react";
+import type { Topic } from "@/data/courseContent";
+import { generateCourseTest, type TestQuestion } from "@/utils/generateCourseTest";
 
 interface CourseTestProps {
   courseName: string;
+  topics: Topic[];
   onTestPass: (userName: string) => void;
 }
 
-export const CourseTest = ({ courseName, onTestPass }: CourseTestProps) => {
+export const CourseTest = ({ courseName, topics, onTestPass }: CourseTestProps) => {
   const [userName, setUserName] = useState("");
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
+  const [questions, setQuestions] = useState<TestQuestion[]>([]);
 
-  const questions = [
-    {
-      question: "Ktorá téma sa zaoberá základnými pojmami?",
-      options: ["Téma 1", "Téma 2", "Téma 3", "Téma 4"],
-      correct: 1
-    },
-    {
-      question: "Čo je hlavným cieľom témy 3?",
-      options: ["Teória", "Praktické aplikácie", "História", "Zhrnutie"],
-      correct: 1
-    },
-    {
-      question: "V ktorej téme sa učíme o pokročilých technikách?",
-      options: ["Téma 2", "Téma 3", "Téma 4", "Téma 5"],
-      correct: 2
-    },
-    {
-      question: "Čo je obsahom témy 5?",
-      options: ["Úvod", "Riešenie problémov", "Záver", "Trendy"],
-      correct: 1
-    },
-    {
-      question: "Ktorá téma obsahuje prípadové štúdie?",
-      options: ["Téma 5", "Téma 6", "Téma 7", "Téma 8"],
-      correct: 1
-    },
-    {
-      question: "O čom sa dozviete v téme 7?",
-      options: ["Základy", "Nástroje", "Najlepšie postupy", "Trendy"],
-      correct: 2
-    },
-    {
-      question: "Ktorá téma predstavuje nástroje a zdroje?",
-      options: ["Téma 6", "Téma 7", "Téma 8", "Téma 9"],
-      correct: 2
-    },
-    {
-      question: "Čo je obsahom témy 9?",
-      options: ["Úvod", "Zhrnutie", "Trendy a budúcnosť", "Prípadové štúdie"],
-      correct: 2
-    },
-    {
-      question: "Koľko tém má celý kurz?",
-      options: ["8", "9", "10", "11"],
-      correct: 2
-    },
-    {
-      question: "Čo nasleduje po úspešnom absolvovaní testu?",
-      options: ["Nová téma", "Certifikát", "Ďalší test", "Ukončenie"],
-      correct: 1
-    }
-  ];
+  // Generate test questions from course content
+  useEffect(() => {
+    const generatedQuestions = generateCourseTest(topics);
+    setQuestions(generatedQuestions);
+  }, [topics]);
 
   const handleSubmit = () => {
     if (!userName.trim()) {
@@ -117,7 +74,9 @@ export const CourseTest = ({ courseName, onTestPass }: CourseTestProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {!showResults ? (
+        {questions.length === 0 ? (
+          <div className="text-center text-muted-foreground">Generujem test...</div>
+        ) : !showResults ? (
           <>
             <div className="space-y-2">
               <Label htmlFor="userName">Vaše meno a priezvisko</Label>
