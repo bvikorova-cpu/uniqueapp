@@ -3762,6 +3762,1381 @@ Nezáleží na tom, či ste začiatočník alebo pokročilý - každý môže vy
 Gratulujeme! Dokončili ste kurz Nechtový dizajn a ste pripravení vytvoriť si krásne gélové nechty v pohodlí domova!`
     }
   ],
+
+  "Vlasoví styling": [
+    {
+      title: "Téma 1: Úvod do vlasového stylingu",
+      content: `**Čo je vlasový styling?**
+
+Vlasový styling je umenie vytvárania rôznych účesov pomocou produktov, nástrojov a techník, ktoré zvýrazňujú vašu prirodzenú krásu a osobnosť.
+
+**Prečo je vlasový styling dôležitý?**
+
+- Vyjadrenie osobnosti a štýlu
+- Zvýšenie sebavedomia
+- Profesionálny vzhľad
+- Prispôsobenie rôznym príležitostiam
+- Ochrana vlasov
+
+**Základy úspešného stylingu:**
+
+**1. Poznanie vlastných vlasov:**
+- Typ vlasov (rovné, vlnité, kučeravé)
+- Hrúbka vlasov (jemné, stredné, husté)
+- Stav pokožky hlavy (mastná, suchá, kombinovaná)
+- Špecifické potreby
+
+**2. Správne produkty:**
+- Šampón a kondicionér
+- Stylingové produkty
+- Tepelná ochrana
+- Finálna fixácia
+
+**3. Vhodné nástroje:**
+- Fén
+- Žehlička
+- Kulma
+- Hrebene a kefky
+
+**4. Správne techniky:**
+- Fúkanie
+- Žehlenie
+- Kulmy
+- Rozčesávanie
+
+**Čo sa naučíte v tomto kurze:**
+
+- Výber správnych produktov pre váš typ vlasov
+- Trendy v úprave vlasov
+- Prispôsobenie stylingu rôznym typom vlasov
+- Styling pre rôzne dĺžky vlasov
+- Prácu s náradím
+- Vyhnúť sa bežným chybám
+
+**Pre koho je tento kurz:**
+
+- Začiatočníkov v oblasti vlasového stylingu
+- Ľudí, ktorí chcú zlepšiť svoje zručnosti
+- Tých, čo chcú ušetriť na kaderníctve
+- Nadšencov vlasového štýlu
+- Každého, kto chce mať krásne vlasy`
+    },
+    {
+      title: "Téma 2: Výber správnych produktov - základy",
+      content: `**Ako vybrať správne produkty pre vlasový styling?**
+
+Výber správnych profesionálnych produktov na vlasový styling je rozhodujúci pre dosiahnutie požadovaného vzhľadu a pre udržanie zdravých vlasov.
+
+**Krok 1: Identifikácia typu vlasov**
+
+**Textúra vlasov:**
+
+**Rovné vlasy:**
+- Prirodzene hladké
+- Sklony k mastnote
+- Rýchlo strácajú objem
+- Potrebujú ľahké produkty
+
+**Vlnité vlasy:**
+- S-pattern
+- Náchylné na krepovatenie
+- Potrebujú definíciu
+- Stredne ťažké produkty
+
+**Kučeravé vlasy:**
+- Spiral pattern
+- Náchylné na sucho
+- Potrebujú hydratáciu
+- Bohaté, výživné produkty
+
+**Krepo-vité vlasy:**
+- Veľmi kučeravé
+- Suché
+- Krehké
+- Extra hydratácia
+
+**Hrúbka vlasov:**
+
+**Jemné vlasy:**
+- Tenká štruktúra
+- Ľahko sa zaťažia
+- Potrebujú ľahké produkty
+- Produkty na objem
+
+**Stredné vlasy:**
+- Normálna hrúbka
+- Univerzálne produkty
+- Vyváž ená starostlivosť
+
+**Husté vlasy:**
+- Silná štruktúra
+- Ťažko sa tvarujú
+- Potrebujú silné produkty
+- Kontrola objemu
+
+**Krok 2: Stav pokožky hlavy**
+
+**Mastná pokožka:**
+- Rýchle mastenie
+- Ľahké šampóny
+- Suché šampóny
+- Vyhýbajte sa ťažkým produktom
+
+**Suchá pokožka:**
+- Svrbenie, lupiny
+- Hydratačné šampóny
+- Výživné masky
+- Oleje
+
+**Kombinovaná:**
+- Mastné korene, suché končeky
+- Vyváž ené produkty
+- Cielená aplikácia
+- Rôzne produkty pre rôzne časti
+
+**Krok 3: Špecifické problémy**
+
+**Krepovatenie:**
+- Anti-frizz séra
+- Uhladiace krémy
+- Olejové ošetrenia
+- Kontrola vlhkosti
+
+**Poškodenie:**
+- Regeneračné masky
+- Proteínové ošetrenia
+- Opravné séra
+- Ostrihajte končeky
+
+**Nedostatok objemu:**
+- Objemové peny
+- Texturizačné spreje
+- Suchý šampón
+- Root lifting spreje
+
+**Rýchle mastenie:**
+- Čistiace šampóny
+- Suché šampóny
+- Ľahké kondicionéry
+- Vyhýbajte sa koreňom pri kondicionéri`
+    },
+    {
+      title: "Téma 3: Výber produktov podľa potrieb",
+      content: `**Produkt y pre tepelné nástroje:**
+
+**Tepelná ochrana - nevyhnutná:**
+
+**Prečo?**
+- Predchádza poškodeniu
+- Ochrana pred vysokými teplotami
+- Udržanie zdravých vlasov
+- Predĺženie trvanlivosti farby
+
+**Typy tepelnej ochrany:**
+
+**Spreje:**
+- Ľahké
+- Rovnomerná aplikácia
+- Pre všetky typy vlasov
+- Aplikujte na vlhké vlasy
+
+**Krémy:**
+- Hustejšie
+- Extra ochrana
+- Pre husté vlasy
+- Väčšia kontrola
+
+**Séra:**
+- Koncentrované
+- Pre poškodené vlasy
+- Lesk a ochrana
+- Malé množstvo postačí
+
+**Produkty na objem:**
+
+**Peny (Mousse):**
+- Pre jemné vlasy
+- Ľahký objem
+- Pred fénom
+- Aplikujte na vlhké vlasy
+
+**Spreje na objem:**
+- Pri koreňoch
+- Okamžité zdvih nutie
+- Pred alebo po stylingu
+- Ľahká fixácia
+
+**Prachy na objem:**
+- Texturiza cia
+- Maximálny objem
+- Na suché vlasy
+- Jemne posypte
+
+**Produkty na uhladenie:**
+
+**Spreje na lesk:**
+- Finálny lesk
+- Odstránenie krepovatenia
+- Jemná aplikácia
+- Po stylingu
+
+**Séra a oleje:**
+- Výživa a lesk
+- Kontrola krepovatenia
+- Malé množstvo
+- Na končeky
+
+**Krémy na uhladenie:**
+- Pred fénom
+- Kontrola krepovatenia
+- Hladké vlasy
+- Rovnomerne rozdeľte
+
+**Produkty na definíciu:**
+
+**Gély:**
+- Silná fixácia
+- Mokrý efekt
+- Pre kučeravé vlasy
+- Definícia kučier
+
+**Pomády:**
+- Stredná fixácia
+- Matný alebo lesklý finišovanie
+- Pre krátke vlasy
+- Tvarovanie
+
+**Vosky:**
+- Silná fixácia
+- Texturizácia
+- Pre krátke až stredne dlhé vlasy
+- Výrazná definícia
+
+**Produkty na plážové vlny:**
+
+**Slaný sprej:**
+- Prirodzené vlny
+- Texturiza cia
+- Ľahké držanie
+- Letný vzhľad
+
+**Krémy na vlny:**
+- Definované vlny
+- Bez krepovatenia
+- Výživa
+- Mäkké vlasy`
+    },
+    {
+      title: "Téma 4: Finálna fixácia a profesionálne produkty",
+      content: `**Laky na vlasy - finálna fixácia:**
+
+Na finálnu fixáciu účesu zvoľte vhodný lak na vlasy podľa toho, aký výsledný vzhľad si prajete a ako dlho chcete, aby vám účes zostal bez zmeny.
+
+**Typy držania:**
+
+**Ľahká fixácia (Light Hold):**
+- Prirodzený pohyb
+- Upraviteľný účes
+- Pre jemné vlasy
+- Bežné nosenie
+
+**Stredná fixácia (Medium Hold):**
+- Vyváž ené držanie
+- Pohyb s kontrolou
+- Univerzálne použitie
+- Každodenný styling
+
+**Silná fixácia (Strong Hold):**
+- Pevné držanie
+- Kontrolovaný účes
+- Pre špeciálne príležitosti
+- Dlhšia trvanlivosť
+
+**Maximálna/Extrémna fixácia (Maximum Hold):**
+- Nepohnuteľný účes
+- Odolný proti vetru a vlhkosti
+- Pre náročné účesy
+- Profesionálne udalosti
+
+**Typy finišovania:**
+
+**Lesklé (Shine):**
+- Viditeľný lesk
+- Zdravý vzhľad
+- Pre rovné vlasy
+- Elegantný efekt
+
+**Matné (Matte):**
+- Prirodzený vzhľad
+- Bez lesku
+- Pre textúrované účesy
+- Moderný štýl
+
+**Profesionálne produkty vs. drogériové:**
+
+**Profesionálne produkty:**
+
+**Výhody:**
+- Vyššie koncentrácie aktívnych zložiek
+- Lepšie a dlhodobejšie výsledky
+- Kvalitnejšie ingrediencie
+- Účinnejšie
+
+**Kedy investovať:**
+- Poškodené vlasy
+- Špecifické problémy
+- Časté použitie tepelných nástrojov
+- Dlhodobá investícia do zdravia vlasov
+
+**Cena:**
+- Vyššia počiatočná investícia
+- Dlhšia výdrž
+- Lepšie výsledky
+- Návratnosť investície
+
+**Drogériové produkty:**
+
+**Výhody:**
+- Cenová dostupnosť
+- Široko dostupné
+- Vhodné pre základnú starostlivosť
+- Dobré pre začiatočníkov
+
+**Kedy použiť:**
+- Zdravé vlasy
+- Základná starostlivosť
+- Obmedzený rozpočet
+- Testovanie nových produktov
+
+**Ako získať odporúčania:**
+
+**Konzultácia s kaderníkom:**
+
+**Výhody:**
+- Profesionálne posúdenie
+- Špecifické odporúčania
+- Znalosť vašich vlasov
+- Osvedčené produkty
+
+**Čo sa pýtať:**
+- Aké produkty používate na moje vlasy?
+- Čo odporúčate pre domácu starostlivosť?
+- Aké produkty sú vhodné pre môj typ vlasov?
+- Ako správne aplikovať produkty?
+
+**Testovanie produktov:**
+
+**Vzorky:**
+- Požiadajte o vzorky
+- Testujte pred kúpou
+- Zistite, čo vám vyhovuje
+- Vyhýbajte sa plytvaniu
+
+**Postupné zavádzanie:**
+- Začnite s jedným produktom
+- Pridávajte postupne
+- Sledujte reakciu vlasov
+- Prispôsobte podľa potreby
+
+**Skladovanie produktov:**
+
+**Správne skladovanie:**
+- Chladné, suché miesto
+- Mimo priameho slnka
+- Uzatvorené obaly
+- Kontrolujte dátum spotreby
+
+**Organizácia:**
+- Denné produkty oddelene
+- Špeciálne ošetrenia osobitne
+- Ľahko dostupné
+- Prehľadné usporiadanie`
+    },
+    {
+      title: "Téma 5: Aktuálne trendy v úprave vlasov",
+      content: `**Trendy v úprave vlasov 2025:**
+
+Aktuálne trendy predstavujú nádhernú zmes nostalgie a modernej estetiky a pozývajú každého, aby preskúmal svoj osobný štýl.
+
+**1. Objemné fúkané - návrat 90. rokov:**
+
+**Charakteristika:**
+- Objemné, nadýchané vlasy
+- Nostalgický vzhľad
+- Ikonický štýl
+- Glamour a elegancia
+
+**Ako dosiahnuť:**
+- Objemová pena pri koreňoch
+- Okrúhla kefa pri fúkaní
+- Fén smerujte smerom hore
+- Finálna fixácia lakom
+
+**Pre koho:**
+- Jemné až stredné vlasy
+- Stredná až dlhá dĺžka
+- Milovníci retro štýlu
+- Špeciálne príležitosti
+
+**2. Elegantné uhladené copy:**
+
+**Charakteristika:**
+- Žiarivý a sofistikovaný look
+- Výrazný prejav
+- Ideálny na bežné výlety aj formálne udalosti
+- Praktický a elegantný
+
+**Typy copov:**
+- Francúzsky cop
+- Holandský cop
+- Rybí chvost
+- Bočný cop
+
+**Ako dosiahnuť:**
+- Uhladiace sérum
+- Kefa na vyhladenie
+- Presné pletenie
+- Fixácia gumičkou a lakom
+
+**3. Všestranné boby:**
+
+**Prečo sú populárne:**
+- Nenáročná údržba
+- Všestrannosť
+- Rôzne textúry a dĺžky
+- Nekonečné možnosti vlasového stylingu
+
+**Typy bobov:**
+
+**Klasický bob:**
+- Pod bradou
+- Rovný strih
+- Univerzálny
+
+**A-líniový bob:**
+- Kratší vzadu
+- Dlhší vpredu
+- Moderný
+
+**Textúrovaný bob:**
+- Vrstvy
+- Pohyb
+- Prirodzený vzhľad
+
+**Asymetrický bob:**
+- Rôzne dĺžky strán
+- Výrazný
+- Odvážny
+
+**4. Klasické strihy:**
+
+**Shag:**
+- Vrstvy
+- Textúra
+- Prirodzený pohyb
+- 70. roky
+
+**Bob:**
+- Nadčasový
+- Elegantný
+- Praktický
+- Pre všetky vekové kategórie
+
+**5. Ofina je späť:**
+
+**Výhody ofiny:**
+- Krásne orámuje tvár
+- Dodá jemnosť a charakter
+- Zakryje čelo
+- Mladistvý vzhľad
+
+**Typy ofín:**
+
+**Priama ofina:**
+- Rovný strih
+- Minimalistická
+- Elegantná
+
+**Šikmá ofina:**
+- Diagonálny strih
+- Orámovanie tváre
+- Všestranná
+
+**Kučeravá ofina:**
+- Pre kučeravé vlasy
+- Prirodzený pohyb
+- Ležérna
+
+**Záclonová ofina:**
+- Rozdelená v strede
+- Orámuje tvár
+- Retro štýl
+
+**6. Vlasové doplnky:**
+
+**Renesancia doplnkov:**
+
+**Výrazné mašle:**
+- Romantické
+- Hravé
+- Výrazný akcent
+- Pre špeciálne príležitosti
+
+**Ozdobné sponky:**
+- Elegantné
+- Praktické a dekoratívne
+- Rôzne štýly
+- Každodenné nosenie
+
+**Čelenky:**
+- Retro štýl
+- Kontrola vlasov
+- Módny doplnok
+
+**7. Prírodná štruktúra vlasov:**
+
+**Výrazný posun:**
+
+**Dôraz na prirodzenosť:**
+- Produkty, ktoré vylepšujú, nie menia
+- Oslavovanie kučier a vĺn
+- Autentická krása
+- Minimálna manipulácia
+
+**Kučeravé vlasy:**
+- Definícia kučier
+- Hydratácia
+- Prirodzený objem
+- Žiadne žehlenie
+
+**Vlnité vlasy:**
+- Zvýraznenie vĺn
+- Minimálny styling
+- Plážový vzhľad
+- Ľahká starostlivosť
+
+**8. Blond tóny:**
+
+**Obzvlášť populárne:**
+- Dopĺňajú prirodzenú krásu
+- Štýl bez námahy
+- Svetlé, žiarivé odtiene
+- Rôzne techniky
+
+**Typy blond:**
+- Platinová
+- Medová
+- Popolavá
+- Zlatistá
+- Balayage
+- Highlights
+
+**Záver:**
+
+Najdôležitejšie je nájsť štýl, ktorý vyjadruje vašu osobnosť a s ktorým sa cítite dobre!`
+    },
+    {
+      title: "Téma 6: Styling pre rôzne typy vlasov",
+      content: `**Prispôsobenie vlasového stylingu rôznym typom vlasov:**
+
+Prispôsobenie techník vlasového stylingu pre rôzne typy vlasov je rozhodujúce pre dosiahnutie najlepších výsledkov a zvýraznenie vašej prirodzenej krásy.
+
+**Rovné vlasy:**
+
+**Charakteristika:**
+- Prirodzene hladké
+- Sklony k mastnote
+- Ťažko držia objem
+- Rýchlo sa mastia pri koreňoch
+
+**Ciele:**
+- Pridať objem
+- Udržať čistotu
+- Textúrizovať
+- Predĺžiť čerstvosť
+
+**Vhodné produkty:**
+
+**Ľahké produkty:**
+- Peny na objem
+- Texturizačné spreje
+- Suché šampóny
+- Séra (malé množstvo)
+
+**Styling:**
+- Fúkajte proti smeru rastu
+- Použite okrúhlu kefu
+- Nadvihnite korene
+- Chladný vzduch na záver
+
+**Tepelná ochrana:**
+- Nevyhnutná pri používaní nástrojov
+- Zabráni poškodeniu
+- Ľahké spreje
+- Rovnomerná aplikácia
+
+**Vlnité vlasy:**
+
+**Charakteristika:**
+- S-pattern
+- Náchylné na krepovatenie
+- Potrebujú definíciu
+- Ľahko strácajú tvar
+
+**Ciele:**
+- Zvýrazniť prirodzené vlny
+- Odstrániť krepovatenie
+- Definovať textúru
+- Udržať hydratáciu
+
+**Vhodné produkty:**
+
+**Krémy na kučery:**
+- Definícia vĺn
+- Kontrola krepovatenia
+- Výživa
+- Prirodzený vzhľad
+
+**Slaté spreje:**
+- Plážový efekt
+- Ležérny štýl
+- Texturizácia
+- Ľahké držanie
+
+**Styling:**
+- Aplikujte produkty na vlhké vlasy
+- Mačkajte vlasy smerom hore
+- Sušte difúzorom alebo na vzduchu
+- Nedotýkajte sa počas sušenia
+
+**Kučeravé vlasy:**
+
+**Charakteristika:**
+- Spiral pattern
+- Náchylné na sucho
+- Krehké
+- Potrebujú výživu
+
+**Ciele:**
+- Udržiavať vlhkosť
+- Definovať kučery
+- Zaistiť pružnosť
+- Bez krepovatenia
+
+**Vhodné produkty:**
+
+**Hydratačné nezmývateľné kondicionéry:**
+- Intenzívna hydratácia
+- Ochrana pred suchom
+- Ľahké rozčesávanie
+- Výživa
+
+**Stylingové gély:**
+- Definícia kučier
+- Držanie tvaru
+- Bez zaťaženia
+- Dlhotrvajúca fixácia
+
+**Styling:**
+- Nikdy nečešte nasucho!
+- Rozčesávajte prstami alebo hrebeňom so širokými zubami
+- Metóda "squish to condish"
+- Plopping technika
+- Difúzor na nízke teplo
+
+**Krepo-vité vlasy:**
+
+**Charakteristika:**
+- Veľmi kučeravé
+- Zig-zag pattern
+- Extra suché
+- Najkrehkejšie
+
+**Ciele:**
+- Maximálna hydratácia
+- Ochrana pred lámavosťou
+- Definícia kučier
+- Zdravé vlasy
+
+**Vhodné produkty:**
+
+**Bohaté krémy:**
+- Intenzívna výživa
+- Extra hydratácia
+- Husté textúry
+- Ochrana
+
+**Oleje na vlasy:**
+- Zabezpečenie vlhkosti
+- Lesk
+- Ochrana končekov
+- Výživa
+
+**Styling:**
+- LOC/LCO metóda (Liquid, Oil, Cream)
+- Protective styling
+- Minimálna manipulácia
+- Pravidelné ošetrenia
+
+**Uvedomenie si špecifických potrieb:**
+
+Uvedomenie si špecifických potrieb každého typu vlasov a výber vhodných produktov sú základom pre pochopenie ako si upraviť vlasy a dosiahnuť krásny a upravený vzhľad, ktorý zvýrazní vašu osobnosť a štýl.`
+    },
+    {
+      title: "Téma 7: Styling pre rôzne dĺžky vlasov",
+      content: `**Ako zvoliť vhodný styling pre rôzne dĺžky vlasov?**
+
+Výber správnych vlasových stylingových produktov pre rôzne dĺžky vlasov je rozhodujúci pre dosiahnutie požadovaného účesu a udržanie zdravia vlasov.
+
+**Krátke vlasy:**
+
+**Charakteristika:**
+- Po uši alebo kratšie
+- Rýchly styling
+- Minimálna údržba
+- Výrazný účes
+
+**Vhodné produkty:**
+
+**Pomády:**
+- Definícia
+- Matný alebo lesklý efekt
+- Stredná až silná fixácia
+- Tvarovanie
+
+**Vosky:**
+- Silná fixácia
+- Textúrizácia
+- Špicaté účesy
+- Výrazné tvarovanie
+
+**Texturizačné spreje:**
+- Objem
+- Prirodzený pohyb
+- Ľahké držanie
+- Denné použitie
+
+**Styling tipy:**
+- Malé množstvo produktu (veľkosť hrášku)
+- Roztierajte medzi dlaňami
+- Aplikujte od koreňov
+- Tvarujte prstami
+
+**Príklady účesov:**
+- Undercut
+- Pompadour
+- Messy styling
+- Slicked back
+
+**Ako si upraviť krátke vlasy:**
+
+Muži s krátkymi vlasmi často nevedia, pritom stačí sa držať pár základných pravidiel:
+- Menej je viac
+- Správny produkt pre váš typ vlasov
+- Fén pre objem
+- Pravidelné strihanie
+
+**Stredne dlhé vlasy (po plecia):**
+
+**Charakteristika:**
+- Po plecia
+- Všestranné
+- Viac možností stylingu
+- Vyžaduje viac produktov
+
+**Vhodné produkty:**
+
+**Objemové penové tužidlá:**
+- Zvýšenie objemu
+- Ľahké držanie
+- Pred fénom
+- Na vlhké vlasy
+
+**Krémové stylingové gély:**
+- Držanie a flexibilita
+- Definícia
+- Kontrola krepovatenia
+- Uľahčujú tvarovanie
+
+**Styling tipy:**
+- Sekcie pri fúkaní
+- Okrúhla kefa pre objem
+- Rôzne nástroje (kulma, žehlička)
+- Vrstvy produktov
+
+**Príklady účesov:**
+- Prirodzené vlny
+- Rovné uhladené
+- Napoly hore, napoly dole
+- Cop alebo drdol
+
+**Ako upraviť vlasy po plecia:**
+
+Profesionálne produkty vlasového stylingu sú nevyhnutné:
+- Kombinácia produktov
+- Správna technika fúkania
+- Tepelná ochrana vždy
+- Finálna fixácia
+
+**Dlhé vlasy:**
+
+**Charakteristika:**
+- Pod plecia
+- Náchylné na zapletenie
+- Vyžadujú viac starostlivosti
+- Ťažké
+
+**Vhodné produkty:**
+
+**Výživné séra:**
+- Boj proti krepovateniu
+- Lesk
+- Ochrana končekov
+- Ľahká textúra
+
+**Oleje:**
+- Intenzívna výživa
+- Dodanie vlhkosti
+- Lesk a hladkosť
+- Ochrana
+
+**Bezoplachové kondicionéry:**
+- Zlepšenie ovládateľnosti
+- Ochrana pred poškodením
+- Ľahšie rozčesávanie
+- Hydratácia
+
+**Styling tipy:**
+- Aplikujte produkty na dlážky a končeky
+- Vyhýbajte sa koreňom (zaťaženie)
+- Používajte tepelnú ochranu
+- Pravidelne strihajte končeky
+
+**Príklady účesov:**
+- Veľké lokne
+- Rovné lesklé
+- Vysoký cop
+- Romantické vlny
+- Zapletené účesy
+
+**Špecifické potreby dlhých vlasov:**
+
+**Ochrana:**
+- Tepelná ochrana povinná
+- Ochrana pred UV žiarením
+- Minimálna manipulácia
+- Jemné rozčesávanie
+
+**Výživa:**
+- Pravidelné masky
+- Olejové ošetrenia
+- Proteínové ošetrenia
+- Hydratácia
+
+**Údržba:**
+- Strihanie každých 8-12 týždňov
+- Ochrana počas spania (hodvábny vankúš)
+- Vyhýbajte sa tesným účesom
+- Jemné gumičky
+
+**Pochopenie dĺžky a typu vlasov:**
+
+Pochopenie dĺžky a typu vlasov vám pomôže vybrať tie najvhodnejšie produkty na dosiahnutie krásnych, zdravo vyzerajúcich vlasov.
+
+**Všeobecné pravidlá:**
+- Krátke vlasy: Malé množstvo produktu, silné držanie
+- Stredné vlasy: Stredné množstvo, všestranné produkty
+- Dlhé vlasy: Viac produktov, výživa a hydratácia`
+    },
+    {
+      title: "Téma 8: Práca s náradím a technikami",
+      content: `**Nástroje pre vlasový styling:**
+
+**1. Fén:**
+
+**Výber správneho fénu:**
+- Wattage: Min. 1800W pre rýchle sušenie
+- Nastavenia tepla: Viacero úrovní
+- Chladný vzduch: Pre fixáciu
+- Difúzor: Pre kučeravé vlasy
+- Koncentrátor: Pre presné sušenie
+
+**Technika fúkania:**
+
+**Pre objem:**
+1. Fúkajte proti smeru rastu
+2. Nadvihnite korene okrúhlou kefou
+3. Začnite pri koreňoch
+4. Chladný vzduch na záver
+
+**Pre hladkosť:**
+1. Sekcie vlasov
+2. Napnite vlasy kefou
+3. Fén smerujte dole po vlase
+4. Chladný vzduch pre lesk
+
+**Pre kučery/vlny:**
+1. Použite difúzor
+2. Nízke teplo
+3. Mačkajte vlasy smerom hore
+4. Nedotýkajte sa počas sušenia
+
+**2. Žehlička na vlasy:**
+
+**Výber žehličky:**
+- Keramické platne
+- Nastaviteľná teplota
+- Široké platne pre dlhé vlasy
+- Úzke pre krátke vlasy
+- Automatické vypnutie
+
+**Bezpečnosť:**
+- Tepelná ochrana VŽDY
+- Správna teplota:
+  - Jemné: 150-170°C
+  - Normálne: 170-200°C
+  - Husté: 200-230°C
+
+**Technika žehlenia:**
+
+**Rovné vlasy:**
+1. Malé sekcie (2-3 cm)
+2. Začnite pri koreňoch
+3. Plynulý pohyb
+4. Jeden prechod postačí
+
+**Vlny žehličkou:**
+1. Obtočte prameň okolo žehličky
+2. Držte 5-10 sekúnd
+3. Jemne vytiahnite
+4. Nechajte vychladnúť
+
+**3. Kulma:**
+
+**Typy kuliem:**
+- Klasická: Pre klasické lokne
+- Kónická: Pre prirodzené vlny
+- Automatická: Pre jednoduchosť
+- Rôzne priemery: Rôzne kučery
+
+**Technika kulmovania:**
+
+**Klasické lokne:**
+1. Malé pramene
+2. Obtočte okolo kulmy
+3. Držte 10-15 sekúnd
+4. Jemne uvoľnite
+5. Nechajte vychladnúť
+
+**Veľké vlny:**
+1. Väčšie pramene
+2. Veľký priemer kulmy
+3. Striedajte smer
+4. Jemne rozčešte prstami
+
+**4. Hrebene a kefky:**
+
+**Typy:**
+
+**Hrebeň so širokými zubami:**
+- Rozčesávanie mokrých vlasov
+- Aplikácia produktov
+- Detangling
+
+**Okrúhla kefa:**
+- Fúkanie s objemom
+- Vytváranie lokien
+- Uhladenie
+
+**Paddle kefa:**
+- Rozčesávanie suchých vlasov
+- Jednoduchý styling
+- Masáž pokožky hlavy
+
+**Teasing kefa:**
+- Tupírovanie
+- Extra objem
+- Speciálne účesy
+
+**5. Doplnkové nástroje:**
+
+**Klipy na sekcie:**
+- Organizácia pri stylingu
+- Oddelenie vlasov
+- Profesionálny vzhľad
+
+**Ochranné rukavice:**
+- Pri používaní kulmy
+- Ochrana pred popálením
+- Lepšia kontrola
+
+**Všeobecné pravidlá:**
+
+**Pred použitím nástrojov:**
+1. Tepelná ochrana vždy
+2. Vlasy musia byť suché (okrem fénu)
+3. Správna teplota
+4. Čisté nástroje
+
+**Po použití nástrojov:**
+1. Nechajte vychladnúť
+2. Očistite platne/kefky
+3. Skladujte bezpečne
+4. Pravidelná údržba`
+    },
+    {
+      title: "Téma 9: Najčastejšie chyby pri stylingu",
+      content: `**Bežné chyby pri úprave vlasov a ako sa im vyhnúť:**
+
+Bežné chyby pri úprave vlasov môžu brániť zdraviu a vzhľadu vašich vlasov, ale často sa im dá ľahko vyhnúť pomocou niekoľkých opatrných postupov.
+
+**Chyba 1: Používanie nadmerného tepla bez ochrany**
+
+**Problém:**
+- Používanie vysokých teplôt
+- Bez tepelnej ochrany
+- Časté používanie tepelných nástrojov
+- Viesť k vysychaniu a lámaniu
+
+**Riešenie:**
+
+**Pred použitím:**
+- VŽDY aplikujte sprej na ochranu pred teplom
+- Pred použitím stylingových nástrojov
+- Rovnomerná aplikácia
+- Nechajte zaschnúť
+
+**Nastavenia tepla:**
+- Používajte nižšie nastavenia
+- Jemné vlasy: 150-170°C
+- Normálne: 170-200°C
+- Husté: Maximálne 230°C
+
+**Frekvencia:**
+- Nie každý deň
+- Doprajte vlasom oddych
+- Striedajte s účesmi bez tepla
+- Minimálne 2-3 dni v týždni bez tepla
+
+**Chyba 2: Zanedbávanie pravidelného strihania**
+
+**Problém:**
+- Štiepenie končekov
+- Nezdravý vzhľad
+- Lámanie vlasov
+- Ťažké rozčesávanie
+
+**Riešenie:**
+
+**Pravidelné strihy:**
+- Každých 6-8 týždňov
+- Odstránenie poškodených končekov
+- Udržanie tvaru účesu
+- Zdravší vzhľad
+
+**Medzi strihmi:**
+- Olejové ošetrenia končekov
+- Ochrana pred teplom
+- Jemné zaobchádzanie
+- Minimálna manipulácia
+
+**Chyba 3: Preťažovanie vlasov produktami**
+
+**Problém:**
+- Príliš veľa produktu
+- Zaťažené vlasy
+- Chýba objem
+- Mastný vzhľad
+
+**Riešenie:**
+
+**Menej je viac:**
+- Začnite s malým množstvom
+- Postupne pridávajte
+- Podľa potreby
+- Lepšie pridať než ubrať
+
+**Správne množstvo:**
+
+**Krátke vlasy:**
+- Velikosť hrášku
+- Pomády, vosky
+
+**Stredne dlhé:**
+- 1-2 pumpnutia
+- Krémy, spreje
+
+**Dlhé vlasy:**
+- 2-3 pumpnutia
+- Séra, oleje (na koncekoch)
+
+**Aplikácia:**
+- Roztrite medzi dlaňami
+- Rovnomerne aplikujte
+- Vyhýbajte sa koreňom (ak nie je určené pre ne)
+- Pridajte postupne
+
+**Chyba 4: Nesprávny výber produktov**
+
+**Problém:**
+- Produkty pre iný typ vlasov
+- Neúčinné výsledky
+- Plytvan ie peňazí
+- Frustrácia
+
+**Riešenie:**
+
+**Poznajte svoj typ vlasov:**
+- Jemné, stredné, husté
+- Rovné, vlnité, kučeravé
+- Mastné, suché, normálne
+- Poškodené, zdravé
+
+**Výber produktov:**
+- Pre jemné vlasy: Ľahké produkty
+- Pre husté vlasy: Výživné, silné produkty
+- Pre kučeravé: Hydratačné produkty
+- Pre poškodené: Regeneračné produkty
+
+**Testovanie:**
+- Požiadajte o vzorky
+- Testujte pred kúpou
+- Jeden produkt naraz
+- Sledujte reakciu
+
+**Chyba 5: Agresívne česanie mokrých vlasov**
+
+**Problém:**
+- Mokré vlasy sú krehké
+- Lámanie vlasov
+- Poškodenie štruktúry
+- Štiepenie
+
+**Riešenie:**
+
+**Správna technika:**
+
+**Nástroj:**
+- Hrebeň so širokými zubami
+- Nikdy nie kefa
+- Špeciálne detangling hrebene
+
+**Postup:**
+1. Začnite od končekov
+2. Jemne rozmotávajte
+3. Postupujte smerom hore
+4. Ku korienkom
+
+**Produkty na pomoc:**
+- Bezoplachový kondicionér
+- Detangling spray
+- Olej na vlasy
+- Ľahšie rozčesávanie
+
+**Prevencia:**
+- Rozčešte pred umytím
+- Netrieť mokré vlasy uterákom
+- Jemne vyžmýkajte
+- Mikroutierka je lepšia
+
+**Chyba 6: Zanedbávanie pokožky hlavy**
+
+**Problém:**
+- Suchá pokožka, lupiny
+- Mastnota
+- Svrbenie
+- Nezdravé vlasy
+
+**Riešenie:**
+
+**Starostlivosť o pokožku:**
+- Šampón vhodný pre váš typ
+- Masáž pri umývaní
+- Peelingy pokožky hlavy
+- Hydratácia
+
+**Doplnky:**
+- Vitamíny
+- Zdravá strava
+- Dostatok vody
+- Správny spánok
+
+**Zhrnutie chýb:**
+
+✗ Teplo bez ochrany
+✗ Zanedbávanie strihania
+✗ Príliš veľa produktov
+✗ Nesprávne produkty
+✗ Agresívne česanie mokrých vlasov
+✗ Zanedbávanie pokožky hlavy
+
+**Pochopením týchto bežných chýb a toho, ako sa im vyhnúť, môžete podporiť zdravšie vlasy a ľahko dosiahnuť účesy, po ktorých túžite!**`
+    },
+    {
+      title: "Téma 10: Denná rutina a zhrnutie",
+      content: `**Denná rutina vlasovej starostlivosti:**
+
+**Ranná rutina:**
+
+**1. Šampón (podľa potreby):**
+- Nie každý deň nutné
+- Mastné vlasy: Denne
+- Normálne: Každý druhý deň
+- Suché: 2-3x týždenne
+
+**2. Kondicionér:**
+- Pri každom umývaní
+- Len na dĺžky a končeky
+- Nechajte pôsobiť 2-3 minúty
+- Dôkladne opláchnite
+
+**3. Bezoplachová starostlivosť:**
+- Bezoplachový kondicionér
+- Tepelná ochrana
+- Sérum na končeky
+- Podľa typu vlasov
+
+**4. Styling:**
+- Vyberteprodukt podľa účesu
+- Aplikujte na vlhké vlasy
+- Fúkajte alebo nechajte vysušiť
+- Finálna fixácia
+
+**Večerná rutina:**
+
+**1. Rozčesanie:**
+- Jemne rozčešte
+- Odstráňte produkty
+- Od končekov ku koreňom
+
+**2. Ochrana počas spania:**
+- Hodvábny vankúš
+- Voľný cop
+- Satén čiapka
+- Minimálne trenie
+
+**3. Nočné ošetrenia (voliteľné):**
+- Olejové ošetrenia
+- Masky na vlasy
+- Séra na pokožku hlavy
+- Raz týždenne
+
+**Týždenná starostlivosť:**
+
+**1. Hĺbková maska:**
+- Raz týždenne
+- Intenzívna výživa
+- Podľa typu vlasov
+- 15-30 minút
+
+**2. Peeling pokožky hlavy:**
+- Raz za 1-2 týždne
+- Odstránenie odumretých buniek
+- Stimulácia rastu
+- Lepšia absorpcia produktov
+
+**3. Olejové ošetrenia:**
+- Pre suché vlasy
+- Kokosový, arganový olej
+- Pred umytím
+- Minimálne 30 minút
+
+**Mesačná starostlivosť:**
+
+**1. Strihanie:**
+- Každých 6-8 týždňov
+- Odstránenie štiepených končekov
+- Udržanie tvaru
+- Zdravšie vlasy
+
+**2. Proteínové ošetrenia:**
+- Raz za mesiac
+- Pre poškodené vlasy
+- Posilnenie štruktúry
+- Regenerácia
+
+**Zhrnutie kurzu:**
+
+**Čo ste sa naučili:**
+
+✓ Výber správnych produktov pre váš typ vlasov
+✓ Aktuálne trendy v úprave vlasov
+✓ Prispôsobenie stylingu rôznym typom vlasov
+✓ Styling pre rôzne dĺžky vlasov
+✓ Prácu s náradím a technikami
+✓ Najčastejšie chyby a ako sa im vyhnúť
+✓ Dennú a týždennú rutinu
+
+**Kľúčové body:**
+
+**1. Poznanie vlastných vlasov:**
+- Typ, hrúbka, stav
+- Špecifické potreby
+- Individuálny prístup
+
+**2. Správne produkty:**
+- Kvalita sa oplatí
+- Podľa typu vlasov
+- Menej je viac
+- Tepelná ochrana vždy
+
+**3. Techniky a nástroje:**
+- Správna teplota
+- Šetrné zaobchádzanie
+- Pravidelná údržba
+- Ochrana vlasov
+
+**4. Pravidelná starostlivosť:**
+- Denná rutina
+- Týždenné ošetrenia
+- Pravidelné strihy
+- Prevencia problémov
+
+**5. Vyhnite sa chybám:**
+- Teplo s ochranou
+- Správne produkty
+- Jemné česanie
+- Starostlivosť o pokožku
+
+**Tipy na záver:**
+
+**1. Experimentujte:**
+- Skúšajte rôzne účesy
+- Nájdite svoj štýl
+- Sledujte trendy
+- Buďte kreatívni
+
+**2. Buďte trpezliví:**
+- Zmeny chvíľu trvajú
+- Zdrav é vlasy potrebujú čas
+- Konzistentnosť je kľúčom
+- Nevzdávajte sa
+
+**3. Investujte do kvality:**
+- Profesionálne produkty
+- Kvalitné nástroje
+- Pravidelné ošetrenia
+- Oplatí sa to
+
+**4. Starajte sa o zdravie:**
+- Zdravá strava
+- Dostatok vody
+- Vitamíny
+- Správny spánok
+
+**5. Užívajte si proces:**
+- Styling má byť zábava
+- Vyjadrenie osobnosti
+- Experimentovanie
+- Sebavedomie
+
+**Záverečná rada:**
+
+Pamätajte, že najkrajšie vlasy sú zdravé vlasy! Investujte do správnej starostlivosti, používajte kvalitné produkty a buďte trpezliví. Každý typ vlasov je krásny a jedinečný - naučte sa pracovať s tým, čo vám príroda dala, a zvýraznite svoju prirodzenú krásu!
+
+Gratulujeme! Dokončili ste kurz Vlasoví styling a ste pripravení vytvárať krásne účesy v pohodlí domova!`
+    }
+  ],
   
   "Základy účtovníctva": [
     {
