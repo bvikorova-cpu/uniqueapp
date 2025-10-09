@@ -116,11 +116,17 @@ Postupnosť tém:
       topics = parsed.topics;
       
       if (!topics || !Array.isArray(topics) || topics.length === 0) {
+        console.error('No topics found in parsed response. Parsed object keys:', Object.keys(parsed));
         throw new Error('No topics in response');
       }
+      
+      console.log(`Successfully parsed ${topics.length} topics`);
     } catch (e) {
-      console.error("Failed to parse AI response:", content);
-      throw new Error("Invalid AI response format");
+      const errorMessage = e instanceof Error ? e.message : 'Unknown error';
+      console.error("Parse error:", errorMessage);
+      console.error("Content type:", typeof content);
+      console.error("Content preview (first 500 chars):", typeof content === 'string' ? content.substring(0, 500) : JSON.stringify(content).substring(0, 500));
+      throw new Error(`Invalid AI response format: ${errorMessage}`);
     }
 
     return new Response(
