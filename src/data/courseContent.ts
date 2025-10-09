@@ -3578,6 +3578,477 @@ Projektový manažment je základom úspechu pre firmy, ktoré chcú zvládnuť 
 Ak chcete dosiahnuť lepšie výsledky vo vašich projektoch, zvážte zavedenie profesionálneho projektového manažmentu a využitie nástrojov a metodík, ktoré sú dnes dostupné.`
     }
   ],
+  "Analýza trhu": [
+    {
+      title: "Téma 1: Úvod do analýzy trhu",
+      content: `**Definícia analýzy trhu**
+
+Analýza trhu poskytuje vnútorný obraz o obchode, celoštátnych a miestnych trendoch, informácie o veľkosti a vývoji trhu, o charakteristických znakoch hlavných účastníkov, predmete obchodovania, fáze životného cyklu.
+
+**Čo je analýza trhu?**
+
+Analýza trhu je súčasťou skúmania trhu, teda systematického zhromažďovania, analyzovania a interpretácie informácií.
+
+**Hlavný cieľ:**
+
+Cieľom je poskytnúť podklady pre marketingové rozhodovanie a plánovanie.
+
+**Hlavné úlohy analýzy trhu:**
+
+1. **Zistenie charakteru a veľkostí trhu**
+   - Meranie trhového potenciálu
+   - Identifikácia hraníc trhu
+
+2. **Analýza podľa geografickej štruktúry**
+   - Regionálne rozdiely
+   - Lokálne špecifiká
+
+3. **Zistenie trhových potenciálov**
+   - Maximálna kapacita trhu
+   - Možnosti rastu
+
+4. **Analýza štruktúry trhu a trhových podielov**
+   - Konkurenčná pozícia
+   - Market share
+
+5. **Segmentačná analýza – cieľové skupiny**
+   - Identifikácia segmentov
+   - Targeting
+
+6. **Analýza trhovej pozície**
+   - Postavenie na trhu
+   - Konkurenčné výhody
+
+7. **Prognózovanie trhu**
+   - Budúci vývoj
+   - Trendy
+
+8. **Modelovanie trhu**
+   - Simulácie
+   - Scenáre vývoja`
+    },
+    {
+      title: "Téma 2: Nevyhnutnosť marketingových analýz",
+      content: `**Prečo sú analýzy dôležité?**
+
+Nevyhnutnosť realizácie marketingových analýz v meniacom sa trhovom prostredí je kľúčová pre úspech každého podniku.
+
+**Hlavný účel:**
+
+Ich cieľom je poskytnúť podklady pre marketingové rozhodovanie a plánovanie.
+
+**Výhody marketingových analýz:**
+
+- **Lepšie rozhodovanie** - Dáta a informácie vedú k informovaným rozhodnutiam
+- **Predvídanie trendov** - Schopnosť reagovať na zmeny skôr než konkurencia
+- **Optimalizácia zdrojov** - Efektívne využívanie marketingového rozpočtu
+- **Identifikácia príležitostí** - Objavovanie nových trhových segmentov
+- **Minimalizácia rizík** - Včasné odhalenie potenciálnych problémov
+
+**Dynamické trhové prostredie:**
+
+V súčasnosti sa trhové prostredie neustále mení:
+- Technologické inovácie
+- Zmeny v správaní spotrebiteľov
+- Globalizácia trhov
+- Nové konkurenčné hrozby
+- Regulačné zmeny
+
+**Strategický prístup:**
+
+Analýzy trhu umožňujú:
+- Prispôsobiť sa zmenám
+- Využiť nové príležitosti
+- Predbehnúť konkurenciu
+- Budovať udržateľné konkurenčné výhody`
+    },
+    {
+      title: "Téma 3: Metodický postup pri analýze trhu",
+      content: `**Analýzy trhu a metodický postup**
+
+Štruktúra trhu sa analyzuje pomocou zisťovania počtu ponúkajúcich podnikov na jednom trhu/odvetví.
+
+**Tri základné situácie:**
+
+1. **Monopol** - Jeden dodávateľ
+2. **Oligopol** - Niekoľko dodávateľov
+3. **Polypol** - Veľký počet ponúkajúcich podnikov
+
+**Analýza produktov:**
+
+Dôležité je analyzovať druh ponúkaných produktov:
+
+- **Homogénne produkty** - Podobné alebo rovnaké
+- **Heterogénne produkty** - Vzájomne sa odlišujú
+
+**Vytvorenie trhových štruktúr:**
+
+Kombináciou týchto znakov (počet dodávateľov a typ produktov) boli vytvorené rôzne štruktúry trhu, ktoré majú priamy vplyv na:
+- Stratégiu podniku
+- Cenovú politiku
+- Marketingové aktivity
+- Úspešnosť na trhu
+
+**Metodický postup:**
+
+1. Identifikácia typu trhu
+2. Analýza konkurencie
+3. Hodnotenie trhových síl
+4. Určenie optimálnej stratégie`
+    },
+    {
+      title: "Téma 4: Čistý monopol a jeho charakteristiky",
+      content: `**Čistý monopol**
+
+Ak len 1 podnik ponúka určitý produkt v jednej oblasti alebo krajine.
+
+**Charakteristika:**
+
+- Nezáleží či sú produkty homogénne alebo heterogénne
+- Nie je konkurencia
+- Úplná kontrola nad trhom
+
+**Vznik monopolu:**
+
+Môže byť výsledkom:
+- Regulačných opatrení štátu
+- Licencií
+- Patentov
+- Prirodzených bariér vstupu
+- Exkluzívneho prístupu k zdrojom
+
+**Správanie monopolu:**
+
+Ak nie je regulovaný, podnik sa snaží o:
+- **Maximalizáciu zisku**
+- **Vysoké ceny** - Môže si dovoliť nadštandardné ceny
+- **Slabá reklama** - Minimálne marketingové výdavky
+- **Minimálny rozsah služieb** - Zákazníci nemajú na výber
+
+**Dôsledky pre spotrebiteľov:**
+
+- Vyššie ceny
+- Menej inovácií
+- Nižšia kvalita služieb
+- Obmedzený výber
+- Menšia spokojnosť
+
+**Regulácia monopolov:**
+
+Štát často reguluje monopoly pomocou:
+- Cenových stropov
+- Kvalitatívnych štandardov
+- Antitrusových zákonov
+- Kontroly zneužívania dominantného postavenia`
+    },
+    {
+      title: "Téma 5: Oligopol a jeho formy",
+      content: `**Čistý oligopol**
+
+Tvoria niekoľké podniky, ktoré produkujú v podstate rovnaký tovar.
+
+**Charakteristiky čistého oligopolu:**
+
+- Výrobky sú väčšinou na rovnakej kvalitatívnej úrovni
+- Vysoká vzájomná závislosť medzi firmami
+- Ceny sú podobné
+
+**Konkurenčné výhody:**
+
+Konkurenčnú výhodu možno získať:
+- **Nižšími cenami** - Efektívnejšia výroba
+- **Lepšími službami** - Pridaná hodnota pre zákazníka
+- **Dokonalejšou výrobnou stratégiou** - Inovatívne procesy
+
+**Diferencovaný oligopol**
+
+Niekoľko podnikov, ktoré ponúkajú čiastočne odlišné výrobky.
+
+**Charakteristiky diferencovaného oligopolu:**
+
+- Produkty sa odlišujú
+- Značky majú význam
+- Lojalita k značke
+- Intenzívny marketing
+
+**Stratégie v oligopole:**
+
+1. **Cenová konkurencia**
+   - Cenové vojny
+   - Price matching
+
+2. **Necenová konkurencia**
+   - Kvalita produktu
+   - Inovácie
+   - Branding
+   - Zákaznícky servis
+
+3. **Kooperácia**
+   - Cenové dohody (často nelegálne)
+   - Kartely
+
+**Výhody pre spotrebiteľov:**
+
+- Viac možností výberu než pri monopole
+- Lepšie služby
+- Vyššia kvalita produktov`
+    },
+    {
+      title: "Téma 6: Monopolistická konkurencia",
+      content: `**Monopolistická konkurencia**
+
+Mnohí konkurenti, z ktorých každý je schopný odlíšiť svoju ponuku od ostatných úplne alebo čiastočne.
+
+**Hlavné charakteristiky:**
+
+- Veľký počet firiem
+- Nízke bariéry vstupu
+- Produktová diferenciácia
+- Nezávislé rozhodovanie
+
+**Diferenciácia produktov:**
+
+Firmy sa snažia odlíšiť pomocou:
+- **Kvality** - Vyššia úroveň spracovania
+- **Dizajnu** - Atraktívny vzhľad
+- **Značky** - Silná brand identity
+- **Služieb** - Pridaná hodnota
+- **Lokácie** - Strategické umiestnenie
+
+**Cenová politika:**
+
+Výrobky predávajú za vysoké ceny a dosahujú vysoký zisk vďaka:
+- Vnímanej hodnote
+- Lojalite zákazníkov
+- Jedinečnosti ponuky
+- Slabej substituovateľnosti
+
+**Marketingová stratégia:**
+
+Kľúčové nástroje:
+- Intenzívna reklama
+- Budovanie značky
+- Public relations
+- Sociálne médiá
+
+**Výhody pre firmy:**
+
+- Väčšia kontrola nad cenou
+- Možnosť zisku
+- Flexibilita v stratégii
+
+**Výhody pre spotrebiteľov:**
+
+- Široký výber
+- Rôzne ceny
+- Rôzne úrovne kvality
+- Inovácie`
+    },
+    {
+      title: "Téma 7: Dokonalá konkurencia a úspech na trhu",
+      content: `**Dokonalá konkurencia**
+
+Teoretická abstrakcia, reálne neexistuje.
+
+**Charakteristiky dokonalej konkurencie:**
+
+- Veľký počet malých firiem
+- Homogénne produkty
+- Žiadne bariéry vstupu/výstupu
+- Dokonalé informácie
+- Žiadna firma nemá vplyv na cenu
+
+**Prečo v realite neexistuje:**
+
+- Vždy existujú nejaké bariéry vstupu
+- Produkty sa vždy nejakým způsobem líšia
+- Informácie nie sú dokonalé
+- Existujú transakčné náklady
+
+**Význam pre podnikanie:**
+
+Úspech podniku je o to väčší, čím viac sa štruktúra podobá alebo približuje k monopolnému typu trhu.
+
+**Kľúčové zistenia:**
+
+- **Blízkosť k monopolu** = Vyššia pravdepodobnosť úspechu
+  - Väčšia kontrola nad trhom
+  - Vyššie marže
+  - Silnejšia pozícia voči zákazníkom
+
+- **Blízkosť k dokonalej konkurencii** = Menšia nádej na úspech
+  - Tlak na ceny
+  - Nízke marže
+  - Intenzívna konkurencia
+
+**Strategické implikácie:**
+
+Podniky by mali:
+- Vytvárať bariéry vstupu
+- Budovať silné značky
+- Diferencovať produkty
+- Získavať konkurenčné výhody
+- Segmentovať trh`
+    },
+    {
+      title: "Téma 8: Situačná analýza - štruktúra",
+      content: `**Situačná analýza**
+
+V rámci analýz trhu sa využíva aj situačná analýza. Tá obsahuje štyri hlavné zložky.
+
+**1. Popis súčasnej situácie podniku**
+
+Tvorí podklady pre plánovanie. Objektívne zhodnotenie súčasnej situácie podniku je vhodné dokumentovať:
+
+**Kvantitatívne ukazovatele:**
+- Štatistiky objemov predaja
+- Trhový podiel
+- Náklady a zisky
+- Hlavné ukazovatele výkonnosti konkurencie
+
+**Kvalitatívne hodnotenie:**
+- Hlavné hybné sily v marketingovom prostredí
+- Trendy v odvetví
+- Zmeny v spotrebiteľskom správaní
+- Technologické zmeny
+
+**Účel popisu:**
+
+- Vytvorenie základu pre plánovanie
+- Pochopenie súčasnej pozície
+- Identifikácia východiskovej situácie
+- Objektívne zhodnotenie stavu
+
+**Kľúčové oblasti:**
+
+- Finančná výkonnosť
+- Trhová pozícia
+- Operatívna efektívnosť
+- Spokojnosť zákazníkov
+- Kvalita produktov/služieb
+- Inovačná kapacita`
+    },
+    {
+      title: "Téma 9: SWOT analýza",
+      content: `**2. SWOT analýza**
+
+SWOT analýza sa skladá zo silných a slabých stránok a príležitostí a hrozieb.
+
+**Štruktúra SWOT:**
+
+**Interné faktory (SW):**
+- **S - Strengths (Silné stránky)** - Vnútorné pozitívne faktory
+- **W - Weaknesses (Slabé stránky)** - Vnútorné negatívne faktory
+
+**Externé faktory (OT):**
+- **O - Opportunities (Príležitosti)** - Vonkajšie pozitívne faktory
+- **T - Threats (Hrozby)** - Vonkajšie negatívne faktory
+
+**Zoznam SW opisuje:**
+- Vnútorné podnikové faktory
+- Čo firma robí dobre/zle
+- Kontrolovateľné prvky
+
+**Zoznam OT opisuje:**
+- Sily pôsobiace vo vonkajšom prostredí podniku
+- Trhové podmienky
+- Nekontrolovateľné faktory
+
+**Využitie SWOT analýzy:**
+
+**Externé vplyvy analyzované cez hľadanie príležitostí a hrozieb:**
+- Pomáhajú udávať strategické smerovanie
+- Identifikujú trhové trendy
+- Odhaľujú konkurenčné hrozby
+
+**Interné vplyvy skúmané prostredníctvom silných a slabých stránok:**
+- Z nich vychádza stratégia
+- Definujú sa vízia, misia, poslanie
+- Stanovujú sa ciele
+
+**Strategické využitie:**
+
+Zhodnotením týchto vplyvov sa identifikujú:
+- Ďalšie možnosti zlepšenia súčasnej situácie
+- Možnosti dosiahnutia želateľných cieľov
+- Konkurenčné výhody
+
+**Obmedzenia:**
+
+Keďže SWOT analýza predstavuje mierne subjektívnu formu rozhodovania, zvyknú sa pri nej používať aj dodatočné metódy.`
+    },
+    {
+      title: "Téma 10: Hlavné problémy a predpoklady do budúcnosti",
+      content: `**3. Hlavné problémy, ktorým podnik čelí**
+
+Táto časť analýzy zhŕňa hlavné problémy podniku.
+
+**Typické problémy:**
+
+- **Zánik konkurenčnej výhody**
+  - Kopírovanie produktov konkurenciou
+  - Technologické zastarávanie
+  - Zmeny preferencií zákazníkov
+
+- **Vysoká úroveň fluktuácie zamestnancov**
+  - Strata know-how
+  - Zvýšené náklady na nábor
+  - Znížená produktivita
+
+- **Nižšie náklady konkurenta**
+  - Cenový tlak
+  - Strata trhového podielu
+  - Znížené marže
+
+- **Nízka lojalita zákazníkov**
+  - Vysoké náklady na akvizíciu
+  - Nestabilné príjmy
+
+- **Nedostatočná inovácia**
+  - Zaostávanie za konkurenciou
+  - Stagnácia
+
+**Identifikácia problémov:**
+
+- Analýza dát
+- Feedback od zákazníkov
+- Porovnanie s konkurenciou
+- Finančná analýza
+- Operatívne metriky
+
+**4. Hlavné predpoklady do budúcnosti**
+
+Vychádzajú z celej analýzy a na nich je založený podnikový plán.
+
+**Typy predpokladov:**
+
+**Trhové predpoklady:**
+- Vývoj veľkosti trhu
+- Zmeny v segmentoch
+- Správanie zákazníkov
+
+**Konkurenčné predpoklady:**
+- Reakcie konkurencie
+- Vstup nových hráčov
+- Technologické zmeny
+
+**Interné predpoklady:**
+- Kapacity podniku
+- Dostupnosť zdrojov
+- Organizačné schopnosti
+
+**Význam predpokladov:**
+
+- Základom pre plánovanie
+- Scenárové modelovanie
+- Riadenie rizík
+- Strategické rozhodovanie
+
+**Zhrnutie:**
+
+Celá situačná analýza vrátane SWOT, identifikácie problémov a stanovenia predpokladov tvorí komplexný základ pre strategické plánovanie a rozhodovanie podniku.`
+    }
+  ],
   "Business plán": [
     {
       title: "Téma 1: Úvod do Business plánu",
