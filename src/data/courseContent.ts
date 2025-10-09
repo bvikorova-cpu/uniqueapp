@@ -274,406 +274,472 @@ Odporúčame pokračovať v štúdiu špecializovaných oblastí účtovníctva 
   
   "Marketing a reklama": [
     {
-      title: "Téma 1: Úvod do marketingu",
+      title: "Téma 1: Moderná definícia marketingu",
       content: `**Čo je marketing?**
 
-Marketing je proces plánovania a realizácie koncepcie, oceňovania, propagácie a distribúcie produktov, služieb a myšlienok s cieľom vytvoriť výmenu, ktorá uspokojuje ciele jednotlivcov a organizácií.
+Marketing je dynamický a strategický proces, ktorý integruje multidisciplinárne prístupy a metódy s cieľom efektívne osloviť a uspokojiť zákazníkov, pričom je neoddeliteľnou súčasťou celkovej podnikovej stratégie.
 
-**Základné prvky marketingu (4P):**
-- **Product** (Produkt) - čo ponúkate
-- **Price** (Cena) - za koľko to ponúkate
-- **Place** (Miesto) - kde to ponúkate
-- **Promotion** (Propagácia) - ako to propagujete
+**Hlavné komponenty:**
 
-**Marketing mix v roku 2025:**
-Moderný marketing zahŕňa aj ďalšie P:
-- People (Ľudia)
-- Process (Proces)
-- Physical Evidence (Fyzický dôkaz)
+Tento proces kombinuje:
+- Vedecké poznatky
+- Analýzu veľkých dát
+- Kreatívne myslenie
+- Technologické inovácie
 
-**Typy marketingu:**
-- B2C (Business to Consumer)
-- B2B (Business to Business)
-- C2C (Consumer to Consumer)
-- D2C (Direct to Consumer)`
+**Ciele marketingu:**
+
+Marketing sa zameriava na:
+- Dosiahnutie konkrétnych cieľov a KPI
+- Skracovanie konverznej cesty zákazníka
+- Budovanie osobnejších vzťahov s využitím emocionálnej inteligencie
+- Vytváranie komunít okolo značky
+
+**Marketing v digitálnej ére:**
+
+V kontexte digitalizácie je marketing kľúčovým prvkom digitálnej transformácie podnikov. Dáta sú cenným aktívom, ktoré umožňuje:
+- Personalizáciu ponúk
+- Optimalizáciu marketingových aktivít
+- Presné cielenie zákazníkov
+
+**Udržateľnosť a etika:**
+
+Moderný marketing kladie dôraz na:
+- Ciele udržateľného rozvoja
+- Spoločenskú zodpovednosť
+- Etické konanie
+- Budovanie dôvery zákazníkov`
     },
     {
-      title: "Téma 2: Digitálny marketing",
-      content: `**Formy digitálneho marketingu:**
+      title: "Téma 2: Význam strategického marketingu pre podnikanie",
+      content: `**Prečo je strategický marketing nevyhnutný?**
 
-**1. SEO (Search Engine Optimization)**
-Optimalizácia webových stránok pre vyhľadávače ako Google.
+Strategický prístup k marketingu je nevyhnutný pre úspech každého podniku, pretože ide o komplexné a dlhodobé plánovanie, ktoré presahuje jednoduché využívanie reklamy.
 
-**Kľúčové faktory:**
-- Kľúčové slová
-- Kvalitný obsah
-- Technická optimalizácia
-- Backlinky
+**Marketing vs. Reklama:**
 
-**2. PPC (Pay-Per-Click)**
-Platená reklama na vyhľadávačoch a sociálnych sieťach.
+**Strategický marketing:**
+- Celková vízia a smerovanie firmy
+- Dlhodobé plánovanie
+- Koordinované aktivity
+- Integrácia všetkých obchodných cieľov
 
-**Platformy:**
-- Google Ads
-- Facebook Ads
-- Instagram Ads
-- LinkedIn Ads
+**Reklama:**
+- Len jedna z mnohých taktík
+- Krátkodobé ciele
+- Čiastková aktivita
 
-**3. Email marketing**
-Komunikácia so zákazníkmi cez email.
+**Výhody strategického marketingu:**
 
-**Typy emailov:**
-- Newsletter
-- Propagačné emaily
-- Transakčné emaily
-- Automatizované sekvencie
+**1. Budovanie silných značiek**
+- Konzistentné správy
+- Dlhodobé vzťahy so zákazníkmi
+- Prepracované marketingové plány
+- Integrácia od produktu po komunikáciu
 
-**4. Obsahový marketing (Content Marketing)**
-Tvorba a distribúcia hodnotného obsahu pre cieľové publikum.
+**2. Flexibilita a inovácie**
+- Rýchla reakcia na zmeny na trhu
+- Využitie nových príležitostí
+- Dôkladná analýza dát
+- Pochopenie trhových trendov
 
-**Formy obsahu:**
-- Blog články
-- Videá
-- Infografiky
-- Podcasty
-- E-knihy`
+**3. Optimalizácia zdrojov**
+- Efektívne využívanie rozpočtu
+- Investície do aktivít s najväčším dopadom
+- Vyššia návratnosť investícií
+- Lepší finančný výkon
+
+**4. Jednotná vízia**
+- Jasná komunikácia naprieč organizáciou
+- Vyššia angažovanosť zamestnancov
+- Produktivita
+- Lojalita zákazníkov`
     },
     {
-      title: "Téma 3: Sociálne médiá",
-      content: `**Social Media Marketing v roku 2025**
+      title: "Téma 3: Strategický a taktický marketing",
+      content: `**1. Strategický marketing**
 
-**Hlavné platformy:**
+**a) Marketingový výskum a analýza**
 
-**1. Facebook**
-- Najväčšia sociálna sieť
-- Vhodná pre B2C aj B2B
-- Facebook Ads s pokročilým targetingom
+Kľúčové aktivity:
+- Analýza trhu a konkurencie
+- Segmentácia trhu
+- Identifikácia cieľových trhov
+- Zber a analýza dát
 
-**2. Instagram**
-- Vizuálna platforma
-- Stories, Reels, Shopping
-- Ideálna pre mladšie publikum
+**b) Marketingová stratégia**
 
-**3. TikTok**
-- Krátke videá
-- Virálny potenciál
-- Gen Z a mladší mileniáli
+Zahŕňa:
+- Definovanie marketingových cieľov
+- Nastavenie kľúčových ukazovateľov výkonnosti (KPI)
+- Dlhodobé plánovanie
+- Integrácia marketingovej stratégie s celkovou podnikateľskou stratégiou
 
-**4. LinkedIn**
-- Profesionálna sieť
-- B2B marketing
-- Thought leadership
+**2. Taktický marketing**
 
-**5. YouTube**
-- Videá všetkých dĺžok
-- SEO pre videá
-- Monetizácia obsahu
+**a) Produktový marketing**
 
-**Stratégie:**
-- Pravidelné publikovanie
-- Engagement s komunitou
-- Influencer marketing
-- User-generated content
-- Platená reklama`
+Oblasti:
+- Vývoj a riadenie produktového portfólia
+- Positioning produktov
+- Životný cyklus produktu
+- Správa produktových línií
+
+**b) Cenová politika**
+
+Stratégie:
+- Cenotvorba
+- Stratégie stanovenia cien
+- Propagačné a zľavové stratégie
+- Cenová diskriminácia
+
+**Prepojenie stratégie a taktiky:**
+
+Strategický marketing poskytuje smer a dlhodobú víziu, zatiaľ čo taktický marketing sa sústreďuje na konkrétne kroky a operatívne rozhodnutia potrebné na realizáciu tejto vízie.`
     },
     {
-      title: "Téma 4: Obsahový marketing",
-      content: `**Tvorba obsahu**
+      title: "Téma 4: Digitálny a komunikačný marketing",
+      content: `**3. Digitálny marketing**
 
-**Typy obsahu:**
+**a) Online marketing**
 
-**1. Blog**
-- SEO optimalizované články
-- Vzdelávacie príspevky
-- Prípadové štúdie
-- How-to návody
+Hlavné nástroje:
+- **SEO a SEM** - optimalizácia pre vyhľadávače a marketing vo vyhľadávačoch
+- **Sociálne médiá** - interakcia a influencer marketing
+- **Email marketing** - priama komunikácia so zákazníkmi
+- **Obsahový marketing** - tvorba hodnotného obsahu
 
-**2. Video obsah**
-- YouTube videá
-- TikTok/Reels
-- Webináre
-- Live streamy
+**b) Dátovo orientovaný marketing**
 
-**3. Vizuálny obsah**
-- Infografiky
-- Obrázky pre sociálne siete
-- GIF-y a memes
-- Grafický design
-
-**4. Audio obsah**
-- Podcasty
-- Audio knihy
-- Audionahrávky
-
-**Content kalendár:**
-Plánovanie obsahu na týždne a mesiace dopredu.
-
-**Metriky úspešnosti:**
-- Počet zobrazení
-- Engagement rate
-- Čas strávený na stránke
-- Konverzný pomer
-- Zdieľania`
-    },
-    {
-      title: "Téma 5: Email marketing",
-      content: `**Budovanie email listu**
-
-**Metódy získavania emailov:**
-- Lead magnety (e-knihy, checklisty)
-- Webináre
-- Súťaže
-- Popup formuláre
-- Landing pages
-
-**Segmentácia**
-
-Rozdelenie zoznamu podľa:
-- Demografických údajov
-- Správania
-- Fázy v nákupnom cykle
-- Záujmov
-
-**Typy emailových kampaní:**
-
-**1. Welcome séria**
-Automatická séria emailov pre nových odoberateľov.
-
-**2. Newsletter**
-Pravidelné aktuality a obsah.
-
-**3. Propagačné emaily**
-Ponuky, zľavy, nové produkty.
-
-**4. Abandonovaný košík**
-Pripomienky pre zákazníkov, ktorí neukončili nákup.
-
-**5. Re-engagement**
-Aktivácia neaktívnych odoberateľov.
-
-**Metriky:**
-- Open rate (miera otvorení)
-- Click-through rate (CTR)
-- Conversion rate
-- Unsubscribe rate`
-    },
-    {
-      title: "Téma 6: Google Ads a PPC",
-      content: `**Google Ads v roku 2025**
-
-**Typy kampaní:**
-
-**1. Search Ads**
-Textové reklamy vo vyhľadávaní Google.
-
-**2. Display Ads**
-Bannerové reklamy na milónoch webov.
-
-**3. Shopping Ads**
-Produktové reklamy s obrázkami a cenami.
-
-**4. Video Ads**
-Reklamy na YouTube.
-
-**5. Performance Max**
-AI-driven kampane naprieč všetkými platformami Google.
-
-**Kľúčové slová:**
-- Broad match (široká zhoda)
-- Phrase match (fráza)
-- Exact match (presná zhoda)
-- Negative keywords (negatívne kľúčové slová)
-
-**Quality Score:**
-Skóre kvality ovplyvňujúce cenu a pozíciu reklamy.
-
-**Faktory:**
-- Relevancia reklamy
-- Očakávaný CTR
-- Kvalita landing page
-
-**Náklady:**
-CPC (Cost Per Click), CPA (Cost Per Acquisition), ROAS (Return on Ad Spend)`
-    },
-    {
-      title: "Téma 7: Influencer marketing",
-      content: `**Typy influencerov:**
-
-**1. Mega influenceri**
-- Nad 1 milión followerov
-- Vysoké náklady
-- Široký dosah
-
-**2. Macro influenceri**
-- 100 000 - 1 milión followerov
-- Stredné náklady
-- Dobrý dosah a engagement
-
-**3. Micro influenceri**
-- 10 000 - 100 000 followerov
-- Nižšie náklady
-- Vysoký engagement
-- Niche publikum
-
-**4. Nano influenceri**
-- Pod 10 000 followerov
-- Minimálne náklady
-- Veľmi vysoký engagement
-- Lokálny dosah
-
-**Spolupráca s influencermi:**
-
-**Formy:**
-- Sponzorované príspevky
-- Affiliate marketing
-- Darčeky produktov
-- Ambasadorship
-- Spoluautorstvo obsahu
-
-**Výber influencera:**
-- Relevancia k značke
-- Engagement rate
-- Autenticita
-- Demografia publika
-- História spolupráce`
-    },
-    {
-      title: "Téma 8: Analytika a meranie",
-      content: `**Kľúčové metriky (KPIs):**
-
-**Web analytika:**
-- Návštevnosť (Traffic)
-- Bounce rate (miera opustenia)
-- Conversion rate
-- Priemerný čas na stránke
-- Pages per session
-
-**Social media metriky:**
-- Reach (dosah)
-- Impressions (zobrazenia)
-- Engagement rate
-- Follower growth
-- Click-through rate
-
-**Email metriky:**
-- Open rate
-- Click rate
-- Conversion rate
-- Unsubscribe rate
-
-**ROI (Return on Investment)**
-
-Výpočet: (Zisk - Náklady) / Náklady × 100%
-
-**Nástroje:**
-
-**1. Google Analytics 4**
-Komplexná web analytika.
-
-**2. Google Search Console**
-SEO data z Google vyhľadávania.
-
-**3. Facebook/Instagram Insights**
-Štatistiky sociálnych sietí.
-
-**4. Hotjar**
-Heatmapy a nahrávky návštevníkov.
-
-**5. SEMrush/Ahrefs**
-SEO a konkurenčná analýza.`
-    },
-    {
-      title: "Téma 9: Marketingová stratégia",
-      content: `**Tvorba marketingovej stratégie:**
-
-**1. Analýza situácie**
-
-**SWOT analýza:**
-- Strengths (silné stránky)
-- Weaknesses (slabé stránky)
-- Opportunities (príležitosti)
-- Threats (hrozby)
-
-**2. Stanovenie cieľov**
-
-**SMART ciele:**
-- Specific (špecifické)
-- Measurable (merateľné)
-- Achievable (dosiahnuteľné)
-- Relevant (relevantné)
-- Time-bound (časovo ohraničené)
-
-**3. Identifikácia cieľového publika**
-
-**Buyer persona:**
-- Demografia
-- Psychografia
-- Správanie
-- Potreby a bolesti
-- Nákupný proces
-
-**4. Positioning**
-
-Ako chcete, aby vás vnímalo vaše publikum?
-
-**5. Marketingový mix**
-
-Kombinácia kanálov a taktík:
-- Organické social media
-- Platená reklama
-- Email marketing
-- Content marketing
-- SEO
-
-**6. Budget**
-
-Rozdelenie rozpočtu podľa kanálov a cieľov.`
-    },
-    {
-      title: "Téma 10: Trendy a budúcnosť marketingu",
-      content: `**Marketingové trendy v roku 2025:**
-
-**1. AI a automatizácia**
-- AI copywriting
-- Chatboty
+Moderné metódy:
+- Analýza veľkých dát (big data)
+- Marketingová automatizácia
+- Personalizácia kampaní
 - Prediktívna analytika
-- Personalizácia v reálnom čase
 
-**2. Video dominancia**
-- Short-form video (TikTok, Reels)
-- Live streaming
-- Interaktívne videá
-- Shoppable videos
+**4. Komunikačný marketing**
 
-**3. Voice search**
-- Optimalizácia pre hlasové vyhľadávanie
-- Smart speakers
-- Konverzačný marketing
+**a) Branding a budovanie značky**
 
-**4. Privacy-first marketing**
-- Cookieless budúcnosť
-- First-party data
-- Transparentnosť
+Kľúčové prvky:
+- Vytváranie a správa značky
+- Vizuálna identita a komunikácia značky
+- Storytelling a vytváranie príbehov značky
+- Emočné prepojenie so zákazníkmi
 
-**5. Udržateľnosť**
-- Green marketing
-- Sociálna zodpovednosť
-- Autentickosť
+**b) Public Relations a komunikácia**
 
-**6. AR/VR**
-- Virtual try-ons
-- Immersive experiences
-- Metaverse marketing
+Oblasti:
+- Media relations
+- Interná komunikácia
+- Krízová komunikácia
+- Správa reputácie
 
-**Budúce zručnosti:**
-- Data literacy
-- AI tools
-- Video production
-- Community building
-- Storytelling
+**Synergický efekt:**
 
-**Záver:**
-Marketing sa neustále vyvíja. Kľúčom k úspechu je neustále vzdelávanie, testovanie nových prístupov a prispôsobovanie sa zmenám v správaní spotrebiteľov a technológiách.`
+Digitálny marketing a komunikačný marketing sa dopĺňajú a vytvárajú komplexný systém, ktorý oslovuje zákazníkov na viacerých úrovniach.`
+    },
+    {
+      title: "Téma 5: Udržateľný, etický a inovačný marketing",
+      content: `**5. Udržateľný a etický marketing**
+
+**a) Udržateľnosť a spoločenská zodpovednosť**
+
+Moderné prístupy:
+- **Zelený marketing** (green marketing)
+- Spoločensky zodpovedné kampane
+- Implementácia cieľov udržateľného rozvoja (SDGs)
+- Environmentálne friendly produkty
+
+**b) Etické konanie**
+
+Základné princípy:
+- Transparentnosť a integrita
+- Ochrana súkromia a dát zákazníkov
+- Etické reklamné praktiky
+- Férové obchodné praktiky
+
+**6. Inovačný a agilný marketing**
+
+**a) Inovačné techniky**
+
+Metódy:
+- Experimentovanie a A/B testovanie
+- Vývoj nových marketingových kanálov a technológií
+- Agilné metódy a rýchle prispôsobenie sa trhu
+- Kontinuálne zlepšovanie
+
+**b) Kreatívne kampane**
+
+Prístupy:
+- Multisenzorické marketingové zážitky
+- Interaktívny dizajn
+- Kreatívne a vizuálne stratégie
+- Nekonvenčné riešenia
+
+**Význam v modernom svete:**
+
+Udržateľnosť a inovácie sú kľúčové pre budovanie dôvery zákazníkov a dlhodobý úspech v konkurenčnom prostredí.`
+    },
+    {
+      title: "Téma 6: Emocionálny, komunitný a výkonnostný marketing",
+      content: `**7. Emocionálny a komunitný marketing**
+
+**a) Emocionálna inteligencia**
+
+Využitie:
+- Pochopenie a využitie emócií zákazníkov
+- Budovanie osobných vzťahov
+- Emocionálne ladené kampane
+- Empatický prístup
+
+**b) Tvorba komunít**
+
+Aktivity:
+- Vytváranie a správa online a offline komunít
+- Engagement a interakcia so zákazníkmi
+- Podpora zdieľania zážitkov a referencií
+- Community management
+
+**8. Výkonnostný marketing**
+
+**a) Mediálne plánovanie a nákup**
+
+Procesy:
+- Výber a nákup médií
+- Optimalizácia mediálnych kampaní
+- Meranie návratnosti investícií (ROI)
+- Media mix modeling
+
+**b) Predajná podpora a promo akcie**
+
+Nástroje:
+- Event marketing
+- Vzorky a ukážky produktov
+- Promočné aktivity a programy vernosti
+- Trade marketing
+
+**Komplexný prístup:**
+
+Kombinácia emocionálneho prepojenia s komunitou a výkonnostného merania vytvára silný základ pre úspešný marketing.`
+    },
+    {
+      title: "Téma 7: Reklama - definícia a ciele",
+      content: `**Definícia reklamy**
+
+Reklama (z lat. clamare = "kričať", "volať") je propagácia (publikovanie, podpora, komunikácia) produktu, informácií alebo názorov o výrobku alebo službe, prípadne organizácii, so zameraním na potenciálny trh.
+
+**Charakteristika:**
+
+Reklama je každá platená forma neosobnej prezentácie a propagácie myšlienok tovaru alebo služieb konkrétnym investorom.
+
+**Použité prostriedky:**
+
+Reklama môže mať viacero foriem:
+- Reklama v médiách
+- Priama reklama
+- Internetová reklama
+
+**Pozícia v marketingovom mixe:**
+
+Reklama patrí medzi najdôležitejšie časti komunikačného mixu.
+
+**Cieľová skupina**
+
+Cieľová skupina je množina príjemcov, ktorých má reklamná kampaň osloviť.
+
+**Môže ísť o:**
+- Súčasných užívateľov výrobku, služby alebo značky
+- Potenciálnych užívateľov
+- Jednotlivcov alebo skupiny, ktorí sa rozhodujú o nákupe
+
+**Charakteristika cieľovej skupiny:**
+
+Je základným predpokladom pre ďalší postup stratégie, tj. pre stanovenie:
+- Čo sa bude zdieľať
+- Akým spôsobom
+- Kedy
+- Kde
+
+**Ciele reklamy podľa účelu:**
+
+Reklama môže mať za cieľ:
+- **Informovať** - predstaviť nový produkt alebo službu
+- **Presviedčať** - presvedčiť o výhodách produktu
+- **Pripomínať** - udržať značku v povedomí
+- **Porovnávať** - ukázať výhody oproti konkurencii`
+    },
+    {
+      title: "Téma 8: ATL a BTL reklama",
+      content: `**ATL reklama (Above The Line)**
+
+Nadlinková reklama, mediálna reklama
+
+**Typy ATL reklamy:**
+
+**1. Televízna reklama**
+- Masové pokrytie
+- Kombinácia sluchových a vizuálnych prostriedkov
+- Vysoké náklady
+
+**2. Tlačová reklama**
+- Inzeráty v novinách a časopisoch
+- Akčné letáky
+- Katalógy
+
+**3. Rozhlasové spoty**
+- Zvuková reklama
+- Nižšie náklady
+- Špecifická cieľová skupina
+
+**4. Spoty v kinách**
+- Captive audience
+- Veľká obrazovka
+- Silný dojem
+
+**5. Internetová reklama**
+- Display ads
+- Video reklamy
+- Native advertising
+
+**6. OOH reklama (Out Of Home)**
+- Plagáty a billboardy
+- Reklama na dopravných prostriedkoch
+- Atypické reklamné plochy
+
+**BTL reklama (Below The Line)**
+
+Podlinková reklama, nemediálna reklama
+
+**Typy BTL reklamy:**
+
+**1. Spotrebiteľské súťaže**
+- Engagement zákazníkov
+- Interaktívne kampane
+- Budovanie databázy
+
+**2. Direct mail**
+- Personalizovaná komunikácia
+- Priama odpoveď
+- Merateľné výsledky
+
+**3. Telemarketing**
+- Osobný kontakt
+- Okamžitá spätná väzba
+- Call centra
+
+**4. Propagačné predmety**
+- Firemné darčeky
+- Merchandise
+- Dlhodobá viditeľnosť
+
+**5. Product placement**
+- Integrácia do obsahu
+- Subtílna reklama
+- Asociácia s kontextom
+
+**Marketingová kampaň:**
+
+Ak daný obchodník využíva niekoľko komunikačných kanálov zároveň, hovoríme o marketingovej kampani.`
+    },
+    {
+      title: "Téma 9: Tlačové a zvukové médiá",
+      content: `**Noviny**
+
+**Výhody:**
+- ✅ Možnosť zaujať širokú vrstvu populácie
+- ✅ Pomerne nižšie finančné náklady
+- ✅ Možnosť presného zamerania na cieľové skupiny
+- ✅ Reklama v novinách patrí na prvé miesto v rebríčkoch dôveryhodnosti reklám
+- ✅ Čitateľ si môže reklamu prečítať opakovane
+
+**Nevýhody:**
+- ❌ Krátka životnosť
+- ❌ Nižšia kvalita tlače
+- ❌ Preplnené reklamné plochy
+
+**Časopisy**
+
+**Výhody:**
+- ✅ Dlhšia životnosť ako pri novinách
+- ✅ Väčšia kreativita inzercie ako pri novinách
+- ✅ Smerované na cieľovú skupinu
+- ✅ Vyššia kvalita tlače
+- ✅ Lepšie možnosti pre vizuálnu prezentáciu
+
+**Nevýhody:**
+- ❌ Dlhšie redakčné uzávierky
+- ❌ Vyššie náklady ako noviny
+
+**Rozhlas**
+
+**Výhody:**
+- ✅ Jedna z najlacnejších reklám
+- ✅ Zameranie priamo na cieľovú skupinu
+- ✅ Špecifický okruh poslucháčov (vek, región, životný štýl)
+- ✅ Flexibilita a rýchla produkcia
+- ✅ Možnosť lokálneho zamerania
+
+**Nevýhody:**
+- ❌ Prenos len pomocou zvuku – poslucháč nemá možnosť produkt vidieť
+- ❌ Kulisovosť rozhlasu – poslucháč nepočúva naplno
+- ❌ Obmedzená životnosť – poslucháč nemá možnosť sa k reklame vrátiť
+- ❌ Nemožnosť vizuálnej prezentácie`
+    },
+    {
+      title: "Téma 10: Televízia, internet a vonkajšia reklama",
+      content: `**Televízia**
+
+**Výhody:**
+- ✅ Masové pokrytie
+- ✅ Kombinácia sluchových a vizuálnych prostriedkov
+- ✅ Pôsobenie na psychiku televízneho diváka
+- ✅ Kreatívne možnosti televízie
+- ✅ Demonštrácia produktu v akcii
+- ✅ Silný emocionálny dopad
+
+**Nevýhody:**
+- ❌ Vysoké náklady na tvorbu reklamy a jej vysielanie
+- ❌ Krátky čas na oslovenie – reklamný spot trvá približne 30 sekúnd
+- ❌ Prepínanie počas reklám na iný program
+- ❌ Vysoká konkurencia
+
+**Internet**
+
+**Výhody:**
+- ✅ Presné zasiahnutie cieľovej skupiny na špecializovaných webových stránkach
+- ✅ Spätná väzba s návštevníkom stránky
+- ✅ Zákazník si ihneď môže zakúpiť ponúkaný produkt alebo službu
+- ✅ Merateľnosť výsledkov
+- ✅ Možnosť personalizácie
+- ✅ Interaktivita
+
+**Nevýhody:**
+- ❌ Menej vhodná k osloveniu určitých skupín spotrebiteľov (napr. seniorov, soc. slabých)
+- ❌ Nie je možné hovoriť o štandardnej cene, tá sa môže naprieč stránkami veľmi odlišovať
+- ❌ Rozporuplný pohľad na efektivitu – reklamy sú často blokované
+- ❌ Potreba technických znalostí
+
+**Vonkajšia reklama**
+
+Medzi tento typ patria billboardy, pútače, firemné štíty, plagáty atď.
+
+**Výhody:**
+- ✅ Možnosť vystavenia na verejnom priestranstve
+- ✅ Môže osloviť takmer kohokoľvek
+- ✅ 24/7 viditeľnosť
+- ✅ Vysoká frekvenencia kontaktu
+- ✅ Relatívne nízke náklady na kontakt
+
+**Nevýhody:**
+- ❌ Pohľadové médium – krátky čas na preštudovanie celého oznámenia (približne 2–3 sekundy)
+- ❌ Obmedzenie pre vonkajšiu reklamu je tiež dlhý čas na zadanie a umiestenie
+- ❌ Typická doba vystavenia billboardu sú dva až tri mesiace
+- ❌ Nemožnosť detailnej komunikácie
+
+**Zhrnutie:**
+
+Každé médium má svoje špecifiká, výhody a nevýhody. Úspešná marketingová kampaň často kombinuje viacero médií pre maximálny dosah a efektivitu.`
     }
   ],
   
