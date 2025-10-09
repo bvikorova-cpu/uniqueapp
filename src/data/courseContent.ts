@@ -1951,6 +1951,760 @@ Lakovanie je voliteľný, ale populárny záverečný krok pedikúry.
 Gratulujeme! Dokončili ste kurz Pedikúra a ste pripravení starať sa o svoje nohy profesionálne!`
     }
   ],
+
+  "Styling a móda": [
+    {
+      title: "Téma 1: Úvod do stylingu a módy",
+      content: `**Čo je styling?**
+
+Styling je umenie vybrať a skombinovať oblečenie, doplnky a obuv tak, aby ste vyzerali dobre, cítili sa sebavedomí a vyjadrili svoju osobnosť.
+
+**Prečo je styling dôležitý?**
+
+- Prvý dojem záleží
+- Sebavedomie a sebavyjadrenie
+- Profesionálny vzhľad v práci
+- Vhodné oblečenie pre každú príležitosť
+- Efektívne využitie šatníka
+
+**Základné piliere dobrého stylingu:**
+
+**1. Farebná typológia:**
+- Poznanie svojho farebného typu
+- Výber farieb, ktoré vám pristanú
+- Kombinovanie farieb
+
+**2. Typ postavy:**
+- Poznanie svojej postavy
+- Výber strihu a vzhľadu
+- Zvýraznenie predností, zakrytie nedostatkov
+
+**3. Štýl osobnosti:**
+- Klasický
+- Romantický
+- Dramatický
+- Prírodný
+- Kreatívny
+
+**4. Príležitosť:**
+- Casual (voľný čas)
+- Business (práca)
+- Formálny (slávnosti)
+- Športový
+
+**Čo sa naučíte v tomto kurze:**
+
+- Určiť svoj farebný typ
+- Vybrať oblečenie podľa postavy
+- Skombinovať farby a vzory
+- Vytvoriť kapsulový šatník
+- Vybrať správne doplnky
+- Obliekať sa pre rôzne príležitosti`
+    },
+    {
+      title: "Téma 2: Farebná typológia - základy",
+      content: `**Čo je farebná typológia?**
+
+Farebná typológia je systém, ktorý určuje, ktoré farby vám pristanú na základe prirodzenej farby vašej pokožky, vlasov a očí.
+
+**Prečo je farebná typológia dôležitá?**
+
+- Správne farby vás rozjasnia
+- Vyzeráte zdravo a vitálne
+- Nesprávne farby vás unavujú
+- Zvýrazňujú kruhy pod očami a nedokonalosti
+
+**Základné delenie - 4 ročné obdobia:**
+
+**1. Jarný typ (Spring)**
+- Teplý podtón pokožky
+- Svetlé, zlatisté vlasy
+- Svetlé, teplé oči (modrá, zelená, svetlohnedá)
+
+**2. Letný typ (Summer)**
+- Chladný podtón pokožky
+- Popolavé, tmavšie vlasy
+- Chladné oči (modrá, šedá, fialová)
+
+**3. Jesenný typ (Autumn)**
+- Teplý podtón pokožky
+- Teplé, tmavé vlasy (ryšavé, gaštanové)
+- Teplé oči (hnedá, zelená, oranžová)
+
+**4. Zimný typ (Winter)**
+- Chladný podtón pokožky
+- Tmavé alebo čierne vlasy
+- Výrazné oči (tmavohnedá, modrá, čierna)
+
+**Ako určiť svoj podtón?**
+
+**Test žíl na zápästí:**
+- Zelené žily = teplý podtón
+- Modré/fialové žily = chladný podtón
+- Oboje = neutrálny podtón
+
+**Test bieleho a béžového:**
+- Biele vám pristane = chladný podtón
+- Béžové vám pristane = teplý podtón
+
+**Test zlatých a strieborných šperkov:**
+- Zlaté vám pristanú = teplý podtón
+- Strieborné vám pristanú = chladný podtón`
+    },
+    {
+      title: "Téma 3: Farby pre jednotlivé typy",
+      content: `**Jarný typ - vaše farby:**
+
+**Najlepšie farby:**
+- Teplé, svetlé odtiene
+- Broskyňová, marhuľová
+- Svetlá tyrkysová, akvamarínová
+- Zlatožltá, kukuričná
+- Lososová, korálová
+- Svetlá zelená, limetková
+
+**Vyhnite sa:**
+- Čiernej (nahraďte hnedou)
+- Studeným fialovým
+- Tmavým, studeným odtieňom
+
+**Letný typ - vaše farby:**
+
+**Najlepšie farby:**
+- Chladné, jemné odtiene
+- Levanduľová, fialková
+- Ružová, malinová
+- Modrá, modrosivá
+- Šedá, strieborná
+- Biela, ledová modrá
+
+**Vyhnite sa:**
+- Teplým oranžovým
+- Teplým hnedým
+- Jasným, výrazným farbám
+
+**Jesenný typ - vaše farby:**
+
+**Najlepšie farby:**
+- Teplé, zemité tóny
+- Tehlová, hrdzavá
+- Olivová, khaki
+- Horčicová, zlatohnedá
+- Terakotová, terakota
+- Teplá hnedá, karamelová
+
+**Vyhnite sa:**
+- Ružovým
+- Studeným modrým
+- Čiernej (nahraďte teplou hnedou)
+
+**Zimný typ - vaše farby:**
+
+**Najlepšie farby:**
+- Výrazné, studené farby
+- Čierna, biela
+- Kráľovská modrá
+- Purpurová, fuchsia
+- Smaragdová zelená
+- Studená červená, bordová
+
+**Vyhnite sa:**
+- Teplým oranžovým
+- Béžovým, zemitým tónom
+- Pastelom
+
+**Neutrálne farby pre všetkých:**
+
+- Námorná modrá
+- Tmavosivá
+- Hnedosivá
+- Prírodná biela (nie jasná biela)`
+    },
+    {
+      title: "Téma 4: Typy postáv - rozpoznanie",
+      content: `**Prečo je dôležité poznať typ postavy?**
+
+Každá postava má iné proporcie. Správny strih oblečenia zvýrazní prednosti a opticky vyváži nedostatky.
+
+**5 základných typov postáv:**
+
+**1. Presýpacie hodiny (Hourglass)**
+
+**Charakteristika:**
+- Rovnako široké ramená a boky
+- Výrazný pás
+- Ženská, zakrivená silueta
+
+**Merania:**
+- Pomer ramená:pás:boky = 1:0,7:1
+- Príklad: 90-65-90
+
+**2. Hrušková postava (Pear)**
+
+**Charakteristika:**
+- Užšie ramená
+- Širšie boky a stehná
+- Menšie prsia
+- Výrazný pás
+
+**Merania:**
+- Boky o 5% a viac širšie ako ramená
+
+**3. Jablková postava (Apple)**
+
+**Charakteristika:**
+- Širšie ramená a hrudník
+- Plnohodnotnejší stred tela
+- Užšie boky
+- Tenké nohy
+- Menej výrazný pás
+
+**4. Obdĺžniková postava (Rectangle)**
+
+**Charakteristika:**
+- Rovnaké šírka ramien, pásu a bokov
+- Málo výrazný pás
+- Priama silueta
+- Športový vzhľad
+
+**5. Prevrátený trojuholník (Inverted Triangle)**
+
+**Charakteristika:**
+- Široké ramená
+- Úzke boky
+- Málo výrazný pás
+- Atletická postava
+
+**Ako zmerať svoju postavu:**
+
+**Potrebné merania:**
+1. **Ramená:** Najširšie miesto cez ramená
+2. **Prsia:** Najširšie miesto cez prsia
+3. **Pás:** Najužšie miesto, zvyčajne nad pupkom
+4. **Boky:** Najširšie miesto cez boky a zadok
+
+**Postup:**
+- Merte v spodnom prádle
+- Meraciu pásku držte horizontálne
+- Nepripínajte príliš silno
+- Zapíšte si merania`
+    },
+    {
+      title: "Téma 5: Styling pre jednotlivé typy postáv",
+      content: `**Presýpacie hodiny - ako sa obliekať:**
+
+**Cieľ:** Zvýrazniť krivky a pás
+
+**Áno:**
+- Zvýraznené v páse
+- V-výstrih
+- Priliehavé šaty
+- Pásy a opasky
+- Puzdrové sukne
+- Bootcut rifle
+
+**Nie:**
+- Voľné, beztvárne šaty
+- Príliš široké oblečenie
+- Priame strihy
+
+**Hrušková postava - ako sa obliekať:**
+
+**Cieľ:** Zvýrazniť hornú polovicu, opticky rozšíriť ramená
+
+**Áno:**
+- Výrazné vrchy (vzory, farby)
+- Lodičkový výstrih
+- Raglánové rukávy
+- Tmavé spodky (sukne, nohavice)
+- A-líniové sukne
+- Bootcut rifle
+
+**Nie:**
+- Svetlé alebo vzorované spodky
+- Úzke rifle
+- Vreckové nohavice na bokoch
+
+**Jablková postava - ako sa obliekať:**
+
+**Cieľ:** Presunúť pozornosť od stredu, zvýrazniť nohy
+
+**Áno:**
+- V-výstrih
+- Volnejšie vrchy (nie obtiahnuté)
+- Tmavé farby v strede
+- Zvýraznené nohy
+- Priame nohavice
+- Šaty A-línie
+
+**Nie:**
+- Oblečenie zvýrazňujúce pás
+- Priliehavé vrchy
+- Pásy na páse
+- Nabranské detaily v strede
+
+**Obdĺžniková postava - ako sa obliekať:**
+
+**Cieľ:** Vytvoriť ilúziu pásu a kriviek
+
+**Áno:**
+- Pásy a opasky
+- Vrstve nie
+- Volány a riasenia
+- Vrecká na nohaviciach
+- Šaty s detailmi v páse
+- Peplum vrchy
+
+**Nie:**
+- Priame, beztvárne šaty
+- Túby
+- Príliš dlhé vrchy
+
+**Prevrátený trojuholník - ako sa obliekať:**
+
+**Cieľ:** Opticky zmenšiť ramená, zvýrazniť dolnú polovicu
+
+**Áno:**
+- Tmavé, jednoduché vrchy
+- V-výstrih
+- Svetlé alebo vzorované spodky
+- Širšie nohavice
+- Objemné sukne
+- Detaily na bokoch
+
+**Nie:**
+- Lodičkový výstrih
+- Raglánové rukávy
+- Výrazné vzory hore
+- Príliš úzke nohavice`
+    },
+    {
+      title: "Téma 6: Kombinovanie farieb a vzorov",
+      content: `**Základné pravidlá kombinovania farieb:**
+
+**1. Monochromatické schémy:**
+- Rôzne odtiene jednej farby
+- Napríklad: námornícka modrá + svetlomodrá + babyblue
+- Elegantné a bezpečné
+
+**2. Analógové farby:**
+- Farby vedľa seba na farebnom kruhu
+- Napríklad: modrá + fialová + purpurová
+- Harmonická kombinácia
+
+**3. Komplementárne farby:**
+- Farby naproti sebe na farebnom kruhu
+- Napríklad: modrá + oranžová, červená + zelená
+- Výrazné, odvážne
+
+**4. Triádické farby:**
+- Tri farby rovnomerne rozložené
+- Napríklad: červená + žltá + modrá
+- Živé, dynamické
+
+**Bezpečné farebné kombinácie:**
+
+**Klasické:**
+- Čierna + biela
+- Námorná modrá + biela
+- Šedá + ružová
+- Béžová + biela
+
+**Elegantné:**
+- Čierna + zlatá
+- Bordová + sivá
+- Smaragdová + zlatá
+- Námorná + červená
+
+**Moderné:**
+- Čierna + mustard
+- Sivá + fuchsia
+- Khaki + bordová
+- Tehlová + ružová
+
+**Pravidlo 3 farieb:**
+
+V jednom outfite používajte maximálne 3 farby:
+- 60% dominantná farba (napr. nohavice)
+- 30% sekundárna farba (napr. sveter)
+- 10% akcentová farba (napr. taška, šál)
+
+**Kombinovanie vzorov:**
+
+**Pravidlá:**
+1. Rôzne veľkosti vzorov (malý + veľký)
+2. Spoločná farba vo vzoroch
+3. Jeden dominantný vzor
+
+**Bezpečné kombinácie:**
+- Prúžky + jednofarebné
+- Bodky + jednofarebné
+- Kvetinový vzor + jednofarebný v spoločnej farbe
+- Prúžky + bodky (v rovnakých farbách)
+
+**Čo sa nehodí:**
+- Dva veľké, výrazné vzory
+- Príliš veľa farieb naraz
+- Vzory bez spoločného menovateľa`
+    },
+    {
+      title: "Téma 7: Kapsulový šatník",
+      content: `**Čo je kapsulový šatník?**
+
+Kapsulový šatník je minimalistický prístup k obliekaniu založený na malej zbierke základných, kvalitných kúskov, ktoré sa dajú ľahko kombinovať.
+
+**Výhody kapsulového šatníka:**
+
+- Menej stresu pri výbere oblečenia
+- Úspora peňazí (kupujete kvalitu, nie kvantitu)
+- Udržateľný prístup k móde
+- Vždy máte čo obliecť
+- Organizovaný šatník
+
+**Koľko kúskov?**
+
+**Klasický kapsulový šatník:**
+- 30-40 kúskov vrátane topánok
+- Na jedno ročné obdobie
+- Doplnky sa nepočítajú
+
+**Základné kategórie:**
+
+**1. Spodky (8-10 ks):**
+- 2x rifle (tmavé, svetlé)
+- 2x nohavice (čierne, béžové)
+- 2x sukne (ceruzková, A-línia)
+- 1x šortky
+- 1x elegantn é nohavice
+
+**2. Vrchy (15-20 ks):**
+- 5x tričká (biele, čierne, farebné)
+- 3x košele/blúzky
+- 3x svetre/cardigany
+- 2x šaty (casual, elegantné)
+- 2x blejzre
+
+**3. Vrchné oblečenie (3-5 ks):**
+- Džínsová bunda
+- Kožená/koženková bunda
+- Kabát
+- Trenchcoat
+
+**4. Obuv (5-7 párov):**
+- Tenisky
+- Baleríny/lodičky
+- Kotníkové topánky
+- Čižmy
+- Sandále/elegantn é topánky
+
+**Farebná paleta:**
+
+**Neutrálne základy (70%):**
+- Čierna, biela
+- Sivá (svetlá, tmavá)
+- Béžová, hnedá
+- Námorná modrá
+
+**Farebné akcenty (30%):**
+- 2-3 vaše obľúbené farby
+- Podľa farebného typu
+
+**Ako vytvoriť kapsulový šatník:**
+
+**Krok 1:** Vyprázdnite šatník
+**Krok 2:** Vytrieďte (ponechať/darovať/opraviť)
+**Krok 3:** Určite chýbajúce základy
+**Krok 4:** Nakupujte premyslene
+**Krok 5:** Udržiavajte (1 kus dnu = 1 kus von)`
+    },
+    {
+      title: "Téma 8: Doplnky a ako ich nosiť",
+      content: `**Prečo sú doplnky dôležité?**
+
+Doplnky môžu zmeniť jednoduchý outfit na výnimočný. Sú to exclamačné znamienka vášho štýlu.
+
+**Základné doplnky do šatníka:**
+
+**1. Kabelky (3-4 ks):**
+- Denná kabelka (stredne veľká)
+- Večerná kabelka (malá, elegantná)
+- Batoh/crossbody (praktická)
+- Plážová taška
+
+**2. Šály a šatky:**
+- Veľký šál (zimný)
+- Hodvábna šatka
+- Pletený nákrčník
+- Ľahký šál (letný)
+
+**3. Opasky (3-4 ks):**
+- Čierny kožený (široký)
+- Hnedý kožený (úzky)
+- Farebný/štýlový
+- Elastický (pre šaty)
+
+**4. Šperky:**
+
+**Minimalistický set:**
+- Náušnice (zlaté/strieborné)
+- Retiazka s príveskom
+- Hodinky
+- Prstene (1-2)
+
+**Pravidlá nosenia šperkov:**
+
+**Menej je viac:**
+- Zvoľte jeden focal point
+- Buď výrazné náušnice, ALEBO náhrdelník
+- Nie oboje naraz
+
+**Kovový tón:**
+- Držte sa jedného kovu (zlato ALEBO striebro)
+- Alebo kombinujte premyslene
+
+**Podľa príležitosti:**
+- Deň: Jemné, minimalistické
+- Večer: Výraznejšie, trblietavé
+- Práca: Diskrétne, klasické
+
+**5. Slnečné okuliare:**
+- Vyberte tvar podľa tvaru tváre
+- Kvalitné, s UV ochranou
+- 1-2 páry (denné, elegantné)
+
+**6. Klobúky a čiapky:**
+- Podľa ročného obdobia
+- Podľa štýlu osobnosti
+
+**Ako kombinovať doplnky:**
+
+**Pravidlo focal point:**
+Jeden doplnok nech je hviezda, ostatné diskrétne.
+
+**Príklad 1:**
+- Výrazný náhrdelník
+- + jednoduché náušnice
+- + jednoduchá kabelka
+
+**Príklad 2:**
+- Jednoduchý outfit
+- + výrazná kabelka
+- + výrazný opasok
+- + jemné šperky
+
+**Častý chyby:**
+- Príliš veľa doplnkov naraz
+- Neladenie kovov
+- Nevhodné doplnky pre príležitosť`
+    },
+    {
+      title: "Téma 9: Obliekanie pre rôzne príležitosti",
+      content: `**Dress code - čo znamená?**
+
+Dress code je neformálne pravidlo, ako sa obliecť pre danú príležitosť.
+
+**1. CASUAL (voľný čas)**
+
+**Charakteristika:**
+- Pohodlné, uvoľnené
+- Dennodenne nositeľné
+- Čisté a upravené
+
+**Ženy:**
+- Rifle + tričko
+- Legíny + dlhší sveter
+- Šaty + tenisky
+- Rifle + košeľa + tenisky
+
+**Muži:**
+- Rifle + tričko
+- Chinos + polo tričko
+- Rifle + košeľa (casual)
+- Šortky + tričko (leto)
+
+**2. BUSINESS CASUAL (kancelária, menej formálna práca)**
+
+**Ženy:**
+- Nohavice + blúzka
+- Sukňa + blúzka + blejzer (voliteľný)
+- Šaty (po kolená, zakryté ramená)
+- Zatvorená obuv (nie tenisky)
+
+**Muži:**
+- Chinos/látkové nohavice + košeľa
+- Sveter + košeľa
+- Bez kravaty
+- Zatvorená obuv
+
+**3. BUSINESS FORMAL (dôležité stretnutia, konferencie)**
+
+**Ženy:**
+- Kostým (nohavicový alebo so sukňou)
+- Šaty + blejzer
+- Lodičky
+- Minimálne šperky
+
+**Muži:**
+- Oblek + košeľa + kravata
+- Tmavé farby (čierna, námornícka, sivá)
+- Kožené topánky
+- Hodinky
+
+**4. COCKTAIL (večierky, oslavy)**
+
+**Ženy:**
+- Kokteilové šaty (po kolená)
+- Elegantn é topánky (lodičky, sandále)
+- Večerná kabelka
+- Výraznejšie šperky
+
+**Muži:**
+- Tmavý oblek
+- Biela košeľa
+- Kravata (voliteľná)
+- Leštené topánky
+
+**5. FORMAL / BLACK TIE (plesy, gala večery)**
+
+**Ženy:**
+- Dlhé večerné šaty
+- Elegantn é sandále/lodičky
+- Večerná kabelka (malá)
+- Elegantn é šperky
+
+**Muži:**
+- Smoking
+- Biela košeľa
+- Motýlik
+- Lakované topánky
+
+**6. SMART CASUAL (večere, divadlo, rande)**
+
+**Ženy:**
+- Šaty + blejzer/kardigan
+- Nohavice + elegantný vrch
+- Sukňa + blúzka
+- Lodičky/kotníkové topánky
+
+**Muži:**
+- Chinos + košeľa
+- Sveter + košeľa
+- Blejzer (voliteľný)
+- Kožené topánky
+
+**Tipy:**
+
+- Pri pochybnostiach je lepšie byť trochu viac formal
+- Všímajte si prostred ie a ostatných
+- Čisté a žehlené oblečenie je základ`
+    },
+    {
+      title: "Téma 10: Nákupné tipy a údržba šatníka",
+      content: `**Premyslené nakupovanie:**
+
+**Pred nákupom:**
+
+**1. Zoznam potrieb:**
+- Napíšte si, čo potrebujete
+- Držte sa zoznamu
+- Nekupujte impulzívne
+
+**2. Rozpočet:**
+- Stanovte si mesačný budget
+- Investujte do základov
+- Šetrite na kvalitné kúsky
+
+**3. Otázky pred kúpou:**
+- Hodí sa to k môjmu štýlu?
+- Mám k tomu aspoň 3 kombinácie?
+- Je to pohodlné?
+- Je to kvalitné?
+- Stojí to za tú cenu?
+
+**Ako spoznať kvalitu:**
+
+**Materiál:**
+- Prírodné vlákna (bavlna, vlna, hodváb)
+- Pevná, hustá tkanina
+- Nemečká sa, nefŕka
+
+**Šitie:**
+- Rovné švy
+- Spevnené okraje
+- Kvalitné gombíky
+- Podšívka (u formálneho oblečenia)
+
+**Údržba šatníka:**
+
+**Pranie:**
+- Rešpektujte etikety
+- Jemné kúsky do vrecka
+- Pracie prášky bez bielidiel
+- Odtiene perte osobitne
+
+**Sušenie:**
+- Vlna: Položte na plochý povrch
+- Hodváb: Vešať v tiene
+- Bavlna: Môže do sušičky
+- Syntetika: Vešať
+
+**Žehlenie:**
+- Kontrolujte teplotu
+- Jemné materiály cez handru
+- Hodváb žehlite naruby
+- Vlnu len napariť
+
+**Skladovanie:**
+
+**Vešiaky:**
+- Kvalitné drevené vešiaky
+- Pletené a delikátne veci zložené
+- Formálne oblečenie na tvarovaných vešiakoch
+
+**Organizácia:**
+- Podľa kategórie
+- Podľa farby
+- Sezónne rotovanie
+- Viditeľne uložené
+
+**Opravy:**
+- Okamžite opravujte dierky
+- Pritláčajte gombíky
+- Odstraňujte škvrny ihneď
+- Investujte do krajčíra
+
+**Pravidelná údržba:**
+
+**Každý mesiac:**
+- Prezrite šatník
+- Odstráňte škvrny
+- Opravte drobné vady
+
+**Každé 6 mesiacov:**
+- Výmena letnej/zimnej garderóby
+- Darujte nenosené veci (pravidlo 1 roka)
+- Doplňte chýbajúce základy
+
+**Ekologický prístup:**
+
+- Kupujte kvalitu, nie kvantitu
+- Second-hand a vintage obchody
+- Vymieňajte si s priateľmi
+- Opravujte namiesto vyhadzovať
+- Recyklujte staré oblečenie
+
+**Zhrnutie:**
+
+✓ Poznajte svoj farebný typ
+✓ Obliekajte sa podľa typu postavy
+✓ Vytvorte kapsulový šatník
+✓ Kombinujte premyslene
+✓ Investujte do kvality
+✓ Starajte sa o oblečenie
+
+Gratulujeme! Dokončili ste kurz Styling a móda a ste pripravení vytvoriť svoj vlastný jedinečný štýl!`
+    }
+  ],
   
   "Základy účtovníctva": [
     {
