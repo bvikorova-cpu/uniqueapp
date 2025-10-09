@@ -1620,6 +1620,653 @@ Podnikanie od A po Z nie je jednoduché, ale s dobrou prípravou, biznis plánom
 - Vybrať správnu právnu formu
 - A hlavne - začať!`
     }
+  ],
+
+  "E-commerce": [
+    {
+      title: "Téma 1: Definícia a základné typy e-commerce",
+      content: `**Čo je e-commerce?**
+
+E-commerce (elektronický obchod) je proces nákupu a predaja tovarov alebo služieb prostredníctvom internetu alebo iných elektronických médií. To znamená, že zákazník si môže objednať produkty z pohodlia domova pomocou počítača alebo mobilného zariadenia a obchodník môže tieto objednávky spracovať a doručiť priamo zákazníkovi.
+
+**Aké najčastejšie typy predaja ponúka e-commerce?**
+
+**B2B (Business-to-Business)**
+
+Pri tomto type obchodovania jeden podnik predáva produkty alebo služby inému podniku, namiesto toho, aby predával priamo zákazníkom.
+
+**Charakteristiky B2B:**
+- Väčšie objemy objednávok
+- Dlhodobé vzťahy
+- Komplexnejšie cenové štruktúry
+- Špecializované produkty
+
+**B2C (Business-to-Consumer)**
+
+V B2C e-commerce podniky predávajú svoje produkty alebo služby koncovým zákazníkom, namiesto toho, aby predávali iným podnikom.
+
+**Charakteristiky B2C:**
+- Menšie, častejšie objednávky
+- Rýchlejšie rozhodovanie o nákupe
+- Dôraz na marketing a zákaznícku skúsenosť
+- Široký sortiment
+
+**C2C (Consumer-to-Consumer)**
+
+V C2C e-commerce spotrebitelia nakupujú a predávajú produkty prostredníctvom internetových platforiem, kde môžu vytvárať inzeráty, prezerať ponuky a komunikovať s ostatnými spotrebiteľmi.
+
+**Charakteristiky C2C:**
+- Platformy typu marketplace
+- Príklady: Bazos.sk, Modrykonik.sk, eBay
+- Peer-to-peer transakcie
+- Nižšie ceny použitého tovaru`
+    },
+    {
+      title: "Téma 2: Benefity e-commerce",
+      content: `**Dostupnosť 24/7**
+
+Internet nikdy nespí, elektronické obchody sú k dispozícii pre zákazníkov 24 hodín denne, 7 dní v týždni.
+
+**Výhody:**
+- Zákazníci môžu nakupovať kedykoľvek sa im to hodí
+- Zarábate, aj keď spíte
+- Žiadne obmedzenie otváracími hodinami
+- Globálna dostupnosť
+
+**Široký dosah**
+
+E-commerce umožňuje podnikom predávať svoje produkty alebo služby cez internet, čo znamená, že majú potenciál osloviť oveľa väčšiu zákaznícku základňu ako v kamennej predajni.
+
+**Možnosti dosahu:**
+- Lokálny trh
+- Celoslovenský trh
+- Medzinárodný trh
+- Globálny trh
+
+**Nižšie náklady**
+
+E-commerce môže byť pre podniky lacnejšie ako tradičné kamenné obchody.
+
+**Úspory:**
+- Nižšie náklady na prenájom priestoru
+- Úspora na energiách
+- Úspora na vode
+- Menší počet zamestnancov
+- Nižšie náklady na prevádzku
+
+**Personalizácia ponúk**
+
+E-commerce umožňuje podnikom personalizovať ponuku na základe nákupného správania zákazníkov a zlepšiť tak zákaznícky zážitok.
+
+**Nástroje personalizácie:**
+- Odporúčané produkty
+- Personalizované emailové kampane
+- Dynamické ceny
+- Individuálne zľavy`
+    },
+    {
+      title: "Téma 3: Ďalšie výhody e-commerce",
+      content: `**Jednoduchšie porovnávanie cien**
+
+Zákazníci môžu jednoduchšie porovnávať ceny a vlastnosti produktov a služieb a nájsť tak najlepšie ponuky bez nutnosti fyzickej návštevy kamenných obchodov.
+
+**Porovnávače cien:**
+- Heureka.sk
+- Najnakup.sk
+- Pricemania.sk
+- Cenové rozšírenia v prehliadači
+
+**Flexibilita platobných možností**
+
+E-commerce umožňuje zákazníkom platiť rôznymi spôsobmi, čo prispieva k ich pohodliu a bezpečnosti.
+
+**Platobné metódy:**
+- Kreditné a debetné karty
+- PayPal
+- Bankové prevody
+- Dobierka
+- Google Pay, Apple Pay
+- Kryptomeny
+- Platba na splátky
+
+**Možnosť väčšej interakcie so zákazníkmi**
+
+E-commerce umožňuje podnikom komunikovať so zákazníkmi prostredníctvom rôznych kanálov.
+
+**Komunikačné kanály:**
+- E-maily
+- Live chat
+- Chatboty
+- Sociálne siete
+- Telefón
+- Video konferencie
+
+**Lepšie sledovanie výkonu**
+
+E-commerce umožňuje podnikom sledovať výkon svojich predajov a marketingových kampaní.
+
+**Metriky:**
+- Google Analytics
+- Konverzný pomer
+- Priemerná hodnota objednávky
+- Návratnosť investícií (ROI)
+- Zdroje návštevnosti
+- Správanie zákazníkov
+
+**Záver:**
+
+E-commerce je biznis model, ktorý pomohol vyšľapať cestu úspechu nejednej veľkej značke. Začatím e-commerce získate viacej zákazníkov, povedomie o značke a značne zvýšite prínos tržieb pre váš biznis.`
+    },
+    {
+      title: "Téma 4: Ako začať s e-commerce",
+      content: `**Výber produktov alebo služieb**
+
+**Kľúčové otázky:**
+- Čo budete predávať?
+- Existuje po tom dopyt?
+- Kto je vaša cieľová skupina?
+- Aká je konkurencia?
+
+**Typy produktov:**
+- Fyzické produkty (potrebujete sklad a logistiku)
+- Digitálne produkty (ebook, kurzy, softvér)
+- Služby (konzultácie, coaching)
+- Dropshipping (predaj bez skladu)
+
+**Výber platformy**
+
+**Vlastná webstránka:**
+- WooCommerce (WordPress)
+- Shopify
+- PrestaShop
+- Magento
+
+**Marketplace:**
+- Amazon
+- eBay
+- Heureka Košík
+- Alza Marketplace
+
+**Výhody vlastnej stránky:**
+- Plná kontrola
+- Vlastný dizajn
+- Žiadne provízie
+- Vlastná zákaznícka databáza
+
+**Výhody marketplace:**
+- Existujúca návštevnosť
+- Dôveryhodnosť
+- Jednoduchý štart
+- Technická podpora
+
+**Registrácia a legislatíva**
+
+**Potrebné kroky:**
+- Živnostenské oprávnenie alebo s.r.o.
+- Registrácia na daňovom úrade
+- DPH (pri obrate nad 50 000 €)
+- Obchodné podmienky
+- GDPR súhlas
+- Informačná povinnost
+
+**Dôležité dokumenty:**
+- Všeobecné obchodné podmienky
+- Reklamačný poriadok
+- Ochrana osobných údajov
+- Cookies policy`
+    },
+    {
+      title: "Téma 5: Dizajn a používateľská skúsenosť (UX)",
+      content: `**Význam dobrého dizajnu**
+
+**Prvý dojem:**
+- Zákazníci rozhodujú o dôveryhodnosti za 0,05 sekundy
+- Profesionálny dizajn zvyšuje konverzie
+- Mobilná responzivita je nevyhnutná
+
+**Kľúčové prvky e-shopu**
+
+**Homepage:**
+- Jasné value proposition
+- Hlavné kategórie produktov
+- Aktuálne akcie a novinky
+- Vyhľadávanie
+- Dôveryhodnostné signály
+
+**Produktová stránka:**
+- Kvalitné fotografie (min. 3-5)
+- Detailný popis
+- Technické parametre
+- Recenzie zákazníkov
+- Dostupnosť skladu
+- Jasné call-to-action (CTA)
+
+**Nákupný košík:**
+- Jednoduchý proces
+- Viditeľné náklady (DPH, doprava)
+- Možnosť úpravy objednávky
+- Odhadovaný čas doručenia
+- Upsell a cross-sell produkty
+
+**Checkout (pokladňa):**
+- Minimálny počet krokov
+- Možnosť nákupu bez registrácie
+- Viacero platobných metód
+- Jasné informácie o doprave
+- Progress bar
+
+**Mobilná optimalizácia**
+
+**Dôležitosť:**
+- Viac ako 60% nákupov je z mobilu
+- Google uprednostňuje mobile-first
+- Jednoduchá navigácia
+- Veľké tlačidlá
+- Rýchle načítanie
+
+**Rýchlosť načítania**
+
+**Prečo je dôležitá:**
+- Každá sekunda znižuje konverzie o 7%
+- Google penalizuje pomalé stránky
+- Zákazníci majú nízku trpezlivosť
+
+**Ako zrýchliť:**
+- Optimalizácia obrázkov
+- Caching
+- CDN (Content Delivery Network)
+- Minimalizácia kódu`
+    },
+    {
+      title: "Téma 6: Marketing pre e-commerce",
+      content: `**SEO (Search Engine Optimization)**
+
+**On-page SEO:**
+- Optimalizované názvy produktov
+- Meta descriptions
+- Alt texty obrázkov
+- URL štruktúra
+- Interné linkovanie
+
+**Content marketing:**
+- Blog s užitočným obsahom
+- Návody a tutoriály
+- Video obsah
+- Infografiky
+
+**PPC reklama (Pay-Per-Click)**
+
+**Google Ads:**
+- Vyhľadávacia sieť
+- Nákupná kampaň (Google Shopping)
+- Display sieť
+- Remarketing
+
+**Facebook a Instagram Ads:**
+- Presné cielenie
+- Vizuálne atraktívne reklamy
+- Katalógové reklamy
+- Dynamický remarketing
+
+**Email marketing**
+
+**Typy emailov:**
+- Uvítací email
+- Opustený košík (cart abandonment)
+- Produktové odporúčania
+- Novinky a akcie
+- Post-purchase follow-up
+
+**Sociálne siete**
+
+**Výber platforiem:**
+- Facebook - širšie publikum
+- Instagram - vizuálne produkty
+- TikTok - mladšie publikum
+- Pinterest - DIY, móda, domácnosť
+- LinkedIn - B2B
+
+**Influencer marketing**
+
+**Výhody:**
+- Dôveryhodnosť
+- Autentický obsah
+- Nové publikum
+- Sociálne dôkazy
+
+**Affiliate marketing**
+
+**Princíp:**
+- Partneri propagujú vaše produkty
+- Platba za výsledky (provízie)
+- Win-win situácia`
+    },
+    {
+      title: "Téma 7: Logistika a doručovanie",
+      content: `**Skladovanie**
+
+**Možnosti:**
+
+**1. Vlastný sklad**
+- Plná kontrola
+- Vyššie náklady
+- Potreba priestoru a personálu
+
+**2. Outsourcing (3PL)**
+- Profesionálne služby
+- Škálovateľnosť
+- Nižšie fixné náklady
+
+**3. Dropshipping**
+- Žiadny sklad
+- Nižšie riziko
+- Nižšie marže
+
+**Správa zásob**
+
+**Kľúčové metriky:**
+- Stock Keeping Unit (SKU)
+- Minimálna zásoba
+- Obratovosť skladu
+- Dead stock (nepredajné zásoby)
+
+**Softvér:**
+- Systémy na správu skladu (WMS)
+- Automatické objednávanie
+- Predikcia dopytu
+
+**Doprava a doručovanie**
+
+**Možnosti doručenia:**
+- Kuriér (GLS, DPD, DHL)
+- Slovenská pošta
+- Packeta (Zásielkovňa)
+- Alzaboxy
+- Osobný odber
+
+**Faktory výberu:**
+- Cena
+- Rýchlosť
+- Spoľahlivosť
+- Pokrytie
+- Sledovanie zásielok
+
+**Medzinárodná preprava**
+
+**Výzvy:**
+- Clo a dane
+- Dlhšie dodacie lehoty
+- Vyššie náklady
+- Jazykové bariéry
+- Právne odlišnosti
+
+**Vrátenie tovaru**
+
+**Dôležitosť:**
+- Zákonná 14-dňová lehota
+- Jednoduchý proces zvyšuje dôveru
+- Náklady na vrátenie
+- Spracovanie vráteného tovaru`
+    },
+    {
+      title: "Téma 8: Platobné brány a bezpečnosť",
+      content: `**Platobné brány**
+
+**Populárne riešenia:**
+- ComGate
+- GoPay
+- Stripe
+- PayPal
+- Tatrapay
+- CardPay
+
+**Výber platobnej brány:**
+- Poplatky (setup, mesačné, transakčné)
+- Podporované platobné metódy
+- Integrácia s platformou
+- Zákaznícka podpora
+- Rýchlosť vyplácania
+
+**Platobné metódy**
+
+**Kreditné/debetné karty:**
+- Najpoužívanejšie
+- Okamžité spracovanie
+- Vyššie poplatky
+
+**Bankové prevody:**
+- Nižšie poplatky
+- Pomalšie spracovanie
+- Vhodné pre B2B
+
+**Dobierka:**
+- Stále populárna na Slovensku
+- Vyššie náklady
+- Riziko vrátenia zásielky
+
+**E-peňaženky:**
+- PayPal
+- Google Pay
+- Apple Pay
+- Rýchle a pohodlné
+
+**Bezpečnosť**
+
+**SSL certifikát:**
+- Nevyhnutnosť
+- HTTPS protokol
+- Dôveryhodnosť
+- SEO benefit
+
+**PCI DSS:**
+- Štandard pre spracovanie platieb kartou
+- Ochrana údajov zákazníkov
+- Povinnosť pre e-shopy
+
+**3D Secure:**
+- Dodatočná autentifikácia
+- Znižuje riziko fraudu
+- Povinné v EU
+
+**Ochrana pred podvodmi**
+
+**Riziká:**
+- Ukradnuté karty
+- Phishing
+- Falošné objednávky
+- Account takeover
+
+**Prevencia:**
+- Verifikácia adries
+- Monitoring nezvyčajných aktivít
+- Limit transakcií
+- CAPTCHA
+- Email verifikácia`
+    },
+    {
+      title: "Téma 9: Zákaznícky servis a recenzie",
+      content: `**Význam zákazníckeho servisu**
+
+**Štatistiky:**
+- 86% zákazníkov je ochotných zaplatiť viac za lepší servis
+- Získať nového zákazníka je 5-7x drahšie ako udržať existujúceho
+- Nespokojný zákazník povie o svojej skúsenosti 9-15 ľuďom
+
+**Kanály zákazníckeho servisu**
+
+**Email:**
+- Ideálny pre komplexnejšie problémy
+- Písomný záznam komunikácie
+- Cieľ: odpoveď do 24 hodín
+
+**Live chat:**
+- Okamžitá pomoc
+- Vyššie konverzie
+- Možnosť použiť chatboty
+
+**Telefón:**
+- Osobný kontakt
+- Rýchle riešenie problémov
+- Vyššie náklady
+
+**Sociálne siete:**
+- Verejná komunikácia
+- Rýchla odpoveď dôležitá
+- Budovanie dôvery
+
+**FAQ sekcia:**
+- Odpovede na časté otázky
+- Úspora času
+- Lepšia SEO
+
+**Spracovanie reklamácií**
+
+**Zákonné lehoty:**
+- Reklamácia: 30 dní
+- Vrátenie tovaru: 14 dní
+- Záruka: 24 mesiacov
+
+**Best practices:**
+- Jednoduchý proces
+- Rýchle spracovanie
+- Komunikácia so zákazníkom
+- Spravodlivé riešenie
+
+**Recenzie a hodnotenia**
+
+**Význam:**
+- 93% zákazníkov číta recenzie
+- Zvyšujú konverzie o 18%
+- Sociálny dôkaz
+- Vylepšujú SEO
+
+**Ako získať viac recenzií:**
+- Email po nákupe
+- Ponúknuť malú zľavu
+- Jednoduchý proces
+- Odpovedať na recenzie
+
+**Správa negatívnych recenzií:**
+- Rýchla odpoveď
+- Profesionálny prístup
+- Ponúknuť riešenie
+- Učiť sa z feedbacku
+
+**Loyalty programy**
+
+**Typy:**
+- Bodový systém
+- VIP úrovne
+- Cashback
+- Exkluzívne zľavy
+
+**Výhody:**
+- Opakované nákupy
+- Vyššia hodnota objednávky
+- Brand advocacy
+- Cenné dáta o zákazníkoch`
+    },
+    {
+      title: "Téma 10: Analytika a optimalizácia",
+      content: `**Kľúčové metriky**
+
+**Traffic metrics:**
+- Návštevníci (unique visitors)
+- Zdroje návštevnosti
+- Bounce rate (miera opustenia)
+- Čas strávený na stránke
+
+**Conversion metrics:**
+- Konverzný pomer
+- Opustené košíky
+- Priemerná hodnota objednávky (AOV)
+- Customer Lifetime Value (CLV)
+
+**Revenue metrics:**
+- Celkové tržby
+- Tržby podľa kanálov
+- ROI kampaní
+- Zisková marža
+
+**Nástroje**
+
+**Google Analytics:**
+- Sledovanie návštevnosti
+- Správanie používateľov
+- E-commerce tracking
+- Conversion funnels
+
+**Google Search Console:**
+- SEO výkon
+- Technické problémy
+- Kľúčové slová
+- Indexovanie
+
+**Hotjar:**
+- Heatmapy
+- Screen recordings
+- Feedback polls
+- Conversion funnels
+
+**A/B testovanie**
+
+**Čo testovať:**
+- Farby tlačidiel
+- Texty CTA
+- Produktové fotografie
+- Ceny
+- Checkout proces
+- Homepage layout
+
+**Nástroje:**
+- Google Optimize
+- Optimizely
+- VWO
+
+**Optimalizácia konverzií (CRO)**
+
+**Best practices:**
+- Jasné value proposition
+- Sociálne důkazy (recenzie)
+- Urgentnosť a scarcity
+- Jednoduchý checkout
+- Optimalizácia na mobil
+- Rýchlosť načítania
+- Živé fotografie produktov
+- Detailné popisy
+
+**Retargeting**
+
+**Stratégie:**
+- Opustené košíky
+- Prezerané produkty
+- Cross-sell a up-sell
+- Zákazníci, ktorí nekúpili dlho
+
+**Platformy:**
+- Facebook Pixel
+- Google Ads Remarketing
+- AdRoll
+
+**Škálovanie**
+
+**Kedy škálovať:**
+- Stabilné konverzie
+- Pozitívny ROI
+- Efektívne procesy
+- Dostatok kapitálu
+
+**Ako škálovať:**
+- Zvýšenie marketingového rozpočtu
+- Rozšírenie produktového portfólia
+- Vstup na nové trhy
+- Automatizácia procesov
+- Budovanie tímu
+
+**Záver:**
+
+Úspešný e-commerce vyžaduje neustálu optimalizáciu, testovanie a prispôsobovanie sa zmenám na trhu. Sledujte svoje dáta, počúvajte zákazníkov a nebojte sa experimentovať!`
+    }
   ]
 };
 
