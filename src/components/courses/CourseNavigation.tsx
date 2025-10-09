@@ -81,9 +81,8 @@ export const CourseNavigation = ({
         </ScrollArea>
         
         <Button
-          variant="outline"
           onClick={() => navigate("/education")}
-          className="w-full gap-2 mt-auto"
+          className="w-full gap-2 mt-auto bg-primary hover:bg-primary/90"
         >
           <ArrowLeft className="h-4 w-4" />
           Späť na zoznam kurzov
