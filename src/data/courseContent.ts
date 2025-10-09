@@ -4,6 +4,444 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Emocionálna inteligencia": [
+    {
+      title: "Téma 1: Úvod do emocionálnej inteligencie",
+      content: `**Čo je emocionálna inteligencia?**
+
+Pravdepodobne každý z nás pozná ľudí, či už v škole, práci alebo súkromí, ktorí sú úžasní poslucháči. Je jedno, o akú situáciu sa jedná. Proste vždy vedia, ako sa zachovať, kedy presne čo povedať. Sú to ľudia, pri ktorých sa jednoducho vždy cítite dobre.
+
+**Charakteristiky ľudí s vysokým EQ:**
+
+- Sú starostliví a ohľaduplní
+- Vždy vedia, ako sa zachovať v rôznych situáciách
+- Sú výborní poslucháči
+- Majú schopnosť urobiť nám ľahšie a veselšie
+- Aj keď nevedia dať riešenie, dokážu pomôcť
+
+**Definícia emocionálnej inteligencie:**
+
+Emocionálna inteligencia je schopnosť rozpoznať emócie, porozumieť, čo vám iní hovoria a chápať, ako vaše emócie ovplyvňujú ľudí okolo vás. Zahŕňa aj vaše vnímanie iných - ak chápete ako sa iní cítia, to vám umožňuje lepšie manažovať vaše vzťahy.
+
+**Prečo je EQ dôležitá:**
+
+Ľudia s vysokou emočnou inteligenciou sú zvyčajne úspešní vo väčšine vecí, ktoré robia. Pretože sú tými, ktorých väčšina chce mať vo svojom tíme. Keď ľudia s vysokým EQ posielajú e-mail, býva spravidla zodpovedaný. Keď potrebujú pomoc, dostanú ju.`
+    },
+    {
+      title: "Téma 2: Charakteristika emocionálnej inteligencie",
+      content: `**Majstri v ovládaní svojich emócií**
+
+Ľudia s vysokým EQ sú majstri v ovládaní svojich emócií:
+
+**Emocionálna kontrola:**
+- Nie sú nahnevaní v stresových situáciách
+- Majú schopnosť pozrieť sa na problém a potichu nájsť riešenie
+- Sú úžasní v rozhodovaní
+- Vedia, kedy môžu dôverovať svojej intuícii
+
+**Sebapoznanie:**
+- Vždy sa chcú na seba pozerať čestne
+- Prijímajú dobre kritiku
+- Vedia, kedy ju použiť na zlepšenie svojho výkonu
+- Poznajú sami seba veľmi dobre
+
+**Vnímanie ostatných:**
+- Sú schopní vycítiť emocionálne potreby iných
+- Rozumejú tomu, čo ostatní potrebujú
+- Dokážu vytvárať pozitívne vzťahy
+- Umožňujú ostatným cítiť sa dobre
+
+**Význam v profesionálnom živote:**
+
+Stále viac a viac ľudí akceptuje, že emocionálna inteligencia je rovnako dôležitá pre profesionálny úspech ako akékoľvek odborné schopnosti. Organizácie čoraz častejšie využívajú EQ pri prijímaní ľudí do zamestnania či ich povyšovaní.
+
+**Štatistiky:**
+- EQ zodpovedá až za 58 % výkonu vo všetkých typoch zamestnaní
+- Ľudia s vyšším EQ zarábajú v priemere o 29 000 dolárov ročne viac
+- Každý jeden bod zvýšenia EQ predstavuje 1 300 dolárov navyše v ročnom príjme`
+    },
+    {
+      title: "Téma 3: Päť prvkov EQ - Sebavedomie",
+      content: `**Prvý prvok: Sebavedomie**
+
+Daniel Goleman, americký psychológ, vyvinul štruktúru 5 prvkov, ktoré definujú emocionálnu inteligenciu. Prvým z nich je sebavedomie.
+
+**Čo je sebavedomie?**
+
+Ľudia s vysokou emocionálnou inteligenciou sú zvyčajne veľmi sebavedomí. Chápu svoje pocity, a preto im nedovoľujú, aby ich ovládali.
+
+**Charakteristiky sebavedomých ľudí:**
+
+**Viera v seba:**
+- Veria si a svojej intuícii
+- Nedovolia svojim pocitom, aby sa dostali spod kontroly
+- Majú dôveru vo vlastné rozhodnutia
+
+**Poznanie seba:**
+- Poznajú svoje prednosti a slabosti
+- Aktívne pracujú na svojom rozvoji
+- Neustále sa zlepšujú
+
+**Emocionálne povedomie:**
+- Rozumejú svojim pocitom
+- Vedia, prečo sa cítia určitým spôsobom
+- Dokážu identifikovať zdroj svojich emócií
+
+**Význam sebavedomia:**
+
+Mnoho ľudí verí, že sebavedomie je najdôležitejšia časť emocionálnej inteligencie. Je to základ, na ktorom sa budujú všetky ostatné prvky EQ.
+
+**Praktická aplikácia:**
+
+- Pozorujte svoje reakcie
+- Pýtajte sa sami seba "Prečo sa takto cítim?"
+- Veďte si denník svojich emócií
+- Reflektujte svoje správanie v rôznych situáciách`
+    },
+    {
+      title: "Téma 4: Päť prvkov EQ - Sebaovládanie",
+      content: `**Druhý prvok: Sebaovládanie**
+
+Sebaovládanie je schopnosť ovládať emócie a impulzy.
+
+**Charakteristiky ľudí so sebaovládaním:**
+
+**Emocionálna kontrola:**
+- Nikdy nie sú priveľmi nahnevaní alebo žiarliví
+- Nerobte impulzívne rozhodnutia
+- Nerobia nezodpovedné činy
+- Vždy myslia skôr ako konajú
+
+**Ohľaduplnosť:**
+- Charakteristika sebaovládania je ohľaduplnosť
+- Berú ohľad na pocity ostatných
+- Premýšľajú o dôsledkoch svojich činov
+
+**Flexibilita:**
+- Bezproblémové prijímanie zmien
+- Adaptabilita v rôznych situáciách
+- Schopnosť prispôsobiť sa novým okolnostiam
+
+**Integrita:**
+- Žijú podľa svojich hodnôt
+- Sú konzistentní vo svojom správaní
+- Majú jasné morálne princípy
+
+**Schopnosť povedať nie:**
+- Vedia odmietnuť, keď je to potrebné
+- Nestanovujú si nereálne očakávania
+- Rešpektujú svoje hranice
+
+**Prečo je sebaovládanie dôležité:**
+
+Sebaovládanie vám umožňuje reagovať na situácie rozvážne namiesto impulzívne. Je to kľúč k profesionálnemu aj osobnému úspechu.
+
+**Ako trénovať sebaovládanie:**
+
+- Cvičte hlboké dýchanie v stresových situáciách
+- Počítajte do desiatich pred reakciou
+- Vytvorte si zoznam hodnôt a držte sa ho
+- Premýšľajte o dlhodobých dôsledkoch rozhodnutí`
+    },
+    {
+      title: "Téma 5: Päť prvkov EQ - Motivácia",
+      content: `**Tretí prvok: Motivácia**
+
+Ľudia s vysokým stupňom EQ sú zvyčajne motivovaní.
+
+**Charakteristiky motivovaných ľudí:**
+
+**Dlhodobé myslenie:**
+- Ochotní oželieť okamžité výsledky
+- Sústreďujú sa na dlhodobý úspech
+- Vedia odložiť okamžité uspokojenie
+
+**Produktivita:**
+- Sú vysoko produktívni
+- Efektívni nech robia čokoľvek
+- Dokončujú, čo začnú
+
+**Láska k výzvam:**
+- Milujú výzvy
+- Neustráchajú sa ťažkostí
+- Berú problémy ako príležitosti na rast
+
+**Vnútorná motivácia:**
+- Nepotrebujú vonkajšie povzbudenie
+- Motivujú ich vnútorné ciele
+- Majú jasné vízie svojho úspechu
+
+**Odhodlanie:**
+- Nevzdávajú sa pri prvých prekážkach
+- Sú vytrvalí v dosahovaní cieľov
+- Učia sa z neúspechov
+
+**Ako podporiť vlastnú motiváciu:**
+
+**Stanovte si jasné ciele:**
+- Definujte, čo chcete dosiahnuť
+- Rozdeľte veľké ciele na menšie kroky
+- Sledujte svoj pokrok
+
+**Nájdite svoj účel:**
+- Zamyslite sa, prečo robíte to, čo robíte
+- Spojte prácu s vašimi hodnotami
+- Hľadajte zmysel vo svojich činnostiach
+
+**Oslavujte malé úspechy:**
+- Uznajte svoje drobné víťazstvá
+- Oceňte svoj pokrok
+- Používajte pozitívne sebaposilnenie`
+    },
+    {
+      title: "Téma 6: Päť prvkov EQ - Empatia",
+      content: `**Štvrtý prvok: Empatia**
+
+Empatia je pravdepodobne druhá najdôležitejšia zložka emocionálnej inteligencie.
+
+**Čo je empatia?**
+
+Empatia je schopnosť identifikovať potreby, priania a uhol pohľadu ľudí okolo nich.
+
+**Charakteristiky empatických ľudí:**
+
+**Rozpoznávanie emócií:**
+- Ľahko rozpoznávajú pocity iných
+- Vnímajú aj nezjavné emócie
+- Dokážu "čítať medzi riadkami"
+
+**Aktívne počúvanie:**
+- Sú vynikajúci v počúvaní
+- Venujú plnú pozornosť hovoriaci osobe
+- Pýtajú sa otázky na porozumenie
+
+**Budovanie vzťahov:**
+- Vynikajú v manažovaní vzťahov
+- Ľahko nadväzujú kontakty
+- Vytvárajú hlboké spojenia s ľuďmi
+
+**Bez predsudkov:**
+- Vyhýbajú sa stereotypom
+- Nerobte rýchle súdy
+- Pristupujú k ľuďom otvorene
+
+**Čestnosť:**
+- Žijú svoj život veľmi čestným spôsobom
+- Sú autentickí vo vzťahoch
+- Rešpektujú odlišnosti ostatných
+
+**Prečo je empatia dôležitá:**
+
+Empatia vám umožňuje skutočne porozumieť ľuďom okolo vás. Je základom zdravých vzťahov, či už v osobnom alebo profesionálnom živote.
+
+**Ako rozvíjať empatiu:**
+
+- Aktívne počúvajte bez prerušovania
+- Snažte sa vidieť situáciu z pohľadu druhého
+- Pýtajte sa otázky na pochopenie pocitov
+- Prejavte záujem o skúsenosti ostatných
+- Praktizujte súcit voči sebe aj ostatným`
+    },
+    {
+      title: "Téma 7: Päť prvkov EQ - Sociálne zručnosti",
+      content: `**Piaty prvok: Sociálne zručnosti**
+
+Je zvyčajne veľmi jednoduché mať rád ľudí s dobrými sociálnymi zručnosťami. Je to ďalší znak vysokej emocionálnej inteligencie.
+
+**Charakteristiky ľudí s dobrými sociálnymi zručnosťami:**
+
+**Tímová práca:**
+- Sú typickí tímoví hráči
+- Radšej pomáhajú iným než sa sústredia na vlastný úspech
+- Pomáhajú ostatným pokročiť a zažiariť
+
+**Komunikácia:**
+- Sú excelentní komunikátori
+- Dokážu jasne vyjadriť svoje myšlienky
+- Prispôsobujú komunikáciu publiku
+
+**Manažment konfliktov:**
+- Dokážu manažovať hádky
+- Hľadajú riešenia prospešné pre všetkých
+- Zostávajú pokojní v napätých situáciách
+
+**Budovanie vzťahov:**
+- Sú majstri vo vytváraní medziľudských vzťahov
+- Ľahko nadväzujú nové kontakty
+- Udržiavajú dlhodobé priateľstvá
+
+**Vedenie:**
+- Prirodzení lídri
+- Inšpirujú ostatných
+- Vytvárajú pozitívne pracovné prostredie
+
+**Prečo sú sociálne zručnosti dôležité:**
+
+Využívanie a budovanie EQ môže byť skvelou možnosťou ukázať ostatným lídra, ktorý vo vás je. Sociálne zručnosti sú kľúčom k úspechu v tíme aj v životných vzťahoch.
+
+**Ako rozvíjať sociálne zručnosti:**
+
+- Zapájajte sa do skupinových aktivít
+- Cvičte aktívne počúvanie
+- Hľadajte príležitosti na spoluprácu
+- Učte sa riešiť konflikty konštruktívne
+- Buďte otvorení spätnej väzbe`
+    },
+    {
+      title: "Téma 8: Význam EQ v profesionálnom živote",
+      content: `**Emocionálna inteligencia v práci**
+
+Stále viac organizácií uznáva význam emocionálnej inteligencie v profesionálnom prostredí.
+
+**Štatistiky a fakty:**
+
+**EQ a výkon:**
+- EQ zodpovedá za 58 % výkonu vo všetkých typoch zamestnaní
+- Vysoko koreluje s pracovným úspechom
+- Predpovedá výkonnosť lepšie ako IQ
+
+**EQ a príjem:**
+- Ľudia s vyšším EQ zarábajú v priemere o 29 000 dolárov ročne viac
+- Každý jeden bod zvýšenia EQ = 1 300 dolárov navyše v ročnom príjme
+- Návratnosť investície do rozvoja EQ je vysoká
+
+**Využitie EQ pri nábore:**
+
+Organizácie čoraz častejšie využívajú EQ pri:
+- Prijímaní nových zamestnancov
+- Povyšovaní do vedúcich pozícií
+- Hodnotení potenciálu zamestnancov
+- Budovaní efektívnych tímov
+
+**Prečo je EQ dôležitá v práci:**
+
+**Lepšia spolupráca:**
+- Ľudia s vysokým EQ sú tými, ktorých väčšina chce mať vo svojom tíme
+- Vytvárajú pozitívnu atmosféru
+- Riešia konflikty efektívne
+
+**Komunikácia:**
+- Keď ľudia s vysokým EQ posielajú e-mail, býva spravidla zodpovedaný
+- Dokážu jasne vyjadriť svoje myšlienky
+- Rozumejú potrebám zákazníkov aj kolegov
+
+**Získavanie podpory:**
+- Keď potrebujú pomoc, dostanú ju
+- Ľudia im dôverujú
+- Vytvárajú silné pracovné vzťahy
+
+**Oblasti, kde EQ vyniká:**
+
+- Vedenie tímov a manažment
+- Zákaznícky servis
+- Predaj a obchodné rokovania
+- HR a ľudské zdroje
+- Všetky pozície vyžadujúce spoluprácu`
+    },
+    {
+      title: "Téma 9: Ako zvyšovať svoju emocionálnu inteligenciu",
+      content: `**Dobrá správa: EQ sa dá naučiť!**
+
+Emocionálna inteligencia MOŽE byť naučená a rozvíjaná. Nie je to vrodená vlastnosť - je to súbor zručností, ktoré si môžete vypestovať.
+
+**Nástroje na zistenie vášho EQ:**
+
+**Testy a knihy:**
+- Mnoho testov vám umožní zistiť svoju aktuálnu emocionálnu inteligenciu
+- Knihy vám pomôžu zistiť, kde je potrebné zapracovať
+- Online zdroje ponúkajú bezplatné hodnotenie
+
+**Praktické tipy na zvýšenie EQ:**
+
+**1. Pozorujte svoje reakcie na ľudí:**
+- Ponáhľate sa rýchlo súdiť skôr ako viete všetky fakty?
+- Žijete v stereotype?
+- Pozrite sa úprimne ako žijete a vychádzate s inými ľuďmi
+- Skúste sa postaviť na ich miesto
+- Buďte viac otvorení a prijímajúci ich pohľady a potreby
+
+**2. Analyzujte svoje pracovné prostredie:**
+- Hľadáte pozornosť pre svoje úspechy?
+- Pokora môže byť úžasnou kvalitou
+- Dajte iným možnosť zažiariť
+- Sústreďte na nich pozornosť
+- Nemajte priveľkú starosť o získanie pochvaly pre seba
+
+**3. Vážte si sami seba:**
+- Čo sú vaše slabosti?
+- Ste schopní akceptovať, že nie ste dokonalí?
+- Pracujte na oblastiach, aby ste sa stali lepším človekom
+- Majte odvahu pozrieť sa na seba úprimne
+- Môže to zmeniť váš život
+
+**Kontinuálny rozvoj:**
+- EQ nie je cieľ, ale cesta
+- Neustále sa učte a zlepšujte
+- Buďte trpezliví so sebou
+- Oslavujte malé pokroky`
+    },
+    {
+      title: "Téma 10: Praktické cvičenia pre rozvoj EQ",
+      content: `**Praktické tipy na každý deň**
+
+**1. Reakcie v stresových situáciách:**
+
+**Zamyslite sa:**
+- Ste nervózny vždy, keď meškáte alebo sa vám niečo nepodarilo?
+- Zahanbujete iných?
+- Stávate sa nahnevaní na nich aj keď to nie je ich chyba?
+
+**Cvičenie:**
+- Schopnosť zostať pokojný a ovládať sa je vysoko cenená hodnota
+- Snažte sa vždy držať svoje emócie pod kontrolou
+- Keď veci nejdú podľa predstáv, dýchajte hlboko
+- Počítajte do desiatich pred reakciou
+
+**2. Prijmite zodpovednosť za svoje činy:**
+
+**Keď zraníte niekoho city:**
+- Ospravedlňte sa priamo
+- Neignorujte, čo ste urobili
+- Nevyhýbajte sa osobe
+- Ľudia sú skôr ochotní odpustiť a zabudnúť pri čestnom kroku
+
+**3. Zvážte dopad na ostatných:**
+
+**Pred rozhodnutím:**
+- Zvážte, jak vaše činy ovplyvnia ostatných
+- Vžite sa do ich kože
+- Ako sa budú cítiť ak to urobíte?
+- Chceli by ste mať takú skúsenosť?
+
+**Ak vec musíte urobiť:**
+- Premýslite, ako pomôžete ostatným vyrovnať sa s dôsledkami
+- Komunikujte otvorene o zmenách
+- Ponúknite podporu
+
+**Denné cvičenia:**
+
+**Ranné zamyslenie:**
+- Ako sa dnes cítim?
+- Čo ovplyvňuje moje emócie?
+- Ako môžem dnes pozitívne ovplyvniť ostatných?
+
+**Večerná reflexia:**
+- Ako som dnes reagoval na výzvy?
+- Čo som sa naučil o sebe?
+- Čo môžem zajtra urobiť lepšie?
+
+**Praktická aplikácia:**
+- Veďte si denník emócií
+- Cvičte aktívne počúvanie každý deň
+- Hľadajte príležitosti pomôcť ostatným
+- Buďte vďační za spätnú väzbu
+
+**Záver:**
+
+Rozvoj emocionálnej inteligencie je celoživotná cesta. Každý deň máte príležitosť sa zlepšiť, učiť sa o sebe a pozitívne ovplyvňovať ľudí okolo vás. Využívanie a budovanie EQ môže byť skvelou možnosťou ukázať ostatným lídra, ktorý vo vás je.`
+    }
+  ],
+  
   "Make-up pre začiatočníkov": [
     {
       title: "Téma 1: Úvod do líčenia - Vaša nevyhnutnosť pre dokonalý podklad",
