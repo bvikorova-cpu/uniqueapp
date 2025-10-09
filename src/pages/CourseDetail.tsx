@@ -221,12 +221,13 @@ Po úspešnom zvládnutí tejto témy budete pripravení na záverečný test a 
       current_topic: 0,
       completed_topics: [],
     });
-  }, [courseProgress]);
+  }, [courseProgress, updateProgress]);
 
   const handleTopicComplete = (index: number) => {
-    const newCompletedTopics = completedTopics.includes(index) 
-      ? completedTopics 
-      : [...completedTopics, index];
+    const currentCompleted = courseProgress?.completed_topics || [];
+    const newCompletedTopics = currentCompleted.includes(index) 
+      ? currentCompleted 
+      : [...currentCompleted, index];
     
     const nextTopic = index === 9 ? 9 : index + 1;
 
@@ -241,9 +242,10 @@ Po úspešnom zvládnutí tejto témy budete pripravení na záverečný test a 
   };
 
   const handleTopicSelect = (index: number) => {
+    const currentCompleted = courseProgress?.completed_topics || [];
     updateProgress({
       current_topic: index,
-      completed_topics: completedTopics,
+      completed_topics: currentCompleted,
     });
   };
 

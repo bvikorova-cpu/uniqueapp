@@ -154,7 +154,7 @@ export const useCourseProgress = (courseName: string) => {
   useEffect(() => {
     startTimeRef.current = new Date();
 
-    timerRef.current = setInterval(() => {
+    const timer = setInterval(() => {
       const now = new Date();
       const minutesElapsed = Math.floor(
         (now.getTime() - startTimeRef.current.getTime()) / 60000
@@ -169,12 +169,14 @@ export const useCourseProgress = (courseName: string) => {
       }
     }, 60000); // Every minute
 
+    timerRef.current = timer;
+
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
     };
-  }, [statistics?.time_spent_minutes]);
+  }, []);
 
   return {
     progress,
