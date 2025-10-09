@@ -4,6 +4,885 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Prezentačné zručnosti": [
+    {
+      title: "Téma 1: Čo sú prezentačné zručnosti?",
+      content: `**Definícia prezentačných zručností**
+
+Prezentačné zručnosti, používané v kontexte podnikania, sa týkajú všetkých vlastností, ktoré budete potrebovať na vytvorenie a poskytnutie jasnej a efektívnej ústnej prezentácie.
+
+**Základné charakteristiky:**
+
+**1. Komplexná zručnosť:**
+- Vytvorenie prezentácie
+- Príprava materiálov
+- Efektívne doručenie
+- Interakcia s publikom
+
+**2. Širokó využitie:**
+
+Váš budúci zamestnávateľ môže chcieť, aby ste:
+- Poskytli informácie kolegom
+- Podávali správy
+- Vykonávali školenia
+- Poskytovali informácie klientom
+- Rozhovárali pred veľkým publikom
+- Prezentovali projekty
+- Vedeli porady
+
+**3. Súčasť komunikačných zručností:**
+
+Poskytovanie zapájajúcich a ľahko zrozumiteľných rozhovorov je dôležitou súčasťou silných ústnych komunikačných zručností, ktoré sú pracovnou požiadavkou pre mnoho pozícií.
+
+**Význam pre kariéru:**
+
+**Profesionálny vývoj:**
+- Dôležité pre kariérny rast
+- Vyžadované na mnohých pozíciách
+- Diferenciátor medzi kandidátmi
+- Nástroj profesionálneho úspechu
+
+**V životopise a pohovore:**
+- Jasné pomenovanie zručností
+- Konkrétne príklady použitia
+- Dôkaz schopností
+- Príprava na ukážky
+
+**Proces rozvoja:**
+
+Môžete použiť zoznam zručností, ktorý vám pomôže:
+- Naplánovať váš profesionálny vývoj
+- Identifikovať oblasti na zlepšenie
+- Opísať existujúce zručnosti
+- Pripraviť sa na pohovory
+
+**Počas rozhovoru:**
+
+Môže vám byť požiadané:
+- Poskytnúť ukážku prezentácie
+- Prezentovať pridelenú tému
+- Vybrať si vlastnú tému
+- Demonštrovať zručnosti v praxi`
+    },
+    {
+      title: "Téma 2: Tri fázy prezentácie",
+      content: `**Komplexný pohľad na prezentáciu**
+
+Každá prezentácia má tri fázy: príprava, doručenie a následné kroky.
+
+**Fáza 1: Príprava**
+
+**Čo zahŕňa:**
+- Robiť výskum
+- Vytvoriť prezentáciu
+- Napísať text alebo poznámky
+- Vytvoriť vizuálne materiály
+- Pripraviť zvukové pomôcky
+
+**Písomná príprava:**
+- Vytvorenie celého textu
+- Písanie poznámok
+- Štruktúrovanie obsahu
+- Príprava príkladov
+
+**Vizuálne materiály:**
+- Vytvorenie snímok
+- Podporné vizuály
+- Infografiky
+- Videá a animácie
+
+**Logistika:**
+- Overenie dostupnosti miesta
+- Správne nastavenie priestoru
+- Test projektora
+- Pripojenie notebooku
+- Zvukové zariadenia
+- Osvetlenie
+
+**Nacvičovanie:**
+Budete chcieť praktizovať svoje prezentácie toľkokrát, koľkokrát potrebujete, aby ste sa cítili pohodlne, aby ste ich dodali s ľahkosťou a dôverou.
+
+**Fáza 2: Doručenie**
+
+**Charakteristika:**
+Doručenie je časť, ktorú publikum vidí.
+
+**Závislosti:**
+Dobrá dodávka závisí od:
+- Dôkladnej prípravy
+- Presvedčivej prezentácie
+- Vlastnej rozlišovacej sady zručností
+
+**Kľúčové aspekty:**
+- Komunikácia s publikom
+- Používanie vizuálnych pomôcok
+- Reč tela
+- Tón hlasu
+- Interakcia
+
+**Fáza 3: Následné kroky**
+
+**Technické úlohy:**
+- Správne rozbitie zariadenia
+- Ukladanie zariadení
+- Archivovanie materiálov
+
+**Komunikácia:**
+- Kontaktovanie členov publika
+- Zasielanie sľúbených informácií
+- Follow-up e-maily
+- Odpovede na otázky
+
+**Spätná väzba:**
+- Vyhľadávanie
+- Zhromažďovanie
+- Analýza spätnej väzby
+- Implementácia zlepšení
+
+**Zber údajov:**
+- Mená a kontaktné informácie
+- Vyplnené prieskumy
+- Hodnotenia
+- Komentáre
+
+**Organizácia údajov:**
+- Zbieranie informácií
+- Organizovanie dát
+- Ukladanie záznamov
+- Analýza výsledkov`
+    },
+    {
+      title: "Téma 3: Výskum a príprava obsahu",
+      content: `**Prvý krok prípravy**
+
+Výskum je prvým krokom pri príprave väčšiny prezentácií a môže sa pohybovať od viacročného procesu až po 20 minút online v závislosti od kontextu a témy.
+
+**Základné výskumné zručnosti:**
+
+**1. Formulácia výskumných otázok:**
+
+**Čo potrebujete vedieť:**
+- Kľúčové témy
+- Hlavné body
+- Podporné údaje
+- Relevantné príklady
+
+**Otázky na zamyslenie:**
+- Čo je cieľ prezentácie?
+- Kto je moje publikum?
+- Aké informácie potrebujú?
+- Aká je úroveň ich znalostí?
+
+**2. Identifikácia zdrojov:**
+
+**Typy zdrojov:**
+- Akademické publikácie
+- Odborné články
+- Firemné dokumenty
+- Štatistiky a dáta
+- Prípadové štúdie
+- Rozhovory s expertmi
+
+**Hodnotenie zdrojov:**
+- Dôveryhodnosť
+- Aktuálnosť
+- Relevantnosť
+- Objektívnosť
+
+**3. Usporiadanie výsledkov:**
+
+**Organizácia informácií:**
+- Kategorizácia podľa tém
+- Chronologické usporiadanie
+- Podľa dôležitosti
+- Logické vzťahy
+
+**Príprava na použitie:**
+- Výber najrelevantnejších údajov
+- Vytvorenie poznámok
+- Citácie a referencie
+- Vizualizácia dát
+
+**Rozsah výskumu:**
+
+**Rýchly výskum (20 minút - 1 hodina):**
+- Online zdroje
+- Základné fakty
+- Aktuálne štatistiky
+- Rýchle overenie
+
+**Stredný výskum (niekoľko dní):**
+- Hlbšia analýza
+- Viacero zdrojov
+- Porovnanie informácií
+- Príprava príkladov
+
+**Rozsiahly výskum (týždne - mesiace):**
+- Komplexná analýza
+- Primárny výskum
+- Rozhovory
+- Terénna práca
+
+**Dokumentácia:**
+- Záznam zdrojov
+- Poznámky
+- Citácie
+- Bibliografia`
+    },
+    {
+      title: "Téma 4: Písanie a štruktúrovanie prezentácie",
+      content: `**Tvorba obsahu prezentácie**
+
+Môžete alebo nemusíte písať skript, ale musíte predplánovať, čo budete hovoriť, v akom poradí a na akej úrovni podrobnosti.
+
+**Prístupy k písaniu:**
+
+**1. Plný skript:**
+
+**Výhody:**
+- Detailná príprava
+- Kontrola nad obsahom
+- Istota v doručení
+- Presné načasovanie
+
+**Nevýhody:**
+- Môže znieť mechanicky
+- Menej flexibility
+- Riziko čítania
+- Viac času na prípravu
+
+**2. Poznámky:**
+
+**Výhody:**
+- Prirodzenejší prejav
+- Flexibilita
+- Lepší očný kontakt
+- Autenticita
+
+**Štruktúra poznámok:**
+- Hlavné body
+- Kľúčové fakty
+- Príklady
+- Prechody
+
+**3. Bullet points:**
+
+**Použitie:**
+- Prehľad štruktúry
+- Hlavné témy
+- Pomocník pre pamäť
+- Základ pre improvizáciu
+
+**Štruktúra prezentácie:**
+
+**Úvod:**
+- Upútanie pozornosti
+- Predstavenie témy
+- Cieľ prezentácie
+- Prehľad obsahu
+
+**Hlavná časť:**
+- 3-5 hlavných bodov
+- Podporné dôkazy
+- Príklady a príbehy
+- Vizualizácie
+
+**Záver:**
+- Zhrnutie
+- Kľúčové posolstvá
+- Call to action
+- Otázky a odpovede
+
+**Princípy efektívneho písania:**
+
+**Jasnosť:**
+- Jednoduché vety
+- Zrozumiteľný jazyk
+- Vyhýbanie sa žargónu
+- Konkrétnosť
+
+**Súvislosť:**
+- Logické prepojenia
+- Plynulé prechody
+- Jasná línia argumentácie
+- Koherentnosť
+
+**Relevantnosť:**
+- Zameranie na publikum
+- Užitočné informácie
+- Praktické príklady
+- Hodnota pre poslucháčov
+
+**Porovnanie s písaním eseje:**
+
+Ak môžete napísať súhrnnú esej, môžete naplánovať prezentáciu:
+- Podobná štruktúra
+- Logická argumentácia
+- Podporné dôkazy
+- Jasný záver`
+    },
+    {
+      title: "Téma 5: PowerPoint a vizuálne pomôcky",
+      content: `**Technologické nástroje prezentácie**
+
+PowerPoint je dominantný softvér používaný na vytváranie vizuálnych pomôcok na prezentácie.
+
+**Základy PowerPoint:**
+
+**1. Základné funkcie:**
+- Vytváranie snímok
+- Formátovanie textu
+- Vkladanie obrázkov
+- Animácie
+- Prechody
+
+**2. Špeciálne funkcie:**
+
+**Nad rámec základných šablón:**
+Naučte sa používať to dobre, vrátane špeciálnych funkcií mimo základných šablón, ktoré môžu skutočne priniesť prezentáciu do života.
+
+**Pokročilé možnosti:**
+- Vlastné animácie
+- Multimedia integrácia
+- Interaktívne prvky
+- Grafika a diagramy
+- SmartArt
+- Embeddovanie videí
+
+**3. Dôležitosť znalosti:**
+
+Dokonca aj keď niekto iný pripravuje prezentáciu pre vás, pomôže vám vedieť, ako používať softvér v prípade zmien v poslednej chvíli.
+
+**Prínosy:**
+- Rýchle úpravy
+- Nezávislosť
+- Flexibilita
+- Profesionalita
+
+**Zásady efektívnych snímok:**
+
+**Pravidlo 6x6:**
+- Maximálne 6 riadkov na snímku
+- Maximálne 6 slov na riadok
+- Prehľadnosť
+- Čitateľnosť
+
+**Vizuálna hierarchia:**
+- Dôležité informácie väčšie
+- Konzistentné farby
+- Jasné písmo
+- Dostatočný kontrast
+
+**Obrázky a grafika:**
+- Vysoká kvalita
+- Relevantnosť
+- Nie príliš veľa
+- Profesionálny vzhľad
+
+**Konzistencia:**
+- Jednotný dizajn
+- Rovnaké písma
+- Farebná schéma
+- Štýl ikon
+
+**Alternatívy k PowerPoint:**
+
+**Ďalšie nástroje:**
+- Google Slides
+- Keynote
+- Prezi
+- Canva
+- Adobe Spark
+
+**Výber nástroja:**
+- Podľa potrieb
+- Kompatibilita
+- Vaše znalosti
+- Očakávania publika`
+    },
+    {
+      title: "Téma 6: Organizácia a logistika",
+      content: `**Zabezpečenie hladkého priebehu**
+
+Nechcete, aby ste strávili polovicu času prezentácie a snažili sa nájsť kábel na pripojenie vášho laptopu k projektoru.
+
+**Význam organizácie:**
+
+Veľa vecí sa môže zhoršiť tesne pred prezentáciou a pravdepodobne to bude, pokiaľ nebudete organizovaní.
+
+**Technická príprava:**
+
+**1. Zariadenia:**
+- Projektor
+- Laptop/počítač
+- Káble a adaptéry
+- Mikrofón
+- Ovládač prezentácie
+- Záložný USB
+
+**2. Kontrolný zoznam (deň vopred):**
+- Test projektora
+- Pripojenie notebooku
+- Kontrola zvuku
+- Test osvetlenia
+- Diaľkové ovládanie
+- Internet connectivity
+
+**3. Záložné plány:**
+- Záložná kópia prezentácie
+- Alternatívne zariadenie
+- Tlačené materiály
+- Plán B bez techniky
+
+**Priestorová organizácia:**
+
+**1. Usporiadanie miestnosti:**
+- Rozloženie sedadiel
+- Viditeľnosť pre všetkých
+- Vzdialenosť od obrazovky
+- Prístupové cesty
+
+**2. Fyzické potreby:**
+- Voda pre rečníka
+- Pódium/stojisko
+- Osvetlenie
+- Teplota miestnosti
+- Vetranie
+
+**3. Materiály:**
+- Handouty
+- Brožúry
+- Vizitky
+- Prihlasovacie hárky
+- Dotazníky
+
+**Časová organizácia:**
+
+**1. Harmonogram:**
+- Čas príchodu
+- Čas na prípravu
+- Začiatok prezentácie
+- Prestávky
+- Q&A
+- Ukončenie
+
+**2. Buffer čas:**
+- Pre technické problémy
+- Pre zdržania
+- Pre dodatočné otázky
+- Pre networking
+
+**Osobná organizácia:**
+
+**1. Dokumenty:**
+- Poznámky
+- Prezentácia
+- Materiály
+- Kontakty
+
+**2. Osobné potreby:**
+- Voda
+- Poznámky
+- Náhradné oblečenie
+- Lieky (ak potrebné)
+- Drobné peniaze
+
+**3. Mentálna príprava:**
+- Príchod včas
+- Čas na ukľudnenie
+- Precvičenie
+- Vizualizácia úspechu`
+    },
+    {
+      title: "Téma 7: Hovorenie na verejnosti",
+      content: `**Zvládnutie strachu z verejného vystupovania**
+
+Ak sa chcete rozprávať pred živým publikom, musíte sa cítiť pohodlne a pútavo, aj keď to nie je.
+
+**Výzvy verejného hovroenia:**
+
+**1. Prirodzený strach:**
+- Bežný u väčšiny ľudí
+- Fyziologická reakcia
+- Psychologický stres
+- Potreba praxe
+
+**2. Časová investícia:**
+
+To môže trvať roky praxe, a niekedy aj verejné hovorenie nie je pre určitých ľudí.
+
+**Realita:**
+- Postupné zlepšovanie
+- Trpezlivosť
+- Kontinuálna práca
+- Nie každý musí byť expert
+
+**3. Vplyv na publikum:**
+
+Nepríjemný moderátor je výzvou pre každého.
+
+**Dôsledky:**
+- Strata pozornosti
+- Znížená dôveryhodnosť
+- Slabší dojem
+- Menej efektívna správa
+
+**Dobrá správa:**
+
+Našťastie sa vďaka praxi môže zlepšiť schopnosť hovoriť verejnosťou.
+
+**Techniky zlepšenia:**
+
+**1. Postupná expozícia:**
+- Začať v malých skupinách
+- Postupne zvyšovať veľkosť publika
+- Rôzne typy prezentácií
+- Budovanie sebadôvery
+
+**2. Príprava:**
+- Dôkladná znalostť témy
+- Nacvičovanie
+- Vizualizácia úspechu
+- Príprava na otázky
+
+**3. Techniky zvládania nervozity:**
+
+**Fyzické:**
+- Hlboké dýchanie
+- Relaxačné cvičenia
+- Pohyb pred prejavom
+- Progresívna svalová relaxácia
+
+**Mentálne:**
+- Pozitívne sebapotvrdenie
+- Realistické očakávania
+- Fokus na správu, nie na seba
+- Prijatie nervozity ako normálnej
+
+**4. Praktická prax:**
+
+**Toastmasters:**
+- Pravidelné stretnutia
+- Podporné prostredie
+- Konštruktívna spätná väzba
+- Progresívne výzvy
+
+**Iné príležitosti:**
+- Firemné prezentácie
+- Komunitné udalosti
+- Online webináre
+- Školenia kolegov
+
+**Kľúčové zásady:**
+
+**Autenticita:**
+- Buďte sami sebou
+- Prirodzený štýl
+- Úprimnosť
+- Osobný prístup
+
+**Príprava:**
+- Znalostť obsahu
+- Cvičenie
+- Overenie techniky
+- Záložné plány`
+    },
+    {
+      title: "Téma 8: Verbálna komunikácia a interakcia",
+      content: `**Komunikácia počas prezentácie**
+
+Verejné hovorenie je jednou formou verbálnej komunikácie, ale budete potrebovať iné formy na dobrú prezentáciu.
+
+**Odpovede na otázky:**
+
+**1. Porozumenie otázkam:**
+
+Konkrétne musíte vedieť, ako odpovedať na otázky. Mali by ste byť schopní porozumieť otázkam, ktoré kladie vaše publikum (aj keď sú to čudné alebo zlé formulácie).
+
+**Techniky:**
+- Aktívne počúvanie
+- Parafrázovanie otázky
+- Objasňovanie nejasností
+- Potvrdenie pochopenia
+
+**Príklad:**
+"Ak dobre rozumiem, pýtate sa na..."
+
+**2. Poskytovanie odpovedí:**
+
+Poskytovať úctivú, čestnú a správnu odpoveď bez toho, aby ste sa dostali mimo témy.
+
+**Charakteristiky dobrých odpovedí:**
+
+**Úctivosť:**
+- Rešpekt k otázke
+- Zdvorilý tón
+- Uznanie otázky
+- Žiadne znevažovanie
+
+**Česnosť:**
+- Úprimné odpovede
+- Priznanie neznalosti
+- Sľub dohľadania
+- Transparentnosť
+
+**Správnosť:**
+- Presné informácie
+- Fakty, nie domienky
+- Overené údaje
+- Citácia zdrojov
+
+**Relevantnosť:**
+- Držanie sa témy
+- Vyhýbanie sa odbočkám
+- Fokus na otázku
+- Stručnosť
+
+**Rôzne typy otázok:**
+
+**1. Jednoduchá faktická:**
+- Priama odpoveď
+- Stručná
+- Na mieste
+
+**2. Zložitá/viacvrstvová:**
+- Rozdelenie na časti
+- Postupné odpovedanie
+- Štruktúrovaný prístup
+
+**3. Provokačná/kritická:**
+- Pokoj
+- Objektívnosť
+- Nie osobné branie
+- Konštruktívna odpoveď
+
+**4. Mimo témy:**
+- Uznanie otázky
+- Presmerovanie
+- Ponúknutie follow-up
+- Návrat k téme
+
+**5. Neviem odpoveď:**
+- Úprimné priznanie
+- Sľub dohľadania
+- Možnosť odporúčania zdroja
+- Pozvanie na ďalšiu komunikáciu
+
+**Techniky efektívnej komunikácie:**
+
+**Jasnosť:**
+- Jednoduché vety
+- Zrozumiteľný jazyk
+- Konkrétne príklady
+- Vyhýbanie sa žargónu
+
+**Empatia:**
+- Pochopenie perspektívy
+- Citlivosť
+- Prispôsobenie sa publiku
+- Rešpekt k rôznorodosti`
+    },
+    {
+      title: "Téma 9: Analytické myslenie a sebazdokonaľovanie",
+      content: `**Kontinuálne zlepšovanie**
+
+Najlepší moderátori neustále zlepšujú svoje zručnosti.
+
+**Význam analýzy:**
+
+Aby ste sa zlepšili, musíte byť schopní pozerať čestne na vašu výkonnosť a všetku spätnú väzbu, ktorú dostanete, a zistiť, čo musíte urobiť, aby ste sa zlepšili. To si vyžaduje analytické myslenie.
+
+**Proces sebahodnotenia:**
+
+**1. Objektívny pohľad:**
+
+**Sebaanalýza:**
+- Čo fungovalo dobre?
+- Kde boli slabiny?
+- Čo by som urobil inak?
+- Aké boli reakcie publika?
+
+**Nástroje:**
+- Video nahrávka
+- Audio záznam
+- Poznámky počas prezentácie
+- Denník rečníka
+
+**2. Spätná väzba:**
+
+**Zdroje:**
+- Hodnotenia od publika
+- Komentáre kolegov
+- Formálne hodnotenia
+- Neformálne rozhovory
+
+**Typy spätnej väzby:**
+
+**Kvantitatívna:**
+- Hodnotenia 1-10
+- Percentá spokojnosti
+- Štatistické údaje
+- Porovnanie s inými
+
+**Kvalitatívna:**
+- Komentáre
+- Návrhy
+- Konkrétne príklady
+- Detailné postrehy
+
+**3. Analýza údajov:**
+
+**Identifikácia vzorov:**
+- Opakujúce sa témy
+- Konzistentné silné stránky
+- Systematické slabiny
+- Oblasti na zlepšenie
+
+**Prioritizácia:**
+- Najdôležitejšie oblasti
+- Rýchle víťazstvá
+- Dlhodobé ciele
+- Realističnosť
+
+**Implementácia zlepšení:**
+
+**1. Akčný plán:**
+
+**Konkrétne kroky:**
+- Čo zlepšiť
+- Ako to urobiť
+- Časový rámec
+- Merateľné ciele
+
+**2. Prax:**
+- Cielené cvičenie
+- Fokus na slabé stránky
+- Posilňovanie silných stránok
+- Pravidelnosť
+
+**3. Monitorovanie pokroku:**
+- Sledovanie zmien
+- Porovnanie výkonnosti
+- Úpravy stratégie
+- Oslava úspechov
+
+**Kritické myslenie:**
+
+**Charakteristiky:**
+- Objektívnosť
+- Otvorenosť ku kritike
+- Ochota zmeniť sa
+- Neustále učenie
+
+**Výhody:**
+- Rýchlejší pokrok
+- Lepšie výsledky
+- Profesionálny rast
+- Vyššia kvalita prezentácií`
+    },
+    {
+      title: "Téma 10: Zhrnutie a profesionálny rozvoj",
+      content: `**Komplexný prehľad prezentačných zručností**
+
+**Všetky kľúčové zručnosti:**
+
+**1. Prípravná fáza:**
+- Výskum
+- Písanie a štruktúrovanie
+- PowerPoint a vizuály
+- Organizácia a logistika
+
+**2. Doručenie:**
+- Verejné hovorenie
+- Verbálna komunikácia
+- Reč tela
+- Interakcia s publikom
+
+**3. Následné kroky:**
+- Analytické myslenie
+- Spracovanie spätnej väzby
+- Organizácia údajov
+- Kontinuálne zlepšovanie
+
+**Používanie zoznamu zručností:**
+
+**Pre profesionálny vývoj:**
+
+Môžete použiť zoznam, ktorý vám pomôže naplánovať váš profesionálny vývoj. Je na ňom niečo, na čo musíte pracovať?
+
+**Sebahodnotenie:**
+- Identifikácia silných stránok
+- Zistenie medzier
+- Plánovanie rozvoja
+- Stanovenie cieľov
+
+**Pre kariérne dokumenty:**
+
+Tento zoznam vám tiež môže pomôcť opísať zručnosti, ktoré už máte.
+
+**V životopise:**
+- Jasné pomenovanie zručností
+- Konkrétne príklady
+- Merateľné výsledky
+- Relevantnosť pre pozíciu
+
+**V sprievodnom liste:**
+- Kontextualizácia zručností
+- Špecifické situácie
+- Dosiahnuté výsledky
+- Hodnota pre zamestnávateľa
+
+**Príprava na pohovor:**
+
+Buďte pripravení poskytnúť príklady príležitostí, keď ste použili akékoľvek zručnosti, o ktorých si myslíte, že máte, v prípade, že si to tazateľ pýta.
+
+**STAR metóda:**
+- **S**ituation - Situácia
+- **T**ask - Úloha
+- **A**ction - Akcia
+- **R**esult - Výsledok
+
+**Ukážkové prezentácie:**
+
+Počas procesu rozhovoru vám môže byť požiadané poskytnúť ukážku prezentácie. Môže vám byť pridelená téma, alebo vás môže byť požiadané, aby ste si vybrali svoju vlastnú.
+
+**Príprava:**
+- Pochopenie požiadaviek
+- Výber vhodnej témy
+- Štruktúrovaná prezentácia
+- Profesionálne vizuály
+- Prax
+
+**Rôznorodosť pozícií:**
+
+Samozrejme, dôkladne prečítajte popisy práce, pretože požiadavky sa môžu líšiť aj medzi veľmi podobnými pozíciami.
+
+**Prispôsobenie:**
+- Analýza požiadaviek
+- Zdôraznenie relevantných zručností
+- Prispôsobenie príkladov
+- Špecifická príprava
+
+**Kontinuálny rozvoj:**
+
+**Celoživotné učenie:**
+- Pravidelná prax
+- Nové techniky
+- Moderné nástroje
+- Sledovanie trendov
+
+**Zdroje:**
+- Kurzy a školenia
+- Knihy a články
+- Online tutoriály
+- Mentoring
+
+**Záver:**
+
+Prezentačné zručnosti sú investíciou do kariéry, ktorá sa oplatí v každej profesii. S praxou, analýzou a odhodlaním sa môže stať každý efektívnym prezentátorom.`
+    }
+  ],
+  
   "Public speaking": [
     {
       title: "Téma 1: Čo je verejné rozprávanie?",
