@@ -9393,27 +9393,10 @@ Podporné dokumenty, ktoré dopĺňajú business plán:
 
 Business plán je živý dokument, ktorý by sa mal pravidelne aktualizovať podľa vývoja firmy a trhu.`
     }
-  ]
-};
-// Generate default topics for courses not in the list
-export const generateDefaultTopics = (courseName: string): Topic[] => {
-  return [
-    { title: `Téma 1: Úvod do ${courseName}`, content: `Základné informácie o téme ${courseName}. Táto téma poskytuje úvod do problematiky a definuje kľúčové pojmy.` },
-    { title: `Téma 2: Základné pojmy ${courseName}`, content: `Kľúčová terminológia a definície potrebné na pochopenie ${courseName}.` },
-    { title: `Téma 3: Praktické aplikácie`, content: `Praktické využitie poznatkov z ${courseName} v reálnych situáciách.` },
-    { title: `Téma 4: Pokročilé techniky`, content: `Pokročilejšie metódy a postupy v oblasti ${courseName}.` },
-    { title: `Téma 5: Riešenie problémov`, content: `Časté problémy a ich riešenia v ${courseName}.` },
-    { title: `Téma 6: Prípadové štúdie`, content: `Reálne príklady a prípadové štúdie z praxe ${courseName}.` },
-    { title: `Téma 7: Najlepšie postupy`, content: `Overené postupy a odporúčania pre ${courseName}.` },
-    { title: `Téma 8: Nástroje a zdroje`, content: `Užitočné nástroje a zdroje pre ${courseName}.` },
-    { title: `Téma 9: Trendy a budúcnosť`, content: `Aktuálne trendy a budúci vývoj v oblasti ${courseName}.` },
-    { title: `Téma 10: Zhrnutie a certifikácia`, content: `Zhrnutie kľúčových poznatkov a informácie o certifikácii.` }
-  ];
-};
+  ],
 
-// Export the courseContent object with the new course
-courseContent["Kryptomeny"] = [
-  {
+  "Kryptomeny": [
+    {
     title: "Téma 1: Úvod do kryptomien",
     content: `**Čo je to kryptomena?**
 
@@ -10113,6 +10096,22 @@ Kryptomeny predstavujú revolučnú zmenu vo svete financií, no je dôležité 
 Svet kryptomien je fascinujúci a plný príležitostí, ale aj výziev. S potrebnými znalosťami a opatrnosťou môžete byť súčasťou tejto finančnej revolúcie.
 
 Úspech v kryptomenách závisí od vzdelávania, trpezlivosti a zodpovedného prístupu k investovaniu.`
-  }
+    }
   ]
+};
+
+// Generate default topics for courses not in the list
+export const generateDefaultTopics = (courseName: string): Topic[] => {
+  return [
+    { title: `Téma 1: Úvod do ${courseName}`, content: `Základné informácie o téme ${courseName}. Táto téma poskytuje úvod do problematiky a definuje kľúčové pojmy.` },
+    { title: `Téma 2: Základné pojmy ${courseName}`, content: `Kľúčová terminológia a definície potrebné na pochopenie ${courseName}.` },
+    { title: `Téma 3: Praktické aplikácie`, content: `Praktické využitie poznatkov z ${courseName} v reálnych situáciách.` },
+    { title: `Téma 4: Pokročilé techniky`, content: `Pokročilejšie metódy a postupy v oblasti ${courseName}.` },
+    { title: `Téma 5: Riešenie problémov`, content: `Časté problémy a ich riešenia v ${courseName}.` },
+    { title: `Téma 6: Prípadové štúdie`, content: `Reálne príklady a prípadové štúdie z praxe ${courseName}.` },
+    { title: `Téma 7: Najlepšie postupy`, content: `Overené postupy a odporúčania pre ${courseName}.` },
+    { title: `Téma 8: Nástroje a zdroje`, content: `Užitočné nástroje a zdroje pre ${courseName}.` },
+    { title: `Téma 9: Trendy a budúcnosť`, content: `Aktuálne trendy a budúci vývoj v oblasti ${courseName}.` },
+    { title: `Téma 10: Zhrnutie a certifikácia`, content: `Zhrnutie kľúčových poznatkov a informácie o certifikácii.` }
+  ];
 };
