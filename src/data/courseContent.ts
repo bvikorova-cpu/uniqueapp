@@ -12694,6 +12694,741 @@ Snaha o dokonalosť spomaľuje dokončenie úloh.
 **Záver:**
 Time management nie je len o plánovaní – je to nástroj, ktorý vám pomôže získať viac času na to, na čom skutočne záleží.`
     }
+  ],
+  
+  "Produktivita": [
+    {
+      title: "Téma 1: Čo je produktivita?",
+      content: `**Definícia produktivity**
+
+Produktivita je miera, ktorá vyjadruje, ako dobre sú využité zdroje pri vytváraní produktov.
+
+**Charakteristika produktivity:**
+
+Produktivita charakterizuje stav:
+- Akejkoľvek ekonomickej jednotky
+- Celého národného hospodárstva
+- Jednotlivých procesov a činností
+
+**Základný princíp:**
+
+Produktivita meria efektívnosť využívania zdrojov pri tvorbe výstupov. Čím vyššia je produktivita, tým lepšie sú využité zdroje.
+
+**Význam produktivity:**
+
+- **Pre podniky:** Kľúčový ukazovateľ výkonnosti a konkurencieschopnosti
+- **Pre ekonomiku:** Indikátor celkovej ekonomickej výkonnosti
+- **Pre zamestnancov:** Ovplyvňuje mzdy a životnú úroveň
+- **Pre zákazníkov:** Vplýva na ceny produktov a služieb
+
+**Prečo je produktivita dôležitá:**
+
+Vysoká produktivita znamená:
+- Nižšie náklady
+- Vyššie zisky
+- Konkurenčnú výhodu
+- Možnosť rastu a rozvoja`
+    },
+    {
+      title: "Téma 2: Výpočet produktivity",
+      content: `**Všeobecný vzorec produktivity**
+
+**Základný vzorec:**
+\`\`\`
+P = výstup / vstup
+\`\`\`
+
+Kde:
+- **P** = ukazovateľ produktivity
+- **Výstup** = finálne produkty procesu
+- **Vstup** = všetky použité výrobné faktory
+
+**Výstup (Output):**
+
+Zahŕňa:
+- Hotové výrobky
+- Rozpracované výrobky
+- Poskytnuté služby
+- Všetky výsledky procesu
+
+**Vstup (Input):**
+
+Tvorený výrobnými faktormi:
+- **Práca:** Pracovná sila a čas zamestnancov
+- **Technológia:** Stroje, zariadenia, software
+- **Materiál:** Suroviny, komponenty, polotovary
+- **Kapitál:** Finančné zdroje investované do procesu
+- **Energia:** Elektrická energia, plyn, palivo
+- **Ďalšie zdroje:** Priestory, informácie, know-how
+
+**Peňažné vyjadrenie:**
+
+**Prečo v peniazoch:**
+Prakticky vždy sa uvádza vyjadrené v peňažných jednotkách, aby bolo možné:
+- Sčítať rôzne typy vstupov a výstupov
+- Porovnávať rôzne produkty a služby
+- Analyzovať trendy v čase
+- Porovnávať s konkurenciou
+
+**Príklad výpočtu:**
+
+**Výroba:**
+- Výstup: 1000 kusov výrobkov v hodnote 50 000 €
+- Vstup: Práca (20 000 €) + Materiál (15 000 €) + Energia (5 000 €) = 40 000 €
+- Produktivita: P = 50 000 / 40 000 = 1,25
+
+**Interpretácia:**
+Produktivita 1,25 znamená, že na každé euro vložených zdrojov získavame 1,25 € hodnoty.`
+    },
+    {
+      title: "Téma 3: Sledovanie produktivity v čase",
+      content: `**Prečo sledovať produktivitu v čase?**
+
+Aby takto zistený údaj mal určitú vypovedaciu hodnotu, je treba ho pravidelne sledovať v opakujúcich sa časových intervaloch a jeho hodnotu porovnávať.
+
+**Princíp sledovania:**
+
+**1. Pravidelné meranie:**
+- Stanovenie časových intervalov (mesiac, kvartál, rok)
+- Konzistentná metodika merania
+- Presné zaznamenávanie údajov
+
+**2. Porovnávanie:**
+Tak sa dá zistiť, či hodnota ukazovateľa produktivity:
+- **Rastie** ↗ - Pozitívny trend, zlepšenie
+- **Nemení sa** → - Stagnácia, potreba zmien
+- **Klesá** ↘ - Negatívny trend, nutnosť zásahu
+
+**Časové horizonty sledovania:**
+
+**Krátkodobé sledovanie (mesačne):**
+- Rýchla identifikácia problémov
+- Okamžitá reakcia na zmeny
+- Sledovanie účinnosti opatrení
+
+**Strednodobé sledovanie (kvartálne):**
+- Vyhodnotenie trendov
+- Strategické rozhodnutia
+- Plánovanie zlepšení
+
+**Dlhodobé sledovanie (ročne):**
+- Celkové vyhodnotenie výkonnosti
+- Strategické plánovanie
+- Investičné rozhodnutia
+
+**Nástroje na sledovanie:**
+
+- **Tabuľky a grafy:** Vizualizácia trendov
+- **Dashboardy:** Prehľad kľúčových ukazovateľov
+- **Reporty:** Pravidelné vyhodnotenia
+- **KPI systémy:** Komplexné sledovanie výkonnosti
+
+**Dôležité pravidlá:**
+
+1. **Konzistentnosť:** Používajte rovnakú metodiku
+2. **Pravidelnosť:** Meranie v rovnakých intervaloch
+3. **Presnosť:** Spoľahlivé a presné údaje
+4. **Akčný plán:** Na základe výsledkov konajte`
+    },
+    {
+      title: "Téma 4: Potreba vysokej produktivity",
+      content: `**Prečo je vysoká produktivita rozhodujúca?**
+
+Potreba vysokej produktivity, ako rozhodujúceho faktora, núti podniky využívať zdroje efektívnejšie.
+
+**Vplyv nízkej produktivity:**
+
+**Na podnik:**
+Nízka úroveň produktivity alebo jej pomalý rast má významný vplyv na:
+- **Prežitie ekonomickej jednotky**
+- **Konkurencieschopnosť**
+- **Ziskovosť**
+- **Možnosti rastu**
+
+**Na spoločnosť:**
+Výrazným spôsobom brzdí:
+- **Rast životnej úrovne obyvateľov**
+- **Ekonomický rozvoj**
+- **Zamestnanosť**
+- **Sociálny pokrok**
+
+**Konkurenčný tlak:**
+
+**Globalizácia:**
+- Celosvetová konkurencia
+- Potreba byť efektívnejší
+- Tlak na inovácie
+- Rýchle zmeny na trhu
+
+**Očakávania zákazníkov:**
+- Nižšie ceny
+- Vyššia kvalita
+- Rýchlejšie dodanie
+- Lepší servis
+
+**Ekonomické faktory:**
+
+**Náklady:**
+- Rastúce ceny energií
+- Drahšia pracovná sila
+- Vyššie materiálové náklady
+- Potreba optimalizácie
+
+**Zdroje:**
+- Obmedzená dostupnosť
+- Environmentálne ohľady
+- Udržateľnosť
+- Efektívne využitie
+
+**Stratégie zvyšovania produktivity:**
+
+1. **Inovácie:** Nové technológie a procesy
+2. **Školenia:** Rozvoj zamestnancov
+3. **Automatizácia:** Zníženie manuálnej práce
+4. **Optimalizácia:** Zlepšovanie procesov
+5. **Investície:** Do moderných technológií`
+    },
+    {
+      title: "Téma 5: Prínosy zvyšovania produktivity",
+      content: `**Konkrétne výhody zvyšovania produktivity**
+
+**1. Nižšie ceny pre zákazníkov:**
+
+**Mechanizmus:**
+- Redukované náklady v rámci aktivít zvyšovania produktivity
+- Úspory sa môžu preniesť na zákazníkov
+- Konkurenčná cena na trhu
+
+**Výsledok:**
+- Spokojnejší zákazníci
+- Väčší podiel na trhu
+- Vyšší objem predaja
+
+**2. Efektívne využitie zdrojov:**
+
+**Princíp:**
+Pri rovnakej spotrebe je možné:
+- Produkovať viac výrobkov
+- Poskytnúť viac služieb
+- Zvýšiť výkon
+
+**Benefity:**
+- Ekologickejšia prevádzka
+- Menšia záťaž na prostredie
+- Udržateľný rozvoj
+
+**3. Posilnenie podniku:**
+
+**Interné zlepšenia:**
+Vďaka odstraňovaniu interných problémov:
+- Plynulejšie procesy
+- Menšia chybovosť
+- Lepšia komunikácia
+- Vyššia kvalita
+
+**Výsledky:**
+- Stabilnejší podnik
+- Lepšia pozícia na trhu
+- Dlhodobá udržateľnosť
+
+**4. Väčší zisk:**
+
+**Finančné benefity:**
+Vďaka zníženým nákladom:
+- Vyššia zisková marža
+- Viac zdrojov na investície
+- Finančná stabilita
+- Možnosti expanzie
+
+**5. Vyššie mzdy pre pracovníkov:**
+
+**Sociálne výhody:**
+Možnosť poskytnutia vyššej mzdy pracovníkom:
+- Zvýšená spokojnosť
+- Vyššia životná úroveň
+- Motivácia zamestnancov
+- Nižšia fluktuácia
+
+**Dlhodobé efekty:**
+- Lojalita zamestnancov
+- Lepší tím
+- Vyššia kvalita práce
+- Pozitívna firemná kultúra
+
+**Celkový prínos:**
+
+Zvyšovanie produktivity je win-win situácia:
+- **Pre podnik:** Vyššie zisky, stabilita
+- **Pre zamestnancov:** Lepšie podmienky, vyššie mzdy
+- **Pre zákazníkov:** Nižšie ceny, vyššia kvalita
+- **Pre spoločnosť:** Ekonomický rast, prosperita`
+    },
+    {
+      title: "Téma 6: Zahájenie zvyšovania produktivity",
+      content: `**Časové horizonty zmien**
+
+Zmeny v prospech zvyšovania produktivity je možné realizovať v:
+- **Krátkodobom časovom horizonte:** Okamžité zlepšenia
+- **Strednodobom časovom horizonte:** Strategické zmeny
+
+**Spúšťacie sily zmien**
+
+Pre zahájenie zmien sú potrebné určité "spúšťacie sily", ktoré vlastný proces zmien odštartujú.
+
+**Hlavné spúšťacie sily:**
+
+**1. Tvrdá konkurencia:**
+
+**Charakteristika:**
+- Tlak zo strany konkurentov
+- Potreba udržať si pozíciu na trhu
+- Nutnosť byť lepší a efektívnejší
+
+**Reakcia:**
+- Analýza konkurencie
+- Hľadanie konkurenčných výhod
+- Zlepšovanie procesov
+
+**2. Žiaduce zákazníka:**
+
+**Požiadavky:**
+- Vyššia kvalita
+- Nižšie ceny
+- Rýchlejšie dodanie
+- Lepší servis
+
+**Opatrenia:**
+- Zameranie na zákaznícku spokojnosť
+- Optimalizácia dodávateľského reťazca
+- Zlepšenie kvality
+
+**3. Nový alebo opakovaný štart podniku:**
+
+**Situácie:**
+- Zakladanie novej firmy
+- Reštart po kríze
+- Nový projekt alebo divízia
+
+**Príležitosť:**
+- Nastavenie efektívnych procesov od začiatku
+- Implementácia best practices
+- Moderné prístupy
+
+**4. Rozhodnutie riaditeľa/predstavenstva:**
+
+**Top-down prístup:**
+- Strategické rozhodnutie vedenia
+- Stanovenie cieľov produktivity
+- Vyčlenenie zdrojov na zlepšenia
+
+**Implementácia:**
+- Komunikácia vízie
+- Zapojenie všetkých úrovní
+- Podpora zmien
+
+**5. Nutnosť znížiť náklady:**
+
+**Finančný tlak:**
+- Rastúce náklady
+- Klesajúce marže
+- Ekonomická kríza
+
+**Riešenie:**
+- Identifikácia úspor
+- Eliminácia plytvania
+- Optimalizácia procesov
+
+**6. Spoločenské a politické zmeny:**
+
+**Externé faktory:**
+- Nová legislatíva
+- Environmentálne požiadavky
+- Spoločenské trendy
+- Technologický pokrok
+
+**Adaptácia:**
+- Prispôsobenie sa novým podmienkam
+- Využitie nových príležitostí
+- Inovácie`
+    },
+    {
+      title: "Téma 7: Faktory ovplyvňujúce produktivitu",
+      content: `**Dva hlavné typy faktorov**
+
+**1. Fyzikálne vplyvy:**
+
+**Technologické aspekty:**
+- Modernosť technológií
+- Stav strojov a zariadení
+- Automatizácia procesov
+- IT systémy
+
+**Materiálové aspekty:**
+- Kvalita materiálov
+- Dostupnosť surovín
+- Efektivita využitia materiálu
+- Logistika materiálového toku
+
+**Využívanie času:**
+- Pracovný čas
+- Odstávky
+- Simple čakania
+- Efektívnosť priebehu práce
+
+**Kapitál:**
+- Investície do technológií
+- Finančné zdroje
+- Return on Investment (ROI)
+
+**2. Psychologické faktory:**
+
+**Modely chovania zamestnancov**
+
+Produktivitu ovplyvňujú minimálne rovnako veľkou mierou ako faktory fyzikálne.
+
+**Kľúčové psychologické faktory:**
+
+**Motivácia:**
+- Vnútorná motivácia
+- Vonkajšia motivácia
+- Systém odmeňovania
+- Uznanie a pochvala
+
+**Pracovné prostredie:**
+- Atmosféra v tíme
+- Vzťahy s kolegami
+- Komunikácia
+- Firemná kultúra
+
+**Leadership:**
+- Štýl vedenia
+- Podpora manažmentu
+- Jasné ciele
+- Feedback
+
+**Spokojnosť zamestnancov:**
+- Work-life balance
+- Kariérny rozvoj
+- Vzdelávanie
+- Benefity
+
+**Stres a vyhorenie:**
+- Pracovné zaťaženie
+- Časový tlak
+- Podpora pri riešení problémov
+- Prevencia vyhorenia
+
+**Vzdelávanie a rozvoj:**
+- Školenia
+- Nové zručnosti
+- Know-how
+- Kariérny rast
+
+**Zapojenie a zodpovednosť:**
+- Participácia na rozhodovaní
+- Vlastníctvo procesov
+- Zodpovednosť za výsledky
+- Empowerment
+
+**Vzájomné pôsobenie:**
+
+Fyzikálne a psychologické faktory sa navzájom ovplyvňujú:
+- Moderná technológia môže zvýšiť spokojnosť
+- Motivovaní zamestnanci lepšie využívajú technológie
+- Dobré prostredie podporuje efektivitu
+- Stres znižuje využitie zdrojov`
+    },
+    {
+      title: "Téma 8: Štyri základné faktory produktivity",
+      content: `**Priemyselné inžinierstvo a produktivita**
+
+Priemyselné inžinierstvo, ako vedúci obor v oblasti zvyšovania produktivity, rozdeľuje jednotlivé vplyvy do štyroch základných faktorov.
+
+**Účel faktorov:**
+- Analyzujú úroveň dosiahnutej produktivity
+- Hľadajú príležitosti pre zvýšenie produktivity
+
+**1. Miera využitia (U - Utilization):**
+
+**Definícia:**
+Stupeň, na akom sú vstupy (zdroje) procesov skutočne konvertované do produktu.
+
+**Čo meriame:**
+- Koľko zo vstupov je naozaj využitých
+- Aké percento kapacity je využité
+- Efektivita transformácie vstupov na výstupy
+
+**Príklady:**
+- Využitie strojov: 85% vs. 100% kapacity
+- Využitie pracovnej sily: 7 hodín produktívnej práce z 8
+- Využitie materiálu: 95% vs. 5% odpadu
+
+**Zlepšenie:**
+- Minimalizácia odstávok
+- Redukcia odpadu
+- Lepšie plánovanie
+
+**2. Miera výkonu (P - Performance):**
+
+**Definícia:**
+Rýchlosť a tempo, s akým je konverzia prevádzaná.
+
+**Čo meriame:**
+- Rýchlosť procesov
+- Počet produktov za časovú jednotku
+- Tempo práce
+
+**Príklady:**
+- 100 kusov/hodinu vs. 80 kusov/hodinu
+- Čas cyklu: 5 minút vs. 7 minút
+- Priepustnosť procesu
+
+**Zlepšenie:**
+- Optimalizácia procesov
+- Odstránenie úzkych miest
+- Zvýšenie rýchlosti
+- Automatizácia
+
+**3. Miera kvality (Q - Quality):**
+
+**Definícia:**
+Presnosť a akosť, s akou je daná činnosť (práce) dosahovaná.
+
+**Čo meriame:**
+- Počet bezchybných produktov
+- Úroveň reklamácií
+- Zhoda so špecifikáciami
+- Spokojnosť zákazníkov
+
+**Príklady:**
+- 98% bezchybných produktov vs. 90%
+- 2% reklamácií vs. 10%
+- First Time Right (FTR) percentage
+
+**Zlepšenie:**
+- Kontrola kvality
+- Preventívne opatrenia
+- Školenia zamestnancov
+- Štandardizácia
+
+**4. Úroveň metód (M - Methods):**
+
+**Definícia:**
+Aké metódy a postupy sú použité.
+
+**Čo posudzujeme:**
+- Efektivita použitých metód
+- Modernosť postupov
+- Best practices
+- Inovácie
+
+**Príklady:**
+- Lean manufacturing vs. tradičné metódy
+- Automatizácia vs. manuálna práca
+- Moderné technológie vs. zastarané
+
+**Zlepšenie:**
+- Implementácia moderných metód
+- Benchmarking
+- Kontinuálne zlepšovanie
+- Inovácie
+
+**Vzájomné pôsobenie faktorov:**
+
+Všetky štyri faktory sa navzájom ovplyvňujú:
+- Lepšie metódy zvyšujú výkon
+- Vyššia kvalita znižuje potrebu opráv
+- Lepšie využitie zvyšuje kapacitu
+- Rýchlejší výkon pri zachovaní kvality`
+    },
+    {
+      title: "Téma 9: Totálny index produktivity (TPI)",
+      content: `**Komplexný ukazovateľ produktivity**
+
+**Vzorec TPI:**
+\`\`\`
+TPI = U × P × Q × M
+\`\`\`
+
+**Legenda:**
+- **TPI** = Totálny index produktivity
+- **U** = Miera využitia (Utilization)
+- **P** = Miera výkonu (Performance)
+- **Q** = Miera kvality (Quality)
+- **M** = Úroveň metód (Methods)
+
+**Princíp výpočtu:**
+
+**Násobenie faktorov:**
+Všetky štyri faktory sa násobia, pretože:
+- Každý faktor ovplyvňuje celkovú produktivitu
+- Slabý výkon v jednej oblasti znižuje celkovú produktivitu
+- Excelentnosť vo všetkých oblastiach maximalizuje TPI
+
+**Praktický príklad výpočtu:**
+
+**Východiskové hodnoty:**
+- U (Využitie) = 0,85 (85%)
+- P (Výkon) = 0,90 (90%)
+- Q (Kvalita) = 0,95 (95%)
+- M (Metódy) = 0,80 (80%)
+
+**Výpočet:**
+\`\`\`
+TPI = 0,85 × 0,90 × 0,95 × 0,80 = 0,58
+\`\`\`
+
+**Interpretácia:**
+TPI = 0,58 znamená, že celková produktivita je na úrovni 58% z teoretického maxima.
+
+**Analýza príležitostí:**
+
+**Identifikácia slabých miest:**
+
+Ak je niektorý faktor nízky, predstavuje príležitosť na zlepšenie:
+
+**Scenár 1 - Zlepšenie metód:**
+- Pôvodné M = 0,80
+- Zlepšené M = 0,95
+- Nové TPI = 0,85 × 0,90 × 0,95 × 0,95 = 0,69
+- **Zlepšenie o 19%**
+
+**Scenár 2 - Zlepšenie využitia:**
+- Pôvodné U = 0,85
+- Zlepšené U = 0,95
+- Nové TPI = 0,95 × 0,90 × 0,95 × 0,80 = 0,65
+- **Zlepšenie o 12%**
+
+**Využitie TPI v praxi:**
+
+**Benchmarking:**
+- Porovnanie s konkurenciou
+- Porovnanie medzi oddeleniami
+- Sledovanie v čase
+
+**Stanovenie cieľov:**
+- Realistické ciele pre zlepšenie
+- Priorizácia oblastí na zlepšenie
+- Meranie pokroku
+
+**Rozhodovanie o investíciách:**
+- Kde investovať zdroje
+- Aký bude očakávaný efekt
+- ROI výpočty
+
+**Kontinuálne zlepšovanie:**
+- Pravidelné meranie TPI
+- Identifikácia trendov
+- Promptná reakcia na zmeny
+
+**Výhody použitia TPI:**
+
+1. **Komplexnosť:** Zahŕňa všetky kľúčové aspekty
+2. **Objektívnosť:** Číselné vyjadrenie
+3. **Porovnateľnosť:** V čase i medzi jednotkami
+4. **Akčný plán:** Jasne ukazuje, kde zlepšovať`
+    },
+    {
+      title: "Téma 10: Praktická aplikácia a stratégie",
+      content: `**Implementácia zvyšovania produktivity v praxi**
+
+**Krok za krokom:**
+
+**1. Analýza súčasného stavu:**
+- Zmeranie všetkých štyroch faktorov (U, P, Q, M)
+- Výpočet aktuálneho TPI
+- Identifikácia slabých miest
+- Porovnanie s benchmarkom
+
+**2. Stanovenie cieľov:**
+- Realistické ciele pre každý faktor
+- Časový horizont dosiahnutia
+- Očakávané zlepšenie TPI
+- Prioritizácia aktivít
+
+**3. Akčný plán:**
+- Konkrétne kroky na zlepšenie
+- Zodpovedné osoby
+- Termíny realizácie
+- Potrebné zdroje
+
+**4. Implementácia:**
+- Realizácia opatrení
+- Školenia zamestnancov
+- Komunikácia zmien
+- Monitorovanie pokroku
+
+**5. Vyhodnotenie:**
+- Meranie nového TPI
+- Porovnanie s cieľmi
+- Analýza odchýlok
+- Ďalšie kroky
+
+**Najlepšie praktiky:**
+
+**Zapojenie zamestnancov:**
+- Informovanie o cieľoch
+- Zbieranie nápadov
+- Motivácia a odmeňovanie
+- Vytvorenie vlastníctva
+
+**Kontinuálne zlepšovanie:**
+- Kaizen filozofia
+- PDCA cyklus (Plan-Do-Check-Act)
+- Lean prístupy
+- Six Sigma metodológie
+
+**Technologické inovácie:**
+- Digitalizácia procesov
+- Automatizácia
+- IoT a Industry 4.0
+- Dátová analytika
+
+**Vzdelávanie a rozvoj:**
+- Pravidelné školenia
+- Certifikácie
+- Knowledge sharing
+- Best practices
+
+**Časté prekážky a ich riešenia:**
+
+**Odpor k zmenám:**
+- **Riešenie:** Komunikácia, zapojenie, postupná implementácia
+
+**Nedostatok zdrojov:**
+- **Riešenie:** Prioritizácia, postupné investície, ROI analýza
+
+**Nerealistické očakávania:**
+- **Riešenie:** Stanovenie dosiahnuteľných cieľov, transparentnosť
+
+**Nedostatočná podpora vedenia:**
+- **Riešenie:** Prezentácia benefitov, quick wins, metriky
+
+**Merateľné výsledky:**
+
+**Krátkodobé (1-3 mesiace):**
+- Nárast TPI o 5-10%
+- Identifikované úspory
+- Zvýšená angažovanosť
+
+**Strednodobé (6-12 mesiacov):**
+- Nárast TPI o 15-25%
+- Viditeľné zlepšenie procesov
+- Vyššia spokojnosť zákazníkov
+
+**Dlhodobé (1-3 roky):**
+- Nárast TPI o 30-50%
+- Trvalá konkurenčná výhoda
+- Kultúra kontinuálneho zlepšovania
+
+**Záver:**
+
+Produktivita nie je jednorazový projekt, ale kontinuálny proces. Systematický prístup využívajúci TPI a jeho komponenty vedie k:
+- Lepším výsledkom
+- Vyššej konkurencieschopnosti
+- Spokojnejším zákazníkom
+- Prosperujúcemu podniku`
+    }
   ]
 };
 
