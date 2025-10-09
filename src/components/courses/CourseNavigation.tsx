@@ -1,7 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { CheckCircle, Circle, Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle, Circle, Lock, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 interface Topic {
   title: string;
@@ -31,13 +33,15 @@ export const CourseNavigation = ({
     );
   };
 
+  const navigate = useNavigate();
+
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader>
         <CardTitle>Obsah kurzu</CardTitle>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-[600px] pr-4">
+      <CardContent className="flex-1 flex flex-col">
+        <ScrollArea className="flex-1 pr-4 mb-4">
           <div className="space-y-2">
             {topics.map((topic, index) => {
               const isCompleted = completedTopics.includes(index);
@@ -75,6 +79,15 @@ export const CourseNavigation = ({
             })}
           </div>
         </ScrollArea>
+        
+        <Button
+          variant="outline"
+          onClick={() => navigate("/education")}
+          className="w-full gap-2 mt-auto"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Späť na zoznam kurzov
+        </Button>
       </CardContent>
     </Card>
   );
