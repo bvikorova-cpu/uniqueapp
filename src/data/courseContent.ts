@@ -11754,6 +11754,496 @@ Pilates je cesta, nie cieľ. Užívajte si každú lekciu, buďte trpezliví a v
 
 **Vitajte vo svete Pilates! 🧘‍♀️**`
     }
+  ],
+
+  "Fitness tréning": [
+    {
+      title: "Téma 1: Úvod do fitness tréningu - Čo je fitness a jeho história",
+      content: `**Čo je fitness?**
+
+Fitness možno definovať ako súbor praktiky a návyky zamerané na fyzickú kondíciu, čím sa optimalizuje vzhľad aj funkčnosť tela. Aj keď sa často spája s chudnutím alebo definíciou svalov, jeho výhody siahajú oveľa ďalej. Táto prax zahŕňa cvičenia, ktoré zlepšujú silu, vytrvalosť, flexibilitu a aeróbne schopnosti a podporujú optimálne fyzické a emocionálne zdravie.
+
+**Funkčné telo:**
+Funkčné telo je také, ktoré dokáže vykonávať každodenné činnosti bez obmedzení a efektívne. Na dosiahnutie tejto rovnováhy je nevyhnutné kombinovať tréningové rutiny spestrené zdravou stravou a pozitívnou mentalitou. Tento prístup pomáha bojovať proti sedavému životnému štýlu a posilňuje telo aj myseľ.
+
+**Počiatky fitness:**
+Termín fitness má historické pozadie, ktoré začína prvými systematizovanými športovými postupmi. Od gréckych telocviční až po prvé centrá, ktoré prevádzkoval Hippolyte Triat v 19. storočí, vývoj fitness bol kultúrnym odrazom snahy o zdravie a pohodu.
+
+**Moderný fitness:**
+Dnes vedecký výskum potvrdil viaceré výhody fitness, od zlepšenia duševného zdravia až po prevenciu chronických chorôb. Jeho premena z jednoduchého cvičenia na multikultúrny životný štýl ho umiestnil ako kľúčový prvok pre komplexnú pohodu.`
+    },
+    {
+      title: "Téma 2: Hlavné fitness modality - Silový tréning, kardio a flexibilita",
+      content: `**Fitness zahŕňa rôzne spôsoby:**
+
+Každý je navrhnutý tak, aby vyhovoval špecifickým potrebám a podporoval celkovú pohodu.
+
+**1. Silový tréning (Strength Training):**
+- Ideálne na posilnenie svalov
+- Zlepšuje stavbu tela
+- Zvyšuje svalovú hmotu
+- Podporuje metabolizmus
+- Posilňuje kosti
+
+**2. Kardio (Cardiovascular Training):**
+- Zlepšuje kardiovaskulárnu kapacitu
+- Pomáha efektívne spaľovať kalórie
+- Posilňuje srdce
+- Zvyšuje vytrvalosť
+- Zlepšuje krvný obeh
+
+**3. Flexibilita (Flexibility Training):**
+- Zvyšuje pohyblivosť kĺbov
+- Znižuje riziko úrazov
+- Zlepšuje držanie tela
+- Uvoľňuje napätie
+- Podporuje regeneráciu
+
+**4. Kombinované tréningy:**
+Programy, ktoré kombinujú kardio, silu a flexibilitu:
+- **Jóga**: Spojenie flexibility, sily a relaxácie
+- **Pilates**: Posilnenie jadra a zlepšenie držania
+- **TRX**: Funkčný tréning s vlastnou váhou
+- **CrossFit**: Vysokointenzívny kombinovaný tréning
+
+**Pre začiatočníkov:**
+Aby ste mohli začať, nemusíte byť profesionálnym športovcom. Jednoduché činnosti ako chodiť 30 minút denne môžu byť súčasťou základného fitness programu a spôsobiť významné zmeny vo vašom živote.`
+    },
+    {
+      title: "Téma 3: Zdravotné výhody fitness",
+      content: `**Dôslednosť je kľúčom:**
+
+Tento životný štýl nielen zlepšuje fyzický vzhľad, ale má pozitívny vplyv na viaceré oblasti zdravia:
+
+**1. Kardiovaskulárne zdravie:**
+- Optimalizuje krvný obeh
+- Znižuje krvný tlak
+- Posilňuje srdce
+- Minimalizuje riziko ischemickej choroby srdca
+- Zlepšuje cholesterol
+
+**2. Zvýšená flexibilita:**
+- Zlepšuje rozsah pohybu
+- Uľahčuje každodenné aktivity
+- Podporuje športové výkony
+- Znižuje napätie v svaloch
+- Prevencia zranení
+
+**3. Mentálne zdravie:**
+- Podporuje produkciu endorfínov
+- Bojuje proti úzkosti
+- Znižuje stres
+- Pomáha pri depresii
+- Zlepšuje náladu
+- Zvyšuje sebavedomie
+
+**4. Posilnenie kostí:**
+- Zvyšuje minerálnu hustotu kostí
+- Zabraňuje osteoporóze
+- Podporuje zdravie kĺbov
+- Znižuje riziko zlomenín
+
+**5. Kontrola hmotnosti:**
+- Pomáha udržiavať zdravý index telesnej hmotnosti
+- Zabraňuje hromadeniu tuku
+- Zvyšuje bazálny metabolizmus
+- Podporuje spaľovanie kalórií aj v pokoji
+
+**6. Redukcia stresu:**
+- Zlepšuje kvalitu spánku
+- Reguluje hormonálne hladiny spojené so stresom
+- Podporuje relaxáciu
+- Zvyšuje odolnosť voči stresu`
+    },
+    {
+      title: "Téma 4: Ako si osvojiť fitness životný štýl",
+      content: `**Osvojiť si fitness životný štýl:**
+
+Neznamená dodržiavať extrémne diéty alebo namáhavé rutiny. Ide o začlenenie udržateľných návykov, ktoré časom pozitívne ovplyvnia kvalitu vášho života.
+
+**1. Vytvorte cvičebný plán:**
+- Navrhnite rutinu, ktorá kombinuje kardio, silu a flexibilitu
+- Začnite s 3-4 tréningami týždenne
+- Postupne zvyšujte frekvenciu a intenzitu
+- Ak nemáte čas na posilňovňu:
+  • Zvážte prechádzky vonku
+  • Cvičte doma s vlastnou váhou
+  • Využívajte online tréningy
+
+**2. Dodržujte vyváženú stravu:**
+- Uprednostňujte konzumáciu zeleniny a ovocia
+- Zaraďte chudé bielkoviny
+- Konzumujte celozrnné výrobky
+- Pite dostatok vody (2-3 litre denne)
+- Vyhnite sa ultraspracovaným potravinám
+- Obmedzte sladené nápoje
+
+**3. Stanovte si dosiahnuteľné ciele:**
+- Začnite s malými cieľmi
+- Postupne napredujte v intenzite
+- Sledujte svoj pokrok
+- Oslavujte malé úspechy
+- Buďte realisti
+
+**4. Nezanedbávajte odpočinok:**
+- Spať 7-8 hodín denne
+- Zaraďte oddychové dni
+- Zotavte sa po tréningu
+- Počúvajte svoje telo
+- Prevencia pretrénovanosti
+
+**Kľúčové princípy:**
+- Konzistentnosť je dôležitejšia než intenzita
+- Malé kroky vedú k veľkým zmenám
+- Fitness je životný štýl, nie krátkodobá diéta
+- Tešte sa z procesu, nie len z výsledkov`
+    },
+    {
+      title: "Téma 5: BMR a kalorické potreby",
+      content: `**BMR (Basal Metabolic Rate - Bazálny metabolický výdaj):**
+
+Udáva množstvo energie, ktorú telo spotrebuje v úplnom pokoji. Kľúčový pojem pri výpočte kalorických potrieb.
+
+**Čo je BMR?**
+- Energia potrebná na základné životné funkcie
+- Dýchanie, krvný obeh, tráviace procesy
+- Regulácia telesnej teploty
+- Bunková produkcia
+
+**Faktory ovplyvňujúce BMR:**
+- **Vek**: S vekom BMR klesá
+- **Pohlavie**: Muži majú vyšší BMR
+- **Svalová hmota**: Viac svalov = vyšší BMR
+- **Genetika**: Individuálne rozdiely
+- **Hormonálne faktory**: Štítna žľaza
+
+**Výpočet kalorických potrieb:**
+
+**1. Vypočítajte BMR**
+**2. Vynásobte aktivitným faktorom:**
+- Sedavý životný štýl: BMR × 1.2
+- Mierna aktivita (1-3× týždenne): BMR × 1.375
+- Stredná aktivita (3-5× týždenne): BMR × 1.55
+- Vysoká aktivita (6-7× týždenne): BMR × 1.725
+- Veľmi vysoká aktivita: BMR × 1.9
+
+**Kalorický deficit:**
+Stav, keď prijmete menej kalórií ako spálite - nevyhnutný pre chudnutie.
+- Zdravý deficit: 300-500 kalórií denne
+- Vedie k postupnému chudnutiu
+- Udržateľný dlhodobo
+
+**Kalorický nadbytok:**
+Príjem vyšší ako výdaj kalórií - vhodný pri naberaní svalov.
+- Mierny nadbytok: 200-300 kalórií
+- Kombinujte so silovým tréningom
+- Zamerajte sa na kvalitné živiny
+
+**TDEE (Total Daily Energy Expenditure):**
+Celkový denný výdaj energie vrátane BMR, aktivity a trávenia.`
+    },
+    {
+      title: "Téma 6: Výživa pre fitness - Makroživiny a vyvážená strava",
+      content: `**Makroživiny - stavebné kamene výživy:**
+
+**1. Bielkoviny (Proteíny):**
+- **Funkcia**: Budovanie a oprava svalov
+- **Zdroje**: 
+  • Chudé mäso (kuracie, morčacie)
+  • Ryby (losos, tuniak)
+  • Vajcia
+  • Mliečne výrobky
+  • Strukoviny
+  • Tofu
+- **Odporúčané množstvo**: 1.6-2.2g na kg telesnej hmotnosti pre športovcov
+
+**2. Sacharidy (Karbohydráty):**
+- **Funkcia**: Hlavný zdroj energie
+- **Zdroje**:
+  • Celozrnné obilniny
+  • Oves
+  • Quinoa
+  • Sladké zemiaky
+  • Ovocie
+  • Zelenina
+- **Typy**:
+  • Komplexné: Pomalé uvoľňovanie energie
+  • Jednoduché: Rýchla energia (po tréningu)
+
+**3. Tuky:**
+- **Funkcia**: Hormonálna regulácia, energia
+- **Zdravé zdroje**:
+  • Avokádo
+  • Orechy a semienka
+  • Olivový olej
+  • Mastné ryby (omega-3)
+  • Kokosový olej
+- **Vyhýbajte sa**: Trans tuky, prežarené oleje
+
+**Vyvážená strava pre fitness:**
+
+**Pred tréningom (1-2 hodiny):**
+- Kombinácia sacharidov a bielkovín
+- Ľahko stráviteľné jedlo
+- Príklad: Ovsená kaša s banánom
+
+**Po tréningu (30-60 minút):**
+- Bielkoviny + jednoduché sacharidy
+- Podporuje regeneráciu
+- Príklad: Proteínový shake s ovocím
+
+**Hydratácia:**
+- 2-3 litre vody denne
+- Viac pri intenzívnom tréningu
+- Elektrolyty pri dlhých tréningoch`
+    },
+    {
+      title: "Téma 7: Tréningové techniky - HIIT, EMOM, AMRAP, Tabata",
+      content: `**Moderné tréningové metódy:**
+
+**1. HIIT (High-Intensity Interval Training):**
+- **Čo to je**: Striedanie krátkych úsekov intenzívneho cvičenia s krátkym odpočinkom
+- **Výhody**:
+  • Efektívne spaľuje tuky
+  • Zlepšuje kondíciu
+  • Krátka doba tréningu (20-30 minút)
+  • EPOC efekt - spaľovanie po tréningu
+- **Príklad**: 30s sprint, 30s odpočinok, 10 kôl
+
+**2. EMOM (Every Minute On the Minute):**
+- **Čo to je**: Začína sa nové cvičenie každú minútu
+- **Výhody**:
+  • Štruktúrovaný tréning
+  • Sledovanie výkonu
+  • Vyvážený odpočinok
+- **Príklad**: Minúta 1: 10 burpees, zvyšok minúty odpočinok
+- Opakovať 10-20 minút
+
+**3. AMRAP (As Many Reps As Possible):**
+- **Čo to je**: Cvičíte čo najviac opakovaní za určený čas
+- **Výhody**:
+  • Zvyšuje výdrž
+  • Buduje silu
+  • Mentálna odolnosť
+- **Príklad**: 10 minút - toľko kôl ako zvládnete:
+  • 10 klikov
+  • 15 drepov
+  • 20 skokanov
+
+**4. Tabata:**
+- **Čo to je**: 4-minútový HIIT tréning
+- **Štruktúra**: 20s cvičenie, 10s pauza, 8 kôl
+- **Výhody**:
+  • Extrémne efektívne
+  • Krátky čas (4 minúty)
+  • Maximálne spaľovanie kalórií
+- **Príklad**: Tabata s burpees alebo sprintmi
+
+**Metcon (Metabolic Conditioning):**
+- Intenzívne tréningy zamerané na spaľovanie kalórií aj po skončení cvičenia
+- Kombinácia kardio a silového tréningu
+- Vysoká intenzita po krátky čas
+
+**Ako začať:**
+- Začnite s nižšou intenzitou
+- Postupne pridávajte
+- Vždy sa zahrejte
+- Nezabúdajte na strečing`
+    },
+    {
+      title: "Téma 8: Cvičenia a ich typy - Compound vs. Isolation",
+      content: `**Typy cvičení:**
+
+**1. Compound Exercises (Komplexné cviky):**
+
+**Čo to je:**
+Cviky zapájajúce viac svalových skupín naraz.
+
+**Výhody:**
+- Efektívnejšie využitie času
+- Väčšie spaľovanie kalórií
+- Funkčná sila
+- Hormonálna odezva (testosterón, rastový hormón)
+
+**Hlavné compound cviky:**
+
+**Drepy (Squats):**
+- Zapájajú: Nohy, sedacie svaly, core
+- Variácie: Back squat, front squat, goblet squat
+
+**Mŕtvy ťah (Deadlift):**
+- Zapájajú: Chrbát, nohy, core, ramená
+- Kráľ všetkých cvikov
+
+**Tlaky (Bench Press):**
+- Zapájajú: Hruď, triceps, ramená
+- Variácie: Flat, incline, decline
+
+**Zhyby (Pull-ups):**
+- Zapájajú: Chrbát, biceps, ramená
+- Vynikajúci na horné telo
+
+**2. Isolation Exercises (Izolované cviky):**
+
+**Čo to je:**
+Cviky zamerané na konkrétny sval.
+
+**Výhody:**
+- Cielená práca na slabé partie
+- Detailná definícia
+- Nižšie riziko zranenia
+- Vhodné pri rehabilitácii
+
+**Príklady:**
+
+**Bicepsový zdvih:**
+- Izoluje: Biceps
+- Variácie: Činky, kladka, kladivo
+
+**Rozpažovanie:**
+- Izoluje: Hruď
+- Pec deck, dumbbells fly
+
+**Leg Extension:**
+- Izoluje: Predná časť stehna
+
+**Leg Curl:**
+- Izoluje: Zadná časť stehna
+
+**Ideálny tréningový plán:**
+- 70-80% compound cviky
+- 20-30% isolation cviky
+- Začnite vždy s compound cvikmi
+- Isolation na koniec tréningu`
+    },
+    {
+      title: "Téma 9: Tréningová terminológia - Reps, Sets, 1RM, Progressive Overload",
+      content: `**Základné pojmy:**
+
+**1. Reps (Repetitions - Opakovania):**
+- Jeden úplný pohyb v rámci cviku
+- Príklad: Jeden kompletný klik od podlahy hore a späť
+
+**2. Sets (Série):**
+- Skupina opakovaní vykonaná bez prestávky
+- Príklad: 3 série × 10 opakovaní = 30 celkových opakovaní s prestávkami
+
+**Rozsahy opakovaní:**
+- **1-5 reps**: Maximálna sila
+- **6-12 reps**: Hypertrofia (rast svalov)
+- **13-20+ reps**: Vytrvalosť
+
+**3. 1RM (One-Rep Max):**
+- Maximálna váha, ktorú zvládnete zdvihnúť pri jednom opakovaní
+- Používa sa na stanovenie tréningových váh
+- Príklad: Ak je váš 1RM v drape 100kg, pracujete s 70-85% (70-85kg)
+
+**4. Progressive Overload (Progresívne zaťaženie):**
+
+**Najdôležitejší princíp rastu:**
+Zvyšovanie váhy, objemu alebo náročnosti tréningu, ktoré vedie k zlepšeniu.
+
+**Metódy progressive overload:**
+
+**Zvýšenie váhy:**
+- Postupne pridávajte kilogramy
+- Príklad: Týždeň 1: 50kg, Týždeň 4: 52.5kg
+
+**Zvýšenie objemu:**
+- Viac sérií alebo opakovaní
+- Príklad: 3×10 → 4×10 → 4×12
+
+**Zvýšenie frekvencie:**
+- Viac tréningov týždenne
+- Príklad: 2× týždenne → 3× týždenne
+
+**Zníženie odpočinku:**
+- Kratšie prestávky medzi sériami
+- Príklad: 90s → 60s
+
+**Ďalšie pojmy:**
+
+**Superset:**
+- Spojenie dvoch cvikov bez prestávky
+- Často na opačné svalové partie
+- Príklad: Biceps curl + Triceps extension
+
+**Drop Set:**
+- Znižovanie váhy počas série bez odpočinku
+- Extrémne vyčerpávajúce
+
+**Tempo:**
+- Rýchlosť vykonávania cviku
+- Príklad: 3-1-2 (3s dolu, 1s pauza, 2s hore)`
+    },
+    {
+      title: "Téma 10: Regenerácia, zotavenie a meranie pokroku",
+      content: `**1. DOMS (Delayed Onset Muscle Soreness):**
+
+**Čo to je:**
+Oneskorená svalovica - bolesti svalov 24-72 hodín po tréningu.
+
+**Príčina:**
+- Dôsledok mikrotrhlín vo svalových vláknach
+- Normálna súčasť adaptácie
+- Nie je indikátor efektívnosti tréningu
+
+**Ako zmierniť:**
+- Ľahké aktívne zotavenie
+- Strečing
+- Masáž
+- Dostatočný spánok
+
+**2. Foam Rolling (Myofasciálne uvoľnenie):**
+- Samo-masáž na uvoľnenie svalov
+- Podporuje regeneráciu
+- Zvyšuje flexibilitu
+- Znižuje DOMS
+- 10-15 minút po tréningu
+
+**3. Spánok a regenerácia:**
+
+**Dôležitosť spánku:**
+- 7-8 hodín denne
+- Regenerácia svalov
+- Hormonálna rovnováha
+- Mentálne zotavenie
+
+**Oddychové dni:**
+- Minimálne 1-2 dni týždenne
+- Aktívne zotavenie (ľahká chôdza, jóga)
+- Prevencia pretrénovanosti
+
+**4. Meranie pokroku:**
+
+**BMI (Body Mass Index):**
+- Ukazovateľ váhového stavu
+- Vzťah výšky a hmotnosti
+- Obmedzený pre športovcov (nevzťahuje sa na svalovú hmotu)
+
+**VO2 Max:**
+- Maximálne množstvo kyslíka využité počas cvičenia
+- Indikátor kardiovaskulárnej kondície
+- Vyšší = lepšia kondícia
+
+**Zloženie tela (Body Composition):**
+- % tuku vs. % svalovej hmoty
+- Dôležitejšie než váha
+- Metódy: Caliper, bioimpedancia, DEXA scan
+
+**Ďalšie metriky:**
+- Obvody tela (ramená, pás, stehná)
+- Fotografie pokroku
+- Výkonnostné metriky (koľko zdvihnete, ako rýchlo bežíte)
+- Ako sa cítite
+
+**Praktické rady:**
+- Merajte pokrok pravidelne (týždenne/mesačne)
+- Neobsedujte váhou
+- Zamerajte sa na celkové zlepšenie
+- Buďte trpezliví - zmeny trvajú čas
+- Oslavujte malé víťazstvá`
+    }
   ]
 };
 
