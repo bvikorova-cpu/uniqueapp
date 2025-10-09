@@ -70,8 +70,11 @@ export const useCourseProgress = (courseName: string) => {
       current_topic: number;
       completed_topics: number[];
     }) => {
+      console.log('updateProgressMutation called with:', data);
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
+
+      console.log('User authenticated:', user.id);
 
       const { error } = await supabase
         .from("course_progress")
@@ -85,9 +88,15 @@ export const useCourseProgress = (courseName: string) => {
           onConflict: "user_id,course_name",
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating progress:', error);
+        throw error;
+      }
+      
+      console.log('Progress updated successfully');
     },
     onSuccess: () => {
+      console.log('Invalidating queries...');
       queryClient.invalidateQueries({ queryKey: ["course-progress", courseName] });
     },
   });

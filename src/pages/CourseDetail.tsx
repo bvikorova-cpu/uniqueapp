@@ -217,6 +217,7 @@ Po úspešnom zvládnutí tejto témy budete pripravení na záverečný test a 
     if (courseProgress) return;
     
     // Initialize progress for new users
+    console.log('Initializing course progress...');
     updateProgress({
       current_topic: 0,
       completed_topics: [],
@@ -224,12 +225,20 @@ Po úspešnom zvládnutí tejto témy budete pripravení na záverečný test a 
   }, [courseProgress, updateProgress]);
 
   const handleTopicComplete = (index: number) => {
+    console.log('handleTopicComplete called with index:', index);
+    console.log('Current courseProgress:', courseProgress);
+    
     const currentCompleted = courseProgress?.completed_topics || [];
+    console.log('Current completed topics:', currentCompleted);
+    
     const newCompletedTopics = currentCompleted.includes(index) 
       ? currentCompleted 
       : [...currentCompleted, index];
     
+    console.log('New completed topics:', newCompletedTopics);
+    
     const nextTopic = index === 9 ? 9 : index + 1;
+    console.log('Next topic will be:', nextTopic);
 
     updateProgress({
       current_topic: nextTopic,

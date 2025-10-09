@@ -57,7 +57,10 @@ export const TopicContent = ({
 
           {!isCompleted && (
             <Button
-              onClick={onComplete}
+              onClick={() => {
+                console.log('TopicContent: Button clicked, calling onComplete');
+                onComplete();
+              }}
               className="w-full mt-8"
               size="lg"
             >
