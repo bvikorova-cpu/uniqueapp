@@ -12244,6 +12244,456 @@ Oneskorená svalovica - bolesti svalov 24-72 hodín po tréningu.
 - Buďte trpezliví - zmeny trvajú čas
 - Oslavujte malé víťazstvá`
     }
+  ],
+  
+  "Time management: Ako efektívne narábať s časom": [
+    {
+      title: "Téma 1: Čo je time management?",
+      content: `**Úvod do time managementu**
+
+Time management je spôsob, ako efektívne plánovať a riadiť svoj čas na splnenie pracovných aj osobných cieľov.
+
+**Definícia:**
+Time management je nevyhnutnou súčasťou každodenného života, ktorá pomáha zvládať povinnosti a znižovať stres.
+
+**Pre koho je určený:**
+- Študentov
+- Profesionálov  
+- Rodičov
+- Podnikateľov
+
+**Výhody pochopenia time managementu:**
+
+Ak pochopíte, čo je time manažment, dokážete:
+- Lepšie organizovať svoj deň
+- Dosahovať dlhodobé výsledky
+- Vyhnúť sa pocitu vyčerpania
+- Mať kontrolu nad svojím časom
+- Získať väčšiu slobodu na osobný rozvoj`
+    },
+    {
+      title: "Téma 2: Identifikácia priorít",
+      content: `**Kľúčové kroky time managementu: Identifikácia priorít**
+
+**Rozdeľte úlohy podľa dôležitosti:**
+
+Úlohy rozdeľte na:
+- Dôležité
+- Menej dôležité
+- Naliehavé
+
+**Eisenhowerova matica:**
+
+Využite Eisenhowerovu maticu pre prioritizáciu úloh:
+
+**1. Naliehavé a dôležité (Urobiť hneď):**
+- Krízy a problémy
+- Deadline projekty
+
+**2. Dôležité, ale nie naliehavé (Naplánovať):**
+- Dlhodobé projekty
+- Osobný rozvoj
+- Plánovanie
+
+**3. Naliehavé, ale nie dôležité (Delegovať):**
+- Väčšina telefónnych hovorov
+- Niektoré emaily
+- Určité stretnutia
+
+**4. Nie naliehavé ani dôležité (Eliminovať):**
+- Časozberné aktivity
+- Zbytočné aktivity`
+    },
+    {
+      title: "Téma 3: Tvorba zoznamu úloh",
+      content: `**Organizácia denných a týždenných úloh**
+
+**Denný zoznam úloh:**
+
+**Výhody:**
+- Udržiava prehľad o úlohách
+- Pomáha sústrediť sa na podstatné veci
+- Zvyšuje produktivitu
+
+**Postup tvorby:**
+1. Ráno si vypíšte všetky úlohy na daný deň
+2. Označte 3 najdôležitejšie (MIT - Most Important Tasks)
+3. Začnite s najťažšou úlohou
+4. Odškrtávajte splnené úlohy
+
+**Týždenný zoznam úloh:**
+
+**Plánovanie týždňa:**
+- Každú nedeľu si naplánujte nasledujúci týždeň
+- Rozdeľte veľké projekty na menšie úlohy
+- Nechajte si priestor pre nečakané udalosti
+- Zahrnite aj čas na oddych
+
+**Nástroje na tvorbu zoznamov:**
+- Papierový denník/zápisník
+- Digitálne aplikácie (Todoist, Microsoft To Do)
+- Bullet journal
+- Nálepkové poznámky (sticky notes)`
+    },
+    {
+      title: "Téma 4: Časové blokovanie",
+      content: `**Efektívna technika riadenia času**
+
+**Čo je časové blokovanie?**
+
+Časové blokovanie znamená naplánovať si konkrétne časové bloky pre jednotlivé činnosti počas dňa.
+
+**Výhody časového blokovania:**
+- Zlepšuje sústredenosť
+- Znižuje multitasking
+- Zabezpečuje vyvážený deň
+- Vytvára štruktúru
+
+**Ako na časové blokovanie:**
+
+**1. Rozdeľte deň na bloky:**
+- Ranný blok (6:00-9:00)
+- Dopoludňajší blok (9:00-12:00)
+- Obedná prestávka (12:00-13:00)
+- Popoludňajší blok (13:00-17:00)
+- Večerný blok (17:00-20:00)
+
+**2. Priraďte úlohy do blokov:**
+- Najnáročnejšie úlohy do blokov s najvyššou energiou
+- Rutinné úlohy do blokov s nižšou energiou
+- Kreativita ráno, administrativa popoludní
+
+**3. Dodržiavajte časové limity:**
+- Nastavte si časovač
+- Keď blok skončí, prejdite na ďalšiu úlohu
+- Budujte disciplínu
+
+**Typy časových blokov:**
+- Hlboká práca (Deep Work)
+- Plytkáca práca (Shallow Work)
+- Prestávky
+- Osobný čas`
+    },
+    {
+      title: "Téma 5: Minimalizácia rušivých elementov",
+      content: `**Odstránenie rozptyľovania**
+
+**Identifikujte rušivé elementy:**
+
+**Digitálne rozptyľovanie:**
+- Notifikácie na telefóne
+- Sociálne siete
+- Emaily
+- Instant správy
+
+**Fyzické rozptyľovanie:**
+- Hlučné prostredie
+- Neporiadok na stole
+- Nečakané návštevy
+- Televízia v pozadí
+
+**Stratégie minimalizácie:**
+
+**1. Vypnite notifikácie:**
+- Počas hlbokej práce vypnite telefón
+- Používajte režim "Nerušiť"
+- Kontrolujte emaily len v určených časoch (napr. 3x denne)
+
+**2. Vytvorte si pracovné prostredie:**
+- Čistý a usporiadaný stôl
+- Tichá miestnosť
+- Kvalitné slúchadlá s bielym šumom
+- Vizuálne signály pre ostatných (červená čiapka = nerušiť)
+
+**3. Technika Pomodoro:**
+- 25 minút sústredenej práce
+- 5 minút prestávka
+- Po 4 cykloch dlhšia prestávka (15-30 minút)
+
+**4. Naučte sa hovoriť NIE:**
+- Odmietajte zbytočné stretnutia
+- Delegujte úlohy
+- Chráňte svoj čas`
+    },
+    {
+      title: "Téma 6: Používanie nástrojov na plánovanie",
+      content: `**Digitálne a analógové nástroje**
+
+**Digitálne kalendáre:**
+
+**Google Calendar:**
+- Synchronizácia medzi zariadeniami
+- Zdieľanie kalendárov
+- Pripomienky a notifikácie
+- Integrácia s ostatnými službami
+
+**Microsoft Outlook:**
+- Profesionálne prostredie
+- Správa emailov a kalendára
+- Plánovanie stretnutí
+- Úlohový zoznam
+
+**Aplikácie na riadenie úloh:**
+
+**Trello:**
+- Vizuálne tabule (Kanban)
+- Karty úloh
+- Tímová spolupráca
+- Označovanie a deadline
+
+**Asana:**
+- Projektový manažment
+- Priradenie úloh členom tímu
+- Sledovanie pokroku
+- Reporty a analytika
+
+**Todoist:**
+- Jednoduchý zoznam úloh
+- Priority a štítky
+- Opakovanie úloh
+- Karma body (motivácia)
+
+**Notion:**
+- All-in-one workspace
+- Poznámky, databázy, projekty
+- Šablóny
+- Flexibilné prispôsobenie
+
+**Analógové nástroje:**
+- Papierový plánovač/diár
+- Bullet journal
+- Nástenný kalendár
+- Whiteboard`
+    },
+    {
+      title: "Téma 7: Zvýšenie produktivity",
+      content: `**Ako dosiahnuť viac za menej času**
+
+**Správne nastavený plán:**
+
+**Ranná rutina:**
+- Vstávajte v rovnakom čase
+- Cvičenie alebo meditácia
+- Zdravá raňajka
+- Prehľad denných úloh
+- Začnite s najťažšou úlohou
+
+**Princíp 80/20 (Paretov princíp):**
+
+**Definícia:**
+20% vašich aktivít prináša 80% výsledkov.
+
+**Aplikácia:**
+- Identifikujte najdôležitejšie úlohy
+- Zamerajte sa na ne
+- Delegujte alebo eliminujte zvyšok
+
+**Eliminujte multitasking:**
+
+**Prečo je multitasking neefektívny:**
+- Znižuje kvalitu práce
+- Spomaľuje dokončenie úloh
+- Zvyšuje stres
+- Vedie k chybám
+
+**Namiesto toho:**
+- Sústreďte sa na jednu vec naraz
+- Dokončite úlohu pred začatím novej
+- Používajte techniku časového blokovania
+
+**Automatizácia a delegovanie:**
+
+**Automatizujte rutinné úlohy:**
+- Automatické platby
+- Šablóny emailov
+- Opakujúce sa reporty
+
+**Delegujte:**
+- Úlohy, ktoré nie sú vaša expertíza
+- Časovo náročné, ale málo hodnotné úlohy
+- Využite virtuálnych asistentov`
+    },
+    {
+      title: "Téma 8: Zníženie stresu",
+      content: `**Time management a duševné zdravie**
+
+**Jasný harmonogram znižuje stres:**
+
+**Prečo plánovanie znižuje stres:**
+- Eliminuje pocit chaosu
+- Dáva vám kontrolu
+- Znižuje únavu z rozhodovania
+- Vytvára predvídateľnosť
+
+**Prevencia preťaženia:**
+
+**Varovné signály:**
+- Chronická únava
+- Podráždenosť
+- Problémy so spánkom
+- Znížená produktivita
+- Pocit zahltenia
+
+**Stratégie prevencie:**
+
+**1. Nastavte realistické očakávania:**
+- Neprekračujte svoje limity
+- Naplánujte menej, než si myslíte, že zvládnete
+- Nechajte si časové rezervy
+
+**2. Pravidelné prestávky:**
+- Každú hodinu vstanite a pretiahnite sa
+- Obed mimo pracoviska
+- Víkendové odpočinky bez práce
+
+**3. Naučte sa rozpoznať priority:**
+- Nie všetko je urgentné
+- Nie všetko musíte urobiť vy
+- Je v poriadku odmietnuť
+
+**4. Relaxačné techniky:**
+- Meditácia (10 minút denne)
+- Dychové cvičenia
+- Jóga
+- Prechádzky v prírode
+
+**5. Odpojte sa:**
+- Večer vypnite pracovné zariadenia
+- Víkendy bez emailov
+- Dovolenka = skutočná dovolenka`
+    },
+    {
+      title: "Téma 9: Viac času na oddych",
+      content: `**Work-life balance**
+
+**Efektívne plánovanie = viac voľného času:**
+
+**Ako získať viac času pre seba:**
+
+**1. Štruktúrovaný pracovný čas:**
+- Jasné hranice (napr. práca len do 17:00)
+- Žiadne preberanie práce domov
+- Efektívne využitie pracovného času
+
+**2. Ochrana osobného času:**
+- Naplánujte si čas pre seba do kalendára
+- Považujte ho za dôležitý ako pracovné stretnutie
+- Neobetujte ho pre prácu
+
+**3. Kvalitný odpočinok:**
+
+**Aktívny odpočinok:**
+- Šport a cvičenie
+- Hobby
+- Učenie sa nových zručností
+
+**Pasívny odpočinok:**
+- Sledovanie filmov/seriálov
+- Čítanie
+- Relaxácia
+
+**4. Čas s rodinou a priateľmi:**
+- Pravidelné rodinné večere
+- Týždenné stretnutia s priateľmi
+- Kvalitný čas bez telefónov
+
+**5. Naplánujte si dovolenku:**
+- Minimálne 2-3 týždne ročne
+- Úplné odpojenie od práce
+- Nové miesta a zážitky
+
+**Benefity voľného času:**
+- Regenerácia energie
+- Zvýšená kreativita
+- Lepšie vzťahy
+- Celkové šťastie
+- Prevencia vyhorenia`
+    },
+    {
+      title: "Téma 10: Najčastejšie chyby a ako ich napraviť",
+      content: `**Vyhnite sa bežným chybám v time managemente**
+
+**1. Nerealistické plánovanie:**
+
+**Problém:**
+Naplánovať si príliš veľa úloh za príliš krátky čas.
+
+**Riešenie:**
+- Pri príprave harmonogramu si nechajte rezervy
+- Počítajte s nepredvídanými udalosťami
+- Plánujte len 60-70% svojho času
+- Zvyšok nechajte ako buffer
+
+**2. Nejasné ciele:**
+
+**Problém:**
+Bez konkrétnych cieľov je ťažké zamerať sa na podstatné.
+
+**Riešenie:**
+- Používajte SMART ciele (Specific, Measurable, Achievable, Relevant, Time-bound)
+- Zapíšte si svoje ciele
+- Pravidelne ich prehodnocujte
+
+**3. Prokrastinácia:**
+
+**Problém:**
+Odkladanie úloh často vedie k zbytočnému stresu.
+
+**Riešenie:**
+- Technika "Eat the Frog" - začnite s najťažším
+- Rozdeľte veľké úlohy na menšie
+- Odstráňte rozptyľovanie
+- Odmeny za splnené úlohy
+- 5-minútové pravidlo: začnite len na 5 minút
+
+**4. Ignorovanie prestávok:**
+
+**Problém:**
+Prestávky sú nevyhnutné na udržanie energie a koncentrácie.
+
+**Riešenie:**
+- Naplánujte si pravidelné prestávky
+- Technika Pomodoro
+- Pohyb počas prestávok
+- Hydratácia a zdravé občerstvenie
+
+**5. Perfekcionizmus:**
+
+**Problém:**
+Snaha o dokonalosť spomaľuje dokončenie úloh.
+
+**Riešenie:**
+- Cieľom je "dostatočne dobré", nie "dokonalé"
+- Stanovte si časový limit
+- Učte sa z chýb
+
+**Vybudujte si vlastný systém:**
+
+**1. Definujte si ciele:**
+- Dlhodobé (ročné, 5-ročné)
+- Krátkodobé (mesačné, týždenné, denné)
+
+**2. Vytvorte si plán:**
+- Týždenný plánovací rituál
+- Denný prehľad úloh
+
+**3. Rozdeľte si čas:**
+- Časové bloky pre rôzne aktivity
+- Ochrana času pre dôležité úlohy
+
+**4. Vyhodnocujte:**
+- Každý deň večer
+- Čo fungovalo?
+- Čo treba zlepšiť?
+
+**5. Upravujte:**
+- Buďte flexibilní
+- Systém musí fungovať pre vás
+- Pravidelne optimalizujte
+
+**Záver:**
+Time management nie je len o plánovaní – je to nástroj, ktorý vám pomôže získať viac času na to, na čom skutočne záleží.`
+    }
   ]
 };
 
