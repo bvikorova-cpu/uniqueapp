@@ -10097,6 +10097,375 @@ Svet kryptomien je fascinujúci a plný príležitostí, ale aj výziev. S potre
 
 Úspech v kryptomenách závisí od vzdelávania, trpezlivosti a zodpovedného prístupu k investovaniu.`
     }
+  ],
+  "Aromaterapia": [
+    {
+      title: "Téma 1: Čo je to aromaterapia?",
+      content: `**Čo je to aromaterapia?**
+
+Aromaterapia je holistická terapeutická metóda, ktorá využíva prírodné esenciálne oleje na podporu fyzického, emocionálneho a duševného zdravia. Tieto oleje sa extrahujú z kvetov, plodov, koreňov a iných častí rastlín a majú silné liečivé vlastnosti.
+
+**Ako aromaterapia funguje?**
+
+Aromaterapia funguje prostredníctvom inhalácie alebo aplikácie esenciálnych olejov na pokožku. Pri inhalácii dochádza k stimulácii čuchového centra v mozgu, čo ovplyvňuje emócie, pamäť a celkovú pohodu. Pri aplikácii na pokožku sa oleje vstrebávajú do krvného obehu, kde majú terapeutické účinky.
+
+**Čo dokáže aromaterapia?**
+
+Aromaterapia môže pomôcť pri:
+- zmierňovaní stresu a únavy
+- podpore relaxácie a lepšieho spánku
+- posilnení imunity
+- zlepšení koncentrácie a mentálnej jasnosti
+- podpore dýchacích ciest
+- zmiernení bolesti hlavy, svalov a kĺbov
+
+**Čo sú to esenciálne oleje?**
+
+Esenciálne oleje sú vysoko koncentrované rastlinné extrakty, ktoré obsahujú prírodné chemické zlúčeniny s terapeutickými účinkami. Každý olej má jedinečné vlastnosti a používa sa na špecifické účely, napríklad levanduľa na relaxáciu, mäta na osvieženie a tea tree na antiseptické účinky.`
+    },
+    {
+      title: "Téma 2: Pre koho je aromaterapia vhodná?",
+      content: `**Pre koho je aromaterapia vhodná?**
+
+Aromaterapia je vhodná pre všetkých, ktorí hľadajú prirodzené spôsoby podpory zdravia. Môžu ju využívať:
+- jednotlivci na osobnú pohodu
+- športovci na regeneráciu svalov
+- členovia rodiny na vytvorenie harmónie v domácnosti
+- seniori na podporu zdravia a spánku
+- človek pracujúci pod tlakom na zlepšenie koncentrácie a znižovanie stresu
+
+**Aké sú rôzne formy aromaterapie?**
+
+Existuje niekoľko spôsobov, ako využívať aromaterapiu:
+
+**1. Difúzia**
+Pomocou aróma difuzérov alebo rozprašovačov.
+
+**2. Inhalácia**
+Priama inhalácia z fľašky alebo inhalácia pary.
+
+**3. Masáž**
+Riedenie olejov v nosnom, napr. mandľovom oleji a následná aplikácia na pokožku.
+
+**4. Kúpele**
+Pridanie esenciálnych olejov do horúceho kúpeľa.
+
+**5. Kozmetika**
+Pridanie do pleťových alebo telových produktov.
+
+**6. Aromatizované obklady**
+Teplé alebo studené obklady aplikované na určité časti tela.`
+    },
+    {
+      title: "Téma 3: Esenciálne oleje pri praní",
+      content: `**Je možné použiť esenciálne oleje aj pri praní?**
+
+Pridaním EO do pracieho cyklu môžete dosiahnuť prírodnú dezinfekciu, osvieženie bielizne a príjemnú vôňu bez syntetických parfumov.
+
+**Niekoľko tipov, ako možno využiť EO pri praní:**
+
+**Priamo do pracieho prostriedku**
+Pridajte 10 – 15 kvapiek EO do vášho tekutého alebo domáceho prášku na pranie. EO pomôže neutralizovať pachy a dodá príjemnú vôňu.
+
+**Do priehradky na aviváž**
+Zmiešajte biely ocot (cca 100 ml) s 10 kvapkami EO a nalejte do priehradky na aviváž. Ocot zmäkčí tkaniny a EO zanechá sviežu vôňu.
+
+**Pri ručnom praní**
+Pridajte 5 – 10 kvapiek EO do nádoby s vodou a trochou sódy bikarbóny. Nechajte prádlo nasiaknuť a potom opláchnite.
+
+**Na sušiace gule do sušičky**
+Nakvapkajte 3 – 5 kvapiek EO na vlnené sušiace gule a vložte do sušičky. Bielizeň bude krásne voňať a menej sa pokrčí.
+
+**Najlepšie esenciálne oleje na pranie:**
+
+🟢 **Na sviežu vôňu:**
+- Levanduľa 🌿 – upokojujúca, antibakteriálna
+- Citrón 🍋 – čistí a neutralizuje pachy
+- Pomaranč 🍊 – osviežuje a dezinfikuje
+- Mäta 🌱 – dodáva energiu a odstraňuje zápach
+
+🟣 **Na dezinfekciu a odstraňovanie pachov:**
+- Čajovník (Tea Tree) 🌿 – antibakteriálny, proti plesniam
+- Eukalyptus 🌬 – čistí a dezinfikuje
+- Borovica 🌲 – osviežujúca, dezodoračná
+
+🔵 **Na extra príjemnú vôňu a relax:**
+- Ruža 🌹 – luxusná a romantická vôňa
+- Ylang-Ylang 💛 – exotická, harmonizujúca
+- Vanilka 🤍 – jemná a hrejivá vôňa`
+    },
+    {
+      title: "Téma 4: Účinky aromaterapie",
+      content: `**Aké sú účinky aromaterapie?**
+
+Aromaterapia má rôzne priaznivé účinky:
+
+**Fyzické účinky:**
+- podpora dýchania
+- posilnenie imunity
+- zmiernenie bolesti
+
+**Mentálne účinky:**
+- zlepšenie koncentrácie
+- redukcia stresu a únavy
+
+**Emocionálne účinky:**
+- vyrovnávanie emócií
+- podpora pozitívnej nálady
+
+**Ako si vybrať kvalitný esenciálny olej na aromaterapiu?**
+
+Pri výbere esenciálnych olejov dbajte na tieto kritériá:
+
+**1. 100 % prírodné zloženie**
+Bez syntetických prísad.
+
+**2. Latinský názov rastliny**
+Overená botanická identita.
+
+**3. Spôsob extrakcie**
+Preferovať destiláciu alebo lisovanie za studena.
+
+**4. Ekologické a bio certifikáty**
+Zaručená kvalita.
+
+**5. Transparentnosť výrobcu**
+Informácie o pôvode a spracovaní.`
+    },
+    {
+      title: "Téma 5: Zásady bezpečnej aromaterapie",
+      content: `**Aké sú zásady bezpečnej aromaterapie?**
+
+**1. Riedenie**
+Nikdy nepoužívajte esenciálne oleje priamo na pokožku – je potrebné ich riediť v nosnom oleji.
+
+**2. Dávkovanie**
+Nepreháňajte to s dávkovaním - menej je často viac.
+
+**3. Fotosenzitivita**
+Niektoré oleje sú fotosenzitívne - neaplikujte citrusové oleje pred vystavením slnku.
+
+**4. Bezpečné skladovanie**
+Uchovávajte esenciálne oleje mimo dosahu detí a zvierat.
+
+**5. Konzultácia s odborníkom**
+Ak ste tehotná alebo trpíte chronickými ochoreniami, konzultujte používanie s odborníkom.
+
+**Dôležité bezpečnostné upozornenia:**
+
+⚠️ Esenciálne oleje sú vysoko koncentrované látky
+⚠️ Vždy vykonajte kožný test pred prvým použitím
+⚠️ Pri akýchkoľvek alergických reakciách prerušte používanie
+⚠️ Neaplikujte na poškodené alebo podráždené miesta pokožky
+⚠️ Pri náhodnom požití kontaktujte lekára`
+    },
+    {
+      title: "Téma 6: Nosné oleje v aromaterapii",
+      content: `**Nosné oleje v aromaterapii**
+
+Pri riedení esenciálnych olejov na bezpečnú aplikáciu na pokožku sú nosné oleje nevyhnutné. Pomáhajú znižovať koncentráciu esenciálnych olejov a zároveň poskytujú hydratáciu a výživu pokožke.
+
+**Mandľový olej**
+- Jemný a hypoalergénny, vhodný pre citlivú pokožku
+- Rýchlo sa vstrebáva a hydratuje
+- Vhodný na masáže a starostlivosť o pokožku
+
+**Kokosový olej (frakcionovaný)**
+- Ľahký, nemastný a rýchlo sa vstrebáva
+- Má antibakteriálne a hydratačné vlastnosti
+- Ideálny na masáže a ako základ pre telové oleje
+
+**Jojobový olej**
+- Chemicky podobný ľudskému kožnému mazu
+- Skvelý pre problematickú a aknóznu pleť
+- Dlhá trvanlivosť a výborná stabilita
+
+**Arganový olej**
+- Bohatý na vitamín E a esenciálne mastné kyseliny
+- Vyživuje a regeneruje pokožku
+- Vhodný na pleťové zmesi a starostlivosť o suchú pokožku
+
+**Hroznový olej**
+- Ľahký, rýchlo sa vstrebáva a nezanecháva mastný pocit
+- Obsahuje antioxidanty a flavonoidy
+- Skvelý pre mastnú a zmiešanú pleť
+
+**Olivový olej**
+- Výživný a hydratačný, bohatý na antioxidanty
+- Skôr hustejšia konzistencia, vhodný na suchú pokožku
+- Má dlhší čas vstrebávania
+
+**Avokádový olej**
+- Vysoko výživný, ideálny pre suchú a starnúcu pokožku
+- Obsahuje vitamíny A, D, E
+- Upokojuje podráždenie a podporuje hojenie pokožky`
+    },
+    {
+      title: "Téma 7: Ako riediť esenciálne oleje?",
+      content: `**Ako riediť esenciálne oleje?**
+
+Správne riedenie esenciálnych olejov je kľúčové pre bezpečné a efektívne používanie. Pri výbere nosného oleja je dôležité zohľadniť typ pokožky, účel použitia a osobné preferencie.
+
+**Pre dospelých: 1 – 3 % riedenie**
+Približne 6 – 18 kvapiek esenciálneho oleja na 30 ml nosného oleja
+
+**Pre deti, starších ľudí a tehotné ženy: 0,5 – 1 % riedenie**
+Približne 3 – 6 kvapiek na 30 ml nosného oleja
+
+**Praktické tabuľky pre riedenie:**
+
+**1% riedenie (citlivá pokožka, deti, starší ľudia):**
+- 5 ml nosného oleja = 1 kvapka EO
+- 10 ml nosného oleja = 2 kvapky EO
+- 30 ml nosného oleja = 6 kvapiek EO
+
+**2% riedenie (bežná starostlivosť, masáže):**
+- 5 ml nosného oleja = 2 kvapky EO
+- 10 ml nosného oleja = 4 kvapky EO
+- 30 ml nosného oleja = 12 kvapiek EO
+
+**3% riedenie (krátkodobé použitie, targeted aplikácie):**
+- 5 ml nosného oleja = 3 kvapky EO
+- 10 ml nosného oleja = 6 kvapiek EO
+- 30 ml nosného oleja = 18 kvapiek EO
+
+**Postup pri riedení:**
+1. Vyberte vhodný nosný olej
+2. Odmerajte potrebné množstvo nosného oleja
+3. Pridajte správny počet kvapiek esenciálneho oleja
+4. Dôkladne premiešajte
+5. Uchovávajte v tmavej sklenenej fľaši`
+    },
+    {
+      title: "Téma 8: Aromaterapia a zdravie",
+      content: `**Aromaterapia a zdravie**
+
+Aromaterapia môže byť skvelou metódou na zlepšenie zdravia a pohody, ak sa používa bezpečne a s rozvahou.
+
+**Podpora imunitného systému:**
+- Tea Tree (čajovník) - silné antibakteriálne účinky
+- Eukalyptus - podporuje dýchacie cesty
+- Levandula - podporuje regeneráciu a relaxáciu
+- Citrusové oleje - vysoký obsah vitamínu C
+
+**Zlepšenie spánku:**
+- Levandula - najznámejší olej pre kvalitný spánok
+- Rumanček rímsky - upokojujúci efekt
+- Ylang-Ylang - znižuje napätie
+- Santalové drevo - podporuje hlboký spánok
+
+**Zníženie stresu a úzkosti:**
+- Bergamot - redukuje stres a zlepšuje náladu
+- Šalvia muškátová - harmonizuje emócie
+- Pačuli - uzemňujúci účinok
+- Frankincense - podporuje meditáciu
+
+**Zlepšenie koncentrácie:**
+- Mäta pieporná - stimuluje mentálnu jasnosť
+- Rozmarín - zlepšuje pamäť a koncentráciu
+- Citrón - osvieži a energizuje
+- Bazalka - podporuje duševnú klaritu
+
+**Úľava od bolesti:**
+- Mäta pieporná - hlavy, svalov
+- Eukalyptus - kĺbov, svalov
+- Zázvor - protizápalové účinky
+- Levandula - všeobecná úľava od bolesti`
+    },
+    {
+      title: "Téma 9: Praktické použitie aromaterapie doma",
+      content: `**Praktické použitie aromaterapie doma**
+
+**V obývacej izbe:**
+- Difúzia citrusových olejov pre svieži vzduch
+- Levandula pre relaxáciu pri čítaní
+- Ylang-Ylang pre romantickú atmosféru
+
+**V spálni:**
+- Levandula pre kvalitný spánok
+- Rumanček pre upokojenie pred spaním
+- Santalové drevo pre hlboký odpočinok
+
+**V kúpeľni:**
+- Eukalyptus v sprche pre podporu dýchania
+- Tea Tree pre čistenie a dezinfekciu
+- Mäta pre ranné osvieženie
+
+**V kuchyni:**
+- Citrón pre čistenie povrchov
+- Tea Tree pre antibakteriálne účinky
+- Pomaranč pre príjemnú vôňu
+
+**V pracovni:**
+- Rozmarín pre zlepšenie koncentrácie
+- Mäta pieporná pre mentálnu jasnosť
+- Bazalka pre kreativitu
+
+**Domáce recepty:**
+
+**Sprejový osvežovač:**
+- 100 ml destilovanej vody
+- 10 kvapiek levandule
+- 5 kvapiek citróna
+- 5 kvapiek mäty
+
+**Kúpeľová soľ:**
+- 200 g himalájskej soli
+- 10 kvapiek levandule
+- 5 kvapiek ylang-ylang
+
+**Čistiaci prostriedok:**
+- 500 ml vody
+- 100 ml bieleho octu
+- 15 kvapiek tea tree
+- 10 kvapiek citróna`
+    },
+    {
+      title: "Téma 10: Pokročilé techniky a certifikácia",
+      content: `**Pokročilé techniky v aromaterapii**
+
+**Synergie esenciálnych olejov:**
+Kombinácia viacerých esenciálnych olejov môže zosilniť ich terapeutické účinky. Pri tvorbe synergií je dôležité poznať vlastnosti jednotlivých olejov a ich vzájomné pôsobenie.
+
+**Príklady synergií:**
+
+**Pre relaxáciu:**
+- 4 kvapky levandule
+- 3 kvapky rumanku
+- 2 kvapky bergamotu
+
+**Pre energiu:**
+- 4 kvapky mäty
+- 3 kvapky rozmarínu
+- 2 kvapky citróna
+
+**Pre imunitu:**
+- 4 kvapky tea tree
+- 3 kvapky eukalyptu
+- 2 kvapky levandule
+
+**Profesionálne techniky:**
+
+**1. Aromaterapeutická masáž**
+Kombinácia masážnych techník s esenciálnymi olejmi pre maximálny terapeutický efekt.
+
+**2. Kompresné obklady**
+Teplé alebo studené obklady s esenciálnymi olejmi na špecifické oblasti tela.
+
+**3. Aromaterapeutické kúpele**
+Špecializované kúpeľové zmesi pre rôzne terapeutické účely.
+
+**Certifikácia a vzdelávanie:**
+
+Aromaterapia môže byť skvelou metódou na zlepšenie zdravia a pohody, ak sa používa bezpečne a s rozvahou. Vyberajte kvalitné esenciálne oleje a užívajte si prírodné benefity, ktoré ponúka.
+
+**Odporúčané kroky pre ďalšie vzdelávanie:**
+- Štúdium botaniky a chémie rastlín
+- Poznávanie jednotlivých esenciálnych olejov
+- Praktické cvičenia a aplikácie
+- Bezpečnostné protokoly a kontraindikácie
+- Etické a udržateľné používanie prírodných zdrojov`
+    }
   ]
 };
 
