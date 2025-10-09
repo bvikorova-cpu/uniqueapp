@@ -19215,6 +19215,923 @@ Ste dôležití. Vaše zdravie je dôležité. Vaša pohoda je dôležitá.
 
 Zaslúžite si to.`
     }
+  ],
+  "Leadership": [
+    {
+      title: "Téma 1: Definícia Leadership-u",
+      content: `**Čo je to Leadership?**
+
+Leadership sa definuje ako schopnosť či sila viesť iných ľudí, ale pre väčšinu z nás to znamená aj čosi viac.
+
+**Rôzne pohľady na vedenie:**
+
+Byť lídrom, dobrým a motivujúcim, to každý chápe trochu inak. Predstavy o tom, čo pre to musíme urobiť, ako sa je treba správať, aby sme sa stali dobrými vodcami, sa totiž rôznia. Aj preto sa líšia spôsoby vedenia i typy šéfov.
+
+**Dva hlavné prístupy:**
+
+**1. Úlohovo orientované vedenie:**
+- Vedenie ľudí k dokončeniu konkrétnych úloh
+- Zameranie na výsledky
+- Jasné ciele a termíny
+- Systematický prístup
+
+**2. Motivačné vedenie:**
+- Nekonečná cesta motivácie
+- Neustále zlepšovanie a napredovanie
+- Rozvoj vlastný aj zamestnancov
+- Dlhodobá vízia
+
+**Spoločný menovateľ:**
+
+Napriek tomu, že definície sa odlišujú, jedno je stále rovnaké:
+
+**Líder je človek, ktorý vie, ako dosiahnuť svoje ciele a inšpiruje aj ostatných k ich naplneniu.**
+
+**Podstata vedenia:**
+- Jasná vízia
+- Schopnosť inšpirovať
+- Dosiahnutie výsledkov
+- Motivácia tímu
+
+**Možnosť naučiť sa:**
+
+Nič nie je nemožné a umeniu viesť sa možno naučiť, stačí len vedieť, ako na to.`
+    },
+    {
+      title: "Téma 2: Byť lídrom - základný prehľad",
+      content: `**Líder 8-krát inak**
+
+Čo podnikateľ, manažér či riaditeľ spoločnosti, to iný postoj k jeho funkcii. Ale byť schopným, rešpektovaným lídrom s reálnymi výsledkami, to nie je iba post, je za tým omnoho viac.
+
+**Viac než len pozícia:**
+
+Byť inšpirujúcim vodcom a viesť ľudí pod sebou si vyžaduje:
+- Výnimočné schopnosti
+- Správny cit
+- Poznatky o typológii osobností
+- Schopnosť prispôsobiť sa jednotlivcom
+
+**Kľúčové požiadavky:**
+
+**1. Znalosti:**
+- Pochopenie ľudskej psychológie
+- Typológia osobností
+- Komunikačné techniky
+- Manažérske zručnosti
+
+**2. Schopnosti:**
+- Vedenie ľudí
+- Motivácia
+- Rozhodovanie
+- Riešenie konfliktov
+
+**3. Cit:**
+- Empatia
+- Intuícia
+- Emocionálna inteligencia
+- Pochopenie potrieb
+
+**4. Prístup:**
+- Individuálny ku každému
+- Flexibilita
+- Pokora
+- Rešpekt
+
+**Dôležitosť praxe:**
+
+A čo to chce predovšetkým, je prax a skúsenosti.
+
+**Cesta k dokonalosti:**
+- Učenie sa z chyb
+- Neustále zlepšovanie
+- Získavanie skúseností
+- Aplikácia poznatkov
+
+**Otázka na zamyslenie:**
+
+Čo všetko by mal teda dobrý líder spĺňať?
+
+Odpoveď nájdete v nasledujúcich témach, kde si rozoberieme 8 kľúčových vlastností úspešného vodcu.`
+    },
+    {
+      title: "Téma 3: Individuálny prístup k jednotlivcovi",
+      content: `**1. Individuálny prístup k jednotlivcovi**
+
+**Podstata vedenia:**
+
+Vedenie, to nie je iba schopnosť pochopiť a využiť svoje vrodené vlohy. Je to aj o efektívnom využití prirodzene silných stránok tímu.
+
+**Neexistuje univerzálny kľúč:**
+
+**Jedinečnosť prístupu:**
+- Jeden správny prístup nefunguje
+- Každý človek je iný
+- Rôzne potreby
+- Odlišné motivácie
+
+**Čo to znamená pre lídra:**
+
+Dobrý líder vie, že je nevyhnutné:
+- Vnímať jednotlivca
+- Pristupovať ku každému osobitne
+- Prispôsobiť štýl komunikácie
+- Rozpoznať individuálne potreby
+
+**Základný prístup:**
+
+**Pokorne, s rešpektom:**
+- Úcta k jednotlivcovi
+- Uznanie jedinečnosti
+- Oceňovanie rozdielov
+- Podpora rozmanitosti
+
+**V snahe dostať z každého to najlepšie:**
+- Identifikácia silných stránok
+- Rozvoj potenciálu
+- Podpora talentov
+- Maximalizácia výkonu
+
+**Pre spoločný cieľ:**
+- Tímová spolupráca
+- Jednotná vízia
+- Kolektívny úspech
+- Vzájomná podpora
+
+**Praktické kroky:**
+
+**1. Poznanie členov tímu:**
+- Individuálne rozhovory
+- Sledovanie správania
+- Zisťovanie preferencií
+- Pochopenie motivácií
+
+**2. Prispôsobenie štýlu:**
+- Flexibilná komunikácia
+- Rôzne prístupy
+- Personalizované zadania
+- Individuálne ciele
+
+**3. Podpora rozvoja:**
+- Osobný rast
+- Profesionálny rozvoj
+- Školenia
+- Mentoring
+
+**Výsledok:**
+
+Efektívne vedenie, ktoré rešpektuje individualitu a zároveň dosahuje spoločné ciele.`
+    },
+    {
+      title: "Téma 4: Nesebecký vodca",
+      content: `**2. Nesebecký vodca**
+
+**Definícia:**
+
+Viesť iných dokáže len niekto, kto je nesebecký a je pripravený vždy pomôcť.
+
+**Skutočná sila:**
+
+Iba skutočne silná osobnosť vie „zostúpiť" dole a viesť ostatných „tvárou v tvár".
+
+**Charakteristiky nesebeckého vodcu:**
+
+**1. Bez zbytočnej nadradenosti:**
+- Rovnocenný prístup
+- Partnerstvo, nie dominancia
+- Pokora vo vedení
+- Rešpekt k tímu
+
+**2. Bez prázdnych veľkých slov:**
+- Konkrétne činy
+- Reálne výsledky
+- Autentická komunikácia
+- Úprimnosť
+
+**Využitie vlastných predností:**
+
+**Sebapoznanie:**
+Dobrý vodca pozná svoje najväčšie klady:
+- Identifikácia silných stránok
+- Uvedomenie si schopností
+- Poznanie limitov
+- Objektívne zhodnotenie
+
+**Maximalizácia pre dobro všetkých:**
+Vie ich zmaximalizovať:
+- Pre dobro všetkých
+- Nielen pre vlastný úžitok
+- Pre prospech tímu
+- Pre spoločný cieľ
+
+**Praktické prejavy:**
+
+**1. Ochota pomôcť:**
+- Podpora členov tímu
+- Zdieľanie znalostí
+- Mentoring
+- Aktívna pomoc
+
+**2. Záujem o druhých:**
+- Počúvanie potrieb
+- Empatia
+- Starostlivosť
+- Podpora rozvoja
+
+**3. Zdieľanie úspechu:**
+- Uznanie prínosu tímu
+- Spravodlivé oceňovanie
+- Kolektívne víťazstvo
+- Transparentnosť
+
+**Dôsledky:**
+
+**Pozitívne:**
+- Dôvera tímu
+- Lojalita
+- Motivácia
+- Vysoká výkonnosť
+
+**Negatívne (pri absencii):**
+- Nedôvera
+- Demotivácia
+- Odliv talentov
+- Slabé výsledky
+
+**Kľúčové posolstvo:**
+
+Skutočný líder slúži svojmu tímu, nie naopak. Jeho úspech je odrazom úspechu celého tímu.`
+    },
+    {
+      title: "Téma 5: Každý problém má riešenie",
+      content: `**3. Každý problém má riešenie**
+
+**Podstata:**
+
+Vedenie je schopnosť odhaliť problém a nájsť naň vhodné riešenie.
+
+**Realita verzus slová:**
+
+**Častá situácia:**
+Je toľko ľudí, ktorí donekonečna hovoria o problémoch, ale kto z nich aj nejaký vyrieši?
+
+**Rozdiel medzi lídrom a ostatnými:**
+- Ostatní hovoria o problémoch
+- Líder problémy rieši
+- Slová verzus činy
+- Plánovanie verzus realizácia
+
+**Charakteristika efektívneho lídra:**
+
+**1. Nehovorí do prázdna:**
+- Konkrétne akcie
+- Jasné kroky
+- Merateľné výsledky
+- Realizácia plánov
+
+**2. Namiesto rečí koná:**
+- Aktívny prístup
+- Praktické riešenia
+- Rýchla reakcia
+- Rozhodnosť
+
+**3. Efektívne:**
+- Optimálne využitie zdrojov
+- Správne prioritizácie
+- Nákladová efektívnosť
+- Výsledkovo orientované
+
+**4. Motivujúco:**
+- Inšpiruje tím
+- Pozitívny prístup
+- Vízia riešenia
+- Nadšenie
+
+**Proces riešenia problémov:**
+
+**1. Identifikácia:**
+- Včasné rozpoznanie
+- Správna diagnóza
+- Hlboká analýza
+- Pochopenie príčin
+
+**2. Analýza:**
+- Zber dát
+- Hodnotenie situácie
+- Identifikácia možností
+- Posúdenie dopadov
+
+**3. Riešenie:**
+- Výber stratégie
+- Vypracovanie plánu
+- Alokácia zdrojov
+- Stanovenie termínov
+
+**4. Implementácia:**
+- Realizácia krokov
+- Monitoring pokroku
+- Úpravy ak potrebné
+- Vyhodnotenie
+
+**Prístup k problémom:**
+
+**Ako príležitosti:**
+- Učenie sa
+- Rast
+- Inovácia
+- Zlepšenie
+
+**S pozitívnym nastavením:**
+- Riešiteľnosť
+- Dôvera v schopnosti
+- Tímová spolupráca
+- Kreativita
+
+**Výsledok:**
+
+Líder, ktorý efektívne rieši problémy a motivuje ostatných, je pre organizáciu neoceniteľný.`
+    },
+    {
+      title: "Téma 6: Pokora na prvom mieste",
+      content: `**4. Pokora na prvom mieste**
+
+**Základná charakteristika:**
+
+Vodca vie, čo je pokora a nehanbí sa ju prejaviť ani voči svojim zamestnancom.
+
+**Uvedomenie si:**
+
+**Vlastných práv:**
+Je si vedomý toho, že:
+- Má svoju pozíciu
+- Má zodpovednosť
+- Má právomoci
+- Má rozhodovať
+
+**Práv druhých:**
+Zároveň vie, že:
+- Zamestnanci majú rovnaké práva
+- Zaslúžia si rešpekt
+- Majú svoje potreby
+- Sú rovnocenní ľudia
+
+**Citlivý prístup:**
+
+**1. Skutočný záujem:**
+- O potreby zamestnancov
+- O ich pohodu
+- O ich rozvoj
+- O ich spokojnosť
+
+**2. Aktívne počúvanie:**
+- Pozornosť k názorom
+- Prijímanie spätnej väzby
+- Rešpektovanie pripomienok
+- Otvorená komunikácia
+
+**3. Empatia:**
+- Pochopenie situácií
+- Vcítenie sa
+- Podpora v ťažkostiach
+- Ľudský prístup
+
+**Investícia do ľudí:**
+
+**Čas:**
+Líder by mal preto investovať svoj čas:
+- Do individuálnych stretnutí
+- Do tímových aktivít
+- Do rozvoja zamestnancov
+- Do budovania vzťahov
+
+**Úsilie:**
+Do zamestnancov:
+- Školenia
+- Mentoring
+- Koučing
+- Podpora
+
+**Cieľ:**
+Uistiť sa, že:
+- Sa na pracovisku cítia komfortne
+- Majú potrebné zdroje
+- Sú podporení
+- Môžu rásť
+
+**Výsledok:**
+
+**To je tá najistejšia cesta:**
+- K zvýšeniu výkonnosti celej firmy
+- K lojalite zamestnancov
+- K lepším výsledkom
+- K spokojnosti všetkých
+
+**Praktické prejavy pokory:**
+
+**1. Priznanie chýb:**
+- Nie je to slabosť
+- Je to sila
+- Buduje dôveru
+- Ukazuje autenticitu
+
+**2. Ocenenie druhých:**
+- Verejné uznanie
+- Spravodlivé hodnotenie
+- Zdieľanie úspechu
+- Vďačnosť
+
+**3. Učenie sa od ostatných:**
+- Otvorená myseľ
+- Prijímanie názorov
+- Rešpekt k expertíze
+- Neustály rast
+
+**Kľúčové posolstvo:**
+
+Pokora nie je slabosť, ale sila. Je to základ skutočného vodcovstva.`
+    },
+    {
+      title: "Téma 7: Ide príkladom",
+      content: `**5. Ide príkladom**
+
+**Základný princíp:**
+
+Správny líder ide vždy príkladom.
+
+**Konkrétne prejavy:**
+
+**1. Prvý kto koná:**
+Je prvým:
+- Kto vezme do ruky lopatu, ak je to treba
+- Kto začne pracovať
+- Kto sa ujme úlohy
+- Kto ukáže cestu
+
+**2. Odvaha:**
+Alebo vysloví:
+- Kontroverzný názor
+- V dôležitej diskusii
+- Pravdu, aj keď je nepohodlná
+- Svoju víziu
+
+**3. Komplexnosť:**
+Robí skrátka všetko:
+- Nielen to, čo je mu príjemné
+- Aj náročné úlohy
+- Aj neobľúbené práce
+- Všetko potrebné
+
+**Vplyv na tím:**
+
+**Pozitívne ovplyvňovanie:**
+Tým pozitívne ovplyvňuje aj ostatných:
+- Motivuje príkladom
+- Inšpiruje konaním
+- Ukazuje možnosti
+- Buduje kultúru
+
+**Ukazuje rovnosť:**
+Ukazuje im, že:
+- Nie je nad nimi
+- Je jedným z nich
+- Má rovnaké ciele
+- Zdieľa zodpovednosť
+
+**Spoločný cieľ:**
+Všetkým ide o to isté:
+- O naplnenie spoločného cieľa
+- O úspech tímu
+- O dobrú prácu
+- O výsledky
+
+**Praktické príklady:**
+
+**1. Práca v teréne:**
+- Fyzická práca s tímom
+- Pomoc pri náročných úlohách
+- Aktívna účasť
+- Spolupráca
+
+**2. Transparentnosť:**
+- Otvorená komunikácia
+- Zdieľanie informácií
+- Jasné rozhodnutia
+- Vysvetlenie krokov
+
+**3. Dodržiavanie pravidiel:**
+- Rovnaké pravidlá pre všetkých
+- Žiadne privilégiá
+- Spravodlivosť
+- Konzistentnosť
+
+**4. Tvrdá práca:**
+- Rovnaká pracovná etika
+- Vysoké nároky na seba
+- Disciplína
+- Vytrvalosť
+
+**Výsledky:**
+
+**Pre tím:**
+- Rešpekt k lídrovi
+- Dôvera
+- Motivácia
+- Lojalita
+
+**Pre organizáciu:**
+- Silná kultúra
+- Vysoká výkonnosť
+- Angažovanosť
+- Úspech
+
+**Kľúčové posolstvo:**
+
+"Nehovor, čo máme robiť - ukáž nám, ako to urobiť."
+
+Skutočný líder vedie príkladom, nie príkazmi.`
+    },
+    {
+      title: "Téma 8: Nesie zodpovednosť",
+      content: `**6. Nesie zodpovednosť**
+
+**Komplexná úloha lídra:**
+
+**Vodca nielenže:**
+- Motivuje
+- Ide príkladom
+- Inšpiruje
+- Vedie
+
+**Ale je tiež tým, kto:**
+- Nesie zodpovednosť
+- Rozhoduje
+- Zaručuje sa
+- Zodpovedá
+
+**Zodpovednosť za úspech:**
+
+**1. Prijímanie pochvaly:**
+Dokáže prijať pochvalu:
+- S pokorou
+- So zdieľaním zásluhy
+- S uznaním tímu
+- S vďačnosťou
+
+**2. Rozpoznanie prínosu:**
+Vie, že úspech je:
+- Výsledkom tímovej práce
+- Kolektívnym úspechom
+- Záslužný celej organizácie
+- Spoločným víťazstvom
+
+**3. Spravodlivé oceňovanie:**
+- Uznanie individuálnych prínosov
+- Verejná pochvala
+- Materiálne ocenenie
+- Morálna podpora
+
+**Zodpovednosť za neúspech:**
+
+**Rovnako tak:**
+Je pripravený aj na:
+- Negatívne dôsledky
+- Kritiku
+- Problémy
+- Výzvy
+
+**Svojich rozhodnutí:**
+Za svoje rozhodnutia:
+- Prevzatie zodpovednosti
+- Žiadne hľadanie výhovoriek
+- Žiadne obviňovanie iných
+- Čestnosť
+
+**Praktické prejavy:**
+
+**1. Pri úspechu:**
+- "Tím to zvládol výborne"
+- "Vďaka všetkým za úsilie"
+- "Spoločne sme to dokázali"
+- Zdieľanie kreditu
+
+**2. Pri neúspechu:**
+- "Ja som zodpovedný"
+- "Urobil som chybu v rozhodnutí"
+- "Vyvodím dôsledky"
+- Prijatie zodpovednosti
+
+**3. Pri riešení:**
+- Analýza príčin
+- Hľadanie riešení
+- Nápravu chýb
+- Ponaučenie
+
+**Typy zodpovednosti:**
+
+**1. Strategická:**
+- Za smerovanie
+- Za víziu
+- Za dlhodobé ciele
+- Za rozhodnutia
+
+**2. Operačná:**
+- Za každodenný chod
+- Za procesy
+- Za výkonnosť
+- Za výsledky
+
+**3. Ľudská:**
+- Za tím
+- Za jednotlivcov
+- Za kultúru
+- Za pohodu
+
+**Dôsledky:**
+
+**Pozitívne:**
+- Dôvera tímu
+- Rešpekt
+- Autoritu
+- Stabilita
+
+**Pri absencii:**
+- Strata dôvery
+- Demotivácia
+- Chaos
+- Nestabilita
+
+**Kľúčové posolstvo:**
+
+Zodpovednosť je cenou za vedenie. Skutočný líder ju nesie s hrdosťou a pokorou.`
+    },
+    {
+      title: "Téma 9: Všetko je možné",
+      content: `**7. Všetko je možné**
+
+**Podstata vedenia:**
+
+Vedenie je schopnosť presvedčiť seba aj iných o tom, že nič nie je nemožné.
+
+**Úloha vodcu:**
+
+**Motor firmy:**
+Vodca je motor firmy:
+- Hnacia sila
+- Zdroj energie
+- Inspirácia
+- Katalyzátor zmeny
+
+**Vie správne nakopnúť:**
+A inšpirovať zvyšok tímu:
+- Motiváciou
+- Víziou
+- Optimizmom
+- Energiou
+
+**Bez ohľadu na:**
+Bez ohľadu na to:
+- Ako nereálne cieľ spočiatku vyzerá
+- Aké veľké sú prekážky
+- Ako skeptickí sú ostatní
+- Aké náročné je to
+
+**Najsilnejšia zbraň:**
+
+**Jeho najsilnejšou zbraňou je:**
+Že ostatným umožní:
+- Aby sa podieľali nielen na dosahovaní toho cieľa
+- Aby boli aj dostatočne ocenení
+- Aby cítili vlastníctvo
+- Aby zdieľali úspech
+
+**Ak sa ho naplniť podarí:**
+- Spoločné víťazstvo
+- Kolektívna radosť
+- Spravodlivé ocenenie
+- Uznanie prínosu
+
+**Praktické prístupy:**
+
+**1. Vytváranie vízie:**
+- Jasná budúcnosť
+- Inšpirujúci obraz
+- Dosiahnuteľné míľniky
+- Spoločný cieľ
+
+**2. Budovanie dôvery:**
+- V schopnosti tímu
+- V možnosti úspechu
+- V proces
+- V lídra
+
+**3. Prekonávanie skepticizmu:**
+- Malými úspechmi
+- Dokazovaním možností
+- Riešením problémov
+- Vytrvalosťou
+
+**4. Podpora tímu:**
+- Zdrojmi
+- Školením
+- Časom
+- Dôverou
+
+**Princípy možného:**
+
+**1. "Ako" namiesto "Či":**
+- Nie "Či to je možné?"
+- Ale "Ako to dosiahneme?"
+- Orientácia na riešenie
+- Pozitívny mindset
+
+**2. Rozdelenie veľkého:**
+- Veľké ciele na menšie
+- Postupné kroky
+- Merateľný pokrok
+- Dosiahnuteľné míľniky
+
+**3. Učenie sa z neúspechov:**
+- Neúspech nie je koniec
+- Je to ponaučenie
+- Príležitosť rásť
+- Cesta k úspechu
+
+**Inšpirácia tímu:**
+
+**1. Príbehmi úspechu:**
+- Minulé víťazstvá
+- Prekonané prekážky
+- Dôkazy možností
+- Motivujúce príklady
+
+**2. Uznaním pokroku:**
+- Oslavy malých úspechov
+- Viditeľný pokrok
+- Povzbudenie
+- Pozitívna energia
+
+**3. Zdieľaním vízie:**
+- Jasná komunikácia
+- Zapojenie všetkých
+- Vlastníctvo cieľa
+- Spoločná zodpovednosť
+
+**Výsledok:**
+
+Tím, ktorý verí, že všetko je možné, je schopný dosiahnutť nezdolateľné.
+
+**Kľúčové posolstvo:**
+
+Limit nie je to, čo je objektívne možné, ale to, čomu veríme, že je možné.`
+    },
+    {
+      title: "Téma 10: Vedenie je služba iným",
+      content: `**8. Vedenie je služba iným**
+
+**Základná filozofia:**
+
+Vedenie je umenie slúžiť iným.
+
+**Ako sa prejavuje:**
+
+**Podpora talentov:**
+Tým, že podporí ich:
+- Talenty
+- Schopnosti
+- Túžby po úspechu
+- Ambície
+
+**Investícia zdrojov:**
+
+**1. Čas:**
+Venuje svoj čas:
+- Individuálnym stretnutiam
+- Mentorovaniu
+- Koučingu
+- Rozvoju
+
+**2. Energia:**
+Venuje svoju energiu:
+- Podpore ľudí
+- Riešeniu ich problémov
+- Pomoci pri raste
+- Motivácii
+
+**3. Prostriedky:**
+I nemalé prostriedky:
+- Na školenia
+- Na vzdelávanie
+- Na rozvoj
+- Na certifikácie
+
+**Cieľ služby:**
+
+**Na rozvoj:**
+- Daností
+- Skrytého potenciálu
+- Schopností
+- Talentov
+
+**Pre vlastné zadosťučinenie:**
+Každého z nich:
+- Osobný rast
+- Profesionálny úspech
+- Sebanaplnenie
+- Spokojnosť
+
+**Pre blaho celej firmy:**
+- Kolektívny úspech
+- Vysoká výkonnosť
+- Pozitívna kultúra
+- Udržateľný rast
+
+**Princípy služobného vedenia:**
+
+**1. Slúžiaci líder:**
+- Obrátená pyramída
+- Líder na spodku
+- Podporuje tím
+- Umožňuje úspech
+
+**2. Rozvoj ľudí:**
+- Dlhodobá investícia
+- Nie krátkodobý zisk
+- Budovanie kapacít
+- Vytváranie lídrov
+
+**3. Empatia a pochopenie:**
+- Skutočný záujem
+- Hlboké počúvanie
+- Vcítenie sa
+- Ľudský prístup
+
+**Praktické kroky:**
+
+**1. Identifikácia potenciálu:**
+- Poznanie členov tímu
+- Rozpoznanie talentov
+- Hodnotenie schopností
+- Zisťovanie ambícií
+
+**2. Vytvorenie plánu rozvoja:**
+- Individuálne plány
+- Jasné ciele
+- Merateľné kroky
+- Časový harmonogram
+
+**3. Poskytnutie zdrojov:**
+- Školenia
+- Kurzy
+- Certifikácie
+- Nástroje
+
+**4. Monitoring a podpora:**
+- Pravidelné stretnutia
+- Spätná väzba
+- Úpravy plánu
+- Neustála podpora
+
+**Výsledky služobného vedenia:**
+
+**Pre jednotlivcov:**
+- Osobný rast
+- Profesionálny úspech
+- Spokojnosť
+- Lojalita
+
+**Pre tím:**
+- Vysoká výkonnosť
+- Motivácia
+- Angažovanosť
+- Stabilita
+
+**Pre organizáciu:**
+- Udržateľný rast
+- Konkurenčná výhoda
+- Pozitívna kultúra
+- Dlhodobý úspech
+
+**Záverečné posolstvo:**
+
+**Každý môže byť tým správnym lídrom:**
+Ak vie:
+- Čo pre to spraviť
+- Čoho sa vyvarovať
+- Ako slúžiť iným
+- Ako rozvíjať ľudí
+
+**Cesta k leadership-u:**
+- Naučte sa to
+- Praktizujte to
+- Zdokonaľujte to
+- Žite to
+
+Vedenie nie je o moci, ale o službe. Nie je o kontrole, ale o podpore. Nie je o vás, ale o tých, ktorých vediate.
+
+**Stať sa lídrom:**
+Nie je to privilege, je to zodpovednosť. Nie je to pozícia, je to postoj. Nie je to titul, je to čin.
+
+Budujte, inšpirujte, slúžte.`
+    }
   ]
 };
 
