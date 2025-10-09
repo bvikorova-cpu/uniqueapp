@@ -17,3 +17,12 @@ verify_jwt = false
 
 [functions.apply-ai-effect]
 verify_jwt = false
+
+[functions.generate-course-content]
+verify_jwt = false
+
+[functions.best-friend-chat]
+verify_jwt = false
+
+[functions.ai-image-generation]
+verify_jwt = false
