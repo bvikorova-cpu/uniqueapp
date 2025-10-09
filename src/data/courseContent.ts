@@ -4,6 +4,354 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Make-up pre začiatočníkov": [
+    {
+      title: "Téma 1: Úvod do líčenia - Vaša nevyhnutnosť pre dokonalý podklad",
+      content: `**Základné produkty pre líčenie:**
+
+**Primer**
+Pripraví vašu pleť na make-up, ktorý tak vydrží celý deň. Tvár zjednotí a zakryje drobné nedokonalosti.
+
+**Make-up**
+Make-up sa na pleti chová ako druhá koža. V závislosti od nepriehľadnosti vyrovná mierne hrbolčeky alebo dokonca zakryje tetovanie. Na začiatok postačí make-up so stredným krytím. Ľahko sa nanáša a rozjasní vašu pleť.
+
+**Korektor**
+Rýchlo a jednoducho zakryje menšie nedokonalosti a kruhy pod očami.
+
+**Púder**
+Fixuje make-up a korektor. Zmatní lesklé miesta a opticky zjemní vašu pleť. Najlepšie je použiť transparentný púder – hodí sa ku každému tónu pleti.
+
+**Lícenka (tvárenka, blush)**
+V tónoch marhuľovej alebo jemnej červenej vykúzli na líčkach zdravú sviežosť. Odtieň ružového dreva sa hodí pre všetky tóny pleti rovnako, a preto je ideálny aj pre začiatočníkov v líčení.
+
+**Rozjasňovač**
+Zvýrazní vaše lícne kosti a stred vašich pier svojím jemným trblietaním. Najlepšie je použiť púdrový rozjasňovač – používa sa ľahšie než ten tekutý alebo krémový. Ak s líčením len začínate, je super siahnuť skôr po paletke rozjasňovačov.
+
+**Bronzer**
+Dodá vašej tvári nádych opálenia ako z dovolenky pri mori. Nájdete ho v rôznych odtieňoch hnedej. Vyberte si ten, ktorý je ideálne o odtieň alebo dva tmavší ako vaša pokožka.
+
+**Štětce**
+Existujú v najrôznejších prevedeniach – od huňatých a širokých na nanášanie make-upu až po riedke a jemné na zvýraznenie jednotlivých oblastí tváre.`
+    },
+    {
+      title: "Téma 2: Príprava pleti pred líčením",
+      content: `**Správna príprava je základ úspešného líčenia**
+
+**Hydratačný krém**
+Naneste na pleť hydratačný krém. Ten dodá vašej pokožke vlhkosť a vyhnete sa tak suchým miestam na tvári, v ktorých by sa make-up alebo aj korektor mohol usádzať.
+
+**Výber správneho krému:**
+- Ľahká textúra
+- Rýchle vstrebávanie
+- Nie príliš hutný alebo mastný
+
+**Prečo je to dôležité?**
+Ak si vyberiete produkt, ktorý je príliš hutný alebo veľmi mastný, make-up by mohol "skĺznuť" či sa usadzovať v jemných linkách okolo očí.
+
+**Čas na vstrebanie**
+Počkajte, kým sa vaša starostlivosť vstrebe, a potom môžete začať s líčením.
+
+**Príprava očného okolia**
+Uistite sa, že vaše oči nie sú mastné, napríklad po aplikácii krému, aby vaše líčenie zostalo na mieste po celý deň. Ak na nich predsa len trochu mastnoty je, jemne si pretrite viečka suchým vatovým tampónom.`
+    },
+    {
+      title: "Téma 3: Aplikácia podkladovej bázy a make-upu",
+      content: `**KROK 1: Naneste podkladovú bázu**
+
+Primer, teda podkladovú bázu pod make-up, prispôsobený potrebám vašej pokožky. Cielene ním zakryjete začervenanie a jemné pigmentové nedokonalosti. Navyše zabezpečíte, že vaše líčenie vydrží dlhšie.
+
+**Aplikácia primeru:**
+- Malé množstvo produktu naneste na tvár
+- Pomocou prstov rovnomerne rozotrite primer
+- Od stredu tváre smerom von
+- Po použití podkladovej bázy bude vaša pleť rovnomernejšie
+
+**Tip:** Ak sa ponáhľate, môžete použiť len podkladovú bázu a make-up vynechať.
+
+**KROK 2: Naneste make-up**
+
+**Aplikácia:**
+1. Použite make-up v odtieni, ktorý vyhovuje vášmu tónu pleti
+2. Naneste si trochu produktu na chrbát ruky
+3. Pomocou štetca na make-up ho postupne aplikujte na nos, líca, čelo a bradu
+4. Make-up krúživými pohybmi štetcom zvnútra von zapracujte do pleti
+
+**Venujte zvláštnu pozornosť:**
+- Miestam okolo uší a línii čeľuste
+- Štetcom prejdite mierne cez okraje
+- Rozotrite make-up smerom ku krku a ušiam
+- Aby nebolo vidieť farebný prechod
+
+**Alternatíva - BB alebo CC krém:**
+Pre prirodzenejší vzhľad namiesto make-upu použite BB alebo CC krém. Tieto jemne tónované krémy jednoducho nanesiete prstami. Už za pár sekúnd bude vaša pleť vyzerať rovnomernejšie.`
+    },
+    {
+      title: "Téma 4: Korektor, púder a dokončenie podkladu",
+      content: `**KROK 3: Zakryte škvrny a tmavé kruhy pomocou korektora**
+
+**Výber správneho korektora:**
+Rovnako ako váš make-up, vyberte si ho tak, aby ladil s farbou vašej pleti, tak najlepšie zakryje tmavé kruhy a pupienky.
+
+**Aplikácia:**
+1. Použite pevnejší štetec s okrúhlymi štetinami
+2. Najskôr zakryte všetky nedokonalosti, ktoré ešte presvitajú cez make-up
+3. Ideálne je "naťupkať" produkt na pleť
+4. Zmiešate ho tak s make-upom
+
+**Dôležité:**
+Vždy pracujte jemnými pohybmi, aby ste korektor neodstránili a neobjavili sa žiadne viditeľné pruhy.
+
+**Zvýraznenie očí:**
+- Naneste malú bodku korektora do vnútorných a vonkajších kútikov očí
+- Zapracujte ho jemne
+- Ak sa vám produkt ťažko nanáša štetcom, použite prsty a jemne ho vklepte do pleti
+
+**KROK 4: Matujte púdrom**
+
+Aby bol váš make-up stále taký krásny ako teraz, použijete púder. Ten zafixuje už nanesené produkty a zabezpečí ľahšie rozotieranie tých, čo budú nasledovať.
+
+**Tip pre suchú pokožku:**
+Ak máte veľmi suchú pokožku, je lepšie púder nepoužívať, inak sa rýchlo usadí a môže vašu pokožku ešte viac vysušovať.
+
+**Aplikácia púdra:**
+1. Použite veľký huňatý štetec na púder
+2. Pred samotnou aplikáciou štetec oklepte o ruku
+3. Začnite v strede tváre
+4. Jemne vtierajte púder od stredu smerom k okraju`
+    },
+    {
+      title: "Téma 5: Lícenka, bronzer a rozjasňovač",
+      content: `**KROK 5: Prineste do hry trochu farby**
+
+**Lícenka**
+Lícenka dodá vašej tvári príjemnú sviežosť a zároveň ju vytvaruje. Spôsob aplikácie závisí od tvaru vašej tváre.
+
+**Aplikácia lícenky:**
+- Naneste lícenku podľa tvaru vašej tváre
+- Začnite od lícnych kostí
+- Rozotrite smerom k spánkom
+- Používajte jemné pohyby
+
+**VYTVORTE HĹBKU S BRONZEROM**
+
+**Aplikácia bronzera:**
+1. Naneste trochu bronzeru pomocou mäkkého stredne veľkého štetca
+2. Naneste produkt jemnými ťahmi v tvare čísla 3
+3. Od spánkov pozdĺž lícnych kostí
+4. Potom od hornej časti ucha smerom k čeľusti
+
+**Výsledok:**
+Pekne to zvýrazní vaše lícne kosti. Vďaka hnedastému tónu bude vaša pokožka vyzerať zdravo a uvoľnene.
+
+**ZVÝRAZNENIE ROZJASŇOVAČEM**
+
+**Výber rozjasňovača:**
+Pri výbere barvy rozjasňovača vychádzajte z produktov, které již používáte, zejména z barvy tvářenky. Ať už má ta vaše teplý, alebo studený odstín, zvolte rozjasňovač ve stejném tónu.
+
+**Aplikácia:**
+1. Malým mäkkým štetcom naneste trochu rozjasňovače na hornú časť tváří
+2. Získáte skvělý lesk
+3. Pridajte trochu rozjasňovače do stredu rtov
+4. Zvýrazníte ich a dodáte im optickú plnosť
+
+Rozjasňovačem ste dokončili základ svojho líčenia.`
+    },
+    {
+      title: "Téma 6: Styling obočia",
+      content: `**Produkty pre styling obočia:**
+
+**Pinzeta**
+Pred nanesením make-upu pinzetou vytrhajte chĺpky mimo línie obočia. Vďaka tomu bude vaše obočie krásne symetrické.
+
+**Púder na obočie**
+Púdrom na obočie môžete jednoducho vyplniť jednotlivé medzery alebo mu dodať jednotný vzhľad.
+
+**Gél na obočie**
+Gél na obočie plní niekoľko účelov naraz – chĺpky jemne farbí a drží ich na mieste. K dispozícii je v rôznych odtieňoch.
+
+**Voliteľné – Transparentný gél**
+Ak už máte tmavé obočie alebo nechcete meniť jeho farbu, použite na jeho fixáciu transparentný gél.
+
+**ZÁKLADNÉ LÍČENIE OBOČIA:**
+
+**Príprava:**
+1. Dbajte na to, aby vaše obočie vyzeralo pekne a rovnomerne
+2. Ak vidíte jednotlivé chĺpky, ktoré odstávajú alebo sú mimo línie, rozčešte ich
+3. Použite čistú kefku na mihalnice
+4. Ak sa niektoré chĺpky nedajú skrotiť, vytrhnite ich pinzetou
+
+**Jednoduché riešenie - gél:**
+Pre vzhľad vhodný na každodenné použitie postačí gél na obočie. Vyberte si odtieň o niečo tmavší než je vaše prirodzené obočie. Prejdite gélom na obočie po obočí v smere rastu.
+
+**Dôležité:**
+Dbajte na to, aby sa na štetec nenalepilo príliš veľa produktu, inak sa vám v obočí rýchlo vytvoria malé hrudky.`
+    },
+    {
+      title: "Téma 7: Vyplnenie a tvarovanie obočia",
+      content: `**Pre riedke obočie alebo medzery:**
+
+**Púder alebo ceruzka na obočie**
+Ak máte prirodzene veľmi málo obočia alebo v ňom máte niekoľko medzier, môžete ho pred aplikáciou gélu vyplniť púdrom alebo ceruzkou na obočie.
+
+**Výber farby:**
+- Dostupné v rôznych farbách
+- Malé paletky s niekoľkými farbami sú obzvlášť praktické
+- Umožnia vám meniť tóny a prispôsobiť ich prirodzenej farbe obočia
+
+**Technika aplikácie:**
+
+**Krok 1: Príprava**
+Pomocou malého šikmého štetca naberte trochu produktu.
+
+**Krok 2: Vyplnenie**
+- Krátkymi pohybmi vyplňte medzery medzi chĺpkami
+- Obkreslite prirodzený tvar obočia
+- Dbajte na to, aby bolo vždy trochu svetlejšie smerom k stredu čela
+- Nenanášajte tam príliš veľa farby
+
+**Krok 3: Fixácia**
+Nakoniec obočie po aplikácii púdra alebo ceruzky upravte s gélom na obočie.
+
+**Tipy pre začiatočníkov:**
+- Začnite s menším množstvom produktu
+- Postupne pridávajte podľa potreby
+- Lepšie menej než viac
+- Vždy pracujte v smere rastu chĺpkov
+- Rozčešte obočie pred aj po aplikácii`
+    },
+    {
+      title: "Téma 8: Líčenie očí - základy",
+      content: `**Produkty pre líčenie očí:**
+
+**Primer na očné tiene**
+Podobne ako primer na tvár aj podkladová báza pod očné tiene pripraví vaše viečka na nasledujúce produkty. Vďaka tomu dlhšie vydržia a tak rýchlo sa neusadia v záhybe viečka.
+
+**Paletka očných tieňov**
+Namiesto kupovania očných tieňov jednotlivo je dobré zaobstarať si malú paletku. Obsahuje zladené odtiene, čo je vždy plus, najmä pre začiatočníkov.
+
+**Štetce**
+Na nanášanie očných tieňov potrebujete rôzne štetce. Na začiatok postačí jeden mäkší štetec, ktorý možno použiť na rôzne účely, a prípadne malý štetec s pevnejšími štetinami.
+
+**Klieštiky na mihalnice**
+Pre výraznejší pohľad odporúčame použiť klieštiky na mihalnice. Vaše riasy pekne natočia a zároveň ich opticky predĺžia.
+
+**Riasenka (maskara)**
+Riasenka dodá vašim mihalniciam farbu, hustotu a objem. Navyše zafixuje natočenie mihalníc, ktoré ste získali s klieštikmi.
+
+**PRÍPRAVA OČÍ:**
+
+Predtým, ako začnete s líčením očí, uistite sa, že vaše oči nie sú mastné, napríklad po aplikácii krému, aby vaše líčenie zostalo na mieste po celý deň.
+
+**Čistenie:**
+Ak na nich predsa len trochu mastnoty je, jemne si pretrite viečka suchým vatovým tampónom. Teraz budú pripravené na líčenie.`
+    },
+    {
+      title: "Téma 9: Aplikácia očných tieňov a riasenky",
+      content: `**KROK 1: Naneste podkladovú bázu na očné tiene**
+
+**Výber primeru:**
+Primer na očné tiene je dostupný v rôznych odtieňoch. Spravidla je biely alebo béžový. Biely primer rozžiari farebné očné tiene. Ako začiatočník je však vhodnejšie použiť ten béžový.
+
+**Aplikácia:**
+1. Naneste trochu primeru na prst
+2. Krúživými pohybmi ho aplikujte na viečko
+3. Dajte ho aj do kútikov očí
+4. Rozotrite smerom k obočiu, aby bolo pokryté celé viečko
+
+**KROK 2: Naneste očné tiene**
+
+**Výber farieb:**
+Vyberte si dva odtiene: svetlejší a tmavší. Začiatočníkom sa odporúčajú zemité tóny, pretože sa hodia k mnohým odtieňom pleti aj farbám očí.
+
+**Aplikácia tmavého tieňa:**
+1. Uchopte jemný štetec na očné tiene
+2. Štetec by mal byť naplocho zakončený alebo mierne zúžený
+3. Začnite pri vonkajšom kútiku oka
+4. Jemnými pohybmi zapracujte tieň do záhybu až do dvoch tretín viečka
+5. S menším štetcom vyplňte aj líniu spodných rias
+
+**Aplikácia svetlého tieňa:**
+1. Prejdite k svetlému tieňu
+2. Využite plochú stranu štetca
+3. Aplikujte tieň na pohyblivé viečko
+4. Zmiešate ho s tmavším tónom pre krásny prechod
+
+**KROK 3: Natočte mihalnice a naneste riasenku**
+
+**Natočenie mihalníc:**
+1. Klieštiky dajte blízko hornej línie mihalníc
+2. Stlačte ich
+3. Podržte desať sekúnd
+4. Uvoľnite
+5. To isté urobte na druhom oku
+
+**Aplikácia riasenky:**
+1. Položte kefku na spodnú líniu mihalníc
+2. Pohybujte sa pozdĺž nich cik-cak pohybmi
+3. Opakujte pohyb, kým nebudú všetky chĺpky pokryté
+4. Urobte to isté na spodnej línii rias`
+    },
+    {
+      title: "Téma 10: Líčenie pier a dokončenie make-upu",
+      content: `**Produkty pre líčenie pier:**
+
+**Starostlivosť o pery**
+K upraveným perám s líčením vhodným na každodenné použitie potrebujete balzam alebo starostlivosť o pery. Starostlivosť dodá vašim perám potrebnú hydratáciu, takže zostanú hladké a pružné po celý deň.
+
+**Lesk na pery**
+Lesk na pery kombinuje svetlú farbu s nezameniteľným leskom. Farba nie je taká výrazná ako pri rúži a ľahko sa nanáša.
+
+**APLIKÁCIA:**
+
+**Krok 1: Hydratácia**
+Po nanesení balzamu na pery počkajte chvíľu, aby sa vstrebala.
+
+**Krok 2: Farba**
+Prejdite aplikátorom lesku po perách. Pomocou týchto jednoduchých krokov ste si nalíčili pery.
+
+**ZHRNUTIE CELÉHO LÍČENIA:**
+
+**1. Príprava pleti**
+- Hydratačný krém
+- Primer
+
+**2. Podklad**
+- Make-up
+- Korektor
+- Púder
+
+**3. Tvarovanie tváre**
+- Lícenka
+- Bronzer
+- Rozjasňovač
+
+**4. Obočie**
+- Úprava pinzetou
+- Vyplnenie púdrom/ceruzkou
+- Fixácia gélom
+
+**5. Oči**
+- Primer na očné tiene
+- Očné tiene
+- Riasenka
+
+**6. Pery**
+- Balzam
+- Lesk na pery
+
+**TIPY NA ZÁVER:**
+
+- Cvičte každý deň
+- Začnite s jednoduchými technikami
+- Postupne pridávajte nové produkty
+- Sledujte tutoriály
+- Nebojte sa experimentovať
+- Najdôležitejšie je cítiť sa dobre vo svojej koži
+
+Gratulujeme! Dokončili ste kurz základov líčenia a ste pripravení vytvoriť krásny make-up pre každý deň.`
+    }
+  ],
+  
   "Základy účtovníctva": [
     {
       title: "Téma 1: Úvod do účtovníctva",
