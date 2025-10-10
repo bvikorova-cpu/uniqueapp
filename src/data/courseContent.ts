@@ -24704,6 +24704,604 @@ auto vysledok = cisla
 **Záver:**
 C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
     }
+  ],
+  "PHP": [
+    {
+      title: "Téma 1: Úvod do PHP - Čo je PHP?",
+      content: `**Čo je PHP?**
+
+PHP je open source skriptovací jazyk, ktorý sa používa predovšetkým na serverovej strane pre tvorbu dynamického webového obsahu a webových aplikácií.
+
+**Základné informácie:**
+- PHP kód sa vykonáva na webovom serveri
+- Výsledok sa odošle do prehliadača používateľa ako štandardný HTML
+- Jazyk je populárny vďaka svojej flexibilite
+- Schopnosť spolupracovať s databázami
+- Široká podpora komunity
+
+**Praktický význam:**
+PHP umožňuje webovým stránkam reagovať na akcie používateľov, čím sa vytvára interaktívny a prispôsobený zážitok namiesto statických stránok.
+
+**História PHP:**
+- Vytvorené v roku 1994 Rasmusom Lerdorfom
+- Pôvodne "Personal Home Page Tools"
+- Dnes "PHP: Hypertext Preprocessor"
+- Jeden z najpopulárnejších webových jazykov`
+    },
+    {
+      title: "Téma 2: Serverový jazyk - Spracovanie na serveri",
+      content: `**Serverový jazyk**
+
+PHP kód sa spracováva na serveri, nie v prehliadači používateľa.
+
+**Ako to funguje:**
+
+**1. Žiadosť (Request):**
+- Používateľ zadá URL do prehliadača
+- Prehliadač pošle HTTP požiadavku na server
+- Server prijme požiadavku
+
+**2. Spracovanie:**
+- Server nájde PHP súbor
+- PHP interpreter spracuje kód
+- Vykoná všetky príkazy a skripty
+- Pripojí sa k databáze (ak je potrebné)
+
+**3. Odpoveď (Response):**
+- Server vygeneruje HTML kód
+- Odošle HTML do prehliadača
+- Prehliadač zobrazí výsledok
+
+**Výhody serverového spracovania:**
+- Bezpečnosť kódu (používateľ nevidí PHP kód)
+- Prístup k databázam
+- Spracovanie citlivých operácií
+- Generovanie dynamického obsahu`
+    },
+    {
+      title: "Téma 3: Dynamický obsah - Interaktívne webové stránky",
+      content: `**Dynamický obsah v PHP**
+
+PHP umožňuje meniť obsah webových stránok na základe prihlásenia používateľa, jeho preferencií alebo iných podmienok.
+
+**Príklady dynamického obsahu:**
+
+**1. Personalizácia:**
+- Zobrazenie mena prihláseného používateľa
+- Prispôsobený dashboard
+- Odporúčania na základe histórie
+
+**2. Interaktívne formuláre:**
+\`\`\`php
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $meno = $_POST["meno"];
+    echo "Vitaj, " . $meno . "!";
+}
+?>
+\`\`\`
+
+**3. Práca s databázou:**
+- Zobrazenie produktov z databázy
+- Vyhľadávanie
+- Filtrovanie výsledkov
+
+**4. Používateľské preferencie:**
+- Nastavenie jazyka
+- Téma (svetlá/tmavá)
+- Uložené nastavenia
+
+**5. Časovo závislý obsah:**
+- Aktuálny dátum a čas
+- Špeciálne ponuky
+- Novinky a články
+
+**Výhody dynamického obsahu:**
+- Lepšia používateľská skúsenosť
+- Relevantný obsah
+- Interaktivita
+- Prispôsobenie potrebám`
+    },
+    {
+      title: "Téma 4: Open Source a kompatibilita",
+      content: `**PHP ako Open Source**
+
+PHP je bezplatný programovací jazyk s otvoreným zdrojovým kódom.
+
+**Výhody Open Source:**
+
+**1. Bezplatnosť:**
+- Žiadne licenčné poplatky
+- Voľné šírenie
+- Možnosť modifikácie
+
+**2. Aktívna komunita:**
+- Tisíce vývojárov na celom svete
+- Pravidelné aktualizácie
+- Bezpečnostné záplaty
+- Nové funkcie
+
+**3. Dostupnosť:**
+- Voľne stiahnuteľné
+- Dokumentácia zadarmo
+- Návody a tutoriály
+
+**Kompatibilita PHP:**
+
+**Operačné systémy:**
+- Windows
+- Mac OS
+- Linux
+- Unix
+
+**Webové servery:**
+- Apache
+- Nginx
+- IIS (Internet Information Services)
+- LiteSpeed
+
+**Databázy:**
+- MySQL
+- PostgreSQL
+- Oracle
+- MongoDB
+- SQLite
+
+**Multiplatformovosť:**
+PHP aplikácia napísaná na Windows môže bežať na Linux serveri bez zmien kódu.`
+    },
+    {
+      title: "Téma 5: Všestrannosť PHP",
+      content: `**Všestranné využitie PHP**
+
+Okrem webových aplikácií sa PHP dá použiť aj na iné účely.
+
+**Hlavné oblasti použitia:**
+
+**1. Webové aplikácie:**
+- E-commerce stránky (WooCommerce)
+- Content Management Systems (WordPress, Drupal)
+- Sociálne siete
+- Fóra a komunity
+
+**2. CMS systémy:**
+Najpoužívanejšie CMS sú postavené na PHP:
+- WordPress (43% všetkých webov)
+- Joomla
+- Drupal
+- Magento
+
+**3. REST API:**
+- Tvorba API endpointov
+- Webové služby
+- Mobilné backend-y
+
+**4. Command Line scripting:**
+\`\`\`php
+#!/usr/bin/php
+<?php
+// PHP môže bežať ako konzolový skript
+echo "Hello from command line!\n";
+?>
+\`\`\`
+
+**5. Desktop aplikácie:**
+- PHP-GTK pre desktop GUI
+- Elektron s PHP backendom
+
+**6. IoT a embedded systémy:**
+- Riadenie zariadení
+- Zbieranie dát
+
+**Populárne PHP frameworky:**
+- Laravel
+- Symfony
+- CodeIgniter
+- Yii
+- Zend Framework
+
+**PHP v praxi:**
+Facebook začínal ako čisto PHP aplikácia a dodnes používa PHP (hack).`
+    },
+    {
+      title: "Téma 6: Základná syntax a premenné",
+      content: `**PHP Syntax**
+
+PHP kód sa píše medzi značky <?php a ?>.
+
+**Základná štruktúra:**
+\`\`\`php
+<?php
+// Toto je komentár
+echo "Hello World!";
+?>
+\`\`\`
+
+**Premenné v PHP:**
+
+**Deklarácia premenných:**
+\`\`\`php
+<?php
+$meno = "Peter";
+$vek = 25;
+$vyska = 180.5;
+$jeStudent = true;
+?>
+\`\`\`
+
+**Pravidlá pre premenné:**
+- Začínajú znakom $
+- Potom nasleduje písmeno alebo _
+- Môžu obsahovať číslice
+- Case-sensitive ($meno ≠ $Meno)
+
+**Dátové typy:**
+
+**1. String (reťazec):**
+\`\`\`php
+$text = "Toto je text";
+$text2 = 'Môže byť v apostrofoch';
+\`\`\`
+
+**2. Integer (celé číslo):**
+\`\`\`php
+$cislo = 42;
+$zaporne = -10;
+\`\`\`
+
+**3. Float (desatinné číslo):**
+\`\`\`php
+$desetinne = 3.14;
+\`\`\`
+
+**4. Boolean (pravdivostná hodnota):**
+\`\`\`php
+$pravda = true;
+$nepravda = false;
+\`\`\`
+
+**5. Array (pole):**
+\`\`\`php
+$ovocie = array("jablko", "hruška", "banán");
+$cisla = [1, 2, 3, 4, 5];
+\`\`\`
+
+**Výpis premenných:**
+\`\`\`php
+echo $meno;
+print $vek;
+var_dump($jeStudent); // Podrobný výpis
+\`\`\`
+
+**Konkatenácia:**
+\`\`\`php
+echo "Volám sa " . $meno . " a mám " . $vek . " rokov.";
+\`\`\``
+    },
+    {
+      title: "Téma 7: Práca s formulármi a HTTP",
+      content: `**Spracovanie formulárov v PHP**
+
+PHP exceluje v spracovaní dát z webových formulárov.
+
+**HTML Formulár:**
+\`\`\`html
+<form method="POST" action="spracuj.php">
+    <input type="text" name="meno">
+    <input type="email" name="email">
+    <button type="submit">Odoslať</button>
+</form>
+\`\`\`
+
+**Spracovanie POST:**
+\`\`\`php
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $meno = $_POST["meno"];
+    $email = $_POST["email"];
+    
+    echo "Prijali sme: " . $meno;
+}
+?>
+\`\`\`
+
+**GET vs POST:**
+
+**GET metóda:**
+- Dáta v URL
+- Viditeľné pre používateľa
+- Možnosť záložkovať
+- Obmedzená dĺžka
+
+**POST metóda:**
+- Dáta v tele požiadavky
+- Neviditeľné v URL
+- Bezpečnejšie pre citlivé dáta
+- Neobmedzená dĺžka
+
+**Validácia vstupu:**
+\`\`\`php
+<?php
+$meno = trim($_POST["meno"]);
+$email = filter_var($_POST["email"], FILTER_VALIDATE_EMAIL);
+
+if (empty($meno)) {
+    echo "Meno je povinné!";
+}
+
+if (!$email) {
+    echo "Neplatný email!";
+}
+?>
+\`\`\`
+
+**Superglobálne premenné:**
+- $_GET - GET parametre
+- $_POST - POST dáta
+- $_REQUEST - GET, POST, COOKIE
+- $_SERVER - serverové informácie
+- $_SESSION - session dáta
+- $_COOKIE - cookies
+- $_FILES - nahrané súbory`
+    },
+    {
+      title: "Téma 8: Práca s databázami - MySQL",
+      content: `**PHP a MySQL**
+
+PHP má vynikajúcu podporu pre prácu s databázami, najmä MySQL.
+
+**Pripojenie k databáze (MySQLi):**
+\`\`\`php
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "moja_db";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Pripojenie zlyhalo: " . $conn->connect_error);
+}
+echo "Úspešne pripojené!";
+?>
+\`\`\`
+
+**SELECT - Čítanie dát:**
+\`\`\`php
+<?php
+$sql = "SELECT id, meno, email FROM pouzivatelia";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        echo "ID: " . $row["id"]. " - Meno: " . $row["meno"]. "<br>";
+    }
+}
+?>
+\`\`\`
+
+**INSERT - Vkladanie dát:**
+\`\`\`php
+<?php
+$sql = "INSERT INTO pouzivatelia (meno, email)
+        VALUES ('Peter', 'peter@email.com')";
+
+if ($conn->query($sql) === TRUE) {
+    echo "Nový záznam vytvorený!";
+}
+?>
+\`\`\`
+
+**UPDATE - Aktualizácia:**
+\`\`\`php
+<?php
+$sql = "UPDATE pouzivatelia SET email='novy@email.com' WHERE id=1";
+$conn->query($sql);
+?>
+\`\`\`
+
+**DELETE - Mazanie:**
+\`\`\`php
+<?php
+$sql = "DELETE FROM pouzivatelia WHERE id=1";
+$conn->query($sql);
+?>
+\`\`\`
+
+**Prepared Statements (Bezpečnosť):**
+\`\`\`php
+<?php
+$stmt = $conn->prepare("INSERT INTO pouzivatelia (meno, email) VALUES (?, ?)");
+$stmt->bind_param("ss", $meno, $email);
+
+$meno = "Jana";
+$email = "jana@email.com";
+$stmt->execute();
+?>
+\`\`\`
+
+**PDO (PHP Data Objects):**
+- Univerzálne rozhranie pre rôzne databázy
+- Lepšia bezpečnosť
+- Objektovo orientované`
+    },
+    {
+      title: "Téma 9: Sessions a Cookies - Správa stavu",
+      content: `**Správa stavu v PHP**
+
+HTTP je bezstavový protokol. PHP používa sessions a cookies na udržanie stavu.
+
+**Sessions:**
+
+**Spustenie session:**
+\`\`\`php
+<?php
+session_start();
+?>
+\`\`\`
+
+**Ukladanie do session:**
+\`\`\`php
+<?php
+session_start();
+$_SESSION["username"] = "peter";
+$_SESSION["email"] = "peter@email.com";
+?>
+\`\`\`
+
+**Čítanie zo session:**
+\`\`\`php
+<?php
+session_start();
+echo "Prihlásený používateľ: " . $_SESSION["username"];
+?>
+\`\`\`
+
+**Zrušenie session:**
+\`\`\`php
+<?php
+session_start();
+session_unset();
+session_destroy();
+?>
+\`\`\`
+
+**Cookies:**
+
+**Vytvorenie cookie:**
+\`\`\`php
+<?php
+// Platnosť 30 dní
+setcookie("user", "Peter", time() + (86400 * 30), "/");
+?>
+\`\`\`
+
+**Čítanie cookie:**
+\`\`\`php
+<?php
+if(isset($_COOKIE["user"])) {
+    echo "Používateľ: " . $_COOKIE["user"];
+}
+?>
+\`\`\`
+
+**Vymazanie cookie:**
+\`\`\`php
+<?php
+setcookie("user", "", time() - 3600);
+?>
+\`\`\`
+
+**Sessions vs Cookies:**
+
+**Sessions:**
+- Uložené na serveri
+- Bezpečnejšie
+- Väčší objem dát
+- Zanikajú po zavretí prehliadača
+
+**Cookies:**
+- Uložené u klienta
+- Menej bezpečné
+- Obmedzená veľkosť (4KB)
+- Môžu byť trvalé
+
+**Praktické použitie:**
+- Prihlásenie používateľov
+- Nákupný košík
+- Používateľské preferencie
+- Sledovanie aktivity`
+    },
+    {
+      title: "Téma 10: Bezpečnosť a best practices",
+      content: `**Bezpečnosť v PHP**
+
+Bezpečnosť je kľúčová pri vývoji PHP aplikácií.
+
+**1. SQL Injection - Ochrana:**
+
+**ZLE:**
+\`\`\`php
+$sql = "SELECT * FROM users WHERE username = '" . $_POST['username'] . "'";
+\`\`\`
+
+**DOBRE:**
+\`\`\`php
+$stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+$stmt->bind_param("s", $_POST['username']);
+$stmt->execute();
+\`\`\`
+
+**2. XSS (Cross-Site Scripting):**
+
+**Sanitizácia výstupu:**
+\`\`\`php
+<?php
+echo htmlspecialchars($user_input, ENT_QUOTES, 'UTF-8');
+?>
+\`\`\`
+
+**3. CSRF (Cross-Site Request Forgery):**
+
+**Použitie tokenov:**
+\`\`\`php
+<?php
+session_start();
+$_SESSION['token'] = bin2hex(random_bytes(32));
+?>
+
+<form method="POST">
+    <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>">
+</form>
+\`\`\`
+
+**4. Validácia vstupu:**
+\`\`\`php
+<?php
+$email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
+$vek = filter_var($_POST['vek'], FILTER_VALIDATE_INT);
+?>
+\`\`\`
+
+**Best Practices:**
+
+**1. Bezpečnosť hesiel:**
+\`\`\`php
+// Hashovanie
+$hash = password_hash($heslo, PASSWORD_DEFAULT);
+
+// Overenie
+if (password_verify($zadane_heslo, $hash)) {
+    echo "Správne heslo!";
+}
+\`\`\`
+
+**2. Error handling:**
+\`\`\`php
+// V produkcii vypnúť zobrazovanie chýb
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+\`\`\`
+
+**3. HTTPS:**
+- Vždy používať HTTPS
+- Šifrovanie komunikácie
+- Bezpečný prenos dát
+
+**4. Aktualizácie:**
+- Pravidelne aktualizovať PHP
+- Používať najnovšiu stabilnú verziu
+- Sledovať bezpečnostné záplaty
+
+**5. Least Privilege:**
+- Minimálne potrebné práva
+- Obmedzený prístup k databáze
+- Bezpečná konfigurácia
+
+**Záver:**
+Bezpečnosť musí byť prioritou pri vývoji každej PHP aplikácie.`
+    }
   ]
 }
 
