@@ -81,15 +81,6 @@ const courseCategories = [
     ]
   },
   {
-    name: "Zdravotníctvo",
-    icon: "⚕️",
-    courses: [
-      "Anatomia", "Fyziológia", "Patológia", "Farmakológia",
-      "Prvá pomoc", "CPR kurz", "Ošetrovateľstvo", "Zdravotnícky asistent",
-      "Zubná hygiena", "Fyzioterapia", "Ergoterapia", "Nutricionizmus"
-    ]
-  },
-  {
     name: "Sociálne odvetvia",
     icon: "🤝",
     courses: [
