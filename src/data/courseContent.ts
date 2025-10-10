@@ -36707,6 +36707,637 @@ Efektívna implementácia projektového vyučovania vyžaduje starostlivé plán
 **Kľúčové posolstvo:**
 "Projektové vyučovanie nie je len metóda, ale filozofia vzdelávania, ktorá pripravuje žiakov na úspech v 21. storočí."`
     }
+  ],
+  "E-learning tvorba": [
+    {
+      title: "Téma 1: Úvod do e-learningu",
+      content: `**Čo je e-learning?**
+
+E-learning (elektronické vzdelávanie) je forma vzdelávania, ktorá využíva digitálne technológie na poskytovanie vzdelávacieho obsahu a podporu procesu učenia.
+
+**Základné charakteristiky:**
+- Digitálne prostredie vzdelávania
+- Flexibilita času a miesta
+- Interaktívny obsah
+- Sledovanie pokroku
+
+**Typy e-learningu:**
+
+**1. Synchrónny e-learning:**
+- Živé online hodiny
+- Webináre
+- Virtuálne triedy
+- Okamžitá interakcia
+
+**2. Asynchrónny e-learning:**
+- Nahrané video lekcie
+- Kurzy na vlastné tempo
+- Interaktívne moduly
+- Flexibilný časový harmonogram
+
+**Výhody e-learningu:**
+- Dostupnosť 24/7
+- Škálovateľnosť
+- Zníženie nákladov
+- Personalizované tempo učenia
+- Globálny dosah
+
+**Kľúčové posolstvo:**
+E-learning demokratizuje vzdelávanie a umožňuje učenie kedykoľvek a kdekoľvek.`
+    },
+    {
+      title: "Téma 2: Analýza a konzultácie - Príprava projektu",
+      content: `**Prvý krok: Pochopenie potrieb**
+
+Pred tvorbou e-learningového kurzu je nevyhnutné dôkladne analyzovať požiadavky a potreby cieľovej skupiny.
+
+**Kľúčové otázky analýzy:**
+
+**1. Cieľová skupina:**
+- Kto sú účastníci kurzu?
+- Aká je ich úroveň predchádzajúcich znalostí?
+- Aké sú ich technické možnosti?
+- Aké sú ich preferované štýly učenia?
+
+**2. Vzdelávacie ciele:**
+- Čo by mali účastníci vedieť po skončení kurzu?
+- Aké zručnosti získajú?
+- Ako budú ciele merateľné?
+
+**3. Obsah a rozsah:**
+- Aký obsah je potrebné pokryť?
+- Aká je hĺbka témy?
+- Koľko času účastníci môžu venovať štúdiu?
+
+**Konzultácie so stakeholdermi:**
+
+**Kľúčoví účastníci:**
+- Vedenie organizácie
+- Odborníci na obsah (SME - Subject Matter Experts)
+- Potenciálni účastníci
+- Technický tím
+
+**Výstupy z analýzy:**
+- Definícia vzdelávacích cieľov
+- Profil cieľovej skupiny
+- Rozsah a štruktúra obsahu
+- Technické požiadavky
+- Časový a rozpočtový rámec
+
+**Kľúčové posolstvo:**
+Dobrá analýza je základom úspešného e-learningového kurzu.`
+    },
+    {
+      title: "Téma 3: Návrh štruktúry a scenára kurzu",
+      content: `**Vytváranie logickej kostry kurzu**
+
+Návrh štruktúry je kľúčovým krokom, ktorý určuje, ako bude obsah organizovaný a prezentovaný.
+
+**Tvorba scenára kurzu:**
+
+**1. Hierarchická štruktúra:**
+- **Kurz** → rozdelený na moduly/sekcie
+- **Modul** → obsahuje lekcie/témy
+- **Lekcia** → pozostáva z obrazov/slajdov
+- **Obraz** → obsahuje konkrétny obsah
+
+**2. Príklad štruktúry:**
+\`\`\`
+Kurz: Úvod do digitálneho marketingu
+├── Modul 1: Základy digitálneho marketingu
+│   ├── Lekcia 1.1: Čo je digitálny marketing
+│   ├── Lekcia 1.2: Kanály digitálneho marketingu
+│   └── Test: Základy
+├── Modul 2: SEO a obsahový marketing
+│   ├── Lekcia 2.1: Optimalizácia pre vyhľadávače
+│   ├── Lekcia 2.2: Tvorba obsahu
+│   └── Test: SEO
+\`\`\`
+
+**Návrh interakcií:**
+
+**Typy interaktívnych prvkov:**
+- Kvízy a otázky
+- Interaktívne scenáre
+- Simulácie
+- Drag-and-drop aktivity
+- Časové osy a infografiky
+
+**Navigácia kurzu:**
+- Lineárna (krok za krokom)
+- Nelineárna (voľná voľba)
+- Hybridná (kombinovaná)
+
+**Storyboard:**
+Vizuálny plán každej obrazovky kurzu obsahujúci:
+- Obsah (text, obrázky)
+- Interaktívne prvky
+- Navigačné tlačidlá
+- Multimédiá
+
+**Kľúčové posolstvo:**
+Jasná štruktúra a scenár zabezpečujú logický tok učenia a predchádzajú dezorientácii účastníkov.`
+    },
+    {
+      title: "Téma 4: Interaktívne spracovanie obsahu",
+      content: `**Od suchých dát k zaujímavému obsahu**
+
+Interaktívne spracovanie transformuje pasívne čítanie na aktívne učenie s využitím vizuálov a multimédií.
+
+**Vizuálne prvky:**
+
+**1. Grafika a ilustrácie:**
+- Podporujú porozumenie
+- Zvyšujú zapamätanie
+- Rozdeľujú text
+- Pridávajú profesionálny vzhľad
+
+**2. Ikony a symboly:**
+- Navigačné prvky
+- Označenie typov obsahu
+- Vizuálne odkazy
+- Zlepšenie orientácie
+
+**3. Infografiky:**
+- Vizualizácia dát
+- Procesy a postupy
+- Štatistiky a čísla
+- Komplexné vzťahy
+
+**Multimédiá:**
+
+**1. Video obsah:**
+- Výučbové videá
+- Ukážky postupov
+- Rozhovory s expertmi
+- Prípadové štúdie
+
+**2. Audio:**
+- Nahovory textov
+- Podcasty
+- Hudba a zvukové efekty
+- Audiokomentár
+
+**Interaktívne prvky:**
+
+**1. Kvízy a testy:**
+\`\`\`
+- Výber z možností (multiple choice)
+- Pravda/nepravda
+- Priradenie (matching)
+- Vypĺňanie (fill-in-the-blank)
+- Scenárové otázky
+\`\`\`
+
+**2. Simulácie:**
+- Nácvik reálnych situácií
+- Bezpečné prostredie na chyby
+- Okamžitá spätná väzba
+- Praktické aplikovanie vedomostí
+
+**3. Gamifikácia:**
+- Body a odznaky
+- Rebríčky
+- Úrovne postupu
+- Výzvy a odmeny
+
+**Princíp vyváženosti:**
+Nie je potrebné používať všetky typy multimédií na každej stránke. Kľúčom je rovnováha medzi obsahom a interaktivitou.
+
+**Kľúčové posolstvo:**
+Interaktívny obsah transformuje pasívne učenie na zaujímavú skúsenosť, ktorá podporuje zapamätanie a pochopenie.`
+    },
+    {
+      title: "Téma 5: Technická implementácia a LMS systémy",
+      content: `**Prenos kurzu do online prostredia**
+
+Technická implementácia zahŕňa export kurzu v správnom formáte a jeho nasadenie do systému riadenia vzdelávania (LMS).
+
+**SCORM štandard:**
+
+**Čo je SCORM?**
+SCORM (Sharable Content Object Reference Model) je súbor technických štandardov pre e-learningový obsah.
+
+**Výhody SCORM:**
+- Kompatibilita s väčšinou LMS
+- Sledovanie pokroku účastníkov
+- Zaznamenávanie výsledkov testov
+- Možnosť opätovného použitia obsahu
+
+**Verzie SCORM:**
+- SCORM 1.2 (široko podporovaná)
+- SCORM 2004 (pokročilejšie funkcie)
+
+**Learning Management System (LMS):**
+
+**Populárne LMS platformy:**
+
+**1. Moodle:**
+- Open source
+- Veľká komunita
+- Prispôsobiteľný
+- Bezplatný
+
+**2. Canvas:**
+- Používateľsky prívetivý
+- Moderné rozhranie
+- Integrácie
+
+**3. Blackboard:**
+- Rozšírený vo vzdelávaní
+- Komplexné funkcie
+- Enterprise riešenie
+
+**4. Iné:**
+- Google Classroom
+- Edmodo
+- Schoology
+- TalentLMS
+
+**Proces nasadenia:**
+
+**1. Príprava kurzu:**
+- Export do SCORM
+- Kontrola kompatibility
+- Testovanie balíka
+
+**2. Nahratie do LMS:**
+- Import SCORM balíka
+- Konfigurácia nastavení
+- Pridelenie kurzov užívateľom
+
+**3. Nastavenie:**
+- Definovanie prístupových práv
+- Nastavenie podmienok postupu
+- Konfigurácia certifikátov
+
+**Kľúčové posolstvo:**
+Správna technická implementácia zabezpečuje bezproblémový prístup k vzdelávaniu a presné sledovanie pokroku.`
+    },
+    {
+      title: "Téma 6: Testovanie a spustenie kurzu",
+      content: `**Zabezpečenie kvality pred spustením**
+
+Dôkladné testovanie je nevyhnutné pre identifikáciu a odstránenie chýb pred tým, ako kurz uvidia účastníci.
+
+**Fázy testovania:**
+
+**1. Funkčné testovanie:**
+
+**Kontrola základných funkcií:**
+- Navigácia funguje správne
+- Všetky tlačidlá sú aktívne
+- Linky vedú na správne miesta
+- Multimédiá sa prehrávajú korektne
+
+**2. Obsahové testovanie:**
+
+**Kontrola obsahu:**
+- Gramatická a pravopisná kontrola
+- Faktická presnosť informácií
+- Konzistentnosť terminológie
+- Logický tok obsahu
+
+**3. Technické testovanie:**
+
+**Kompatibilita:**
+- Rôzne prehliadače (Chrome, Firefox, Safari, Edge)
+- Mobilné zariadenia (telefóny, tablety)
+- Rôzne operačné systémy
+- Rôzne veľkosti obrazoviek
+
+**4. Používateľské testovanie:**
+
+**Testovanie s reálnymi užívateľmi:**
+- Pilot skupina účastníkov
+- Zbieranie spätnej väzby
+- Identifikácia nejasností
+- Meranie času potrebného na kurz
+
+**Kontrolný zoznam pred spustením:**
+
+\`\`\`
+□ Všetky lekcie sú kompletné
+□ Kvízy fungujú správne
+□ Multimédiá sú optimalizované
+□ Navigácia je intuitívna
+□ Kurz je otestovaný na rôznych zariadeniach
+□ Všetky linky fungujú
+□ Certifikáty sú nastavené
+□ Používateľské role sú definované
+□ Záloha kurzu je vytvorená
+\`\`\`
+
+**Soft launch stratégia:**
+- Spustenie pre malú skupinu
+- Zbieranie prvej spätnej väzby
+- Rýchle opravy problémov
+- Postupné rozširovanie prístupu
+
+**Kľúčové posolstvo:**
+Kvalitné testovanie predchádza problémom a zabezpečuje hladkú vzdelávaciu skúsenosť pre všetkých účastníkov.`
+    },
+    {
+      title: "Téma 7: Nástroje na tvorbu e-learningu",
+      content: `**Výber správnych nástrojov**
+
+Moderné nástroje na tvorbu e-learningu umožňujú vytvárať profesionálne kurzy bez potreby programovania.
+
+**Authoring nástroje:**
+
+**1. Articulate Storyline:**
+- Najpoužívanejší nástroj
+- Pokročilé interakcie
+- SCORM export
+- Simulácie softvéru
+- Vysoká kvalita výstupu
+
+**2. Adobe Captivate:**
+- VR a 360° prostredie
+- Responzívny dizajn
+- Simulácie softvéru
+- Komplexné kvízy
+
+**3. Articulate Rise:**
+- Rýchla tvorba
+- Responzívny obsah
+- Jednoduché použitie
+- Moderný dizajn
+- Výborné pre mobilné zariadenia
+
+**4. iSpring Suite:**
+- PowerPoint integrácia
+- Jednoduchosť použitia
+- Rýchla produkcia
+- Videokvízy
+
+**5. Camtasia:**
+- Záznam obrazovky
+- Video editing
+- Interaktívne videá
+- Jednoduché použitie
+
+**Šablóny a knižnice:**
+
+**Výhody použitia šablón:**
+- Rýchlejšia tvorba
+- Konzistentný dizajn
+- Profesionálny vzhľad
+- Zníženie nákladov
+
+**Zdroje šablón:**
+- E-Learning Heroes (Articulate komunita)
+- Envato Elements
+- Creative Market
+- Template Cloud
+
+**Open source alternatívy:**
+
+**1. H5P:**
+- Bezplatný a open source
+- Vytváraníinteraktívneho obsahu
+- Integrácia s Moodle, WordPress
+- Viac ako 50 typov interakcií
+
+**2. Adapt:**
+- Open source framework
+- Responzívny obsah
+- Prispôsobiteľný
+- Bezplatný
+
+**Kľúčové posolstvo:**
+Správny výber nástroja závisí od typu obsahu, rozpočtu a technických zručností tímu.`
+    },
+    {
+      title: "Téma 8: Tvorba obrazov a slajdov",
+      content: `**Stavebné bloky e-learningového kurzu**
+
+Každý kurz je tvorený z jednotlivých obrazov (slajdov), ktoré obsahujú konkrétne časti obsahu.
+
+**Anatómia efektívneho obrazu:**
+
+**1. Záhlavie/Nadpis:**
+- Jasný a výstižný
+- Orientuje účastníka
+- Konzistentné formátovanie
+
+**2. Hlavný obsah:**
+- Text (stručný a jasný)
+- Vizuály (podporujúce pochopenie)
+- Multimédiá (video, audio)
+- Interaktívne prvky
+
+**3. Navigácia:**
+- Tlačidlá Ďalej/Späť
+- Menu kurzu
+- Indikátor pokroku
+- Tlačidlo Pomoc
+
+**Typy obrazov:**
+
+**1. Informačné obrazy:**
+- Prezentácia obsahu
+- Text + vizuály
+- Minimálna interakcia
+
+**2. Interaktívne obrazy:**
+- Klikateľné prvky
+- Hotspoty (klikateľné oblasti)
+- Tabs a akordiony
+- Odkrývanie obsahu
+
+**3. Kvízové obrazy:**
+- Otázky
+- Spätná väzba
+- Bodovanie
+- Vysvetlenia správnych odpovedí
+
+**4. Scenárové obrazy:**
+- Príbehové situácie
+- Rozhodovacia stromová štruktúra
+- Realistické scenáre
+- Dôsledky rozhodnutí
+
+**Princípy dizajnu obrazov:**
+
+**1. Kognitívne zaťaženie:**
+- Neprepĺňať informáciami
+- Jedno hlavné posolstvo na obraz
+- Dostatok "bielého priestoru"
+
+**2. Vizuálna hierarchia:**
+- Najdôležitejšie prvky najviditeľnejšie
+- Konzistentné používanie farieb
+- Vhodná veľkosť písma
+
+**3. Pravidlo 6x6:**
+- Maximum 6 odrážok na obraz
+- Maximum 6 slov na odrážku
+- Jednoduchosť a prehľadnosť
+
+**Kľúčové posolstvo:**
+Dobre navrhnuté obrazy udržiavajú pozornosť účastníkov a facilitujú efektívne učenie.`
+    },
+    {
+      title: "Téma 9: Zjednodušenie procesu a best practices",
+      content: `**Efektívnosť v tvorbe e-learningu**
+
+Použitie osvedčených postupov a šablón výrazne urýchľuje proces tvorby a zvyšuje kvalitu výsledku.
+
+**Využitie šablón:**
+
+**Typy šablón:**
+
+**1. Dizajnové šablóny:**
+- Prednastavené farebné schémy
+- Typografia a štýly
+- Layout rozloženia
+- Konzistentný vizuálny štýl
+
+**2. Interaktívne šablóny:**
+- Kvízové formáty
+- Scenáre a simulácie
+- Timeline šablóny
+- Drag-and-drop interakcie
+
+**3. Obsahové šablóny:**
+- Štruktúra lekcie
+- Úvodné obrazy
+- Zhrnutia
+- Hodnotenia
+
+**Best practices v tvorbe:**
+
+**1. KISS princíp (Keep It Simple, Stupid):**
+- Jednoduchosť pred komplexnosťou
+- Jasná a priama komunikácia
+- Intuitívna navigácia
+- Minimalistický dizajn
+
+**2. Mikroučenie (Microlearning):**
+- Krátke učebné jednotky (3-7 min)
+- Jedno konkrétne téma
+- Ľahko stráviteľný obsah
+- Vhodné pre zaneprázdnených učiacich sa
+
+**3. Responzívny dizajn:**
+- Prispôsobenie mobilným zariadeniam
+- Testovanie na rôznych obrazovkách
+- Touch-friendly navigácia
+- Optimalizácia načítania
+
+**4. Prístupnosť (Accessibility):**
+- Alt texty pre obrázky
+- Titulky pre videá
+- Podpora čítačiek obrazovky
+- Dostatočný kontrast farieb
+- Navigácia pomocou klávesnice
+
+**Workflow optimalizácia:**
+
+**1. Opakované použitie obsahu:**
+- Vytvorenie knižnice prvkov
+- Zdieľané šablóny
+- Modulárny prístup
+- Znovu použiteľné interakcie
+
+**2. Tímová spolupráca:**
+- Rozdelenie úloh
+- Verziovanie súborov
+- Pravidelné review
+- Zdieľanie zdrojov
+
+**Kľúčové posolstvo:**
+Efektívnosť v tvorbe e-learningu sa dosahuje kombináciou správnych nástrojov, šablón a osvedčených postupov.`
+    },
+    {
+      title: "Téma 10: Hodnotenie efektivity a zlepšovanie kurzu",
+      content: `**Meranie úspešnosti a kontinuálne zlepšovanie**
+
+Po spustení kurzu je dôležité sledovať jeho efektivitu a na základe dát ho priebežne zlepšovať.
+
+**Kirkpatrickův model hodnotenia:**
+
+**Úroveň 1: Reakcia**
+- Spokojnosť účastníkov
+- Dotazníky po kurze
+- Hodnotenie obsahu a formy
+- Net Promoter Score (NPS)
+
+**Úroveň 2: Učenie**
+- Nadobudnuté vedomosti
+- Výsledky testov a kvízov
+- Porovnanie pred/po kurze
+- Splnenie vzdelávacích cieľov
+
+**Úroveň 3: Správanie**
+- Aplikácia v praxi
+- Zmena pracovných návykov
+- Pozorovanie manažérov
+- Follow-up po 3-6 mesiacoch
+
+**Úroveň 4: Výsledky**
+- ROI (Return on Investment)
+- Obchodné výsledky
+- Produktivita
+- Finančné prínosy
+
+**Analytické metriky:**
+
+**Základné metriky:**
+- Miera dokončenia kurzu
+- Čas strávený v kurze
+- Úspešnosť v testoch
+- Počet pokusov o test
+
+**Pokročilé metriky:**
+- Miera angažovanosti
+- Drop-off body (kde účastníci odchádzajú)
+- Najpopulárnejšie lekcie
+- Najproblematickejšie otázky
+
+**Spätná väzba a iterácie:**
+
+**Zdroje spätnej väzby:**
+- Dotazníky po kurze
+- Fokusové skupiny
+- Individuálne rozhovory
+- Analytické dáta z LMS
+- Komentáre účastníkov
+
+**Proces zlepšovania:**
+
+**1. Zbieranie dát:**
+- Kvalitatívne aj kvantitatívne
+- Kontinuálne sledovanie
+- Rôzne zdroje informácií
+
+**2. Analýza:**
+- Identifikácia problematických oblastí
+- Hľadanie vzorov
+- Porovnanie s benchmarkami
+
+**3. Implementácia zmien:**
+- Prioritizácia zlepšení
+- Testovanie zmien
+- Meranie dopadu
+
+**4. Iterácia:**
+- Opakovaný cyklus
+- Kontinuálne zlepšovanie
+- Adaptácia na zmeny
+
+**A/B testovanie:**
+- Testovanie rôznych verzií
+- Porovnanie efektivity
+- Dátami riadené rozhodnutia
+
+**Kľúčové posolstvo:**
+E-learningový kurz nie je statický produkt, ale živý organizmus, ktorý vyžaduje kontinuálnu starostlivosť a zlepšovanie na základe dát a spätnej väzby.
+
+**Záverečné slovo:**
+Úspešná tvorba e-learningu je kombináciou pedagogiky, technológie a dizajnu. S použitím správnych nástrojov, postupov a neustálym zlepšovaním môžete vytvoriť efektívne vzdelávacie zážitky, ktoré skutočne menia životy účastníkov.`
+    }
   ]
 }
 
