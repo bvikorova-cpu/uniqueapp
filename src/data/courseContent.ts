@@ -25497,6 +25497,268 @@ auto vysledok = cisla
 C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
     }
   ],
+  "TypeScript": [
+    {
+      title: "Téma 1: Úvod do TypeScript",
+      content: `**Čo je TypeScript?**
+
+TypeScript je nadmnožina (superset) JavaScriptu, ktorá pridáva voliteľné statické typovanie, triedy, rozhrania a ďalšie funkcie.
+
+**Základné informácie:**
+- Vytvorený spoločnosťou Microsoft v roku 2012
+- Open-source projekt
+- Kompiluje sa do čistého JavaScriptu
+- Každý JavaScriptový kód je zároveň TypeScriptový kód
+
+**Prečo TypeScript?**
+- Odhalenie chýb už počas vývoja
+- Lepšie IDE podpory (IntelliSense)
+- Zvýšená spoľahlivosť kódu
+- Ideálny pre veľké projekty
+- Lepšia udržiavateľnosť
+
+**História:**
+- 2012: Prvá verzia TypeScript
+- 2014: TypeScript 1.0
+- 2016: TypeScript 2.0 s vylepšeniami
+- Dnes: Používajú ho Angular, Vue 3, React projekty
+
+**Kto používa TypeScript:**
+- Microsoft
+- Google (Angular)
+- Airbnb
+- Slack
+- Asana`
+    },
+    {
+      title: "Téma 2: Statické typovanie",
+      content: `**Statické typovanie v TypeScript**
+
+TypeScript umožňuje definovať dátové typy premenných, parametre funkcií a návratové hodnoty.
+
+**Prečo statické typy?**
+
+**JavaScript (dynamický):**
+\`\`\`javascript
+let message = "Hello";
+message = 42; // OK, ale môže spôsobiť problémy
+\`\`\`
+
+**TypeScript (statický):**
+\`\`\`typescript
+let message: string = "Hello";
+message = 42; // CHYBA: Type 'number' is not assignable to type 'string'
+\`\`\`
+
+**Typová anotácia:**
+\`\`\`typescript
+let name: string = "Peter";
+let age: number = 25;
+let isActive: boolean = true;
+\`\`\`
+
+**Funkcie:**
+\`\`\`typescript
+function greet(name: string): string {
+  return \`Hello, \${name}!\`;
+}
+\`\`\`
+
+**Výhody:**
+- Chyby sa odhalia pri kompilácii, nie za behu
+- Lepšie automatické doplňovanie
+- Bezpečnejší refactoring
+- Dokumentácia kódu`
+    },
+    {
+      title: "Téma 3: TypeScript vs JavaScript",
+      content: `**Rozdiely medzi TypeScript a JavaScript**
+
+TypeScript je nadmnožina JavaScriptu - každý platný JavaScriptový kód je zároveň platným TypeScriptovým kódom.
+
+**Kľúčové rozdiely:**
+- JavaScript: Dynamický typový systém
+- TypeScript: Statický typový systém
+- JavaScript: Chyby za behu
+- TypeScript: Chyby pri kompilácii
+- TypeScript: Lepšia IDE podpora
+
+**Kompatibilita:**
+- TypeScript kód sa kompiluje do JS
+- Môže bežať kdekoľvek kde beží JS
+- Node.js, prehliadač, React Native`
+    },
+    {
+      title: "Téma 4: Základné typy",
+      content: `**Primitívne a základné typy**
+
+TypeScript poskytuje rôzne typy: string, number, boolean, array, tuple, enum, any, unknown, void, never. 
+
+**Príklady:**
+\`\`\`typescript
+let name: string = "Peter";
+let age: number = 25;
+let isActive: boolean = true;
+let numbers: number[] = [1, 2, 3];
+let tuple: [string, number] = ["Peter", 25];
+\`\`\``
+    },
+    {
+      title: "Téma 5: Rozhrania (Interfaces)",
+      content: `**Interfaces - Definícia štruktúry objektov**
+
+Interface definuje "zmluvu" ktorú musí objekt splniť.
+
+**Základný interface:**
+\`\`\`typescript
+interface User {
+  id: number;
+  name: string;
+  email?: string;  // Voliteľné
+  readonly created: Date;  // Read-only
+}
+\`\`\`
+
+**Rozširovanie:**
+\`\`\`typescript
+interface Employee extends User {
+  position: string;
+  salary: number;
+}
+\`\`\``
+    },
+    {
+      title: "Téma 6: Triedy a OOP",
+      content: `**Objektovo orientované programovanie**
+
+TypeScript pridáva plnú podporu pre OOP s triedami.
+
+**Základná trieda:**
+\`\`\`typescript
+class User {
+  constructor(
+    public name: string,
+    private email: string
+  ) {}
+
+  greet(): string {
+    return \`Hello, \${this.name}\`;
+  }
+}
+\`\`\`
+
+**Access modifiers:**
+- public: Prístupné všade
+- private: Len v triede
+- protected: V triede a potomkoch`
+    },
+    {
+      title: "Téma 7: Generické typy (Generics)",
+      content: `**Generics - Znovupoužiteľné komponenty**
+
+Generics umožňujú vytvárať komponenty, ktoré fungujú s rôznymi typmi.
+
+**Príklad:**
+\`\`\`typescript
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+class DataStorage<T> {
+  private data: T[] = [];
+  
+  addItem(item: T): void {
+    this.data.push(item);
+  }
+}
+
+const storage = new DataStorage<string>();
+storage.addItem("Hello");
+\`\`\``
+    },
+    {
+      title: "Téma 8: Kompilácia a konfigurácia",
+      content: `**TypeScript kompilácia**
+
+TypeScript sa musí skompilovať do JavaScriptu pred spustením.
+
+**Inštalácia:**
+\`\`\`bash
+npm install -g typescript
+tsc --init
+\`\`\`
+
+**tsconfig.json:**
+\`\`\`json
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "strict": true,
+    "outDir": "./dist",
+    "rootDir": "./src"
+  }
+}
+\`\`\`
+
+**Kompilácia:**
+\`\`\`bash
+tsc           # Kompiluje všetky súbory
+tsc --watch   # Watch mode
+\`\`\``
+    },
+    {
+      title: "Téma 9: TypeScript s Node.js a frameworkami",
+      content: `**TypeScript v Node.js**
+
+**Express s TypeScript:**
+\`\`\`typescript
+import express, { Request, Response } from 'express';
+
+const app = express();
+
+app.get('/users', (req: Request, res: Response) => {
+  res.json([{ name: 'Peter' }]);
+});
+
+app.listen(3000);
+\`\`\`
+
+**React s TypeScript:**
+\`\`\`typescript
+interface Props {
+  title: string;
+}
+
+const Component: React.FC<Props> = ({ title }) => {
+  return <h1>{title}</h1>;
+};
+\`\`\`
+
+**Angular:** Používa TypeScript ako primary jazyk`
+    },
+    {
+      title: "Téma 10: Advanced typy a best practices",
+      content: `**Pokročilé TypeScript techniky**
+
+**Utility Types:**
+- Partial<T>: Všetky vlastnosti voliteľné
+- Required<T>: Všetky povinné
+- Pick<T, K>: Vyber vlastnosti
+- Omit<T, K>: Odstráň vlastnosti
+- Record<K, T>: Mapa typov
+
+**Best Practices:**
+1. Používajte strict mode
+2. Vyhýbajte sa 'any'
+3. Používajte interfaces pre objekty
+4. Definujte return typy funkcií
+5. Type checking v CI/CD pipeline
+
+**Deployment:**
+TypeScript sa kompiluje do JS - nasadzujte len JS súbory.`
+    }
+  ],
   "Node.js": [
     {
       title: "Téma 1: Úvod do Node.js - Čo je Node.js?",
