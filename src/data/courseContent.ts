@@ -43592,6 +43592,840 @@ Práca s rodinami je náročná profesia, ktorá vyžaduje vysoké etické štan
 
 Práca s rodinami je náročná, ale veľmi zmysluplná profesia. Sociálni pracovníci hrajú kľúčovú úlohu v podpore rodín, ochrane detí a budovaní zdravšej spoločnosti.`
     }
+  ],
+  "Práca so seniormi": [
+    {
+      title: "Téma 1: Úvod do práce so seniormi",
+      content: `**Čo je práca so seniormi?**
+
+Práca so seniormi je oblasť sociálnej práce zameraná na podporu starších ľudí, ktorá zahŕňa riešenie ich individuálnych potrieb (sociálnych, psychologických, zdravotných, materiálnych) a podporu ich dôstojného začlenenia do spoločnosti.
+
+**Základné charakteristiky:**
+
+**1. Komplexný prístup:**
+- Zohľadnenie všetkých potrieb seniora
+- Holistický pohľad na život starších ľudí
+- Prepojenie zdravotnej a sociálnej starostlivosti
+- Rešpektovanie individuality
+
+**2. Dôstojnosť a začlenenie:**
+- Podpora aktívneho života seniorov
+- Integrácia do spoločnosti
+- Udržanie sociálnych vzťahov
+- Prevencia izolácie
+
+**3. Profesionálny prístup:**
+- Vysoká profesionalita
+- Empatia a pochopenie
+- Etické princípy
+- Interdisciplinárna spolupráca
+
+**Ciele práce so seniormi:**
+- Podpora samostatnosti a autonómie
+- Udržanie kvality života
+- Prevencia sociálnej exklúzie
+- Zabezpečenie dôstojného starnutia
+
+**Význam:**
+Práca so seniormi je kľúčová pre vytváranie humánnej spoločnosti, ktorá si váži príspevok starších generácií a zabezpečuje im dôstojný život.`
+    },
+    {
+      title: "Téma 2: Podpora individuálnych potrieb seniorov",
+      content: `**Individuálne potreby seniorov**
+
+Každý senior má špecifické potreby, ktoré vyžadujú individuálny prístup a komplexnú podporu.
+
+**1. Sociálne potreby:**
+
+**Udržanie sociálnych kontaktov:**
+- Podpora stretávaní s rodinou a priateľmi
+- Komunitné aktivity
+- Záujmové kluby a činnosti
+- Medzigerneračné programy
+
+**Prevencia osamelosti:**
+- Návštevy dobrovoľníkov
+- Skupinové aktivity
+- Telefónne linky podpory
+- Denné centrá pre seniorov
+
+**2. Psychologické potreby:**
+
+**Emocionálna podpora:**
+- Vypočutie a pochopenie
+- Podpora pri zmenách
+- Pomoc pri zvládaní straty
+- Udržanie sebaúcty
+
+**Kognitívna stimulácia:**
+- Pamäťové cvičenia
+- Vzdelávacie aktivity
+- Záujmové krúžky
+- Udržanie mentálnej aktivity
+
+**3. Zdravotné potreby:**
+
+**Zdravotná starostlivosť:**
+- Koordinácia zdravotných služieb
+- Podpora pri návštevách lekárov
+- Pomoc s medikáciou
+- Prevencia zdravotných komplikácií
+
+**Fyzická aktivita:**
+- Cvičenie prispôsobené veku
+- Rehabilitácia
+- Prevencia pádov
+- Udržanie mobility
+
+**4. Materiálne potreby:**
+
+**Finančná podpora:**
+- Informácie o dávkach a príspevkoch
+- Pomoc s rozpočtom
+- Zabezpečenie základných potrieb
+- Prístup k sociálnym službám
+
+**Bývanie:**
+- Úprava domácnosti pre bezpečnosť
+- Podpora samostatného bývania
+- Alternatívne formy bývania
+- Zariadenia pre seniorov
+
+**Praktický význam:**
+Komplexná podpora individuálnych potrieb umožňuje seniorom žiť dôstojný a plnohodnotný život v prostredí, ktoré rešpektuje ich potreby a želania.`
+    },
+    {
+      title: "Téma 3: Sociálna integrácia seniorov",
+      content: `**Sociálna integrácia starších ľudí**
+
+Zabezpečenie, aby sa seniori cítili integrovaní do spoločnosti a komunity, a boli súčasťou aktívneho sociálneho života.
+
+**1. Komunitný život:**
+
+**Zapojenie do komunity:**
+- Účasť na komunitných podujatiach
+- Dobrovoľnícke aktivity
+- Podpora miestnych iniciatív
+- Občianska participácia
+
+**Dostupnosť služieb:**
+- Prístup k verejnej doprave
+- Dostupné verejné priestory
+- Komunitné centrá
+- Lokálne služby
+
+**2. Intergeneračné vzťahy:**
+
+**Medzigeneračné programy:**
+- Stretnutia starších a mladších generácií
+- Zdieľanie skúseností a vedomostí
+- Spoločné projekty
+- Budovanie porozumenia
+
+**Rodinné vzťahy:**
+- Podpora rodinných väzieb
+- Pomoc vnúčatám a deťom
+- Udržanie rodinných tradícií
+- Prenosu hodnôt
+
+**3. Aktívne starnutie:**
+
+**Vzdelávacie aktivity:**
+- Univerzity tretieho veku
+- Kurzy a workshopy
+- Jazykové kurzy
+- Počítačová gramotnosť
+
+**Kultúrne a spoločenské aktivity:**
+- Návštevy kultúrnych podujatí
+- Divadlo, kino, koncerty
+- Výlety a exkurzie
+- Záujmové kluby
+
+**4. Prevencia sociálnej exklúzie:**
+
+**Identifikácia rizík:**
+- Monitorovanie osamotenosti
+- Vyhľadávanie ohrozených seniorov
+- Včasná intervencia
+- Preventívne programy
+
+**Podpora začlenenia:**
+- Komunitné aktivity
+- Susedská pomoc
+- Podpora mobility
+- Dostupnosť informácií
+
+**Praktický význam:**
+Sociálna integrácia je kľúčová pre well-being seniorov. Začlenení seniori sú zdravší, šťastnejší a aktívnejší, čo prispieva k celkovej kvalite ich života.`
+    },
+    {
+      title: "Téma 4: Humánny a profesionálny prístup",
+      content: `**Profesionalita v práci so seniormi**
+
+Práca so seniormi vyžaduje vysokú profesionalitu, empatiu a pochopenie od odborníkov z pomáhajúcich profesií.
+
+**1. Etické princípy:**
+
+**Rešpekt a dôstojnosť:**
+- Uznanie hodnoty každého seniora
+- Rešpektovanie rozhodnutí
+- Ochrana súkromia
+- Podpora autonómie
+
+**Nediskriminácia:**
+- Rovnaký prístup ku všetkým
+- Bez ohľadu na zdravotný stav
+- Rešpektovanie rozmanitosti
+- Ochrana práv
+
+**2. Empatia a pochopenie:**
+
+**Aktívne počúvanie:**
+- Venovaný čas a pozornosť
+- Pochopenie emócií
+- Bezpodmienečná akceptácia
+- Podpora sebavyjadrovania
+
+**Empatie:**
+- Vcítenie sa do situácie seniora
+- Pochopenie ich perspektívy
+- Citlivý prístup
+- Budovanie dôvery
+
+**3. Profesionálne kompetencie:**
+
+**Odborné vedomosti:**
+- Poznanie špecifík starnutia
+- Zdravotná problematika seniorov
+- Sociálne a psychologické aspekty
+- Právny rámec a legislatíva
+
+**Praktické zručnosti:**
+- Komunikačné schopnosti
+- Plánovanie a koordinácia služieb
+- Riešenie konfliktov
+- Krízová intervencia
+
+**4. Interdisciplinárna spolupráca:**
+
+**Tímová práca:**
+- Spolupráca so zdravotníkmi
+- Koordinácia s psychológmi
+- Prepojenie so sociálnymi službami
+- Zapojenie rodiny
+
+**Networking:**
+- Spolupráca s komunitou
+- Partnerstvo s organizáciami
+- Využitie zdrojov
+- Výmena skúseností
+
+**5. Sebareflexia a rozvoj:**
+
+**Supervízia:**
+- Reflektovanie vlastnej práce
+- Podpora od kolegov
+- Riešenie náročných situácií
+- Prevencia vyhorenia
+
+**Kontinuálne vzdelávanie:**
+- Sledovanie nových trendov
+- Účasť na školeniach
+- Výmena skúseností
+- Profesionálny rast
+
+**Praktický význam:**
+Humánny a profesionálny prístup vytvára podporné prostredie, v ktorom sa seniori cítia rešpektovaní, vypočutí a dôstojní, čo je základom kvalitnej starostlivosti.`
+    },
+    {
+      title: "Téma 5: Existenciálna podpora seniorov",
+      content: `**Existenciálna dimenzia práce so seniormi**
+
+Pomoc seniorom pri nachádzaní zmyslu života, hodnôt a uvedomení si utvárania vlastného života do poslednej chvíle.
+
+**1. Zmysel života v starobe:**
+
+**Reflexia životnej cesty:**
+- Spomínanie na životné skúsenosti
+- Hodnotenie prežitého života
+- Hľadanie vzorcov a zmyslu
+- Integrácia životných skúseností
+
+**Naratívna práca:**
+- Rozprávanie životných príbehov
+- Zachovanie spomienok
+- Písanie memoárov
+- Zdieľanie múdrosti
+
+**2. Spiritualita a viера:**
+
+**Duchovné potreby:**
+- Podpora duchovného života
+- Prístup k náboženským službám
+- Meditácia a modlitba
+- Hľadanie vnútorného pokoja
+
+**Existenciálne otázky:**
+- Otázky o živote a smrti
+- Hľadanie zmyslu
+- Zmierenie s minulosťou
+- Príprava na koniec života
+
+**3. Bilancovanie života:**
+
+**Life review:**
+- Systematický prehľad života
+- Spracovanie neriešených konfliktov
+- Odpustenie sebe i druhým
+- Akceptácia životných rozhodnutí
+
+**Naplnenie:**
+- Uznanie úspechov
+- Hodnotenie prínosu
+- Hrdosť na dosiahnuté
+- Zmierenie s nedostatkami
+
+**4. Autonómia a sebaurčenie:**
+
+**Rozhodovanie o živote:**
+- Podpora vlastných rozhodnutí
+- Rešpektovanie želaní
+- Plány pre budúcnosť
+- Kontrola nad vlastným životom
+
+**Dôstojnosť až do konca:**
+- Rešpektovanie voľby
+- Podpora pri ťažkých rozhodnutiach
+- Paliativna starostlivosť
+- Dôstojné umieranie
+
+**5. Odkaz a kontinuita:**
+
+**Generativita:**
+- Odovzdávanie skúseností
+- Mentorstvo mladších
+- Prenos hodnôt
+- Zanechanie odkazu
+
+**Rodina a potomkovia:**
+- Podpora rodinných vzťahov
+- Zdieľanie rodinnej histórie
+- Odovzdanie dedičstva
+- Pokračovanie v potomkoch
+
+**Praktický význam:**
+Existenciálna podpora pomáha seniorom nájsť zmysel a hodnotu v poslednej fáze života, čo vedie k väčšej spokojnosti, pokoju a dôstojnému starnutiu.`
+    },
+    {
+      title: "Téma 6: Sociálne poradenstvo a služby",
+      content: `**Sociálne poradenstvo a služby pre seniorov**
+
+Poskytovanie sociálneho poradenstva, sociálnoprávnej ochrany, kompenzačných príspevkov a iných sociálnych služieb.
+
+**1. Sociálne poradenstvo:**
+
+**Informačné služby:**
+- Informácie o sociálnych dávkach
+- Prehľad dostupných služieb
+- Právne poradenstvo
+- Navigácia v systéme
+
+**Individuálne poradenstvo:**
+- Posúdenie individuálnych potrieb
+- Plánovanie starostlivosti
+- Riešenie konkrétnych problémov
+- Podpora pri rozhodovaní
+
+**2. Sociálnoprávná ochrana:**
+
+**Ochrana práv seniorov:**
+- Informácie o právach
+- Ochrana pred zneužívaním
+- Zastúpenie v konaní
+- Právna pomoc
+
+**Opatrovníctvo:**
+- Podpora pri rozhodovaní
+- Právne zastúpenie
+- Ochrana majetku
+- Zabezpečenie záujmov
+
+**3. Kompenzačné príspevky:**
+
+**Finančné dávky:**
+- Dôchodky a penzia
+- Príspevok na opatrovanie
+- Invalidný dôchodok
+- Sociálne príplatky
+
+**Vecné dávky:**
+- Kompenzačné pomôcky
+- Úprava domácnosti
+- Zdravotné pomôcky
+- Dopravné výhody
+
+**4. Sociálne služby:**
+
+**Terénne služby:**
+- Pomoc v domácnosti
+- Osobná starostlivosť
+- Donáška stravy
+- Sprevádzanie
+
+**Ambulantné služby:**
+- Denné stacionáre
+- Rehabilitačné centrá
+- Poradenské centrá
+- Kluby seniorov
+
+**Pobytové služby:**
+- Domovy dôchodcov
+- Špecializované zariadenia
+- Hospiсové zariadenia
+- Prechodné ubytovanie
+
+**5. Koordinácia služieb:**
+
+**Case management:**
+- Plánovanie starostlivosti
+- Koordinácia poskytovateľov
+- Monitorovanie kvality
+- Priebežné hodnotenie
+
+**Interdisciplinárna spolupráca:**
+- Spolupráca so zdravotníkmi
+- Prepojenie na psychológov
+- Koordinácia s právnikmi
+- Zapojenie rodiny
+
+**Praktický význam:**
+Komplexný systém sociálneho poradenstva a služieb zabezpečuje, že seniori majú prístup k podpore, ktorú potrebujú pre dôstojný a kvalitný život.`
+    },
+    {
+      title: "Téma 7: Komunitná práca so seniormi",
+      content: `**Komunitný prístup v práci so seniormi**
+
+Uplatňovanie princípov komunitnej práce, ktorá počíta s rôznorodosťou seniorov a integruje ich do miestneho života.
+
+**1. Princípy komunitnej práce:**
+
+**Participácia:**
+- Zapojenie seniorov do rozhodovania
+- Aktívna účasť na plánovaní
+- Spoluúčasť na riešeniach
+- Partnerský prístup
+
+**Empowerment:**
+- Posilnenie seniorov
+- Podpora samostatnosti
+- Rozvoj kompetencií
+- Aktivizácia zdrojov
+
+**2. Rôznorodosť seniorov:**
+
+**Rôzne životné štýly:**
+- Rešpektovanie rozdielov
+- Individuálne preferencie
+- Rozmanité potreby
+- Kultúrna diverzita
+
+**Rôzne skúsenosti:**
+- Uznanie životných skúseností
+- Využitie zručností
+- Oceňovanie prínosu
+- Zdieľanie múdrosti
+
+**Rôzne vzdelanie:**
+- Prístup pre všetkých
+- Prispôsobenie komunikácie
+- Dostupné informácie
+- Rôzne formy podpory
+
+**3. Komunitné programy:**
+
+**Seniorské kluby:**
+- Stretávacie miesta
+- Spoločenské aktivity
+- Záujmové krúžky
+- Vzájomná podpora
+
+**Dobrovoľnícke programy:**
+- Zapojenie seniorov ako dobrovoľníkov
+- Príležitosti pomáhať iným
+- Udržanie zmysluplnej aktivity
+- Prínos komunite
+
+**4. Podpora v komunite:**
+
+**Susedská pomoc:**
+- Neformálna podpora
+- Pomoc od susedov
+- Komunitné siete
+- Vzájomná výpomoc
+
+**Bezpečné prostredie:**
+- Bezbariérové priestory
+- Bezpečné ulice a chodníky
+- Dostupná doprava
+- Senior-friendly komunita
+
+**5. Miestna samospráva:**
+
+**Participácia na verejnom živote:**
+- Zapojenie do miestnej politiky
+- Účasť na komunitných stretnutiach
+- Podpora miestneho rozvoja
+- Hlas seniorov v rozhodovaní
+
+**Verejné politiky:**
+- Stratégie pre seniorov
+- Programy podpory
+- Investície do služieb
+- Systémové riešenia
+
+**Praktický význam:**
+Komunitný prístup vytvára podporné prostredie, v ktorom seniori nie sú pasívnymi prijímateľmi služieb, ale aktívnymi členmi komunity, ktorí prispievajú a zároveň dostávajú podporu.`
+    },
+    {
+      title: "Téma 8: Výzvy a riziká v práci so seniormi",
+      content: `**Špecifické výzvy a riziká**
+
+Práca so seniormi prináša špecifické výzvy, ktoré vyžadujú pozornosť a profesionálny prístup.
+
+**1. Zdravotné výzvy:**
+
+**Chronické ochorenia:**
+- Diabetes, hypertenzia
+- Kardiovaskulárne problémy
+- Artritída a osteoporóza
+- Demencia a Alzheimer
+
+**Polymorbidita:**
+- Viac ochorení súčasne
+- Komplexná medikácia
+- Riziko interakcií
+- Náročná starostlivosť
+
+**2. Sociálne riziká:**
+
+**Osamelost a izolácia:**
+- Strata blízkych osôb
+- Obmedzená mobilita
+- Nedostatok sociálnych kontaktov
+- Riziko depresie
+
+**Chudoba seniorov:**
+- Nízke dôchodky
+- Vysoké náklady na zdravie
+- Energetická chudoba
+- Materiálna deprivácia
+
+**3. Riziko zneužívania:**
+
+**Typy zneužívania:**
+- Fyzické násilie
+- Psychické týranie
+- Finančné zneužívanie
+- Zanedbávanie
+
+**Ochrana:**
+- Identifikácia signálov
+- Hlásenie podozrení
+- Ochranné opatrenia
+- Právna pomoc
+
+**4. Psychologické výzvy:**
+
+**Depresie a úzkosť:**
+- Časté v starobe
+- Potreba terapeutickej podpory
+- Riziko samovraždy
+- Včasná intervencia
+
+**Kognitívny pokles:**
+- Demencia a Alzheimer
+- Strata pamäti
+- Zmeny osobnosti
+- Podpora pre rodinu
+
+**5. Systémové výzvy:**
+
+**Nedostatok služieb:**
+- Obmedzená kapacita
+- Čakacie listiny
+- Nedostupnosť v regiónoch
+- Potreba rozšírenia
+
+**Financovanie:**
+- Nedostatočné zdroje
+- Udržateľnosť služieb
+- Kvalita vs. náklady
+- Investície do systému
+
+**6. Demografické výzvy:**
+
+**Starnutie populácie:**
+- Rastúci počet seniorov
+- Dlhšia dĺžka života
+- Nároky na systém
+- Potreba adaptácie
+
+**Generačné zmeny:**
+- Rôzne očakávania
+- Nové potreby
+- Technologická gramotnosť
+- Zmeny v rodinách
+
+**Praktický význam:**
+Poznanie výziev a rizík umožňuje lepšie plánovanie, prevenciu a efektívnejšiu prácu so seniormi, čo vedie k lepším výsledkom a vyššej kvalite života starších ľudí.`
+    },
+    {
+      title: "Téma 9: Inovatívne prístupy a trendy",
+      content: `**Moderné prístupy v práci so seniormi**
+
+Nové trendy a inovatívne prístupy, ktoré zlepšujú kvalitu života seniorov a efektivitu sociálnej práce.
+
+**1. Technologické inovácie:**
+
+**Asistívne technológie:**
+- Smart domácnosti
+- Monitorovacie systémy
+- Zdravotné aplikácie
+- Núdzové tlačidlá
+
+**Telezdravotníctvo:**
+- Online konzultácie
+- Diaľkový monitoring
+- Digitálne recepty
+- Zdravotné wearables
+
+**Sociálne siete:**
+- Komunikácia s rodinou
+- Online komunity
+- Videotelefonáty
+- Zdieľanie záujmov
+
+**2. Person-centered care:**
+
+**Individualizácia:**
+- Plány šité na mieru
+- Rešpektovanie preferencií
+- Flexibilné služby
+- Participácia seniora
+
+**Biografický prístup:**
+- Poznanie životnej histórie
+- Rešpektovanie hodnôt
+- Kontinuita identity
+- Personalizovaný prístup
+
+**3. Aktívne starnutie:**
+
+**Preventívne programy:**
+- Fyzická aktivita
+- Mentálna stimulácia
+- Sociálne zapojenie
+- Zdravý životný štýl
+
+**Celoživotné učenie:**
+- Univerzity tretieho veku
+- Online kurzy
+- Jazykové vzdelávanie
+- Digitálne zručnosti
+
+**4. Alternatívne formy bývania:**
+
+**Komunitné bývanie:**
+- Senior housing
+- Spolubývanie
+- Intergeneračné komunity
+- Udržateľné prostredie
+
+**Domáca starostlivosť:**
+- Podpora samostatného bývania
+- Domáce služby
+- Denné stacionáre
+- Mobilné tímy
+
+**5. Intergeneračné programy:**
+
+**Medzigeneračné projekty:**
+- Spoločné aktivity
+- Mentorstvo
+- Zdieľanie zručností
+- Budovanie porozumenia
+
+**Rodinná podpora:**
+- Pomoc opatrovateľom
+- Respitná starostlivosť
+- Vzdelávacie programy
+- Psychosociálna podpora
+
+**6. Inkluzívne komunity:**
+
+**Age-friendly cities:**
+- Prístupné prostredie
+- Bezpečná doprava
+- Dostupné služby
+- Participácia seniorov
+
+**Komunitné plánovanie:**
+- Zapojenie seniorov
+- Strategické plánovanie
+- Spolupráca sektorov
+- Udržateľný rozvoj
+
+**7. Kvalita života:**
+
+**Well-being prístup:**
+- Holistická starostlivosť
+- Fyzické zdravie
+- Mentálne zdravie
+- Sociálne vzťahy
+- Spiritualita
+
+**Meranie kvality:**
+- Hodnotenie spokojnosti
+- Metriky kvality života
+- Spätná väzba od seniorov
+- Kontinuálne zlepšovanie
+
+**Praktický význam:**
+Inovatívne prístupy a využitie technológií môžu výrazne zlepšiť kvalitu života seniorov, podporiť ich autonómiu a umožniť im žiť dôstojne a aktívne aj vo vyššom veku.`
+    },
+    {
+      title: "Téma 10: Budúcnosť práce so seniormi",
+      content: `**Budúcnosť starostlivosti o seniorov**
+
+Trendy, výzvy a príležitosti, ktoré formujú budúcnosť práce so seniormi.
+
+**1. Demografické zmeny:**
+
+**Starnutie populácie:**
+- Dvojnásobný nárast počtu seniorov do roku 2050
+- Vyššia dĺžka života
+- Zmeny v rodinných štruktúrach
+- Potreba systémových zmien
+
+**Silver economy:**
+- Ekonomický potenciál seniorov
+- Nové trhové príležitosti
+- Inovatívne služby
+- Podnikanie seniorov
+
+**2. Systémové reformy:**
+
+**Integrácia služieb:**
+- Prepojenie zdravotnej a sociálnej starostlivosti
+- Komplexný prístup
+- Case management
+- Kontinuita starostlivosti
+
+**Financovanie:**
+- Udržateľné modely financovania
+- Kombinácia verejného a súkromného
+- Dlhodobá starostlivosť
+- Poistné schémy
+
+**3. Technologický rozvoj:**
+
+**Umelá inteligencia:**
+- Predikcia rizík
+- Personalizácia starostlivosti
+- Asistentné systémy
+- Automatizácia úloh
+
+**Robotika:**
+- Asistentné roboty
+- Podpora mobility
+- Spoločenské roboty
+- Pomoc v domácnosti
+
+**4. Nové modely starostlivosti:**
+
+**Komunitná starostlivosť:**
+- Posun od inštitucionálnej starostlivosti
+- Podpora v prirodzenom prostredí
+- Komunitné služby
+- Lokálne riešenia
+
+**Participatívne modely:**
+- Spolutvorba služieb
+- Zapojenie seniorov
+- Peer podpora
+- Aktivizácia komunity
+
+**5. Vzdelávanie a profesionalizácia:**
+
+**Vzdelávanie odborníkov:**
+- Špecializované vzdelávanie
+- Interdisciplinárny prístup
+- Gerontologické vzdelávanie
+- Kontinuálny rozvoj
+
+**Nové profesie:**
+- Geriatrickí koordinátori
+- Špecialisti na aktívne starnutie
+- Technologickí asistenti pre seniorov
+- Komunitní facilitátori
+
+**6. Prevencia a promocia zdravia:**
+
+**Preventívne programy:**
+- Včasné skríningové programy
+- Podpora zdravého životného štýlu
+- Prevencia pádov
+- Kognitívny tréning
+
+**Aktívne starnutie:**
+- Podpora mobility
+- Sociálna aktivizácia
+- Celoživotné vzdelávanie
+- Zmysluplné aktivity
+
+**7. Ľudské práva a dôstojnosť:**
+
+**Ochrana práv:**
+- Konvencia o právach seniorov
+- Prevencia diskriminácie
+- Rovnaký prístup
+- Právna ochrana
+
+**Etické štandardy:**
+- Dôstojnosť v starostlivosti
+- Rešpektovanie autonómie
+- Informovaný súhlas
+- Kvalita života
+
+**8. Výskum a inovácie:**
+
+**Gerontologický výskum:**
+- Starnutie a zdravie
+- Sociálne aspekty
+- Inovatívne intervencie
+- Evidence-based prax
+
+**Pilotné projekty:**
+- Testovanie nových modelov
+- Evaluácia programov
+- Zdieľanie best practices
+- Transferability riešení
+
+**Záver:**
+
+Budúcnosť práce so seniormi je plná výziev, ale aj príležitostí. Starnutie populácie vyžaduje systémové zmeny, inovatívne prístupy a interdisciplinárnu spoluprácu. 
+
+Kľúčom k úspešnej budúcnosti je:
+- Rešpektovanie dôstojnosti a práv seniorov
+- Podpora aktívneho a zdravého starnutia
+- Integrácia služieb a komunitný prístup
+- Využitie technológií pre zlepšenie kvality života
+- Investície do vzdelávania a výskumu
+- Budovanie age-friendly spoločnosti
+
+Práca so seniormi bude naďalej kľúčovou oblasťou sociálnej práce, ktorá si vyžaduje profesionalitu, empatiu a záväzok k vytvoreniu spoločnosti, v ktorej môžu starší ľudia žiť dôstojne, aktívne a naplnene.`
+    }
   ]
 }
 
