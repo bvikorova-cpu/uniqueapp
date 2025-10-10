@@ -25497,6 +25497,699 @@ auto vysledok = cisla
 C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
     }
   ],
+  "Pedagogika": [
+    {
+      title: "Téma 1: Úvod do pedagogiky - Pôvod a význam",
+      content: `**Čo je pedagogika?**
+
+Pedagogika je vedná disciplína (veda, teória a náuka) o výchove a vzdelávaní, ktorá skúma zámerné ovplyvňovanie vývinu osobnosti.
+
+**Pôvod pojmu:**
+- Pochádza z gréckeho slova "paidagogiké (téchnē)"
+- Znamená "umenie výchovy"
+- Paidagógos = otrok sprevádzajúci deti do školy
+- Dozeral na ne a viedol ich
+
+**Základné vymedzenie:**
+- Veda o výchove a vzdelávaní
+- Teória aj prax
+- Zámerné ovplyvňovanie osobnosti
+- Opiera sa o iné vedy
+
+**Tri rozmery pedagogiky:**
+1. Teoretický - vedná disciplína
+2. Praktický - praktická činnosť
+3. Umelecký - umenie vychovávať
+
+**Význam pedagogiky:**
+- Príprava na život v spoločnosti
+- Rozvoj osobnosti jedinca
+- Prenos kultúrnych hodnôt
+- Príprava na povolanie`
+    },
+    {
+      title: "Téma 2: Predmet a úlohy pedagogiky",
+      content: `**Predmet pedagogiky**
+
+Pedagogika skúma edukačnú realitu - celý proces výchovy a vzdelávania.
+
+**Hlavné oblasti skúmania:**
+
+**1. Edukačná realita:**
+- Celý proces výchovy a vzdelávania
+- Od determinantov po výsledky
+- Podmienky výchovno-vzdelávacieho procesu
+- Faktory ovplyvňujúce výchovu
+
+**2. Výchovné procesy:**
+- Zámerné ovplyvňovanie osobnosti
+- Pozitívne formovanie charakteru
+- Rozvoj schopností a zručností
+- Utváranie hodnotovej orientácie
+
+**3. Zákonitosti výchovy:**
+- Podstata výchovných procesov
+- Pravidlá a princípy výchovy
+- Vzťahy medzi výchovou a rozvojom
+- Podmienky úspešnej výchovy
+
+**Hlavné úlohy pedagogiky:**
+
+**1. Poznávacia úloha:**
+- Odhaľovanie zákonitostí
+- Skúmanie výchovných javov
+- Analýza edukačných procesov
+
+**2. Praktická úloha:**
+- Aplikácia poznatkov v praxi
+- Vypracovanie metód a foriem výchovy
+- Zdokonaľovanie výchovno-vzdelávacieho procesu
+
+**3. Prognostická úloha:**
+- Predvídanie vývoja výchovy
+- Plánovanie vzdelávacích systémov
+- Inovácie v pedagogike`
+    },
+    {
+      title: "Téma 3: Charakteristika pedagogiky ako vedy",
+      content: `**Pedagogika ako vedná disciplína**
+
+Pedagogika má špecifické charakteristiky, ktoré ju odlišujú od iných vied.
+
+**1. Interdisciplinárna veda:**
+
+**Čerpá z:**
+- Psychológia - poznanie duševného vývinu
+- Sociológia - spoločenské vzťahy
+- Filozofia - svetonázorové základy
+- Biológia - fyziologický vývoj
+- Anatómia - telesný vývoj
+- Etika - morálne normy
+
+**Prínos iných vied:**
+- Hlbšie pochopenie edukačných procesov
+- Komplexný pohľad na výchovu
+- Vedecké zdôvodnenie metód
+
+**2. Normatívna veda:**
+
+**Charakteristiky:**
+- Vyjadruje, ako má výchova prebiehať
+- Stanovuje ideály a ciele výchovy
+- Formuluje požiadavky na učiteľa
+- Určuje obsahy vzdelávania
+
+**Normatívne aspekty:**
+- Ciele výchovy a vzdelávania
+- Výchovné ideály
+- Etické normy v pedagogike
+- Štandardy vzdelávania
+
+**3. Exploratívna a explanačná:**
+
+**Exploratívna funkcia:**
+- Skúmanie nových javov
+- Objavovanie zákonitostí
+- Hľadanie riešení problémov
+
+**Explanačná funkcia:**
+- Vysvetľovanie výchovných javov
+- Interpretácia procesov
+- Zdôvodňovanie postupov
+
+**4. Teoreticko-praktická:**
+- Prepojenie teórie s praxou
+- Overovanie teórií v praxi
+- Praktické aplikácie poznatkov`
+    },
+    {
+      title: "Téma 4: Základné pojmy pedagogiky",
+      content: `**Kľúčové pojmy v pedagogike**
+
+Pre pochopenie pedagogiky je dôležité poznať jej základné pojmy.
+
+**1. Výchova:**
+
+**Definícia:**
+- Zámerné ovplyvňovanie osobnosti
+- Cieľavedomý proces
+- Utváranie vlastností a schopností
+
+**Charakteristiky:**
+- Dlhodobý proces
+- Cieľavedomý a organizovaný
+- Vzťahový proces (vychovávateľ - vychovávaný)
+
+**Typy výchovy:**
+- Rodinná výchova
+- Školská výchova
+- Spoločenská výchova
+- Sebavýchova
+
+**2. Vzdelávanie:**
+
+**Definícia:**
+- Proces získavania vedomostí, zručností a návykov
+- Rozvoj poznávacích schopností
+- Príprava na život a povolanie
+
+**Formy:**
+- Formálne vzdelávanie (škola)
+- Neformálne vzdelávanie
+- Informálne učenie
+
+**3. Vyučovanie:**
+
+**Charakteristiky:**
+- Proces prenosu vedomostí
+- Riadený učiteľom
+- Cieľavedomá činnosť
+- Výsledok - učenie
+
+**4. Učenie:**
+
+**Definícia:**
+- Proces získavania skúseností
+- Zmena v správaní a myslení
+- Aktívna činnosť žiaka
+
+**5. Edukácia:**
+
+**Komplexný pojem zahŕňa:**
+- Výchovu
+- Vzdelávanie
+- Vyučovanie
+- Sebavýchovu
+
+**6. Osobnosť:**
+
+**Pedagogický pohľad:**
+- Jedinečná individualita
+- Výsledok výchovy a sebavýchovy
+- Subjekt i objekt výchovy
+- Sociálny a psychologický fenomén`
+    },
+    {
+      title: "Téma 5: Ciele a funkcie výchovy",
+      content: `**Ciele výchovy**
+
+Ciele výchovy určujú smer a zameranie výchovného procesu.
+
+**1. Všeobecný cieľ výchovy:**
+
+**Všestranný rozvoj osobnosti:**
+- Fyzický rozvoj
+- Psychický rozvoj
+- Sociálny rozvoj
+- Duchovný rozvoj
+
+**Príprava na život:**
+- Adaptácia na spoločnosť
+- Schopnosť sebarealizácie
+- Zodpovednosť
+- Samostatnosť
+
+**2. Čiastkové ciele:**
+
+**Intelektuálna výchova:**
+- Rozvoj myslenia
+- Poznávacie schopnosti
+- Kritické myslenie
+- Kreativita
+
+**Morálna výchova:**
+- Utváranie hodnôt
+- Etické správanie
+- Zodpovednosť
+- Úcta k druhým
+
+**Estetická výchova:**
+- Zmysel pre krásu
+- Vkus a kultúra
+- Tvorivosť
+- Vzťah k umeniu
+
+**Telesná výchova:**
+- Fyzická kondícia
+- Zdravý životný štýl
+- Pohybové schopnosti
+- Hygiena
+
+**Pracovná výchova:**
+- Pracovné návyky
+- Zručnosti
+- Vzťah k práci
+- Zodpovednosť
+
+**3. Funkcie výchovy:**
+
+**Socializačná funkcia:**
+- Začlenenie do spoločnosti
+- Prijatie spoločenských noriem
+- Rozvoj sociálnych vzťahov
+
+**Personalizačná funkcia:**
+- Rozvoj individuality
+- Sebarealizácia
+- Utváranie vlastnej identity
+
+**Kultúrna funkcia:**
+- Prenos kultúrneho dedičstva
+- Zachovanie hodnôt
+- Kultúrna kontinuita
+
+**Kvalifikačná funkcia:**
+- Príprava na povolanie
+- Rozvoj kompetencií
+- Celoživotné vzdelávanie`
+    },
+    {
+      title: "Téma 6: Faktory a zákonitosti výchovy",
+      content: `**Faktory ovplyvňujúce výchovu**
+
+Výchova je ovplyvnená mnohými faktormi, ktoré spolupôsobia.
+
+**1. Vnútorné faktory:**
+
+**Dedičnosť:**
+- Genetické vlohy
+- Dispozície
+- Temperament
+- Talent
+
+**Vlastná aktivita:**
+- Sebavýchova
+- Motivácia
+- Záujmy
+- Snaha
+
+**2. Vonkajšie faktory:**
+
+**Prostredie:**
+- Fyzické prostredie
+- Sociálne prostredie
+- Kultúrne prostredie
+- Ekonomické podmienky
+
+**Výchova:**
+- Rodinná výchova
+- Školská výchova
+- Mimoškolská výchova
+- Spoločenské vplyvy
+
+**3. Zákonitosti výchovy:**
+
+**Všeobecné zákonitosti:**
+
+**Zákon jednoty výchovy a prostredia:**
+- Výchova musí zohľadňovať prostredie
+- Prostredie ovplyvňuje výsledky výchovy
+- Vzájomné pôsobenie
+
+**Zákon aktivity a sebavýchovy:**
+- Bez vlastnej aktivity niet výchovy
+- Vychovávaný musí byť aktívny
+- Sebavýchova je kľúčová
+
+**Zákon súladu výchovy s rozvojom:**
+- Výchova musí rešpektovať vek
+- Primerané požiadavky
+- Zohľadnenie individuálnych osobitostí
+
+**Zákon jednoty teórie a praxe:**
+- Prepojenie poznatkov s činnosťou
+- Praktické uplatňovanie vedomostí
+- Učenie v kontexte
+
+**Princípy výchovy:**
+- Princíp vedomosti a aktivity
+- Princíp názornosti
+- Princíp systematickosti
+- Princíp primeranosti
+- Princíp trvalosti
+- Princíp individuálneho prístupu`
+    },
+    {
+      title: "Téma 7: Metódy a formy výchovy",
+      content: `**Metódy výchovy**
+
+Metódy sú spôsoby, akými sa realizuje výchovný proces.
+
+**1. Slovné metódy:**
+
+**Rozhovor:**
+- Dialóg s vychovávaným
+- Získavanie informácií
+- Ovplyvňovanie názorov
+- Riešenie problémov
+
+**Vysvetľovanie:**
+- Objasňovanie javov
+- Zdôvodňovanie požiadaviek
+- Interpretácia
+
+**Príbeh:**
+- Použitie naratívu
+- Emocionálne pôsobenie
+- Morálne posolstvo
+
+**Príkaz a zákaz:**
+- Direktívne vedenie
+- Jasné požiadavky
+- Hranice správania
+
+**2. Vzorové metódy:**
+
+**Osobný príklad:**
+- Vychovávateľ ako vzor
+- Modelovanie správania
+- Identifikácia
+
+**Vzor:**
+- Pozitívne vzory (hrdina)
+- Historické osobnosti
+- Literárne postavy
+
+**3. Praktické metódy:**
+
+**Cvičenie:**
+- Opakovanie činností
+- Utváranie návykov
+- Automatizácia
+
+**Prikazovanie úloh:**
+- Samostatná práca
+- Zodpovednosť
+- Rozvoj schopností
+
+**4. Metódy motivácie:**
+
+**Pochvala a povzbudenie:**
+- Pozitívne hodnotenie
+- Podpora sebadôvery
+- Motivácia k výkonu
+
+**Odmena:**
+- Materiálna/nemateriálna
+- Pozitívna spätná väzba
+- Posilnenie správania
+
+**Trest:**
+- Sankcia za priestupok
+- Výchovné pôsobenie
+- Posledná možnosť
+
+**5. Formy výchovy:**
+
+**Individuálna:**
+- Prístup k jednotlivcovi
+- Zohľadnenie osobitostí
+- Individuálny plán
+
+**Skupinová:**
+- Práca v skupine
+- Kooperácia
+- Sociálne učenie
+
+**Hromadná:**
+- Veľká skupina
+- Spoločné aktivity
+- Kolektívny duch`
+    },
+    {
+      title: "Téma 8: História pedagogiky",
+      content: `**Vývoj pedagogického myslenia**
+
+Pedagogika má dlhú históriu siahajúcu do staroveku.
+
+**1. Antická pedagogika:**
+
+**Grécko:**
+- Platón - Štát, ideálna výchova
+- Aristoteles - Etika, rozumová výchova
+- Sokratovská metóda
+- Gymnáziá a akadémie
+
+**Rím:**
+- Quintilianus - Rečníctvo
+- Praktická orientácia
+- Rétorické školy
+- Civilná výchova
+
+**2. Stredoveká pedagogika:**
+
+**Charakteristiky:**
+- Náboženská orientácia
+- Cirkevné školy
+- Latinčina
+- Scholastika
+
+**Predstavitelia:**
+- Tomáš Akvinský
+- Cirkevní otcovia
+- Univerzity (Bologna, Oxford)
+
+**3. Renesančná pedagogika:**
+
+**Humanizmus:**
+- Návrat k antike
+- Rozvoj osobnosti
+- Humanistické gymnáziá
+
+**Predstavitelia:**
+- Erasmus Rotterdamský
+- Michel de Montaigne
+- Vittorino da Feltre
+
+**4. Pedagogika novoveku:**
+
+**J. A. Komenský (1592-1670):**
+- "Otec modernej pedagogiky"
+- Veľká didaktika
+- Názornosť
+- Vyučovať všetko všetkých
+- Systém škôl
+
+**J. J. Rousseau (1712-1778):**
+- Emil alebo o výchove
+- Prirodzená výchova
+- Rešpekt k dieťaťu
+- Vývinové štádiá
+
+**J. H. Pestalozzi (1746-1827):**
+- Ľudová škola
+- Výchova chudobných
+- Hlava, srdce, ruka
+- Praktická pedagogika
+
+**J. F. Herbart (1776-1841):**
+- Vedecká pedagogika
+- Výchovné vyučovanie
+- Formálne stupne vyučovania
+
+**5. Moderná pedagogika:**
+
+**M. Montessori (1870-1952):**
+- Montessori metóda
+- Pripravené prostredie
+- Samostatnosť dieťaťa
+
+**J. Dewey (1859-1952):**
+- Pragmatická pedagogika
+- Učenie činnosťou
+- Škola života`
+    },
+    {
+      title: "Téma 9: Moderné smery v pedagogike",
+      content: `**Súčasné trendy v pedagogike**
+
+Pedagogika sa neustále vyvíja a reaguje na spoločenské zmeny.
+
+**1. Progresívna pedagogika:**
+
+**Charakteristiky:**
+- Aktivita žiaka
+- Učenie skúsenosťou
+- Demokratizácia školy
+- Spojenie s životom
+
+**Metódy:**
+- Projektové vyučovanie
+- Problémové vyučovanie
+- Skupinová práca
+- Experimenty
+
+**2. Humanistická pedagogika:**
+
+**Princípy:**
+- Rešpekt k dieťaťu
+- Rozvoj potenciálu
+- Empatia
+- Sebarealizácia
+
+**Predstavitelia:**
+- Carl Rogers
+- Abraham Maslow
+- Partnerský vzťah učiteľ-žiak
+
+**3. Konštruktivizmus:**
+
+**Základy:**
+- Žiak si aktívne buduje poznanie
+- Nie pasívne prijímanie
+- Osobná konštrukcia významu
+- Sociálne učenie
+
+**Aplikácia:**
+- Objavovanie
+- Bádateľské vyučovanie
+- Kooperatívne učenie
+- Autentické úlohy
+
+**4. Inkluzívna pedagogika:**
+
+**Princípy:**
+- Škola pre všetkých
+- Integrácia žiakov so špeciálnymi potrebami
+- Rešpekt k diverzite
+- Individuálny prístup
+
+**Prax:**
+- Prispôsobenie podmienok
+- Asistent pedagóga
+- Diferenciácia
+- Podpora
+
+**5. Digitálna pedagogika:**
+
+**Charakteristiky:**
+- Využitie technológií
+- E-learning
+- Digitálne nástroje
+- Online vzdelávanie
+
+**Metódy:**
+- Blended learning
+- Flipped classroom
+- Gamifikácia
+- Mobilné učenie
+
+**6. Tvorivá pedagogika:**
+
+**Zameranie:**
+- Rozvoj kreativity
+- Kritické myslenie
+- Riešenie problémov
+- Inovácie
+
+**Techniky:**
+- Brainstorming
+- Mind mapping
+- Design thinking
+- Projektová práca`
+    },
+    {
+      title: "Téma 10: Profesionálne kompetencie pedagóga",
+      content: `**Učiteľ - kľúčová postava výchovy**
+
+Profesionálny pedagóg musí disponovať širokou škálou kompetencií.
+
+**1. Odborné kompetencie:**
+
+**Predmetové znalosti:**
+- Hlboké poznanie predmetu
+- Aktuálne poznatky
+- Interdisciplinárne súvislosti
+- Neustále vzdelávanie
+
+**Didaktické znalosti:**
+- Metodika vyučovania
+- Výber metód a foriem
+- Plánovanie vyučovania
+- Hodnotenie
+
+**2. Pedagogické kompetencie:**
+
+**Výchovné pôsobenie:**
+- Morálny vplyv
+- Výchovná autorita
+- Osobný príklad
+- Utváranie hodnôt
+
+**Komunikácia:**
+- Efektívna komunikácia
+- Empatia
+- Aktívne počúvanie
+- Riešenie konfliktov
+
+**Manažment triedy:**
+- Organizácia vyučovania
+- Vedenie žiakov
+- Disciplína
+- Motivácia
+
+**3. Diagnostické kompetencie:**
+
+**Pozorovanie:**
+- Sledovanie pokroku
+- Identifikácia problémov
+- Poznanie žiakov
+
+**Hodnotenie:**
+- Objektívne hodnotenie
+- Formatívne hodnotenie
+- Spätná väzba
+- Sebahodnotenie
+
+**4. Sociálne kompetencie:**
+
+**Spolupráca:**
+- Práca v tíme
+- Spolupráca s rodičmi
+- Kolegialita
+- Partnerstvo
+
+**Empatia:**
+- Vcítenie sa do žiakov
+- Pochopenie potrieb
+- Podpora
+- Dôvera
+
+**5. Osobnostné kvality:**
+
+**Charakterové vlastnosti:**
+- Zodpovednosť
+- Spravodlivosť
+- Trpezlivosť
+- Húževnatosť
+
+**Morálne kvality:**
+- Etické správanie
+- Vzorový život
+- Autenticita
+- Integrita
+
+**6. Sebarozvoj:**
+
+**Celoživotné vzdelávanie:**
+- Ďalšie vzdelávanie
+- Sebavzdelávanie
+- Reflexia praxe
+- Inovácie
+
+**Osobnostný rast:**
+- Sebapoznanie
+- Sebareflexia
+- Osobnostný rozvoj
+- Work-life balance
+
+**Profesionálna etika:**
+- Etický kódex
+- Rešpekt k žiakom
+- Diskrétnosť
+- Zodpovednosť`
+    }
+  ],
   "Vue.js": [
     {
       title: "Téma 1: Úvod do Vue.js",
