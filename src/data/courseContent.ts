@@ -25497,11 +25497,745 @@ auto vysledok = cisla
 C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
     }
   ],
-  "SQL": [
+  "Node.js": [
     {
-      title: "Téma 1: Úvod do SQL",
-      content: `SQL (Structured Query Language) je štandardizovaný programovací jazyk určený na komunikáciu s relačnými databázami. Umožňuje získavať, upravovať, pridávať a vymazávať dáta pomocou príkazov ako SELECT, INSERT, UPDATE a DELETE. Je štandardizovaný organizáciami ANSI a ISO a používa sa v systémoch ako Oracle, MySQL, PostgreSQL a Microsoft SQL Server.`
+      title: "Téma 1: Úvod do Node.js - Čo je Node.js?",
+      content: `**Čo je Node.js?**
+
+Node.js je open-source JavaScriptové runtime prostredie, ktoré umožňuje spúšťať JavaScript kód na serverovej strane, čiže mimo webového prehliadača.
+
+**Základné informácie:**
+- Vytvorené v roku 2009 Ryanom Dahlom
+- Postavené na Google V8 JavaScript engine
+- Umožňuje používať JavaScript na serveri
+- Cross-platformové riešenie
+
+**História:**
+- 2009: Prvá verzia Node.js
+- 2010: npm (Node Package Manager)
+- 2015: Vznik Node.js Foundation
+- Dnes: Používajú ho Netflix, PayPal, LinkedIn, Uber
+
+**Prečo Node.js?**
+- Jeden jazyk pre frontend aj backend
+- Obrovský ekosystém balíčkov (npm)
+- Aktívna komunita
+- Vysoký výkon
+- Rýchly vývoj aplikácií`
     },
+    {
+      title: "Téma 2: JavaScript na serveri",
+      content: `**JavaScript mimo prehliadača**
+
+Node.js umožňuje vývojárom používať jeden jazyk (JavaScript) pre frontend aj backend aplikácie.
+
+**Výhody jednotného jazyka:**
+
+**1. Zdieľanie kódu:**
+\`\`\`javascript
+// Validácia emailu použiteľná na klientovi aj serveri
+function validateEmail(email) {
+  return email.includes('@') && email.includes('.');
+}
+
+module.exports = { validateEmail };
+\`\`\`
+
+**2. Jednoduchší vývoj:**
+- Jeden jazyk na naučenie
+- Jednotné vývojové nástroje
+- Znížená komplexnosť projektu
+
+**3. Full-stack JavaScript:**
+- Frontend: React, Vue, Angular
+- Backend: Node.js, Express
+- Databáza: MongoDB (JSON-like)
+- Všetko v JavaScripte!
+
+**Rozdiely oproti prehliadaču:**
+
+**Node.js má:**
+- Prístup k súborovému systému
+- Prístup k sieťovým rozhraniam
+- Systémové procesy
+- Bez DOM a window objektu
+
+**Príklad:**
+\`\`\`javascript
+// Node.js - prístup k súborom
+const fs = require('fs');
+fs.readFile('subor.txt', 'utf8', (err, data) => {
+  console.log(data);
+});
+
+// Node.js - HTTP server
+const http = require('http');
+const server = http.createServer((req, res) => {
+  res.end('Hello World!');
+});
+server.listen(3000);
+\`\`\``
+    },
+    {
+      title: "Téma 3: Google V8 Engine a vysoký výkon",
+      content: `**Google V8 JavaScript Engine**
+
+Node.js využíva Google V8 engine, ktorý JavaScript prekladá do strojového kódu, čo zaisťuje rýchle spracovanie.
+
+**Čo je V8?**
+- JavaScript engine od Google
+- Používaný v Chrome prehliadači
+- Kompiluje JavaScript do natívneho strojového kódu
+- JIT (Just-In-Time) kompilácia
+
+**Ako V8 funguje:**
+
+**1. Parsing:**
+- Načítanie JavaScript kódu
+- Vytvorenie Abstract Syntax Tree (AST)
+
+**2. Ignition (interpreter):**
+- Interpretácia bytecode
+- Rýchle spustenie kódu
+
+**3. TurboFan (optimalizujúci kompilátor):**
+- Optimalizácia často spúšťaného kódu
+- Kompilácia do strojového kódu
+
+**Výkonnostné výhody:**
+
+**Single-threaded, ale rýchly:**
+\`\`\`javascript
+// Asynchrónne operácie nevytvárajú blokovanie
+const start = Date.now();
+
+setTimeout(() => {
+  console.log('Toto sa vykoná po 1s');
+}, 1000);
+
+console.log('Toto sa vykoná ihneď');
+console.log('Čas: ' + (Date.now() - start) + 'ms');
+\`\`\`
+
+**Memory management:**
+- Automatický garbage collection
+- Efektívne využitie pamäte
+- Optimalizovaný V8 heap
+
+**Porovnanie výkonu:**
+- Node.js je rýchlejší ako Python, Ruby, PHP
+- Ideálny pre I/O operácie
+- Menej vhodný pre CPU-intensive úlohy`
+    },
+    {
+      title: "Téma 4: Architektúra riadená udalosťami",
+      content: `**Event-Driven Architecture**
+
+Node.js pracuje na princípe architektúry riadenej udalosťami, čo minimalizuje režiu a maximalizuje výkon.
+
+**Event Loop - Srdce Node.js:**
+
+**Ako funguje Event Loop:**
+\`\`\`javascript
+// 1. Synchronný kód sa vykoná prvý
+console.log('1. Prvý');
+
+// 2. Async operácie sa pridajú do fronty
+setTimeout(() => {
+  console.log('3. Timeout');
+}, 0);
+
+// 3. Pokračuje sync kód
+console.log('2. Druhý');
+
+// Výstup:
+// 1. Prvý
+// 2. Druhý
+// 3. Timeout
+\`\`\`
+
+**Event Emitter:**
+
+\`\`\`javascript
+const EventEmitter = require('events');
+const emitter = new EventEmitter();
+
+// Registrácia listenera
+emitter.on('greeting', (name) => {
+  console.log(\`Ahoj, \${name}!\`);
+});
+
+// Spustenie udalosti
+emitter.emit('greeting', 'Peter');
+\`\`\`
+
+**Vlastný Event Emitter:**
+\`\`\`javascript
+class Server extends EventEmitter {
+  constructor() {
+    super();
+  }
+  
+  start() {
+    this.emit('started');
+  }
+  
+  stop() {
+    this.emit('stopped');
+  }
+}
+
+const server = new Server();
+
+server.on('started', () => {
+  console.log('Server beží');
+});
+
+server.start();
+\`\`\`
+
+**Výhody event-driven architektúry:**
+- Neblokujúce I/O operácie
+- Efektívne využitie zdrojov
+- Paralelné spracovanie udalostí
+- Škálovateľnosť`
+    },
+    {
+      title: "Téma 5: Asynchrónne I/O a neblokujúce operácie",
+      content: `**Non-blocking I/O Model**
+
+Node.js používa asynchrónny I/O model, ktorý umožňuje spracovať viacero operácií súčasne.
+
+**Blocking vs Non-blocking:**
+
+**Blokujúci kód (ZLÝ):**
+\`\`\`javascript
+const fs = require('fs');
+
+// Blokuje celý program!
+const data = fs.readFileSync('large-file.txt');
+console.log('Súbor načítaný');
+console.log('Pokračujem ďalej');
+\`\`\`
+
+**Neblokujúci kód (DOBRÝ):**
+\`\`\`javascript
+const fs = require('fs');
+
+// Neblokuje program
+fs.readFile('large-file.txt', (err, data) => {
+  console.log('Súbor načítaný');
+});
+
+console.log('Pokračujem ďalej - bez čakania!');
+\`\`\`
+
+**Callbacks:**
+
+\`\`\`javascript
+function downloadFile(url, callback) {
+  // Simulácia sťahovania
+  setTimeout(() => {
+    callback(null, 'súbor stiahnutý');
+  }, 2000);
+}
+
+downloadFile('http://example.com', (err, result) => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(result);
+  }
+});
+\`\`\`
+
+**Promises:**
+
+\`\`\`javascript
+function downloadFile(url) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve('súbor stiahnutý');
+    }, 2000);
+  });
+}
+
+downloadFile('http://example.com')
+  .then(result => console.log(result))
+  .catch(err => console.error(err));
+\`\`\`
+
+**Async/Await:**
+
+\`\`\`javascript
+async function process() {
+  try {
+    const result = await downloadFile('http://example.com');
+    console.log(result);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+process();
+\`\`\`
+
+**Výhody asynchrónneho I/O:**
+- Jeden thread spracováva tisíce požiadaviek
+- Efektívne využitie CPU
+- Rýchla odozva
+- Vysoká priepustnosť`
+    },
+    {
+      title: "Téma 6: npm a ekosystém balíčkov",
+      content: `**Node Package Manager (npm)**
+
+npm je najväčší ekosystém open-source knižníc na svete.
+
+**Základné príkazy npm:**
+
+**Inicializácia projektu:**
+\`\`\`bash
+npm init
+# alebo rýchlo
+npm init -y
+\`\`\`
+
+**Inštalácia balíčkov:**
+\`\`\`bash
+# Lokálne do projektu
+npm install express
+
+# Globálne
+npm install -g nodemon
+
+# Dev závislosti
+npm install --save-dev jest
+\`\`\`
+
+**package.json:**
+\`\`\`json
+{
+  "name": "moja-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.0"
+  }
+}
+\`\`\`
+
+**Populárne npm balíčky:**
+
+**Web frameworky:**
+- Express.js - minimalistický framework
+- Koa.js - moderný framework
+- Fastify - super rýchly
+- NestJS - enterprise framework
+
+**Utility:**
+- Lodash - pomocné funkcie
+- Moment.js / Day.js - práca s dátumom
+- Axios - HTTP klient
+- Dotenv - environment premenné
+
+**Testovanie:**
+- Jest - testing framework
+- Mocha - test runner
+- Chai - assertions
+
+**Databázy:**
+- Mongoose - MongoDB ODM
+- Sequelize - SQL ORM
+- Prisma - moderný ORM
+
+**Vytvorenie vlastného balíčka:**
+\`\`\`javascript
+// moj-balik.js
+module.exports = {
+  greet: (name) => \`Hello, \${name}!\`
+};
+
+// Publikovanie
+npm publish
+\`\`\``
+    },
+    {
+      title: "Téma 7: Express.js framework",
+      content: `**Express.js - Webový framework**
+
+Express je najpoužívanejší webový framework pre Node.js.
+
+**Základný server:**
+\`\`\`javascript
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Server beží na porte 3000');
+});
+\`\`\`
+
+**Routing:**
+
+\`\`\`javascript
+// GET request
+app.get('/users', (req, res) => {
+  res.json([{ id: 1, name: 'Peter' }]);
+});
+
+// POST request
+app.post('/users', (req, res) => {
+  const newUser = req.body;
+  res.status(201).json(newUser);
+});
+
+// PUT request
+app.put('/users/:id', (req, res) => {
+  const userId = req.params.id;
+  res.json({ message: \`User \${userId} updated\` });
+});
+
+// DELETE request
+app.delete('/users/:id', (req, res) => {
+  res.json({ message: 'User deleted' });
+});
+\`\`\`
+
+**Middleware:**
+
+\`\`\`javascript
+// Body parser
+app.use(express.json());
+
+// Logger middleware
+app.use((req, res, next) => {
+  console.log(\`\${req.method} \${req.url}\`);
+  next();
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+\`\`\`
+
+**Route parameters:**
+\`\`\`javascript
+// URL: /users/123
+app.get('/users/:id', (req, res) => {
+  const userId = req.params.id;
+  res.send(\`User ID: \${userId}\`);
+});
+
+// Query params: /search?q=nodejs
+app.get('/search', (req, res) => {
+  const query = req.query.q;
+  res.send(\`Search: \${query}\`);
+});
+\`\`\`
+
+**Statické súbory:**
+\`\`\`javascript
+app.use(express.static('public'));
+// Servuje súbory z priečinka public
+\`\`\``
+    },
+    {
+      title: "Téma 8: Práca so súbormi a modulmi",
+      content: `**File System (fs) modul**
+
+Node.js poskytuje fs modul na prácu so súbormi.
+
+**Čítanie súborov:**
+\`\`\`javascript
+const fs = require('fs');
+
+// Asynchrónne
+fs.readFile('subor.txt', 'utf8', (err, data) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  console.log(data);
+});
+
+// Synchrónne (neodporúča sa)
+const data = fs.readFileSync('subor.txt', 'utf8');
+\`\`\`
+
+**Zápis do súborov:**
+\`\`\`javascript
+// Prepísanie súboru
+fs.writeFile('output.txt', 'Obsah súboru', (err) => {
+  if (err) throw err;
+  console.log('Súbor uložený!');
+});
+
+// Pripojenie na koniec
+fs.appendFile('log.txt', 'Nový riadok\\n', (err) => {
+  if (err) throw err;
+});
+\`\`\`
+
+**Práca s priečinkami:**
+\`\`\`javascript
+// Vytvorenie priečinka
+fs.mkdir('novy-priecinok', (err) => {
+  if (err) throw err;
+});
+
+// Čítanie priečinka
+fs.readdir('./', (err, files) => {
+  console.log(files);
+});
+\`\`\`
+
+**Vlastné moduly:**
+
+**mathUtils.js:**
+\`\`\`javascript
+function add(a, b) {
+  return a + b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+module.exports = { add, multiply };
+\`\`\`
+
+**app.js:**
+\`\`\`javascript
+const math = require('./mathUtils');
+
+console.log(math.add(5, 3));      // 8
+console.log(math.multiply(4, 2)); // 8
+\`\`\`
+
+**ES6 moduly:**
+\`\`\`javascript
+// mathUtils.mjs
+export function add(a, b) {
+  return a + b;
+}
+
+// app.mjs
+import { add } from './mathUtils.mjs';
+console.log(add(5, 3));
+\`\`\``
+    },
+    {
+      title: "Téma 9: Databázy a MongoDB",
+      content: `**MongoDB s Node.js**
+
+MongoDB je populárna NoSQL databáza ideálna pre Node.js.
+
+**Inštalácia:**
+\`\`\`bash
+npm install mongodb
+# alebo s Mongoose
+npm install mongoose
+\`\`\`
+
+**Mongoose - MongoDB ODM:**
+
+**Pripojenie:**
+\`\`\`javascript
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost/mydb', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+\`\`\`
+
+**Definícia schémy:**
+\`\`\`javascript
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  age: Number,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('User', userSchema);
+\`\`\`
+
+**CRUD operácie:**
+
+**Create:**
+\`\`\`javascript
+const user = new User({
+  name: 'Peter Novák',
+  email: 'peter@email.com',
+  age: 25
+});
+
+await user.save();
+\`\`\`
+
+**Read:**
+\`\`\`javascript
+// Všetci používatelia
+const users = await User.find();
+
+// Jeden používateľ
+const user = await User.findById(id);
+
+// S podmienkou
+const adults = await User.find({ age: { $gte: 18 } });
+\`\`\`
+
+**Update:**
+\`\`\`javascript
+await User.findByIdAndUpdate(id, {
+  email: 'novy@email.com'
+});
+\`\`\`
+
+**Delete:**
+\`\`\`javascript
+await User.findByIdAndDelete(id);
+\`\`\`
+
+**SQL databázy:**
+
+**MySQL s Sequelize:**
+\`\`\`javascript
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'mysql'
+});
+
+const User = sequelize.define('User', {
+  name: DataTypes.STRING,
+  email: DataTypes.STRING
+});
+
+await User.create({
+  name: 'Peter',
+  email: 'peter@email.com'
+});
+\`\`\``
+    },
+    {
+      title: "Téma 10: Deployment a best practices",
+      content: `**Nasadenie Node.js aplikácií**
+
+**Environment premenné:**
+\`\`\`javascript
+// .env súbor
+PORT=3000
+DB_URL=mongodb://localhost/mydb
+SECRET_KEY=tajny-kluc
+
+// Použitie s dotenv
+require('dotenv').config();
+
+const port = process.env.PORT || 3000;
+const dbUrl = process.env.DB_URL;
+\`\`\`
+
+**Process Manager - PM2:**
+\`\`\`bash
+npm install -g pm2
+
+# Spustenie aplikácie
+pm2 start app.js
+
+# Automatický restart pri zmene
+pm2 start app.js --watch
+
+# Cluster mode
+pm2 start app.js -i max
+\`\`\`
+
+**Error handling:**
+\`\`\`javascript
+// Async error handling
+app.get('/users/:id', async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: err.message });
+});
+\`\`\`
+
+**Security best practices:**
+\`\`\`javascript
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
+// Security headers
+app.use(helmet());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+});
+app.use(limiter);
+
+// Input validation
+const { body, validationResult } = require('express-validator');
+
+app.post('/users',
+  body('email').isEmail(),
+  body('password').isLength({ min: 6 }),
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+  }
+);
+\`\`\`
+
+**Logging:**
+\`\`\`javascript
+const winston = require('winston');
+
+const logger = winston.createLogger({
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' })
+  ]
+});
+\`\`\`
+
+**Deployment platformy:**
+- Heroku
+- Vercel
+- AWS (EC2, Lambda)
+- Google Cloud
+- DigitalOcean`
+    }
+  ],
+  "SQL": [
     {
       title: "Téma 2: SELECT - Získavanie dát",
       content: `SELECT je základný príkaz na získavanie dát z databázy. Syntax: SELECT stĺpce FROM tabuľka WHERE podmienka. Umožňuje filtrovanie (WHERE), triedenie (ORDER BY), obmedzenie (LIMIT) a prácu s podmienkami (AND, OR, IN, LIKE, BETWEEN).`
