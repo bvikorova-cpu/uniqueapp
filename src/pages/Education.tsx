@@ -86,7 +86,7 @@ const courseCategories = [
     courses: [
       "Sociálna práca", "Terénna sociálna práca", "Komunitná práca", "Case management",
       "Práca s rodinami", "Práca so seniormi", "Práca s mládežou", "Adiktológia a práca so závislosťami",
-      "Sociálna práca s osobami bez domova", "Krízová intervencia", "Domáce násilie", "Prevencia závislostí"
+      "Sociálna práca s osobami bez domova", "Krízová intervencia", "Domáce násilie", "Supervízia a prevencia vyhorenia v pomáhajúcich profesiách"
     ]
   }
 ];
