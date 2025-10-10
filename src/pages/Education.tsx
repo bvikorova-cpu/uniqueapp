@@ -17,7 +17,6 @@ const quizCategories = [
   { id: "history", name: "História", icon: "📜" },
   { id: "literature", name: "Literatura", icon: "📚" },
   { id: "english", name: "Angličtina", icon: "🇬🇧" },
-  { id: "slovak", name: "Slovenčina", icon: "🇸🇰" },
   { id: "computer", name: "Informatika", icon: "💻" },
   { id: "art", name: "Umenie", icon: "🎨" },
   { id: "celebrity", name: "Celebrity", icon: "⭐" },
@@ -264,7 +263,7 @@ export default function Education() {
                       <span className="text-3xl">{category.icon}</span>
                       {category.name}
                     </CardTitle>
-                    <CardDescription>125+ otázok</CardDescription>
+                    <CardDescription>20 otázok</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button

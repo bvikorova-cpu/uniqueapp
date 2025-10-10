@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { expandQuizQuestions } from "@/utils/expandQuizData";
 
 const quizData: Record<string, Array<{question: string; options: string[]; correct: number}>> = {
   math: [
@@ -109,13 +110,6 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "What is the plural of 'child'?", options: ["childs", "children", "childes", "child"], correct: 1 },
     { question: "'I ___ a student.' What fits?", options: ["is", "are", "am", "be"], correct: 2 },
     { question: "What color is the sky?", options: ["green", "red", "blue", "yellow"], correct: 2 },
-  ],
-  slovak: [
-    { question: "Koľko samohlások má slovenská abeceda?", options: ["5", "6", "7", "8"], correct: 0 },
-    { question: "Ktoré slovo je príslovka?", options: ["rýchlo", "rýchly", "rýchlosť", "rýchlejší"], correct: 0 },
-    { question: "Čo je sloveso?", options: ["podstatné meno", "prídavné meno", "činnostné slovo", "číslovka"], correct: 2 },
-    { question: "Koľko pádov má slovenčina?", options: ["4", "5", "6", "7"], correct: 2 },
-    { question: "Aký je rod slova 'dievča'?", options: ["mužský", "ženský", "stredný", "žiadny"], correct: 2 },
   ],
   computer: [
     { question: "Čo znamená HTML?", options: ["HyperText Markup Language", "High Tech Modern Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language"], correct: 0 },
@@ -222,7 +216,9 @@ export default function Quiz() {
   const [showResult, setShowResult] = useState(false);
   const [answered, setAnswered] = useState(false);
 
-  const questions = quizData[category] || quizData.math;
+  // Automatically expand all quiz categories to 20 questions
+  const baseQuestions = quizData[category] || quizData.math;
+  const questions = expandQuizQuestions(baseQuestions);
   const question = questions[currentQuestion];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
