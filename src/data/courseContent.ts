@@ -38277,6 +38277,1698 @@ Kombinovaným využitím nových technológií (AI, VR, blockchain) a hlbšieho 
 **Finálne odporúčanie:**
 Pri implementácii gamifikácie vždy začnite s otázkou: "Aká hodnota to prináša užívateľovi?" a nie "Ako to môžeme použiť na manipuláciu správania?"`
     }
+  ],
+  "Sociálna práca": [
+    {
+      title: "Téma 1: Úvod do sociálnej práce",
+      content: `**Čo je sociálna práca?**
+
+Sociálna práca je profesia aj vedecký odbor zameraný na podporu sociálnej zmeny a pomoc ľuďom v riešení ich životných situácií.
+
+**Dvojaká povaha:**
+
+**1. Praktická profesia:**
+- Priamy kontakt s klientmi
+- Individuálne poradenstvo
+- Práca s rodinami a skupinami
+- Komunitná práca
+
+**2. Vedecký odbor:**
+- Výskum sociálnych javov
+- Analýza sociálnych problémov
+- Tvorba metodológií
+- Vzdelávanie odborníkov
+
+**Definícia sociálnej práce (IFSW - International Federation of Social Workers):**
+
+"Sociálna práca je profesijná činnosť a akademický odbor, ktorý podporuje sociálnu zmenu a rozvoj, sociálnu súdržnosť a posilnenie a oslobodenie ľudí. Princípy sociálnej spravodlivosti, ľudských práv, kolektívnej zodpovednosti a rešpektovania rôznorodosti sú centrálnymi pre sociálnu prácu."
+
+**Rozsah sociálnej práce:**
+
+**Užší význam:**
+- Priamy kontakt pracovník-klient
+- Individuálne poradenstvo
+- Podpora v krízových situáciách
+- Sociálna terapia
+
+**Širší význam:**
+- Poskytovanie sociálnych služieb
+- Administrácia sociálnych dávok
+- Spolupráca s inými odborníkmi
+- Systémové zmeny
+
+**Základné ciele:**
+
+**1. Pomoc jednotlivcom:**
+- Riešenie osobných problémov
+- Podpora v krízach
+- Rozvoj sebestačnosti
+
+**2. Práca so skupinami:**
+- Podpora rodín
+- Skupinová terapia
+- Komunitné projekty
+
+**3. Spoločenské zmeny:**
+- Ovplyvňovanie politík
+- Obhajoba práv
+- Systémové reformy
+
+**História:**
+Sociálna práca má korene v 19. storočí v charitatívnej práci a postupne sa vyvinula do profesionálnej disciplíny s vlastnými teóriami, metódami a etickým kódexom.`
+    },
+    {
+      title: "Téma 2: Podpora riešenia sociálnych problémov",
+      content: `**Sociálne problémy a ich riešenie**
+
+Sociálna práca sa zameriava na pomoc ľuďom čeliť rôznym sociálnym problémom a životným výzvam.
+
+**Typy sociálnych problémov:**
+
+**1. Ekonomické problémy:**
+- Chudoba a finančná tieseň
+- Nezamestnanosť
+- Zadlženosť
+- Bezdomovectvo
+- Nedostatok základných zdrojov
+
+**2. Zdravotné problémy:**
+- Chronické ochorenia
+- Zdravotné postihnutia
+- Duševné poruchy
+- Závislosti (alkohol, drogy, hazard)
+- Potreba dlhodobej starostlivosti
+
+**3. Rodinné problémy:**
+- Rodinné krízy
+- Domáce násilie
+- Rozvody a rozchody
+- Problémy v rodičovstve
+- Medzigerační konflikty
+
+**4. Sociálne vylúčenie:**
+- Diskriminácia
+- Stigmatizácia
+- Sociálna izolácia
+- Marginalizácia skupín
+- Nedostatok sociálnych kontaktov
+
+**Prístup k riešeniu problémov:**
+
+**1. Posúdenie situácie (Assessment):**
+\`\`\`
+Kľúčové otázky:
+• Aký je charakter problému?
+• Aké sú jeho príčiny?
+• Ako dlho trvá?
+• Aké zdroje má klient k dispozícii?
+• Aké sú silné stránky klienta?
+\`\`\`
+
+**2. Plánovanie intervencií:**
+- Stanovenie cieľov
+- Výber metód práce
+- Určenie časového rámca
+- Identifikácia potrebných zdrojov
+
+**3. Implementácia:**
+- Realizácia plánovaných aktivít
+- Koordinácia služieb
+- Pravidelné stretnutia s klientom
+- Monitorovanie pokroku
+
+**4. Evaluácia:**
+- Hodnotenie dosiahnutých cieľov
+- Úprava prístupu podľa potreby
+- Zhodnotenie efektivity
+- Ukončenie alebo pokračovanie pomoci
+
+**Metódy práce s problémami:**
+
+**1. Case work (Individuálna práca s prípadom):**
+- Jeden na jedného kontakt
+- Individualizovaný prístup
+- Dlhodobá podpora
+- Rozvoj osobných kapacít
+
+**2. Krízová intervencia:**
+- Okamžitá pomoc
+- Stabilizácia situácie
+- Bezpečnostné opatrenia
+- Zvládanie akútnej krízy
+
+**3. Riešenie problémov (Problem-solving approach):**
+\`\`\`
+Kroky:
+1. Identifikácia problému
+2. Analýza príčin
+3. Hľadanie riešení
+4. Vyhodnotenie možností
+5. Výber najlepšej možnosti
+6. Implementácia
+7. Hodnotenie výsledkov
+\`\`\`
+
+**4. Empowerment (Posilňovanie):**
+- Aktivizácia klienta
+- Rozvoj sebadôvery
+- Podpora sebestačnosti
+- Mobilizácia zdrojov
+
+**Príklad prístupu:**
+
+**Situácia:** Matka samoživiteľka s tromi deťmi, nezamestnaná, hrozí exekúcia bytu.
+
+**Riešenie:**
+1. Okamžitá pomoc: Zamedzenie exekúcie, sociálne dávky
+2. Krátkodobé: Finančné poradenstvo, podpora pri hľadaní práce
+3. Dlhodobé: Rozvoj pracovných zručností, stabilizácia situácie
+4. Prevencia: Budovanie sociálnej siete, finančná gramotnosť`
+    },
+    {
+      title: "Téma 3: Posilňovanie ľudského potenciálu",
+      content: `**Empowerment v sociálnej práci**
+
+Jedným z kľúčových cieľov sociálnej práce je posilniť schopnosti a zdroje ľudí, aby dokázali lepšie zvládať životné výzvy.
+
+**Koncept empowermentu:**
+
+**Definícia:**
+Empowerment je proces, pri ktorom ľudia získavajú kontrolu nad svojím životom, rozvíjajú kritické vedomie a podieľajú sa na transformácii svojho prostredia.
+
+**Úrovne empowermentu:**
+
+**1. Individuálny empowerment:**
+- Sebaúcta a sebadôvera
+- Osobná autonómia
+- Schopnosť rozhodovať sa
+- Kontrola nad vlastným životom
+
+**2. Interpersonálny empowerment:**
+- Schopnosť ovplyvniť druhých
+- Asertívna komunikácia
+- Budovanie vzťahov
+- Sociálne zručnosti
+
+**3. Komunitný empowerment:**
+- Kolektívna akcia
+- Komunitná participácia
+- Organizovanie sa
+- Ovplyvňovanie politík
+
+**Princípy empowerment prístupu:**
+
+**1. Rešpekt a dôstojnosť:**
+- Každý človek má hodnotu
+- Rešpektovanie autonómie
+- Nedirektívny prístup
+- Partnerský vzťah
+
+**2. Zameranie na silné stránky:**
+\`\`\`
+Namiesto:
+"Čo je s vami v neporiadku?"
+
+Pýtame sa:
+"Aké sú vaše silné stránky?"
+"Čo vám pomohlo v minulosti?"
+"Aké zdroje máte?"
+\`\`\`
+
+**3. Participácia:**
+- Klient je aktívny účastník
+- Spolurozhodo­vanie
+- Vlastné ciele klienta
+- Nie pre klienta, ale s klientom
+
+**4. Vzdelávanie a informovanie:**
+- Poskytovanie informácií
+- Rozvoj kritického myslenia
+- Pochopenie systémov
+- Právne povedomie
+
+**Stratégie posilňovania:**
+
+**1. Identifikácia zdrojov:**
+
+**Vnútorné zdroje:**
+- Osobné schopnosti
+- Skúsenosti
+- Odolnosť (resilience)
+- Záujmy a talenty
+
+**Vonkajšie zdroje:**
+- Rodina a priatelia
+- Komunitné služby
+- Sociálne siete
+- Materiálne zdroje
+
+**2. Rozvoj zručností:**
+- Life skills training
+- Komunikačné zručnosti
+- Finančná gramotnosť
+- Pracovné zručnosti
+- Rodičovské zručnosti
+
+**3. Podpora sebestačnosti:**
+\`\`\`
+Proces:
+Závislosť → Čiastočná nezávislosť → Nezávislosť
+            ↓
+        Postupné preberanie kontroly
+\`\`\`
+
+**4. Advokácia:**
+- Zastupovanie klienta
+- Pomoc pri presadzovaní práv
+- Postupné odovzdanie advokácie klientovi
+- "Učiť rybárčiť, nie dávať ryby"
+
+**Praktické príklady:**
+
+**Príklad 1: Osoba s postihnutím**
+- Cieľ: Nezávislý život
+- Kroky: Tréning sebaobsluhy, asistencia, úprava bytu, pracovné umiestnenie
+- Výsledok: Život v komunite s podporou
+
+**Príklad 2: Obete domáceho násilia**
+- Cieľ: Bezpečnosť a sebestačnosť
+- Kroky: Azylový dom, terapia, právna pomoc, rekvalifikácia
+- Výsledok: Nový začiatok, ekonomická nezávislosť
+
+**Kritická reflexia:**
+
+**Otázky:**
+- Kto definuje "empowerment"?
+- Ako predísť paternalizmu?
+- Ako rešpektovať odlišné hodnoty?
+- Hranice empowermentu v systémových bariérach
+
+**Kľúčové posolstvo:**
+Empowerment nie je niečo, čo "dáme" klientovi, ale proces, ktorý podporujeme a facilitujeme. Klient je expertom na svoj vlastný život.`
+    },
+    {
+      title: "Téma 4: Teoretické základy sociálnej práce",
+      content: `**Teórie a modely v sociálnej práci**
+
+Sociálna práca je vedená teóriami, ktoré pomáhajú pochopiť človeka, jeho problémy a spôsoby pomoci.
+
+**Hlavné teoretické prístupy:**
+
+**1. Psychodynamický prístup:**
+
+**Základ:**
+- Freudova psychoanalýza
+- Nevedomie a obranné mechanizmy
+- Raný vývoj a vzťahy
+
+**Aplikácia v sociálnej práci:**
+- Pochopenie minulosti klienta
+- Práca s prenosom
+- Insight-oriented terapia
+- Dlhodobá práca
+
+**2. Behaviorálny a kognitívno-behaviorálny prístup:**
+
+**Princípy:**
+\`\`\`
+Behaviorálny:
+• Učenie a podmieňovanie
+• Pozorovateľné správanie
+• Posilňovanie a trestu
+
+Kognitívno-behaviorálny (CBT):
+• Vzťah myšlienok, emócií a správania
+• Kognitívne skreslenia
+• Restrukturalizácia myslenia
+\`\`\`
+
+**Techniky:**
+- Behaviorálne kontrakty
+- Relaxačné techniky
+- Kognitívna rekonštrukcia
+- Problémové riešenie
+
+**3. Systémový prístup:**
+
+**Základné koncepty:**
+- Človek v kontexte systémov
+- Rodina ako systém
+- Interakcie a vzťahy
+- Homeostáza a zmena
+
+**Ekologický model:**
+\`\`\`
+Úrovne systémov (Bronfenbrenner):
+• Mikrosystém (rodina, škola)
+• Mezosystém (vzťahy medzi mikrosystémami)
+• Exosystém (širšie prostredie)
+• Makrosystém (kultúra, hodnoty)
+• Chronosystém (zmeny v čase)
+\`\`\`
+
+**4. Humanistický prístup:**
+
+**Kľúčové princípy:**
+- Človek je dobrý a má potenciál
+- Sebaaktualizácia (Maslow)
+- Klient-centrovaný prístup (Rogers)
+- Tu a teraz
+
+**Podmienky terapeutického vzťahu (Rogers):**
+- Empatia
+- Bezpodmienečné akceptovanie
+- Kongruencia (autenticita)
+
+**5. Feministický a kritický prístup:**
+
+**Zameranie:**
+- Mocenské vzťahy
+- Štruktúrna nerovnosť
+- Gender, trieda, rasa
+- Sociálna spravodlivosť
+- Anti-opresívna prax
+
+**6. Prístup zameraný na riešenie (Solution-Focused):**
+
+**Charakteristiky:**
+- Orientácia na budúcnosť
+- Hľadanie riešení, nie problémov
+- Výnimky z problému
+- Škálovacie otázky
+- Zázračná otázka
+
+**Príklad:**
+"Keby ste sa ráno zobudili a zázrakom by bol váš problém vyriešený, ako by ste to poznali? Čo by bolo inak?"
+
+**Teoretické modely praxe:**
+
+**1. Task-centered model:**
+- Krátkodobá intervencia
+- Konkrétne úlohy
+- Časovo limitovaný
+- Merateľné ciele
+
+**2. Crisis intervention model:**
+\`\`\`
+Fázy:
+1. Posúdenie krízy
+2. Bezpečnosť
+3. Podpora
+4. Alternatívy zvládania
+5. Akčný plán
+6. Follow-up
+\`\`\`
+
+**3. Strengths-based model:**
+- Zameranie na silné stránky
+- Zdroje namiesto deficitov
+- Resilience
+- Assets mapping
+
+**Integrácia teórií:**
+
+**Eklektický prístup:**
+- Výber prvkov z rôznych teórií
+- Prispôsobenie klientovi
+- Flexibilita
+- Evidence-based practice
+
+**Príklad integrácie:**
+Práca s rodinou s problémovým adolescentom:
+- Systémová teória: pochopenie rodinnej dynamiky
+- CBT: práca s myšlienkami adolescenta
+- Solution-focused: hľadanie výnimiek a riešení
+- Empowerment: posilnenie rodičovských kompetencií
+
+**Dôležitosť teórie:**
+Teória nie je odtrhnutá od praxe - poskytuje rámec pre pochopenie, plánovanie a evaluáciu našej práce.`
+    },
+    {
+      title: "Téma 5: Poskytovanie sociálnych služieb a dávok",
+      content: `**Systém sociálnych služieb a dávok**
+
+Sociálni pracovníci často facilitujú prístup klientov k sociálnym službám a dávkam.
+
+**Sociálne služby:**
+
+**1. Podľa typu pomoci:**
+
+**Opatrovateľské služby:**
+- Pomoc pri sebaobsluhe
+- Starostlivosť o domácnosť
+- Osobná hygiena
+- Sprievod
+
+**Pobytové služby:**
+- Domovy sociálnych služieb
+- Domovy dôchodcov
+- Špecializované zariadenia
+- Komunitné domy
+
+**Ambulantné služby:**
+- Denné centrá
+- Rehabilitačné programy
+- Poradenské centrá
+- Kluby seniorov
+
+**Terénne služby:**
+- Opatrovateľská služba v domácnosti
+- Sociálna rehabilitácia
+- Sprievodcovské služby
+- Rannointervečné služby
+
+**2. Podľa cieľovej skupiny:**
+
+**Seniori:**
+\`\`\`
+Služby:
+• Domovy dôchodcov
+• Denné stacionáre
+• Opatrovateľská služba
+• Kluby seniorov
+• Jedálne
+\`\`\`
+
+**Osoby so zdravotným postihnutím:**
+- Rehabilitačné zariadenia
+- Chránené dielne
+- Podporované zamestnávanie
+- Asistentské služby
+- Osobná asistencia
+
+**Deti a rodiny:**
+- Sociálnoprávna ochrana detí
+- Krízové strediská
+- Detské domovy
+- Náhradná starostlivosť
+- Centrum pre deti a rodiny
+
+**Osoby v krízových situáciách:**
+- Útulky
+- Nocľahárne
+- Nízkoprahové denné centrá
+- Intervenčné centrá
+- Krízové linky
+
+**Osoby so závislosťami:**
+- Detoxikačné centrá
+- Liečebne
+- Resocializačné programy
+- Ambulantné poradenstvo
+- Následná starostlivosť
+
+**Sociálne dávky:**
+
+**1. Dávky v hmotnej núdzi:**
+
+**Dávka v hmotnej núdzi:**
+- Základ pre zabezpečenie základných životných potrieb
+- Podmienkou je nízky príjem
+- Zohľadňuje sa majetok
+
+**Príspevky k dávke:**
+- Ochrana zdravia
+- Aktivačný príspevok
+- Na bývanie
+
+**2. Rodinné dávky:**
+
+**Príspevky:**
+- Prídavok na dieťa
+- Príplatok k prídavku na dieťa
+- Rodičovský príspevok
+- Príspevok pri narodení dieťaťa
+- Príspevok na viacerých súčasne narodených detí
+
+**3. Dávky pre osoby so zdravotným postihnutím:**
+- Invalidný dôchodok
+- Príspevok na kompenzáciu
+- Peňažný príspevok na opatrovanie
+- Príspevok na osobnú asistenciu
+- Parkovacia karta
+
+**4. Štátne sociálne dávky:**
+- Dávka náhrady príjmu pri dlhodobej PN
+- Dávka náhrady príjmu pri izolácii
+- Dávka pre tehotné ženy
+
+**Rola sociálneho pracovníka:**
+
+**1. Informovanie:**
+- Vysvetlenie nárokov
+- Orientácia v systéme
+- Poskytnutie informácií
+
+**2. Sprostredkovanie:**
+\`\`\`
+Proces:
+Identifikácia potreby → Posúdenie nároku → 
+Pomoc pri žiadosti → Sprostredkovanie kontaktu → 
+Follow-up
+\`\`\`
+
+**3. Advokácia:**
+- Pomoc pri komunikácii s úradmi
+- Zastupovanie záujmov klienta
+- Odvolania
+- Riešenie komplikácií
+
+**4. Case management:**
+- Koordinácia služieb
+- Monitorovanie využívania služieb
+- Evaluácia primeranosti
+- Úprava plánu pomoci
+
+**Administratívna práca:**
+
+**Dokumentácia:**
+- Sociálne šetrie
+- Individuálne plány
+- Správy
+- Evidencia
+
+**Spolupráca:**
+- S poskytovateľmi služieb
+- S úradmi práce
+- So zdravotníckymi zariadeniami
+- S ďalšími inštitúciami
+
+**Výzvy:**
+
+**1. Byrokratická záťaž:**
+- Veľa administratívy
+- Zložité formuláre
+- Časová náročnosť
+
+**2. Nedostatok zdrojov:**
+- Kapacity služieb
+- Finančné limity
+- Čakacie lehoty
+
+**3. Balansovanie rol:**
+- Pomoc vs. kontrola
+- Podpora vs. posudzovatelia
+- Empatia vs. pravidlá`
+    },
+    {
+      title: "Téma 6: Metódy sociálnej práce",
+      content: `**Základné metódy sociálnej práce**
+
+Sociálna práca využíva rôzne metódy v závislosti od typu problému a cieľovej skupiny.
+
+**Tri základné metódy:**
+
+**1. Sociálna práca s jednotlivcom (Case work)**
+
+**Charakteristika:**
+- Individuálny prístup
+- Jeden na jeden kontakt
+- Dlhodobý vzťah
+- Komplexné riešenie situácie
+
+**Fázy case worku:**
+\`\`\`
+1. Nadviazanie kontaktu (Engagement)
+   • Budovanie dôvery
+   • Vysvetlenie roly
+   • Motivácia k spolupráci
+
+2. Posúdenie (Assessment)
+   • Zber informácií
+   • Analýza situácie
+   • Identifikácia potrieb a zdrojov
+
+3. Plánovanie (Planning)
+   • Stanovenie cieľov
+   • Výber stratégií
+   • Dohoda o spolupráci
+
+4. Implementácia (Implementation)
+   • Realizácia plánu
+   • Pravidelné stretnutia
+   • Úpravy podľa potreby
+
+5. Evaluácia (Evaluation)
+   • Hodnotenie pokroku
+   • Meranie cieľov
+
+6. Ukončenie (Termination)
+   • Postupné ukončovanie
+   • Reflexia spolupráce
+   • Podpora sebestačnosti
+\`\`\`
+
+**Techniky:**
+- Aktívne počúvanie
+- Empatická reflexia
+- Parafráza
+- Sumarizácia
+- Otvorené otázky
+- Konfrontácia
+
+**2. Sociálna práca so skupinou (Group work)**
+
+**Typy skupín:**
+
+**Terapeutické skupiny:**
+- Podpora pri riešení osobných problémov
+- Zdieľanie skúseností
+- Vzájomná pomoc
+- Uzdravovanie
+
+**Edukačné skupiny:**
+- Vzdelávacie programy
+- Rozvoj zručností
+- Informovanie
+- Prednášky a workshopy
+
+**Podporné skupiny:**
+- Sebapo­mocné skupiny
+- Peer podpora
+- Zdieľanie podobných skúseností
+- Dlhodobá podpora
+
+**Socializačné skupiny:**
+- Rozvoj sociálnych zručností
+- Trávenie voľného času
+- Budovanie vzťahov
+- Integrácia
+
+**Dynamika skupiny:**
+
+**Štádiá vývoja skupiny (Tuckman):**
+\`\`\`
+1. Forming (Formovanie)
+   • Spoznávanie
+   • Neistota
+   • Hľadanie miesta
+
+2. Storming (Búrkovanie)
+   • Konflikty
+   • Boj o moc
+   • Vymedzovanie sa
+
+3. Norming (Normovanie)
+   • Vytváranie pravidiel
+   • Kooperácia
+   • Kohézia
+
+4. Performing (Vykonávanie)
+   • Efektívna práca
+   • Produktivita
+   • Dosiahnuť ciele
+
+5. Adjourning (Ukončenie)
+   • Rozlúčka
+   • Reflexia
+   • Emócie z ukončenia
+\`\`\`
+
+**Rola facilitátora:**
+- Štruktúrovanie stretnutí
+- Podpora participácie všetkých
+- Manažovanie konfliktov
+- Modelovanie správania
+- Reflexia procesov
+
+**3. Komunitná sociálna práca (Community work)**
+
+**Definícia:**
+Práca s komunitou na riešení spoločných problémov a zlepšení kvality života.
+
+**Prístupy:**
+
+**Community development:**
+- Rozvoj komunity zdola
+- Participácia obyvateľov
+- Budovanie kapacít
+- Sebestačnosť
+
+**Social planning:**
+- Analýza potrieb
+- Plánovanie služieb
+- Expertný prístup
+- Strategické plánovanie
+
+**Social action:**
+- Obhajoba práv
+- Sociálne zmeny
+- Aktivizmus
+- Ovplyvňovanie politík
+
+**Proces komunitnej práce:**
+
+**1. Analýza komunity:**
+\`\`\`
+Nástroje:
+• Community mapping
+• Asset mapping (mapovanie zdrojov)
+• SWOT analýza
+• Dotazníky a rozhovory
+• Pozorovanie
+\`\`\`
+
+**2. Identifikácia problémov a potrieb:**
+- Participatívne metódy
+- Komunitné stretnutia
+- Fokusové skupiny
+- Prioritizácia
+
+**3. Mobilizácia zdrojov:**
+- Ľudské zdroje (dobrovoľníci)
+- Materiálne zdroje
+- Finančné zdroje
+- Partnerstvá
+
+**4. Akčné plánovanie:**
+- Konkrétne projekty
+- Časový plán
+- Zodpovednosti
+- Merateľné ciele
+
+**5. Implementácia a evaluácia:**
+- Realizácia projektov
+- Monitoring
+- Hodnotenie dopadov
+- Udržateľnosť
+
+**Príklady projektov:**
+- Komunitné záhrady
+- Susedské centrá
+- Programy pre seniorov
+- Podpora marginalizovaných skupín
+- Kultúrne akcie
+
+**Iné metódy:**
+
+**Sociálna advokácia:**
+- Zastupovanie
+- Obhajoba práv
+- Systémové zmeny
+
+**Krízová intervencia:**
+- Okamžitá pomoc
+- Stabilizácia
+- Krátkodobá intervencia
+
+**Case management:**
+- Koordinácia služieb
+- Komplexná podpora
+- Dlhodobá spolupráca`
+    },
+    {
+      title: "Téma 7: Práca s rôznymi cieľovými skupinami",
+      content: `**Špecifiká práce s rôznymi klientmi**
+
+Každá cieľová skupina má svoje špecifické potreby a vyžaduje prispôsobený prístup.
+
+**1. Práca so seniormi**
+
+**Špecifické potreby:**
+- Zdravotné problémy
+- Strata blízkych
+- Sociálna izolácia
+- Finančné problémy
+- Potreba starostlivosti
+
+**Časté problémy:**
+\`\`\`
+• Osamelosti
+• Depresie
+• Demencia
+• Fyzické obmedzenia
+• Strata autonómie
+• Zneužívanie seniorov
+\`\`\`
+
+**Prístupy:**
+- Rešpektovanie autonómie
+- Pomalšie tempo
+- Pozitívne vnímanie starnutia
+- Podpora dôstojnosti
+- Aktivizácia
+
+**Služby:**
+- Domáca opatrovateľská služba
+- Denné centrá
+- Domovy dôchodcov
+- Sociálne poradenstvo
+
+**2. Práca s deťmi a rodinami**
+
+**Sociálnoprávna ochrana detí:**
+
+**Princípy:**
+- Najlepší záujem dieťaťa
+- Bezpečnosť dieťaťa
+- Právo na rodinu
+- Zachovanie rodinných väzieb
+
+**Situácie:**
+- Zanedbávanie
+- Týranie
+- Sexuálne zneužívanie
+- Domáce násilie
+- Rodičia s problémami (závislosť, duševné ochorenie)
+
+**Opatrenia:**
+\`\`\`
+Preventívne:
+• Sociálne poradenstvo
+• Podpora rodiny
+• Výchovné programy
+
+Ochranné:
+• Krízová intervencia
+• Umiestnenie do zariadenia
+• Náhradná starostlivosť
+• Súdne opatrenia
+\`\`\`
+
+**Práca s rodinou:**
+- Rodinná terapia
+- Posilnenie rodičovských kompetencií
+- Mediácia
+- Podpora v krízach
+
+**3. Práca s osobami so zdravotným postihnutím**
+
+**Modely postihnutia:**
+
+**Medicínsky model:**
+- Postihnutie ako chorobu
+- Potreba liečby
+- Obmedzenia
+
+**Sociálny model:**
+- Bariéry v spoločnosti
+- Sociálne konštruované
+- Potreba zmeny prostredia
+
+**Princípy:**
+- Inklúzia
+- Rovnosť príležitostí
+- Nezávislý život
+- Sebaurčenie
+
+**Služby:**
+- Osobná asistencia
+- Podporované zamestnávanie
+- Denné centrá
+- Rehabilitácia
+
+**4. Práca s osobami so závislosťami**
+
+**Typy závisostí:**
+- Alkohol
+- Drogy
+- Gambling
+- Behaviorálne závislosti
+
+**Štádiá zmeny (Prochaska & DiClemente):**
+\`\`\`
+1. Precontemplation (Nepremýšľa o zmene)
+2. Contemplation (Uvažuje o zmene)
+3. Preparation (Príprava na zmenu)
+4. Action (Aktívna zmena)
+5. Maintenance (Udržiavanie zmeny)
+6. Relapse (Recidíva)
+\`\`\`
+
+**Prístupy:**
+- Harm reduction (Znižovanie škôd)
+- Motivačné interview­vanie
+- Podpora abstinencie
+- Substituční léčba
+- Terapeutické komunity
+
+**5. Práca s osobami bez domova**
+
+**Príčiny bezdomovectva:**
+- Ekonomické (chudoba, nezamestnanosť)
+- Sociálne (rozpad rodiny, strata bývania)
+- Osobné (duševné ochorenie, závislosť)
+- Štrukturálne (nedostatok dostupného bývania)
+
+**Housing First prístup:**
+\`\`\`
+Princíp:
+Najprv zabezpečiť bývanie, potom riešiť ostatné problémy
+
+Tradičný prístup:
+Najprv vyriešiť problémy (abstinenciu), potom bývanie
+\`\`\`
+
+**Služby:**
+- Nocľaháre
+- Nízkoprahové denné centrá
+- Útulky
+- Podpora pri získavaní bývania
+- Dlhodobá podpora
+
+**6. Práca s obeťami domáceho násilia**
+
+**Formy násilia:**
+- Fyzické
+- Psychické
+- Sexuálne
+- Ekonomické
+- Sociálne izolácia
+
+**Intervencia:**
+\`\`\`
+1. Bezpečnosť
+   • Bezpečnostný plán
+   • Ochranné opatrenia
+   • Intervenčné centrum
+
+2. Podpora
+   • Terapia
+   • Právne poradenstvo
+   • Ekonomická pomoc
+
+3. Empowerment
+   • Posilnenie sebestačnosti
+   • Rozhodovanie
+   • Nový začiatok
+\`\`\`
+
+**Služby:**
+- Intervenčné centrá
+- Krízové linky
+- Poradenstvo
+- Azylové domy
+
+**7. Práca s migrantmi a utečencami**
+
+**Výzvy:**
+- Jazyková bariéra
+- Kultúrne rozdiely
+- Trauma
+- Strata sociálnej siete
+- Integrácia
+
+**Podpora:**
+- Jazyková podpora
+- Kultúrne sprostredkovanie
+- Pomoc pri integrácii
+- Právne poradenstvo
+- Trauma terapia
+
+**Kultúrna kompe­tencia:**
+- Rešpektovanie hodnôt
+- Pochopenie kultúrneho pozadia
+- Vyhýbanie sa stereotypom
+- Flexibilný prístup`
+    },
+    {
+      title: "Téma 8: Etika v sociálnej práci",
+      content: `**Etické princípy a dilemy**
+
+Etika je fundamentálnou súčasťou sociálnej práce a vedie profesionálne rozhodovanie.
+
+**Etický kódex sociálnej práce:**
+
+**Základné hodnoty:**
+
+**1. Dôstojnosť a hodnota človeka:**
+- Každý človek má inherentnú hodnotu
+- Rešpekt bez ohľadu na okolnosti
+- Právo na sebaurčenie
+- Ochrana ľudských práv
+
+**2. Sociálna spravodlivosť:**
+- Rovnosť príležitostí
+- Boj proti diskriminácii
+- Obhajoba znevýhodnených
+- Systémové zmeny
+
+**3. Služba ľuďom:**
+- Primát záujmov klienta
+- Altruizmus
+- Sociálny záujem
+- Profesionálna služba
+
+**4. Integrita:**
+- Čestnosť
+- Transparentnosť
+- Dôveryhodnosť
+- Konzistentnosť
+
+**5. Kompetencia:**
+- Profesionálne vzdelanie
+- Neustále vzdelávanie
+- Práca v rámci kompetencií
+- Supervízia
+
+**Etické princípy v praxi:**
+
+**1. Mlčanlivosť (Confidentiality):**
+
+**Pravidlo:**
+Informácie o klientovi sú dôverné a nesmú byť prezradené bez súhlasu.
+
+**Výnimky:**
+\`\`\`
+• Ohrozenie života (klient alebo iní)
+• Týranie detí
+• Súdny príkaz
+• Profesionálna konzultácia (anonymizované)
+\`\`\`
+
+**Praktické otázky:**
+- Ako anonymizovať prípady?
+- Čo povedať rodine?
+- Zdieľanie informácií medzi odborníkmi?
+
+**2. Informovaný súhlas:**
+
+**Obsahuje:**
+- Informácie o službách
+- Práva a povinnosti
+- Limity mlčanlivosti
+- Možnosť odstúpiť
+
+**3. Sebaurčenie:**
+
+**Princíp:**
+Klient má právo robiť vlastné rozhodnutia, aj keď s nimi nesúhlasíme.
+
+**Limity:**
+- Ohrozenie seba alebo iných
+- Nesvosposobnosť
+- Deti
+
+**Príklad dilemy:**
+Klient chce opustiť liečbu, hoci je to proti jeho záujmu. Rešpektujeme rozhodnutie?
+
+**4. Profesionálne hranice:**
+
+**Dôležitosť hraníc:**
+- Ochrana klienta aj pracovníka
+- Jasnosť role
+- Prevencia zneužitia
+- Profesionalita
+
+**Zakázané:**
+\`\`\`
+• Duálne vzťahy (osobné + profesionálne)
+• Sexuálne vzťahy s klientmi
+• Finančné transakcie
+• Prijímanie darov
+• Sebaodhalenie (self-disclosure) nad rámec
+\`\`\`
+
+**Etické dilemy:**
+
+**Definícia:**
+Situácie, kde dochádza ku konfliktu medzi dvoma alebo viacerými etickými princípmi.
+
+**Typy dilem:**
+
+**1. Mlčanlivosť vs. Ochrana:**
+\`\`\`
+Príklad:
+Klient sa zverí, že týra svoje dieťa.
+
+Dilema:
+• Mlčanlivosť (dôvera, vzťah)
+VS
+• Ochrana dieťaťa (povinnosť oznámiť)
+
+Riešenie:
+Ochrana dieťaťa má prednosť.
+\`\`\`
+
+**2. Sebaurčenie vs. Paternalizmus:**
+\`\`\`
+Príklad:
+Senior chce žiť doma, hoci je to nebezpečné.
+
+Dilema:
+• Rešpekt k autonómii
+VS
+• Ochrana pred poškodením
+
+Riešenie závisí od:
+• Kapacity rozhodovania
+• Závažnosti rizika
+• Možnosti podpory
+\`\`\`
+
+**3. Lojalita ku klientovi vs. Organizačné požiadavky:**
+\`\`\`
+Príklad:
+Organizácia obmedzuje čas s klientom, ale klient potrebuje viac.
+
+Dilema:
+• Záujem klienta
+VS
+• Pravidlá organizácie
+
+Možné riešenia:
+• Advokácia za zmenu pravidiel
+• Iné zdroje pre klienta
+• Etická reflexia
+\`\`\`
+
+**4. Zdieľanie zdrojov:**
+\`\`\`
+Situácia:
+Obmedzené zdroje, viacero klientov v núdzi.
+
+Otázka:
+Ako spravodlivo rozdeliť?
+\`\`\`
+
+**Proces etického rozhodovania:**
+
+**Model rozhodovania:**
+\`\`\`
+1. Identifikácia etického problému
+2. Určenie zainteresovaných strán
+3. Identifikácia relevantných hodnôt a princípov
+4. Zváženie možností
+5. Konzultácia (supervízia, kolegovia, etický kódex)
+6. Rozhodnutie
+7. Reflexia a evaluácia
+\`\`\`
+
+**Podpora pri etických dilemách:**
+
+**1. Supervízia:**
+- Pravidelná reflexia
+- Externe vedenie
+- Podpora pri ťažkých rozhodnutiach
+
+**2. Etické konzultácie:**
+- Etické komisie
+- Kolegálne konzultácie
+- Expert na etiku
+
+**3. Vzdelávanie:**
+- Kurzy etiky
+- Kazuistiky
+- Etické semináre
+
+**Osobná etika a hodnoty:**
+
+**Sebareflexia:**
+- Uvedomenie si vlastných hodnôt
+- Ako ovplyvňujú moju prácu?
+- Kedy sa dostávajú do konfliktu s profesionálnymi hodnotami?
+
+**Príklad:**
+Práca s klientom, ktorého hodnoty sú v rozpore s mojimi (napr. náboženstvo, životný štýl).
+
+**Profesionálna zodpovednosť:**
+- Rešpekt k odlišnosti
+- Nenavádzať vlastné hodnoty
+- Hľadanie kolegov s vhodnými hodnotami pre klienta (ak neviem byť objektívny)`
+    },
+    {
+      title: "Téma 9: Interdisciplinárna spolupráca",
+      content: `**Práca v multidisciplinárnych tímoch**
+
+Sociálna práca často vyžaduje spoluprácu s inými profesiami pre komplexné riešenie problémov klientov.
+
+**Dôvody pre interdisciplinárnu spoluprácu:**
+
+**1. Komplexnosť problémov:**
+- Problémy nemajú jednoduchú príčinu
+- Vyžadujú pohľad z viacerých perspektív
+- Holistický prístup
+
+**2. Špecializácia:**
+- Každá profesia má jedinečné znalosti
+- Komplementárne zručnosti
+- Nie jeden odborník nemôže pokryť všetko
+
+**3. Efektivita:**
+- Lepšie výsledky
+- Predchádzanie duplicite
+- Optimalizácia zdrojov
+
+**Partneri v spolupráci:**
+
+**1. Zdravotnícki pracovníci:**
+
+**Lekári:**
+- Diagnóza a liečba
+- Odporučenia
+- Koordinácia zdravotnej starostlivosti
+
+**Zdravotné sestry:**
+- Ošetrovateľská starostlivosť
+- Edukácia pacienta
+- Monitoring zdravia
+
+**Psychológovia:**
+- Psychodiagnostika
+- Psychoterapia
+- Hodnotenie kapacity
+
+**Psychiatri:**
+- Diagnostika duševných porúch
+- Farmakoterapia
+- Krízová intervencia
+
+**2. Vzdelávacie inštitúcie:**
+
+**Učitelia:**
+\`\`\`
+Spolupráca pri:
+• Problémoch dieťaťa v škole
+• Šikane
+• Vzdelávacom zanedbávaní
+• Špeciálnych vzdelávacích potrebách
+\`\`\`
+
+**Školskí psychológovia a špeciálni pedagógovia:**
+- Diagnostika porúch učenia
+- Intervencie
+- Individuálne vzdelávacie plány
+
+**3. Právnici a súdne orgány:**
+
+**Advokáti:**
+- Právne poradenstvo
+- Zastupovanie klientov
+- Ochrana práv
+
+**Súdy:**
+- Opatrovnícke konania
+- Sociálnoprávna ochrana
+- Rozvodové konania
+
+**Polícia:**
+- Domáce násilie
+- Krízové situácie
+- Ochrana obetí
+
+**4. Úrad práce:**
+- Podpora pri hľadaní zamestnania
+- Rekvalifikácie
+- Dávky v nezamestnanosti
+- Chránené dielne
+
+**5. Ďalší poskytovatelia sociálnych služieb:**
+- Neziskové organizácie
+- Cirkevné organizácie
+- Komunitné centrá
+- Špecializované zariadenia
+
+**Modely spolupráce:**
+
+**1. Multidisciplinárny tím:**
+\`\`\`
+Charakteristika:
+• Odborníci z rôznych profesií
+• Pracujú nezávisle
+• Zdieľajú informácie
+• Každý má svoju úlohu
+
+Príklad:
+Nemocničný tím - lekár ošetruje, sestra sa stará, 
+sociálny pracovník rieši sociálnu situáciu.
+\`\`\`
+
+**2. Interdisciplinárny tím:**
+\`\`\`
+Charakteristika:
+• Spolupracujúci prístup
+• Spoločné ciele
+• Vzájomná konzultácia
+• Integrovaný plán
+
+Príklad:
+Tím v centre duševného zdravia - spoločné 
+stretnutia, spoločný plán starostlivosti.
+\`\`\`
+
+**3. Transdisciplinárny tím:**
+\`\`\`
+Charakteristika:
+• Prelínanie rolí
+• Zdieľanie znalostí
+• Flexibilita
+• Holistický prístup
+
+Príklad:
+Komunitný tím pre raný vývoj - terapeuti učia 
+rodičov techniky, sociálny pracovník robí terapie.
+\`\`\`
+
+**Efektívna spolupráca:**
+
+**Kľúčové faktory úspechu:**
+
+**1. Komunikácia:**
+- Pravidelné stretnutia
+- Zdieľanie informácií
+- Jasná a transparentná
+- Rešpekt k mlčanlivosti
+
+**2. Spoločné ciele:**
+- Konsenzus o cieľoch
+- Prioritizácia
+- Jasné role
+
+**3. Vzájomný rešpekt:**
+- Oceňovanie prínosu každého
+- Uznanie expertízy
+- Rovnocennosť
+
+**4. Jasné role a zodpovednosti:**
+\`\`\`
+Kto je zodpovedný za:
+• Koordináciu prípadu?
+• Komunikáciu s rodinou?
+• Implementáciu plánu?
+• Monitoring?
+\`\`\`
+
+**5. Spoločná dokumentácia:**
+- Zdieľané záznamy
+- Jednotný informačný systém
+- Prístup k informáciám
+
+**Výzvy v spolupráci:**
+
+**1. Profesionálne bariéry:**
+- Rozdielne jazyky profesií
+- Hierarchie (napr. medicínsky model)
+- Odlišné prístupy a hodnoty
+- Súťaživosť
+
+**2. Organizačné bariéry:**
+- Rôzne organizačné kultúry
+- Administratívne prekážky
+- Nedostatok času
+- Chýbajúce zdroje
+
+**3. Etické otázky:**
+- Kto má zodpovednosť?
+- Konflikty v hodnotách
+- Mlčanlivosť vs. zdieľanie informácií
+
+**Riešenia:**
+
+**1. Interdisciplinárne vzdelávanie:**
+- Spoločné tréningy
+- Výmena skúseností
+- Učenie sa o iných profesiách
+
+**2. Stanovenie protokolov:**
+- Jasné postupy
+- Dohody o spolupráci
+- Protokoly o zdieľaní informácií
+
+**3. Facilitácia:**
+- Case manager / koordinátor
+- Pravidelné tímové stretnutia
+- Supervízia tímu
+
+**Príklad úspešnej spolupráce:**
+
+**Prípad: Rodina s dieťaťom s autizmom**
+
+**Tím:**
+- Sociálny pracovník: Koordinácia, podpora rodiny, sociálne služby
+- Psychológ: Diagnostika, poradenstvo
+- Špeciálny pedagóg: Vzdelávací plán, intervencie
+- Logopéd: Komunikačné zručnosti
+- Ergoterapeut: Sebaobslužné zručnosti
+- Lekár: Zdravotný monitoring
+
+**Spolupráca:**
+- Mesačné tímové stretnutia
+- Spoločný plán podpory
+- Koordinácia intervencií
+- Podpora rodičov
+
+**Výsledok:**
+- Komplexná podpora dieťaťa a rodiny
+- Lepší pokrok dieťaťa
+- Spokojnosť rodičov
+- Efektívne využitie zdrojov`
+    },
+    {
+      title: "Téma 10: Výzvy, trendy a budúcnosť sociálnej práce",
+      content: `**Súčasné výzvy a budúci smer**
+
+Sociálna práca čelí mnohým výzvam a zároveň sa vyvíja smerom k novým prístupom a metódam.
+
+**Aktuálne výzvy:**
+
+**1. Byrokratizácia a administratíva:**
+
+**Problém:**
+- Prílišná dokumentácia
+- Časová náročnosť
+- Menej času na prácu s klientom
+- Vyhorenie pracovníkov
+
+**Údaje:**
+\`\`\`
+Prieskumy ukazujú:
+• 30-50% času na administratívu
+• Iba 20-30% času s klientom
+• Vysoká fluktuácia pracovníkov
+\`\`\`
+
+**Riešenia:**
+- Digitalizácia
+- Zjednodušenie procesov
+- Asistenti pre administratívu
+- Prioritizácia klienta
+
+**2. Nedostatok zdrojov:**
+
+**Oblasti:**
+- Nedostatok sociálnych pracovníkov
+- Vysoká záťaž (prípadov na pracovníka)
+- Nízke platy
+- Nedostatok služieb
+- Kapacity zariadení
+
+**Dôsledky:**
+- Zlá kvalita služieb
+- Vyhorenie
+- Neschopnosť venovať sa klientom
+- Etické dilemy pri prideľovaní zdrojov
+
+**3. Medializácia zlyhaní:**
+
+**Problém:**
+- Médiá reportujú tragédie
+- Vina kladená na sociálnych pracovníkov
+- Obavy z chýb
+- Defenzívna prax
+
+**Príklad:**
+Smrť dieťaťa v náhradnej starostlivosti → verejnosť obviňuje sociálnu prácu.
+
+**Potreba:**
+- Systematická podpora
+- Supervízia
+- Pochopenie komplexity
+- Obhajoba profesie
+
+**4. Stigmatizácia klientov:**
+
+**Problém:**
+- Stereotypy o klientoch
+- "Nešťastníci"
+- "Zneužívajú systém"
+- Diskriminácia
+
+**Anti-stigma prístup:**
+- Zmena naratívu
+- Zahrnutie klientov
+- Empowerment
+- Obhajoba
+
+**5. Diversita a multikultúralnosť:**
+
+**Výzva:**
+- Rastúca rozmanitosť klientov
+- Kultúrne rozdiely
+- Jazykové bariéry
+- Potreba kultúrnej kompetencie
+
+**Kultúrne kompetentná prax:**
+\`\`\`
+Úrovne:
+1. Kultúrne povedomie
+   • Uvedomenie si vlastnej kultúry
+   • Uznanie rozdielov
+
+2. Kultúrne znalosti
+   • Učenie sa o iných kultúrach
+   • Pochopenie worldviews
+
+3. Kultúrne zručnosti
+   • Efektívna komunikácia
+   • Prispôsobenie prístupu
+
+4. Kultúrne stretnutie
+   • Aplikácia v praxi
+   • Reflexia a učenie sa
+\`\`\`
+
+**Nové trendy:**
+
+**1. Evidence-based practice:**
+
+**Definícia:**
+Integrácia najlepších dostupných výskumných dôkazov s expertízou pracovníka a preferenciami klienta.
+
+**Proces:**
+\`\`\`
+1. Formulovanie otázky
+2. Vyhľadávanie dôkazov
+3. Kritické hodnotenie
+4. Aplikácia v praxi
+5. Evaluácia výsledkov
+\`\`\`
+
+**Výhody:**
+- Efektívne intervencie
+- Zodpovednosť
+- Profesionalita
+
+**Výzvy:**
+- Časová náročnosť
+- Prístup k výskumom
+- Aplikovateľnosť v praxi
+
+**2. Technológie v sociálnej práci:**
+
+**E-sociálna práca:**
+- Online poradenstvo
+- Telehealth
+- Videokonferencie
+- Mobilné aplikácie
+
+**Digitálne nástroje:**
+- Elektronické zdravotné záznamy
+- Manažment prípadov (software)
+- Online vzdelávanie
+- Sociálne médiá pre osvetu
+
+**AI a automatizácia:**
+- Chatboty pre prvý kontakt
+- Analýza dát
+- Predikcia rizika
+- Automatizácia administra­tívy
+
+**Etické otázky:**
+- Privacy a ochrana dát
+- Digitálna priepasť
+- Osobný kontakt vs. technológia
+- Algoritmic bias
+
+**3. Trauma-informed approach:**
+
+**Princípy:**
+\`\`\`
+• Bezpečnosť (fyzická a emocionálna)
+• Dôvera a transparentnosť
+• Peer podpora
+• Spolupráca a vzájomnosť
+• Empowerment
+• Kultúrna, historická a genderová citlivosť
+\`\`\`
+
+**Aplikácia:**
+- Predpokladať traumu v pozadí
+- Vyhnúť sa retraumatizácii
+- Posilnenie resilience
+- Holistický prístup
+
+**4. Community-based services:**
+
+**Trend:**
+- Deinštitucionalizácia
+- Služby v komunite
+- Podpora v prirodzenom prostredí
+- Inklúzia
+
+**Výhody:**
+- Bližšie ku klientom
+- Menej stigmatizujúce
+- Podpora integrácie
+- Nákladovo efektívnejšie
+
+**5. Preventívna sociálna práca:**
+
+**Zameranie:**
+- Včasná intervencia
+- Prevencia problémov
+- Posilnenie ochranných faktorov
+- Komunitné programy
+
+**Úrovne prevencie:**
+\`\`\`
+Primárna:
+• Pre všetkých
+• Prevencia vzniku problémov
+
+Sekundárna:
+• Pre rizikové skupiny
+• Včasné zachytenie
+
+Terciárna:
+• Pre tých s problémami
+• Prevencia zhoršenia
+\`\`\`
+
+**Budúcnosť sociálnej práce:**
+
+**Vízia:**
+
+**1. Silnejšia profesia:**
+- Lepšie uznanie
+- Viac zdrojov
+- Vplyv na politiky
+- Výskum a inovácie
+
+**2. Integrované služby:**
+- Spolupráca profesií
+- Holistický prístup
+- Klient v centre
+- Kontinuita starostlivosti
+
+**3. Sociálna spravodlivosť:**
+- Obhajoba systémových zmien
+- Boj proti nerovnosti
+- Zapojenie komunít
+- Participatívne prístupy
+
+**4. Globálna perspektíva:**
+- Medzinárodná spolupráca
+- Riešenie globálnych problémov
+- Utečenci a migrácia
+- Klimatická zmena a sociálna práca
+
+**Kľúčové kompetencie budúcnosti:**
+
+- **Digitálna gramotnosť**
+- **Kultúrna kompetencia**
+- **Kritické myslenie**
+- **Tímová práca**
+- **Flexibilita a adaptabilita**
+- **Advokácia a leadership**
+- **Sebastarostlivosť a resilience**
+
+**Záverečné posolstvo:**
+
+Sociálna práca je profesia s obrovským potenciálom zmeniť životy jednotlivcov a spoločnosti. Napriek výzvam je to zmysluplná kariéra, ktorá vyžaduje odvahu, empatiu a záväzok k sociálnej spravodlivosti.
+
+Budúcnosť sociálnej práce závisí od našej schopnosti inovovať, spolupracovať a neustále sa vzdelávať, pričom vždy zachovávame v centre nášho úsilia dôstojnosť a blaho ľudí, ktorým slúžime.`
+    }
   ]
 }
 
