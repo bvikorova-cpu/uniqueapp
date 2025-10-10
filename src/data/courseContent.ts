@@ -45921,6 +45921,756 @@ Domáce násilie je závažný spoločenský problém, ktorý sa týka všetkýc
 - Výskum a dátové zbieranie
 - Financovanie služieb`
     },
+  ],
+  "Adiktológia a práca so závislosťami": [
+    {
+      title: "Téma 1: Úvod do adiktológie",
+      content: `**Adiktológia** je interdisciplinárny vedný odbor zameraný na štúdium závislostí, ich príčin, prejavov, liečby a prevencie.
+
+**Základné pojmy:**
+
+**Závislosť (Addikcia):**
+- Chronické ochorenie mozgu
+- Kompulzívne správanie napriek negatívnym následkom
+- Fyzická a/alebo psychická závislosť
+- Strata kontroly nad užívaním
+- Tolerancia a abstinenčný syndróm
+
+**Typy závislostí:**
+
+**Látkové závislosti:**
+- Alkohol
+- Nelegálne drogy (heroín, kokaín, metamfetamín)
+- Lieky (benzodiazepíny, opiáty)
+- Tabak a nikotín
+- Psychoaktívne látky
+
+**Nelátkové závislosti (behaviorálne):**
+- Gambling (patologické hráčstvo)
+- Závislosť od internetu a hier
+- Závislosť od sociálnych médií
+- Pracovná závislosť
+- Závislosť od cvičenia
+- Závislosť od nakupovania
+
+**Biopsychosociálny model závislosti:**
+- Biologické faktory (genetika, neurochémia)
+- Psychologické faktory (trauma, duševné zdravie)
+- Sociálne faktory (prostredie, vzťahy)
+
+**Prevalencia:**
+Závislosti sú závažným celospoločenským problémom ovplyvňujúcim milióny ľudí na celom svete, s významnými dopady na zdravie, rodiny, pracovné výkony a ekonomiku.`
+    },
+    {
+      title: "Téma 2: Neurobiológia závislosti",
+      content: `**Neurobiológia závislosti** vysvetľuje, ako závislosti ovplyvňujú mozog a prečo je tak ťažké ich prekonať.
+
+**Mozgové mechanizmy:**
+
+**Dopamínový systém odmeny:**
+- Nucleus accumbens (centrum odmeny)
+- Ventral tegmental area (VTA)
+- Uvoľňovanie dopamínu
+- Posilnenie správania
+- Vývoj závislosti
+
+**Neuroplasticita:**
+- Zmeny v mozgových obvodoch
+- Posilnenie neuronálnych spojení
+-Oslabenie samoregulácie
+- Dlhodobé zmeny v štruktúre mozgu
+
+**Tolerancia:**
+- Znížená citlivosť receptorov
+- Potreba vyšších dávok
+- Znížená odpoveď na prirodzené odmeny
+- Adaptácia nervového systému
+
+**Abstinenčný syndróm:**
+- Fyzické príznaky (trasenie, potenie, bolesť)
+- Psychické príznaky (úzkosť, depresia, nespavosť)
+- Craving (túžba po látke)
+- Dysregulacia neurotransmiterov
+
+**Prefrontálny kortex:**
+- Oblasť zodpovedná za rozhodovanie
+- Impulzívna kontrola
+- Plánování a úsudok
+- Oslabenie funkcií pri závislosti
+
+**Genetické faktory:**
+- Dedičnosť závislosti (40-60%)
+- Genetické variácie
+- Epigenetické zmeny
+- Rizikové gény
+
+**Kľúčové poznatky:**
+Závislosť nie je morálne zlyhanie, ale chronické ochorenie mozgu, ktoré vyžaduje odborné liečenie a dlhodobú podporu.`
+    },
+    {
+      title: "Téma 3: Alkoholizmus a jeho liečba",
+      content: `**Alkoholizmus** (závislosť od alkoholu) je najrozšírenejšia forma látkovej závislosti.
+
+**Fázy alkoholizmu:**
+
+**1. Rizikové pitie:**
+- Pravidelná konzumácia alkoholu
+- Prekračovanie odporúčaných limitov
+- Pitie v rizikových situáciách
+- Zatiaľ bez závislosti
+
+**2. Škodlivé pitie:**
+- Fyzické alebo psychické poškodenie zdravia
+- Sociálne problémy
+- Pokračujúca konzumácia napriek následkom
+- Začiatok závislosti
+
+**3. Závislosť:**
+- Silná túžba po alkohole
+- Strata kontroly nad pitím
+- Abstinenčný syndróm
+- Tolerancia
+- Zanedbávanie iných aktivít
+
+**Zdravotné následky:**
+
+**Fyzické:**
+- Poškodenie pečene (cirhóza)
+- Srdcové choroby
+- Neurologické poškodenie
+- Rakovinové ochorenia
+- Pankreatitída
+
+**Psychické:**
+- Depresia a úzkosť
+- Psychózy
+- Kognitívne poruchy
+- Demencia
+
+**Sociálne:**
+- Problémy v rodine
+- Strata zamestnania
+- Právne problémy
+- Finančné ťažkosti
+
+**Liečba alkoholizmu:**
+
+**Detoxifikácia:**
+- Lekársky dohľad
+- Farmakoterapia (benzodiazepíny)
+- Prevencia komplikácií
+- Trvanie 5-10 dní
+
+**Odvykacia liečba:**
+- Pobytová liečba (4-12 týždňov)
+- Ambulantná liečba
+- Terapeutické komunity
+- Psychoterapia
+
+**Farmakoterapia:**
+- Disulfiram (Antabus) - averzia
+- Naltrexón - redukcia cravingu
+- Akamprosat - stabilizácia
+- Podpora abstinencie
+
+**Aftercare:**
+- Následná starostlivosť
+- Skupiny vzájomnej pomoci (AA)
+- Ambulantné sledovanie
+- Prevencia relapsu`
+    },
+    {
+      title: "Téma 4: Drogové závislosti",
+      content: `**Drogové závislosti** zahŕňajú závislosť od rôznych nelegálnych a legálnych psychoaktívnych látok.
+
+**Typy drog:**
+
+**Opiáty a opioidy:**
+- Heroín
+- Morfín
+- Fentanyl
+- Tramadol
+- Vysoké riziko predávkovania
+
+**Stimulanty:**
+- Kokaín
+- Metamfetamín (pervitin)
+- Amfetamíny
+- MDMA (extáza)
+- Zvýšená energia a eufória
+
+**Sedatíva a hypnotiká:**
+- Benzodiazepíny
+- Barbituráty
+- GHB
+- Tlmenie nervového systému
+
+**Halucinogény:**
+- LSD
+- Psilocybín (huby)
+- Meskalín
+- Zmeny vnímania reality
+
+**Kannabinoidy:**
+- Marihuana
+- Hašiš
+- Syntetické kanabinoidy
+- Psychoaktívne účinky
+
+**Charakteristiky drogových závislostí:**
+
+**Fyzická závislosť:**
+- Abstinenčné príznaky pri vysadení
+- Tolerancia
+- Fyzické poškodenie orgánov
+- Riziko predávkovania
+
+**Psychická závislosť:**
+- Silná túžba (craving)
+- Obsedantné myšlienky
+- Emočná nestabilita
+- Psychické poruchy
+
+**Sociálne následky:**
+- Kriminalita
+- Strata sociálnych väzieb
+- Chudoba
+- Bezdomovectvo
+- Zdravotné riziká (HIV, hepatitídy)
+
+**Liečba:**
+
+**Substituéčná liečba (pre opioidy):**
+- Metadón
+- Buprenorfín
+- Harm reduction prístup
+- Zníženie rizika predávkovania
+
+**Detoxifikácia:**
+- Lekársky dohľad
+- Symptomatická liečba
+- Psychologická podpora
+- Trvanie podľa látky
+
+**Komplexná rehabilitácia:**
+- Terapeutické komunity
+- Psychoterapia
+- Resocializácia
+- Dlhodobá podpora`
+    },
+    {
+      title: "Téma 5: Behaviorálne závislosti",
+      content: `**Behaviorálne závislosti** sú závislosti bez užívania látok, ale s podobnými mechanizmami a následkami.
+
+**Patologické hráčstvo (Gambling):**
+
+**Charakteristiky:**
+- Kompulzívna potreba hrať
+- Strata kontroly nad hraním
+- Stávkovanie napriek stratám
+- Ľhanie o hraní
+- Finančné problémy
+
+**Fázy:**
+- Fáza výhier (začiatok)
+- Fáza strát (eskalácia)
+- Fáza zúfalstva (dno)
+
+**Následky:**
+- Finančná ruina
+- Rozpad vzťahov
+- Strata zamestnania
+- Suicidálne myšlienky
+- Kriminalita
+
+**Závislosť od internetu a hier:**
+
+**Prejavy:**
+- Nadmerné používanie (8+ hodín denne)
+- Zanedbávanie povinností
+- Sociálna izolácia
+- Abstinenčné príznaky pri odňatí
+- Gaming disorder (WHO 2018)
+
+**Rizikové faktory:**
+- Sociálna úzkosť
+- Nízke sebavedomie
+- Problémy v reálnom živote
+- Ľahký prístup k hrám
+
+**Závislosť od sociálnych médií:**
+
+**Znaky:**
+- Neustála kontrola telefónu
+- Strach z vynechania (FOMO)
+- Potreba validácie (lajky, komentáre)
+- Ovplyvnenie nálady počtom lajkov
+- Znížená produktivita
+
+**Ďalšie behaviorálne závislosti:**
+
+**Pracovná závislosť:**
+- Workaholizmus
+- Neschopnosť relaxovať
+- Zanedávanie rodiny
+- Zdravotné problémy
+
+**Závislosť od cvičenia:**
+- Nadmerné cvičenie napriek zraneniam
+- Abstinenčné príznaky
+- Sociálna izolácia
+- Poruchy príjmu potravy
+
+**Závislosť od nakupovania:**
+- Kompulzívne nakupovanie
+- Finančné problémy
+- Zadlženie
+- Tajenie nákupov
+
+**Liečba behaviorálnych závislostí:**
+- Kognitívno-behaviorálna terapia
+- Skupiny vzájomnej pomoci
+- Rodinná terapia
+- Farmakoterapia (v niektorých prípadoch)
+- Techniky sebakontroly`
+    },
+    {
+      title: "Téma 6: Motivačné rozhovory a práca s klientmi",
+      content: `**Motivačné rozhovory (Motivational Interviewing - MI)** sú efektívna metóda práce s klientami so závislosťami.
+
+**Princípy MI:**
+
+**1. Vyjadrenie empatie:**
+- Akceptujúci prístup
+- Reflexívne počúvanie
+- Pochopenie perspektívy klienta
+- Bez súdenia
+
+**2. Rozvoj diskrepancie:**
+- Zvýraznenie rozporov medzi súčasným správaním a cieľmi
+- Uvedomenie si následkov
+- Vlastná motivácia k zmene
+- Hodnoty vs. správanie
+
+**3. Roll with resistance:**
+- Nesúboj s odporom
+- Reflexia namiesto argumentácie
+- Uznanie ambivalencie
+- Klient ako expert na svoj život
+
+**4. Podpora self-efficacy:**
+- Viera v schopnosť zmeny
+- Posilnenie sebaúcty
+- Zdôrazňovanie úspechov
+- Nádej a optimizmus
+
+**Štádiá zmeny (Prochaska & DiClemente):**
+
+**1. Prekontemplatívne štádium:**
+- Popieranie problému
+- Nevníma potrebu zmeny
+- "Nemám problém"
+
+**Stratégie:**
+- Poskytovanie informácií
+- Vyvolanie pochybností
+- Bez presadzovania zmeny
+
+**2. Kontemplatívne štádium:**
+- Uvedomenie si problému
+- Ambivalencia
+- Váhanie medzi zmenou a status quo
+
+**Stratégie:**
+- Vyvažovanie pros a cons
+- Posilnenie motivácie
+- Práca s ambivalenciou
+
+**3. Prípravné štádium:**
+- Rozhodnutie zmeniť sa
+- Príprava plánu
+- Malé kroky
+
+**Stratégie:**
+- Konkrétny akčný plán
+- Identifikácia zdrojov
+- Posúdenie prekážok
+
+**4. Akčné štádium:**
+- Aktívna zmena správania
+- Implementácia plánu
+- Vyžaduje energiu a odhodlanie
+
+**Stratégie:**
+- Podpora a povzbudenie
+- Riešenie problémov
+- Sledovanie pokroku
+
+**5. Udržiavacie štádium:**
+- Udržanie zmeny
+- Prevencia relapsu
+- Nový životný štýl
+
+**Stratégie:**
+- Identifikácia rizikových situácií
+- Coping stratégie
+- Kontinuálna podpora
+
+**Techniky MI:**
+- Otvorené otázky (OARS)
+- Affirmatívy
+- Reflexívne počúvanie
+- Sumarizácia
+- Evokácia change talk`
+    },
+    {
+      title: "Téma 7: Harm reduction (znižovanie škôd)",
+      content: `**Harm reduction** je pragmatický prístup k práci so závislosťami zameraný na minimalizáciu negatívnych následkov užívania namiesto vyžadovania okamžitej abstinencie.
+
+**Filozofia harm reduction:**
+
+**Základné princípy:**
+- Akceptácia reality užívania
+- Humanistický prístup
+- Rešpekt k autonómii
+- Pragmatizmus nad idealizmom
+- Postupné kroky smerom k zdraviu
+
+**Ciele:**
+- Zníženie zdravotných rizík
+- Prevencia predávkovania
+- Zníženie kriminality
+- Podpora sociálnej integrácie
+- Zlepšenie kvality života
+
+**Intervencie harm reduction:**
+
+**Programy výmeny ihiel:**
+- Poskytovanie čistých striekačiek
+- Prevencia HIV a hepatitíd
+- Odber použitých ihiel
+- Bez podmienky abstinencie
+
+**Substituéčná liečba:**
+- Metadónové programy
+- Buprenorfínová liečba
+- Lekársky dohľad
+- Stabilizácia života
+
+**Naloxon programy:**
+- Antidotum pri predávkovaní opioidmi
+- Distribúcia medzi užívateľov
+- Training pre laikov
+- Záchrana životov
+
+**Kontaktné centrá (drop-in):**
+- Nízkoprahové služby
+- Základná zdravotná starostlivosť
+- Sociálne poradenstvo
+- Bezpečný priestor
+
+**Safe consumption rooms:**
+- Miesta na bezpečné užívanie
+- Lekársky dohľad
+- Prevencia predávkovania
+- Kontakt s pomocou
+
+**Testovanie drog:**
+- Analýza obsahu látok
+- Identifikácia nebezpečných prímesí
+- Informovanosť užívateľov
+- Prevencia otráv
+
+**Edukácia:**
+- Safer use informácie
+- Prevencia rizikového správania
+- Znalosti o predávkovaní
+- Sexuálne zdravie
+
+**Kontroverzie:**
+- Etické dilemy
+- Verejná podpora vs. odpor
+- "Podporuje užívanie?"
+- Evidence-based efektivita
+
+**Dôkazy efektivity:**
+- Zníženie HIV a hepatitíd
+- Zníženie predávkovaní
+- Zlepšenie verejného zdravia
+- Úspora nákladov na zdravotníctvo`
+    },
+    {
+      title: "Téma 8: Relaps a prevencia relapsu",
+      content: `**Relaps** (recidíva, návrat k užívaniu) je bežnou súčasťou procesu zotavovania zo závislosti.
+
+**Pochopenie relapsu:**
+
+**Relaps ako proces:**
+- Nie je náhla udalosť
+- Postupné kroky smerom k užívaniu
+- Identifikovateľné varovné znaky
+- Môže byť predvídaný a preventovaný
+
+**Typy relapsu:**
+
+**Lapse (prešľap):**
+- Jednorazové užitie
+- Krátke trvanie
+- Možnosť rýchleho návratu k abstinencii
+
+**Relaps (recidíva):**
+- Návrat k pravidelnému užívaniu
+- Strata kontroly
+- Potreba opätovnej intervencie
+
+**Rizikové faktory:**
+
+**Vnútorné:**
+- Craving (túžba)
+- Negatívne emócie (stres, smútok, hnev)
+- Pozitívne emócie (oslava)
+- Fyzická bolesť
+- Nuda
+
+**Vonkajšie:**
+- Vysokorizikové situácie (parties, bary)
+- Kontakt s užívateľmi
+- Prístup k látkam
+- Konflikty v vzťahoch
+- Sociálny tlak
+
+**Varovné znaky relapsu:**
+- Romantizovanie užívania
+- Izolácia od podpory
+- Zanedbávanie sebastarostlivosti
+- Návrat k starým vzorcom
+- Zhoršenie nálady
+- Vyhýbanie sa stretnutiam (AA, NA)
+
+**Prevencia relapsu:**
+
+**Identifikácia triggerov:**
+- Mapovaie rizikových situácií
+- Pochopenie vlastných spúšťačov
+- Emocionálne triggery
+- Miesta a ľudia
+
+**Coping stratégie:**
+- Vyhýbanie sa rizikovým situáciám
+- Alternatívne aktivity
+- Relaxačné techniky
+- Kontakt s podporou
+
+**HALT princíp:**
+- Hungry (hladný)
+- Angry (nahnevaný)
+- Lonely (osamelý)
+- Tired (unavený)
+- Varovné stavy zvyšujúce riziko
+
+**Plán prevencie relapsu:**
+- Písomný plán
+- Identifikácia rizík
+- Coping stratégie
+- Kontakty na podporu
+- Nácvik situácií
+
+**Práca s relapsom:**
+- Relaps nie je zlyhanie
+- Príležitosť na učenie
+- Analýza situácie
+- Úprava plánu
+- Podpora bez súdenia`
+    },
+    {
+      title: "Téma 9: Práca s rodinami závislých",
+      content: `**Práca s rodinami** je kľúčovou súčasťou liečby závislostí, pretože závislosť ovplyvňuje celý rodinný systém.
+
+**Dopad závislosti na rodinu:**
+
+**Koděpendencia:**
+- Nadmerná starostlivosť o závislého
+- Zanedbávanie vlastných potrieb
+- Umožňovanie (enabling)
+- Strata vlastnej identity
+- Kontrolujúce správanie
+
+**Rodinné role:**
+
+**Hrdina (The Hero):**
+- Zodpovedné dieťa
+- Úspešné navonok
+- Nesie bremeno rodiny
+
+**Kozol ofetný (Scapegoat):**
+- Problémové dieťa
+- Odklonenie pozornosti od závislého
+- Správanie naruší
+
+**Stratený (Lost Child):**
+- Tichý a izolovaný
+- Vyhýba sa konfliktom
+- Emocionálne oddelený
+
+**Maskot (Mascot):**
+- Vtipné dieťa
+- Uvoľňuje napätie humorom
+- Skrýva bolesť
+
+**Rodinné vzorce:**
+- Popieranie problému
+- Tajenie pred okolím
+- Walking on eggshells
+- Nepredvídateľnosť
+- Narušená komunikácia
+
+**Rodinná terapia:**
+
+**Ciele:**
+- Prerušenie koděpendencie
+- Zdravé hranice
+- Autentická komunikácia
+- Podpora zotavovania všetkých
+- Rodinná dynamika
+
+**Prístupy:**
+
+**Systemová rodinná terapia:**
+- Rodina ako systém
+- Zmena interakcií
+- Cirkulárne vzorce
+- Nové riešenia
+
+**Al-Anon a Alateen:**
+- Skupiny pre rodiny
+- 12-krokový program
+- Vzájomná podpora
+- Odpútanie sa (detachment)
+
+**CRAFT (Community Reinforcement and Family Training):**
+- Motivovanie závislého k liečbe
+- Podpora rodiny
+- Posilňovanie pozitívneho správania
+- Bez konfrontácie
+
+**Edukácia rodiny:**
+
+**Témы:**
+- Pochopenie závislosti ako choroby
+- Prerušenie enabling
+- Sebstarostlivosť
+- Zdravé hranice
+- Komunikačné zručnosti
+- Prevencia relapsu
+
+**Podpora pre rodinu:**
+- Individuálne poradenstvo
+- Podporné skupiny
+- Psychoterapia
+- Kríza intervencia
+
+**Deti z rodín so závislosťou:**
+- Zvýšené riziko vlastnej závislosti
+- Psychické problémy
+- Potreba špecializovanej pomoci
+- Prevencia medzigeneračného prenosu`
+    },
+    {
+      title: "Téma 10: Prevencia závislostí",
+      content: `**Prevencia závislostí** je kľúčová pre zníženie výskytu a dopadu závislostí v spoločnosti.
+
+**Úrovne prevencie:**
+
+**Primárna prevencia:**
+- Zameraná na celú populáciu
+- Prevencia vzniku závislosti
+- Vzdelávanie a osveta
+- Budovanie ochranných faktorov
+
+**Aktivity:**
+
+**Školské programy:**
+- Vzdelávanie o drogách
+- Life skills tréning
+- Odolnosť voči tlaku rovesníkov
+- Kritické myslenie
+
+**Komunitné programy:**
+- Zmysluplné voľnočasové aktivity
+- Športové a kultúrne aktivity
+- Podpora rodičov
+- Budovanie komunity
+
+**Mediálne kampane:**
+- Osveta o rizikách
+- Boj proti stigme
+- Pozitívne vzory
+- Verejná diskusia
+
+**Sekundárna prevencia:**
+- Včasná identifikácia
+- Intervencia v počiatočnej fáze
+- Rizikové skupiny
+- Prevencia progresu
+
+**Skupiny v riziku:**
+- Mladiství s problémovým správaním
+- Deti z rodín so závislosťou
+- Osoby s duševnými problémami
+- Osamené osoby
+
+**Intervencie:**
+- Skríningové programy
+- Krátke intervencie
+- Poradenstvo
+- Odporúčanie na liečbu
+
+**Terciárna prevencia:**
+- Liečba závislosti
+- Prevencia relapsu
+- Rehabilitácia
+- Reintegrácia
+
+**Ochranné faktory:**
+
+**Individuálne:**
+- Vysoké sebavedomie
+- Coping zručnosti
+- Prosociálne hodnoty
+- Životné ciele
+
+**Rodinné:**
+- Podpora rodiny
+- Zdravé vzťahy
+- Jasné hranice a pravidlá
+- Otvorená komunikácia
+
+**Komunitné:**
+- Pozitívne komunity
+- Prístup k službám
+- Bezpečné prostredie
+- Sociálna kohézia
+
+**Rizikové faktory:**
+- Raný začiatok užívania
+- Genetická predispozícia
+- Trauma a zneužívanie
+- Duševné poruchy
+- Sociálna exklúzia
+- Ľahký prístup k látkam
+
+**Evidence-based prevencia:**
+- Programs založené na výskume
+- Hodnotenie efektivity
+- Dlhodobé sledovanie
+- Adaptácia na kontext
+
+**Výzvy:**
+- Financovanie
+- Koordinácia aktérov
+- Meranie dopadu
+- Udržateľnosť programov`
+    },
   ]
 }
 

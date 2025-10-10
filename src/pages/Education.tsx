@@ -85,7 +85,7 @@ const courseCategories = [
     icon: "🤝",
     courses: [
       "Sociálna práca", "Terénna sociálna práca", "Komunitná práca", "Case management",
-      "Práca s rodinami", "Práca so seniormi", "Práca s mládežou", "Práca s deťmi",
+      "Práca s rodinami", "Práca so seniormi", "Práca s mládežou", "Adiktológia a práca so závislosťami",
       "Práca s hendikepovanými", "Krízová intervencia", "Domáce násilie", "Prevencia závislostí"
     ]
   }
