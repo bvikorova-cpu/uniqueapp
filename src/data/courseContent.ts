@@ -25497,6 +25497,949 @@ auto vysledok = cisla
 C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
     }
   ],
+  "Didaktika": [
+    {
+      title: "Téma 1: Úvod do didaktiky - Pôvod a definícia",
+      content: `**Čo je didaktika?**
+
+Didaktika je pedagogická vedná disciplína zaoberajúca sa teóriou vyučovania ako procesom učenia a vyučovania.
+
+**Pôvod pojmu:**
+- Pochádza z gréckeho slova "didaskein"
+- Znamená "učiť, vyučovať"
+- Zavedené Janom Amosom Komenským
+- Didactica Magna (Veľká didaktika)
+
+**Definícia didaktiky:**
+Veda o:
+- Procese výučby
+- Zákonitostiach vyučovania
+- Obsahu vzdelávania
+- Metódach a formách
+- Interakcii učiteľ - žiak
+
+**Predmet skúmania:**
+
+**1. Vyučovanie:**
+- Činnosť učiteľa
+- Vedenie vzdelávacieho procesu
+- Organizácia učenia
+- Motivácia žiakov
+
+**2. Učenie:**
+- Činnosť žiaka
+- Aktívne získavanie poznatkov
+- Rozvoj schopností
+- Utváranie kompetencií
+
+**3. Vzájomná súhra:**
+- Jednota vyučovania a učenia
+- Dialektický vzťah
+- Obojstranná aktivita
+- Vzájomné pôsobenie`
+    },
+    {
+      title: "Téma 2: História didaktiky a Komenský",
+      content: `**Vývoj didaktiky ako vedy**
+
+Didaktika má bohatú históriu siahajúcu do antiky.
+
+**Antika a stredovek:**
+- Sókrates - maieutická metóda
+- Platón - dialóg
+- Aristoteles - systematickosť
+- Quintilianus - rétorika
+
+**Ján Amos Komenský (1592-1670):**
+
+**Zakladateľ modernej didaktiky:**
+- Didactica Magna (1657)
+- "Otec modernej pedagogiky"
+- Systematizácia didaktiky
+- Vedecké základy vyučovania
+
+**Kľúčové diela:**
+- Didactica Magna (Veľká didaktika)
+- Orbis Pictus (Svet v obrazoch)
+- Schola pansophica
+
+**Základné princípy Komenského:**
+
+**1. Vyučovať všetko všetkých:**
+- Univerzálne vzdelanie
+- Rovnaký prístup pre všetkých
+- Demokratizácia školstva
+
+**2. Názornosť:**
+- "Zlaté pravidlo didaktiky"
+- Použitie zmyslov
+- Konkrétne príklady
+- Obrazové pomôcky
+
+**3. Prirodzenosť:**
+- Rešpektovanie prírody dieťaťa
+- Primeranosť veku
+- Postupnosť
+
+**4. Systematickosť:**
+- Od jednoduchého k zložitému
+- Od známeho k neznámemu
+- Od konkrétneho k abstraktnému
+- Logická postupnosť
+
+**5. Trvalosť:**
+- Opakovanie
+- Upevňovanie poznatkov
+- Cvičenie
+- Aplikácia v praxi
+
+**Ďalší významní didaktici:**
+- J. F. Herbart - formálne stupne
+- A. Diesterweg - rozvíjajúce vyučovanie
+- K. D. Ušinskij - didaktické princípy`
+    },
+    {
+      title: "Téma 3: Obecná vs. predmetová didaktika",
+      content: `**Delenie didaktiky**
+
+Didaktika sa člení na obecnú a predmetové didaktiky.
+
+**1. Obecná didaktika:**
+
+**Predmet skúmania:**
+- Všeobecné zákonitosti vyučovania
+- Univerzálne princípy
+- Spoločné metódy
+- Základné formy organizácie
+
+**Oblasti záujmu:**
+- Ciele vzdelávania
+- Obsah vzdelávania
+- Vyučovacie metódy
+- Organizačné formy
+- Hodnotenie
+- Vyučovací proces
+
+**Didaktické kategórie:**
+- Ciele
+- Obsah
+- Metódy
+- Formy
+- Prostriedky
+- Hodnotenie
+
+**Platnosť:**
+- Platí pre všetky predmety
+- Univerzálne zásady
+- Základný teoretický rámec
+
+**2. Predmetové didaktiky:**
+
+**Charakteristika:**
+- Špecifické didaktiky jednotlivých predmetov
+- Aplikácia obecnej didaktiky
+- Zohľadnenie špecifík predmetu
+
+**Príklady:**
+
+**Didaktika matematiky:**
+- Matematické myslenie
+- Abstraktné pojmy
+- Logické usudovanie
+- Riešenie úloh
+
+**Didaktika jazykov:**
+- Jazykové kompetencie
+- Komunikácia
+- Gramatika
+- Literatura
+
+**Didaktika prírodných vied:**
+- Experimenty
+- Pozorovanie
+- Vedecká metóda
+- Laboratórne práce
+
+**Didaktika spoločenských vied:**
+- Kritické myslenie
+- Diskusia
+- Analýza dokumentov
+- Aktuálne udalosti
+
+**Didaktika umení:**
+- Tvorivosť
+- Estetické cítenie
+- Praktické činnosti
+- Hodnotenie umenia
+
+**3. Vzťah:**
+
+**Obecná → Predmetová:**
+- Obecná poskytuje rámec
+- Predmetová aplikuje a konkretizuje
+- Vzájomné ovplyvňovanie
+- Predmetová obohatuje obecnú
+
+**Spolupráca:**
+- Výmena skúseností
+- Transfer poznatkov
+- Interdisciplinárny prístup`
+    },
+    {
+      title: "Téma 4: Ciele vzdelávania",
+      content: `**Ciele ako východisko didaktiky**
+
+Ciele určujú smer a zameranie vyučovacieho procesu.
+
+**1. Hierarchia cieľov:**
+
+**Všeobecné ciele vzdelávania:**
+- Celospoločenské
+- Dlhodobé
+- Formulované v štátnych dokumentoch
+- Napríklad: Všestranný rozvoj osobnosti
+
+**Ciele vyučovacích predmetov:**
+- Špecifické pre predmet
+- Vymedzené učebnými osnovami
+- Napríklad: Rozvoj matematického myslenia
+
+**Ciele vyučovacej hodiny:**
+- Konkrétne
+- Merateľné
+- Dosiahnuteľné za 45 minút
+- Napríklad: Žiak vie vyriešiť rovnicu
+
+**2. Taxonómie cieľov:**
+
+**Bloomova taxonómia (kognitívna oblasť):**
+
+**Úroveň 1 - Pamäť:**
+- Zapamätanie faktov
+- Reprodukcia
+- Priame vyvolanie
+
+**Úroveň 2 - Porozumenie:**
+- Vysvetlenie svojimi slovami
+- Interpretácia
+- Príklady
+
+**Úroveň 3 - Aplikácia:**
+- Použitie v nových situáciách
+- Riešenie problémov
+- Transfer poznatkov
+
+**Úroveň 4 - Analýza:**
+- Rozkladanie na časti
+- Identifikácia vzťahov
+- Kritické myslenie
+
+**Úroveň 5 - Syntéza:**
+- Tvorba nového celku
+- Kreativita
+- Plánovanie
+
+**Úroveň 6 - Hodnotenie:**
+- Posudzovanie
+- Kritika
+- Argumentácia
+
+**Afektívna oblasť:**
+- Postoje
+- Záujmy
+- Hodnoty
+- Motivácia
+
+**Psychomotorická oblasť:**
+- Pohybové zručnosti
+- Manuálne schopnosti
+- Koordinácia
+
+**3. Formulácia cieľov:**
+
+**SMART kritériá:**
+- Specific (špecifický)
+- Measurable (merateľný)
+- Achievable (dosiahnuteľný)
+- Relevant (relevantný)
+- Time-bound (časovo ohraničený)
+
+**Operacionalizácia:**
+- Konkrétne slovesá
+- Jasné kritériá
+- Pozorovateľné správanie`
+    },
+    {
+      title: "Téma 5: Obsah vzdelávania",
+      content: `**Čo učíme - Obsah vzdelávania**
+
+Obsah vzdelávania vymedzuje, čo sa má žiak naučiť.
+
+**1. Zložky obsahu:**
+
+**Vedomosti:**
+- Fakty
+- Pojmy
+- Definície
+- Princípy
+- Teórie
+- Zákony
+
+**Zručnosti:**
+- Intelektuálne (myslenie, analýza)
+- Praktické (laboratórne práce)
+- Sociálne (komunikácia)
+- Technické (práca s nástrojmi)
+
+**Schopnosti:**
+- Kognitívne (myslenie, pamäť)
+- Tvorivé (kreativita)
+- Komunikačné
+- Riešenie problémov
+
+**Postoje a hodnoty:**
+- Morálne hodnoty
+- Vzťah k predmetu
+- Motivácia
+- Záujmy
+
+**2. Determinanty obsahu:**
+
+**Spoločenské požiadavky:**
+- Potreby trhu práce
+- Technologický rozvoj
+- Kultúrne dedičstvo
+- Občianske kompetencie
+
+**Vedecké poznanie:**
+- Aktuálne poznatky
+- Vedecké disciplíny
+- Výskum
+- Inovácie
+
+**Potreby žiakov:**
+- Vývinové osobitosti
+- Záujmy
+- Individuálne potreby
+- Budúce uplatnenie
+
+**3. Dokumenty upravujúce obsah:**
+
+**Štátny vzdelávací program:**
+- Rámcový dokument
+- Všeobecné ciele
+- Kompetencie
+- Vzdelávacie oblasti
+
+**Školský vzdelávací program:**
+- Konkretizácia ŠVP
+- Prispôsobenie škole
+- Špecifiká školy
+- Voľnočasové aktivity
+
+**Učebné osnovy:**
+- Obsah jednotlivých predmetov
+- Tematické celky
+- Časová dotácia
+- Požadované výstupy
+
+**Učebnice:**
+- Didaktická transformácia
+- Prístupná forma
+- Metodická príručka
+- Úlohy a cvičenia
+
+**4. Výber a organizácia obsahu:**
+
+**Princípy výberu:**
+- Vedeckosť
+- Aktuálnosť
+- Primeranosť
+- Systematickosť
+- Komplexnosť
+
+**Organizácia:**
+- Lineárna (postupná)
+- Koncentrická (opakovaná v rôznej hĺbke)
+- Špirálovitá (rozširovanie)
+- Modulová (samostatné celky)`
+    },
+    {
+      title: "Téma 6: Didaktické princípy a zásady",
+      content: `**Základné princípy vyučovania**
+
+Didaktické princípy sú všeobecné zásady riadenia vyučovacieho procesu.
+
+**1. Princíp vedomosti a aktivity:**
+
+**Charakteristika:**
+- Aktívna účasť žiakov
+- Uvedomovanie si zmyslu učenia
+- Vlastná činnosť
+- Zodpovednosť za učenie
+
+**Realizácia:**
+- Problémové úlohy
+- Diskusie
+- Projekty
+- Samostatná práca
+
+**2. Princíp názornosti:**
+
+**"Zlaté pravidlo didaktiky" (Komenský):**
+- Využitie všetkých zmyslov
+- Konkrétne príklady
+- Modely a pomôcky
+- Experimenty
+
+**Formy názornosti:**
+- Prirodzená (skutočné objekty)
+- Obrazová (obrázky, videá)
+- Symbolická (schémy, grafy)
+- Verbálna (slovný opis)
+
+**3. Princíp systematickosti a postupnosti:**
+
+**Charakteristika:**
+- Logické usporiadanie
+- Vzájomné súvislosti
+- Postupnosť krokov
+
+**Pravidlá:**
+- Od jednoduchého k zložitému
+- Od známeho k neznámemu
+- Od konkrétneho k abstraktnému
+- Od celku k časti a späť
+
+**4. Princíp primeranosti:**
+
+**Primeranosť:**
+- Veku žiakov
+- Mentálnym schopnostiam
+- Predchádzajúcim vedomostiam
+- Individuálnym osobitostiam
+
+**Zóna proximálneho vývinu (Vygotsky):**
+- Nie príliš ľahké
+- Nie príliš ťažké
+- Optimálna náročnosť
+- S pomocou zvládnuteľné
+
+**5. Princíp trvalosti:**
+
+**Charakteristika:**
+- Pevné osvojenie poznatkov
+- Dlhodobá pamäť
+- Automatizácia zručností
+
+**Prostriedky:**
+- Opakovanie
+- Precvičovanie
+- Aplikácia
+- Systematizácia
+
+**6. Princíp spojenia teórie s praxou:**
+
+**Charakteristika:**
+- Praktické využitie poznatkov
+- Aplikácia v živote
+- Motivácia učením
+- Transfer poznatkov
+
+**Realizácia:**
+- Praktické cvičenia
+- Projekty
+- Exkurzie
+- Aplikačné úlohy
+
+**7. Princíp diferenciácie a individualizácie:**
+
+**Diferenciácia:**
+- Prispôsobenie skupinám žiakov
+- Rôzne úrovne náročnosti
+- Skupinová práca
+
+**Individualizácia:**
+- Prístup k jednotlivcovi
+- Individuálne tempo
+- Osobné potreby
+- Talenty a záujmy`
+    },
+    {
+      title: "Téma 7: Vyučovacie metódy",
+      content: `**Metódy vyučovania**
+
+Vyučovacie metódy sú spôsoby, akými učiteľ vedie žiakov k učeniu.
+
+**1. Klasifikácia metód:**
+
+**Podľa aktivity:**
+
+**Pasívne metódy:**
+- Výklad
+- Prednáška
+- Reprodukcia
+- Opisovanie
+
+**Aktívne metódy:**
+- Diskusia
+- Projekty
+- Experimenty
+- Riešenie problémov
+
+**2. Slovné metódy:**
+
+**Výklad:**
+- Systematický ústny prejav učiteľa
+- Vysvetľovanie nového učiva
+- Logická postupnosť
+- Používanie pojmov
+
+**Rozhovor:**
+- Dialóg učiteľ - žiak
+- Otázky a odpovede
+- Aktivizácia myslenia
+- Zisťovanie porozumenia
+
+**Diskusia:**
+- Výmena názorov
+- Argumentácia
+- Kritické myslenie
+- Spolupráca
+
+**Práca s textom:**
+- Čítanie učebnice
+- Práca s dokumentmi
+- Analýza textu
+- Vytváranie poznámok
+
+**3. Názorné metódy:**
+
+**Demonštrácia:**
+- Ukážka predmetu, javu
+- Model
+- Experiment
+- Video
+
+**Pozorovanie:**
+- Cielené vnímanie
+- Záznam pozorovaní
+- Analýza
+- Syntéza
+
+**4. Praktické metódy:**
+
+**Cvičenie:**
+- Opakovanie činností
+- Upevňovanie zručností
+- Automatizácia
+- Precvičovanie
+
+**Laboratórne práce:**
+- Experimenty
+- Overovanie hypotéz
+- Vedecká metóda
+- Samostatná práca
+
+**Praktické činnosti:**
+- Aplikácia poznatkov
+- Vytváranie produktov
+- Modelovanie
+- Konštruovanie
+
+**5. Moderné metódy:**
+
+**Problémové vyučovanie:**
+- Vytvorenie problémovej situácie
+- Vlastné riešenie
+- Rozvoj myslenia
+- Motivácia
+
+**Projektové vyučovanie:**
+- Komplexná úloha
+- Dlhodobá práca
+- Tímová spolupráca
+- Prezentácia výsledkov
+
+**Kooperatívne učenie:**
+- Práca v skupinách
+- Vzájomná pomoc
+- Spoločný cieľ
+- Sociálne učenie
+
+**E-learning:**
+- Využitie technológií
+- Online vzdelávanie
+- Interaktívne materiály
+- Flexibilita
+
+**Gamifikácia:**
+- Herné prvky
+- Body, levely
+- Súťaživosť
+- Motivácia`
+    },
+    {
+      title: "Téma 8: Organizačné formy vyučovania",
+      content: `**Formy organizácie vyučovania**
+
+Organizačné formy určujú, ako je vyučovanie štruktúrované.
+
+**1. Vyučovacia hodina:**
+
+**Charakteristika:**
+- Základná forma
+- Pevný čas (45 minút)
+- Jedna trieda, jeden predmet
+- Pevný rozvrh
+
+**Typy vyučovacích hodín:**
+
+**Podľa didaktickej funkcie:**
+- Úvodná hodina
+- Hodina nového učiva
+- Opakovacia hodina
+- Hodina precvičovania
+- Verifikačná hodina (písomka)
+- Kombinovaná hodina
+
+**Štruktúra vyučovacej hodiny:**
+
+**Úvod (5-10 min):**
+- Organizačná časť
+- Motivácia
+- Opakovanie
+- Cieľ hodiny
+
+**Hlavná časť (25-30 min):**
+- Výklad nového učiva
+- Precvičovanie
+- Aplikácia
+- Samostatná práca
+
+**Záver (5-10 min):**
+- Zhrnutie
+- Fixácia
+- Domáca úloha
+- Hodnotenie
+
+**2. Blokové vyučovanie:**
+
+**Charakteristika:**
+- Dlhší časový úsek (90-180 min)
+- Koncentrácia na tému
+- Komplexné aktivity
+- Flexibilita
+
+**Výhody:**
+- Hlbšie spracovanie témy
+- Projekty
+- Experimenty
+- Exkurzie
+
+**3. Skupinové formy:**
+
+**Frontálne vyučovanie:**
+- Učiteľ → celá trieda
+- Spoločný postup
+- Jednotný obsah
+- Efektívne pre výklad
+
+**Skupinová práca:**
+- Spolupráca v skupinách
+- Spoločné riešenie úloh
+- Sociálne učenie
+- Rozvoj komunikácie
+
+**Individuálna práca:**
+- Samostatné plnenie úloh
+- Vlastné tempo
+- Individuálny prístup
+- Sebavzdelávanie
+
+**4. Mimoškolské formy:**
+
+**Exkurzia:**
+- Výchovno-vzdelávacia aktivita mimo školy
+- Spojenie teórie s praxou
+- Názornosť
+- Motivácia
+
+**Vychádzka:**
+- Terénne vyučovanie
+- Pozorovanie prírody
+- Praktické skúsenosti
+
+**Projektový deň:**
+- Celý deň venovaný téme
+- Interdisciplinárny prístup
+- Praktické aktivity
+- Prezentácia
+
+**5. Alternatívne formy:**
+
+**Workshopy:**
+- Intenzívna práca
+- Praktické zručnosti
+- Skupinová práca
+
+**Konferencie:**
+- Prezentácie žiakov
+- Verejné vystúpenie
+- Spätná väzba`
+    },
+    {
+      title: "Téma 9: Didaktické prostriedky a médiá",
+      content: `**Vyučovacie prostriedky**
+
+Didaktické prostriedky podporujú vyučovací proces.
+
+**1. Klasické prostriedky:**
+
+**Tabuľa:**
+- Základný prostriedok
+- Vizualizácia
+- Postupné budovanie poznania
+- Interaktívna tabuľa
+
+**Učebnica:**
+- Základný text
+- Štruktúrovaný obsah
+- Úlohy a cvičenia
+- Domáca práca
+
+**Zošit:**
+- Poznámky žiakov
+- Cvičenia
+- Domáce úlohy
+- Portfolio
+
+**Didaktické pomôcky:**
+- Modely
+- Makety
+- Obrazy
+- Mapy
+- Grafy a tabuľky
+
+**2. Technické prostriedky:**
+
+**Projektor a prezentácie:**
+- PowerPoint, Prezi
+- Vizuálna podpora výkladu
+- Multimédiá
+- Interaktivita
+
+**Počítače a tablety:**
+- Digitálne vzdelávanie
+- Interaktívne aplikácie
+- Prístup k informáciám
+- E-learning platformy
+
+**Interaktívna tabuľa:**
+- Dotykové ovládanie
+- Interaktívne aplikácie
+- Ukladanie poznámok
+- Zapojenie žiakov
+
+**3. Audiovizuálne prostriedky:**
+
+**Video:**
+- Dokumentárne filmy
+- Vzdelávacie videá
+- YouTube vzdelávacie kanály
+- Vlastné nahrávky
+
+**Audio:**
+- Nahrávky
+- Podcasty
+- Hudba
+- Zvukové efekty
+
+**4. Digitálne nástroje:**
+
+**Online platformy:**
+- Google Classroom
+- Microsoft Teams
+- Moodle
+- Edmodo
+
+**Vzdelávacie aplikácie:**
+- Kahoot (kvízy)
+- Quizlet (flashcards)
+- Duolingo (jazyky)
+- GeoGebra (matematika)
+
+**Virtuálna realita:**
+- VR okuliare
+- Virtuálne exkurzie
+- 3D modely
+- Simulácie
+
+**5. Internet a online zdroje:**
+
+**Webové stránky:**
+- Vzdelávacie portály
+- Online encyklopédie
+- Interaktívne cvičenia
+- Videotutoriály
+
+**Sociálne siete:**
+- Vzdelávacie skupiny
+- Zdieľanie materiálov
+- Komunikácia
+- Spolupráca
+
+**6. Kritériá výberu prostriedkov:**
+
+**Didaktické:**
+- Primeranosť veku
+- Podpora cieľov
+- Názornosť
+- Efektívnosť
+
+**Technické:**
+- Dostupnosť
+- Funkčnosť
+- Spoľahlivosť
+- Jednoduché ovládanie
+
+**Ekonomické:**
+- Náklady
+- Udržiavanie
+- Efektivita`
+    },
+    {
+      title: "Téma 10: Hodnotenie a spätná väzba",
+      content: `**Hodnotenie vo vyučovaní**
+
+Hodnotenie je neoddeliteľnou súčasťou didaktického procesu.
+
+**1. Funkcie hodnotenia:**
+
+**Diagnostická funkcia:**
+- Zisťovanie úrovne vedomostí
+- Identifikácia nedostatkov
+- Východisko pre plánovanie
+- Vstupné testovanie
+
+**Formujúca funkcia:**
+- Spätná väzba počas učenia
+- Podpora učenia
+- Korekcia chýb
+- Motivácia
+
+**Sumačná funkcia:**
+- Celkové zhodnotenie
+- Certifikácia
+- Rozhodovanie o postupe
+- Záverečné hodnotenie
+
+**Motivačná funkcia:**
+- Podpora ďalšieho učenia
+- Pozitívne hodnotenie
+- Uznanie výkonu
+- Povzbudenie
+
+**2. Typy hodnotenia:**
+
+**Formative (priebežné):**
+- Počas učenia
+- Časté, krátke
+- Spätná väzba
+- Podpora učenia
+- Neznámkované
+
+**Sumative (záverečné):**
+- Na konci obdobia
+- Komplexné
+- Známkovanie
+- Certifikácia
+
+**3. Formy hodnotenia:**
+
+**Ústne skúšanie:**
+- Dialóg učiteľ - žiak
+- Kontrola porozumenia
+- Argumentácia
+- Komunikačné zručnosti
+
+**Písomné práce:**
+- Testy
+- Eseje
+- Úlohy
+- Projekty
+
+**Praktické skúšky:**
+- Demonštrácia zručností
+- Laboratórne práce
+- Prezentácie
+- Výrobky
+
+**Portfólio:**
+- Súbor prác žiaka
+- Dokumentácia pokroku
+- Reflexia
+- Sebahodnotenie
+
+**4. Kritériá hodnotenia:**
+
+**Objektívnosť:**
+- Jasné kritériá
+- Jednotné štandardy
+- Bez predsudkov
+- Spoľahlivosť
+
+**Validita:**
+- Hodnotí to, co má
+- Relevantnosť
+- Opodstatnenie
+
+**Transparentnosť:**
+- Jasné kritériá
+- Poznanie kritérií žiakmi
+- Zrozumiteľnosť
+- Spravodlivosť
+
+**5. Spätná väzba:**
+
+**Charakteristiky kvalitnej spätnej väzby:**
+- Konkrétna
+- Konštruktívna
+- Včasná
+- Orientovaná na zlepšenie
+
+**Typy:**
+- Pozitívna (pochvala)
+- Korektívna (oprava chýb)
+- Rozvojová (návod na zlepšenie)
+
+**6. Sebahodnotenie a vzájomné hodnotenie:**
+
+**Sebahodnotenie:**
+- Reflexia vlastného učenia
+- Zodpovednosť
+- Metakognícia
+- Samostatnosť
+
+**Peer-assessment:**
+- Hodnotenie spolužiakmi
+- Vzájomné učenie
+- Objektívny pohľad
+- Sociálne učenie
+
+**7. Moderné trendy:**
+
+**Hodnotenie bez známok:**
+- Slovné hodnotenie
+- Popisy pokroku
+- Individuálny prístup
+
+**Formatívne hodnotenie:**
+- Assessment for learning
+- Podpora učenia
+- Častá spätná väzba`
+    }
+  ],
   "Pedagogika": [
     {
       title: "Téma 1: Úvod do pedagogiky - Pôvod a význam",
