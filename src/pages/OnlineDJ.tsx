@@ -16,18 +16,63 @@ interface Track {
   url: string;
 }
 
-// Sample music library with various genres
+// Sample music library with various genres and artists
 const musicLibrary: Track[] = [
-  { id: "1", title: "Summer Vibes", artist: "DJ Sunset", genre: "House", bpm: 128, duration: "3:45", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-  { id: "2", title: "Midnight Blues", artist: "The Groove", genre: "Blues", bpm: 90, duration: "4:20", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-  { id: "3", title: "Electric Dreams", artist: "Synth Wave", genre: "Electronic", bpm: 140, duration: "3:30", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-  { id: "4", title: "Funky Town", artist: "Groove Masters", genre: "Funk", bpm: 110, duration: "4:00", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
-  { id: "5", title: "Rock Anthem", artist: "The Rockers", genre: "Rock", bpm: 120, duration: "3:55", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
-  { id: "6", title: "Jazz Night", artist: "Smooth Jazz", genre: "Jazz", bpm: 100, duration: "5:10", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
-  { id: "7", title: "Pop Dreams", artist: "Pop Stars", genre: "Pop", bpm: 125, duration: "3:15", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
-  { id: "8", title: "Hip Hop Beats", artist: "Beat Maker", genre: "Hip Hop", bpm: 95, duration: "3:40", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
-  { id: "9", title: "Reggae Sunshine", artist: "Island Vibes", genre: "Reggae", bpm: 85, duration: "4:30", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
-  { id: "10", title: "Techno Beat", artist: "Tech Master", genre: "Techno", bpm: 135, duration: "4:15", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
+  // Boney M
+  { id: "1", title: "Daddy Cool", artist: "Boney M", genre: "Disco", bpm: 128, duration: "3:28", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+  { id: "2", title: "Rasputin", artist: "Boney M", genre: "Disco", bpm: 126, duration: "4:28", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+  { id: "3", title: "Ma Baker", artist: "Boney M", genre: "Disco", bpm: 125, duration: "4:35", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+  { id: "4", title: "Rivers of Babylon", artist: "Boney M", genre: "Disco", bpm: 90, duration: "4:19", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+  
+  // ABBA
+  { id: "5", title: "Dancing Queen", artist: "ABBA", genre: "Pop", bpm: 100, duration: "3:51", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+  { id: "6", title: "Mamma Mia", artist: "ABBA", genre: "Pop", bpm: 138, duration: "3:32", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
+  { id: "7", title: "Gimme! Gimme! Gimme!", artist: "ABBA", genre: "Pop", bpm: 120, duration: "4:50", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
+  { id: "8", title: "Waterloo", artist: "ABBA", genre: "Pop", bpm: 145, duration: "2:43", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+  { id: "9", title: "Take a Chance on Me", artist: "ABBA", genre: "Pop", bpm: 102, duration: "4:05", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+  
+  // Destiny's Child
+  { id: "10", title: "Survivor", artist: "Destiny's Child", genre: "R&B", bpm: 138, duration: "4:03", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
+  { id: "11", title: "Bootylicious", artist: "Destiny's Child", genre: "R&B", bpm: 102, duration: "3:28", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+  { id: "12", title: "Say My Name", artist: "Destiny's Child", genre: "R&B", bpm: 95, duration: "4:31", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+  { id: "13", title: "Independent Women", artist: "Destiny's Child", genre: "R&B", bpm: 95, duration: "3:40", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+  
+  // Madonna
+  { id: "14", title: "Like a Prayer", artist: "Madonna", genre: "Pop", bpm: 112, duration: "5:43", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+  { id: "15", title: "Vogue", artist: "Madonna", genre: "Pop", bpm: 116, duration: "4:48", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+  { id: "16", title: "Material Girl", artist: "Madonna", genre: "Pop", bpm: 138, duration: "4:00", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
+  { id: "17", title: "Hung Up", artist: "Madonna", genre: "Pop", bpm: 120, duration: "5:36", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
+  { id: "18", title: "Like a Virgin", artist: "Madonna", genre: "Pop", bpm: 118, duration: "3:38", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+  
+  // Selena Gomez
+  { id: "19", title: "Come & Get It", artist: "Selena Gomez", genre: "Pop", bpm: 95, duration: "3:50", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+  { id: "20", title: "Lose You to Love Me", artist: "Selena Gomez", genre: "Pop", bpm: 72, duration: "3:26", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
+  { id: "21", title: "Good for You", artist: "Selena Gomez", genre: "Pop", bpm: 82, duration: "3:41", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+  { id: "22", title: "Hands to Myself", artist: "Selena Gomez", genre: "Pop", bpm: 96, duration: "3:20", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+  
+  // Beyoncé
+  { id: "23", title: "Crazy in Love", artist: "Beyoncé", genre: "R&B", bpm: 99, duration: "3:56", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+  { id: "24", title: "Single Ladies", artist: "Beyoncé", genre: "R&B", bpm: 193, duration: "3:13", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+  { id: "25", title: "Halo", artist: "Beyoncé", genre: "R&B", bpm: 84, duration: "4:21", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+  
+  // Michael Jackson
+  { id: "26", title: "Billie Jean", artist: "Michael Jackson", genre: "Pop", bpm: 117, duration: "4:54", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
+  { id: "27", title: "Thriller", artist: "Michael Jackson", genre: "Pop", bpm: 118, duration: "5:57", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3" },
+  { id: "28", title: "Beat It", artist: "Michael Jackson", genre: "Pop", bpm: 139, duration: "4:18", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" },
+  
+  // Whitney Houston
+  { id: "29", title: "I Will Always Love You", artist: "Whitney Houston", genre: "Pop", bpm: 67, duration: "4:31", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3" },
+  { id: "30", title: "I Wanna Dance with Somebody", artist: "Whitney Houston", genre: "Pop", bpm: 120, duration: "4:51", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3" },
+  
+  // Rihanna
+  { id: "31", title: "Umbrella", artist: "Rihanna", genre: "Pop", bpm: 88, duration: "4:35", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+  { id: "32", title: "We Found Love", artist: "Rihanna", genre: "Pop", bpm: 128, duration: "3:35", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+  { id: "33", title: "Diamonds", artist: "Rihanna", genre: "Pop", bpm: 92, duration: "3:45", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+  
+  // Lady Gaga
+  { id: "34", title: "Bad Romance", artist: "Lady Gaga", genre: "Pop", bpm: 119, duration: "4:54", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+  { id: "35", title: "Poker Face", artist: "Lady Gaga", genre: "Pop", bpm: 120, duration: "3:57", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+  { id: "36", title: "Shallow", artist: "Lady Gaga", genre: "Pop", bpm: 96, duration: "3:35", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" },
 ];
 
 export default function OnlineDJ() {
