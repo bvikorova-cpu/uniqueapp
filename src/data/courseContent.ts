@@ -4,6 +4,851 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Python": [
+    {
+      title: "Téma 1: Úvod do Pythonu a jeho história",
+      content: `**Čo je Python?**
+
+Python je interpretovaný, interaktívny programovací jazyk, ktorý vytvoril Guido van Rossum. Pôvodne bol vyvinutý ako skriptovací jazyk pre Amoeba OS schopný systémových volaní. Python je v súčasnosti pri verzii 3.12 a je vyvíjaný ako open source projekt.
+
+**História a vývoj:**
+- Vytvorený Guido van Rossum
+- Pôvodne ako skriptovací jazyk
+- Vyvíjaný ako open source
+- Súčasná verzia: 3.12
+- Neustále aktívny vývoj
+
+**Porovnanie s inými jazykmi:**
+
+Python je často porovnávaný s:
+- **Tcl**: Podobná jednoduchosť
+- **Perl**: Podobná flexibilita
+- **Scheme**: Funkcionálne prvky
+- **Java**: Objektová orientácia
+- **Ruby**: Syntaktická eleganc ia
+
+**Názov jazyka:**
+
+Názov jazyka vôbec nevznikol z názvu druhu hada. Autor nazval jazyk podľa populárneho britského satirického seriálu Monty Python's Flying Circus. Napriek tomu sa názov jazyka často asociuje práve s hadom a nie so seriálom.
+
+**Využitie Pythonu:**
+
+Python sa používa na:
+- Vývoj webových aplikácií
+- Dátovú analýzu a vedu
+- Umelú inteligenciu
+- Automatizáciu úloh
+- Vedecké výpočty
+- Systémové skripty`
+    },
+    {
+      title: "Téma 2: Multi-paradigmový programovací jazyk",
+      content: `**Charakteristika Pythonu**
+
+Python je multi-paradigmový jazyk podobne ako Perl, na rozdiel od Smalltalku alebo Haskellu. To znamená, že namiesto toho aby nútil programátora používať určitý štýl programovania, umožňuje používanie viacerých.
+
+**Podporované paradigmy:**
+
+**1. Objektovo orientované programovanie (OOP):**
+- Triedy a objekty
+- Dedičnosť (vrátane viacnásobnej)
+- Polymorfizmus
+- Zapuzdrenie
+- Abstrakcia
+
+**2. Štruktúrované programovanie:**
+- Funkcie a procedúry
+- Bloková štruktúra
+- Riadené cykly
+- Podmienky
+
+**3. Funkcionálne programovanie:**
+- Funkcie vyššieho rádu
+- Lambda výrazy
+- Map, filter, reduce
+- List comprehensions
+- Generátory
+
+**Dynamické typovanie:**
+
+Python je dynamicky typový jazyk:
+- Premenné nemajú typ, iba hodnoty
+- Flexibilita v kóde
+- Rýchly vývoj
+- Introspekcia typov
+
+**Vysokoúrovňové dátové typy:**
+
+Python podporuje:
+- Zoznamy (lists)
+- Tuple
+- Slovníky (dictionaries)
+- Množiny (sets)
+- Reťazce (strings)
+
+**Garbage Collection:**
+
+Python používa garbage collection na správu pamäte:
+- Automatická správa pamäte
+- Počítanie referencií
+- Detekcia cyklických referencií
+- Žiadne manuálne uvoľňovanie pamäte
+
+**Rozšíriteľnosť:**
+
+Ďalšou dôležitou vlastnosťou Pythonu je to, že sa dá jednoducho rozširovať:
+- Nové moduly môžu byť napísané v C alebo C++
+- Python môže byť použitý ako rozširovací jazyk
+- Jednoduché rozhranie s existujúcimi systémami`
+    },
+    {
+      title: "Téma 3: Python ako skriptovací a vysokoúrovňový jazyk",
+      content: `**Skriptovací jazyk vs. Programovací jazyk**
+
+Aj keď sa Python často označuje ako "skriptovací jazyk", používa sa na vývoj mnohých veľkých softvérových projektov.
+
+**Veľké projekty v Pythone:**
+
+**1. Aplikačný server Zope:**
+- Komplexný web aplikačný server
+- Podniková úroveň
+- Rozsiahla funkcionalita
+
+**2. Systémy na zdieľanie súborov:**
+- Mnet
+- BitTorrent
+- Distribuované systémy
+
+**3. Google:**
+- Široké využitie vo vnútorných nástrojoch
+- YouTube backend
+- Mnoho interných služieb
+
+**Prečo nie je len "skriptovací jazyk":**
+
+Zástanci Pythónu ho radšej volajú **vysokoúrovňovým dynamickým programovacím jazykom**, lebo pojem "skriptovací jazyk" sa asociuje s:
+- Jednoduché shell skripty
+- Menej spôsobilé jazyky
+- Obmedzené použitie
+
+**Python je viac ako skriptovací jazyk:**
+- Komplexné aplikácie
+- Podnikové systémy
+- Vedecké výpočty
+- Umelá inteligencia
+- Web development
+
+**Použitie v rôznych oblastiach:**
+
+**1. Web development:**
+- Django framework
+- Flask micro-framework
+- Pyramid
+- FastAPI
+
+**2. Dátová veda:**
+- NumPy
+- Pandas
+- SciPy
+- Matplotlib
+
+**3. Machine Learning:**
+- TensorFlow
+- PyTorch
+- Scikit-learn
+- Keras
+
+**4. Automatizácia:**
+- Systémové skripty
+- DevOps nástroje
+- Testing frameworks
+- CI/CD pipeline
+
+**Výhody vysokoúrovňového jazyka:**
+- Vysoká produktivita
+- Rýchly vývoj
+- Čitateľný kód
+- Rozsiahle knižnice`
+    },
+    {
+      title: "Téma 4: Dátové typy a štruktúry v Pythone",
+      content: `**Základné dátové typy**
+
+Python podporuje základné dátové typy, ako celé čísla a čísla s pohyblivou desatinnou čiarkou, ale podporuje aj celé čísla neobmedzenej dĺžky a komplexné čísla.
+
+**Číselné typy:**
+
+**1. Celé čísla (int):**
+- Neobmedzená dĺžka
+- Automatické rozšírenie
+- Žiadne overflow
+
+**2. Desatinné čísla (float):**
+- Pohyblivá desatinná čiarka
+- IEEE 754 štandard
+
+**3. Komplexné čísla (complex):**
+- Reálna a imaginárna časť
+- Matematické operácie
+
+**Reťazce (Strings):**
+
+Taktiež podporuje bežné operácie s reťazcami s jednou výnimkou: **reťazce sú v Pythone nemenným typom**.
+
+**Vlastnosti reťazcov:**
+- Nemenný typ (immutable)
+- Operácie vracajú nový reťazec
+- Unicode podpora
+- Formátovanie
+
+**Dynamické typovanie:**
+
+**V Pythone premenné nemajú typ, majú iba hodnoty.**
+- Python je dynamicky typový jazyk na rozdiel od Java a C
+- Všetky hodnoty sa odovzdávajú odkazom a nie hodnotou
+- Flexibilita v kóde
+
+**Typová kontrola:**
+
+Medzi dynamicky typovými jazykmi má Python stredne prísnu typovú kontrolu:
+
+**Implicitné konverzie:**
+- Definované pre číselné typy
+- Môžeme vynásobiť komplexné číslo celým bez explicitného pretypovania
+- Nie je implicitná konverzia medzi číslami a reťazcami
+
+**Kolekcie - základné formy:**
+
+Kolekcie majú dve základné formy:
+
+**1. Mapované typy (Dictionaries):**
+- Nezoradené premenné typy
+- Implementované v podobe asociatívneho poľa
+- Mapujú kľúče na hodnoty
+- Podobné matematickým funkciám
+
+**2. Sekvenčné typy:**
+- Zoznamy (lists) - premenné
+- Tuple - nemenné
+- Reťazce (strings) - nemenné
+- Indexované od 0
+
+**Vlastnosti sekvenčných typov:**
+- Všetky indexované pozične (od 0 po dĺžku – 1)
+- Zoznamy môžu obsahovať objekty ľubovoľného typu
+- Reťazce môžu obsahovať iba znaky
+
+**Manipulácia s kolekciami:**
+
+Python poskytuje rozsiahle možnosti:
+- Zabudovaný operátor na kontrolu obsahu
+- Jednoduchá iterácia pomocou "for element in list"
+- List comprehensions
+- Generátory`
+    },
+    {
+      title: "Téma 5: Objektový systém Pythonu",
+      content: `**Integrácia dátových typov a tried**
+
+Systém dátových typov Pythonu je dobre integrovaný so systémom tried. Zabudované dátové typy nie sú skutočnými triedami, ale triedy môžu od nich dediť.
+
+**Rozširovanie zabudovaných typov:**
+
+Takže je možné rozširovať:
+- Reťazce (strings)
+- Asociatívne polia (dictionaries)
+- Celé čísla (integers)
+- Zoznamy (lists)
+
+**Introspekcia typov a tried:**
+
+Jazyk podporuje rozsiahlu introspekciu:
+- Typy môžeme prečítať a porovnávať
+- Ako v Smalltalku, typy sú tiež objektami
+- Atribúty objektu môžeme extrahovať ako asociatívne pole
+
+**Predefinovanie operátorov:**
+
+Operátory môžu byť v Pythone predefinované pomocou zadefinovania špeciálnej členskej funkcie.
+
+**Príklad:**
+\`\`\`python
+class MyNumber:
+    def __init__(self, value):
+        self.value = value
+    
+    # Definovanie __add__ dovolí používať operátor +
+    def __add__(self, other):
+        return MyNumber(self.value + other.value)
+\`\`\`
+
+**Špeciálne metódy (Magic methods):**
+
+Python používa špeciálne metódy pre:
+- \`__init__\`: Konštruktor
+- \`__str__\`: String reprezentácia
+- \`__add__\`: Operátor +
+- \`__len__\`: Funkcia len()
+- \`__getitem__\`: Indexovanie []
+
+**Objektovo orientované programovanie v Pythone:**
+
+Python má rozsiahlu podporu pre OOP:
+
+**1. Polymorfizmus:**
+- Pre triedy dedené od tej istej triedy
+- Plný polymorfizmus pre všetky objekty
+- Duck typing
+
+**2. Dedičnosť:**
+- Jednoduchá dedičnosť
+- Viacnásobná dedičnosť
+- Method Resolution Order (MRO)
+
+**3. Zapuzdrenie:**
+- Súkromné premenné (obmedzená podpora)
+- Property dekorátory
+- Getters a setters
+
+**Metatriedy:**
+
+Python podporuje metatriedy – pokročilý nástroj na rozšírenie funkcionality tried:
+- Dynamické vytváranie tried
+- Modifikácia správania tried
+- Pokročilé vzory návrhu
+
+**Výhody objektového systému:**
+- Flexibilita
+- Rozšíriteľnosť
+- Introspekcia
+- Dynamické správanie`
+    },
+    {
+      title: "Téma 6: Syntaktická významnosť odsadenia",
+      content: `**Jedinečná vlastnosť Pythonu**
+
+Jedným z nezvyčajných aspektov syntaxe Pythonu je spôsob, akým sa určujú bloky v programe. Je to aspekt syntaxe Pythonu, o ktorom počuli aj programátori, ktorí inak nepoznajú Python, keďže je dosť unikátny.
+
+**Tradičné jazyky:**
+
+V jazykoch, ktoré používajú blokovú štruktúru zdedenú po ALGOL (vrátane Pascalu, C, Perlu):
+- Bloky kódu sú oddelené pomocou zátvoriek
+- Alebo kľúčových slov ako begin a end v Pascale
+- Programátori obyčajne používajú odsadzovanie pre vizuálne oddelenie
+
+**Python prístup:**
+
+Python na rozdiel od toho požičiava vlastnosť z málo známeho jazyka ABC:
+- **Namiesto interpunkcie alebo kľúčových slov používa samotné odsadzovanie**
+- Odsadzovanie určuje bloky
+- Čitateľnejší kód
+- Vynútená konzistencia
+
+**Príklad - Faktoriál v C:**
+
+\`\`\`c
+int factorial(int x) {
+    if (x == 0) {
+        return 1;
+    } else {
+        return x * factorial(x-1);
+    }
+}
+\`\`\`
+
+**Príklad - Faktoriál v Pythone:**
+
+\`\`\`python
+def factorial(x):
+    if x == 0:
+        return 1
+    else:
+        return x * factorial(x-1)
+\`\`\`
+
+**Príklad - Faktoriál v Pythone za použitia lambdy:**
+
+\`\`\`python
+factorial = lambda x: 1 if x==0 else x*factorial(x-1)
+\`\`\`
+
+**Výhody odsadzovania:**
+
+**1. Čitateľnosť:**
+- Jasná štruktúra
+- Vynútené formátovanie
+- Konzistentný kód
+
+**2. Menej syntaxe:**
+- Žiadne zátvorky
+- Žiadne bodkočiarky
+- Jednoduchší kód
+
+**3. Bezpečnosť:**
+- Nemožné nesprávne zátvorkovanie
+- Vizuálna štruktúra = skutočná štruktúra
+
+**Pravidlá odsadenia:**
+- Štandardne 4 medzery
+- Konzistentné v celom súbore
+- Nikdy nemiešať medzery a tabulátory
+- PEP 8 štýl guide`
+    },
+    {
+      title: "Téma 7: Funkcionálne programovanie v Pythone",
+      content: `**Funkcionálny štýl programovania**
+
+Ako už bolo spomenuté, ďalším kladom Pythonu je dostupnosť funkcionálneho štýlu programovania. Umožňuje to priamočiarejšiu prácu so zoznamami a inými kolekciami.
+
+**List Comprehensions:**
+
+Jedna z takýchto konštrukcií je list comprehension, prebratá z funkcionálneho jazyka Haskell.
+
+**Príklad - prvých päť mocnín čísla dva:**
+
+\`\`\`python
+numbers = [1, 2, 3, 4, 5]
+powers_of_two = [2**n for n in numbers]
+\`\`\`
+
+**Quicksort algoritmus:**
+
+Algoritmus quicksort môže byť elegantne vyjadrený pomocou list comprehensions:
+
+\`\`\`python
+def qsort(L):
+    if L == []: return []
+    return qsort([x for x in L[1:] if x< L[0]]) + L[0:1] + \\
+        qsort([x for x in L[1:] if x>=L[0]])
+\`\`\`
+
+**Lambda výrazy:**
+
+Pomocou kľúčového slova lambda môžeme vytvárať malé anonymné funkcie.
+
+**Obmedzenia lambda:**
+- Môžu obsahovať len jeden výraz
+- Nemôžu obsahovať príkazy
+
+**Príklad - funkcia súčtu:**
+
+\`\`\`python
+lambda a, b: a+b
+\`\`\`
+
+**Funkcie ako argumenty:**
+
+Keďže Python umožňuje odovzdávať funkcie ako argumenty, je možné vyjadriť funkcionálne konštrukcie:
+
+**1. Map:**
+\`\`\`python
+# Použitie map s lambda
+numbers = [1, 2, 3, 4, 5]
+squared = list(map(lambda x: x**2, numbers))
+\`\`\`
+
+**2. Filter:**
+\`\`\`python
+# Filtrovanie párnych čísel
+numbers = [1, 2, 3, 4, 5, 6]
+even = list(filter(lambda x: x % 2 == 0, numbers))
+\`\`\`
+
+**3. Reduce:**
+\`\`\`python
+from functools import reduce
+# Súčet všetkých čísel
+numbers = [1, 2, 3, 4, 5]
+sum_all = reduce(lambda x, y: x + y, numbers)
+\`\`\`
+
+**Exec - dynamické vykonávanie kódu:**
+
+Python umožňuje vykonanie kódu, ktorý je napr. obsahom premennej, pomocou funkcie exec:
+
+\`\`\`python
+premenna = """print "ahoj svet"; premenna="print 'tak ahoj';stale=False" """
+stale = True
+
+while stale: 
+    exec premenna
+# Program sa môže meniť sám počas behu
+\`\`\`
+
+**Generátory:**
+
+Generátory v Pythone sú mechanizmom pre tzv. "lenivé vyhodnocovanie":
+
+\`\`\`python
+def generate_ints(N):
+    for i in xrange(N):
+        yield i
+
+# Použitie generátora
+for i in generate_ints(N):
+    print i
+\`\`\`
+
+**Výhody generátorov:**
+- Úspora pamäte
+- Lenivé vyhodnocovanie
+- Efektívne pre veľké dáta
+- Jednoduchá syntax`
+    },
+    {
+      title: "Téma 8: Dokumentačné reťazce a štandardná knižnica",
+      content: `**Dokumentačné reťazce (Docstrings)**
+
+Reťazec umiestnený hneď za definíciou triedy alebo funkcie alebo na začiatku modulu sa stáva asociovaným dokumentačným reťazcom (tzv. docstring).
+
+**Použitie docstrings:**
+- Automatická dokumentácia
+- Generovanie HTML dokumentácie
+- Interaktívna pomoc
+- IDE podpora
+
+**Príklad:**
+
+\`\`\`python
+def factorial(n):
+    """
+    Vypočíta faktoriál čísla n.
+    
+    Args:
+        n (int): Nezáporné celé číslo
+    
+    Returns:
+        int: Faktoriál čísla n
+    """
+    if n == 0:
+        return 1
+    return n * factorial(n-1)
+\`\`\`
+
+**Štandardná knižnica:**
+
+Python má rozsiahlu štandardnú knižnicu, ktorá ho robí vhodným na veľa úloh.
+
+**Vlastnosti štandardnej knižnice:**
+
+**1. Rozšíriteľnosť:**
+- Moduly môžu byť rozšírené vlastnými modulmi
+- Napísané v C alebo v Pythone
+- Jednoduché rozhranie
+
+**2. Internetové aplikácie:**
+
+Štandardná knižnica je dobre prispôsobená písaniu aplikácií pracujúcich s Internetom:
+- Podpora pre MIME
+- HTTP protokol
+- FTP, SMTP
+- URL parsing
+- Email handling
+
+**3. GUI knižnice:**
+- tkinter (Tk interface)
+- Vytváranie grafického užívateľského rozhrania
+- Cross-platform podpora
+
+**4. Databázy:**
+- Pripájanie sa k relačným databázam
+- SQLite zabudované
+- DB-API štandard
+
+**5. Regulárne výrazy:**
+- Pokročilé spracovanie textu
+- Pattern matching
+- Validácia
+
+**Multiplatformová kompatibilita:**
+
+Väčšina štandardnej knižnice je kompatibilná medzi platformami:
+- UNIX
+- Windows
+- Macintosh
+- Iné platformy
+- Programy môžu pracovať bez zmeny
+
+**Najdôležitejšie moduly:**
+
+**1. os a sys:**
+- Systémové operácie
+- Práca so súbormi
+- Environment variables
+
+**2. datetime:**
+- Práca s dátumom a časom
+- Formátovanie
+- Výpočty
+
+**3. json:**
+- Práca s JSON
+- Serializácia
+- Deserializácia
+
+**4. re:**
+- Regulárne výrazy
+- Pattern matching
+
+**5. collections:**
+- Špeciálne dátové štruktúry
+- Counter, defaultdict
+- OrderedDict`
+    },
+    {
+      title: "Téma 9: Interaktívny režim a vývojové nástroje",
+      content: `**Interaktívny režim Pythonu**
+
+Interpreter Pythonu tiež podporuje interaktívny režim, v ktorom výrazy môžu byť zadávané z terminálu a môžeme okamžite vidieť výsledok.
+
+**Výhody interaktívneho režimu:**
+
+**1. Pre začiatočníkov:**
+- Okamžitá spätná väzba
+- Učenie sa jazyka
+- Experimentovanie s kódom
+- Testovanie malých častí
+
+**2. Pre skúsených vývojárov:**
+- Rýchle testovanie
+- Prototypovanie
+- Debugging
+- Explorácia knižníc
+
+**Ako používať:**
+
+\`\`\`python
+>>> 2 + 2
+4
+>>> print("Hello, Python!")
+Hello, Python!
+>>> def greet(name):
+...     return f"Ahoj, {name}!"
+...
+>>> greet("Svet")
+'Ahoj, Svet!'
+\`\`\`
+
+**IPython - vylepšený shell:**
+
+Interaktívny shell **ipython** podporuje:
+- Code highlighting
+- Automatické dopĺňanie výrazov
+- Magic commands
+- Históriu príkazov
+- Môže slúžiť ako náhrada systémového shellu
+
+**Výhody IPython:**
+- Najmä užitočné pre Windows
+- Lepší ako štandardný Windows shell
+- Integrácia so systémom
+- Pokročilé funkcie
+
+**Jupyter Notebook:**
+
+Pokročilé interaktívne prostredie:
+- Web-based interface
+- Kombinuje kód, text a vizualizácie
+- Ideálne pre dátovú vedu
+- Zdieľanie a prezentácia práce
+
+**Vývojové nástroje zabudované v Pythone:**
+
+**1. Debugger:**
+- pdb modul
+- Breakpoints
+- Step-by-step vykonávanie
+- Inšpekcia premenných
+
+**Použitie:**
+\`\`\`python
+import pdb
+pdb.set_trace()  # Breakpoint
+\`\`\`
+
+**2. Profiler:**
+- Meranie výkonu
+- Identifikácia úzkych miest
+- Optimalizácia kódu
+
+**3. Unit Testing Framework:**
+- unittest modul
+- Automatizované testovanie
+- Test discovery
+- Fixtures a mocks
+
+**Príklad testu:**
+\`\`\`python
+import unittest
+
+class TestMath(unittest.TestCase):
+    def test_addition(self):
+        self.assertEqual(2 + 2, 4)
+    
+    def test_multiplication(self):
+        self.assertEqual(3 * 3, 9)
+
+if __name__ == '__main__':
+    unittest.main()
+\`\`\`
+
+**Ďalšie vývojové nástroje:**
+
+**1. Linters:**
+- pylint
+- flake8
+- Kontrola kvality kódu
+
+**2. Formatters:**
+- black
+- autopep8
+- Automatické formátovanie
+
+**3. Type checkers:**
+- mypy
+- Statická typová kontrola
+- Type hints`
+    },
+    {
+      title: "Téma 10: Spracovanie výnimiek a pokročilé funkcie",
+      content: `**Spracovanie výnimiek v Pythone**
+
+Python podporuje spracovanie výnimiek vo význame testovania chýb a iných výnimočných udalostí v programe.
+
+**Základná syntax:**
+
+\`\`\`python
+try:
+    # Kód, ktorý môže vyhodiť výnimku
+    result = 10 / 0
+except ZeroDivisionError:
+    # Spracovanie špecifickej výnimky
+    print("Delenie nulou!")
+except Exception as e:
+    # Spracovanie všetkých výnimiek
+    print(f"Chyba: {e}")
+else:
+    # Vykoná sa, ak nebola výnimka
+    print("Úspech!")
+finally:
+    # Vždy sa vykoná
+    print("Ukončenie")
+\`\`\`
+
+**Výhody výnimiek:**
+
+**1. Stručnejšia kontrola chýb:**
+- Lepšie ako testovanie vráteného kódu chyby v C
+- Čistejší kód
+- Oddelenie normálneho toku od spracovania chýb
+
+**2. Spoľahlivosť:**
+- Výnimky sa nemôžu ignorovať
+- Automatické šírenie
+- Jasné hlásenie chýb
+
+**3. Šírenie výnimiek:**
+- Môžu sa jednoducho šíriť volajúcimi funkciami
+- Ak chyba musí byť ohlásená vyššej úrovni programu
+- Žiadne manuálne predávanie chybových kódov
+
+**Vlastné výnimky:**
+
+\`\`\`python
+class CustomError(Exception):
+    """Vlastná výnimka pre špecifický prípad"""
+    pass
+
+try:
+    raise CustomError("Niečo sa pokazilo!")
+except CustomError as e:
+    print(f"Zachytená chyba: {e}")
+\`\`\`
+
+**Zachytenie syntaktickej chyby:**
+
+Takto je možné zachytiť aj výnimku spôsobenú syntaktickou chybou (hoci to nie je bežné):
+
+\`\`\`python
+try:
+    exec("neplatný kód !!!")
+except SyntaxError:
+    print("Syntaktická chyba zachytená!")
+\`\`\`
+
+**Context managers:**
+
+\`\`\`python
+# Automatické zatvorenie súboru
+with open('file.txt', 'r') as f:
+    content = f.read()
+# Súbor sa automaticky zatvorí
+\`\`\`
+
+**Dekorátory:**
+
+Pokročilá funkcia Pythonu:
+
+\`\`\`python
+def timer_decorator(func):
+    def wrapper(*args, **kwargs):
+        import time
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"Čas: {end - start}")
+        return result
+    return wrapper
+
+@timer_decorator
+def slow_function():
+    time.sleep(1)
+    return "Hotovo"
+\`\`\`
+
+**Property dekorátory:**
+
+\`\`\`python
+class Person:
+    def __init__(self, name):
+        self._name = name
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        if not value:
+            raise ValueError("Meno nemôže byť prázdne")
+        self._name = value
+\`\`\`
+
+**Asynchrónne programovanie:**
+
+\`\`\`python
+import asyncio
+
+async def fetch_data():
+    await asyncio.sleep(1)
+    return "Data"
+
+async def main():
+    result = await fetch_data()
+    print(result)
+
+asyncio.run(main())
+\`\`\`
+
+**Záver:**
+
+Python je mocný, flexibilný jazyk vhodný pre:
+- Rýchly vývoj
+- Čitateľný kód
+- Široké spektrum aplikácií
+- Od skriptov po veľké aplikácie`
+    }
+  ],
   "Prezentačné zručnosti": [
     {
       title: "Téma 1: Čo sú prezentačné zručnosti?",
