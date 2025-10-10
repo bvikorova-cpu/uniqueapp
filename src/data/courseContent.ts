@@ -21409,6 +21409,373 @@ Pre tých, ktorí chcú urobiť kariéru v oblasti webového dizajnu a vývoja, 
 **Pracovné príležitosti:**
 Dopyt po expertoch na CSS rastie a ponúka príležitosti v odvetviach, ako sú technológie, médiá, reklama a ďalšie. Je to oblasť, ktorá ponúka kreativitu, výzvy a odmenu.`
     }
+  ],
+  "JavaScript": [
+    {
+      title: "Téma 1: Úvod do JavaScriptu",
+      content: `**Definícia JavaScript**
+
+JavaScript je univerzálny a široko používaný **programovací jazyk**, ktorý sa používa najmä na vývoj webových stránok. Umožňuje vývojárom vytvárať interaktívny a dynamický obsah webových stránok. JavaScript sa stal nevyhnutnou súčasťou moderného internetu a používajú ho takmer všetky webové stránky.
+
+**Základy jazyka JavaScript:**
+JavaScript je skriptovací jazyk, ktorý funguje vo väčšine webových prehliadačov. Pôvodne bol vyvinutý na oživenie stránok HTML, ale v súčasnosti ho možno používať aj na strane servera v prostrediach, ako je napríklad Node.js. Jazyk podporuje procedurálne aj objektovo orientované **programovanie**, vďaka čomu je flexibilný a výkonný.
+
+**Interpretovaný jazyk:**
+JavaScript je interpretovaný jazyk, čo znamená, že kód sa vykonáva v prehliadači, nie v procesore počítača. Tým sa umožňuje dynamická interakcia s používateľom a zmeny obsahu stránky bez potreby jej aktualizovať.
+
+**Význam pre vývoj webových stránok:**
+Význam JavaScriptu pri vývoji webových stránok možno len ťažko preceňovať. Je to jedna z troch základných **webových technológií**, spolu s HTML a CSS. Vďaka možnosti používať ho na strane klienta aj servera spôsobil JavaScript revolúciu vo vývoji webových stránok.`
+    },
+    {
+      title: "Téma 2: História a vývoj JavaScriptu",
+      content: `**Počiatky JavaScriptu**
+
+JavaScript bol vyvinutý v roku 1995 Brendanom Eichom, ktorý pracoval pre Netscape Communications Corporation. Pôvodne bol vytvorený s cieľom pridať interaktivitu webovým stránkam.
+
+**Raný vývoj:**
+- 1995: Vytvorenie JavaScriptu
+- 1996: Štandardizácia pod ECMAScript
+- 1997: ECMAScript 1
+- 1998-1999: ECMAScript 2 a 3
+
+**Moderná éra:**
+Zavedením rámcov a knižníc sa výrazne zvýšila efektívnosť a výkonnosť jazyka JavaScript, vďaka čomu sa stal obľúbeným jazykom mnohých vývojárov.
+
+**ECMAScript verzie:**
+- ES5 (2009): Významné vylepšenia
+- ES6/ES2015: Veľká revolúcia
+- ES2016+: Každoročné aktualizácie
+
+**Vplyv na web:**
+JavaScript transformoval statické HTML stránky na dynamické webové aplikácie a stal sa nevyhnutnou súčasťou moderného webového vývoja.`
+    },
+    {
+      title: "Téma 3: Typické aplikácie JavaScriptu",
+      content: `**Využitie JavaScriptu**
+
+JavaScript má vo vývoji webových stránok množstvo aplikácií:
+
+**1. Interaktivita:**
+Používa sa na vytváranie interaktívnych webových stránok, napríklad:
+- Dynamické formuláre
+- Animácie
+- Hry
+- Interaktívne vizualizácie
+
+**2. Asynchrónna komunikácia:**
+Technológie ako AJAX umožňujú webovým aplikáciám získavať alebo odosielať informácie bez toho, aby sa musela znovu načítať celá stránka.
+
+**Výhody:**
+- Rýchlejší používateľský zážitok
+- Plynulá interakcia
+- Úspora dát
+- Lepší výkon
+
+**3. Používateľské rozhrania:**
+JavaScriptové frameworky ako React, Angular alebo Vue.js pomáhajú vývojárom vytvárať pokročilé používateľské rozhrania.
+
+**Moderné aplikácie:**
+- Single Page Applications (SPA)
+- Progressive Web Apps (PWA)
+- Mobilné aplikácie
+- Desktop aplikácie`
+    },
+    {
+      title: "Téma 4: Objektovo orientované programovanie v JavaScripte",
+      content: `**OOP v JavaScripte**
+
+JavaScript je objektovo orientovaný jazyk, čo znamená, že v ňom sú prvky tried, objektov, vlastností a metód. Tieto prvky umožňujú vývojárom vytvárať zložité aplikácie s hierarchiou tried a objektov.
+
+**Základné koncepty:**
+
+**1. Objekty:**
+- Kolekcie vlastností a metód
+- Základné stavebné bloky
+- Dátové štruktúry
+
+**2. Triedy:**
+- Šablóny pre objekty
+- Definícia vlastností a metód
+- Dedičnosť a polymorfizmus
+
+**3. Prototypy:**
+- Mechanizmus dedičnosti
+- Reťazec prototypov
+- Zdieľanie metód
+
+**4. Enkapslácia:**
+- Skrývanie implementačných detailov
+- Verejné a súkromné vlastnosti
+- Gettery a settery
+
+**Výhody OOP:**
+- Organizovaný kód
+- Znovupoužiteľnosť
+- Modulárnosť
+- Jednoduchšia údržba`
+    },
+    {
+      title: "Téma 5: Dynamické a funkcionálne programovanie",
+      content: `**Dynamická povaha JavaScriptu**
+
+JavaScript je dynamický jazyk, ktorý umožňuje vývojárom meniť obsah a štruktúru stránky za behu. To znamená, že používateľ môže zmeniť obsah stránky bez toho, aby ju musel aktualizovať.
+
+**Dynamické vlastnosti:**
+- Dynamické typy
+- Automatická konverzia typov
+- Flexibilné štruktúry dát
+- Runtime zmeny
+
+**Funkcionálne programovanie:**
+
+JavaScript podporuje funkcionálne programovanie, čo znamená, že funkcie sú v jazyku prvotriedne objekty.
+
+**Kľúčové koncepty:**
+
+**1. Funkcie ako objekty:**
+- Funkcie môžu byť priradené premenným
+- Môžu byť použité ako argumenty
+- Môžu byť vrátené z iných funkcií
+
+**2. Higher-order funkcie:**
+- map()
+- filter()
+- reduce()
+- forEach()
+
+**3. Arrow funkcie:**
+- Kratšia syntax
+- Lexikálne this
+- Moderný prístup
+
+**4. Closures:**
+- Zachovanie kontextu
+- Privátne premenné
+- Funkcionálne vzory`
+    },
+    {
+      title: "Téma 6: Interaktivita a manipulácia s DOM",
+      content: `**DOM Manipulation**
+
+JavaScript poskytuje možnosť manipulovať s DOM (Document Object Model), ktorý predstavuje štruktúru a obsah webových stránok. S JavaScriptom môžete pridávať, odoberať a meniť elementy stránky, pristupovať k ich atribútom a meniť ich štýl.
+
+**Základné operácie:**
+
+**1. Výber elementov:**
+- getElementById()
+- querySelector()
+- querySelectorAll()
+- getElementsByClassName()
+
+**2. Manipulácia s obsahom:**
+- innerHTML
+- textContent
+- createElement()
+- appendChild()
+- removeChild()
+
+**3. Zmena štýlov:**
+- style.property
+- classList.add()
+- classList.remove()
+- classList.toggle()
+
+**4. Atribúty:**
+- getAttribute()
+- setAttribute()
+- removeAttribute()
+- hasAttribute()
+
+**Interaktivita a dynamika:**
+
+JavaScript umožňuje vývojárom vytvárať interaktívne prvky a dynamické zmeny na webových stránkach. Môžete meniť obsah, štýl a vlastnosti elementov stránky na základe akcií používateľa alebo iných podmienok.`
+    },
+    {
+      title: "Téma 7: Spracovanie udalostí (Event Handling)",
+      content: `**Event-driven programovanie**
+
+JavaScript podporuje event-driven programovanie, čo umožňuje vývojárom programovať na základe udalostí. To znamená, že kód môže byť vykonaný v reakcii na určitú udalosť, napríklad kliknutie na tlačidlo.
+
+**Typy udalostí:**
+
+**1. Myš:**
+- click
+- dblclick
+- mouseover
+- mouseout
+- mousemove
+
+**2. Klávesnica:**
+- keydown
+- keyup
+- keypress
+
+**3. Formuláre:**
+- submit
+- change
+- focus
+- blur
+- input
+
+**4. Okno:**
+- load
+- resize
+- scroll
+- unload
+
+**Práca s udalosťami:**
+
+**1. addEventListener():**
+- Moderný prístup
+- Viacero poslucháčov
+- Lepšia kontrola
+- Oddelenie od HTML
+
+**2. Event objekt:**
+- Informácie o udalosti
+- target
+- preventDefault()
+- stopPropagation()
+
+**3. Event delegation:**
+- Efektívnejšie
+- Dynamické elementy
+- Menej poslucháčov`
+    },
+    {
+      title: "Téma 8: AJAX a asynchrónna komunikácia",
+      content: `**AJAX (Asynchronous JavaScript and XML)**
+
+JavaScript podporuje asynchrónne volania na server pomocou techniky nazvanej AJAX. Týmto spôsobom môžete načítať alebo odoslať dáta na server bez nutnosti obnovenia celej stránky. To umožňuje rýchle a plynulé načítavanie a aktualizáciu obsahu stránky.
+
+**Výhody AJAX:**
+- Bez obnovenia stránky
+- Rýchlejšia komunikácia
+- Lepší používateľský zážitok
+- Úspora šírky pásma
+
+**Moderné prístupy:**
+
+**1. Fetch API:**
+- Moderný štandard
+- Promise-based
+- Jednoduchšia syntax
+- Lepšia práca s chybami
+
+**2. Async/Await:**
+- Synchronný vzhľad
+- Lepšia čitateľnosť
+- Jednoduchšie spracovanie chýb
+- Moderný JavaScript
+
+**3. Axios:**
+- Populárna knižnica
+- Automatické parsovanie JSON
+- Interceptory
+- Jednoduchšie používanie
+
+**Spracovanie dát:**
+
+JavaScript umožňuje spracovávať a manipulovať s dátami na strane klienta. Môžete pracovať s textovými reťazcami, číslami, poliami, objektami a ďalšími dátovými typmi. Tiež poskytuje rôzne funkcie a metódy na manipuláciu s dátami, ako je triedenie, filtrovanie a vyhľadávanie.`
+    },
+    {
+      title: "Téma 9: Knižnice a frameworky",
+      content: `**Rozšíriteľnosť JavaScriptu**
+
+JavaScript má veľké množstvo rozšírení a knižníc, ktoré vývojárom uľahčujú prácu a poskytujú rôzne funkcionality.
+
+**Populárne knižnice:**
+
+**1. jQuery:**
+- Zjednodušenie DOM manipulácie
+- Kompatibilita medzi prehliadačmi
+- Veľká komunita
+- Rozšírená dokumentácia
+
+**2. Lodash:**
+- Utility funkcie
+- Práca s poľami a objektami
+- Výkonnosť
+- Konzistencia
+
+**Moderné frameworky:**
+
+**1. React:**
+- Komponentový prístup
+- Virtual DOM
+- Unidirectional data flow
+- Veľká ekosystém
+
+**2. Vue.js:**
+- Jednoduchosť
+- Progresívny framework
+- Reaktivita
+- Skvelá dokumentácia
+
+**3. Angular:**
+- Komplexné riešenie
+- TypeScript
+- Dependency injection
+- Enterprise aplikácie
+
+**Výhody použitia frameworkov:**
+- Rýchlejší vývoj
+- Štandardizácia
+- Komunita a podpora
+- Overené riešenia
+- Špecifické nástroje a komponenty`
+    },
+    {
+      title: "Téma 10: Node.js a server-side JavaScript",
+      content: `**JavaScript na serveri**
+
+JavaScript nie je obmedzený len na webové aplikácie, ale je tiež používaný pre vývoj serverovej strany pomocou Node.js. Node.js umožňuje JavaScriptu vykonávať sa na serveri, čo poskytuje plnú škálovateľnosť a možnosti pre vývoj backendových aplikácií.
+
+**Výhody Node.js:**
+
+**1. Jeden jazyk:**
+- Frontend aj backend v JavaScripte
+- Zdieľanie kódu
+- Jednoduchší vývoj
+- Jedna technológia
+
+**2. Výkonnosť:**
+- Event-driven architektúra
+- Non-blocking I/O
+- Škálovateľnosť
+- Rýchlosť
+
+**3. NPM (Node Package Manager):**
+- Najväčší repozitár balíčkov
+- Jednoduché riadenie závislostí
+- Veľká komunita
+- Mnoho riešení
+
+**Použitie Node.js:**
+
+**1. API servery:**
+- RESTful API
+- GraphQL
+- WebSockets
+- Real-time aplikácie
+
+**2. Mikroslužby:**
+- Škálovateľná architektúra
+- Nezávislé služby
+- Jednoduchšia údržba
+
+**3. Nástroje:**
+- Build tools
+- Task runners
+- Development servers
+- CLI aplikácie
+
+**Populárne frameworky:**
+- Express.js
+- Nest.js
+- Koa.js
+- Fastify`
+    }
   ]
 };
 
