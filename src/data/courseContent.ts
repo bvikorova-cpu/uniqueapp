@@ -40470,6 +40470,951 @@ Terénna sociálna práca môže byť aj nástrojom širšej sociálnej zmeny a 
 
 Terénna sociálna práca je kľúčovým nástrojom pomoci najzraniteľnejším skupinám spoločnosti. Vyžaduje nielen profesionálne znalosti a zručnosti, ale aj osobné kvality ako empatia, trpezlivosť a odhodlanie. Úspešní terénni sociálni pracovníci dokážu zmeniť životy jednotlivcov, rodín a celých komunít.`
     }
+  ],
+  "Komunitná práca": [
+    {
+      title: "Téma 1: Úvod do komunitnej práce",
+      content: `**Čo je komunitná práca?**
+
+Komunitná práca je metóda riešenia problémov v miestnom spoločenstve, ktorá sa zameriava na aktivizáciu a zapojenie ľudí do spoločného hľadania riešení.
+
+**Základné charakteristiky:**
+
+**1. Orientácia na komunitu:**
+- Práca s celým spoločenstvom
+- Nie len s jednotlivcami
+- Zmena systémov a štruktúr
+- Budovanie vzťahov v komunite
+
+**2. Aktivizácia obyvateľov:**
+- Podpora občianskej participácie
+- Rozvoj lokálnych lídrov
+- Posilnenie hlasu komunity
+- Demokratické rozhodovanie
+
+**3. Spoločné riešenia:**
+- Kolektívne hľadanie odpovedí
+- Využitie lokálnych zdrojov
+- Vzájomná podpora
+- Spolupráca namiesto individualizmu
+
+**Filozofia komunitnej práce:**
+
+**1. Zmocňovanie (Empowerment):**
+- Podpora sebadôvery komunity
+- Rozvoj schopností a zručností
+- Uznanie lokálneho poznania
+- Podpora autonómie
+
+**2. Participácia:**
+- Aktívne zapojenie obyvateľov
+- Demokratické procesy
+- Rovné príležitosti na účasť
+- Rešpekt k rôznorodosti
+
+**3. Solidarita:**
+- Vzájomná podpora
+- Spoločná zodpovednosť
+- Prekonávanie izolácie
+- Budovanie sociálneho kapitálu
+
+**Ciele komunitnej práce:**
+
+**1. Krátkodobé:**
+- Riešenie konkrétnych problémov
+- Realizácia projektov
+- Zlepšenie služieb
+- Zvýšenie kvality života
+
+**2. Dlhodobé:**
+- Budovanie silných komunít
+- Rozvoj miestnej demokracie
+- Sociálna zmena
+- Udržateľný rozvoj`
+    },
+    {
+      title: "Téma 2: Identifikácia a analýza potrieb komunity",
+      content: `**Zisťovanie potrieb komunity**
+
+Prvá fáza komunitnej práce zahŕňa dôkladnú analýzu a pochopenie potrieb a zdrojov v rámci komunity.
+
+**Metódy zisťovania potrieb:**
+
+**1. Pozorovanie:**
+- Priama účasť v živote komunity
+- Pozorovanie sociálnych interakcií
+- Identifikácia problémových oblastí
+- Mapovanie fyzického prostredia
+
+**2. Rozhovory a fokusové skupiny:**
+- Individuálne rozhovory s kľúčovými osobami
+- Skupinové diskusie s obyvateľmi
+- Dialóg s rôznymi skupinami komunity
+- Počúvanie rôznorodých hlasov
+
+**3. Dotazníky a ankety:**
+- Zber kvantitatívnych údajov
+- Mapovanie názorov obyvateľov
+- Identifikácia priorít
+- Zmapovanie zdrojov
+
+**4. Komunitné fóra:**
+- Verejné stretnutia
+- Prezentácia zistení
+- Diskusia o prioritách
+- Spoločné rozhodovanie
+
+**Analýza potrieb:**
+
+**1. SWOT analýza:**
+- **Silné stránky (Strengths):** čo komunita má
+- **Slabé stránky (Weaknesses):** kde má problémy
+- **Príležitosti (Opportunities):** čo môže využiť
+- **Hrozby (Threats):** čo ju ohrozuje
+
+**2. Mapovanie aktív:**
+- Identifikácia zdrojov komunity
+- Ľudský kapitál (zručnosti, talentu)
+- Fyzické zdroje (budovy, priestory)
+- Sociálny kapitál (vzťahy, siete)
+- Kultúrny kapitál (tradície, hodnoty)
+
+**3. Analýza problémového stromu:**
+- Identifikácia hlavného problému
+- Analýza príčin problému
+- Mapovanie dôsledkov
+- Hľadanie vstupných bodov pre zmenu
+
+**Prioritizácia potrieb:**
+
+**1. Kritériá hodnotenia:**
+- Naliehavosť problému
+- Dosah na komunitu
+- Realizovateľnosť riešenia
+- Dostupnosť zdrojov
+
+**2. Zapojenie komunity:**
+- Participatívne hodnotenie
+- Demokratické rozhodovanie
+- Konsenzus alebo hlasovanie
+- Transparentný proces
+
+**Dokumentácia zistení:**
+- Zápisy z rozhovorov
+- Fotografie a mapy
+- Štatistické údaje
+- Správy a prezentácie`
+    },
+    {
+      title: "Téma 3: Zapojenie komunity a participácia",
+      content: `**Aktivizácia a zapojenie obyvateľov**
+
+Cieľom komunitnej práce je podnietiť obyvateľov k aktívnej účasti na riešení problémov, ktoré sa týkajú ich bezprostredného prostredia.
+
+**Princípy participácie:**
+
+**1. Dobrovoľnosť:**
+- Nikto nie je nútený zapájať sa
+- Rešpekt k rozhodnutiam jednotlivcov
+- Podpora záujmu o participáciu
+- Odstránenie bariér účasti
+
+**2. Inkluzívnosť:**
+- Zapojenie všetkých skupín
+- Pozornosť na marginalizované hlasy
+- Dostupnosť pre všetkých
+- Rešpekt k rozmanitosti
+
+**3. Rovnosť:**
+- Rovnaké príležitosti na účasť
+- Rovnaký hlas pre všetkých
+- Nie dominancia určitých skupín
+- Horizontálne vzťahy
+
+**Úrovne participácie:**
+
+**1. Informovanie:**
+- Poskytovanie informácií
+- Transparentnosť
+- Dostupná komunikácia
+- Základná úroveň zapojenia
+
+**2. Konzultácia:**
+- Zber názorov a spätnej väzby
+- Počúvanie komunity
+- Diskusia o návrhoch
+- Nie záväzné rozhodovanie
+
+**3. Spolupráca:**
+- Partnerstvo s komunitou
+- Spoločné plánovanie
+- Zdieľanie zodpovednosti
+- Aktívna participácia
+
+**4. Zmocnenie:**
+- Rozhodovacia moc u komunity
+- Kontrola nad procesmi
+- Samospráva
+- Najvyššia úroveň participácie
+
+**Metódy zapojenia:**
+
+**1. Komunitné stretnutia:**
+- Pravidelné fóra
+- Verejné prezentácie
+- Diskusné stretnutia
+- Networkingové udalosti
+
+**2. Pracovné skupiny:**
+- Tematické tímy
+- Realizačné skupiny
+- Prípravné výbory
+- Koordinačné tímy
+
+**3. Participatívne metódy:**
+- Svetové kaviarni (World Café)
+- Open Space Technology
+- Participatívne rozpočty
+- Komunitné plánovanie
+
+**4. Online nástroje:**
+- Sociálne siete
+- Online fóra
+- Hlasovanie
+- Webové stránky
+
+**Budovanie dôvery:**
+- Transparentnosť procesov
+- Plnenie záväzkov
+- Pravidelná komunikácia
+- Oceňovanie príspevkov`
+    },
+    {
+      title: "Téma 4: Komunitné plánovanie a vývoj projektov",
+      content: `**Spoločné plánovanie a realizácia**
+
+Obyvatelia sa podieľajú na tvorbe plánov a realizácii projektov s cieľom zlepšiť svoju komunitu.
+
+**Proces komunitného plánovania:**
+
+**1. Vízia komunity:**
+- Spoločné stretnutie
+- Diskusia o budúcnosti
+- Kreslenie mentálnych máp
+- Stanovenie cieľov
+
+**2. Strategické plánovanie:**
+- Od vízie k akcii
+- Stanovenie priorít
+- Identifikácia krokov
+- Časový harmonogram
+
+**3. Akčné plány:**
+- Konkrétne aktivity
+- Zodpovedné osoby
+- Časové rámce
+- Potrebné zdroje
+
+**Vývoj komunitných projektov:**
+
+**1. Fáza prípravy:**
+- Identifikácia potreby
+- Definovanie cieľov projektu
+- Analýza zainteresovaných strán
+- Hodnotenie zdrojov
+
+**2. Plánovanie projektu:**
+- Detailný projektový plán
+- Rozpočet
+- Časový plán
+- Rozdelenie úloh
+
+**3. Realizácia:**
+- Implementácia aktivít
+- Koordinácia činností
+- Riadenie zdrojov
+- Riešenie problémov
+
+**4. Monitorovanie:**
+- Sledovanie pokroku
+- Meranie indikátorov
+- Pravidelné hodnotenia
+- Prispôsobovanie plánov
+
+**5. Hodnotenie:**
+- Finálne vyhodnotenie
+- Analýza dosahu
+- Lekcie pre budúcnosť
+- Zdieľanie výsledkov
+
+**Financovanie projektov:**
+
+**1. Lokálne zdroje:**
+- Komunitné zbierky
+- Dobrovoľnícka práca
+- Miestne príspevky
+- Naturálne dary
+
+**2. Granty a dotácie:**
+- Európske fondy
+- Štátne dotácie
+- Nadácie
+- Grantové agentúry
+
+**3. Partnerstvá:**
+- Firmy a podnikatelia
+- Samospráva
+- Neziskové organizácie
+- Akademická sféra
+
+**Riadenie projektu:**
+- Projektový manažment
+- Komunikácia s tímom
+- Riešenie konfliktov
+- Dokumentácia procesu`
+    },
+    {
+      title: "Téma 5: Metódy a formy komunitnej práce",
+      content: `**Rôznorodé prístupy v komunitnej práci**
+
+Komunitná práca môže využívať rôzne formy sociálnej práce a metódy na dosiahnutie svojich cieľov.
+
+**Základné metódy:**
+
+**1. Komunitná organizácia:**
+- Budovanie komunitných skupín
+- Rozvoj lokálneho líderstva
+- Mobilizácia zdrojov
+- Advokácia za zmenu
+
+**2. Komunitný rozvoj:**
+- Ekonomický rozvoj
+- Zlepšovanie infraštruktúry
+- Rozvoj služieb
+- Kultúrny rozvoj
+
+**3. Sociálne plánovanie:**
+- Analýza potrieb
+- Plánovanie služieb
+- Koordinácia programov
+- Strategický rozvoj
+
+**4. Sociálna akcia:**
+- Kampane a advokácia
+- Mobilizácia komunity
+- Politická aktivizácia
+- Sociálne hnutia
+
+**Formy komunitnej práce:**
+
+**1. Susedské iniciatívy:**
+- Malé lokálne projekty
+- Susedské stretnutia
+- Spoločné aktivity
+- Vzájomná pomoc
+
+**2. Komunitné festivaly:**
+- Kultúrne podujatia
+- Oslavy komunity
+- Prezentácia talentov
+- Budovanie identity
+
+**3. Komunitné záhrady:**
+- Spoločné pestovania
+- Vzdelávanie
+- Sociálne interakcie
+- Ekologická osveta
+
+**4. Trhové dni:**
+- Podpora lokálnych producentov
+- Miesto stretnutia
+- Ekonomická aktivita
+- Spoločenské podujatie
+
+**5. Verejné umenie:**
+- Murály a graffiti
+- Sochy a inštalácie
+- Komunitné galerie
+- Kultúrne projekty
+
+**Vzdelávacie metódy:**
+
+**1. Workshopy a školenia:**
+- Rozvoj zručností
+- Vzdelávanie komunity
+- Výmena skúseností
+- Praktické učenie
+
+**2. Mentoring a koučing:**
+- Individuálna podpora
+- Rozvoj líderstva
+- Prenos znalostí
+- Osobnostný rozvoj
+
+**3. Peer learning:**
+- Učenie od rovesníkov
+- Výmena skúseností
+- Vzájomná podpora
+- Neformálne vzdelávanie
+
+**Mobilizačné metódy:**
+
+**1. Komunitné kampane:**
+- Verejné akcie
+- Petície
+- Protesty
+- Mediálne kampane
+
+**2. Dialóg s autoritami:**
+- Stretnutia s poslancami
+- Verejné vypočutia
+- Prezentácie návrhov
+- Lobbovanie`
+    },
+    {
+      title: "Téma 6: Komunitné centrá a ich úloha",
+      content: `**Centrálne miesta komunitnej práce**
+
+Komunitné centrá poskytujú poradenstvo, preventívne aktivity a záujmovú činnosť a sú kľúčovými miestami pre komunitný rozvoj.
+
+**Funkcie komunitných centier:**
+
+**1. Miesto stretnutia:**
+- Spoločný priestor pre komunitu
+- Bezpečné a priateľské prostredie
+- Dostupné pre všetkých
+- Neutrálna pôda
+
+**2. Poskytovanie služieb:**
+- Sociálne poradenstvo
+- Právne poradenstvo
+- Psychologická podpora
+- Sprostredkovanie služieb
+
+**3. Preventívne programy:**
+- Programy pre deti a mládež
+- Prevencia sociálnopatologických javov
+- Zdravotná prevencia
+- Vzdelávacie aktivity
+
+**4. Záujmové aktivity:**
+- Krúžky a workshopy
+- Kultúrne aktivity
+- Športové programy
+- Voľnočasové aktivity
+
+**Typy komunitných centier:**
+
+**1. Susedské centrá:**
+- Malé lokálne priestory
+- Neformálna atmosféra
+- Blízkosť obyvateľom
+- Flexibilné služby
+
+**2. Multifunkčné centrá:**
+- Širšie spektrum služieb
+- Viac profesionálov
+- Koordinácia programov
+- Regionálny dosah
+
+**3. Tematické centrá:**
+- Špecializácia na určitú oblasť
+- Hlbšia expertíza
+- Cielené programy
+- Špecifické cieľové skupiny
+
+**Programy komunitných centier:**
+
+**1. Pre deti:**
+- Denné centrá
+- Doučovanie
+- Záujmové krúžky
+- Letné tábory
+
+**2. Pre mládež:**
+- Voľnočasové aktivity
+- Kariérne poradenstvo
+- Peer programy
+- Vzdelávacie projekty
+
+**3. Pre rodičov:**
+- Rodičovské kluby
+- Výchovné poradenstvo
+- Podpora rodičovstva
+- Skupiny vzájomnej pomoci
+
+**4. Pre seniorov:**
+- Aktivizačné programy
+- Kultúrne aktivity
+- Vzdelávacie semináre
+- Sociálne služby
+
+**Manažment komunitného centra:**
+
+**1. Organizácia:**
+- Štruktúra riadenia
+- Tím pracovníkov
+- Dobrovoľníci
+- Finančné riadenie
+
+**2. Participatívne riadenie:**
+- Zapojenie používateľov
+- Poradné orgány
+- Spätná väzba
+- Demokratické rozhodovanie
+
+**3. Partnerstvá:**
+- Spolupráca s inštitúciami
+- Networking
+- Zdieľanie zdrojov
+- Spoločné projekty
+
+**Hodnotenie dopadu:**
+- Meranie návštevnosti
+- Spokojnosť používateľov
+- Sociálny dopad
+- Zmeny v komunite`
+    },
+    {
+      title: "Téma 7: Implementácia a realizácia projektov",
+      content: `**Od plánu k akcii**
+
+Efektívna realizácia komunitných projektov je kľúčom k úspešnej komunitnej práci.
+
+**Príprava na realizáciu:**
+
+**1. Tímová príprava:**
+- Zostavenie realizačného tímu
+- Jasné rozdelenie úloh
+- Školenie a príprava
+- Vytvorenie pracovných postupov
+
+**2. Zabezpečenie zdrojov:**
+- Finančné zdroje
+- Materiálne vybavenie
+- Ľudské zdroje
+- Priestory a infraštruktúra
+
+**3. Komunikačný plán:**
+- Interná komunikácia
+- Externí komunikácia
+- Mediálna stratégia
+- Propagácia aktivít
+
+**Realizácia aktivít:**
+
+**1. Organizácia podujatí:**
+- Detailný program
+- Logistika
+- Registrácia účastníkov
+- Technické zabezpečenie
+
+**2. Facilitácia procesov:**
+- Vedenie stretnutí
+- Moderovanie diskusií
+- Riešenie konfliktov
+- Podpora participácie
+
+**3. Koordinácia aktivít:**
+- Súbeh viacerých činností
+- Spolupráca partnerov
+- Synchronizácia krokov
+- Manažment času
+
+**Riadenie projektu:**
+
+**1. Časový manažment:**
+- Dodržiavanie harmonogramu
+- Flexibilita pri zmenách
+- Pravidelné zhodnotenie pokroku
+- Riešenie oneskorení
+
+**2. Rozpočtový manažment:**
+- Sledovanie výdavkov
+- Efektívne využitie zdrojov
+- Finančné reporty
+- Transparentnosť
+
+**3. Riadenie rizík:**
+- Identifikácia rizík
+- Preventívne opatrenia
+- Krízový manažment
+- Plánovanie záložných riešení
+
+**Zapojenie komunity v realizácii:**
+
+**1. Dobrovoľníctvo:**
+- Mobilizácia dobrovoľníkov
+- Školenie a podpora
+- Ocenenie príspevkov
+- Budovanie tímu
+
+**2. Participácia:**
+- Aktívne zapojenie obyvateľov
+- Spolurozhodovanie
+- Spoluzodpovednosť
+- Zmocnenie
+
+**3. Komunikácia s komunitou:**
+- Pravidelné updates
+- Spätná väzba
+- Otvorené dvere
+- Transparentnosť
+
+**Dokumentácia:**
+
+**1. Záznam aktivít:**
+- Zápisnice
+- Fotodokumentácia
+- Videá
+- Články a reporty
+
+**2. Správy:**
+- Priebežné správy
+- Finančné výkazy
+- Správy pre partnerov
+- Verejné správy
+
+**Riešenie problémov:**
+- Flexibilný prístup
+- Kreatívne riešenia
+- Zapojenie tímu
+- Učenie sa z chýb`
+    },
+    {
+      title: "Téma 8: Monitorovanie a hodnotenie",
+      content: `**Sledovanie pokroku a hodnotenie dopadu**
+
+Pravidelné monitorovanie a hodnotenie sú nevyhnutné pre úspech komunitných projektov.
+
+**Monitorovanie projektu:**
+
+**1. Čo je monitorovanie?**
+- Priebežné sledovanie aktivít
+- Zber údajov o pokroke
+- Identifikácia problémov
+- Podklad pre rozhodovanie
+
+**2. Indikátory výkonu:**
+- Kvantitatívne ukazovatele (počty)
+- Kvalitatívne ukazovatele (zmeny)
+- Procesné indikátory (ako)
+- Výsledkové indikátory (čo)
+
+**3. Metódy zberu údajov:**
+- Zoznamy prítomnosti
+- Dotazníky spokojnosti
+- Pozorovania
+- Rozhovory s účastníkmi
+
+**4. Frekvencia monitorovania:**
+- Denné sledovanie aktivít
+- Týždenné schôdze tímu
+- Mesačné hodnotenia
+- Kvartálne správy
+
+**Hodnotenie projektu:**
+
+**1. Typy hodnotenia:**
+- **Formátové:** počas realizácie
+- **Sumatívne:** na konci projektu
+- **Krátkodobé:** bezprostredné výsledky
+- **Dlhodobé:** udržateľný dopad
+
+**2. Kritériá hodnotenia:**
+- **Relevantnosť:** riešil projekt skutočné potreby?
+- **Efektívnosť:** ako efektívne využité zdroje?
+- **Účinnosť:** dosiahnuté ciele?
+- **Dopad:** aké zmeny projekt priniesol?
+- **Udržateľnosť:** budú výsledky trvať?
+
+**3. Metódy hodnotenia:**
+- Dotazníky a ankety
+- Fokusové skupiny
+- Individuálne rozhovory
+- Prípadové štúdie
+- Pozorovania
+
+**Participatívne hodnotenie:**
+
+**1. Zapojenie komunity:**
+- Obyvatelia ako hodnotitelia
+- Spolurozhodovanie o kritériách
+- Spoločná analýza výsledkov
+- Zmocnenie cez hodnotenie
+
+**2. Metódy:**
+- Komunitné fóra
+- Hodnotenie najvýznamnejších zmien
+- Participatívne mapovanie
+- Príbehový prístup
+
+**Analýza výsledkov:**
+
+**1. Spracovanie údajov:**
+- Kvantitatívna analýza
+- Kvalitatívna analýza
+- Triangulation (kombinácia metód)
+- Vizualizácia výsledkov
+
+**2. Interpretácia:**
+- Čo výsledky znamenajú?
+- Aké sú príčiny?
+- Čo sa podarilo a prečo?
+- Čo sa nepodarilo a prečo?
+
+**Využitie výsledkov:**
+
+**1. Učenie sa:**
+- Lekcie pre budúcnosť
+- Zdieľanie skúseností
+- Zmeny v prístupe
+- Kontinuálne zlepšovanie
+
+**2. Accountability (zodpovednosť):**
+- Správy pre partnerov
+- Informovanie komunity
+- Transparentnosť
+- Zodpovednosť za výsledky
+
+**3. Advokácia:**
+- Dôkazy o dopade
+- Podpora politických zmien
+- Získavanie financovania
+- Zvyšovanie povedomia`
+    },
+    {
+      title: "Téma 9: Budovanie odolných komunít",
+      content: `**Od závislosti k sebestačnosti**
+
+Hlavným cieľom komunitnej práce je budovať silnejšie a odolnejšie komunity, ktoré sú schopné sami seba podporovať a riešiť svoje problémy.
+
+**Komunitná odolnosť:**
+
+**1. Čo je komunitná odolnosť?**
+- Schopnosť čeliť výzvam
+- Prispôsobivosť zmenám
+- Zotavenie sa z kríz
+- Dlhodobá udržateľnosť
+
+**2. Dimenzie odolnosti:**
+- **Sociálna:** vzťahy a siete
+- **Ekonomická:** lokálne zdroje
+- **Environmentálna:** zdravé prostredie
+- **Inštitucionálna:** efektívne vedenie
+
+**Budovanie sociálneho kapitálu:**
+
+**1. Bonding (zjednocujúci kapitál):**
+- Silné väzby v komunite
+- Vzájomná dôvera
+- Spoločná identita
+- Solidarita
+
+**2. Bridging (premosťujúci kapitál):**
+- Prepojenie rôznych skupín
+- Preklenenie rozdielov
+- Širšie siete
+- Rozmanitosť
+
+**3. Linking (prepojujúci kapitál):**
+- Spojenie s autoritami
+- Prístup k zdrojom
+- Politický vplyv
+- Inštitucionálna podpora
+
+**Rozvoj lokálneho líderstva:**
+
+**1. Identifikácia lídrov:**
+- Prírodné vodcovia
+- Rešpektované osobnosti
+- Aktivisti a vizionári
+- Rôznorodé vedenie
+
+**2. Podpora lídrov:**
+- Školenia a vzdelávanie
+- Mentorovanie
+- Platformy na pôsobenie
+- Uznanie a ocenenie
+
+**3. Demokratické vedenie:**
+- Participatívne rozhodovanie
+- Transparentnosť
+- Zodpovednosť
+- Rotácia rolí
+
+**Ekonomická sebestačnosť:**
+
+**1. Lokálna ekonomika:**
+- Podpora miestnych podnikov
+- Sociálne podnikanie
+- Družstvá
+- Lokálne trhy
+
+**2. Rozvoj zručností:**
+- Vzdelávanie a školenia
+- Rozvoj remesiel
+- Podnikateľské zručnosti
+- Finančná gramotnosť
+
+**3. Zdieľanie zdrojov:**
+- Komunitné banky času
+- Výmenné systémy
+- Spoločné zariadenia
+- Solidárna ekonomika
+
+**Environmentálna udržateľnosť:**
+
+**1. Zelená infraštruktúra:**
+- Komunitné záhrady
+- Verejné parky
+- Zelené strechy
+- Udržateľný transport
+
+**2. Environmentálna osveta:**
+- Vzdelávanie o ekológii
+- Praktické workshopy
+- Komunitné kampane
+- Zmena správania
+
+**Krízová pripravenosť:**
+
+**1. Plánovanie:**
+- Identifikácia rizík
+- Krízové plány
+- Komunitné tímy
+- Pravidelné cvičenia
+
+**2. Vzájomná pomoc:**
+- Susedská solidarita
+- Zásobovanie
+- Evakuácia
+- Podpora zraniteľných`
+    },
+    {
+      title: "Téma 10: Udržateľnosť a budúcnosť komunitnej práce",
+      content: `**Dlhodobá vízia a sociálna zmena**
+
+Komunitná práca sa zameriava na udržateľný rozvoj a dlhodobú zmenu v komunitách.
+
+**Udržateľnosť projektov:**
+
+**1. Finančná udržateľnosť:**
+- Diverzifikácia zdrojov financovania
+- Sociálne podnikanie
+- Členské príspevky
+- Lokálne príjmy
+
+**2. Inštitucionálna udržateľnosť:**
+- Formalizácia štruktúr
+- Občianske združenia
+- Jasné pravidlá
+- Transparentnosť
+
+**3. Sociálna udržateľnosť:**
+- Zapojenie mladých
+- Prenos hodnôt
+- Kultúrna kontinuita
+- Generačná výmena
+
+**Transfer vlastníctva:**
+
+**1. Od projektu k systému:**
+- Inštitucionalizácia procesov
+- Zakotvenie v komunite
+- Zníženie závislosti na externých
+- Sebeorganizácia
+
+**2. Exit stratégie:**
+- Postupné odchádzanie facilitátorov
+- Prenos zodpovednosti
+- Budovanie kapacít
+- Udržanie podpory
+
+**Sociálna zmena:**
+
+**1. Od mikro k makro:**
+- Individuálne zmeny
+- Komunitné zmeny
+- Systémové zmeny
+- Politické zmeny
+
+**2. Advokácia a lobbing:**
+- Kampaň za zmeny politík
+- Verejné kampane
+- Tlak na autority
+- Mediálna práca
+
+**3. Budovanie hnutia:**
+- Spojenie komunít
+- Siete a koalície
+- Kolektívna akcia
+- Masová mobilizácia
+
+**Trendy v komunitnej práci:**
+
+**1. Digitalizácia:**
+- Online platformy
+- Digitálne nástroje
+- Virtuálne komunity
+- Technológie pre mobilizáciu
+
+**2. Participatívne rozpočty:**
+- Občania rozhodujú o rozpočte
+- Demokratizácia financií
+- Priama demokracia
+- Transparentnosť
+
+**3. Transitions Towns:**
+- Udržateľné komunity
+- Energetická nezávislosť
+- Lokálna sebestačnosť
+- Ekologická transformácia
+
+**4. Commons (spoločné dobro):**
+- Kolektívne vlastníctvo
+- Spoločná správa zdrojov
+- Solidárna ekonomika
+- Alternatívy k privatizácii
+
+**Výzvy budúcnosti:**
+
+**1. Demografické zmeny:**
+- Starnutie populácie
+- Migrácia
+- Urbanizácia
+- Rozmanitosť
+
+**2. Ekonomické výzvy:**
+- Nerovnosť
+- Nezamestnanosť
+- Chudoba
+- Prekarizácia
+
+**3. Environmentálne krízy:**
+- Klimatická zmena
+- Znečistenie
+- Strata biodiverzity
+- Zdroje
+
+**Úloha komunitného pracovníka:**
+
+**1. Facilitátor:**
+- Podporovať proces
+- Nie riadiť
+- Zmocňovať
+- Postupne sa stiahnuť
+
+**2. Aktivista:**
+- Presadzovať zmenu
+- Podporovať spravodlivosť
+- Stáť na strane komunity
+- Vyzvať systém
+
+**Záver:**
+
+Komunitná práca je cesta k silnejším, odolnejším a demokratickejším komunitám. Vyžaduje trpezlivosť, dôveru v ľudí a vieru v kolektívnu silu. Úspech nie je v realizácii jednotlivých projektov, ale v zmene vzťahov, štruktúr a kultúry komunity.`
+    }
   ]
 }
 
