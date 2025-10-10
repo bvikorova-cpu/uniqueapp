@@ -1921,6 +1921,42 @@ export type Database = {
           },
         ]
       }
+      tracks: {
+        Row: {
+          artist: string
+          audio_url: string
+          bpm: number
+          created_at: string
+          duration: string
+          genre: string
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          artist: string
+          audio_url: string
+          bpm: number
+          created_at?: string
+          duration: string
+          genre: string
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          artist?: string
+          audio_url?: string
+          bpm?: number
+          created_at?: string
+          duration?: string
+          genre?: string
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_follows: {
         Row: {
           created_at: string
