@@ -34192,6 +34192,1100 @@ Montessori metóda nie je len o materiáloch a škole - je to životný prístup
 **Odkaz Márie Montessori:**
 "Pomôžme deťom, aby to dokázali samy - je to cesta k ich slobode a našej budúcnosti."`
     }
+  ],
+
+  "Waldorfská pedagogika": [
+    {
+      title: "Téma 1: Úvod do Waldorfské pedagogiky",
+      content: `**Čo je Waldorfská pedagogika?**
+
+Waldorfská (alebo Waldorfsko-steinská) pedagogika je alternatívna výchovná metóda založená na antropozofickej filozofii, ktorá sa zameriava na holistický rozvoj dieťaťa.
+
+**História a zakladateľ:**
+
+**Rudolf Steiner (1861-1925):**
+- Rakúsky filozof a pedagóg
+- Zakladateľ antropozofie
+- Vytvoril waldorfskú pedagogiku
+- Holistický prístup k vzdelávaniu
+
+**Vznik:**
+- Rok 1919 - prvá waldorfská škola v Stuttgarte
+- Pre deti zamestnancov továrne Waldorf-Astoria
+- Odtiaľ názov "waldorfská"
+- Dnes viac ako 1000 škôl po celom svete
+
+**Základná filozofia:**
+
+**Holistický prístup:**
+- Rozvoj celej osobnosti
+- Telesný, emocionálny, intelektuálny a duchovný rozmer
+- Harmónia všetkých aspektov
+- Nie len intelekt
+
+**Hlavné princípy:**
+
+**1. Rešpekt k vývinovým fázam:**
+- Každé obdobie má svoje potreby
+- Tri sedemoročné cykly (0-7, 7-14, 14-21)
+- Prispôsobenie vzdelávania veku
+- Prirodzený rozvoj
+
+**2. Umelecký prístup:**
+- Umenie preniká celým vzdelávaním
+- Rozvoj tvorivosti
+- Estetické vnímanie
+- Kreativita ako základ učenia
+
+**3. Rytmus a rituály:**
+- Denné, týždenné, ročné rytmy
+- Slávenie sviatkov
+- Pravidelnosť a predvídateľnosť
+- Pocit bezpečia
+
+**4. Prepojenie s prírodou:**
+- Práca s prírodnými materiálmi
+- Pochopenie prírodných cyklov
+- Ročné obdobia
+- Rešpekt k prírode
+
+**Motto:**
+"Vzdelávanie hlavy, srdca a rúk" - rozvoj myslenia, cítenia a vôle.`
+    },
+    {
+      title: "Téma 2: Tri sedemoročné cykly vývoja",
+      content: `**Vývinové fázy podľa Steinera**
+
+Rudolf Steiner rozdelil detský a mladistvý vývoj do troch sedemoročných období, z ktorých každé má svoje špecifické potreby a ciele.
+
+**Prvé sedemoročie (0-7 rokov):**
+
+**Charakteristika:**
+- Obdobie napodobňovania
+- Rozvoj tela a vôle
+- Učenie cez zmysly
+- Fantázia a hra
+
+**Potreby dieťaťa:**
+- Napodobňovanie dospelých
+- Rytmus a rituály
+- Voľná hra
+- Prírodné prostredie
+- Jednoduché hračky
+
+**Čo sa rozvíja:**
+- Telesné schopnosti
+- Hrubá a jemná motorika
+- Zmyslové vnímanie
+- Fantázia
+- Vôľa
+
+**Vzdelávací prístup:**
+- Materská škôlka
+- Bez formálneho vzdelávania
+- Hra a praktické činnosti
+- Príbehy a bábkové divadlo
+- Žiadne akademické učenie
+
+**Druhé sedemoročie (7-14 rokov):**
+
+**Charakteristika:**
+- Obdobie autority
+- Rozvoj citu a emócií
+- Učenie cez obraz a umenie
+- Vzťah k učiteľovi
+
+**Potreby dieťaťa:**
+- Vzor učiteľa
+- Umelecký prístup
+- Obrazné vyučovanie
+- Rytmus a opakování
+- Spoločenstvo
+
+**Čo sa rozvíja:**
+- Emočný život
+- Pamäť
+- Imaginatívne myslenie
+- Umelecké schopnosti
+- Cítenie
+
+**Vzdelávací prístup:**
+- Základná škola (1.-8. ročník)
+- Epochové vyučovanie
+- Umelecké predmety
+- Bez učebníc
+- Hlavný učiteľ s triedou 8 rokov
+
+**Tretie sedemoročie (14-21 rokov):**
+
+**Charakteristika:**
+- Obdobie kritického myslenia
+- Rozvoj intelektu
+- Hľadanie vlastnej identity
+- Samostatnosť
+
+**Potreby mladistvého:**
+- Abstraktné myslenie
+- Kritické hodnotenie
+- Diskusia a dialóg
+- Samostatnosť
+- Pochopenie sveta
+
+**Čo sa rozvíja:**
+- Logické myslenie
+- Kritické uvažovanie
+- Úsudok
+- Sebapoznanie
+- Myslenie
+
+**Vzdelávací prístup:**
+- Vyššie ročníky (9.-12.)
+- Odborní učitelia
+- Vedecký prístup
+- Diskusie a projekty
+- Príprava na život
+
+**Dôležitosť rešpektovania fáz:**
+Predčasné stimulovanie intelektu v ranom veku môže narušiť harmonický rozvoj dieťaťa.`
+    },
+    {
+      title: "Téma 3: Umenie ako základ vzdelávania",
+      content: `**Umelecký prístup k učeniu**
+
+V waldorfských školách je umenie integrálnou súčasťou celého vzdelávania, nie len doplnkom.
+
+**Prečo umenie?**
+
+**1. Rozvoj celej osobnosti:**
+- Rozvoj mysle, citu a vôle
+- Harmónia rozumu a emócií
+- Kreativita a tvorivosť
+- Vyvážený rozvoj
+
+**2. Obrazné učenie:**
+- Deti v 2. sedemoročí učia cez obrazy
+- Živé predstavy
+- Emocionálne zapojenie
+- Hlbšie pochopenie
+
+**3. Praktické zručnosti:**
+- Práca s rukamí
+- Jemná motorika
+- Vytrvalosť
+- Dovednosť
+
+**Umelecké predmety:**
+
+**Maľovanie:**
+- Akvarelové maľovanie
+- Mokré na mokrým
+- Zážitok farieb
+- Nie výsledok, ale proces
+- Rozvoj zmyslu pre farby
+
+**Kreslenie:**
+- Formokreslenie
+- Geometria cez kresbu
+- Od jednoduché k zložitému
+- Rozvoj priestorovej predstavivosti
+- Symetria a harmónia
+
+**Modelovanie:**
+- Práca s hlinou, voskom
+- Trojrozmerné vnímanie
+- Vytváraní foriem
+- Hmatový zážitok
+- Tvorivosť
+
+**Hudba:**
+- Spev každý deň
+- Hra na flautu
+- Rytmus a melódia
+- Školský orchester
+- Rozvoj hudobného cítenia
+
+**Eurytmia:**
+- Pohybové umenie
+- "Viditeľný spev"
+- Harmonizácia tela a duše
+- Priestorová orientácia
+- Spoločenský prvok
+
+**Dramatické umenie:**
+- Bábkové divadlo (materská škola)
+- Javiskové hry (škola)
+- Recitácia poézie
+- Verejné predstavenia
+- Rozvoj sebavedomia
+
+**Remeslá:**
+- Háčkovanie, pletenie
+- Šitie
+- Práca s drevom
+- Kovanie
+- Praktické zručnosti
+
+**Umenie v "obyčajných" predmetoch:**
+
+**Jazyk:**
+- Básne a príbehy
+- Rytmus a rým
+- Krásne písmo (kaligrafia)
+- Ilustrácie vlastných zošitov
+
+**Matematika:**
+- Rytmické počítanie
+- Geometrické kresby
+- Vizualizácia
+- Krása vzorcov
+
+**Prírodovedné predmety:**
+- Pozorovanie prírody
+- Kreslenie pozorovaného
+- Fenomenologický prístup
+- Zážitok pred teóriou
+
+**Výhody umeleckého prístupu:**
+- Radosť z učenia
+- Rozvoj tvorivosti
+- Emocionálna inteligencia
+- Vyvážená osobnosť
+- Celoživotná láska k umeniu`
+    },
+    {
+      title: "Téma 4: Rytmus a rituály",
+      content: `**Význam pravidelnosti a rytmu**
+
+Rytmus a rituály sú kľúčovými prvkami waldorfskej pedagogiky, ktoré poskytujú deťom pocit bezpečia a harmónie.
+
+**Denný rytmus:**
+
+**Štruktúra dňa:**
+
+**Materská škola:**
+- Ranný kruh (spev, poézia, pohyb)
+- Voľná hra
+- Spoločné občerstvenie
+- Pobyt vonku
+- Umelecké činnosti
+- Rozlúčenie
+
+**Základná škola:**
+- Ranné privítanie
+- Hlavná lekcia (2 hodiny)
+- Rytmická časť
+- Odborné predmety
+- Obed a odpočinok
+- Odpoludňajšie aktivity
+
+**Princípy:**
+- Striedanie aktivity a pokoja
+- Dýchanie - vydýchnutie a nádych
+- Vnútorné a vonkajšie aktivity
+- Rovnováha
+
+**Týždenný rytmus:**
+
+**Pravidelnosť činností:**
+- Každý deň má svoj charakter
+- Napríklad: pondelok - maľovanie, utorok - pečenie
+- Predvídateľnosť
+- Pocit bezpečia
+
+**Opakujúce sa aktivity:**
+- Rovnaké jedlo v určité dni
+- Rovnaké príbehy
+- Rovnaké hry
+- Rutiny
+
+**Ročný rytmus:**
+
+**Slávenie sviatkov:**
+- Prírodné sviatky (rovnodennosť, slnovrat)
+- Kultúrne sviatky
+- Náboženské sviatky (všetky tradície)
+- Vlastné školské sviatky
+
+**Príklady:**
+- Jeseň: Michalský sviatok (odvaha)
+- Zima: Adventné obdobie, svetlo v tme
+- Jar: Veľká noc, prebudenie prírody
+- Leto: Jánsky sviatok, plnosť života
+
+**Príprava a slávenie:**
+- Tvorba dekorácií
+- Pečenie
+- Nacvičovanie hier
+- Spoločný zážitok
+
+**Význam sviatkov:**
+- Spojenie s prírodným cyklom
+- Rešpekt k tradíciám
+- Spoločenstvo
+- Duchovný rozmer života
+
+**Rytmus v učení:**
+
+**Epochové vyučovanie:**
+- Jeden predmet 3-4 týždne
+- Každý deň 2 hodiny
+- Hlboké ponorenie sa
+- Rytmus zapamätania
+
+**Tri kroky učenia:**
+- 1. deň: zážitok, príbeh
+- Spánok - spracovanie
+- 2. deň: spomienka, cvičenie
+- Zafixovanie
+
+**Výhody rytmu:**
+- Pocit bezpečia
+- Vnútorný pokoj
+- Lepšie učenie
+- Zdravý vývoj
+- Spojenie s prírodou`
+    },
+    {
+      title: "Téma 5: Rola učiteľa vo waldorfskej škole",
+      content: `**Učiteľ ako autorita a vzor**
+
+V waldorfskej pedagogike má učiteľ špecifickú úlohu, ktorá sa líši v jednotlivých vývinových fázach dieťaťa.
+
+**Hlavný učiteľ (1.-8. ročník):**
+
+**Kontinuita:**
+- Jeden učiteľ s triedou 8 rokov
+- Hlboké poznanie detí
+- Vzájomná dôvera
+- Stabilita a istota
+
+**Výhody:**
+- Dlhodobý vzťah
+- Poznanie rodín
+- Individuálny prístup
+- Sledovanie vývoja
+
+**Výzvy:**
+- Vysoké nároky na učiteľa
+- Multidisciplinárnosť
+- Osobnostný rast
+- Neustále vzdelávanie
+
+**Učiteľ ako autorita:**
+
+**V 2. sedemoročí:**
+- Dieťa potrebuje autoritu
+- Nie autoritárstvo
+- Milovaná autorita
+- Vzor na nasledovanie
+
+**Charakter autority:**
+- Založená na rešpekte
+- Nie na strachu
+- Prirodzená
+- Láskavá
+
+**Učiteľ ako model:**
+- Deti napodobňujú
+- Nie slová, ale činy
+- Autentičnosť
+- Osobný príklad
+
+**Učiteľ ako umelec:**
+
+**Tvorivý prístup:**
+- Každá lekcia je umelecké dielo
+- Živé vyprávanie
+- Krásne nápisy na tabuli
+- Umelecké vyučovanie
+
+**Príprava:**
+- Dôkladná príprava
+- Vlastné zošity
+- Kreativita
+- Nadšenie
+
+**Obrazné vyučovanie:**
+- Príbehy a obrazy
+- Nie abstrakcie
+- Živé predstavy
+- Emocionálne zapojenie
+
+**Bez učebníc:**
+- Deti si tvoria vlastné
+- Krásne písané zošity
+- Ilustrácie
+- Vlastná tvorba
+
+**Osobnostný rozvoj učiteľa:**
+
+**Sebapoznanie:**
+- Práca na sebe
+- Antropozofické štúdium
+- Meditácia
+- Osobný rast
+
+**Vzdelávanie:**
+- Kontinuálne vzdelávanie
+- Konferencie
+- Spolupráca s kolegami
+- Štúdium antropozofie
+
+**Spolupráca:**
+
+**S rodičmi:**
+- Pravidelné stretnutia
+- Otvorená komunikácia
+- Partnerstvo
+- Spoločné ciele
+
+**S kolegami:**
+- Týždenné pedagogické rady
+- Štúdium
+- Vzájomná podpora
+- Tímová práca
+
+**Odborní učitelia:**
+- Umenie, remeslá
+- Cudzíe jazyky
+- Šport (eurytmia, hry)
+- Od 1. ročníka
+
+**Vedenie školy:**
+- Bez riaditeľa
+- Kolektívne vedenie
+- Samosprávna škola
+- Zodpovednosť všetkých`
+    },
+    {
+      title: "Téma 6: Prírodné materiály a jednoduché hračky",
+      content: `**Dôraz na prirodzenosť a jednoduchosť**
+
+Waldorfská pedagogika kladie veľký dôraz na používanie prírodných materiálov a jednoduchých, netvarovaných hračiek.
+
+**Prírodné materiály:**
+
+**V materské škole:**
+
+**Hračky:**
+- Drevo
+- Vlna
+- Bavlna
+- Hodváb
+- Hlina
+- Kamene
+- Šušky
+- Oriešky
+
+**Prečo prírodné?**
+- Zmyslový zážitok
+- Rôzne textúry
+- Teplo materiálu
+- Spojenie s prírodou
+- Ekologické
+
+**Charakteristiky hračiek:**
+
+**Jednoduchosť:**
+- Netvarované
+- Nie sú "hotové"
+- Ponechanie priestoru fantázii
+- Multifunkčné
+
+**Príklady:**
+- Drevené kocky
+- Látky na zabaľovanie
+- Šúlky z vlny
+- Kúsky dreva
+- Šišky a konáre
+
+**Prečo jednoduché?**
+- Rozvoj fantázie
+- Kreativita
+- Improvizácia
+- Neobmedzené možnosti
+
+**Bábky:**
+- Jednoduché
+- Minimálne črty tváre
+- Prirodzené materiály
+- Dieťa dopĺňa emócie
+
+**V škole:**
+
+**Náradie a pomôcky:**
+- Drevené perá na písanie
+- Voňavé voskové pastely
+- Prírodné farby
+- Papier zo stromu
+
+**Výtvarné materiály:**
+- Akvarelové farby
+- Včelí vosk
+- Hlina
+- Drevo
+- Vlna na plstenie
+
+**Remeslá:**
+- Vlna na pletenie
+- Bavlna na šitie
+- Drevo na vyrezávanie
+- Meď na kovanie
+
+**Čo waldorfská pedagogika NEPOUŽÍVA:**
+
+**V ranom veku (0-7):**
+- Plastové hračky
+- Elektronické hračky
+- TV, tablet, mobil
+- Počítače
+- Batériové hračky
+
+**Prečo nie?**
+- Prekrývajú fantáziu
+- Pasívne vnímanie
+- Škodlivé pre rozvoj
+- Proti prirodzenému vývoju
+- Nadmerná stimulácia
+
+**Farby v prostredí:**
+
+**Materská škola:**
+- Jemné, pastelové tóny
+- Ružová (podporuje telesný vývoj)
+- Teplé farby
+- Prírodné odtiene
+
+**Škola:**
+- Prispôsobené veku
+- 1. ročník - červená (vôľa)
+- Postupne chladnejšie
+- 8. ročník - modrá (myslenie)
+
+**Výhody prírodných materiálov:**
+- Zdravý rozvoj zmyslov
+- Spojenie s prírodou
+- Rozvoj fantázie
+- Kreativita
+- Úcta k materiálom
+- Ekologické vedomie`
+    },
+    {
+      title: "Téma 7: Epochové vyučovanie",
+      content: `**Hlboké ponorenie sa do témy**
+
+Epochové vyučovanie je špecifická forma organizácie učiva, ktorá je charakteristická pre waldorfské školy.
+
+**Čo je epocha?**
+
+**Definícia:**
+- Jeden hlavný predmet 3-4 týždne
+- Každé ráno prvé 2 hodiny
+- Intenzívne štúdium
+- Hlboké ponorenie
+
+**Hlavná lekcia:**
+- 1,5-2 hodiny
+- Ranné hodiny (najlepšia koncentrácia)
+- Rytmická časť + práca
+- Bez prestávok
+
+**Prečo epochy?**
+
+**1. Hlbšie pochopenie:**
+- Čas na prežitie témy
+- Nie povrchné
+- Prepojenia
+- Komplexný pohľad
+
+**2. Rytmus učenia:**
+- Zážitok - spanie - cvičenie
+- Prirodzený proces pamäti
+- Spracovanie cez noc
+- Opakovanie ráno
+
+**3. Koncentrácia:**
+- Nie striedanie predmetov
+- Sústredenie na jedno
+- Hlbšia koncentrácia
+- Menej rozptyľovania
+
+**Štruktúra epochy:**
+
+**Tri časti hlavnej lekcie:**
+
+**1. Rytmická časť (20-30 min):**
+- Prebúdzanie
+- Pohyb
+- Recitácia
+- Spev
+- Aktivizácia
+
+**2. Spomienka (30 min):**
+- Čo bolo včera
+- Rozprávanie detí
+- Precvičenie
+- Upevnenie
+
+**3. Nová látka (45-60 min):**
+- Príbeh
+- Obrazné vyučovanie
+- Zážitok
+- Objavovanie
+
+**Príklady epoch:**
+
+**1.-2. ročník:**
+- Písanie a čítanie
+- Počítanie
+- Príbehy rozprávok
+
+**3.-4. ročník:**
+- Biblické príbehy
+- Stvorenie sveta
+- Miestopis
+- Gramatika
+
+**5. ročník:**
+- Grécke dejiny a mýty
+- Botanika
+- Geografia
+
+**6. ročník:**
+- Rímske dejiny
+- Minerálogia
+- Geometria
+
+**7.-8. ročník:**
+- Stredovek, renesancia
+- Fyzika, chémia
+- Anatómia
+
+**Vedenie epochových zošitov:**
+
+**Vlastné učebnice:**
+- Deti si píšu zošity
+- Krásne písmo
+- Ilustrácie
+- Vlastná tvorba
+
+**Obsah:**
+- Hlavné látka
+- Kresby
+- Cvičenia
+- Shrnutie
+
+**Výhody:**
+- Osobný vzťah k látke
+- Estetický zážitok
+- Rozvoj schopností
+- Cenná spomienka
+
+**Ostatné predmety:**
+
+**Celoročne:**
+- Cudzíe jazyky (2-3x týždenne)
+- Umenie (maľba, hudba, eurytmia)
+- Remeslá
+- Šport/hry
+
+**Výhody epochového vyučovania:**
+- Hlboké pochopenie
+- Menej stresu
+- Prirodzený rytmus
+- Radosť z učenia
+- Lepšie zapamätanie`
+    },
+    {
+      title: "Téma 8: Hodnotenie bez známok",
+      content: `**Iný prístup k hodnoteniu**
+
+Waldorfské školy nepoužívajú klasické známky, ale alternatívne formy hodnotenia, ktoré podporujú individuálny rozvoj.
+
+**Bez známok:**
+
+**Prečo nie známky?**
+- Porovnávanie škodí
+- Stres a tlak
+- Strata vnútornej motivácie
+- Neúcta k individualite
+- Zameranie na výkon, nie učenie
+
+**Alternatívy:**
+
+**1. Slovné hodnotenie:**
+- Podrobný popis
+- Individuálny pokrok
+- Silné stránky
+- Oblasti rozvoja
+- Osobný rast
+
+**2. Záškolské vysvedčenie:**
+- Raz ročne
+- Dlhý text (niekoľko strán)
+- Všetky oblasti
+- Osobnosť dieťaťa
+- Hollistický pohľad
+
+**3. Báseň pre dieťa:**
+- Osobná báseň
+- Vystihuje povahu
+- Povzbudenie
+- Láskavé slová
+- Oceňenie jedinečnosti
+
+**Čo sa hodnotí:**
+
+**Nie len intelekt:**
+- Telesný vývoj
+- Emocionálny rast
+- Sociálne schopnosti
+- Umelecké zručnosti
+- Remeselná dovednosť
+- Úsilie a snaha
+
+**Oblasti hodnotenia:**
+
+**1. Akademické predmety:**
+- Čítanie, písanie
+- Matematika
+- Prírodovedné predmety
+- Jazyky
+
+**2. Umelecké predmety:**
+- Maľovanie, kreslenie
+- Hudba, spev
+- Eurytmia
+- Dramatické umenie
+
+**3. Praktické zručnosti:**
+- Remeslá
+- Šport/hry
+- Záhradníctvo
+- Praktické práce
+
+**4. Sociálne správanie:**
+- Vzťahy s ostatnými
+- Spolupráca
+- Rešpekt
+- Empatia
+
+**5. Osobný rozvoj:**
+- Vytrvalosť
+- Koncentrácia
+- Samostatnosť
+- Zodpovednosť
+- Kreativita
+
+**Spätná väzba:**
+
+**Priebežne:**
+- Ústna spätná väzba
+- Individuálne rozhovory
+- Povzbudenie
+- Konkrétne rady
+
+**Rodičovské stretnutia:**
+- Pravidelne (3-4x ročne)
+- Dlhé rozhovory
+- Partnerstvo
+- Spoločné ciele
+
+**Prezentácie:**
+- Verejné vystúpenia
+- Divadelné hry
+- Výstavy prác
+- Slávnosti
+
+**Sebahodnotenie:**
+
+**Rozvoj sebareflexie:**
+- Deti hodnotia sami seba
+- Čo sa podarilo
+- Kde rásť
+- Vlastné ciele
+
+**Portfolio:**
+- Zbierka prác
+- Viditeľný pokrok
+- Osobný vývoj
+- Hrdosť
+
+**Výhody bez známok:**
+- Vnútorná motivácia
+- Radosť z učenia
+- Individuálny rast
+- Sebavedomie
+- Spolupráca namiesto súťaže
+- Zdravý sebaobraz`
+    },
+    {
+      title: "Téma 9: Spolupráca s rodičmi",
+      content: `**Partnerstvo rodiny a školy**
+
+Waldorfská pedagogika kladie veľký dôraz na úzku spoluprácu medzi školou a rodinou.
+
+**Úloha rodičov:**
+
+**1. Spolutvorba školy:**
+- Rodičia sú súčasťou komunity
+- Aktívna účasť
+- Spolurozhodovanie
+- Zodpovednosť
+
+**2. Podpora doma:**
+- Rešpektovanie princípov
+- Jednotný prístup
+- Pokračovanie doma
+- Konzistentnosť
+
+**3. Praktická pomoc:**
+- Údržba školy
+- Organizácia slávností
+- Dobrovoľnícka práca
+- Finančná podpora
+
+**Formy spolupráce:**
+
+**Pravidelné stretnutia:**
+
+**1. Rodičovské večery:**
+- 3-4x ročne
+- S celou triedou
+- Pedagogické témy
+- Výmena skúseností
+
+**2. Individuálne konzultácie:**
+- S hlavným učiteľom
+- O jednotlivom dieťati
+- Individuálny rozvoj
+- Riešenie problémov
+
+**3. Pracovné skupiny:**
+- Záhrada
+- Údržba
+- Slávnosti
+- Fundraising
+
+**Vzdelávanie rodičov:**
+
+**Prednášky a workshopy:**
+- Antropozofické témy
+- Vývinová psychológia
+- Praktické zručnosti
+- Výchova doma
+
+**Štúdium:**
+- Spoločné čítanie
+- Diskusie
+- Hlbšie pochopenie
+- Osobný rast
+
+**Slávnosti a akcie:**
+
+**Spoločné oslavy:**
+- Jesenné, zimné, jarné, letné slávnosti
+- Triedne slávnosti
+- Predstavenia
+- Výstavy
+
+**Príprava:**
+- Spoločná tvorba
+- Dekorácie
+- Pečenie
+- Programy
+
+**Význam:**
+- Budovanie komunity
+- Spoločné zážitky
+- Tradície
+- Pocit príslušnosti
+
+**Domáce prostredie:**
+
+**Odporúčania pre rodičov:**
+
+**1. Rytmus:**
+- Pravidelný denný režim
+- Dostatočný spánok
+- Pravidelné jedlá
+- Čas na hru
+
+**2. Obmedzenie médií:**
+- Žiadna TV, tablet pre malé deti
+- Obmedzený čas pre starších
+- Kvalita obsahu
+- Ochrana pred nadmernou stimuláciou
+
+**3. Prírodné hračky:**
+- Jednoduché hračky
+- Prírodné materiály
+- Priestor pre fantáziu
+- Kvalita pred kvantitou
+
+**4. Čas vonku:**
+- Dennýpobyt v prírode
+- Voľná hra
+- Fyzická aktivita
+- Spojenie s prírodou
+
+**5. Kultúrny život:**
+- Čítanie kníh
+- Rozprávanie príbehov
+- Hudba
+- Tvorivé aktivity
+
+**Výzvy a riešenia:**
+
+**Odlišnosť od mainstreamu:**
+- Vysvetľovanie príbuzným
+- Dôvera v cestu
+- Podpora komunity
+- Trpezlivosť
+
+**Finančná náročnosť:**
+- Waldorfské školy často súkromné
+- Školné
+- Solidarita komunity
+- Štipendiá
+
+**Výhody partnerstva:**
+- Jednotný prístup
+- Lepší rozvoj dieťaťa
+- Komunita
+- Podpora
+- Spoločné hodnoty`
+    },
+    {
+      title: "Téma 10: Ciele a kritika waldorfskej pedagogiky",
+      content: `**Ciele, výsledky a kritické pohľady**
+
+Waldorfská pedagogika má jasne definované ciele a za 100 rokov existencie nazbierala aj kritické ohlasy.
+
+**Hlavné ciele:**
+
+**1. Rozvoj celej osobnosti:**
+- Hlava, srdce, ruky
+- Myslenie, cítenie, vôľa
+- Harmonická osobnosť
+- Vyvážený človek
+
+**2. Sloboda a zodpovednosť:**
+- Samostatné myslenie
+- Kritické uvažovanie
+- Zodpovednosť za svet
+- Etické konanie
+
+**3. Sociálne schopnosti:**
+- Empatia
+- Spolupráca
+- Rešpekt k iným
+- Spoločenské uvedomenie
+
+**4. Kreativita a flexibilita:**
+- Tvorivé myslenie
+- Riešenie problémov
+- Adaptabilita
+- Inovácia
+
+**5. Láska k učeniu:**
+- Celoživotné vzdelávanie
+- Zvedavosť
+- Radosť z poznávania
+- Vnútorná motivácia
+
+**Výsledky waldorfského vzdelávania:**
+
+**Výskumy ukazujú:**
+- Vysoká spokojnosť absolventov
+- Úspešnosť v rôznych oblastiach
+- Vysoké percento vysokoškolákov
+- Sociálna angažovanosť
+- Kreativita
+
+**Známi absolventi:**
+- Umělci, vedci, podnikatelia
+- Alternatívna cesta k úspechu
+- Netradičné kariéry
+- Sociálne aktívni
+
+**Kritika waldorfskej pedagogiky:**
+
+**1. Antropozofické základy:**
+- Ezoterika
+- Scientizmus sporný
+- Duchovný rozmer
+- Náboženské prvky
+
+**Odpoveď:**
+- Nie je potrebné veriť v antropozofiu
+- Praktické výsledky
+- Rešpekt k všetkým nábženstvám
+- Duchovnosť, nie dogma
+
+**2. Oddialenie akademického učenia:**
+- Čítanie až v 7 rokoch
+- Žiadna predčasná stimulácia
+- Pomalý štart
+
+**Odpoveď:**
+- Rešpekt k zrelosti
+- Dlhodobo lepšie výsledky
+- Zdravý vývoj dôležitejší
+- Deti dobehyjú a predbehujú
+
+**3. Obmedzenie médií:**
+- Žiadna TV, počítače v rannom veku
+- Odlišnosť od rovesníkov
+- Odtrhnutie od reality
+
+**Odpoveď:**
+- Ochrana pred škodlivými vplyvmi
+- Výskumy o škodlivosti
+- Neskorší zodpovedný prístup
+- Neničí kreativitu
+
+**4. Nedostatočná individualizácia:**
+- Pevný kurikulum
+- Všetci to isté
+- Vek určuje obsah
+
+**Odpoveď:**
+- Individuálny prístup v rámci skupiny
+- Slovné hodnotenie
+- Flexibilita v praxi
+- Sociálne učenie
+
+**5. Eliárstvo a cena:**
+- Drahé súkromné školy
+- Nie pre všetkých
+- Sociálna selekcia
+
+**Odpoveď:**
+- Snaha o dostupnosť
+- Štipendiá
+- Štátne waldorfské školy
+- Solidarita
+
+**Moderné výzvy:**
+
+**Digitalizácia:**
+- Ako integrovať technológie?
+- Kedy je správny čas?
+- Zodpovedné používanie
+
+**Diverzita:**
+- Inklúzia detí so špeciálnymi potrebami
+- Multikultúrne prostredie
+- Prispôsobenie systému
+
+**Záver:**
+
+Waldorfská pedagogika ponúka alternatívu k mainstreamovému vzdelávaniu s dôrazom na holistický rozvoj, kreativitu a ľudskosť. Nie je pre každého, ale pre mnohé rodiny predstavuje cestu, ako vychovať vyváženú, tvorivú a sociálne zodpovednú osobnosť.
+
+**Kľúčové posolstvo:**
+"Vzdelávajme detí nie pre súčasnosť, ale pre budúcnosť, ktorú ešte nepoznáme."`
+    }
   ]
 }
 
