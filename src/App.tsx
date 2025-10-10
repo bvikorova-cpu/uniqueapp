@@ -16,7 +16,6 @@ import Dating from "./pages/Dating";
 import FirstAid from "./pages/FirstAid";
 import FitSlim from "./pages/FitSlim";
 import Marketplace from "./pages/Marketplace";
-
 import Bazaar from "./pages/Bazaar";
 import Referral from "./pages/Referral";
 import Games from "./pages/Games";
@@ -35,6 +34,7 @@ import BestFriend from "./pages/BestFriend";
 import Cooking from "./pages/Cooking";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import OnlineDJ from "./pages/OnlineDJ";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -76,6 +76,7 @@ const App = () => (
           <Route path="/education" element={<Education />} />
           <Route path="/course/:courseName" element={<CourseDetail />} />
           <Route path="/quiz" element={<Quiz />} />
+          <Route path="/online-dj" element={<OnlineDJ />} />
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
