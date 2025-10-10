@@ -25497,6 +25497,1045 @@ auto vysledok = cisla
 C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
     }
   ],
+  "Vue.js": [
+    {
+      title: "Téma 1: Úvod do Vue.js",
+      content: `**Čo je Vue.js?**
+
+Vue.js je progresívny, open-source JavaScriptový framework na vytváranie používateľských rozhraní a jednostránkových aplikácií.
+
+**Základné informácie:**
+- Vytvorený Evan You v roku 2014
+- Progresívny framework
+- Jednoduchý a flexibilný
+- Komponentový model
+- Reaktivita
+
+**Prečo Vue.js?**
+- Nízka požiadavka na učenie
+- Jednoduchá syntax
+- Postupné prijímanie
+- Vynikajúca dokumentácia
+- Aktívna komunita
+
+**História:**
+- 2014: Prvá verzia Vue.js
+- 2016: Vue 2.0
+- 2020: Vue 3.0 s Composition API
+- Aktuálne: Vue 3.x s vylepšeniami
+
+**Kto používa Vue.js:**
+- Alibaba
+- GitLab
+- Nintendo
+- Adobe
+- Grammarly`
+    },
+    {
+      title: "Téma 2: Komponentový model",
+      content: `**Komponenty vo Vue.js**
+
+Vue.js umožňuje rozdelenie UI na nezávislé, opakovane použiteľné komponenty.
+
+**Jednoduchý komponent:**
+\`\`\`vue
+<template>
+  <div class="hello">
+    <h1>{{ message }}</h1>
+    <button @click="changeMessage">Zmeniť</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HelloComponent',
+  data() {
+    return {
+      message: 'Vitajte vo Vue.js!'
+    }
+  },
+  methods: {
+    changeMessage() {
+      this.message = 'Správa zmenená!';
+    }
+  }
+}
+</script>
+
+<style scoped>
+.hello {
+  padding: 20px;
+}
+</style>
+\`\`\`
+
+**Single File Components (SFC):**
+- Template (HTML)
+- Script (JavaScript)
+- Style (CSS)
+- Všetko v jednom súbore .vue
+
+**Registrácia komponentov:**
+
+**Globálna:**
+\`\`\`javascript
+import { createApp } from 'vue';
+import HelloComponent from './components/HelloComponent.vue';
+
+const app = createApp(App);
+app.component('HelloComponent', HelloComponent);
+\`\`\`
+
+**Lokálna:**
+\`\`\`javascript
+export default {
+  components: {
+    HelloComponent
+  }
+}
+\`\`\`
+
+**Vnorené komponenty:**
+\`\`\`vue
+<template>
+  <div>
+    <ParentComponent>
+      <ChildComponent />
+    </ParentComponent>
+  </div>
+</template>
+\`\`\`
+
+**Výhody komponentov:**
+- Znovupoužiteľnosť
+- Izolácia logiky
+- Jednoduchšia údržba
+- Lepšia organizácia kódu`
+    },
+    {
+      title: "Téma 3: Reaktivita a Vue reaktívny systém",
+      content: `**Reaktivita vo Vue.js**
+
+Vue.js automaticky sleduje zmeny v stave aplikácie a efektívne aktualizuje DOM.
+
+**Reaktívne dáta (Options API):**
+\`\`\`javascript
+export default {
+  data() {
+    return {
+      count: 0,
+      message: 'Hello',
+      user: {
+        name: 'Peter',
+        age: 25
+      }
+    }
+  }
+}
+\`\`\`
+
+**Reactive (Composition API):**
+\`\`\`javascript
+import { reactive } from 'vue';
+
+export default {
+  setup() {
+    const state = reactive({
+      count: 0,
+      message: 'Hello'
+    });
+
+    function increment() {
+      state.count++;
+    }
+
+    return {
+      state,
+      increment
+    }
+  }
+}
+\`\`\`
+
+**Ref (Composition API):**
+\`\`\`javascript
+import { ref } from 'vue';
+
+export default {
+  setup() {
+    const count = ref(0);
+    const message = ref('Hello');
+
+    function increment() {
+      count.value++;
+    }
+
+    return {
+      count,
+      message,
+      increment
+    }
+  }
+}
+\`\`\`
+
+**Ako funguje reaktivita:**
+- Vue sleduje prístup k vlastnostiam
+- Pri zmene sa automaticky aktualizuje view
+- Efektívne re-rendering len potrebných častí
+- Virtual DOM pre optimalizáciu
+
+**Reaktívne objekty:**
+\`\`\`javascript
+import { reactive, toRefs } from 'vue';
+
+const user = reactive({
+  name: 'Peter',
+  email: 'peter@email.com'
+});
+
+// Zmena reaktívnych dát
+user.name = 'Jana';
+\`\`\`
+
+**Pravidlá reaktivity:**
+- Vždy používajte .value s ref v JS
+- Reactive funguje len s objektmi
+- Ref funguje s primitívnymi typmi aj objektmi`
+    },
+    {
+      title: "Téma 4: Template syntax a directives",
+      content: `**Deklaratívny prístup**
+
+Vue rozširuje štandardné HTML pomocou špeciálnej syntaxe.
+
+**Text interpolation:**
+\`\`\`vue
+<template>
+  <p>{{ message }}</p>
+  <p>{{ count * 2 }}</p>
+  <p>{{ user.name.toUpperCase() }}</p>
+</template>
+\`\`\`
+
+**v-bind - Attribute binding:**
+\`\`\`vue
+<template>
+  <img :src="imageUrl" :alt="altText">
+  <div :class="{ active: isActive }">Content</div>
+  <button :disabled="isDisabled">Klikni</button>
+</template>
+\`\`\`
+
+**v-on - Event handling:**
+\`\`\`vue
+<template>
+  <button @click="handleClick">Klikni</button>
+  <input @input="handleInput">
+  <form @submit.prevent="submitForm">
+    <button type="submit">Odoslať</button>
+  </form>
+</template>
+\`\`\`
+
+**v-model - Two-way binding:**
+\`\`\`vue
+<template>
+  <input v-model="message">
+  <p>{{ message }}</p>
+  
+  <input v-model.number="age" type="number">
+  <input v-model.trim="username">
+</template>
+\`\`\`
+
+**v-if / v-else / v-else-if:**
+\`\`\`vue
+<template>
+  <div v-if="type === 'A'">
+    A
+  </div>
+  <div v-else-if="type === 'B'">
+    B
+  </div>
+  <div v-else>
+    Not A/B
+  </div>
+</template>
+\`\`\`
+
+**v-show:**
+\`\`\`vue
+<template>
+  <p v-show="isVisible">Viditeľné/neviditeľné</p>
+</template>
+\`\`\`
+
+**v-for:**
+\`\`\`vue
+<template>
+  <ul>
+    <li v-for="item in items" :key="item.id">
+      {{ item.name }}
+    </li>
+  </ul>
+
+  <div v-for="(value, key, index) in object" :key="key">
+    {{ index }}. {{ key }}: {{ value }}
+  </div>
+</template>
+\`\`\`
+
+**Modifikátory:**
+- .prevent - preventDefault()
+- .stop - stopPropagation()
+- .once - trigger len raz
+- .enter - klávesa Enter`
+    },
+    {
+      title: "Téma 5: Computed properties a watchers",
+      content: `**Computed Properties**
+
+Computed properties sú cachované vlastnosti založené na reaktívnych závislostiach.
+
+**Základný príklad:**
+\`\`\`javascript
+export default {
+  data() {
+    return {
+      firstName: 'Peter',
+      lastName: 'Novák'
+    }
+  },
+  computed: {
+    fullName() {
+      return \`\${this.firstName} \${this.lastName}\`;
+    },
+    reversedName() {
+      return this.fullName.split('').reverse().join('');
+    }
+  }
+}
+\`\`\`
+
+**Computed s getter a setter:**
+\`\`\`javascript
+export default {
+  data() {
+    return {
+      firstName: 'Peter',
+      lastName: 'Novák'
+    }
+  },
+  computed: {
+    fullName: {
+      get() {
+        return \`\${this.firstName} \${this.lastName}\`;
+      },
+      set(newValue) {
+        const names = newValue.split(' ');
+        this.firstName = names[0];
+        this.lastName = names[names.length - 1];
+      }
+    }
+  }
+}
+\`\`\`
+
+**Watchers:**
+
+**Základný watcher:**
+\`\`\`javascript
+export default {
+  data() {
+    return {
+      question: '',
+      answer: 'Otázky obsahujú otáznik?'
+    }
+  },
+  watch: {
+    question(newQuestion, oldQuestion) {
+      if (newQuestion.includes('?')) {
+        this.getAnswer();
+      }
+    }
+  }
+}
+\`\`\`
+
+**Deep watcher:**
+\`\`\`javascript
+export default {
+  data() {
+    return {
+      user: {
+        name: 'Peter',
+        address: {
+          city: 'Bratislava'
+        }
+      }
+    }
+  },
+  watch: {
+    user: {
+      handler(newVal, oldVal) {
+        console.log('User changed');
+      },
+      deep: true
+    }
+  }
+}
+\`\`\`
+
+**Immediate watcher:**
+\`\`\`javascript
+watch: {
+  searchQuery: {
+    handler(val) {
+      this.fetchResults(val);
+    },
+    immediate: true
+  }
+}
+\`\`\`
+
+**Composition API - computed:**
+\`\`\`javascript
+import { ref, computed } from 'vue';
+
+const firstName = ref('Peter');
+const lastName = ref('Novák');
+
+const fullName = computed(() => {
+  return \`\${firstName.value} \${lastName.value}\`;
+});
+\`\`\``
+    },
+    {
+      title: "Téma 6: Lifecycle hooks",
+      content: `**Životný cyklus komponentu**
+
+Vue komponenty prechádzajú rôznymi fázami od vytvorenia po zničenie.
+
+**Options API lifecycle hooks:**
+
+**Creation:**
+\`\`\`javascript
+export default {
+  beforeCreate() {
+    // Pred vytvorením inštancie
+    console.log('beforeCreate');
+  },
+  created() {
+    // Po vytvorení inštancie
+    // Prístup k data, computed, methods
+    console.log('created');
+    this.fetchData();
+  }
+}
+\`\`\`
+
+**Mounting:**
+\`\`\`javascript
+export default {
+  beforeMount() {
+    // Pred pripojením do DOM
+    console.log('beforeMount');
+  },
+  mounted() {
+    // Po pripojení do DOM
+    // Prístup k DOM elementom
+    console.log('mounted');
+    this.$refs.input.focus();
+  }
+}
+\`\`\`
+
+**Updating:**
+\`\`\`javascript
+export default {
+  beforeUpdate() {
+    // Pred aktualizáciou DOM
+    console.log('beforeUpdate');
+  },
+  updated() {
+    // Po aktualizácii DOM
+    console.log('updated');
+  }
+}
+\`\`\`
+
+**Unmounting:**
+\`\`\`javascript
+export default {
+  beforeUnmount() {
+    // Pred odstránením z DOM
+    console.log('beforeUnmount');
+  },
+  unmounted() {
+    // Po odstránení z DOM
+    // Cleanup kód
+    console.log('unmounted');
+    clearInterval(this.timer);
+  }
+}
+\`\`\`
+
+**Composition API lifecycle:**
+\`\`\`javascript
+import { onMounted, onUpdated, onUnmounted } from 'vue';
+
+export default {
+  setup() {
+    onMounted(() => {
+      console.log('Component mounted');
+    });
+
+    onUpdated(() => {
+      console.log('Component updated');
+    });
+
+    onUnmounted(() => {
+      console.log('Component unmounted');
+    });
+  }
+}
+\`\`\`
+
+**Praktické použitie:**
+- created: Fetch dát z API
+- mounted: Inicializácia third-party knižníc
+- beforeUnmount: Cleanup timers, listeners`
+    },
+    {
+      title: "Téma 7: Props a Events - Komunikácia medzi komponentmi",
+      content: `**Props - Odovzdávanie dát nadol**
+
+Props umožňujú rodiču odovzdať dáta potomkovi.
+
+**Definícia props:**
+\`\`\`javascript
+// Child.vue
+export default {
+  props: {
+    title: String,
+    count: {
+      type: Number,
+      required: true,
+      default: 0
+    },
+    user: {
+      type: Object,
+      required: true
+    }
+  }
+}
+\`\`\`
+
+**Použitie v rodiči:**
+\`\`\`vue
+<template>
+  <ChildComponent 
+    title="Vitaj" 
+    :count="10" 
+    :user="currentUser" 
+  />
+</template>
+\`\`\`
+
+**Validácia props:**
+\`\`\`javascript
+props: {
+  age: {
+    type: Number,
+    validator(value) {
+      return value >= 0 && value <= 150;
+    }
+  },
+  status: {
+    type: String,
+    validator(value) {
+      return ['active', 'inactive'].includes(value);
+    }
+  }
+}
+\`\`\`
+
+**Events - Posielanie dát nahor:**
+
+**Emitovanie udalostí:**
+\`\`\`javascript
+// Child.vue
+export default {
+  emits: ['update', 'delete'],
+  methods: {
+    handleClick() {
+      this.$emit('update', { id: 1, name: 'Peter' });
+    },
+    handleDelete() {
+      this.$emit('delete', this.itemId);
+    }
+  }
+}
+\`\`\`
+
+**Počúvanie v rodiči:**
+\`\`\`vue
+<template>
+  <ChildComponent 
+    @update="handleUpdate"
+    @delete="handleDelete"
+  />
+</template>
+
+<script>
+export default {
+  methods: {
+    handleUpdate(data) {
+      console.log('Updated:', data);
+    },
+    handleDelete(id) {
+      console.log('Deleted:', id);
+    }
+  }
+}
+</script>
+\`\`\`
+
+**v-model na komponentoch:**
+\`\`\`javascript
+// Child.vue
+export default {
+  props: ['modelValue'],
+  emits: ['update:modelValue'],
+  methods: {
+    updateValue(event) {
+      this.$emit('update:modelValue', event.target.value);
+    }
+  }
+}
+\`\`\`
+
+\`\`\`vue
+<!-- Parent.vue -->
+<template>
+  <ChildComponent v-model="message" />
+</template>
+\`\`\`
+
+**Composition API:**
+\`\`\`javascript
+import { defineProps, defineEmits } from 'vue';
+
+const props = defineProps({
+  title: String
+});
+
+const emit = defineEmits(['update']);
+
+function handleUpdate() {
+  emit('update', 'new value');
+}
+\`\`\``
+    },
+    {
+      title: "Téma 8: Vue Router - Navigácia",
+      content: `**Vue Router pre SPA**
+
+Vue Router je oficiálny router pre Vue.js aplikácie.
+
+**Inštalácia:**
+\`\`\`bash
+npm install vue-router@4
+\`\`\`
+
+**Základná konfigurácia:**
+\`\`\`javascript
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from './views/Home.vue';
+import About from './views/About.vue';
+
+const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About
+  },
+  {
+    path: '/users/:id',
+    name: 'UserDetail',
+    component: () => import('./views/UserDetail.vue')
+  }
+];
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+});
+
+export default router;
+\`\`\`
+
+**Použitie v main.js:**
+\`\`\`javascript
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
+
+createApp(App)
+  .use(router)
+  .mount('#app');
+\`\`\`
+
+**Router-view a Router-link:**
+\`\`\`vue
+<template>
+  <nav>
+    <router-link to="/">Domov</router-link>
+    <router-link to="/about">O nás</router-link>
+    <router-link :to="{ name: 'UserDetail', params: { id: 123 } }">
+      Detail
+    </router-link>
+  </nav>
+
+  <router-view />
+</template>
+\`\`\`
+
+**Programová navigácia:**
+\`\`\`javascript
+import { useRouter } from 'vue-router';
+
+export default {
+  setup() {
+    const router = useRouter();
+
+    function goToAbout() {
+      router.push('/about');
+    }
+
+    function goToUser(id) {
+      router.push({ name: 'UserDetail', params: { id } });
+    }
+
+    function goBack() {
+      router.go(-1);
+    }
+
+    return { goToAbout, goToUser, goBack };
+  }
+}
+\`\`\`
+
+**Route parameters:**
+\`\`\`javascript
+import { useRoute } from 'vue-router';
+
+export default {
+  setup() {
+    const route = useRoute();
+    const userId = route.params.id;
+
+    return { userId };
+  }
+}
+\`\`\`
+
+**Navigation Guards:**
+\`\`\`javascript
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !isLoggedIn()) {
+    next('/login');
+  } else {
+    next();
+  }
+});
+\`\`\`
+
+**Named views:**
+\`\`\`javascript
+{
+  path: '/dashboard',
+  components: {
+    default: Dashboard,
+    sidebar: Sidebar,
+    header: Header
+  }
+}
+\`\`\``
+    },
+    {
+      title: "Téma 9: State Management - Pinia/Vuex",
+      content: `**Pinia - Vue State Management**
+
+Pinia je oficiálny state management pre Vue 3.
+
+**Inštalácia:**
+\`\`\`bash
+npm install pinia
+\`\`\`
+
+**Setup:**
+\`\`\`javascript
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
+import App from './App.vue';
+
+const pinia = createPinia();
+
+createApp(App)
+  .use(pinia)
+  .mount('#app');
+\`\`\`
+
+**Vytvorenie store:**
+\`\`\`javascript
+import { defineStore } from 'pinia';
+
+export const useUserStore = defineStore('user', {
+  state: () => ({
+    users: [],
+    currentUser: null
+  }),
+  
+  getters: {
+    userCount: (state) => state.users.length,
+    activeUsers: (state) => {
+      return state.users.filter(u => u.active);
+    }
+  },
+  
+  actions: {
+    addUser(user) {
+      this.users.push(user);
+    },
+    
+    async fetchUsers() {
+      const response = await fetch('/api/users');
+      this.users = await response.json();
+    },
+    
+    setCurrentUser(user) {
+      this.currentUser = user;
+    }
+  }
+});
+\`\`\`
+
+**Použitie v komponente:**
+\`\`\`javascript
+import { useUserStore } from '@/stores/user';
+
+export default {
+  setup() {
+    const userStore = useUserStore();
+
+    // State
+    const users = userStore.users;
+    
+    // Getters
+    const count = userStore.userCount;
+    
+    // Actions
+    function addUser(user) {
+      userStore.addUser(user);
+    }
+
+    return {
+      users,
+      count,
+      addUser
+    };
+  }
+}
+\`\`\`
+
+**Composition API s Pinia:**
+\`\`\`javascript
+import { storeToRefs } from 'pinia';
+import { useUserStore } from '@/stores/user';
+
+export default {
+  setup() {
+    const userStore = useUserStore();
+    
+    // Reaktívne refs
+    const { users, currentUser } = storeToRefs(userStore);
+    
+    // Actions zostávajú ako sú
+    const { addUser, fetchUsers } = userStore;
+
+    return {
+      users,
+      currentUser,
+      addUser,
+      fetchUsers
+    };
+  }
+}
+\`\`\`
+
+**Store s Composition API:**
+\`\`\`javascript
+import { ref, computed } from 'vue';
+import { defineStore } from 'pinia';
+
+export const useCounterStore = defineStore('counter', () => {
+  const count = ref(0);
+  
+  const doubleCount = computed(() => count.value * 2);
+  
+  function increment() {
+    count.value++;
+  }
+
+  return { count, doubleCount, increment };
+});
+\`\`\`
+
+**Výhody Pinia:**
+- Jednoduchšia syntax ako Vuex
+- TypeScript podpora
+- DevTools integrácia
+- Modulárna architektúra`
+    },
+    {
+      title: "Téma 10: Composition API vs Options API",
+      content: `**Dva prístupy vo Vue 3**
+
+Vue 3 ponúka dva spôsoby písania komponentov.
+
+**Options API (tradičný):**
+\`\`\`javascript
+export default {
+  data() {
+    return {
+      count: 0,
+      message: 'Hello'
+    }
+  },
+  computed: {
+    doubleCount() {
+      return this.count * 2;
+    }
+  },
+  methods: {
+    increment() {
+      this.count++;
+    }
+  },
+  mounted() {
+    console.log('Mounted');
+  }
+}
+\`\`\`
+
+**Composition API (moderný):**
+\`\`\`javascript
+import { ref, computed, onMounted } from 'vue';
+
+export default {
+  setup() {
+    const count = ref(0);
+    const message = ref('Hello');
+
+    const doubleCount = computed(() => count.value * 2);
+
+    function increment() {
+      count.value++;
+    }
+
+    onMounted(() => {
+      console.log('Mounted');
+    });
+
+    return {
+      count,
+      message,
+      doubleCount,
+      increment
+    };
+  }
+}
+\`\`\`
+
+**Script setup (najmodernejší):**
+\`\`\`vue
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+
+const count = ref(0);
+const message = ref('Hello');
+
+const doubleCount = computed(() => count.value * 2);
+
+function increment() {
+  count.value++;
+}
+
+onMounted(() => {
+  console.log('Mounted');
+});
+</script>
+\`\`\`
+
+**Výhody Composition API:**
+- Lepšia organizácia kódu
+- Znovupoužiteľné composables
+- Lepší TypeScript support
+- Flexibilnejšia logika
+
+**Composables - Znovupoužiteľná logika:**
+\`\`\`javascript
+// useCounter.js
+import { ref } from 'vue';
+
+export function useCounter(initialValue = 0) {
+  const count = ref(initialValue);
+
+  function increment() {
+    count.value++;
+  }
+
+  function decrement() {
+    count.value--;
+  }
+
+  return {
+    count,
+    increment,
+    decrement
+  };
+}
+
+// Použitie v komponente
+import { useCounter } from './useCounter';
+
+export default {
+  setup() {
+    const { count, increment, decrement } = useCounter(10);
+
+    return { count, increment, decrement };
+  }
+}
+\`\`\`
+
+**Kedy použiť ktorý:**
+- Options API: Menšie projekty, jednoduchšie komponenty
+- Composition API: Veľké projekty, zložitá logika
+- Script setup: Moderný vývoj, najkratšia syntax
+
+**Best practices:**
+- Konzistentnosť v projekte
+- Používajte Composition API pre nové projekty
+- Vytvárajte composables pre znovupoužiteľnú logiku`
+    }
+  ],
   "Angular": [
     {
       title: "Téma 1: Úvod do Angular",
