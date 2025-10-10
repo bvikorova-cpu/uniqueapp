@@ -33341,6 +33341,857 @@ Meranie pokroku a trendy v inkluzívnom vzdelávaní.
 **Kľúčové posolstvo:**
 Inkluzívne vzdelávanie nie je len o deťoch so špeciálnymi potrebami - je to cesta k lepšej spoločnosti pre všetkých.`
     }
+  ],
+
+  "Montessori metóda": [
+    {
+      title: "Téma 1: Úvod do Montessori metódy",
+      content: `**Čo je Montessori metóda?**
+
+Montessori metóda je filozofia výchovy a vzdelávania, ktorá sa zameriava na samostatnosť, individuálny rozvoj a prirodzené učenie dieťaťa prostredníctvom praktických činností a zážitkov.
+
+**História a zakladateľka:**
+
+**Mária Montessori (1870-1952):**
+- Prvá talianska lekárka
+- Začala pracovať s deťmi s postihnutím
+- Neskôr aplikovala metódu na všetky deti
+- Vytvorila metódu pozorovaním detí
+
+**Vznik metódy:**
+- Začiatok 20. storočia v Taliansku
+- Prvý "Dom detí" (Casa dei Bambini) v roku 1907
+- Rozšírenie po celom svete
+- Dodnes používaná v tisíckach škôl
+
+**Základná filozofia:**
+
+**Heslo metódy:**
+"Pomôž mi, aby som to dokázal sám"
+
+**Podstata:**
+- Rešpekt k dieťaťu
+- Dôvera v prirodzený vývoj
+- Podpora samostatnosti
+- Učenie cez skúsenosť
+
+**Kľúčové myšlienky:**
+
+**1. Dieťa ako učiteľ:**
+- Každé dieťa má prirodzenú túžbu učiť sa
+- Vnútorná motivácia
+- Vlastné tempo rozvoja
+- Unikátne schopnosti
+
+**2. Prirodzené učenie:**
+- Učenie je radosť, nie povinnosť
+- Zážitok pred teóriou
+- Konkrétne pred abstraktným
+- Pohyb a poznávanie
+
+**Moderná aplikácia:**
+Montessori princípy sú dodnes aktuálne a podporované moderným výskumom v oblasti detskej psychológie a neurovedy.`
+    },
+    {
+      title: "Téma 2: Individuálny rozvoj dieťaťa",
+      content: `**Každé dieťa je jedinečné**
+
+V Montessori prístupe je základom rešpektovanie individuality každého dieťaťa a jeho vlastného tempa vývoja.
+
+**Princíp individuality:**
+
+**1. Vlastné tempo:**
+- Dieťa nie je porovnávané s ostatnými
+- Každé má svoj čas na rozvoj
+- Nie je tlak na výkon
+- Rešpekt k odlišnostiam
+
+**2. Unikátne schopnosti:**
+- Každé dieťa má silné stránky
+- Odlišné záujmy
+- Rôzne štýly učenia
+- Individuálne potreby
+
+**3. Prirodzená zvedavosť:**
+- Vnútorná motivácia
+- Vlastný záujem
+- Prirodzená túžba poznávať
+- Radosť z objavovania
+
+**Bez porovnávania:**
+
+**Prečo neporovnávame:**
+- Každé dieťa je v inom štádiu
+- Porovnávanie znižuje sebavedomie
+- Stres a tlak na výkon
+- Strata radosti z učenia
+
+**Pozitívny prístup:**
+- Zameranie na vlastný pokrok
+- Individuálne ciele
+- Sebahodnotenie
+- Vnútorná spokojnosť
+
+**Pozorovanie dieťaťa:**
+
+**Úloha učiteľa:**
+- Pozorne pozorovať každé dieťa
+- Identifikovať záujmy
+- Rozpoznať potreby
+- Prispôsobiť podporu
+
+**Čo pozorujeme:**
+- V čom má dieťa záujem
+- Čo mu robí radosť
+- Kde potrebuje podporu
+- Aké je jeho tempo
+
+**Individuálny plán:**
+
+**Prispôsobenie:**
+- Aktivity podľa záujmov
+- Tempo podľa schopností
+- Výzvy na správnej úrovni
+- Flexibilný prístup
+
+**Výhody:**
+- Dieťa sa cíti akceptované
+- Rastie sebavedomie
+- Prirodzená láska k učeniu
+- Zdravý rozvoj osobnosti`
+    },
+    {
+      title: "Téma 3: Pripravené prostredie",
+      content: `**Prostredie ako tretí učiteľ**
+
+Pripravené prostredie je jedným z najdôležitejších prvkov Montessori metódy - je starostlivo navrhnuté tak, aby podporovalo samostatnosť a učenie dieťaťa.
+
+**Charakteristiky pripraveného prostredia:**
+
+**1. Prístupnosť:**
+- Všetko na dosah dieťaťa
+- Nábytok primeranej výšky
+- Ľahko dostupné materiály
+- Dieťa nepotrebuje pomoc dospelého
+
+**2. Poriadok:**
+- Každá vec má svoje miesto
+- Jasná organizácia
+- Predvídateľnosť
+- Ľahká orientácia
+
+**3. Estetika:**
+- Krásne, príjemné prostredie
+- Prírodné materiály
+- Harmonické farby
+- Čistota a útulnosť
+
+**Usporiadanie priestoru:**
+
+**Oblasti v Montessori triede:**
+
+**1. Praktický život:**
+- Činnosti z denného života
+- Umývanie, presýpanie, lievanie
+- Starostlivosť o seba a prostredie
+- Rozvoj jemnej motoriky
+
+**2. Senzorická oblasť:**
+- Materiály na rozvoj zmyslov
+- Rozlišovanie veľkostí, tvarov, farieb
+- Príprava na matematiku
+- Triedenie a porovnávanie
+
+**3. Matematika:**
+- Konkrétne materiály
+- Od jednoduchého k zložitému
+- Manipulatívne pomôcky
+- Zážitkové učenie
+
+**4. Jazyk:**
+- Písanie pred čítaním
+- Hmatové písmenká
+- Pohyblivá abeceda
+- Postupný rozvoj gramotnosti
+
+**5. Kozmická výchova:**
+- Geografia, prírodoveda
+- História, kultúry
+- Prepojenie vied
+- Pochopenie sveta
+
+**Pravidlá prostredia:**
+
+**Sloboda s hranicami:**
+- Dieťa si vyberá aktivitu
+- Rešpekt k materiálom
+- Rešpekt k iným
+- Vrátenie na miesto
+
+**Výhody pripraveného prostredia:**
+- Podpora samostatnosti
+- Rozvoj zodpovednosti
+- Sebaorganizácia
+- Vnútorný poriadok`
+    },
+    {
+      title: "Téma 4: Samostatné učenie a voľnosť",
+      content: `**Sloboda voľby a samostatnosť**
+
+Montessori metóda dáva deťom slobodu výberu a podporuje ich k samostatnému učeniu bez tlaku a núty.
+
+**Princíp slobody:**
+
+**1. Voľba aktivity:**
+- Dieťa si samo vyberá prácu
+- Podľa svojho záujmu
+- Vo vlastnom čase
+- Podľa vnútornej motivácie
+
+**2. Tempo práce:**
+- Vlastné tempo
+- Bez časového tlaku
+- Možnosť opakovania
+- Až do spokojnosti
+
+**3. Dĺžka práce:**
+- Koncentrácia podľa potreby
+- Dokončenie aktivity
+- Hlboké ponorenie sa
+- Rešpekt k sústredenosti
+
+**Sloboda s hranicami:**
+
+**Pravidlá:**
+- Rešpekt k materiálom
+- Rešpekt k iným deťom
+- Rešpekt k prostrediu
+- Bezpečnosť
+
+**Čo nie je sloboda:**
+- Chaos
+- Nerešpektovanie iných
+- Ničenie materiálov
+- Nebezpečné správanie
+
+**Samostatné učenie:**
+
+**Ako to funguje:**
+
+**1. Vlastná aktivita:**
+- Dieťa pracuje samo
+- Objavuje riešenia
+- Experimentuje
+- Učí sa z chýb
+
+**2. Vnútorná motivácia:**
+- Prirodzená zvedavosť
+- Radosť z objavovania
+- Vnútorná spokojnosť
+- Nie vonkajšie odmeny
+
+**3. Učenie zážitkom:**
+- Praktické skúsenosti
+- Manipulácia s materiálmi
+- Zmyslové vnemy
+- Pochopenie, nie memorovanie
+
+**Podpora samostatnosti:**
+
+**Rola dospelého:**
+- Pripraviť prostredie
+- Ukázať použitie materiálov
+- Byť k dispozícii
+- Nezasahovať zbytočne
+
+**Podpora dieťaťa:**
+- "Pomôž mi, aby som to dokázal sám"
+- Nie "urobím to za teba"
+- Vedenie k samostatnosti
+- Budovanie sebadôvery
+
+**Výsledky:**
+- Sebavedomé deti
+- Schopnosť riešiť problémy
+- Vnútorná disciplína
+- Láska k učeniu`
+    },
+    {
+      title: "Téma 5: Praktické činnosti a práca rúk",
+      content: `**Učenie prácou rúk**
+
+Praktické činnosti sú základom Montessori metódy - deti sa učia cez prácu s rukamí, čo rozvíja ich motoriku, koncentráciu aj zodpovednosť.
+
+**Význam praktických činností:**
+
+**1. Rozvoj jemnej motoriky:**
+- Presýpanie
+- Lievanie
+- Zapínanie gombíkov
+- Viazanie šnúrok
+- Príprava na písanie
+
+**2. Koncentrácia:**
+- Sústredenosť na úlohu
+- Koordinácia oko-ruka
+- Dokončenie činnosti
+- Trpezlivosť
+
+**3. Nezávislosť:**
+- Starostlivosť o seba
+- Obliekanie
+- Jedenie
+- Hygiena
+
+**Oblasti praktického života:**
+
+**Cvičenia starostlivosti o seba:**
+- Umývanie rúk
+- Obliekanie sa
+- Česanie vlasov
+- Čistenie topánok
+- Prestieranie stola
+
+**Cvičenia starostlivosti o prostredie:**
+- Umývanie stola
+- Polievanie kvetov
+- Zametanie
+- Utieranie prachu
+- Umývanie riadu
+
+**Cvičenia spoločenského života:**
+- Pozdravenie
+- Prosenie
+- Ďakovanie
+- Nošenie predmetov
+- Otvorenie dveří
+
+**Presnosť a poriadok:**
+
+**Charakteristiky:**
+- Každá činnosť má presný postup
+- Krok za krokom
+- Od ľavej k pravej
+- Od vrchu k spodku
+- Logická postupnosť
+
+**Prečo je to dôležité:**
+- Rozvoj logického myslenia
+- Vnútorný poriadok
+- Príprava na čítanie a písanie
+- Systematický prístup
+
+**Príklady praktických činností:**
+
+**Presýpanie:**
+- Z nádoby do nádoby
+- Naberačkou
+- Pinzetou
+- Pipetou
+- Postupne menšie predmety
+
+**Lievanie:**
+- Voda
+- Strukoviny
+- Ryža
+- Rôzne nádoby
+- Postupne menšie
+
+**Príprava jedla:**
+- Krájanie ovocia
+- Mazanie chleba
+- Vytláčanie šťavy
+- Miešanie
+- Príprava občerstvenia
+
+**Výhody:**
+- Sebavedomie: "Ja to dokážem"
+- Zodpovednosť
+- Nezávislosť
+- Radosť z práce`
+    },
+    {
+      title: "Téma 6: Chyby ako príležitosť na učenie",
+      content: `**Pozitívny prístup k chybám**
+
+V Montessori metóde sú chyby vnímané ako prirodzená a dôležitá súčasť procesu učenia, nie ako zlyhanie.
+
+**Filozofia chyby:**
+
+**1. Chyba je učiteľ:**
+- Každá chyba je príležitosť
+- Možnosť naučiť sa niečo nové
+- Pochopenie, čo nefunguje
+- Hľadanie iného riešenia
+
+**2. Nie je dôvod na kritiku:**
+- Bez hanby
+- Bez trestu
+- Bez porovnávania
+- Akceptujúce prostredie
+
+**3. Prirodzený proces:**
+- Každý sa učí cez chyby
+- Súčasť vývoja
+- Cesta k dokonalosti
+- Postupné zlepšovanie
+
+**Kontrola chyby:**
+
+**Samokorekcia:**
+- Materiály majú zabudovanú kontrolu
+- Dieťa samo zistí chybu
+- Nie je potrebný dospelý
+- Rozvoj sebahodnotenia
+
+**Príklady:**
+- Valčeky - vizuálna kontrola
+- Geometrické tvary - pasujú/nepasujú
+- Farebné tablety - porovnanie
+- Matematické materiály - číselná kontrola
+
+**Výhody samokorekcie:**
+- Nezávislosť od dospelého
+- Vnútorná motivácia
+- Objektívnosť
+- Rozvoj kritického myslenia
+
+**Rola učiteľa:**
+
+**Podpora, nie oprava:**
+- Neopravuje okamžite
+- Dá dieťaťu priestor
+- Pozoruje
+- Podporuje samostatné riešenie
+
+**Ak dieťa potrebuje pomoc:**
+- Navádzacie otázky
+- Nie priame odpovede
+- Podpora myslenia
+- Vedenie k objavu
+
+**Budovanie odolnosti:**
+
+**Učenie sa zo zlyhania:**
+- Vytrvalosť
+- Neúspech nie je koniec
+- Pokus a omyl
+- Postupné zlepšovanie
+
+**Zdravý vzťah k chybám:**
+- Chyba nie je katastrofa
+- Normálna súčasť života
+- Príležitosť rásť
+- Odvaha skúšať
+
+**Prínosy prístupu:**
+- Sebavedomie
+- Odvaha experimentovať
+- Nestrach z neúspechu
+- Vytrvalosť
+- Samostatné riešenie problémov`
+    },
+    {
+      title: "Téma 7: Učiteľ ako sprievodca",
+      content: `**Nová rola učiteľa**
+
+V Montessori metóde má učiteľ úplne inú úlohu než v tradičnom vzdelávaní - nie je autoritou, ale sprievodcom a pozorovateľom.
+
+**Učiteľ ako sprievodca:**
+
+**1. Pozorovateľ:**
+- Pozoruje každé dieťa
+- Všíma si záujmy
+- Rozpoznáva potreby
+- Sleduje pokrok
+
+**2. Pripravovač prostredia:**
+- Vytvára pripravené prostredie
+- Organizuje materiály
+- Udržiava poriadok
+- Zabezpečuje prístupnosť
+
+**3. Sprostredkovateľ:**
+- Ukazuje použitie materiálov
+- Predstavuje nové činnosti
+- Spája dieťa s prostredím
+- Facilituje učenie
+
+**Čo učiteľ ROBÍ:**
+
+**Ukážky (prezentácie):**
+- Presné
+- Pomalé
+- Bez zbytočných slov
+- Krok za krokom
+- Ideálne individuálne
+
+**Príprava:**
+- Pravidelné kontroly materiálov
+- Doplňovanie pomôcok
+- Úprava prostredia
+- Plánovanie aktivít
+
+**Podpora:**
+- Je k dispozícii
+- Pomáha len keď treba
+- Povzbudzuje
+- Rešpektuje tempo dieťaťa
+
+**Čo učiteľ NEROBÍ:**
+
+**1. Nevnucuje:**
+- Nenúti k aktivite
+- Netrestá za nezáujem
+- Nerušíu koncentrovanú prácu
+- Nezasahuje bez potreby
+
+**2. Nehodnotí:**
+- Bez známok
+- Bez porovnávania
+- Bez odmien a trestov
+- Vnútorná motivácia
+
+**3. Nevysvetľuje všetko:**
+- Dá priestor na objavovanie
+- Necháva dieťa experimentovať
+- Podporuje samostatné riešenia
+- Vedie navádzajúcimi otázkami
+
+**Dôležité vlastnosti Montessori učiteľa:**
+
+**Osobné kvality:**
+- Trpezlivosť
+- Pokora
+- Rešpekt k dieťaťu
+- Dôvera v dieťa
+- Schopnosť pozorovať
+
+**Profesionálne schopnosti:**
+- Znalosti o vývoji dieťaťa
+- Ovládanie materiálov
+- Schopnosť adaptácie
+- Individuálny prístup
+
+**Výsledok:**
+- Dieťa je aktívne
+- Učiteľ je v pozadí
+- Učenie je prirodzené
+- Vzťah je partnerský`
+    },
+    {
+      title: "Téma 8: Senzitívne obdobia",
+      content: `**Využitie prirodzených období vývoja**
+
+Senzitívne obdobia sú časové úseky, keď je dieťa zvlášť vnímavé na určité podnety a ľahšie sa učí konkrétne zručnosti.
+
+**Čo sú senzitívne obdobia:**
+
+**Definícia:**
+- Obdobia zvýšenej citlivosti
+- Prirodzená túžba učiť sa konkrétne veci
+- Ideálny čas na rozvoj zručností
+- Biologicky dané obdobia
+
+**Charakteristiky:**
+- Dočasné
+- Univerzálne (u všetkých detí)
+- Intenzívne
+- Nevratné
+
+**Hlavné senzitívne obdobia:**
+
+**1. Poriadok (0-6 rokov, vrchol 1-3):**
+- Potreba konzistentnosti
+- Rituály a rutiny
+- Predvídateľnosť
+- Každá vec na svojom mieste
+
+**Ako to využiť:**
+- Jasná štruktúra dňa
+- Stály rozvrh
+- Poriadok v prostredí
+- Konzistentné pravidlá
+
+**2. Pohyb (0-4,5 roka):**
+- Rozvoj hrubej motoriky
+- Rozvoj jemnej motoriky
+- Koordinácia
+- Rovnováha
+
+**Ako to využiť:**
+- Cvičenia praktického života
+- Voľnosť pohybu
+- Práca s rukamí
+- Fyzické aktivity
+
+**3. Malé predmety (1,5-4 roky):**
+- Fascinácia drobnými vecami
+- Jemná motorika
+- Koncentrácia
+- Presnosť
+
+**Ako to využiť:**
+- Činnosti s malými predmetmi
+- Presýpanie, triedenie
+- Navliekanie korálok
+- Puzzle
+
+**4. Jazyk (0-6 rokov):**
+- Впитывание jazyka
+- Ľahké učenie sa
+- Hovorenie
+- Písanie a čítanie (4-6)
+
+**Ako to využiť:**
+- Bohaté jazykové prostredie
+- Rozhovory
+- Čítanie kníh
+- Jazykové aktivity
+
+**5. Zmysly (0-6 rokov, vrchol 2,5-6):**
+- Rafinovaný rozvoj zmyslov
+- Rozlišovanie
+- Kategorizácia
+- Abstrakcia
+
+**Ako to využiť:**
+- Senzorické materiály
+- Triedenie, porovnávanie
+- Práca so zmyslami
+- Poznávanie vlastností
+
+**6. Sociálne správanie (2,5-6 rokov):**
+- Záujem o iných
+- Spoločenské pravidlá
+- Spolupráca
+- Empathy
+
+**Ako to využiť:**
+- Skupinové aktivity
+- Cvičenia spoločenského života
+- Spolupráca
+- Modelovanie správania
+
+**Význam:**
+- Využitie prirodzenej motivácie
+- Ľahšie učenie
+- Hlbšie pochopenie
+- Radosť z učenia`
+    },
+    {
+      title: "Téma 9: Montessori pomôcky a materiály",
+      content: `**Špeciálne navrhnuté vzdelávacie pomôcky**
+
+Montessori materiály sú starostlivo navrhnuté pomôcky, ktoré podporujú samostatné učenie a rozvoj dieťaťa.
+
+**Charakteristiky Montessori materiálov:**
+
+**1. Izolácia vlastnosti:**
+- Každý materiál učí jeden koncept
+- Jasný cieľ
+- Nie je preťaženie
+- Sústredenie na jedno
+
+**2. Kontrola chyby:**
+- Zabudovaná samokorekcia
+- Dieťa samo zistí chybu
+- Nezávislosť od dospelého
+- Objektívnosť
+
+**3. Estetika:**
+- Krásne materiály
+- Prírodné materiály
+- Príjemné na dotyk
+- Lákavé pre dieťa
+
+**4. Od konkrétneho k abstraktnému:**
+- Manipulatívne pomôcky
+- Zmyslová skúsenosť
+- Postupné abstrakcie
+- Pochopenie pred memorovaním
+
+**Príklady materiálov:**
+
+**Praktický život:**
+
+**1. Rámy na zapínanie:**
+- Gombíky
+- Zips
+- Šnurovanie
+- Cvičky
+- Háčiky
+
+**2. Cvičenia presnosti:**
+- Lievanie vody
+- Presýpanie strukovín
+- Práca s pinzetou
+- Použitie pipety
+
+**Senzorické materiály:**
+
+**1. Ružová veža:**
+- 10 kociek rôznych veľkostí
+- Rozvoj zraku
+- Porovnávanie veľkostí
+- Príprava na matematiku
+
+**2. Farebné tablety:**
+- Rozlišovanie farieb
+- Odtiene
+- Párovanie
+- Vizuálna pamäť
+
+**3. Geometrické telesá:**
+- Trojrozmerné tvary
+- Hmatové rozlíšenie
+- Pojmenovanie
+- Geometria
+
+**Matematické materiály:**
+
+**1. Číselné tyčinky:**
+- Konkrétne množstvo
+- Vizualizácia čísel
+- Počítanie
+- Porovnávanie
+
+**2. Zlatý materiál:**
+- Jednotky, desiatky, stovky, tisícky
+- Dekadický systém
+- Operácie
+- Pochopenie hodnôt
+
+**3. Navliekacie korálky:**
+- Počítanie do 10
+- Farby a čísla
+- Matematické operácie
+- Štvorce a mocniny
+
+**Jazykové materiály:**
+
+**1. Hmatové písmenká:**
+- Drsné/hladké
+- Tvarovanie písmen
+- Zápis pred čítaním
+- Senzomotorické učenie
+
+**2. Pohyblivá abeceda:**
+- Skladanie slov
+- Bez nutnosti písať
+- Analýza slov
+- Tvorba viet
+
+**Výhody materiálov:**
+- Samostatné učenie
+- Zmyslová skúsenosť
+- Radosť z objavu
+- Hlboké pochopenie`
+    },
+    {
+      title: "Téma 10: Ciele a aplikácia Montessori metódy",
+      content: `**Ciele a praktické využitie Montessori prístupu**
+
+Montessori metóda má jasne definované ciele a dá sa aplikovať v rôznych prostrediach.
+
+**Hlavné ciele Montessori metódy:**
+
+**1. Podpora prirodzeného rozvoja:**
+- Rešpekt k individuálnemu tempu
+- Podpora vnútornej motivácie
+- Prirodzené učenie
+- Harmonický rozvoj
+
+**2. Rozvoj samostatnosti:**
+- "Pomôž mi, aby som to dokázal sám"
+- Nezávislosť
+- Sebadôvera
+- Zodpovednosť
+
+**3. Koncentrácia a vytrvalosť:**
+- Schopnosť sústrediť sa
+- Dokončiť úlohu
+- Trpezlivosť
+- Usilovnosť
+
+**4. Presnosť a pozornosť k detailom:**
+- Starostlivosť o detaily
+- Kvalita práce
+- Presnosť vykonania
+- Dokonalosť
+
+**5. Zdravé sebavedomie:**
+- Sebadôvera
+- Pozitívny sebaobraz
+- Poznanie vlastných schopností
+- Odvaha skúšať
+
+**6. Láska k učeniu:**
+- Učenie ako radosť
+- Prirodzená zvedavosť
+- Vnútorná motivácia
+- Celoživotné učenie
+
+**Aplikácia v praxi:**
+
+**Montessori školy:**
+- Celkový systém vzdelávania
+- Od 0 do 18 rokov
+- Kontinuita prístupu
+- Certifikované školy po celom svete
+
+**Montessori v rodine:**
+- Pripravené prostredie doma
+- Rešpekt k dieťaťu
+- Podpora samostatnosti
+- Praktické činnosti
+
+**Montessori princípy všade:**
+- Možno aplikovať čiastočne
+- V každodennom živote
+- V tradičnej škole
+- Doma aj v škôlke
+
+**Výhody Montessori vzdelávania:**
+
+**Akademické:**
+- Solídne základy v matematike
+- Láska k čítaniu
+- Kritické myslenie
+- Tvorivosť
+
+**Sociálne:**
+- Empatia
+- Spolupráca
+- Rešpekt k iným
+- Sociálne zručnosti
+
+**Emocionálne:**
+- Sebavedomie
+- Emocionálna inteligencia
+- Odolnosť
+- Vyrovnanosť
+
+**Dlhodobé efekty:**
+
+**Výskumy ukazujú:**
+- Vyššia akademická úspešnosť
+- Lepšie sociálne zručnosti
+- Vyššia kreativita
+- Celoživotná láska k učeniu
+
+**Pre koho je vhodná:**
+- Pre všetky deti
+- Rôzne schopnosti
+- Rôzne temperamenty
+- Inkluzívny prístup
+
+**Záver:**
+Montessori metóda nie je len o materiáloch a škole - je to životný prístup, ktorý rešpektuje dieťa ako jedinečnú osobnosť s obrovským potenciálom.
+
+**Odkaz Márie Montessori:**
+"Pomôžme deťom, aby to dokázali samy - je to cesta k ich slobode a našej budúcnosti."`
+    }
   ]
 }
 
