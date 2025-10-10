@@ -25497,6 +25497,838 @@ auto vysledok = cisla
 C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
     }
   ],
+  "Angular": [
+    {
+      title: "Téma 1: Úvod do Angular",
+      content: `**Čo je Angular?**
+
+Angular je open-source front-endový framework na vývoj dynamických webových aplikácií, ktorý vytvoril Google.
+
+**Základné informácie:**
+- Vytvorený spoločnosťou Google v roku 2016
+- Založený na TypeScript
+- Single Page Applications (SPA)
+- Komponentová architektúra
+- MVC architektonický vzor
+
+**História:**
+- 2010: AngularJS (Angular 1.x)
+- 2016: Angular 2+ (kompletný prepis)
+- Pravidelné updates každých 6 mesiacov
+- Aktuálne: Angular 17+
+
+**Prečo Angular?**
+- Komplexný framework (all-in-one)
+- Silná typová kontrola (TypeScript)
+- Veľká komunita a podpora Google
+- Nástroje a CLI
+- Ideálny pre enterprise aplikácie
+
+**Kto používa Angular:**
+- Google
+- Microsoft Office
+- Forbes
+- PayPal
+- Samsung`
+    },
+    {
+      title: "Téma 2: Komponentová architektúra",
+      content: `**Komponenty - Základné stavebné bloky**
+
+Aplikácie sú tvorené modulmi a komponentmi, ktoré sa skladajú zo služieb a šablón.
+
+**Štruktúra komponentu:**
+
+**Component TypeScript súbor:**
+\`\`\`typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-hello',
+  templateUrl: './hello.component.html',
+  styleUrls: ['./hello.component.css']
+})
+export class HelloComponent {
+  title: string = 'Vitajte v Angular!';
+  
+  sayHello(): void {
+    alert('Hello from Angular!');
+  }
+}
+\`\`\`
+
+**Template (HTML):**
+\`\`\`html
+<div class="container">
+  <h1>{{ title }}</h1>
+  <button (click)="sayHello()">Klikni</button>
+</div>
+\`\`\`
+
+**Styles (CSS):**
+\`\`\`css
+.container {
+  padding: 20px;
+}
+\`\`\`
+
+**Životný cyklus komponentu:**
+
+**ngOnInit():**
+\`\`\`typescript
+export class MyComponent implements OnInit {
+  ngOnInit(): void {
+    console.log('Komponent inicializovaný');
+  }
+}
+\`\`\`
+
+**Ďalšie lifecycle hooks:**
+- ngOnChanges() - Zmeny vstupov
+- ngOnInit() - Inicializácia
+- ngDoCheck() - Detekcia zmien
+- ngAfterViewInit() - Po inicializácii view
+- ngOnDestroy() - Pred zničením
+
+**Vnorené komponenty:**
+\`\`\`typescript
+@Component({
+  selector: 'app-parent',
+  template: \`
+    <app-child [data]="parentData"></app-child>
+  \`
+})
+export class ParentComponent {
+  parentData = 'Data z rodiča';
+}
+\`\`\``
+    },
+    {
+      title: "Téma 3: TypeScript v Angular",
+      content: `**TypeScript - Základ Angular aplikácií**
+
+Angular používa TypeScript namiesto čistého JavaScriptu, čo prináša lepšiu čitateľnosť kódu a silnejšiu typovú kontrolu.
+
+**Prečo TypeScript?**
+- Statické typovanie
+- Lepšia čitateľnosť
+- IntelliSense podpora
+- Odhalenie chýb pri vývoji
+- Objektovo orientované programovanie
+
+**Príklad s typmi:**
+\`\`\`typescript
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
+export class UserComponent {
+  users: User[] = [];
+  selectedUser?: User;
+
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+
+  selectUser(id: number): void {
+    this.selectedUser = this.users.find(u => u.id === id);
+  }
+}
+\`\`\`
+
+**Dekorátory:**
+
+**@Component:**
+\`\`\`typescript
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html'
+})
+\`\`\`
+
+**@Input a @Output:**
+\`\`\`typescript
+export class ChildComponent {
+  @Input() data!: string;
+  @Output() notify = new EventEmitter<string>();
+
+  sendMessage(): void {
+    this.notify.emit('Správa z child komponentu');
+  }
+}
+\`\`\`
+
+**@Injectable:**
+\`\`\`typescript
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  getData(): string[] {
+    return ['data1', 'data2'];
+  }
+}
+\`\`\`
+
+**Generické typy:**
+\`\`\`typescript
+export class ApiService<T> {
+  private data: T[] = [];
+
+  add(item: T): void {
+    this.data.push(item);
+  }
+
+  getAll(): T[] {
+    return this.data;
+  }
+}
+\`\`\``
+    },
+    {
+      title: "Téma 4: Data Binding",
+      content: `**Data Binding - Prepojenie dát a view**
+
+Angular umožňuje obojsmernú väzbu medzi údajmi v modeli a zobrazením v HTML.
+
+**Typy data bindingu:**
+
+**1. Interpolation ({{ }}):**
+\`\`\`typescript
+export class AppComponent {
+  title = 'Moja aplikácia';
+  count = 5;
+}
+\`\`\`
+
+\`\`\`html
+<h1>{{ title }}</h1>
+<p>Počet: {{ count }}</p>
+<p>Dvojnásobok: {{ count * 2 }}</p>
+\`\`\`
+
+**2. Property Binding ([property]):**
+\`\`\`typescript
+export class AppComponent {
+  imageUrl = 'https://example.com/image.jpg';
+  isDisabled = false;
+}
+\`\`\`
+
+\`\`\`html
+<img [src]="imageUrl">
+<button [disabled]="isDisabled">Klikni</button>
+<div [class.active]="isActive">Content</div>
+\`\`\`
+
+**3. Event Binding ((event)):**
+\`\`\`typescript
+export class AppComponent {
+  handleClick(): void {
+    console.log('Button clicked!');
+  }
+
+  onInputChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    console.log(value);
+  }
+}
+\`\`\`
+
+\`\`\`html
+<button (click)="handleClick()">Klikni</button>
+<input (input)="onInputChange($event)">
+\`\`\`
+
+**4. Two-way Binding ([(ngModel)]):**
+\`\`\`typescript
+export class AppComponent {
+  name: string = '';
+}
+\`\`\`
+
+\`\`\`html
+<input [(ngModel)]="name">
+<p>Ahoj, {{ name }}!</p>
+\`\`\`
+
+**Template reference variables:**
+\`\`\`html
+<input #nameInput type="text">
+<button (click)="greet(nameInput.value)">Pozdrav</button>
+\`\`\`
+
+**Safe navigation operator:**
+\`\`\`html
+<p>{{ user?.address?.city }}</p>
+\`\`\``
+    },
+    {
+      title: "Téma 5: Directives - Direktívy",
+      content: `**Direktívy v Angular**
+
+Direktívy rozširujú HTML o dodatočnú funkcionalitu.
+
+**Typy direktív:**
+
+**1. Structural Directives:**
+
+**\*ngIf:**
+\`\`\`html
+<div *ngIf="isLoggedIn">
+  Vitaj späť!
+</div>
+
+<div *ngIf="isLoggedIn; else loginTemplate">
+  Prihlásený
+</div>
+<ng-template #loginTemplate>
+  <div>Prihlás sa</div>
+</ng-template>
+\`\`\`
+
+**\*ngFor:**
+\`\`\`typescript
+export class AppComponent {
+  users = [
+    { id: 1, name: 'Peter' },
+    { id: 2, name: 'Jana' },
+    { id: 3, name: 'Martin' }
+  ];
+}
+\`\`\`
+
+\`\`\`html
+<ul>
+  <li *ngFor="let user of users; let i = index">
+    {{ i + 1 }}. {{ user.name }}
+  </li>
+</ul>
+\`\`\`
+
+**\*ngSwitch:**
+\`\`\`html
+<div [ngSwitch]="role">
+  <p *ngSwitchCase="'admin'">Admin panel</p>
+  <p *ngSwitchCase="'user'">User panel</p>
+  <p *ngSwitchDefault>Guest panel</p>
+</div>
+\`\`\`
+
+**2. Attribute Directives:**
+
+**ngClass:**
+\`\`\`html
+<div [ngClass]="{'active': isActive, 'disabled': isDisabled}">
+  Content
+</div>
+
+<div [ngClass]="currentClasses">Content</div>
+\`\`\`
+
+**ngStyle:**
+\`\`\`html
+<div [ngStyle]="{'color': textColor, 'font-size': fontSize + 'px'}">
+  Styled text
+</div>
+\`\`\`
+
+**Vlastná direktíva:**
+\`\`\`typescript
+import { Directive, ElementRef, HostListener } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+  constructor(private el: ElementRef) {}
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.el.nativeElement.style.backgroundColor = 'yellow';
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.el.nativeElement.style.backgroundColor = '';
+  }
+}
+\`\`\`
+
+\`\`\`html
+<p appHighlight>Prejdi myšou cez mňa</p>
+\`\`\``
+    },
+    {
+      title: "Téma 6: Services a Dependency Injection",
+      content: `**Services - Služby v Angular**
+
+Services obsahujú logiku a dáta, ktoré sú zdieľané medzi komponentmi.
+
+**Vytvorenie service:**
+\`\`\`typescript
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private users: User[] = [];
+
+  getUsers(): User[] {
+    return this.users;
+  }
+
+  addUser(user: User): void {
+    this.users.push(user);
+  }
+
+  getUserById(id: number): User | undefined {
+    return this.users.find(u => u.id === id);
+  }
+}
+\`\`\`
+
+**Dependency Injection:**
+
+**V komponente:**
+\`\`\`typescript
+import { Component, OnInit } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-users',
+  template: \`
+    <div *ngFor="let user of users">
+      {{ user.name }}
+    </div>
+  \`
+})
+export class UsersComponent implements OnInit {
+  users: User[] = [];
+
+  constructor(private dataService: DataService) {}
+
+  ngOnInit(): void {
+    this.users = this.dataService.getUsers();
+  }
+}
+\`\`\`
+
+**HTTP Service:**
+\`\`\`typescript
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ApiService {
+  private apiUrl = 'https://api.example.com';
+
+  constructor(private http: HttpClient) {}
+
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(\`\${this.apiUrl}/users\`);
+  }
+
+  createUser(user: User): Observable<User> {
+    return this.http.post<User>(\`\${this.apiUrl}/users\`, user);
+  }
+}
+\`\`\`
+
+**Použitie v komponente:**
+\`\`\`typescript
+export class UsersComponent implements OnInit {
+  users: User[] = [];
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.apiService.getUsers().subscribe({
+      next: (data) => this.users = data,
+      error: (err) => console.error(err)
+    });
+  }
+}
+\`\`\``
+    },
+    {
+      title: "Téma 7: Routing - Navigácia",
+      content: `**Angular Router**
+
+Router umožňuje navigáciu medzi rôznymi view v SPA aplikácii.
+
+**Konfigurácia routes:**
+\`\`\`typescript
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'users', component: UsersComponent },
+  { path: 'users/:id', component: UserDetailComponent },
+  { path: '**', component: NotFoundComponent }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+\`\`\`
+
+**Router outlet v template:**
+\`\`\`html
+<nav>
+  <a routerLink="/">Domov</a>
+  <a routerLink="/about">O nás</a>
+  <a routerLink="/users">Používatelia</a>
+</nav>
+
+<router-outlet></router-outlet>
+\`\`\`
+
+**Programová navigácia:**
+\`\`\`typescript
+import { Router } from '@angular/router';
+
+export class AppComponent {
+  constructor(private router: Router) {}
+
+  navigateToUsers(): void {
+    this.router.navigate(['/users']);
+  }
+
+  navigateToUser(id: number): void {
+    this.router.navigate(['/users', id]);
+  }
+}
+\`\`\`
+
+**Route parameters:**
+\`\`\`typescript
+import { ActivatedRoute } from '@angular/router';
+
+export class UserDetailComponent implements OnInit {
+  userId!: number;
+
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.userId = +params['id'];
+    });
+  }
+}
+\`\`\`
+
+**Query parameters:**
+\`\`\`typescript
+// Navigácia: /users?sort=name&order=asc
+this.router.navigate(['/users'], {
+  queryParams: { sort: 'name', order: 'asc' }
+});
+
+// Čítanie
+this.route.queryParams.subscribe(params => {
+  const sort = params['sort'];
+  const order = params['order'];
+});
+\`\`\`
+
+**Route Guards:**
+\`\`\`typescript
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(): boolean {
+    if (this.isLoggedIn()) {
+      return true;
+    }
+    this.router.navigate(['/login']);
+    return false;
+  }
+}
+\`\`\``
+    },
+    {
+      title: "Téma 8: Forms - Formuláre",
+      content: `**Práca s formulármi v Angular**
+
+Angular poskytuje dva prístupy: Template-driven a Reactive forms.
+
+**1. Template-driven Forms:**
+
+\`\`\`typescript
+import { FormsModule } from '@angular/forms';
+
+export class AppComponent {
+  user = {
+    name: '',
+    email: '',
+    age: 0
+  };
+
+  onSubmit(): void {
+    console.log(this.user);
+  }
+}
+\`\`\`
+
+\`\`\`html
+<form #userForm="ngForm" (ngSubmit)="onSubmit()">
+  <input 
+    type="text" 
+    name="name" 
+    [(ngModel)]="user.name" 
+    required>
+  
+  <input 
+    type="email" 
+    name="email" 
+    [(ngModel)]="user.email" 
+    required 
+    email>
+  
+  <button [disabled]="!userForm.valid">Odoslať</button>
+</form>
+\`\`\`
+
+**2. Reactive Forms:**
+
+\`\`\`typescript
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+export class AppComponent {
+  userForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.userForm = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      age: [0, [Validators.required, Validators.min(18)]]
+    });
+  }
+
+  onSubmit(): void {
+    if (this.userForm.valid) {
+      console.log(this.userForm.value);
+    }
+  }
+
+  get name() {
+    return this.userForm.get('name');
+  }
+}
+\`\`\`
+
+\`\`\`html
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+  <input formControlName="name">
+  <div *ngIf="name?.invalid && name?.touched">
+    <small *ngIf="name?.errors?.['required']">Meno je povinné</small>
+    <small *ngIf="name?.errors?.['minlength']">Min. 3 znaky</small>
+  </div>
+
+  <input formControlName="email">
+  <input formControlName="age" type="number">
+  
+  <button [disabled]="userForm.invalid">Odoslať</button>
+</form>
+\`\`\`
+
+**Vlastný validátor:**
+\`\`\`typescript
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+
+export function forbiddenNameValidator(control: AbstractControl): ValidationErrors | null {
+  const forbidden = /admin/i.test(control.value);
+  return forbidden ? { forbiddenName: { value: control.value } } : null;
+}
+\`\`\``
+    },
+    {
+      title: "Téma 9: Moduly a lazy loading",
+      content: `**Angular Modules**
+
+Moduly organizujú aplikáciu do logických celkov.
+
+**AppModule:**
+\`\`\`typescript
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    HomeComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+\`\`\`
+
+**Feature Module:**
+\`\`\`typescript
+@NgModule({
+  declarations: [
+    UsersComponent,
+    UserDetailComponent
+  ],
+  imports: [
+    CommonModule,
+    UsersRoutingModule
+  ],
+  exports: [UsersComponent]
+})
+export class UsersModule { }
+\`\`\`
+
+**Lazy Loading:**
+
+**Routing konfigurácia:**
+\`\`\`typescript
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  {
+    path: 'users',
+    loadChildren: () => import('./users/users.module').then(m => m.UsersModule)
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule),
+    canActivate: [AuthGuard]
+  }
+];
+\`\`\`
+
+**SharedModule:**
+\`\`\`typescript
+@NgModule({
+  declarations: [
+    LoadingSpinnerComponent,
+    ErrorMessageComponent
+  ],
+  imports: [
+    CommonModule
+  ],
+  exports: [
+    CommonModule,
+    LoadingSpinnerComponent,
+    ErrorMessageComponent
+  ]
+})
+export class SharedModule { }
+\`\`\`
+
+**Výhody modularity:**
+- Lepšia organizácia kódu
+- Znovupoužiteľnosť
+- Lazy loading zlepšuje výkon
+- Jednoduchšie testovanie`
+    },
+    {
+      title: "Téma 10: RxJS a Observables",
+      content: `**Reactive Programming s RxJS**
+
+Angular používa RxJS pre asynchrónne operácie.
+
+**Observable:**
+\`\`\`typescript
+import { Observable } from 'rxjs';
+
+const observable = new Observable(subscriber => {
+  subscriber.next(1);
+  subscriber.next(2);
+  subscriber.next(3);
+  subscriber.complete();
+});
+
+observable.subscribe({
+  next: value => console.log(value),
+  complete: () => console.log('Done')
+});
+\`\`\`
+
+**Operátory:**
+
+**map:**
+\`\`\`typescript
+import { map } from 'rxjs/operators';
+
+this.apiService.getUsers().pipe(
+  map(users => users.filter(u => u.age > 18))
+).subscribe(adults => console.log(adults));
+\`\`\`
+
+**filter:**
+\`\`\`typescript
+import { filter } from 'rxjs/operators';
+
+numbers$.pipe(
+  filter(n => n % 2 === 0)
+).subscribe(even => console.log(even));
+\`\`\`
+
+**switchMap:**
+\`\`\`typescript
+import { switchMap } from 'rxjs/operators';
+
+this.route.params.pipe(
+  switchMap(params => this.apiService.getUser(params['id']))
+).subscribe(user => this.user = user);
+\`\`\`
+
+**Subject:**
+\`\`\`typescript
+import { Subject } from 'rxjs';
+
+export class DataService {
+  private messageSource = new Subject<string>();
+  message$ = this.messageSource.asObservable();
+
+  sendMessage(message: string): void {
+    this.messageSource.next(message);
+  }
+}
+\`\`\`
+
+**catchError:**
+\`\`\`typescript
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+this.apiService.getUsers().pipe(
+  catchError(error => {
+    console.error(error);
+    return of([]);
+  })
+).subscribe(users => this.users = users);
+\`\`\`
+
+**Best practices:**
+- Vždy unsubscribe z observables
+- Používajte async pipe v template
+- Kombinujte operátory pre komplexnú logiku`
+    }
+  ],
   "TypeScript": [
     {
       title: "Téma 1: Úvod do TypeScript",
