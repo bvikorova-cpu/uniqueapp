@@ -44866,6 +44866,479 @@ Mladosť je kľúčové obdobie formovania osobnosti, hodnôt a kompetencií. Kv
 - Co-creation
 - Aktivizmus mladých ľudí`
     },
+  ],
+  "Krízová intervencia": [
+    {
+      title: "Téma 1: Úvod do krízovej intervencie",
+      content: `**Krízová intervencia** je špecializovaná, okamžitá a krátkodobá odborná pomoc a podpora zameraná na stabilizáciu jednotlivca alebo skupiny v období po prežitej krízovej udalosti.
+
+**Základné charakteristiky:**
+- Špecializovaná odborná činnosť
+- Okamžitá a krátkodobá pomoc
+- Stabilizácia po krízovej udalosti
+- Podpora copingových stratégií
+- Práca s emóciami
+
+**Hlavné ciele:**
+- Obnoviť pocit bezpečia a stability
+- Pomôcť zvládnuť negatívnu situáciu
+- Posilniť vlastné schopnosti klienta
+- Predchádzať ďalším traumám
+- Podporiť návrat k normálnemu fungovaniu
+
+**Kedy je potrebná:**
+Krízová intervencia je potrebná v situáciách, keď človek prežije udalosť, ktorá narušila jeho psychickú rovnováhu a prekračuje jeho bežné zvládacie schopnosti - napríklad strata blízkej osoby, násilný útok, závažná nehoda, prírodná katastrofa alebo iná traumatická udalosť.`
+    },
+    {
+      title: "Téma 2: Špecializovaná činnosť a odbornosť",
+      content: `**Špecializovaná činnosť** v krízovej intervencii vyžaduje špecifické vzdelanie, zručnosti a kompetencie odborníkov.
+
+**Odborná príprava:**
+
+**Vzdelanie:**
+- Psychológia, sociálna práca alebo príbuzné odbory
+- Špecializačné kurzy v krízovej intervencii
+- Poznatky z traumatológie
+- Kontinuálne vzdelávanie
+
+**Špecifické kompetencie:**
+- Práca v krízových situáciách
+- Zvládanie stresu a tlaku
+- Rýchle rozhodovanie
+- Emočná stabilita
+
+**Kľúčové zručnosti:**
+
+**Komunikačné zručnosti:**
+- Aktívne počúvanie
+- Empatická komunikácia
+- Kríza komunikácia
+- Práca s traumatizovanými osobami
+
+**Asistenčné zručnosti:**
+- Poskytovanie prvej psychologickej pomoci
+- Stabilizačné techniky
+- Práca s rozličnými skupinami
+- Koordinácia s inými službami
+
+**Etické aspekty:**
+- Zachovanie dôvernosti
+- Rešpekt k autonómii
+- Neškodenie (non-maleficence)
+- Profesionálne hranice
+- Kulturná citlivosť`
+    },
+    {
+      title: "Téma 3: Okamžitá a krátkodobá pomoc",
+      content: `**Okamžitá a krátkodobá pomoc** je charakteristická pre krízovú intervenciu a odlišuje ju od dlhodobej terapie.
+
+**Časové charakteristiky:**
+
+**Okamžitosť:**
+- Poskytovanie pomoci ihneď po krízovej udalosti
+- Dostupnosť 24/7
+- Rýchla reakcia
+- Žiadne dlhé čakacie doby
+
+**Krátkodobosť:**
+- Trvanie zvyčajne od jednej návštevy do niekoľkých týždňov
+- Intenzívna podpora v akútnej fáze
+- Sledovanie stavu klienta
+- Prípadné odporúčanie dlhodobej terapie
+
+**Fázy krízovej intervencie:**
+
+**1. Prvý kontakt (okamžitý):**
+- Vytvorenie bezpečného prostredia
+- Nadviazanie kontaktu
+- Posúdenie krízovej situácie
+- Poskytnutie prvej pomoci
+
+**2. Stabilizácia (prvé hodiny/dni):**
+- Zníženie intenzity emócií
+- Obnovenie pocitu bezpečia
+- Základné copingové stratégie
+- Mobilizácia podporných systémov
+
+**3. Facilitácia pochopenia (dni/týždne):**
+- Spracovanie udalosti
+- Normalizácia reakcií
+- Podpora sebareflexie
+- Identifikácia zdrojov
+
+**4. Adaptácia a ukončenie:**
+- Posilnenie copingových stratégií
+- Plánovanie do budúcnosti
+- Odporúčania pre ďalšiu podporu
+- Formálne ukončenie intervencie`
+    },
+    {
+      title: "Téma 4: Cieľ stabilizácie a obnova bezpečia",
+      content: `**Stabilizácia** a **obnovenie pocitu bezpečia** sú kľúčové ciele krízovej intervencie.
+
+**Stabilizačné techniky:**
+
+**Fyzická stabilizácia:**
+- Vytvorenie bezpečného prostredia
+- Zabezpečenie základných potrieb
+- Pomoc s orientáciou v priestore a čase
+- Regulácia telesných funkcií
+
+**Emočná stabilizácia:**
+- Poskytnutie emočnej podpory
+- Validácia pocitov
+- Zníženie intenzity úzkosti
+- Techniky upokojenia (dýchacie cvičenia, grounding)
+
+**Kognitívna stabilizácia:**
+- Pomoc pri organizácii myšlienok
+- Práca s dezorientáciou
+- Poskytovanie informácií
+- Redukcia zmätenosti
+
+**Obnovenie pocitu bezpečia:**
+
+**Fyzické bezpečie:**
+- Odstránenie hrozieb
+- Zabezpečenie ochrany
+- Vytvorenie bezpečného priestoru
+- Prípadná spolupráca s políciou
+
+**Psychologické bezpečie:**
+- Budovanie dôvery
+- Predvídateľnosť a kontrola
+- Podpora autonómie
+- Rešpekt a dôstojnosť
+
+**Sociálne bezpečie:**
+- Mobilizácia podpornej siete
+- Spojenie s blízkymi
+- Zapojenie komunity
+- Prevencia izolácie`
+    },
+    {
+      title: "Téma 5: Posilnenie copingových stratégií",
+      content: `**Posilnenie copingových stratégií** a schopností pracovať s emóciami je dôležitým cieľom krízovej intervencie.
+
+**Copingové stratégie:**
+
+**Adaptívne copingové stratégie:**
+- Aktívne riešenie problémov
+- Vyhľadanie sociálnej podpory
+- Racionálne prehodnotenie situácie
+- Regulácia emócií
+- Hľadanie informácií
+
+**Emočne zamerané coping:**
+- Akceptácia situácie
+- Ventilace emócií
+- Relaxačné techniky
+- Pozitívne prehodnotenie
+- Sebaúcta a sebapodpora
+
+**Problémovo zamerané coping:**
+- Plánovanie ďalších krokov
+- Vyhľadanie praktickej pomoci
+- Zmena situácie
+- Konfrontácia s problémom
+
+**Práca s emóciami:**
+
+**Identifikácia emócií:**
+- Rozpoznanie vlastných pocitov
+- Pomenovanie emócií
+- Pochopenie intenzity
+- Spojenie emócií s telesným prežívaním
+
+**Regulácia emócií:**
+- Dychové cvičenia
+- Grounding techniky
+- Progresívna svalová relaxácia
+- Mindfulness techniky
+- Vizualizácia
+
+**Expresia emócií:**
+- Bezpečné vyjadrovanie pocitov
+- Práca s hnevom, smútkom, strachom
+- Umelecké vyjadrovanie
+- Písanie denníka
+- Rozhovor s dôveryhodnou osobou`
+    },
+    {
+      title: "Téma 6: Individuálna a skupinová intervencia",
+      content: `**Krízová intervencia** môže byť poskytnutá ako **individuálna** alebo **skupinová**, v závislosti od situácie a potrieb klientov.
+
+**Individuálna intervencia:**
+
+**Charakteristiky:**
+- Osobný prístup
+- Dôvernosť a súkromie
+- Individualizovaná podpora
+- Flexibility v prístupe
+
+**Kedy je vhodná:**
+- Osobná kríza (trauma, strata, násilie)
+- Potreba súkromia
+- Špecifické potreby klienta
+- Intenzívna podpora
+
+**Proces:**
+- Vytvorenie terapeutického vzťahu
+- Individuálne posúdenie
+- Osobný plán intervencie
+- Sledovanie individuálneho pokroku
+
+**Skupinová intervencia:**
+
+**Charakteristiky:**
+- Zdieľanie skúseností
+- Vzájomná podpora
+- Normalizácia reakcií
+- Sociálna konexia
+
+**Kedy je vhodná:**
+- Hromadné traumatické udalosti (katastrofy, nehody)
+- Komunity v krízach
+- Školské krízy
+- Pracovné prostredie po incidente
+
+**Typy skupinovej intervencie:**
+
+**Debriefing:**
+- Psychologický debriefing po traumatickej udalosti
+- Štruktúrovaný proces
+- Prevencia PTSD
+- Podpora skupinovej kohézie
+
+**Podporné skupiny:**
+- Zdieľanie pocitov a skúseností
+- Vzájomná pomoc
+- Zníženie izolácie
+- Budovanie nádeje`
+    },
+    {
+      title: "Téma 7: Rola krízového interventa",
+      content: `**Krízový intervent** je odborník, ktorý vie ako efektívne zasiahnuť a pomôcť v krízových situáciách.
+
+**Role a zodpovednosti:**
+
+**Assessor:**
+- Posúdenie krízovej situácie
+- Identifikácia rizík
+- Zhodnotenie zdrojov klienta
+- Určenie úrovne ohrozenia
+
+**Facilitátor:**
+- Podpora procesu zvládania
+- Facilitácia expresie emócií
+- Pomoc pri hľadaní riešení
+- Moderovanie skupinových procesov
+
+**Educator:**
+- Poskytovanie informácií o reakciách na traumu
+- Vzdelávanie o copingových stratégiách
+- Normalizácia prežívania
+- Psychoedukácia
+
+**Advokát:**
+- Zastupovanie záujmov klienta
+- Sprostredkovanie ďalších služieb
+- Ochrana práv klienta
+- Koordinácia starostlivosti
+
+**Kľúčové kompetencie interventa:**
+
+**Odborné kompetencie:**
+- Poznanie krízových reakcií
+- Techniky stabilizácie
+- Práca s traumou
+- Rizikové posúdenie (suicidálne riziko, atď.)
+
+**Osobnostné kvality:**
+- Empatia a súcit
+- Emočná stabilita
+- Odolnosť voči stresu
+- Flexibility
+- Autentickosť
+
+**Sebastarostlivosť interventa:**
+- Prevencia vyhorenia
+- Supervízia a podpora
+- Vlastná psychohygiena
+- Práca s vlastnými emóciami`
+    },
+    {
+      title: "Téma 8: Typy krízových situácií",
+      content: `**Krízové situácie** môžu byť rôznorodé a vyžadujú si špecifický prístup v závislosti od ich povahy.
+
+**Kategórie krízových situácií:**
+
+**Osobné krízy:**
+
+**Strata a smútok:**
+- Smrť blízkej osoby
+- Náhla strata (úraz, choroba)
+- Anticipovaná strata
+- Stratené vzťahy (rozvod, rozchod)
+
+**Traumatické udalosti:**
+- Násilné trestné činy (znásilnenie, lúpež)
+- Fyzické zranenia
+- Dopravné nehody
+- Domáce násilie
+
+**Životné zmeny:**
+- Strata zamestnania
+- Vážna diagnóza
+- Migrácia a vysídlenie
+- Finančná kríza
+
+**Skupinové a komunitné krízy:**
+
+**Prírodné katastrofy:**
+- Záplavy, zemetrasenia
+- Požiare
+- Víchrice
+- Pandémie
+
+**Človekom spôsobené katastrofy:**
+- Terorizmus
+- Vojnové konflikty
+- Hromadné nehody
+- Chemické havárie
+
+**Inštitucionálne krízy:**
+- Školské streľby
+- Pracovné úrazy
+- Organizačné krízy
+- Komunálne incidenty
+
+**Špecifické reakcie podľa typu krízy:**
+- Akútna stresová reakcia
+- Šok a popretie
+- Disociácia
+- Intenzívne emócie (strach, hnev, smútok)
+- Fyzické symptómy`
+    },
+    {
+      title: "Téma 9: Prvá psychologická pomoc (PFA)",
+      content: `**Prvá psychologická pomoc (PFA)** je základným nástrojom krízovej intervencie poskytovanej bezprostredne po traumatickej udalosti.
+
+**Princípy PFA:**
+
+**Look (Pozorovať):**
+- Posúdenie situácie
+- Identifikácia osôb v núdzi
+- Kontrola bezpečnosti
+- Zistenie potrieb
+
+**Listen (Počúvať):**
+- Aktívne počúvanie
+- Empatický prístup
+- Bez súdenia
+- Validácia pocitov
+
+**Link (Prepojiť):**
+- Sprostredkovanie pomoci
+- Mobilizácia zdrojov
+- Spojenie s blízkymi
+- Odporúčanie ďalších služieb
+
+**Päť základných akcií PFA:**
+
+**1. Kontakt a zapojenie:**
+- Nenásilný prístup
+- Rešpektovanie hraníc
+- Predstavenie sa
+- Ponuka pomoci
+
+**2. Bezpečnosť a komfort:**
+- Fyzické bezpečie
+- Emočný komfort
+- Praktická pomoc
+- Upokojujúce prostredie
+
+**3. Stabilizácia:**
+- Grounding techniky
+- Dychové cvičenia
+- Orientácia v čase a priestore
+- Zníženie arousal
+
+**4. Zber informácií:**
+- Porozumenie potrebám
+- Identifikácia zdrojov
+- Posúdenie rizík
+- Plánovanie pomoci
+
+**5. Praktická asistencia:**
+- Pomoc s konkrétnymi problémami
+- Sprostredkovanie služieb
+- Podpora pri rozhodovaní
+- Sledovanie a follow-up`
+    },
+    {
+      title: "Téma 10: Etické aspekty a profesionálne hranice",
+      content: `**Etické aspekty** a **profesionálne hranice** sú kľúčové pre kvalitné a bezpečné poskytovanie krízovej intervencie.
+
+**Etické princípy:**
+
+**Autonómia:**
+- Rešpekt k rozhodnutiam klienta
+- Informovaný súhlas
+- Sebaurčenie
+- Právo na odmietnutie pomoci
+
+**Neškodenie:**
+- Predchádzanie retraumatizácii
+- Citlivý prístup
+- Ochrana pred ďalším poškodením
+- Bezpečné metódy
+
+**Prospešnosť:**
+- Pomoc a podpora
+- Najlepší záujem klienta
+- Efektívne intervencie
+- Pozitívne výsledky
+
+**Spravodlivosť:**
+- Rovný prístup k službám
+- Nediskriminácia
+- Kultúrna kompetencia
+- Prístupnosť pomoci
+
+**Profesionálne hranice:**
+
+**Duálne vzťahy:**
+- Vyhýbanie sa konfliktom záujmov
+- Jasné profesionálne role
+- Ochrana klienta
+- Profesionálny odstup
+
+**Dôvernosť:**
+- Ochrana osobných údajov
+- Výnimky z dôvernosti (riziko sebou alebo iným)
+- Informovanie o limitoch
+- Bezpečné uchovávanie informácií
+
+**Kompetencie:**
+- Práca v rámci svojej odbornosti
+- Odmietnutie prípadov mimo kompetencie
+- Odporúčanie špecializovanej pomoci
+- Kontinuálne vzdelávanie
+
+**Sebastarostlivosť a prevencia vyhorenia:**
+- Supervízia a podpora
+- Práca s vlastnou traumou
+- Rovnováha medzi pracovným a súkromným životom
+- Rozpoznanie limitov
+
+**Výzvy v krízovej intervencii:**
+- Práca pod tlakom
+- Etické dilemy
+- Limitované zdroje
+- Kultúrne rozdiely
+- Systémové bariéry`
+    },
   ]
 }
 
