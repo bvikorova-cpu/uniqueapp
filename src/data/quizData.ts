@@ -1,14 +1,5 @@
-import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-
-const quizData: Record<string, Array<{question: string; options: string[]; correct: number}>> = {
+// Quiz data with 20 questions per category
+export const quizData: Record<string, Array<{question: string; options: string[]; correct: number}>> = {
   math: [
     { question: "Koľko je 15 + 28?", options: ["41", "42", "43", "44"], correct: 2 },
     { question: "Čo je 12 × 8?", options: ["84", "96", "102", "108"], correct: 1 },
@@ -48,7 +39,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Čo je hemoglobín?", options: ["Hormón", "Proteín v krvi", "Vitamín", "Enzým"], correct: 1 },
     { question: "Koľko percent tela je voda?", options: ["50%", "60%", "70%", "80%"], correct: 1 },
     { question: "Ktorý vitamín vyrábame zo slnka?", options: ["A", "C", "D", "E"], correct: 2 },
-    { question: "Čo sú mitochondrie?", options: ["Bunkové jadro", "Energetické elektrárne", "Riborómy", "Vakuoly"], correct: 1 },
+    { question: "Čo sú mitochondrie?", options: ["Bunkové jadro", "Energetické elektrárne", "Ribozómy", "Vakuoly"], correct: 1 },
     { question: "Koľko párov rebier má človek?", options: ["10", "11", "12", "13"], correct: 2 },
     { question: "Ktorý orgán filtruje krv?", options: ["Pečeň", "Pľúca", "Obličky", "Slezina"], correct: 2 },
     { question: "Čo je evolúcia?", options: ["Vymieranie", "Prispôsobenie a vývoj", "Mutácia", "Migrácia"], correct: 1 },
@@ -72,7 +63,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Ktorá planéta je najväčšia?", options: ["Zem", "Saturn", "Jupiter", "Uránus"], correct: 2 },
     { question: "Čo je elektrina?", options: ["Tok elektrónov", "Energia", "Svetlo", "Teplo"], correct: 0 },
     { question: "Aký je vzorec pre kinetickú energiu?", options: ["mv", "mv²", "½mv²", "m²v"], correct: 2 },
-    { question: "Čo je dúha?", options: ["Rozklad svetla", "Odraz svetla", "Absorpcia svetla", "Emisialight"], correct: 0 },
+    { question: "Čo je dúha?", options: ["Rozklad svetla", "Odraz svetla", "Absorpcia svetla", "Emisia svetla"], correct: 0 },
     { question: "Ktorý kov je najlepší vodič?", options: ["Železo", "Meď", "Striebro", "Zlato"], correct: 2 },
   ],
   chemistry: [
@@ -81,6 +72,21 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
     { question: "Čo je pH neutrálneho roztoku?", options: ["5", "6", "7", "8"], correct: 2 },
     { question: "Ktorý plyn je najrozšírenejší v atmosfére?", options: ["Kyslík", "Dusík", "Oxid uhličitý", "Argón"], correct: 1 },
     { question: "Aký je symbol pre sodík?", options: ["So", "Sd", "Na", "S"], correct: 2 },
+    { question: "Čo je periodicka tabuľka?", options: ["Zoznam prvkov", "Tabuľka násobenia", "Zoznam planét", "Mapa"], correct: 0 },
+    { question: "Ktorý prvok má symbol Fe?", options: ["Fosfor", "Fluór", "Železo", "Francium"], correct: 2 },
+    { question: "Čo je oxid uhličitý?", options: ["H2O", "CO2", "O2", "N2"], correct: 1 },
+    { question: "Ktorý plyn potrebujeme na dýchanie?", options: ["Dusík", "Kyslík", "Oxid uhličitý", "Vodík"], correct: 1 },
+    { question: "Aký je vzorec pre kuchynskú soľ?", options: ["NaCl", "KCl", "CaCl2", "MgCl2"], correct: 0 },
+    { question: "Čo je atómové číslo?", options: ["Počet neutrónov", "Počet protónov", "Počet elektrónov", "Hmotnosť"], correct: 1 },
+    { question: "Ktorý prvok je tekutý pri izbovej teplote?", options: ["Striebro", "Ortuť", "Zlato", "Meď"], correct: 1 },
+    { question: "Čo je molekula?", options: ["Jeden atóm", "Skupina atómov", "Elektrón", "Protón"], correct: 1 },
+    { question: "Ktorý prvok má symbol Ag?", options: ["Zlato", "Striebro", "Hliník", "Argón"], correct: 1 },
+    { question: "Čo je kyselina?", options: ["pH > 7", "pH < 7", "pH = 7", "pH = 0"], correct: 1 },
+    { question: "Ktorý plyn má vzorec O2?", options: ["Dusík", "Kyslík", "Vodík", "Hélium"], correct: 1 },
+    { question: "Čo je chemická reakcia?", options: ["Zmena skupenstva", "Premena látok", "Fyzikálny dej", "Zmiešanie"], correct: 1 },
+    { question: "Aký je symbol pre uhlík?", options: ["U", "C", "Ca", "Cu"], correct: 1 },
+    { question: "Ktorý prvok je diamant?", options: ["Uhlík", "Kyslík", "Kremík", "Síra"], correct: 0 },
+    { question: "Čo je zlúčenina?", options: ["Jeden prvok", "Dva alebo viac prvkov", "Zmes", "Roztok"], correct: 1 },
   ],
   geography: [
     { question: "Ktoré je najväčšie mesto na Slovensku?", options: ["Košice", "Bratislava", "Prešov", "Žilina"], correct: 1 },
@@ -210,170 +216,7 @@ const quizData: Record<string, Array<{question: string; options: string[]; corre
   ],
 };
 
-export default function Quiz() {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const category = searchParams.get("category") || "math";
-  const { toast } = useToast();
-  
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(false);
-  const [answered, setAnswered] = useState(false);
-
-  const questions = quizData[category] || quizData.math;
-  const question = questions[currentQuestion];
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
-
-  const handleAnswer = () => {
-    if (selectedAnswer === null) return;
-    
-    setAnswered(true);
-    if (selectedAnswer === question.correct) {
-      setScore(score + 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-      setAnswered(false);
-    } else {
-      setShowResult(true);
-    }
-  };
-
-  const handleRestart = () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setScore(0);
-    setShowResult(false);
-    setAnswered(false);
-  };
-
-  if (showResult) {
-    const percentage = Math.round((score / questions.length) * 100);
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-12">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-3xl text-center">Výsledky kvízu</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6 text-center">
-              <div className="text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                {percentage}%
-              </div>
-              <p className="text-xl">
-                Správne odpovede: {score} z {questions.length}
-              </p>
-              <div className="space-y-2">
-                <Button onClick={handleRestart} className="w-full" size="lg">
-                  Skúsiť znova
-                </Button>
-                <Button onClick={() => navigate("/education")} variant="outline" className="w-full" size="lg">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Späť na vzdelávanie
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-2xl">
-        <Button 
-          onClick={() => navigate("/education")} 
-          variant="ghost" 
-          className="mb-4"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Späť
-        </Button>
-
-        <Card>
-          <CardHeader>
-            <div className="space-y-2">
-              <CardDescription>
-                Otázka {currentQuestion + 1} z {questions.length}
-              </CardDescription>
-              <Progress value={progress} />
-            </div>
-            <CardTitle className="text-2xl mt-4">{question.question}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <RadioGroup
-              value={selectedAnswer?.toString()}
-              onValueChange={(val) => !answered && setSelectedAnswer(parseInt(val))}
-              disabled={answered}
-            >
-              <div className="space-y-3">
-                {question.options.map((option, idx) => (
-                  <div
-                    key={idx}
-                    className={`flex items-center space-x-2 p-4 rounded-lg border-2 transition-all ${
-                      answered
-                        ? idx === question.correct
-                          ? "border-green-500 bg-green-500/10"
-                          : idx === selectedAnswer
-                          ? "border-red-500 bg-red-500/10"
-                          : "border-muted"
-                        : selectedAnswer === idx
-                        ? "border-primary bg-primary/10"
-                        : "border-muted hover:border-primary/50"
-                    }`}
-                  >
-                    <RadioGroupItem value={idx.toString()} id={`option-${idx}`} />
-                    <Label 
-                      htmlFor={`option-${idx}`} 
-                      className="flex-1 cursor-pointer flex items-center justify-between"
-                    >
-                      <span>{option}</span>
-                      {answered && idx === question.correct && (
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                      )}
-                      {answered && idx === selectedAnswer && idx !== question.correct && (
-                        <XCircle className="h-5 w-5 text-red-500" />
-                      )}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </RadioGroup>
-
-            <div className="flex gap-2">
-              {!answered ? (
-                <Button 
-                  onClick={handleAnswer} 
-                  disabled={selectedAnswer === null}
-                  className="w-full"
-                  size="lg"
-                >
-                  Potvrdiť odpoveď
-                </Button>
-              ) : (
-                <Button 
-                  onClick={handleNext}
-                  className="w-full"
-                  size="lg"
-                >
-                  {currentQuestion < questions.length - 1 ? "Ďalšia otázka" : "Zobraziť výsledky"}
-                </Button>
-              )}
-            </div>
-
-            <div className="text-center text-sm text-muted-foreground">
-              Skóre: {score} / {currentQuestion + (answered ? 1 : 0)}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-}
+// For categories not defined above, use default 5 questions
+export const getQuizQuestions = (category: string) => {
+  return quizData[category] || [];
+};
