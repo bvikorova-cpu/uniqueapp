@@ -4,6 +4,744 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Java": [
+    {
+      title: "Téma 1: Úvod do Java - história a základy",
+      content: `**Čo je Java?**
+
+Java je objektovo orientovaný programovací jazyk vyvinutý firmou Sun Microsystems v roku 1995. Autorom je James Gosling. Jedná sa o typovaný jazyk, kompilovaný do bytecode formy, ktorá sa interpretuje na natívne inštrukcie platformy až pri spúšťaní kódu (JIT - Just In Time compilation).
+
+**História Javy:**
+- Vytvorená v roku 1995
+- Autor: James Gosling
+- Firma: Sun Microsystems (neskôr Oracle)
+- Dlhodobo jeden z najpoužívanejších programovacích jazykov
+
+**Základné charakteristiky:**
+
+**1. Typovaný jazyk:**
+- Statické typovanie
+- Kontrola typov pri kompilácii
+- Vyššia bezpečnosť kódu
+
+**2. Bytecode a JIT:**
+- Kompilácia do bytecode
+- Interpretácia pri spúšťaní
+- Optimalizácia výkonu
+
+**3. Univerzálnosť:**
+- Možnosť behu na väčšine platforiem
+- "Write Once, Run Anywhere"
+- Cross-platform kompatibilita`
+    },
+    {
+      title: "Téma 2: Hlavné výhody programovania v Jave",
+      content: `**Java je univerzálny a funkčný programovací jazyk**
+
+Môžeme ju definovať ako univerzálny programovací jazyk. Tým pádom je možné použiť Javu na programovanie skoro v každej oblasti.
+
+**Najčastejšie využitie:**
+- Vývoj softvéru
+- Big Data
+- Serverové back-endy
+- Mobilné aplikácie (Android)
+- Desktopové aplikácie
+- Webové Java aplikácie
+- Umelá inteligencia
+- Strojové učenie
+
+**Prečo je Java vhodná pre začiatočníkov:**
+
+**1. Zrozumiteľnosť:**
+- Ľahko čitateľný kód
+- Syntax vychádza z C a C++
+- Logická štruktúra
+
+**2. Analýza pred spustením:**
+Java pred spustením vykoná analýzu s cieľom overiť, či sa v zdrojovom kóde nenachádzajú:
+- Chyby
+- Problémy
+- Nedostatky
+- Bezpečnostné riziká
+
+**Automatická správa pamäte:**
+
+Pri tvorbe aplikácií nie je potrebná manuálna správa pamäte:
+- Java spravuje pamäť automaticky
+- Garbage Collector
+- Programátor sa môže sústrediť na programovanie
+- Žiadne starosti o únik pamäte
+
+**Obrovská komunita:**
+
+- Vyše 9 miliónov Java programátorov na svete
+- Open-source programovací jazyk
+- Široká odborná literatúra
+- Online návody a tutoriály
+- Aktívne fóra a komunity`
+    },
+    {
+      title: "Téma 3: Platové ohodnotenie a kariérne možnosti",
+      content: `**Vysoký dopyt a nadštandardný plat**
+
+V súčasnej dobe rastie dopyt po kvalitných IT špecialistoch, čomu vďačíme práve automatizácií, digitálnej transformácií a neustálemu rastu inovácií.
+
+**Prečo je dopyt taký vysoký:**
+
+**1. Digitálna transformácia:**
+- Prechod firiem na digitálne riešenia
+- Cloudové služby
+- Modernizácia systémov
+
+**2. Automatizácia:**
+- Automatizácia procesov
+- Zvyšovanie efektivity
+- Znižovanie nákladov
+
+**3. Inovácie:**
+- Neustály vývoj nových technológií
+- Potreba kvalifikovaných vývojárov
+- Rozširovanie IT sektora
+
+**Platové ohodnotenie:**
+
+IT sektor patrí medzi najlepšie zarábajúce odvetvia:
+- Nadštandardné platy
+- Rastúci trend
+- Atraktívne benefity
+- Možnosti rastu
+
+**Kariérne možnosti Java developera:**
+
+**1. Junior Java Developer:**
+- Vstup do profesie
+- Práca pod vedením seniorov
+- Učenie sa best practices
+
+**2. Mid-level Java Developer:**
+- Samostatná práca na projektoch
+- Vyššie zodpovednosti
+- Lepšie platové ohodnotenie
+
+**3. Senior Java Developer:**
+- Vedenie tímov
+- Architektúra riešení
+- Mentoring juniorov
+
+**4. Java Architect:**
+- Návrh systémov
+- Technologické rozhodnutia
+- Strategické plánovanie
+
+**Ďalšie pozície:**
+- Tech Lead
+- Engineering Manager
+- DevOps Engineer (Java)
+- Full-stack Developer`
+    },
+    {
+      title: "Téma 4: Nevýhody a obmedzenia Javy",
+      content: `**Rýchlosť a výkon**
+
+Javu možno spustiť na rôznych platformách aj operačných systémoch, čo negatívne vplýva na jeho rýchlosť.
+
+**Prečo je Java pomalšia:**
+
+**1. Multiplatformovosť:**
+- Java je pomalšia ako jazyky cielené na konkrétnu platformu
+- Vrstva abstrakcie
+- JVM overhead
+
+**2. Automatická správa pamäte:**
+- Garbage Collector môže spôsobiť pauzy
+- Negatívny dopad na výkon
+- Nie ideálne pre real-time aplikácie
+
+**Nevhodná pre:**
+- Programovanie hier (náročné na výkon)
+- Operácie náročné na výpočet
+- Real-time systémy s prísnym časovaním
+
+**Pamäťová náročnosť:**
+
+**Vysoká spotreba RAM:**
+- Veľmi náročná na RAM pamäť
+- JVM zaberie značnú časť pamäte
+- Nie vhodná pre zariadenia s obmedzenou pamäťou
+
+**GUI aplikácie:**
+Nedoporučuje sa pri tvorbe komplikovaného používateľského rozhrania:
+- Možné problémy s výkonom
+- Nezrovnalosti medzi platformami
+- Lepšie alternatívy existujú
+
+**Absencia zálohovania:**
+
+**Veľká nevýhoda:**
+- Java sa na zálohovanie neorientuje
+- Hrozba straty dôležitých dát
+- Nutnosť implementovať vlastné riešenia
+
+**Zložitejšia syntax:**
+
+**Náročnosť na učenie:**
+- Zložitejšia syntax ako u iných jazykov
+- Dlhé kódové vety
+- Množstvo detailov
+- Náročné na čitateľnosť pre nováčikov
+
+**Orientácia v ekosystéme:**
+
+**Príliš veľa možností:**
+- Obrovské množstvo knižníc
+- Veľa frameworkov
+- Ťažká orientácia pre začiatočníkov
+- Náročné vyhodnotiť vhodnosť pre aplikáciu
+
+**Záver:**
+Výhody Java programovania s prehľadom prevyšujú jeho nevýhody.`
+    },
+    {
+      title: "Téma 5: Objektovo orientované programovanie v Jave",
+      content: `**OOP v Jave**
+
+Java je čisto objektovo orientovaný programovací jazyk. Všetko v Jave je objekt (okrem primitívnych typov).
+
+**Základné princípy OOP:**
+
+**1. Triedy a objekty:**
+
+**Trieda (Class):**
+- Šablóna pre objekty
+- Definuje vlastnosti a správanie
+- Blueprint pre vytváranie objektov
+
+**Objekt (Object):**
+- Instance triedy
+- Konkrétna realizácia
+- Má vlastný stav
+
+**Príklad:**
+\`\`\`java
+public class Auto {
+    private String znacka;
+    private int rok;
+    
+    public Auto(String znacka, int rok) {
+        this.znacka = znacka;
+        this.rok = rok;
+    }
+    
+    public void jazdi() {
+        System.out.println("Auto jazdí");
+    }
+}
+
+// Vytvorenie objektu
+Auto mojeAuto = new Auto("BMW", 2023);
+\`\`\`
+
+**2. Zapuzdrenie (Encapsulation):**
+
+**Skrývanie implementácie:**
+- Private premenné
+- Public metódy
+- Getters a Setters
+- Kontrola prístupu
+
+**3. Dedičnosť (Inheritance):**
+
+**Znovupoužitie kódu:**
+- Rozšírenie existujúcich tried
+- Kľúčové slovo extends
+- Hierarchia tried
+
+**Príklad:**
+\`\`\`java
+public class Vozidlo {
+    protected String znacka;
+    
+    public void jazdi() {
+        System.out.println("Vozidlo jazdí");
+    }
+}
+
+public class Auto extends Vozidlo {
+    private int pocetDveri;
+    
+    @Override
+    public void jazdi() {
+        System.out.println("Auto jazdí po ceste");
+    }
+}
+\`\`\`
+
+**4. Polymorfizmus:**
+
+**Mnoho foriem:**
+- Pretypovanie (Overloading)
+- Prekrývanie (Overriding)
+- Rozhrania (Interfaces)
+
+**5. Abstrakcia:**
+
+**Skrývanie zložitosti:**
+- Abstraktné triedy
+- Rozhrania
+- Zjednodušenie pre používateľa`
+    },
+    {
+      title: "Téma 6: Dátové typy a premenné v Jave",
+      content: `**Typový systém Javy**
+
+Java je silno typovaný jazyk - každá premenná musí mať deklarovaný typ.
+
+**Primitívne dátové typy:**
+
+**1. Celé čísla:**
+- **byte**: 8-bit (-128 až 127)
+- **short**: 16-bit (-32,768 až 32,767)
+- **int**: 32-bit (-2^31 až 2^31-1)
+- **long**: 64-bit (veľmi veľké čísla)
+
+**2. Desatinné čísla:**
+- **float**: 32-bit, pohyblivá desatinná čiarka
+- **double**: 64-bit, väčšia presnosť
+
+**3. Znakové a logické:**
+- **char**: 16-bit Unicode znak
+- **boolean**: true alebo false
+
+**Príklady:**
+\`\`\`java
+int vek = 25;
+double vyska = 180.5;
+char iniciala = 'J';
+boolean jeStudent = true;
+long velkeCislo = 1000000000L;
+\`\`\`
+
+**Referenčné typy:**
+
+**1. String (reťazec):**
+\`\`\`java
+String meno = "Java Developer";
+String pozdrav = "Ahoj " + meno;
+\`\`\`
+
+**2. Polia (Arrays):**
+\`\`\`java
+int[] cisla = {1, 2, 3, 4, 5};
+String[] mena = new String[10];
+\`\`\`
+
+**3. Objekty:**
+\`\`\`java
+Auto auto = new Auto("BMW", 2023);
+\`\`\`
+
+**Konštanty:**
+
+**Final kľúčové slovo:**
+\`\`\`java
+final double PI = 3.14159;
+final int MAX_POCET = 100;
+\`\`\`
+
+**Konverzia typov:**
+
+**1. Automatická (Widening):**
+\`\`\`java
+int x = 10;
+double y = x; // OK
+\`\`\`
+
+**2. Explicitná (Narrowing):**
+\`\`\`java
+double a = 10.5;
+int b = (int) a; // Nutné pretypovanie
+\`\`\`
+
+**Wrapper triedy:**
+
+Pre každý primitívny typ existuje wrapper trieda:
+- Integer, Double, Boolean, Character, atď.
+- Autoboxing a Unboxing
+- Možnosť použitia v kolekciách`
+    },
+    {
+      title: "Téma 7: Kolekcie a dátové štruktúry",
+      content: `**Java Collections Framework**
+
+Java poskytuje rozsiahly framework pre prácu s kolekciami dát.
+
+**Základné rozhrania:**
+
+**1. List - zoznamy:**
+
+**ArrayList:**
+\`\`\`java
+import java.util.ArrayList;
+
+ArrayList<String> zoznam = new ArrayList<>();
+zoznam.add("Java");
+zoznam.add("Python");
+zoznam.add("JavaScript");
+\`\`\`
+
+**LinkedList:**
+- Rýchle vkladanie a mazanie
+- Pomalší prístup k prvkom
+
+**2. Set - množiny:**
+
+**HashSet:**
+\`\`\`java
+import java.util.HashSet;
+
+HashSet<Integer> cisla = new HashSet<>();
+cisla.add(1);
+cisla.add(2);
+cisla.add(1); // Nepridá sa, už existuje
+\`\`\`
+
+**Vlastnosti:**
+- Unikátne prvky
+- Nezoradené
+- Rýchle vyhľadávanie
+
+**3. Map - mapy:**
+
+**HashMap:**
+\`\`\`java
+import java.util.HashMap;
+
+HashMap<String, Integer> vek = new HashMap<>();
+vek.put("Peter", 25);
+vek.put("Jana", 30);
+
+int petrovVek = vek.get("Peter");
+\`\`\`
+
+**Iterácia cez kolekcie:**
+
+**For-each cyklus:**
+\`\`\`java
+ArrayList<String> mena = new ArrayList<>();
+for (String meno : mena) {
+    System.out.println(meno);
+}
+\`\`\`
+
+**Iterator:**
+\`\`\`java
+Iterator<String> iterator = zoznam.iterator();
+while (iterator.hasNext()) {
+    String prvok = iterator.next();
+    System.out.println(prvok);
+}
+\`\`\`
+
+**Dôležité metódy:**
+
+**Všeobecné:**
+- add() - pridať prvok
+- remove() - odstrániť prvok
+- size() - veľkosť
+- isEmpty() - je prázdna
+- contains() - obsahuje prvok
+- clear() - vymazať všetko
+
+**Triedenie:**
+\`\`\`java
+Collections.sort(zoznam);
+Collections.reverse(zoznam);
+\`\`\`
+
+**Generické typy:**
+- Bezpečnosť typov
+- Kontrola pri kompilácii
+- Žiadne pretypovanie`
+    },
+    {
+      title: "Téma 8: Výnimky a spracovanie chýb",
+      content: `**Exception Handling v Jave**
+
+Java má robustný systém na spracovanie výnimiek a chýb.
+
+**Try-Catch bloky:**
+
+**Základná syntax:**
+\`\`\`java
+try {
+    int vysledok = 10 / 0; // ArithmeticException
+} catch (ArithmeticException e) {
+    System.out.println("Delenie nulou!");
+    e.printStackTrace();
+} finally {
+    System.out.println("Vždy sa vykoná");
+}
+\`\`\`
+
+**Viacero catch blokov:**
+\`\`\`java
+try {
+    // Kód, ktorý môže vyhodiť výnimku
+    String text = null;
+    int dlzka = text.length();
+} catch (NullPointerException e) {
+    System.out.println("Null pointer!");
+} catch (Exception e) {
+    System.out.println("Iná chyba!");
+}
+\`\`\`
+
+**Typy výnimiek:**
+
+**1. Checked Exceptions:**
+- Musia byť ošetrené
+- Kontrolované pri kompilácii
+- IOException, SQLException
+
+**2. Unchecked Exceptions:**
+- Runtime výnimky
+- NullPointerException
+- ArrayIndexOutOfBoundsException
+
+**3. Errors:**
+- Vážne systémové chyby
+- OutOfMemoryError
+- StackOverflowError
+
+**Vyhodenie vlastnej výnimky:**
+
+\`\`\`java
+public void skontrolujVek(int vek) throws Exception {
+    if (vek < 0) {
+        throw new Exception("Vek nemôže byť záporný!");
+    }
+}
+\`\`\`
+
+**Vlastné výnimky:**
+
+\`\`\`java
+public class MojaVynimka extends Exception {
+    public MojaVynimka(String sprava) {
+        super(sprava);
+    }
+}
+
+// Použitie
+throw new MojaVynimka("Niečo sa pokazilo");
+\`\`\`
+
+**Try-with-resources:**
+
+**Automatické zatvorenie zdrojov:**
+\`\`\`java
+try (FileReader fr = new FileReader("subor.txt")) {
+    // Práca so súborom
+} catch (IOException e) {
+    e.printStackTrace();
+}
+// FileReader sa automaticky zatvorí
+\`\`\`
+
+**Best practices:**
+- Špecifické catch bloky
+- Informatívne chybové hlásenia
+- Logovanie výnimiek
+- Nezachytávať všeobecnú Exception`
+    },
+    {
+      title: "Téma 9: Java knižnice a frameworky",
+      content: `**Ekosystém Java knižníc**
+
+Java má obrovské množstvo knižníc a frameworkov pre rôzne účely.
+
+**Základné knižnice (JDK):**
+
+**1. java.util:**
+- Kolekcie
+- Dátum a čas
+- Scanner
+- Random
+
+**2. java.io:**
+- Práca so súbormi
+- Input/Output operácie
+- Streams
+
+**3. java.lang:**
+- String, Math
+- System
+- Automaticky importovaná
+
+**Populárne frameworky:**
+
+**1. Spring Framework:**
+- Najpopulárnejší Java framework
+- Dependency Injection
+- Spring Boot pre rýchly vývoj
+- REST API
+
+**2. Hibernate:**
+- ORM (Object-Relational Mapping)
+- Práca s databázami
+- Automatické mapovanie objektov
+
+**3. JUnit:**
+- Unit testing
+- Testovanie kódu
+- Automatizované testy
+
+**4. Apache Maven:**
+- Build nástroj
+- Správa závislostí
+- Automatizácia buildov
+
+**5. Gradle:**
+- Moderný build systém
+- Alternatíva k Maven
+- Flexibilnejší
+
+**Android vývoj:**
+
+**Android SDK:**
+- Mobilné aplikácie
+- Java ako hlavný jazyk
+- Kotlin ako alternatíva
+
+**Web development:**
+
+**1. JavaServer Pages (JSP):**
+- Dynamické webové stránky
+- Server-side rendering
+
+**2. Servlety:**
+- HTTP requesty a response
+- Web aplikácie
+
+**3. Spring MVC:**
+- Model-View-Controller
+- Webové aplikácie
+
+**Big Data:**
+
+**Apache Hadoop:**
+- Spracovanie veľkých dát
+- Distribuované systémy
+
+**Apache Spark:**
+- Rýchle spracovanie dát
+- In-memory computing
+
+**Výber správnej knižnice:**
+
+**Kritériá:**
+- Účel použitia
+- Komunita a podpora
+- Dokumentácia
+- Licencia
+- Výkon`
+    },
+    {
+      title: "Téma 10: Budúcnosť Javy a moderné trendy",
+      content: `**Java v modernom svete**
+
+Java naďalej zostáva relevantným jazykom a neustále sa vyvíja.
+
+**Moderné Java verzie:**
+
+**Java 8 (2014):**
+- Lambda výrazy
+- Stream API
+- Default metódy v interface
+- Nové Date/Time API
+
+**Príklad lambda:**
+\`\`\`java
+List<String> mena = Arrays.asList("Peter", "Jana", "Tomáš");
+mena.forEach(meno -> System.out.println(meno));
+\`\`\`
+
+**Stream API:**
+\`\`\`java
+List<Integer> cisla = Arrays.asList(1, 2, 3, 4, 5);
+int sucet = cisla.stream()
+    .filter(n -> n % 2 == 0)
+    .mapToInt(Integer::intValue)
+    .sum();
+\`\`\`
+
+**Novšie verzie:**
+
+**Java 11 (LTS):**
+- Local-variable syntax
+- HTTP Client API
+- String metódy
+
+**Java 17 (LTS):**
+- Pattern Matching
+- Sealed Classes
+- Records
+
+**Java 21 (LTS - 2023):**
+- Virtual Threads
+- Pattern Matching for switch
+- Record Patterns
+
+**Moderné trendy:**
+
+**1. Microservices:**
+- Spring Boot
+- Malé, nezávislé služby
+- Cloud-native aplikácie
+
+**2. Reactive Programming:**
+- Project Reactor
+- Asynchrónne operácie
+- Non-blocking I/O
+
+**3. Cloud Computing:**
+- AWS, Azure, Google Cloud
+- Kontajnerizácia (Docker)
+- Kubernetes
+
+**4. GraalVM:**
+- Rýchlejší výkon
+- Native image compilation
+- Polyglot programovanie
+
+**Konkurencia a alternatívy:**
+
+**JVM jazyky:**
+- **Kotlin**: Moderná alternatíva pre Android
+- **Scala**: Funkcionálne programovanie
+- **Groovy**: Dynamický jazyk
+
+**Prečo sa naďalej učiť Javu:**
+
+**1. Stabilita:**
+- Dlhodobá podpora
+- Spätná kompatibilita
+- Spoľahlivosť
+
+**2. Pracovné príležitosti:**
+- Vysoký dopyt
+- Dobre platené pozície
+- Kariérny rast
+
+**3. Ekosystém:**
+- Obrovská komunita
+- Množstvo nástrojov
+- Bohaté zdroje
+
+**Záver:**
+Java je stále moderný a relevantný jazyk s veľkou budúcnosťou.`
+    }
+  ],
   "Python": [
     {
       title: "Téma 1: Úvod do Pythonu a jeho história",
