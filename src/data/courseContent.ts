@@ -32684,6 +32684,663 @@ const logger = winston.createLogger({
       title: "Téma 10: Transakcie a pokročilé koncepty",
       content: `Transakcie (START TRANSACTION, COMMIT, ROLLBACK) zabezpečujú ACID vlastnosti. Podotázky (subqueries) vnorené SELECT v SELECT/WHERE. Views virtuálne tabuľky. Stored Procedures uložené procedúry. Triggers automatické akcie pri INSERT/UPDATE/DELETE.`
     }
+  ],
+  
+  "Inkluzívne vzdelávanie": [
+    {
+      title: "Téma 1: Úvod do inkluzívneho vzdelávania",
+      content: `**Čo je inkluzívne vzdelávanie?**
+
+Inkluzívne vzdelávanie je prístup, ktorý zabezpečuje rovnaké právo na kvalitné vzdelanie pre všetky deti, bez ohľadu na ich individuálne potreby alebo schopnosti, prostredníctvom vzdelávania v bežných školách a triedach.
+
+**Kľúčové princípy:**
+
+**1. Právo na vzdelanie:**
+- Každé dieťa má právo na kvalitné vzdelanie
+- Vzdelávanie zodpovedá individuálnym potrebám
+- Bez diskriminácie a vylúčenia
+- Rovnaký prístup k príležitostiam
+
+**2. Spoločné vzdelávanie:**
+- Deti so špecifickými potrebami sa vzdelávajú spolu s ostatnými
+- V bežných triedach bežných škôl
+- Integrované prostredie
+- Prirodzená socializácia
+
+**3. Odstraňovanie bariér:**
+- Aktívne hľadanie prekážok
+- Odstraňovanie fyzických bariér
+- Odstránenie postojových bariér
+- Zlepšenie prístupnosti
+
+**Základné charakteristiky:**
+
+Inkluzívne vzdelávanie nie je len o fyzickom umiestnení detí v škole, ale o:
+- Reálnej účasti všetkých detí
+- Vzájomnej spolupráci
+- Rozvoji celého systému
+- Zmenách v školskej kultúre`
+    },
+    {
+      title: "Téma 2: Dynamický proces inklúzie",
+      content: `**Inklúzia ako proces**
+
+Inkluzívne vzdelávanie je dynamický proces, nie jednorazový stav, ktorý flexibilne reaguje na meniace sa potreby.
+
+**Flexibilita a prizpôsobivosť:**
+
+**1. Reagovanie na potreby:**
+- Potreby detí sa menia v čase
+- Individuálne tempo vývoja
+- Prispôsobenie metód vyučovania
+- Adaptívne stratégie
+
+**2. Spolupráca s rodičmi:**
+- Aktívna komunikácia
+- Zdieľanie informácií
+- Spoločné plánovanie
+- Podpora doma i v škole
+
+**3. Podpora učiteľov:**
+- Kontinuálne vzdelávanie
+- Metodická podpora
+- Supervízia a konzultácie
+- Tímová spolupráca
+
+**Rozvoj celého systému:**
+
+**Školský systém:**
+- Nie je len dieťa, kto sa musí prispôsobiť
+- Škola sa prispôsobuje potrebám
+- Zmeny v kurikule
+- Úprava prostredia
+
+**Spoločenský rozmer:**
+- Zmena postojov spoločnosti
+- Budovanie inkluzívnej kultúry
+- Osveta a vzdelávanie
+- Podpora od komunity
+
+**Princípy procesu:**
+
+**1. Postupnosť:**
+- Krok za krokom
+- Overené metódy
+- Vyhodnocovanie pokroku
+- Úpravy stratégií
+
+**2. Partnerstvo:**
+- Spolupráca všetkých zúčastnených
+- Škola, rodičia, odborníci
+- Koordinácia aktivít
+- Zdieľanie zodpovednosti`
+    },
+    {
+      title: "Téma 3: Rešpektovanie rozmanitosti",
+      content: `**Vzájomné rešpektovanie a rozmanitosť**
+
+Všetci účastníci vzdelávania sa navzájom rešpektujú a oslavujú rozmanitosť ako príležitosť pre rast.
+
+**Podpora rozmanitosti:**
+
+**1. Odlišnosť ako príležitosť:**
+- Každé dieťa je jedinečné
+- Rozmanitosť obohacuje
+- Učenie sa od seba navzájom
+- Rešpekt k individualite
+
+**2. Oslava rozdielov:**
+- Nie deficity, ale iné schopnosti
+- Uznanie silných stránok
+- Pozitívny prístup
+- Budovanie sebavedomia
+
+**3. Vzájomné učenie:**
+- Deti sa učia tolerancii
+- Empatia a pochopenie
+- Sociálne zručnosti
+- Spoločné projekty
+
+**Kultura inklúzie:**
+
+**V triede:**
+- Akceptujúce prostredie
+- Bez šikany a vylúčenia
+- Vzájomná pomoc
+- Pochopenie pre odlišnosti
+
+**V škole:**
+- Inkluzívna školská kultúra
+- Politiky proti diskriminácii
+- Podpora pre všetkých
+- Rovnaké príležitosti
+
+**Výhody rozmanitosti:**
+
+**Pre deti so špeciálnymi potrebami:**
+- Prirodzené sociálne interakcie
+- Vzory správania
+- Vyššie očakávania
+- Lepšie akademické výsledky
+
+**Pre ostatné deti:**
+- Učia sa empatie
+- Rozvoj sociálnych zručností
+- Príprava na skutočný život
+- Pochopenie rozdielov
+
+**Praktické stratégie:**
+- Kooperatívne učenie
+- Peer tutoring (učenie medzi rovesníkmi)
+- Skupinové projekty
+- Spoločné aktivity`
+    },
+    {
+      title: "Téma 4: Spolupráca a partnerstvo",
+      content: `**Spolupráca všetkých zúčastnených**
+
+Dôraz sa kladie na spoluprácu medzi všetkými učiteľmi, rodičmi a komunitou.
+
+**Multidisciplinárna spolupráca:**
+
+**1. Tím odborníkov:**
+- Učitelia
+- Špeciálni pedagógovia
+- Psychológovia
+- Logopédi
+- Fyzioterapeuti
+- Sociálni pracovníci
+
+**2. Koordinácia služieb:**
+- Pravidelné stretnutia
+- Zdieľanie informácií
+- Spoločné plánovanie
+- Jednotný prístup
+
+**3. Vzájomná podpora:**
+- Výmena skúseností
+- Konzultácie
+- Mentoring
+- Tímové riešenie problémov
+
+**Spolupráca s rodičmi:**
+
+**Partnerstvo škola-rodina:**
+- Rodičia ako partneri, nie klienti
+- Aktívna účasť rodičov
+- Zdieľanie rozhodnutí
+- Vzájomný rešpekt
+
+**Komunikácia:**
+- Pravidelné stretnutia
+- Otvorený dialóg
+- Spätná väzba
+- Zdieľanie úspechov
+
+**Komunitná podpora:**
+
+**Zapojenie komunity:**
+- Miestne organizácie
+- Dobrovoľníci
+- Spolupráca s firmami
+- Komunitné zdroje
+
+**Širšie povedomie:**
+- Osveta v komunite
+- Podpora inklúzie
+-Ломanie stereotypov
+- Budovanie inkluzívnej spoločnosti
+
+**Výhody spolupráce:**
+- Komplexná podpora dieťaťa
+- Lepšie výsledky
+- Efektívnejšie riešenia
+- Zdieľanie zodpovednosti`
+    },
+    {
+      title: "Téma 5: Individuálna podpora",
+      content: `**Prispôsobená podpora každému dieťaťu**
+
+Poskytuje sa podpora prispôsobená konkrétnym potrebám každého dieťaťa.
+
+**Individuálny vzdelávací plán (IVP):**
+
+**1. Tvorba IVP:**
+- Diagnostika potrieb
+- Stanovenie cieľov
+- Výber stratégií
+- Časový plán
+
+**2. Obsah IVP:**
+- Silné a slabé stránky
+- Špecifické potreby
+- Prispôsobené ciele
+- Metódy a stratégie
+- Hodnotenie pokroku
+
+**3. Realizácia:**
+- Pravidelné vyhodnocovanie
+- Úpravy podľa potreby
+- Sledovanie pokroku
+- Dokumentácia
+
+**Typy podpory:**
+
+**Pedagogická podpora:**
+- Diferencovaná výučba
+- Upravené materiály
+- Alternatívne metódy
+- Extra čas
+
+**Technická podpora:**
+- Kompenzačné pomôcky
+- Asistívne technológie
+- Upravené učebnice
+- Špecializované softvéry
+
+**Osobná asistencia:**
+- Školský asistent
+- Podpora pri aktivitách
+- Pomoc s orientáciou
+- Sociálna integrácia
+
+**Prispôsobenie prostredia:**
+
+**Fyzické úpravy:**
+- Bezbariérový prístup
+- Upravená trieda
+- Špeciálny nábytok
+- Tichá miestnosť
+
+**Organizačné úpravy:**
+- Flexibilný rozvrh
+- Prestávky podľa potreby
+- Menšie skupiny
+- Individuálne tempo
+
+**Hodnotenie:**
+- Prispôsobené testy
+- Alternatívne formy
+- Slovné hodnotenie
+- Zameranie na pokrok`
+    },
+    {
+      title: "Téma 6: Rozdiel medzi integráciou a inklúziou",
+      content: `**Integrácia vs. Inklúzia**
+
+Pochopenie rozdielu medzi integráciou a inklúziou je kľúčové pre úspešnú implementáciu inkluzívneho vzdelávania.
+
+**Integrácia:**
+
+**Charakteristiky:**
+- Fyzické umiestnenie dieťaťa v bežnej škole
+- Dieťa sa musí prispôsobiť systému
+- Existujúci systém sa nemení
+- "Pridanie" dieťaťa do triedy
+
+**Prístup:**
+- Dieťa musí splniť určité kritériá
+- Minimálne zmeny v škole
+- Podpora mimo triedy (špeciálne miestnosti)
+- Segregácia stále prítomná
+
+**Limity:**
+- Dieťa môže byť fyzicky prítomné, ale sociálne vylúčené
+- Stigmatizácia
+- Obmedzené príležitosti
+- Nedostatočná podpora
+
+**Inklúzia:**
+
+**Charakteristiky:**
+- Systém sa prispôsobuje dieťaťu
+- Zmeny v celom školskom systéme
+- Aktívna účasť všetkých
+- Prirodzené prostredie
+
+**Prístup:**
+- Právo na vzdelanie pre všetkých
+- Komplexné zmeny
+- Podpora v bežnej triede
+- Skutočná participácia
+
+**Výhody:**
+- Sociálne začlenenie
+- Akceptácia odlišností
+- Lepšie výsledky
+- Príprava na život v spoločnosti
+
+**Kľúčové rozdiely:**
+
+**1. Filozofia:**
+- Integrácia: "Dieťa sa musí prispôsobiť"
+- Inklúzia: "Škola sa prispôsobí dieťaťu"
+
+**2. Prístup:**
+- Integrácia: Medicínsky model (deficit)
+- Inklúzia: Sociálny model (bariéry)
+
+**3. Zodpovednosť:**
+- Integrácia: Na dieťati a rodičoch
+- Inklúzia: Na celom systéme
+
+**Cesta k inklúzii:**
+- Od segregácie cez integráciu k inklúzii
+- Postupná transformácia
+- Zmena myslenia
+- Systémové zmeny`
+    },
+    {
+      title: "Téma 7: Význam inkluzívneho vzdelávania",
+      content: `**Prečo je inkluzívne vzdelávanie dôležité?**
+
+Inkluzívne vzdelávanie prináša výhody nielen deťom so špeciálnymi potrebami, ale celej spoločnosti.
+
+**Pre deti so špeciálnymi potrebami:**
+
+**1. Akademický úspech:**
+- Zvyšuje úspešnosť žiakov
+- Vyššie očakávania
+- Lepšie výsledky
+- Predchádza vylúčeniu
+
+**2. Sociálny rozvoj:**
+- Prirodzené sociálne interakcie
+- Vzory správania od rovesníkov
+- Rozvoj sociálnych zručností
+- Pravé priateľstvá
+
+**3. Príprava na budúcnosť:**
+- Schopnosti potrebné pre život v spoločnosti
+- Samostatnosť
+- Sebavedomie
+- Uplatnenie v práci
+
+**Pre ostatné deti:**
+
+**1. Rozvoj empatie:**
+- Učia sa chápať odlišnosti
+- Empatia a súcit
+- Tolerancia
+- Pochopenie
+
+**2. Sociálne kompetencie:**
+- Spolupráca
+- Vzájomná pomoc
+- Komunikácia
+- Rešpekt k druhým
+
+**3. Príprava na skutočný život:**
+- Spoločnosť je rozmanitá
+- Práca s rôznymi ľuďmi
+- Realistický pohľad na svet
+- Flexibilita
+
+**Pre spoločnosť:**
+
+**1. Sociálna súdržnosť:**
+- Budovanie inkluzívnej spoločnosti
+- Rovnosť príležitostí
+- Bez diskriminácie
+- Spoločné hodnoty
+
+**2. Ekonomické výhody:**
+- Lepšie uplatnenie absolventov
+- Menšia závislosť na podpore
+- Produktívni občania
+- Zníženie nákladov
+
+**3. Etický rozmer:**
+- Dodržiavanie ľudských práv
+- Sociálna spravodlivosť
+- Morálna povinnosť
+- Humanistické hodnoty
+
+**Dlhodobé efekty:**
+- Zmena postojov spoločnosti
+- Menej predsudkov
+- Akceptujúca kultúra
+- Lepšia kvalita života pre všetkých`
+    },
+    {
+      title: "Téma 8: Prekážky a výzvy inklúzie",
+      content: `**Odstraňovanie bariér v inkluzívnom vzdelávaní**
+
+Aktívne sa hľadajú a odstraňujú prekážky, ktoré bránia deťom v plnom zapojení sa do vzdelávacieho procesu.
+
+**Fyzické bariéry:**
+
+**1. Architektúra:**
+- Neprístupné budovy
+- Chýbajúce výťahy
+- Úzke dvere
+- Nevhodné toalety
+
+**Riešenia:**
+- Bezbariérové úpravy
+- Rampy a výťahy
+- Široké dvere
+- Prispôsobené zariadenia
+
+**2. Vybavenie:**
+- Nevhodný nábytok
+- Chýbajúce pomôcky
+- Nedostupné materiály
+
+**Riešenia:**
+- Upravený nábytok
+- Kompenzačné pomôcky
+- Dostupné formáty
+
+**Postojové bariéry:**
+
+**1. Stereotypy:**
+- Predsudky učiteľov
+- Nízke očakávania
+- Strach z odlišnosti
+- Odpor k zmenám
+
+**Riešenia:**
+- Vzdelávanie učiteľov
+- Zmena myslenia
+- Pozitívne skúsenosti
+- Osveta
+
+**2. Nedostatok informácií:**
+- Nevedomosť o inklúzii
+- Obavy z neznámeho
+- Mýty a nepravdy
+
+**Riešenia:**
+- Vzdelávanie
+- Zdieľanie príkladov dobrej praxe
+- Podpora a konzultácie
+
+**Systémové bariéry:**
+
+**1. Legislatíva:**
+- Chýbajúce právne normy
+- Nedostatočné financovanie
+- Byrokratické prekážky
+
+**Riešenia:**
+- Legislatívne zmeny
+- Primeraný rozpočet
+- Zjednodušenie procesov
+
+**2. Organizácia:**
+- Rigidný systém
+- Nedostatok personálu
+- Nedostatočná príprava učiteľov
+
+**Riešenia:**
+- Flexibilný systém
+- Zvýšenie kapacít
+- Kvalitné vzdelávanie učiteľov
+
+**Praktické výzvy:**
+- Veľké triedy
+- Časová náročnosť
+- Nedostatok zdrojov
+- Potreba spolupráce`
+    },
+    {
+      title: "Téma 9: Metódy a stratégie inkluzívnej výučby",
+      content: `**Efektívne stratégie pre inkluzívnu triedu**
+
+Praktické metódy a prístupy, ktoré podporujú úspešnú inklúziu v bežných triedach.
+
+**Diferencovaná výučba:**
+
+**1. Úrovne obtiažnosti:**
+- Základná, stredná, pokročilá
+- Rovnaký obsah, rôzna hĺbka
+- Prispôsobené tempo
+- Individuálne ciele
+
+**2. Rôzne prístupy:**
+- Vizuálne (obrázky, schémy)
+- Auditívne (vysvetľovanie, diskusie)
+- Kinetické (praktické činnosti)
+- Multimodálny prístup
+
+**3. Flexibilné skupiny:**
+- Menenie skupín podľa úlohy
+- Heterogénne skupiny
+- Peer tutoring
+- Kooperatívne učenie
+
+**Univerzálny dizajn učenia (UDL):**
+
+**Tri princípy:**
+
+**1. Viacero spôsobov reprezentácie:**
+- Rôzne formáty informácií
+- Text, audio, video
+- Grafické organizéry
+- Praktické ukázky
+
+**2. Viacero spôsobov akcie a expresie:**
+- Rôzne formy odpovedí
+- Písomné, ústne, praktické
+- Použitie technológií
+- Kreatívne projekty
+
+**3. Viacero spôsobov zapojenia:**
+- Relevantný obsah
+- Voľba úloh
+- Spojenie so záujmami
+- Motivujúce aktivity
+
+**Podpora správania:**
+
+**Pozitívny prístup:**
+- Jasné pravidlá
+- Pozitívne posilnenie
+- Predvídateľná štruktúra
+- Preventívne stratégie
+
+**Sociálne učenie:**
+- Modelovanie správania
+- Sociálne príbehy
+- Cvičenie zručností
+- Spätná väzba
+
+**Používanie technológií:**
+
+**Asistívne technológie:**
+- Text-to-speech
+- Speech-to-text
+- Zväčšovacie programy
+- Komunikačné zariadenia
+
+**Vzdelávacie aplikácie:**
+- Interaktívne programy
+- Hry na učenie
+- Online zdroje
+- Prispôsobené softvéry`
+    },
+    {
+      title: "Téma 10: Hodnotenie a rozvoj inkluzívneho vzdelávania",
+      content: `**Hodnotenie a budúcnosť inklúzie**
+
+Meranie pokroku a trendy v inkluzívnom vzdelávaní.
+
+**Hodnotenie inklúzie:**
+
+**1. Na úrovni dieťaťa:**
+- Akademický pokrok
+- Sociálny rozvoj
+- Osobný rast
+- Dosiahnutie cieľov IVP
+
+**Metódy:**
+- Portfólio
+- Pozorovanie
+- Slovné hodnotenie
+- Štandardizované testy (upravené)
+
+**2. Na úrovni školy:**
+- Index inklúzie
+- Sebahodnotenie školy
+- Školská klíma
+- Spokojnosť rodičov
+
+**Ukazovatele:**
+- Počet integrovaných žiakov
+- Úspešnosť
+- Úroveň spolupráce
+- Kultura školy
+
+**3. Na úrovni systému:**
+- Legislatívny rámec
+- Financovanie
+- Podpora služieb
+- Vzdelávanie učiteľov
+
+**Trendy v inkluzívnom vzdelávaní:**
+
+**1. Technologické inovácie:**
+- Pokročilé asistívne technológie
+- Online vzdelávanie
+- Virtuálna realita
+- Umelá inteligencia
+
+**2. Personalizácia:**
+- Individualizované učenie
+- Adaptívne systémy
+- Flexibilné kurikulum
+- Rešpekt k jedinečnosti
+
+**3. Komunitný prístup:**
+- Škola ako centrum komunity
+- Zapojenie všetkých
+- Partnerstvá
+- Celoživotné učenie
+
+**Výzvy budúcnosti:**
+
+**Potreba:**
+- Zvýšenie kapacít
+- Kvalitné vzdelávanie učiteľov
+- Adekvátne financovanie
+- Zmena postojov
+
+**Príležitosti:**
+- Nové technológie
+- Výskum a inovácie
+- Medzinárodná spolupráca
+- Zdieľanie dobrej praxe
+
+**Vízia:**
+- Skutočne inkluzívna spoločnosť
+- Rovnaké príležitosti pre všetkých
+- Akceptácia rozmanitosti
+- Kvalitné vzdelanie bez bariér
+
+**Kľúčové posolstvo:**
+Inkluzívne vzdelávanie nie je len o deťoch so špeciálnymi potrebami - je to cesta k lepšej spoločnosti pre všetkých.`
+    }
   ]
 }
 
