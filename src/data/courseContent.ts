@@ -25497,6 +25497,1054 @@ auto vysledok = cisla
 C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
     }
   ],
+  "Metodika vyučovania": [
+    {
+      title: "Téma 1: Úvod do metodiky vyučovania",
+      content: `**Čo je metodika vyučovania?**
+
+Metodika vyučovania je súbor postupov a spôsobov, ktoré učitelia používajú na odovzdávanie vedomostí, zručností a hodnôt žiakom.
+
+**Základné vymedzenie:**
+- Systematické štúdium vyučovacích metód
+- Teória aj prax metód
+- Výber a kombinácia metód
+- Efektívny vzdelávací proces
+
+**Obsah metodiky:**
+- Teória vyučovacích metód
+- Praktická aplikácia
+- Výber vhodných metód
+- Kombinácia metód
+- Hodnotenie efektívnosti
+
+**Ciele metodiky vyučovania:**
+
+**1. Hlavný cieľ:**
+- Efektívne odovzdávanie vedomostí
+- Rozvoj zručností
+- Formovanie hodnôt
+- Komplexný rozvoj žiaka
+
+**2. Čiastkové ciele:**
+- Aktivizácia žiakov
+- Rozvoj myslenia
+- Motivácia k učeniu
+- Diferenciácia a individualizácia
+- Sociálne učenie
+
+**Prispôsobenie metodiky:**
+
+**Faktory ovplyvňujúce výber metód:**
+- Ciele vzdelávania
+- Potreby žiakov
+- Vek a vývinové osobitosti
+- Podmienky školy
+- Charakter predmetu
+- Časová dotácia`
+    },
+    {
+      title: "Téma 2: Klasifikácia vyučovacích metód",
+      content: `**Delenie vyučovacích metód**
+
+Vyučovacie metódy možno klasifikovať podľa rôznych kritérií.
+
+**1. Podľa prameňa poznania:**
+
+**Slovné metódy:**
+- Výklad
+- Rozhovor
+- Diskusia
+- Práca s textom
+- Inštruktáž
+
+**Názorné metódy:**
+- Pozorovanie
+- Demonštrácia
+- Ilustrácia
+- Projekcia
+- Experimenty
+
+**Praktické metódy:**
+- Cvičenie
+- Laboratórne práce
+- Praktické činnosti
+- Modelovanie
+- Konštruovanie
+
+**2. Podľa logického postupu:**
+
+**Indukcia:**
+- Od konkrétneho k všeobecnému
+- Od príkladov k pravidlu
+- Odhaľovanie zákonitostí
+- Aktívne myslenie
+
+**Dedukcia:**
+- Od všeobecného k konkrétnemu
+- Od pravidla k príkladom
+- Aplikácia poznatkov
+- Systematickosť
+
+**Analýza:**
+- Rozkladanie celku na časti
+- Skúmanie zložiek
+- Detailné poznanie
+
+**Syntéza:**
+- Skladanie častí do celku
+- Zobecňovanie
+- Vytváranie súvislostí
+
+**3. Podľa aktivity žiakov:**
+
+**Pasívne metódy:**
+- Výklad učiteľa
+- Prednáška
+- Opisovanie
+- Reprodukcia
+
+**Aktivizujúce metódy:**
+- Problémové vyučovanie
+- Projektová metóda
+- Diskusia
+- Kooperatívne učenie
+- Objavovanie
+
+**4. Podľa didaktickej funkcie:**
+
+**Motivačné metódy:**
+- Vzbudenie záujmu
+- Vytvorenie problémovej situácie
+- Využitie hier
+- Praktické príklady
+
+**Expozičné metódy:**
+- Výklad nového učiva
+- Demonštrácia
+- Vysvetľovanie
+
+**Fixačné metódy:**
+- Opakovanie
+- Precvičovanie
+- Aplikácia
+- Systematizácia
+
+**Diagnostické metódy:**
+- Skúšanie
+- Testovanie
+- Kontrola
+- Hodnotenie`
+    },
+    {
+      title: "Téma 3: Slovné vyučovacie metódy",
+      content: `**Metódy založené na slove**
+
+Slovné metódy patria medzi najstaršie a najpoužívanejšie.
+
+**1. Výklad:**
+
+**Charakteristika:**
+- Systematický ústny prejav učiteľa
+- Vysvetľovanie nového učiva
+- Logická postupnosť
+- Monológ učiteľa
+
+**Typy výkladu:**
+- Popisný - charakteristika objektov
+- Vysvetľujúci - príčiny, vzťahy
+- Odôvodňujúci - argumentácia
+- Inštruktážny - návod
+
+**Zásady efektívneho výkladu:**
+- Jasnosť a zrozumiteľnosť
+- Logická štruktúra
+- Primeraná rýchlosť
+- Názorné príklady
+- Spojenie s praxou
+- Aktivizácia pozornosti
+
+**2. Rozhovor (dialóg):**
+
+**Charakteristika:**
+- Otázky a odpovede
+- Dialog učiteľ - žiak
+- Aktivizácia myslenia
+- Spätná väzba
+
+**Typy rozhovoru:**
+
+**Zisťovací:**
+- Kontrola vedomostí
+- Diagnostika
+- Reprodukcia
+
+**Motivačný:**
+- Vzbudenie záujmu
+- Aktivizácia
+- Spojenie s praxou
+
+**Heuristický:**
+- Objavovanie nových poznatkov
+- Riešenie problémov
+- Samostatné myslenie
+
+**Fixačný:**
+- Upevňovanie poznatkov
+- Systematizácia
+- Opakovanie
+
+**Techniky kladenia otázok:**
+- Jasné a zrozumiteľné
+- Primerané náročnosti
+- Stimulujúce myslenie
+- Čas na premýšľanie
+- Spravodlivé rozdelenie
+
+**3. Diskusia:**
+
+**Charakteristika:**
+- Výmena názorov
+- Argumentácia
+- Kritické myslenie
+- Skupinová interakcia
+
+**Formy diskusie:**
+- Triednická diskusia
+- Panelová diskusia
+- Debata
+- Brainstorming
+
+**Pravidlá diskusie:**
+- Rešpekt k názorom
+- Vecná argumentácia
+- Aktívne počúvanie
+- Kultúrne vyjadrenie
+- Moderovanie učiteľom
+
+**4. Práca s textom:**
+
+**Typy:**
+- Čítanie učebnice
+- Analýza dokumentov
+- Práca s časopismi
+- Štúdium odbornej literatúry
+
+**Techniky:**
+- Podčiarkovanie kľúčových slov
+- Vytváranie poznámok
+- Myšlienkové mapy
+- Zhrnutie textu`
+    },
+    {
+      title: "Téma 4: Názorné vyučovacie metódy",
+      content: `**Metódy založené na názornosti**
+
+Názornosť je "zlatým pravidlom didaktiky" (Komenský).
+
+**1. Pozorovanie:**
+
+**Charakteristika:**
+- Cielené vnímanie reality
+- Využitie zmyslov
+- Aktívna činnosť žiakov
+- Priame skúsenosti
+
+**Typy pozorovania:**
+
+**Systematické:**
+- Plánované
+- Zámerné
+- Metodické
+- Dlhodobé
+
+**Príležitostné:**
+- Spontánne
+- Krátkodobé
+- Využitie situácie
+
+**Fázy pozorovania:**
+1. Príprava - cieľ, inštruktáž
+2. Pozorovanie - aktívne vnímanie
+3. Záznam - poznámky, kresby
+4. Vyhodnotenie - analýza, syntéza
+
+**2. Demonštrácia:**
+
+**Charakteristika:**
+- Ukážka predmetu, javu, procesu
+- Názorná prezentácia
+- Statická alebo dynamická
+
+**Formy demonštrácie:**
+
+**Ukážka predmetov:**
+- Reálne objekty
+- Modely
+- Makety
+- Vzorky
+
+**Ukážka procesov:**
+- Experimenty
+- Pohyby
+- Postupy práce
+- Deje
+
+**Ukážka obrazov:**
+- Fotografie
+- Obrazy
+- Schémy
+- Grafy
+
+**Pravidlá demonštrácie:**
+- Viditeľnosť pre všetkých
+- Vhodná veľkosť
+- Primeraná doba
+- Spojenie s výkladom
+- Možnosť manipulácie
+
+**3. Ilustrácia:**
+
+**Charakteristika:**
+- Sprístupnenie pomocou obrazov
+- Vizuálna podpora
+- Statické zobrazenie
+
+**Typy ilustrácie:**
+- Tabuľové kresby
+- Obrazy a fotografie
+- Schémy a grafy
+- Mapy
+- Diagramy
+
+**4. Projekcia:**
+
+**Formy:**
+- PowerPoint prezentácie
+- Videá
+- Animácie
+- Interaktívne simulácie
+
+**Výhody:**
+- Dynamickosť
+- Zaujímavosť
+- Možnosť opakovania
+- Priblíženie reality
+
+**5. Experiment:**
+
+**Charakteristika:**
+- Aktívne overovanie
+- Vedecká metóda
+- Praktické skúsenosti
+- Zážitkové učenie
+
+**Typy experimentov:**
+
+**Demonštračný:**
+- Vykonáva učiteľ
+- Žiaci pozorujú
+- Vysvetľovanie priebehu
+
+**Žiacky:**
+- Vykonávajú žiaci
+- Samostatná práca
+- Osvojovanie postupov
+- Rozvoj zručností`
+    },
+    {
+      title: "Téma 5: Praktické vyučovacie metódy",
+      content: `**Metódy založené na činnosti**
+
+Praktické metódy umožňujú získavanie zručností a návykov.
+
+**1. Cvičenie:**
+
+**Charakteristika:**
+- Opakovaná činnosť
+- Utváranie zručností
+- Automatizácia
+- Upevňovanie poznatkov
+
+**Typy cvičení:**
+
+**Reprodukčné:**
+- Opakovanie podľa vzoru
+- Napodobňovanie
+- Mechanické cvičenie
+
+**Produktívne:**
+- Tvorivé cvičenie
+- Aplikácia v nových situáciách
+- Riešenie problémov
+
+**Fázy cvičenia:**
+1. Motivácia
+2. Inštruktáž
+3. Predvedenie vzoru
+4. Samostatné cvičenie
+5. Kontrola a korekcia
+6. Zhodnotenie
+
+**Pravidlá efektívneho cvičenia:**
+- Postupnosť
+- Pravidelnosť
+- Primeraná náročnosť
+- Rôznorodosť úloh
+- Spätná väzba
+- Pozitívna atmosféra
+
+**2. Laboratórne práce:**
+
+**Charakteristika:**
+- Experimentálna činnosť
+- Vedecká metóda
+- Samostatná práca
+- Praktické overovanie
+
+**Štruktúra:**
+1. Zadanie úlohy
+2. Hypotéza
+3. Plán experimentu
+4. Realizácia
+5. Záznam výsledkov
+6. Vyhodnotenie
+7. Záver
+
+**Typy:**
+- Demonštračné
+- Frontálne
+- Skupinové
+- Individuálne
+
+**3. Praktické činnosti:**
+
+**Grafické práce:**
+- Kreslenie
+- Schémy
+- Grafy
+- Diagramy
+
+**Modelovanie:**
+- Tvorba modelov
+- Makety
+- Znázornenie javov
+
+**Konštruovanie:**
+- Stavebnice
+- Technické práce
+- Projekty
+
+**Meranie:**
+- Práca s prístrojmi
+- Zbieranie dát
+- Presnosť
+
+**4. Pracovné vyučovanie:**
+
+**Formy:**
+- Dielne
+- Cvičné kuchyne
+- Školské záhrady
+- Technické práce
+
+**Význam:**
+- Prepojenie teórie a praxe
+- Manuálne zručnosti
+- Pracovné návyky
+- Vzťah k práci
+
+**5. Didaktické hry:**
+
+**Charakteristika:**
+- Zábavná forma učenia
+- Motivácia
+- Aktívna účasť
+- Sociálne učenie
+
+**Typy hier:**
+- Simulačné hry
+- Situačné hry
+- Úlohové hry
+- Rolové hry`
+    },
+    {
+      title: "Téma 6: Aktivizujúce metódy vyučovania",
+      content: `**Moderné aktivizujúce metódy**
+
+Aktivizujúce metódy podporujú aktívnu účasť žiakov.
+
+**1. Problémové vyučovanie:**
+
+**Podstata:**
+- Vytvorenie problémovej situácie
+- Riešenie problému žiakmi
+- Rozvoj myslenia
+- Samostatnosť
+
+**Fázy:**
+1. Vznik problémovej situácie
+2. Formulácia problému
+3. Vyslovenie hypotéz
+4. Riešenie problému
+5. Overenie riešenia
+6. Zovšeobecnenie
+
+**Typy problémových situácií:**
+- Teoretické problémy
+- Praktické problémy
+- Experimentálne problémy
+
+**2. Projektová metóda:**
+
+**Charakteristika:**
+- Komplexná úloha
+- Dlhodobá práca
+- Integrácia predmetov
+- Reálny produkt
+
+**Fázy projektu:**
+1. Výber témy
+2. Plánovanie
+3. Realizácia
+4. Prezentácia
+5. Hodnotenie
+
+**Typy projektov:**
+- Individuálne
+- Skupinové
+- Školské
+- Mimoškolské
+
+**Výhody:**
+- Motivácia
+- Tímová práca
+- Komplexné učenie
+- Praktické zručnosti
+
+**3. Kooperatívne učenie:**
+
+**Princípy:**
+- Pozitívna vzájomná závislosť
+- Individuálna zodpovednosť
+- Priama interakcia
+- Sociálne zručnosti
+- Reflexia skupiny
+
+**Metódy:**
+
+**Think-Pair-Share:**
+1. Individuálne myslenie
+2. Práca vo dvojici
+3. Zdieľanie s triedou
+
+**Jigsaw (puzzle):**
+1. Domáce skupiny
+2. Expertné skupiny
+3. Návrat do domácich skupín
+4. Výučba ostatných
+
+**STAD (Student Teams Achievement Divisions):**
+1. Výklad učiteľa
+2. Práca v skupinách
+3. Individuálne testovanie
+4. Zlepšenie výkonu
+5. Uznanie skupiny
+
+**4. Brainstorming:**
+
+**Pravidlá:**
+- Žiadne hodnotenie nápadov
+- Voľná asociácia
+- Množstvo nápadov
+- Rozvíjanie nápadov
+
+**Fázy:**
+1. Uvedenie problému
+2. Generovanie nápadov
+3. Triedenie nápadov
+4. Hodnotenie
+
+**5. Situačné metódy:**
+
+**Case study:**
+- Analýza prípadov
+- Riešenie situácií
+- Diskusia
+- Rozhodovanie
+
+**Rolové hry:**
+- Hranie úloh
+- Empatie
+- Sociálne učenie`
+    },
+    {
+      title: "Téma 7: Kombinácia vyučovacích metód",
+      content: `**Kombinácia a výber metód**
+
+Efektívne vyučovanie využíva kombináciu rôznych metód.
+
+**1. Princípy kombinácie:**
+
+**Komplementarita:**
+- Metódy sa dopĺňajú
+- Každá má svoje miesto
+- Synergický efekt
+
+**Variabilita:**
+- Striedanie metód
+- Udržanie pozornosti
+- Prispôsobenie situácii
+
+**Primeranosť:**
+- Vek žiakov
+- Obsah učiva
+- Ciele hodiny
+- Podmienky
+
+**2. Faktory ovplyvňujúce výber:**
+
+**Ciele vyučovacej hodiny:**
+- Osvojenie vedomostí → výklad, rozhovor
+- Rozvoj zručností → cvičenie, praktické metódy
+- Rozvoj postojov → diskusia, projekty
+
+**Obsah učiva:**
+- Teoretické → slovné metódy
+- Praktické → praktické metódy
+- Faktografické → názorné metódy
+
+**Charakteristika žiakov:**
+- Vek a vývin
+- Schopnosti
+- Záujmy
+- Štýly učenia
+
+**Podmienky:**
+- Časová dotácia
+- Materiálne vybavenie
+- Veľkosť triedy
+- Priestor
+
+**3. Príklady kombinácií:**
+
+**Úvodná časť hodiny:**
+- Motivácia - brainstorming, problémová situácia
+- Aktivizácia - otázky, krátke cvičenie
+- Opakovanie - rozhovor, test
+
+**Hlavná časť:**
+- Výklad + demonštrácia
+- Rozhovor + práca s textom
+- Experiment + diskusia
+- Projektová práca + kooperatívne učenie
+
+**Záverečná časť:**
+- Zhrnutie - rozhovor
+- Fixácia - cvičenie
+- Reflexia - diskusia
+
+**4. Metodické rady:**
+
+**Plánovaná kombinácia:**
+- Premyslené
+- V príprave hodiny
+- Postupnosť metód
+- Časový harmonogram
+
+**Flexibilita:**
+- Prispôsobenie situácii
+- Reakcia na žiakov
+- Zmena plánu
+
+**Rovnováha:**
+- Nie monotónnosť
+- Nie chaotickosť
+- Optimálna variabilita
+
+**5. Chyby pri kombinácii:**
+
+**Častá zmena:**
+- Chaos
+- Strata pozornosti
+- Nedokončenie aktivít
+
+**Jednostrannosť:**
+- Preferencia jednej metódy
+- Nuda
+- Ignorovanie individuálnych potrieb
+
+**Neprimeranosť:**
+- Nevhodný výber
+- Nesúlad s cieľmi
+- Neúčinnosť`
+    },
+    {
+      title: "Téma 8: Diferenciácia a individualizácia",
+      content: `**Prispôsobenie výučby žiakom**
+
+Diferenciácia a individualizácia zohľadňujú rôznorodosť žiakov.
+
+**1. Diferenciácia:**
+
+**Definícia:**
+- Prispôsobenie výučby skupinám žiakov
+- Rôzne úrovne náročnosti
+- Variety úloh
+- Flexibilné skupiny
+
+**Formy diferenciácie:**
+
+**Vnútorná:**
+- V rámci triedy
+- Rôzne úlohy pre rôzne skupiny
+- Flexibilné tempo
+- Voliteľné úlohy
+
+**Vonkajšia:**
+- Delenie na triedy
+- Výkonnostné skupiny
+- Voliteľné predmety
+
+**Podľa čoho diferencovať:**
+
+**Schopnosti:**
+- Nadaní žiaci - náročnejšie úlohy
+- Priemer - štandardné úlohy
+- Slabší - podporné úlohy
+
+**Záujmy:**
+- Rôzne témy
+- Voliteľné projekty
+- Diferenciácia obsahu
+
+**Štýly učenia:**
+- Vizuálny - obrázky, schémy
+- Auditívny - výklad, diskusia
+- Kinestetický - praktické činnosti
+
+**2. Individualizácia:**
+
+**Definícia:**
+- Prístup k jednotlivcovi
+- Zohľadnenie osobitostí
+- Individuálny plán
+- Osobné tempo
+
+**Formy individualizácie:**
+
+**Individuálne vzdelávanie:**
+- Špeciálne potreby
+- Nadaní žiaci
+- Zdravotné problémy
+
+**Individuálna práca:**
+- Samostatné úlohy
+- Vlastné tempo
+- Individuálne konzultácie
+
+**Individuálny prístup:**
+- V rámci skupinovej práce
+- Individuálna pomoc
+- Osobná spätná väzba
+
+**3. Praktické stratégie:**
+
+**Úrovňové úlohy:**
+- Základná úroveň - pre všetkých
+- Rozširujúca úroveň - pre pokročilých
+- Nadstavbová úroveň - pre nadaných
+
+**Voliteľné úlohy:**
+- Výber podľa záujmu
+- Rôzne spôsoby spracovania
+- Kreativita
+
+**Projekty:**
+- Vlastný výber témy
+- Individuálne tempo
+- Diferenciácia produktu
+
+**Skupinová práca:**
+- Heterogénne skupiny
+- Kooperatívne učenie
+- Vzájomná pomoc
+
+**4. Podpora žiakov:**
+
+**Nadaní žiaci:**
+- Obohacovanie obsahu
+- Akcelerácia
+- Mentorovanie
+- Špecializované programy
+
+**Žiaci so špeciálnymi potrebami:**
+- Individuálny vzdelávací plán
+- Asistenčné služby
+- Kompenzačné pomôcky
+- Upravené hodnotenie
+
+**5. Hodnotenie:**
+
+**Diferenciované hodnotenie:**
+- Rôzne formy
+- Prispôsobené kritériá
+- Individuálny pokrok
+- Formatívne hodnotenie`
+    },
+    {
+      title: "Téma 9: Motivácia vo vyučovaní",
+      content: `**Motivácia žiakov k učeniu**
+
+Motivácia je kľúčovým faktorom úspešného učenia.
+
+**1. Typy motivácie:**
+
+**Vnútorná motivácia:**
+- Záujem o predmet
+- Zvedavosť
+- Radosť z poznania
+- Sebarealizácia
+
+**Vonkajšia motivácia:**
+- Známky
+- Odmeny
+- Pochvaly
+- Uznanie
+
+**Cieľ:**
+- Rozvoj vnútornej motivácie
+- Zníženie závislosti od vonkajších podnetov
+
+**2. Faktory ovplyvňujúce motiváciu:**
+
+**Záujem:**
+- Zaujímavý obsah
+- Aktuálnosť
+- Spojenie s praxou
+- Využitie v živote
+
+**Úspech:**
+- Primeraná náročnosť
+- Dosiahnuteľné ciele
+- Zážitok úspechu
+- Pozitívna spätná väzba
+
+**Vzťahy:**
+- Kvalitný vzťah učiteľ - žiak
+- Podpora a dôvera
+- Pozitívna trieda
+- Spolupráca
+
+**3. Metódy motivácie:**
+
+**Pred vyučovaním:**
+
+**Vzbudenie záujmu:**
+- Zaujímavý úvod
+- Problémová situácia
+- Prekvapenie
+- Praktický príklad
+
+**Uvedomenie cieľa:**
+- Jasné ciele
+- Význam učiva
+- Praktické využitie
+
+**Aktivizácia:**
+- Otázky
+- Brainstorming
+- Krátka hra
+
+**Počas vyučovania:**
+
+**Variabilita:**
+- Striedanie aktivít
+- Rôzne metódy
+- Dynamickosť
+
+**Úspech:**
+- Primeraná náročnosť
+- Podpora
+- Pochvala za snahu
+
+**Aktivita:**
+- Praktické činnosti
+- Experimenty
+- Projekty
+- Spolupráca
+
+**Po vyučovaní:**
+
+**Pozitívne ukončenie:**
+- Zhodnotenie pokroku
+- Pochvala
+- Povzbudenie
+
+**Podnietenie zvedavosti:**
+- Otázky na zamyslenie
+- Zaujímavá domáca úloha
+- Výhľad na ďalšiu hodinu
+
+**4. Demotivácia - čomu sa vyhnúť:**
+
+**Negatívne faktory:**
+- Nudné vyučovanie
+- Neprimeraná náročnosť
+- Neúspech
+- Kritika osobnosti
+- Nespravodlivosť
+- Monotónnosť
+
+**5. Stratégie podpory motivácie:**
+
+**Herné prvky:**
+- Gamifikácia
+- Súťaže
+- Body, levely
+- Výzvy
+
+**Praktická orientácia:**
+- Reálne problémy
+- Projekty
+- Exkurzie
+- Hosťujúci odborníci
+
+**Voľba:**
+- Výber úloh
+- Vlastná téma
+- Spôsob spracovania
+- Autonomia`
+    },
+    {
+      title: "Téma 10: Moderné trendy v metodike",
+      content: `**Súčasné smery metodiky vyučovania**
+
+Metodika sa neustále vyvíja a reaguje na zmeny v spoločnosti.
+
+**1. Digitálne technológie:**
+
+**E-learning:**
+- Online vzdelávanie
+- Vzdelávacie platformy
+- Webináre
+- Videotutoriály
+
+**Blended learning:**
+- Kombinácia prezenčného a online
+- Flexibilita
+- Individuálne tempo
+- Dostupnosť materiálov
+
+**Flipped classroom:**
+- Prehodnotená trieda
+- Doma - obsah (videá)
+- V škole - aplikácia, cvičenie
+- Aktívne učenie
+
+**Mobilné učenie:**
+- Využitie smartfónov a tabletov
+- Vzdelávacie aplikácie
+- Kedykoľvek, kdekoľvek
+- Mikroučenie
+
+**2. Interaktívne metódy:**
+
+**Interaktívne tabule:**
+- Dotykové ovládanie
+- Interaktívne aplikácie
+- Spolupráca
+- Zapojenie žiakov
+
+**Vzdelávacie hry:**
+- Gamifikácia
+- Serious games
+- Edukačné videohry
+- Motivácia hrou
+
+**Virtuálna realita:**
+- VR okuliare
+- Virtuálne exkurzie
+- Simulácie
+- Zážitkové učenie
+
+**Augmented reality:**
+- Rozšírená realita
+- Interaktívne modely
+- Prepojenie reálneho a virtuálneho
+
+**3. Aktívne učenie:**
+
+**Učenie skúsenosťou:**
+- Experiential learning
+- Reflexia skúseností
+- Praktické aktivity
+- Zážitkové učenie
+
+**Inquiry-based learning:**
+- Učenie bádaním
+- Kladenie otázok
+- Experimentovanie
+- Objavovanie
+
+**Problem-based learning:**
+- Učenie založené na problémoch
+- Reálne situácie
+- Samostatné riešenie
+- Transfer poznatkov
+
+**4. Sociálne učenie:**
+
+**Kooperatívne učenie:**
+- Skupinová práca
+- Vzájomná závislosť
+- Sociálne zručnosti
+- Tímová práca
+
+**Peer learning:**
+- Učenie od rovesníkov
+- Vzájomné vyučovanie
+- Spätná väzba
+- Sociálna interakcia
+
+**Komunitné učenie:**
+- Učenie v komunite
+- Projekty pre komunitu
+- Občianska angažovanosť
+
+**5. Personalizované učenie:**
+
+**Adaptívne učenie:**
+- Prispôsobenie tempu
+- Individuálna cesta
+- AI systémy
+- Personalizovaný obsah
+
+**Diferenciácia:**
+- Rôzne úrovne
+- Variety úloh
+- Individuálny prístup
+
+**6. Hodnotenie:**
+
+**Formatívne hodnotenie:**
+- Priebežné
+- Podpora učenia
+- Častá spätná väzba
+- Assessment for learning
+
+**Sebahodnotenie:**
+- Reflexia učenia
+- Metakognícia
+- Zodpovednosť
+- Samostatnosť
+
+**Portfólio:**
+- Dokumentácia pokroku
+- Rôzne typy prác
+- Reflexia
+- Autenticita`
+    }
+  ],
   "Didaktika": [
     {
       title: "Téma 1: Úvod do didaktiky - Pôvod a definícia",
