@@ -365,44 +365,48 @@ export default function OnlineDJ() {
                 ))}
               </TabsList>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredTracks.map(track => (
-                  <Card key={track.id} className="hover:shadow-lg transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1">
-                          <h4 className="font-semibold">{track.title}</h4>
-                          <p className="text-sm text-muted-foreground">{track.artist}</p>
-                          <div className="flex gap-2 mt-2 text-xs">
-                            <span className="bg-primary/20 px-2 py-1 rounded">{track.genre}</span>
-                            <span className="bg-secondary px-2 py-1 rounded">{track.bpm} BPM</span>
-                            <span className="bg-accent px-2 py-1 rounded">{track.duration}</span>
+              {genres.map(genre => (
+                <TabsContent key={genre} value={genre}>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {filteredTracks.map(track => (
+                      <Card key={track.id} className="hover:shadow-lg transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <h4 className="font-semibold">{track.title}</h4>
+                              <p className="text-sm text-muted-foreground">{track.artist}</p>
+                              <div className="flex gap-2 mt-2 text-xs">
+                                <span className="bg-primary/20 px-2 py-1 rounded">{track.genre}</span>
+                                <span className="bg-secondary px-2 py-1 rounded">{track.bpm} BPM</span>
+                                <span className="bg-accent px-2 py-1 rounded">{track.duration}</span>
+                              </div>
+                            </div>
+                            <Disc3 className="h-8 w-8 text-muted-foreground" />
                           </div>
-                        </div>
-                        <Disc3 className="h-8 w-8 text-muted-foreground" />
-                      </div>
-                      <div className="flex gap-2 mt-3">
-                        <Button
-                          onClick={() => loadTrack(track, 'A')}
-                          size="sm"
-                          variant="outline"
-                          className="flex-1"
-                        >
-                          Load to A
-                        </Button>
-                        <Button
-                          onClick={() => loadTrack(track, 'B')}
-                          size="sm"
-                          variant="outline"
-                          className="flex-1"
-                        >
-                          Load to B
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                          <div className="flex gap-2 mt-3">
+                            <Button
+                              onClick={() => loadTrack(track, 'A')}
+                              size="sm"
+                              variant="outline"
+                              className="flex-1"
+                            >
+                              Load to A
+                            </Button>
+                            <Button
+                              onClick={() => loadTrack(track, 'B')}
+                              size="sm"
+                              variant="outline"
+                              className="flex-1"
+                            >
+                              Load to B
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+              ))}
             </Tabs>
           </CardContent>
         </Card>
