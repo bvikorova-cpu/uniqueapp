@@ -42789,6 +42789,809 @@ Case management sa neustále vyvíja a čelí novým výzvam aj príležitostiam
 
 Case management je kľúčovým nástrojom modernej zdravotnej a sociálnej starostlivosti. Jeho sila spočíva v holistickom, koordinovanom a klientom orientovanom prístupe. Úspešný case management môže transformovať životy jednotlivcov a zvýšiť efektívnosť celého systému. Budúcnosť case managementu je v integrácii, personalizácii, využití technológií a najmä v nekompromisnom dôraze na dôstojnosť, práva a empowerment klientov.`
     }
+  ],
+  "Práca s rodinami": [
+    {
+      title: "Téma 1: Úvod do práce s rodinami",
+      content: `**Čo je práca s rodinami?**
+
+Práca s rodinami je sociálna práca zameraná na podporu, poradenstvo a ochranu rodín v rôznych životných situáciách.
+
+**Základné charakteristiky:**
+
+**1. Cieľ práce:**
+- Podpora rodín v náročných obdobiach
+- Ochrana detí a zraniteľných členov
+- Poradenstvo v zložitých situáciách
+- Pomoc pri rozvode a rozvodových konaniach
+
+**2. Rola sociálneho pracovníka:**
+- Sprievodca rodinami
+- Poradca a podporovateľ
+- Zástupca detí v súdnych konaniach
+- Vyhodnotenie rizík a príležitostí
+
+**3. Komplexný prístup:**
+- Sociálne aspekty
+- Etické hľadiská
+- Právne otázky
+- Emočné a psychologické potreby
+
+**Význam práce s rodinami:**
+
+Rodiny čelia mnohým výzvam v modernej spoločnosti - rozvody, ekonomické problémy, zdravotné krízoy, konflikty. Sociálni pracovníci pomáhajú rodinám zvládnuť tieto náročné obdobia a nájsť riešenia.
+
+**Sociálno-právna ochrana detí:**
+
+V kontexte sociálnej práce s rodinami je kľúčová ochrana detí, ktorá zahŕňa:
+- Identifikáciu rizikových situácií
+- Preventívne opatrenia
+- Zasahovanie v krízových situáciách
+- Zastupovanie detí v konaniach`
+    },
+    {
+      title: "Téma 2: Definícia a podstata rodiny",
+      content: `**Čo je rodina?**
+
+Rodina je základná spoločenská jednotka, prirodzená skupina a základná bunka spoločnosti.
+
+**Historický kontext definície:**
+
+**1. Tradičné chápanie:**
+- Spoločenstvo ľudí pod jednou strechou
+- Spoločné hospodárenie
+- Podriadenie jednej autorite
+- Spoločná výrobná jednotka
+
+**2. Moderné chápanie:**
+- Vzťahy založené na láske a podpore
+- Rôzne formy rodinných štruktúr
+- Biologické aj sociálne väzby
+- Emocionálne spojenie
+
+**Typy rodinných štruktúr:**
+
+**1. Jadrová rodina:**
+- Rodičia a deti
+- Najčastejšia forma v modernej spoločnosti
+- Samostatná domácnosť
+
+**2. Rozšírená rodina:**
+- Viacgeneračné spolužitie
+- Starí rodičia, rodičia, deti
+- Tradičná forma v mnohých kultúrach
+
+**3. Neúplná rodina:**
+- Jeden rodič s deťmi
+- Vzniká rozvodom alebo úmrtím
+- Osobitné výzvy a potreby
+
+**4. Náhradná rodinná starostlivosť:**
+- Pestúnska starostlivosť
+- Osvojenie
+- Detské domovy rodinného typu
+
+**Funkcie rodiny:**
+
+**1. Základné funkcie:**
+- Reprodukčná (biologické pokračovanie)
+- Ekonomická (zabezpečenie potrieb)
+- Výchovná (socializácia detí)
+- Emocionálna (podpora a láska)
+
+**Význam rodiny pre spoločnosť:**
+
+Rodina je základným stavebným kameňom spoločnosti, poskytuje zázemie, výchovu a formuje hodnoty budúcich generácií.`
+    },
+    {
+      title: "Téma 3: Poskytovanie podpory a poradenstva",
+      content: `**Podpora rodín v zložitých situáciách**
+
+Sociálna práca s rodinami zahŕňa poskytovanie všestrannej podpory v náročných životných obdobiach.
+
+**Oblasti podpory:**
+
+**1. Rodinné poradenstvo:**
+- Riešenie konfliktov medzi členmi rodiny
+- Zlepšenie komunikácie
+- Posilnenie rodinných väzieb
+- Preventívne poradenstvo
+
+**2. Podpora pri rozvode:**
+- Sprevádzanie rodinami počas rozvodu
+- Minimalizácia dopadov na deti
+- Pomoc pri hľadaní riešení
+- Vysvetľovanie právnych krokov
+
+**3. Ekonomická podpora:**
+- Informácie o sociálnych dávkach
+- Pomoc pri žiadostiach o podporu
+- Finančné poradenstvo
+- Sprostredkovanie zdrojov
+
+**Metódy poradenstva:**
+
+**1. Individuálne poradenstvo:**
+- Osobné stretnutia s členmi rodiny
+- Dôverné rozhovory
+- Individuálny prístup k problémom
+
+**2. Rodinná terapia:**
+- Spoločné sedenia celej rodiny
+- Riešenie konfliktov spolu
+- Budovanie vzťahov
+- Zlepšenie dynamiky
+
+**3. Skupinové stretnutia:**
+- Stretnutia viacerých rodín
+- Zdieľanie skúseností
+- Vzájomná podpora
+- Učenie sa od iných
+
+**Rola sociálneho pracovníka ako sprievodcu:**
+
+**1. Empatický prístup:**
+- Porozumenie situácii rodiny
+- Bez odsudzovania
+- Rešpektovanie rozhodnutí
+
+**2. Informovanie:**
+- Vysvetľovanie možností
+- Identifikácia rizík a výhod
+- Poskytovanie objektívnych informácií
+
+**3. Posilnenie schopností:**
+- Podpora sebaúcty rodiny
+- Rozvoj riešiteľských schopností
+- Budovanie odolnosti (resiliencie)`
+    },
+    {
+      title: "Téma 4: Sociálno-právna ochrana detí",
+      content: `**Ochrana detí v rodinnom prostredí**
+
+Sociálno-právna ochrana detí je kľúčovou súčasťou práce s rodinami, zameriava sa na zabezpečenie práv a blahobytu detí.
+
+**Právny rámec:**
+
+**1. Zákon o sociálnoprávnej ochrane detí:**
+- Definuje práva detí
+- Určuje povinnosti rodičov
+- Stanovuje úlohu orgánov sociálnoprávnej ochrany
+- Upravuje náhradnú starostlivosť
+
+**2. Medzinárodné dohovory:**
+- Dohovor o právach dieťaťa (OSN)
+- Európske smernice
+- Medzinárodné štandardy ochrany
+
+**Úlohy sociálneho pracovníka:**
+
+**1. Prevencia:**
+- Identifikácia rizikových faktorov
+- Preventívne programy pre rodiny
+- Vzdelávanie rodičov
+- Podpora pozitívnej výchovy
+
+**2. Intervencia:**
+- Riešenie krízových situácií
+- Ochrana detí pred týraním a zneužívaním
+- Odstránenie dieťaťa z ohrozujúceho prostredia
+- Zabezpečenie bezpečia
+
+**3. Zastupovanie detí:**
+- Obhajoba záujmov dieťaťa
+- Účasť na súdnych konaniach
+- Vypracovanie správ pre súd
+- Monitorovanie plnenia rozhodnutí
+
+**Náhradná rodinná starostlivosť:**
+
+**1. Pestúnska starostlivosť:**
+- Umiestnenie dieťaťa do rodiny pestúnov
+- Dočasné alebo dlhodobé riešenie
+- Podpora pestúnov
+- Monitorovanie starostlivosti
+
+**2. Osvojenie:**
+- Proces osvojenia
+- Príprava osvojiteľov
+- Výber vhodnej rodiny pre dieťa
+- Sledovanie adaptácie
+
+**Práca s rizikovými rodinami:**
+
+**1. Identifikácia rizík:**
+- Zanedbávanie starostlivosti
+- Domáce násilie
+- Zneužívanie
+- Závislosti rodičov
+
+**2. Plány ochrany:**
+- Individuálne plány pre každé dieťa
+- Spolupráca s rodinou
+- Zapojenie externých služieb
+- Pravidelné hodnotenie`
+    },
+    {
+      title: "Téma 5: Komplexný prístup k rodinám",
+      content: `**Holistický pohľad na prácu s rodinami**
+
+Efektívna práca s rodinami vyžaduje zohľadnenie všetkých aspektov života rodiny - sociálnych, právnych, emočných, psychologických a etických.
+
+**Sociálne aspekty:**
+
+**1. Sociálne väzby:**
+- Vzťahy v rámci rodiny
+- Kontakty s komunitou
+- Sociálna izolácia vs. integrácia
+- Podpora sociálnych sietí
+
+**2. Sociálno-ekonomická situácia:**
+- Príjem a zdroje rodiny
+- Bývanie a životné podmienky
+- Prístup k službám
+- Sociálne znevýhodnenie
+
+**3. Kultúrne faktory:**
+- Kultúrne hodnoty a tradície
+- Náboženské presvedčenie
+- Etnická identita
+- Rešpektovanie kultúrnej rozmanitosti
+
+**Právne aspekty:**
+
+**1. Práva a povinnosti:**
+- Rodičovské práva a povinnosti
+- Práva detí
+- Právne normy a predpisy
+- Súdne konania
+
+**2. Legislatíva:**
+- Rodinné právo
+- Sociálne právo
+- Trestné právo (pri zneužívaní)
+- Občianske právo
+
+**Emočné a psychologické aspekty:**
+
+**1. Emočné potreby:**
+- Potreba lásky a prijatia
+- Bezpečie a istota
+- Sebaúcta a sebadôvera
+- Zmysel pre identitu
+
+**2. Psychologická dynamika:**
+- Vzťahy medzi členmi rodiny
+- Komunikačné vzorce
+- Konflikty a ich riešenie
+- Trauma a jej dôsledky
+
+**3. Duševné zdravie:**
+- Identifikácia problémov
+- Prístup k psychologickej podpore
+- Terapia a liečba
+- Podpora resiliencie
+
+**Etické aspekty:**
+
+**1. Etické princípy:**
+- Rešpekt k autonómii rodiny
+- Záujem dieťaťa na prvom mieste
+- Dôvernosť a mlčanlivosť
+- Spravodlivosť a rovnosť
+
+**2. Etické dilemy:**
+- Konflikt medzi právami rodičov a ochranou detí
+- Rešpektovanie kultúrnych rozdielov vs. univerzálne štandardy
+- Obmedzená zdrojová základňa
+- Profesionálne hranice
+
+**Interdisciplinárna spolupráca:**
+
+Pre komplexný prístup je nevyhnutná spolupráca:
+- Psychológovia a psychiatri
+- Pedagógovia a školské poradenstvo
+- Zdravotnícki pracovníci
+- Policajti a právnici
+- Komunitné služby`
+    },
+    {
+      title: "Téma 6: Zvládanie stresu a frustrácie v rodinách",
+      content: `**Podpora rodín pri zvládaní náročných situácií**
+
+Rodiny v kríze často čelia vysokému stresu a frustrácii. Sociálni pracovníci pomáhajú rodinám naučiť sa s týmito emóciami pracovať.
+
+**Zdroje stresu v rodinách:**
+
+**1. Ekonomické problémy:**
+- Nezamestnanosť
+- Dlhy a finančné ťažkosti
+- Chudoba
+- Strach o budúcnosť
+
+**2. Vzťahové problémy:**
+- Konflikty medzi partnermi
+- Problémy s deťmi
+- Problémy s príbuznými
+- Rozvod alebo rozchod
+
+**3. Zdravotné problémy:**
+- Chronické ochorenia
+- Postihnutie člena rodiny
+- Duševné ochorenia
+- Závislosti
+
+**4. Životné udalosti:**
+- Strata blízkeho človeka
+- Strata zamestnania
+- Presťahovanie
+- Zmeny v rodinnej štruktúre
+
+**Príznaky nadmerného stresu:**
+
+**1. Fyzické symptómy:**
+- Únava a vyčerpanie
+- Bolesti hlavy a tela
+- Problémy so spánkom
+- Choroby súvisiace so stresom
+
+**2. Emočné symptómy:**
+- Úzkosť a nervozita
+- Depresia a smútok
+- Hnev a podráždenie
+- Pocity bezmocnosti
+
+**3. Správanie:**
+- Izolácia od ostatných
+- Zvýšená konfliktnosť
+- Zanedbávanie povinností
+- Riskanté správanie
+
+**Stratégie zvládania stresu:**
+
+**1. Techniky relaxácie:**
+- Dychové cvičenia
+- Meditácia a mindfulness
+- Joga a cvičenie
+- Progresívna svalová relaxácia
+
+**2. Riešenie problémov:**
+- Identifikácia problému
+- Brainstorming riešení
+- Vyhodnotenie možností
+- Akčný plán
+
+**3. Sociálna podpora:**
+- Rozhovory s blízkymi
+- Podpora od priateľov
+- Podpora skupín
+- Profesionálna pomoc
+
+**4. Zmeny životného štýlu:**
+- Zdravá strava
+- Pravidelné cvičenie
+- Dostatok spánku
+- Vyhýbanie sa alkoholu a drogám
+
+**Pomoc sociálneho pracovníka:**
+
+**1. Emočná podpora:**
+- Aktívne počúvanie
+- Validácia pocitov
+- Empatia a porozumenie
+
+**2. Praktická pomoc:**
+- Informácie o zdrojoch
+- Pomoc pri plánovaní
+- Sprostredkovanie služieb
+
+**3. Budovanie odolnosti:**
+- Podpora silných stránok
+- Rozvoj coping stratégií
+- Posilnenie nádeje`
+    },
+    {
+      title: "Téma 7: Práca s rodinami v období rozvodu",
+      content: `**Špecifiká podpory rodín počas rozvodu**
+
+Rozvod je jednou z najstresujúcejších životných udalostí pre rodinu. Sociálni pracovníci poskytujú podporu a pomáhajú minimalizovať negatívne dopady.
+
+**Fázy rozvodu:**
+
+**1. Rozhodovacia fáza:**
+- Zvažovanie možností
+- Emočné výkyvy
+- Nejistota o budúcnosti
+- Potreba poradenstva
+
+**2. Právna fáza:**
+- Podanie návrhu na rozvod
+- Súdne konania
+- Riešenie majetkových otázok
+- Úprava práv a povinností
+
+**3. Fáza po rozvode:**
+- Úprava na novú situáciu
+- Nové životné podmienky
+- Spolupráca bývalých partnerov
+- Stabilizácia
+
+**Dopad rozvodu na deti:**
+
+**1. Emočné reakcie:**
+- Smútok a strata
+- Hnev a sklamanie
+- Pocity viny
+- Strach o budúcnosť
+
+**2. Správanie:**
+- Zmeny v školskom výkone
+- Problémy so správaním
+- Regresívne správanie
+- Sociálne problémy
+
+**3. Dlhodobé dopady:**
+- Problémy vo vzťahoch
+- Nižšia sebaúcta
+- Úzkosť a depresia
+- Problémy s dôverou
+
+**Minimalizácia dopadov na deti:**
+
+**1. Otvorená komunikácia:**
+- Veku primeraná vysvetlenie
+- Ubezpečenie o láske oboch rodičov
+- Možnosť vyjadriť pocity
+- Pravidelné rozhovory
+
+**2. Zachovanie stability:**
+- Udržanie rutiny
+- Minimalizácia zmien
+- Stabilné prostredie
+- Predvídateľnosť
+
+**3. Spolupráca rodičov:**
+- Spoločné rozhodovanie o deťoch
+- Rešpekt k druhému rodičovi
+- Vyhýbanie sa konfliktom pred deťmi
+- Konzistentná výchova
+
+**Rola sociálneho pracovníka:**
+
+**1. Mediácia:**
+- Pomoc pri komunikácii
+- Hľadanie kompromisov
+- Riešenie konfliktov
+- Dohoda o starostlivosti o deti
+
+**2. Podpora detí:**
+- Individuálne rozhovory
+- Skupinová podpora
+- Terapia pri potrebe
+- Monitorovanie blahobytu
+
+**3. Právne zastupovanie:**
+- Zastupovanie záujmov detí
+- Vypracovanie správ pre súd
+- Odporúčania pre rozhodnutie
+- Sledovanie vykonávania rozhodnutí
+
+**Práca s rodičmi:**
+
+**1. Poradenstvo:**
+- Vysvetlenie procesu rozvodu
+- Rizíka a výhody rôznych riešení
+- Podpora pri rozhodovaní
+- Informácie o službách
+
+**2. Emočná podpora:**
+- Spracovanie rozchodu
+- Zvládanie stresu
+- Budovanie nového života
+- Podpora rodičovských zručností`
+    },
+    {
+      title: "Téma 8: Rodiny v riziku a krízová intervencia",
+      content: `**Identifikácia a podpora rizikových rodín**
+
+Niektoré rodiny čelia mnohonásobným rizikám a vyžadujú intenzívnejšiu podporu a intervenciu.
+
+**Rizikové faktory:**
+
+**1. Ekonomické riziko:**
+- Chudoba a nezamestnanosť
+- Zadlženosť
+- Bezdomovectvo alebo riziko straty bývania
+- Nedostatok základných zdrojov
+
+**2. Sociálne riziko:**
+- Sociálna izolácia
+- Nedostatok podporných sietí
+- Stigmatizácia
+- Vylúčenie z komunity
+
+**3. Zdravotné riziko:**
+- Chronické ochorenia
+- Duševné ochorenia
+- Závislosti (alkohol, drogy)
+- Zanedbávanie zdravia
+
+**4. Vzťahové riziko:**
+- Domáce násilie
+- Konflikty a dysfunkčné vzťahy
+- Nedostatočné rodičovské schopnosti
+- Týranie a zneužívanie
+
+**Krízová intervencia:**
+
+**1. Bezprostredná odozva:**
+- Rýchle vyhodnotenie situácie
+- Zabezpečenie bezpečia
+- Stabilizácia krízy
+- Urgentné riešenia
+
+**2. Plán krízovej intervencie:**
+- Identifikácia najnaliehavejších potrieb
+- Mobilizácia zdrojov
+- Koordinácia služieb
+- Časový harmonogram
+
+**3. Následná starostlivosť:**
+- Dlhodobý plán podpory
+- Pravidelné monitorovanie
+- Úprava plánu podľa potrieb
+- Prevencia budúcich kríz
+
+**Ochranné faktory:**
+
+**1. Vnútorné zdroje rodiny:**
+- Silné rodinné väzby
+- Pozitívne rodičovské schopnosti
+- Resilienncia (odolnosť)
+- Schopnosť riešiť problémy
+
+**2. Externé zdroje:**
+- Podporná sieť (príbuzní, priatelia)
+- Prístup k službám
+- Stabilný príjem
+- Kvalitné bývanie
+
+**Multidisciplinárny prístup:**
+
+**1. Tímová spolupráca:**
+- Sociálni pracovníci
+- Psychológovia
+- Zdravotníci
+- Pedagógovia
+- Policajti
+- Právnici
+
+**2. Koordinácia služieb:**
+- Integrácia podpory
+- Vyhýbanie sa duplikácii
+- Komplexné riešenia
+- Efektívne využitie zdrojov
+
+**Posilnenie rodiny (empowerment):**
+
+**1. Podpora silných stránok:**
+- Identifikácia zdrojov rodiny
+- Budovanie na pozitívach
+- Rozvoj kompetencií
+- Zvyšovanie sebadôvery
+
+**2. Účasť rodiny:**
+- Zapojenie do plánovania
+- Rešpektovanie rozhodnutí
+- Podpora autonómie
+- Spolupráca, nie direktívy`
+    },
+    {
+      title: "Téma 9: Preventívne programy a komunitná práca",
+      content: `**Prevencia problémov v rodinách**
+
+Prevencia je kľúčová pre zníženie výskytu problémov v rodinách a podporu zdravého rodinného fungovania.
+
+**Úrovne prevencie:**
+
+**1. Primárna prevencia:**
+- Programy pre všetky rodiny
+- Vzdelávanie rodičov
+- Príprava na rodičovstvo
+- Podpora pozitívnej výchovy
+
+**2. Sekundárna prevencia:**
+- Cielená podpora rizikových rodín
+- Včasná identifikácia problémov
+- Preventívne intervencie
+- Podpora v náročných obdobiach
+
+**3. Terciárna prevencia:**
+- Prevencia opakovania problémov
+- Práca s rodinami po kríze
+- Podpora reintegrácie
+- Dlhodobé sledovanie
+
+**Preventívne programy:**
+
+**1. Programy prípravy na rodičovstvo:**
+- Pre budúcich rodičov
+- Informácie o vývoji dieťaťa
+- Rodičovské zručnosti
+- Podpora vzťahu partnera
+
+**2. Podporné skupiny:**
+- Skupiny pre rodičov
+- Výmena skúseností
+- Vzájomná podpora
+- Znižovanie izolácie
+
+**3. Rodinné centrá:**
+- Miesto stretávania rodín
+- Aktivity pre rodičov a deti
+- Poradenstvo
+- Komunitné akcie
+
+**4. Vzdelávacie programy:**
+- Kurzy rodičovských zručností
+- Komunikácia v rodine
+- Riešenie konfliktov
+- Finančné plánovanie
+
+**Komunitná práca s rodinami:**
+
+**1. Budovanie komunity:**
+- Posilnenie susedských vzťahov
+- Podpora sociálnych sietí
+- Komunitné akcie
+- Inkluzívne prostredie
+
+**2. Komunitné zdroje:**
+- Identifikácia a mobilizácia zdrojov
+- Využitie miestnych služieb
+- Dobrovoľníctvo
+- Partnerstvy s organizáciami
+
+**3. Advokácia:**
+- Obhajoba práv rodín
+- Ovplyvňovanie politík
+- Zvyšovanie povedomia
+- Zmena systémov
+
+**Význam prevencie:**
+
+**1. Ekonomický prínos:**
+- Nižšie náklady než liečba
+- Zníženie potreby nákladných intervencií
+- Efektívnejšie využitie zdrojov
+
+**2. Sociálny prínos:**
+- Zdravšie rodiny a deti
+- Silnejšie komunity
+- Nižšia kriminalita
+- Vyššia kvalita života
+
+**3. Individuálny prínos:**
+- Lepšie fyzické a duševné zdravie
+- Silnejšie vzťahy
+- Vyššia sebaúcta
+- Lepšie vyhliadky do budúcnosti
+
+**Partnerstvá a spolupráca:**
+
+Pre efektívnu prevenciu je kľúčová spolupráca:
+- Školy a materské školy
+- Zdravotnícke zariadenia
+- Miestne samosprávy
+- Neziskové organizácie
+- Cirkvi a náboženské spoločenstvá`
+    },
+    {
+      title: "Téma 10: Etika a budúcnosť práce s rodinami",
+      content: `**Etické princípy a trendy v práci s rodinami**
+
+Práca s rodinami je náročná profesia, ktorá vyžaduje vysoké etické štandardy a neustále prispôsobovanie sa meniacim sa potrebám spoločnosti.
+
+**Etické princípy:**
+
+**1. Rešpekt k autonómii:**
+- Právo rodiny na sebaurčenie
+- Rešpektovanie rozhodnutí
+- Informovaný súhlas
+- Podpora, nie kontrola
+
+**2. Záujem dieťaťa na prvom mieste:**
+- Ochrana práv detí
+- Priorita blahobytu dieťaťa
+- Vyváženie práv rodičov a detí
+- Obhajoba záujmov dieťaťa
+
+**3. Dôvernosť a mlčanlivosť:**
+- Ochrana osobných údajov
+- Rešpektovanie súkromia
+- Výnimky pri ohrození
+- Transparentnosť
+
+**4. Spravodlivosť a rovnosť:**
+- Prístup k službám pre všetkých
+- Nediskriminácia
+- Kultúrna senzitivita
+- Sociálna spravodlivosť
+
+**5. Profesionálna kompetentnosť:**
+- Kontinuálne vzdelávanie
+- Supervízia a podpora
+- Uvedomenie si vlastných limitov
+- Záujem o kvalitu
+
+**Etické dilemy:**
+
+**1. Konflikt záujmov:**
+- Záujmy dieťaťa vs. záujmy rodičov
+- Individuálne potreby vs. rodinné potreby
+- Ochrana vs. zachovanie rodiny
+
+**2. Kultúrna rozmanitosť:**
+- Rešpekt k odlišnostiam
+- Univerzálne ľudské práva
+- Kultúrne citlivé intervencie
+
+**3. Obmedzené zdroje:**
+- Rozhodovanie o prioritách
+- Spravodlivé rozdeľovanie
+- Advokácia za viac zdrojov
+
+**Budúce trendy:**
+
+**1. Zmeny v rodinných štruktúrach:**
+- Rôznorodosť rodín
+- Novomanželské páry
+- Jednopohlavné rodičovstvo
+- Adoptívne a pestúnske rodiny
+- Medzigeneračné rodiny
+
+**2. Technologické zmeny:**
+- Online poradenstvo
+- Aplikácie pre podporu rodín
+- Digitálne zdroje
+- Vzdialenosť nie je bariéra
+
+**3. Preventívny prístup:**
+- Väčší dôraz na prevenciu
+- Včasné intervencie
+- Komunitná podpora
+- Systémové zmeny
+
+**4. Participatívny prístup:**
+- Zapojenie rodín do tvorby služieb
+- Spolurozhodovanie
+- Hodnota skúseností klientov
+- Partnerský vzťah
+
+**5. Dôraz na resilienciu:**
+- Budovanie silných stránok
+- Podpora odolnosti
+- Pozitívny prístup
+- Empowerment
+
+**Profesionálny rozvoj:**
+
+**1. Vzdelávanie:**
+- Formálne vzdelanie v sociálnej práci
+- Špecializácia na prácu s rodinami
+- Kontinuálne vzdelávanie
+- Výskum a vývoj
+
+**2. Podpora sociálnych pracovníkov:**
+- Supervízia a mentoring
+- Podpora duševného zdravia
+- Predchádzanie vyhoreniu
+- Profesionálne spoločenstvá
+
+**Záver:**
+
+Práca s rodinami je náročná, ale veľmi zmysluplná profesia. Sociálni pracovníci hrajú kľúčovú úlohu v podpore rodín, ochrane detí a budovaní zdravšej spoločnosti.`
+    }
   ]
 }
 
