@@ -28181,6 +28181,679 @@ Profesionálny pedagóg musí disponovať širokou škálou kompetencií.
 - Zodpovednosť`
     }
   ],
+  "Psychológia dieťaťa": [
+    {
+      title: "Téma 1: Úvod do psychológie a patopsychológie",
+      content: `**Psychológia a patopsychológia**
+
+Psychológia aj patopsychológia sú vednými disciplínami, ktoré majú spoločného menovateľa - štúdium ľudskej psychiky.
+
+**Psychológia:**
+- Všeobecné skúmanie ľudského prežívania a správania
+- Štúdium duševných procesov
+- Výskum ľudského správania
+- Kognitívne, emocionálne a sociálne procesy
+
+**Patopsychológia:**
+
+**Zameranie:**
+- Štúdium psychických anomálií a deficitov
+- Skúmanie procesov od normálu po patológiu
+- Psychické sprievodné javy a dôsledky
+- Nedostatky a vybočenia z psychologickej normy
+
+**Kontinuum:**
+- Od normy po abnormalitu
+- Nie každé vybočenie je patológia
+- Včasná identifikácia problémov
+- Prevencia a intervencia
+
+**Vzťah disciplín:**
+- Psychológia poskytuje teoretický základ
+- Patopsychológia aplikuje poznatky na klinickú prax
+- Vzájomné prepojenie a ovplyvňovanie
+- Spoločný cieľ - pochopenie ľudskej psychiky`
+    },
+    {
+      title: "Téma 2: Vývinová psychológia a psychológia dieťaťa",
+      content: `**Psychológia dieťaťa a jej základy**
+
+Psychológia dieťaťa vychádza predovšetkým z vývinovej psychológie.
+
+**Vývinová psychológia:**
+- Štúdium vývinových štádií
+- Zákonitosti vývinu
+- Vývinové míľniky
+- Vekové osobitosti
+
+**Jean Piaget a vývinová teória:**
+
+**1. Senzomotorické štádium (0-2 roky):**
+- Poznávanie cez zmysly a pohyb
+- Objektová permanencia
+- Primárne reflexy
+- Koordinácia zmyslov
+
+**2. Predoperačné štádium (2-7 rokov):**
+- Rozvoj reči a symbolického myslenia
+- Egocentrizmus
+- Animizmus
+- Intuítivne myslenie
+
+**3. Štádium konkrétnych operácií (7-11 rokov):**
+- Logické myslenie o konkrétnych veciach
+- Konzervácia
+- Klasifikácia
+- Seriácia
+
+**4. Štádium formálnych operácií (11+ rokov):**
+- Abstraktné myslenie
+- Hypoteticko-deduktívne myslenie
+- Systematické riešenie problémov
+- Introspekcia
+
+**Význam vývinovej teórie:**
+- Pochopenie detského myslenia
+- Prispôsobenie vzdelávania veku
+- Podpora zdravého vývinu
+- Včasná detekcia odchýlok`
+    },
+    {
+      title: "Téma 3: Vplyv detstva na celý život",
+      content: `**Detstvo ako základ osobnosti**
+
+U detí je z hľadiska ich zdravého vývinu veľmi dôležité sociálne prostredie.
+
+**Bio-psycho-sociálny pohľad:**
+
+**Biologická zložka:**
+- Genetické vlohy
+- Zdravotný stav
+- Neurologický vývin
+- Fyzický vývin
+
+**Psychologická zložka:**
+- Kognitívny vývin
+- Emocionálny vývin
+- Temperament
+- Osobnostné vlastnosti
+
+**Sociálna zložka:**
+- Rodinné prostredie
+- Sociálne vzťahy
+- Kultúrne vplyvy
+- Ekonomické podmienky
+
+**Sigmund Freud a význam raného detstva:**
+
+**Psychoanalytická teória:**
+- Dôraz na rané detstvo
+- Formovanie osobnosti v prvých rokoch
+- Nevedomé procesy
+- Význam prvých skúseností
+
+**Vplyv traumy:**
+- Silná trauma v detstve
+- Fyzické alebo emočné zanedbávanie
+- Týranie a jeho následky
+- Riziko psychických porúch
+
+**Dlhodobé následky:**
+- Ovplyvnenie celého života
+- Vzťahové problémy
+- Emocionálne ťažkosti
+- Potreba terapie
+
+**Prevencia:**
+- Vytvorenie bezpečného prostredia
+- Citová podpora
+- Stabilné vzťahy
+- Včasná intervencia`
+    },
+    {
+      title: "Téma 4: Koncept dostatočne dobrej matky",
+      content: `**Donald Winnicott a dostatočne dobrá matka**
+
+Rodič nemá byť dokonalý, pre dieťa je lepšie ak je dostatočne dobrý.
+
+**Koncept "Good Enough Mother":**
+
+**Hlavné princípy:**
+- Rodič nemusí byť dokonalý
+- Dostatočná kvalita starostlivosti
+- Akceptácia vlastných chýb
+- Prirodzená rodičovská láska
+
+**Charakteristiky dostatočne dobrého rodiča:**
+
+**1. Láska a starostlivosť:**
+- Bezpodmienečná láska
+- Empatia voči dieťaťu
+- Citlivosť na potreby
+- Ochranná funkcia
+
+**2. Akceptácia chýb:**
+- Nikto nie je dokonalý
+- Učenie sa z chýb
+- Schopnosť ospravedlniť sa
+- Priznanie si nedostatkov
+
+**3. Primeraná frustrácia:**
+
+**Význam frustrácie:**
+- Dieťa potrebuje určitú mieru frustrácie
+- Rozvoj odolnosti
+- Učenie sa zvládať sklamanie
+- Osobnostný rast
+
+**Typy frustrácie:**
+- Odklad uspokojenia potrieb
+- Neprijatie každej požiadavky
+- Stanovenie hraníc
+- Primeraná náročnosť
+
+**Výhody koncepcie:**
+- Znižuje tlak na rodičov
+- Realistické očakávania
+- Zdravší vzťah k rodičovstvu
+- Podpora sebadôvery rodičov
+
+**Praktická aplikácia:**
+- Nepotrebujete byť dokonalí
+- Stačí byť tam pre dieťa
+- Chyby sú súčasťou učenia
+- Autenticita je dôležitejšia než dokonalosť`
+    },
+    {
+      title: "Téma 5: Patopsychológia a psychológia postihnutých",
+      content: `**Patopsychológia ako vedná disciplína**
+
+Patopsychológia rozlišuje mieru aj druh postihnutia.
+
+**Základné vymedzenie:**
+- Psychológia postihnutých
+- Štúdium psychických anomálií
+- Výskum deficitov a ich vplyvov
+- Podpora osôb s postihnutím
+
+**Výskumný ústav:**
+- Výskumný ústav detskej psychológie a patopsychológie
+- Časopis: Psychológia a patopsychológia dieťaťa
+- Výskum a publikácie
+- Odborná podpora praxe
+
+**Štruktúra postihnutia:**
+
+**1. Porucha (Impairment):**
+- Nedostatok alebo deficit orgánu
+- Funkčné obmedzenie
+- Biologická úroveň
+- Primárny problém
+
+**2. Postihnutie (Disability):**
+- Obmedzenie funkcií
+- Vplyv na každodenný život
+- Funkčná úroveň
+- Sekundárne následky
+
+**3. Znevýhodnenie/Hendikep (Handicap):**
+- Sociálne dôsledky
+- Obmedzenia v spoločnosti
+- Environmentálne bariéry
+- Terciárne následky
+
+**Typy postihnutia:**
+
+**Mentálne postihnutie:**
+- Intelektové deficity
+- Poruchy učenia
+- Vývinové oneskorenie
+
+**Senzorické postihnutie:**
+- Zrakové postihnutie
+- Sluchové postihnutie
+- Kombinované
+
+**Fyzické postihnutie:**
+- Pohybové obmedzenia
+- Chronické ochorenia
+- Neurologické poruchy
+
+**Viacnásobné postihnutie:**
+- Kombinácia viacerých postihnutí
+- Komplexné potreby
+- Individuálny prístup`
+    },
+    {
+      title: "Téma 6: Definícia a identifikácia postihnutia",
+      content: `**Kto je považovaný za postihnutého?**
+
+O jednotlivcovi s postihnutím hovoríme vtedy, ak je uňho prítomný zjavný nedostatok alebo deficit.
+
+**Kritériá postihnutia:**
+
+**1. Orgánový deficit:**
+- Nedostatok alebo poškodenie orgánu
+- Funkčné obmedzenie
+- Anatomická odchýlka
+- Diagnostikovateľné poruchy
+
+**2. Vplyv na poznávacie procesy:**
+- Obmedzenie vnímania
+- Problémy s pamäťou
+- Poruchy pozornosti
+- Obmedzenie myslenia
+
+**3. Sociálne zručnosti:**
+- Získavanie sociálnych zručností
+- Využívanie zručností v praxi
+- Komunikačné schopnosti
+- Sociálna adaptácia
+
+**Faktory prostredia:**
+
+**Význam školského prostredia:**
+- Podpora zo strany školy
+- Prispôsobenie vyučovania
+- Špeciálne pomôcky
+- Inkluzívne vzdelávanie
+
+**Spolupráca s rodičmi:**
+- Vzájomná komunikácia
+- Spoločné ciele
+- Domáca podpora
+- Konzistentný prístup
+
+**Diagnostický proces:**
+
+**1. Identifikácia:**
+- Včasné odhalenie problémov
+- Pozorovanie vývinu
+- Porovnanie s normou
+- Skríningové testy
+
+**2. Diagnostika:**
+- Odborné vyšetrenia
+- Psychologické testy
+- Lekárske vyšetrenia
+- Komplexné posúdenie
+
+**3. Intervencia:**
+- Individuálny plán
+- Špecializovaná podpora
+- Terapie a cvičenia
+- Pravidelné hodnotenie
+
+**Prístup k dieťaťu:**
+- Rešpekt a dôstojnosť
+- Podpora silných stránok
+- Práca na deficitoch
+- Pozitívne očakávania`
+    },
+    {
+      title: "Téma 7: Bio-psycho-sociálny model v patopsychológii",
+      content: `**Komplexný pohľad na postihnutie**
+
+Patopsychológia a bio-psycho-sociálny model - každý človek s postihnutím môže na svojom zdravotnom stave participovať.
+
+**Bio-psycho-sociálny model:**
+
+**Biologická zložka:**
+
+**Zdravotný stav:**
+- Diagnóza a prognóza
+- Liečba a medikácia
+- Fyzický stav
+- Genetické faktory
+
+**Funkčné obmedzenia:**
+- Mobilita
+- Senzorické funkcie
+- Kognitívne schopnosti
+- Komunikácia
+
+**Psychologická zložka:**
+
+**Osobnosť:**
+- Temperament
+- Charakterové vlastnosti
+- Emocionálny život
+- Sebavnímanie
+
+**Psychický stav:**
+- Nálada a emócie
+- Motivácia
+- Zvládanie stresu
+- Duševné zdravie
+
+**Kognitívne procesy:**
+- Vnímanie
+- Pamäť
+- Myslenie
+- Učenie
+
+**Sociálna zložka:**
+
+**Sociálna podpora:**
+- Rodina
+- Priatelia
+- Komunita
+- Odborníci
+
+**Prostredie:**
+- Fyzické prostredie
+- Bariéry a dostupnosť
+- Kultúrne faktory
+- Ekonomické podmienky
+
+**Sociálne vzťahy:**
+- Začlenenie do spoločnosti
+- Sociálne role
+- Vzťahy s inými
+- Kvalita života
+
+**Participácia na zdraví:**
+
+**Aktívna úloha:**
+- Človek nie je pasívny objekt
+- Môže ovplyvňovať svoj stav
+- Aktívna účasť na liečbe
+- Sebapéča
+
+**Rehabilitácia:**
+
+**Význam:**
+- Obnova poškodených funkcií
+- Rozvoj kompenzačných schopností
+- Začlenenie do spoločnosti
+- Zlepšenie kvality života
+
+**Typy rehabilitácie:**
+- Fyzická
+- Psychologická
+- Sociálna
+- Pracovná
+
+**Ciele:**
+- Maximálna samostatnosť
+- Sociálna integrácia
+- Kvalita života
+- Sebarealizácia`
+    },
+    {
+      title: "Téma 8: Vývinové štádiá podľa Piageta - podrobne",
+      content: `**Piagetova teória kognitívneho vývinu**
+
+Jean Piaget vytvoril komplexnú teóriu kognitívneho vývinu dieťaťa.
+
+**1. Senzomotorické štádium (0-2 roky):**
+
+**Podštádiá:**
+- Reflexné schémy (0-1 mesiac)
+- Primárne cirkulárne reakcie (1-4 mesiace)
+- Sekundárne cirkulárne reakcie (4-8 mesiacov)
+- Koordinácia sekundárnych schém (8-12 mesiacov)
+- Terciárne cirkulárne reakcie (12-18 mesiacov)
+- Začiatok symbolického myslenia (18-24 mesiacov)
+
+**Kľúčové úspechy:**
+- Objektová permanencia
+- Cieľavedomé správanie
+- Koordinácia zmyslov
+- Základné pochopenie príčiny a následku
+
+**2. Predoperačné štádium (2-7 rokov):**
+
+**Charakteristiky:**
+
+**Symbolické myslenie:**
+- Používanie symbolov
+- Rolové hry
+- Jazyk a komunikácia
+- Mentálne reprezentácie
+
+**Egocentrizmus:**
+- Pohľad len zo svojho hľadiska
+- Ťažkosti s pochopením iných perspektív
+- Animizmus (pripisovanie života neživým objektom)
+- Magické myslenie
+
+**Obmedzenia:**
+- Centrácia (zameranie na jeden aspekt)
+- Neschopnosť konzervácie
+- Ireversibilita
+- Transdukcia (od špecifického k špecifickému)
+
+**3. Štádium konkrétnych operácií (7-11 rokov):**
+
+**Nové schopnosti:**
+
+**Konzervácia:**
+- Počtu
+- Hmotnosti
+- Objemu
+- Dĺžky
+
+**Logické operácie:**
+- Klasifikácia
+- Seriácia
+- Reverzibilita
+- Tranzitívnosť
+
+**Obmedzenia:**
+- Viazané na konkrétne objekty
+- Problémy s abstraktným myslením
+- Potreba názornosti
+
+**4. Štádium formálnych operácií (11+ rokov):**
+
+**Najvyššie kognitívne schopnosti:**
+
+**Abstraktné myslenie:**
+- Myslenie o možnostiach
+- Hypotetické situácie
+- Filozofické úvahy
+- Ideály a hodnoty
+
+**Hypoteticko-deduktívne myslenie:**
+- Tvorba hypotéz
+- Systematické testovanie
+- Logické uvažovanie
+- Vedecké myslenie
+
+**Metakognície:**
+- Myslenie o myslení
+- Sebarefexia
+- Plánovanie stratégií
+- Hodnotenie vlastného myslenia`
+    },
+    {
+      title: "Téma 9: Emocionálny a sociálny vývin dieťaťa",
+      content: `**Emocionálny a sociálny rozvoj**
+
+Okrem kognitívneho vývinu je dôležitý aj emocionálny a sociálny vývin.
+
+**Emocionálny vývin:**
+
+**Raný vek (0-2 roky):**
+- Základné emócie (radosť, smútok, hnev, strach)
+- Pripútanosť (attachment)
+- Sociálny úsmev
+- Rozpoznávanie emócií iných
+
+**Predškolský vek (2-6 rokov):**
+- Sekundárne emócie (hrdosť, hanba, vina)
+- Emocionálna regulácia
+- Empatia
+- Vyjadrenie pocitov slovami
+
+**Školský vek (6-12 rokov):**
+- Komplexné emócie
+- Lepšia regulácia
+- Pochopenie viacerých emócií súčasne
+- Sociálne porovnávanie
+
+**Teórie pripútanosti:**
+
+**John Bowlby:**
+- Význam pripútanosti
+- Bezpečná základňa
+- Vnútorné pracovné modely
+- Kritické obdobie
+
+**Mary Ainsworth - Typy pripútanosti:**
+
+**Bezpečná pripútanosť:**
+- Dôvera v opatrovateľa
+- Používanie ako bezpečnej základne
+- Zdravý emocionálny vývin
+
+**Vyhýbavá pripútanosť:**
+- Minimálny kontakt
+- Zdanlivá nezávislosť
+- Potláčanie emócií
+
+**Ambivalentná pripútanosť:**
+- Neistota
+- Úzkosť pri odlúčení
+- Ťažkosti s upokojením
+
+**Dezorganizovaná pripútanosť:**
+- Nekonzistentné správanie
+- Zmätenosť
+- Rizikový faktor
+
+**Sociálny vývin:**
+
+**Raný vek:**
+- Sociálny úsmev
+- Spoločná pozornosť
+- Základná interakcia
+
+**Predškolský vek:**
+- Paralelná hra
+- Začiatok spolupráce
+- Priateľstvá
+- Prosociálne správanie
+
+**Školský vek:**
+- Komplexnejšie vzťahy
+- Skupinová dynamika
+- Morálny vývin
+- Sociálne normy
+
+**Význam sociálneho prostredia:**
+- Rodina ako primárne prostredie
+- Vrstovníci a ich vplyv
+- Škola a pedagógovia
+- Širšia komunita`
+    },
+    {
+      title: "Téma 10: Poruchy vývinu a intervencia",
+      content: `**Vývinové poruchy a odchýlky**
+
+Niektoré deti môžu mať odchýlky alebo poruchy vo vývine.
+
+**Typy vývinových porúch:**
+
+**1. Poruchy autistického spektra (PAS):**
+
+**Charakteristiky:**
+- Problémy v sociálnej interakcii
+- Komunikačné ťažkosti
+- Opakujúce sa správanie
+- Špecifické záujmy
+
+**Podpora:**
+- Včasná intervencia
+- Behaviorálne terapie (ABA)
+- Podpora komunikácie
+- Štrukturované prostredie
+
+**2. ADHD (Porucha pozornosti s hyperaktivitou):**
+
+**Príznaky:**
+- Nepozornosť
+- Hyperaktivita
+- Impulzivita
+- Problémy v škole
+
+**Intervencia:**
+- Behaviorálne techniky
+- Medikácia (ak je potrebná)
+- Úprava prostredia
+- Spolupráca škola-rodina
+
+**3. Špecifické poruchy učenia:**
+
+**Typy:**
+- Dyslexia (čítanie)
+- Dysgrafia (písanie)
+- Dyskalkulia (matematika)
+- Dyspraxia (koordinácia)
+
+**Podpora:**
+- Špecializované metódy
+- Individuálny prístup
+- Kompenzačné pomôcky
+- Podpora sebavedomia
+
+**4. Poruchy reči a komunikácie:**
+
+**Formy:**
+- Oneskorený rečový vývin
+- Artikulačné poruchy
+- Afázia
+- Mutizmus
+
+**Terapia:**
+- Logopedická intervencia
+- Cvičenia
+- Podpora v rodine
+- Alternatívna komunikácia
+
+**5. Emocionálne a behaviorálne poruchy:**
+
+**Typy:**
+- Úzkostné poruchy
+- Depresia u detí
+- Poruchy správania
+- Opozičné správanie
+
+**Prístup:**
+- Psychoterapia
+- Rodinná terapia
+- Úprava prostredia
+- Budovanie pozitívnych vzťahov
+
+**Včasná intervencia:**
+
+**Význam:**
+- Čím skôr, tým lepšie
+- Plasticita mozgu v detstve
+- Prevencia sekundárnych problémov
+- Lepšia prognóza
+
+**Interdisciplinárny tím:**
+- Psychológ
+- Logopéd
+- Špeciálny pedagóg
+- Lekár
+- Rodičia
+
+**Inklúzia:**
+- Začlenenie do bežnej školy
+- Prispôsobené podmienky
+- Podpora asistenta
+- Akceptácia odlišností
+
+**Práca s rodinou:**
+- Vzdelávanie rodičov
+- Emocionálna podpora
+- Praktické rady
+- Komunitné zdroje`
+    }
+  ],
   "Vue.js": [
     {
       title: "Téma 1: Úvod do Vue.js",
