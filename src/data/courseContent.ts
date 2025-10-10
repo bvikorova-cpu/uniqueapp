@@ -28854,6 +28854,928 @@ Niektoré deti môžu mať odchýlky alebo poruchy vo vývine.
 - Komunitné zdroje`
     }
   ],
+  "Špeciálna pedagogika": [
+    {
+      title: "Téma 1: Úvod do špeciálnej pedagogiky",
+      content: `**Čo je špeciálna pedagogika?**
+
+Špeciálna pedagogika je vedný odbor zaoberajúci sa výchovou, vzdelávaním a výučbou osôb s postihnutím alebo ohrozených detí, mládeže a dospelých.
+
+**Základné vymedzenie:**
+- Súčasť širšej vednej disciplíny defektológie
+- Teória a prax edukácie jedincov so špeciálnymi potrebami
+- Adaptácia vzdelávacích prístupov
+- Podpora osôb s narušenými schopnosťami
+
+**História a vývoj:**
+- Vývoj od ústavnej starostlivosti k inklúzii
+- Zmena paradigmy z medicínskeho na sociálny model
+- Medzinárodné dokumenty (Salamanca 1994)
+- Legislatívne zakotvenie
+
+**Ciele špeciálnej pedagogiky:**
+
+**1. Výchovné a vzdelávacie:**
+- Rozvoj osobnosti jedinca
+- Maximálna možná samostatnosť
+- Sociálna integrácia
+- Kvalita života
+
+**2. Nápravné a kompenzačné:**
+- Náprava defektov
+- Rozvoj kompenzačných mechanizmov
+- Využitie zachovaných schopností
+- Podpora rozvoja
+
+**3. Preventívne:**
+- Včasná diagnostika
+- Prevencia sekundárnych postihnutí
+- Podpora rizikových skupín
+- Osveta
+
+**Princípy špeciálnej pedagogiky:**
+- Individuálny prístup
+- Komplexnosť pôsobenia
+- Systematickosť a postupnosť
+- Názornosť a aktivita
+- Humanizmus a optimizmus`
+    },
+    {
+      title: "Téma 2: Defektológia a jej odbory",
+      content: `**Defektológia ako vedná disciplína**
+
+Špeciálna pedagogika je súčasťou širšej vednej disciplíny defektológie.
+
+**Čo je defektológia?**
+- Komplexná veda o postihnutiach
+- Štúdium príčin, prejavov a dôsledkov
+- Prevencia, diagnostika, intervencia
+- Interdisciplinárny charakter
+
+**Odbory defektológie:**
+
+**1. Špeciálna pedagogika:**
+- Výchova a vzdelávanie
+- Metodika práce
+- Didaktika špeciálnych škôl
+- Integrácia a inklúzia
+
+**2. Klinická psychológia:**
+- Diagnostika porúch
+- Psychoterapia
+- Poradenstvo
+- Podpora rodín
+
+**3. Medicínske odbory:**
+- Neurológia
+- Psychiatria
+- Rehabilitačná medicína
+- Logopédia
+
+**4. Sociálna práca:**
+- Sociálne poradenstvo
+- Podpora rodín
+- Komunitné služby
+- Advokácia
+
+**Vzájomné vzťahy:**
+
+**Interdisciplinárna spolupráca:**
+- Tímová práca odborníkov
+- Komplexný pohľad na klienta
+- Koordinácia intervencie
+- Výmena informácií
+
+**Holistický prístup:**
+- Bio-psycho-sociálny model
+- Zohľadnenie všetkých aspektov
+- Individuálne potreby
+- Systémový prístup
+
+**Výskum v defektológii:**
+- Etiológia postihnutí
+- Efektívnosť intervencií
+- Kvalita života
+- Vývoj diagnostických nástrojov`
+    },
+    {
+      title: "Téma 3: Druhy postihnutí a ich charakteristika",
+      content: `**Klasifikácia postihnutí**
+
+Špeciálna pedagogika rozlišuje rôzne druhy postihnutí.
+
+**1. Mentálne postihnutie:**
+
+**Charakteristika:**
+- Znížená úroveň intelektových schopností
+- IQ pod 70
+- Obmedzenia v adaptívnom správaní
+- Prejavenie sa pred 18. rokom
+
+**Stupne:**
+- Ľahké (IQ 50-69)
+- Stredne ťažké (IQ 35-49)
+- Ťažké (IQ 20-34)
+- Hlboké (IQ pod 20)
+
+**2. Zmyslové postihnutia:**
+
+**Zrakové postihnutie:**
+- Slepota
+- Slabozrakosť
+- Poruchy farebného videnia
+- Čiastočné straty zorného poľa
+
+**Sluchové postihnutie:**
+- Hluchota
+- Nedoslýchavosť
+- Jednostranné postihnutie
+- Poruchy spracovania zvuku
+
+**3. Telesné postihnutie:**
+
+**Typy:**
+- Detská mozgová obrna
+- Svalové dystrofie
+- Poruchy pohybového aparátu
+- Chronické ochorenia
+
+**Dôsledky:**
+- Obmedzená mobilita
+- Ťažkosti v sebaobsluhe
+- Potreba kompenzačných pomôcok
+- Možné kognitívne postihnutie
+
+**4. Poruchy komunikačných schopností:**
+
+**Formy:**
+- Poruchy reči
+- Poruchy jazyka
+- Poruchy hlasu
+- Poruchy plynulosti reči
+
+**5. Poruchy správania:**
+
+**Typy:**
+- ADHD
+- Poruchy opozičného vzdoru
+- Poruchy správania
+- Emocionálne poruchy
+
+**6. Viacnásobné postihnutie:**
+
+**Charakteristika:**
+- Kombinácia dvoch a viac postihnutí
+- Komplexné potreby
+- Náročnejšia edukácia
+- Individualizovaný prístup
+
+**7. Špecifické poruchy učenia:**
+
+**Typy:**
+- Dyslexia
+- Dysgrafia
+- Dyskalkulia
+- Dyspraxia
+
+**8. Autizmus a poruchy autistického spektra:**
+
+**Charakteristika:**
+- Poruchy sociálnej interakcie
+- Komunikačné ťažkosti
+- Stereotypné správanie
+- Špecifické záujmy`
+    },
+    {
+      title: "Téma 4: Diagnostika v špeciálnej pedagogike",
+      content: `**Diagnostický proces**
+
+Diagnostika je základom kvalitnej špeciálnopedagogickej intervencie.
+
+**Ciele diagnostiky:**
+- Identifikácia postihnutia
+- Určenie stupňa závažnosti
+- Odhalenie potenciálu
+- Plánovanie intervencie
+- Hodnotenie pokroku
+
+**Typy diagnostiky:**
+
+**1. Skríningová diagnostika:**
+- Prvotné zachytenie rizika
+- Orientačné vyšetrenie
+- Masové testovanie
+- Odoslanie na ďalšiu diagnostiku
+
+**2. Komplexná diagnostika:**
+- Podrobné vyšetrenie
+- Viacero metód
+- Tímová diagnostika
+- Stanovenie diagnózy
+
+**3. Diferenciálna diagnostika:**
+- Odlíšenie podobných stavov
+- Presná diagnóza
+- Špecifikácia problému
+- Určenie etiológie
+
+**Diagnostické metódy:**
+
+**1. Pozorovanie:**
+- Systematické sledovanie
+- Prirodzené prostredie
+- Záznam správania
+- Analýza interakcií
+
+**2. Rozhovor:**
+- Anamnéza
+- Zisťovanie informácií
+- Rozhovor s rodičom
+- Rozhovor s dieťaťom
+
+**3. Testovanie:**
+
+**Inteligenčné testy:**
+- WISC (Wechslerova škála)
+- Stanford-Binet
+- Ravenove matice
+- Kaufmanov test
+
+**Vývinové testy:**
+- Motorický vývin
+- Rečový vývin
+- Sociálny vývin
+- Emocionálny vývin
+
+**Testy školskej pripravenosti:**
+- Zrelosť pre školu
+- Predčitateľské zručnosti
+- Matematické predpoklady
+- Grafomotorika
+
+**4. Psychologické vyšetrenia:**
+- Osobnostné testy
+- Projektívne metódy
+- Dotazníky
+- Škály
+
+**Diagnostický tím:**
+- Špeciálny pedagóg
+- Psychológ
+- Lekár (neurológ, psychiater)
+- Logopéd
+- Sociálny pracovník
+
+**Výsledky diagnostiky:**
+- Diagnostická správa
+- Odporúčania
+- Individuálny vzdelávací plán
+- Spolupráca s rodinou`
+    },
+    {
+      title: "Téma 5: Vzdelávacie prístupy a metódy",
+      content: `**Adaptácia vzdelávania**
+
+Špeciálna pedagogika využíva špecifické prístupy a metódy.
+
+**Základné princípy:**
+
+**1. Individualizácia:**
+- Prispôsobenie tempom učenia
+- Zohľadnenie schopností
+- Individuálny vzdelávací plán
+- Flexibilita
+
+**2. Diferenciácia:**
+- Rôzne úrovne náročnosti
+- Variabilita úloh
+- Viacero prístupov k obsahu
+- Rôzne formy hodnotenia
+
+**3. Kompenzácia:**
+- Využitie zachovaných zmyslov
+- Kompenzačné pomôcky
+- Náhradné stratégie
+- Prispôsobenie prostredia
+
+**Špeciálnopedagogické metódy:**
+
+**1. Montessori metóda:**
+- Pripravené prostredie
+- Samostatná práca
+- Didaktické pomôcky
+- Rešpekt k dieťaťu
+
+**2. Alternatívna a augmentatívna komunikácia (AAK):**
+- Znaková reč
+- Piktogramy
+- Komunikačné pomôcky
+- Gestá a mimika
+
+**3. Špecifické metódy pre jednotlivé postihnutia:**
+
+**Pre zrakovo postihnutých:**
+- Braillovo písmo
+- Reliéfne pomôcky
+- Zvukové nahrávky
+- Hmatové vnímanie
+
+**Pre sluchovo postihnutých:**
+- Znaková reč
+- Odzeranie
+- Vizuálna podpora
+- FM systémy
+
+**Pre mentálne postihnutých:**
+- Postupnosť malých krokov
+- Praktické činnosti
+- Opakovanie
+- Názornosť
+
+**4. Behaviorálne metódy:**
+- Pozitívne posilnenie
+- Token economy
+- Tréning sociálnych zručností
+- Modelovanie
+
+**5. Kognitívne metódy:**
+- Rozvoj myslenia
+- Metakognitívne stratégie
+- Riešenie problémov
+- Pamäťové techniky
+
+**Didaktické pomôcky:**
+
+**Technické pomôcky:**
+- Počítače a tablety
+- Špeciálny softvér
+- Komunikátory
+- Asistívne technológie
+
+**Klasické pomôcky:**
+- Hračky a hry
+- Didaktické materiály
+- Vizuálne podpory
+- Senzorické pomôcky`
+    },
+    {
+      title: "Téma 6: Poradenstvo a podpora",
+      content: `**Špeciálnopedagogické poradenstvo**
+
+Poradenstvo je kľúčovou súčasťou špeciálnej pedagogiky.
+
+**Typy poradenských služieb:**
+
+**1. Centrum špeciálnopedagogického poradenstva (CPPPaP):**
+
+**Služby:**
+- Komplexná diagnostika
+- Odborné poradenstvo
+- Vzdelávacie programy
+- Metodická podpora
+
+**Cieľové skupiny:**
+- Deti a žiaci
+- Rodičia
+- Pedagógovia
+- Školy
+
+**2. Školské poradenské zariadenie:**
+- Výchovný poradca
+- Školský psychológ
+- Špeciálny pedagóg
+- Kariérový poradca
+
+**3. Špecializované poradenské centrá:**
+- Pre konkrétne postihnutia
+- Odborná špecializácia
+- Špecifická diagnostika
+- Špecializovaná podpora
+
+**Formy poradenstva:**
+
+**Individuálne poradenstvo:**
+- Osobný rozhovor
+- Individuálna diagnostika
+- Riešenie konkrétnych problémov
+- Dlhodobá podpora
+
+**Skupinové poradenstvo:**
+- Skupiny rodičov
+- Vzdelávacie workshopy
+- Podpora rovesníkov
+- Sebapoznávacie skupiny
+
+**Krízová intervencia:**
+- Okamžitá pomoc
+- Riešenie akútnej situácie
+- Stabilizácia
+- Ďalšie odporúčania
+
+**Oblasti poradenstva:**
+
+**1. Vzdelávacie poradenstvo:**
+- Výber školy
+- Vzdelávacia dráha
+- Štúdium
+- Ďalšie vzdelávanie
+
+**2. Kariérové poradenstvo:**
+- Profesijná orientácia
+- Výber povolania
+- Príprava na zamestnanie
+- Podpora v zamestnaní
+
+**3. Psychologické poradenstvo:**
+- Emocionálne problémy
+- Vzťahové ťažkosti
+- Správanie
+- Adaptácia
+
+**4. Sociálne poradenstvo:**
+- Sociálne dávky
+- Služby
+- Právne otázky
+- Komunitné zdroje
+
+**Práca s rodinou:**
+
+**Podpora rodičov:**
+- Prijatie diagnózy
+- Zvládanie stresu
+- Rodičovské zručnosti
+- Sebastarostlivosť
+
+**Rodičovské vzdelávanie:**
+- Workshopy
+- Prednášky
+- Literatúra
+- Online zdroje
+
+**Spolupráca:**
+- Partnerstvo rodina-škola
+- Výmena informácií
+- Spoločné ciele
+- Kontinuita podpory`
+    },
+    {
+      title: "Téma 7: Nápravné a liečebné metódy",
+      content: `**Špecifické intervenčné techniky**
+
+Nápravné a liečebné metódy sú súčasťou komplexnej starostlivosti.
+
+**1. Logopedická intervencia:**
+
+**Oblasti:**
+- Artikulácia
+- Fonácia
+- Fluencia
+- Jazykový vývin
+
+**Metódy:**
+- Dychové cvičenia
+- Artikulačné cvičenia
+- Fonematické uvedomovanie
+- Jazykové hry
+
+**Techniky:**
+- Priame cvičenie
+- Nepriama stimulácia
+- Masáže
+- Relaxačné techniky
+
+**2. Fyzioterapia:**
+
+**Ciele:**
+- Zlepšenie motoriky
+- Prevencia deformít
+- Zvýšenie sily a pohyblivosti
+- Samostatnosť v pohybe
+
+**Metódy:**
+- Vojtova metóda
+- Bobath koncept
+- Petö systém
+- Klasická fyzioterapia
+
+**3. Ergoterapia:**
+
+**Zameranie:**
+- Jemná motorika
+- Grafomotorika
+- Sebaobsluha
+- Pracovné zručnosti
+
+**Aktivity:**
+- Tréning denných aktivít
+- Tvorivé činnosti
+- Pracovné návyky
+- Využívanie kompenzačných pomôcok
+
+**4. Psychoterapeutické prístupy:**
+
+**Kognitívno-behaviorálna terapia:**
+- Zmena myslenia
+- Modifikácia správania
+- Riešenie problémov
+- Zvládanie emócií
+
+**Hraterapia:**
+- Expresia cez hru
+- Spracovanie emócií
+- Rozvoj sociálnych zručností
+- Terapeutický vzťah
+
+**Arteterapia:**
+- Výtvarné techniky
+- Expresia cez umenie
+- Neverbalná komunikácia
+- Relaxácia
+
+**Muzikoterapia:**
+- Aktívna muzikoterapia
+- Receptívna muzikoterapia
+- Rytmické aktivity
+- Spev a tanec
+
+**5. Senzorická integrácia:**
+
+**Princíp:**
+- Spracovanie zmyslov
+- Integrácia podnetov
+- Rozvoj vnímania
+- Adaptívne odpovede
+
+**Techniky:**
+- Vestibulárna stimulácia
+- Proprioceptívne cvičenia
+- Taktilné aktivity
+- Multisenzorické prostredie
+
+**6. Tréning sociálnych zručností:**
+
+**Oblasti:**
+- Komunikácia
+- Spolupráca
+- Asertivita
+- Riešenie konfliktov
+
+**Metódy:**
+- Modelovanie
+- Rolové hry
+- Spätná väzba
+- Generalizácia
+
+**7. Alternatívna medicína:**
+- Hipoterapia (liečba pomocou koňa)
+- Canisterapia (liečba so psom)
+- Delfínoterapia
+- Záhradná terapia`
+    },
+    {
+      title: "Téma 8: Špecializácie v špeciálnej pedagogike",
+      content: `**Špecializované oblasti**
+
+Študijné programy špeciálnej pedagogiky ponúkajú rôzne špecializácie.
+
+**1. Špeciálna pedagogika - poradenstvo:**
+
+**Zameranie:**
+- Diagnostika
+- Poradenské služby
+- Metodická podpora
+- Supervízia
+
+**Kompetentcie:**
+- Diagnostické zručnosti
+- Poradenské techniky
+- Komunikácia
+- Tímová práca
+
+**Uplatnenie:**
+- Poradenské centrá
+- Školy
+- Zdravotnícke zariadenia
+- Súkromná prax
+
+**2. Pedagogika mentálne a viacnásobne postihnutých:**
+
+**Špecifiká:**
+- Výrazné kognitívne deficity
+- Kombinácia postihnutí
+- Náročná edukácia
+- Dlhodobá podpora
+
+**Metódy:**
+- Bazálna stimulácia
+- Snoezelen
+- Podporovaná komunikácia
+- Alternatívna komunikácia
+
+**Prostredie:**
+- Špeciálne školy
+- Denné stacionáre
+- Domovy sociálnych služieb
+- Integrácia s podporou
+
+**3. Pedagogika zrakovo postihnutých - tyflopédia:**
+
+**Charakteristika:**
+- Práca so slepými a slabozrakými
+- Využitie ostatných zmyslov
+- Kompenzačné techniky
+- Špecifické pomôcky
+
+**Metódy a pomôcky:**
+- Braillovo písmo
+- Hmatové vnímanie
+- Zvukové knihy
+- Asistívne technológie
+
+**Orientácia v priestore:**
+- Technika bielej hole
+- Vodiací pes
+- Mobility tréning
+- Priestorová orientácia
+
+**4. Pedagogika sluchovo postihnutých - surdopédia:**
+
+**Prístupy:**
+- Orálna metóda
+- Totálna komunikácia
+- Bilingválny prístup
+- Kombinované metódy
+
+**Komunikácia:**
+- Znaková reč
+- Odzeranie
+- Kochleárny implantát
+- Vizuálna podpora
+
+**5. Logopedie:**
+
+**Oblasti:**
+- Poruchy reči
+- Poruchy jazyka
+- Poruchy hlasu
+- Koktavosť
+
+**Klientela:**
+- Deti
+- Dospelí
+- Neurologickí pacienti
+- Hlasové profesie
+
+**6. Pedagogika telesne postihnutých - somapédia:**
+
+**Zameranie:**
+- DMO
+- Svalové ochorenia
+- Poruchy pohybového aparátu
+- Chronické ochorenia
+
+**Prístup:**
+- Bezbariérovosť
+- Kompenzačné pomôcky
+- Fyzioterapia
+- Samostatnosť
+
+**7. Pedagogika osôb s poruchami autistického spektra:**
+
+**Špecializované metódy:**
+- ABA (Applied Behavior Analysis)
+- TEACCH
+- Floor time
+- Social stories
+
+**Podpora:**
+- Štruktúrované prostredie
+- Vizuálne podpory
+- Prediktabilita
+- Senzorická integrácia`
+    },
+    {
+      title: "Téma 9: Integrácia a inklúzia",
+      content: `**Od segregácie k inklúzii**
+
+Moderná špeciálna pedagogika preferuje inkluzívny prístup.
+
+**Historický vývoj:**
+
+**1. Segregácia:**
+- Oddelené inštitúcie
+- Ústavy
+- Izolácia
+- Medicínsky model
+
+**2. Integrácia:**
+- Začlenenie do bežných škôl
+- Prispôsobenie žiaka
+- Špeciálne triedy
+- Asistenti
+
+**3. Inklúzia:**
+- Škola sa prispôsobuje
+- Rôznorodosť je hodnota
+- Rovnaké práva
+- Sociálny model
+
+**Princípy inkluzívneho vzdelávania:**
+
+**1. Rovnaký prístup:**
+- Každé dieťa má právo na vzdelanie
+- V bežnej škole v komunite
+- Bez diskriminácie
+- Úprava podmienok
+
+**2. Individualizácia:**
+- Individuálny vzdelávací plán
+- Prispôsobenie metód
+- Flexibilné hodnotenie
+- Rešpekt k odlišnostiam
+
+**3. Spolupráca:**
+- Tímová práca
+- Koordinácia odborníkov
+- Partnerstvo s rodinou
+- Podpora komunity
+
+**Podmienky úspešnej inklúzie:**
+
+**Legislatívne:**
+- Zákon o vzdelávaní
+- Práva osôb s postihnutím
+- Antidiskriminačné zákony
+- Štátne podpory
+
+**Materiálne:**
+- Bezbariérovosť
+- Pomôcky
+- Technológie
+- Prispôsobené priestory
+
+**Personálne:**
+- Asistenti učiteľa
+- Špeciálni pedagógovia
+- Školský psychológ
+- Terapeutický tím
+
+**Vzdelávacie:**
+- Vzdelávanie pedagógov
+- Metodická podpora
+- Adaptácia učebníc
+-Didaktické pomôcky
+
+**Výhody inklúzie:**
+
+**Pre žiakov so ŠVP:**
+- Sociálne kontakty
+- Vzory rovesníkov
+- Väčšie výzvy
+- Príprava na život
+
+**Pre intaktných žiakov:**
+- Empatia
+- Tolerancia
+- Sociálne zručnosti
+- Rôznorodosť
+
+**Pre spoločnosť:**
+- Rovnosť
+- Nediskriminácia
+- Sociálna kohézia
+- Inkluzívna kultúra
+
+**Výzvy inklúzie:**
+- Nedostatočné zdroje
+- Nevzdelaní učitelia
+- Odpor prostredia
+- Neprispôsobené podmienky
+
+**Riešenia:**
+- Systémové zmeny
+- Vzdelávanie
+- Zvyšovanie povedomia
+- Zdieľanie príkladov dobrej praxe`
+    },
+    {
+      title: "Téma 10: Moderné trendy a budúcnosť",
+      content: `**Súčasné smery špeciálnej pedagogiky**
+
+Špeciálna pedagogika sa neustále vyvíja a inovácia.
+
+**1. Technologické inovácie:**
+
+**Asistívne technológie:**
+- Komunikačné pomôcky
+- Čítacie programy
+- Softvér pre dyslexiu
+- Inteligentné aplikácie
+
+**Virtuálna realita:**
+- Tréning sociálnych zručností
+- Simulácie
+- Virtuálne exkurzie
+- Terapeutické použitie
+
+**Robotika:**
+- Sociálne roboty
+- Terapeutické roboty
+- Vzdelávacie roboty
+- Rehabilitačné pomôcky
+
+**Umelá inteligencia:**
+- Personalizované učenie
+- Adaptívne systémy
+- Diagnostické nástroje
+- Predikcia rizík
+
+**2. Nové prístupy:**
+
+**Univerzálny dizajn učenia (UDL):**
+- Viacero spôsobov prezentácie
+- Rôzne formy zapojenia
+- Variabilita v hodnotení
+- Flexibilita pre všetkých
+
+**Pozitívna behaviorálna podpora (PBS):**
+- Prevencia problémov
+- Pozitívne posilnenie
+- Funkčná analýza správania
+- Systémový prístup
+
+**Травма-информированный подход:**
+- Pochopenie traumy
+- Bezpečné prostredie
+- Empatia a podpora
+- Vzťahový prístup
+
+**3. Výskum a evidence-based practice:**
+
+**Oblasti výskumu:**
+- Efektívnosť intervencií
+- Neuroplasticita
+- Genetika postihnutí
+- Kvalita života
+
+**Implementácia:**
+- Využívanie overených metód
+- Vyhodnocovanie pokroku
+- Prispôsobovanie prístupu
+- Kontinuálne zlepšovanie
+
+**4. Spolupráca a sieťovanie:**
+
+**Medzinárodná spolupráca:**
+- Výmena skúseností
+- Spoločné projekty
+- Standardizácia
+- Vzdelávanie
+
+**Rodičovské organizácie:**
+- Advokácia
+- Vzájomná podpora
+- Osveta
+- Politický vplyv
+
+**5. Zmena paradigmy:**
+
+**Od deficitu k silám:**
+- Zameranie na schopnosti
+- Rozvoj potenciálu
+- Sebaobhajoba
+- Empowerment
+
+**Osobnostne centrovaný prístup:**
+- Jedinec v centre
+- Jeho želania a ciele
+- Aktívna participácia
+- Autodeterminácia
+
+**6. Budúcnosť špeciálnej pedagogiky:**
+
+**Vízie:**
+- Plná inklúzia
+- Rovnosť príležitostí
+- Odstránenie bariér
+- Inkluzívna spoločnosť
+
+**Výzvy:**
+- Systémové zmeny
+- Vzdelávanie odborníkov
+- Financovanie
+- Zmena postojov
+
+**Príležitosti:**
+- Nové technológie
+- Vedecký pokrok
+- Medzinárodná spolupráca
+- Legislatívne zmeny
+
+**Záver:**
+Špeciálna pedagogika je dynamický odbor, ktorý sa neustále vyvíja a reaguje na potreby osôb so špeciálnymi výchovno-vzdelávacími potrebami. Jej cieľom je zabezpečiť každému jednotlivcovi možnosť plnohodnotného života a maximálnej sebarealizácie.`
+    }
+  ],
   "Vue.js": [
     {
       title: "Téma 1: Úvod do Vue.js",
