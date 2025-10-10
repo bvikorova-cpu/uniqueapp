@@ -23925,6 +23925,785 @@ Aké sú hlavné rozdiely medzi Reactom a inými frameworkami ako Angular alebo 
 - Spätná kompatibilita
 - Dlhodobá podpora`
     }
+  ],
+  "C++": [
+    {
+      title: "Téma 1: História a vznik C++",
+      content: `**Vznik a vývoj C++**
+
+C++ je viacparadigmový programovací jazyk vyššej úrovne na všeobecné použitie, ktorý umožňuje pracovať aj s prostriedkami nízkej úrovne.
+
+**História:**
+- **1979**: Bjarne Stroustrup začal pracovať na "C with Classes"
+- **1983**: Zmena názvu na C++
+- **1985**: Vydaná prvá verzia jazyka
+- **1989**: Verzia 2.0 s viacnásobnou dedičnosťou
+- **1998**: Prvý oficiálny štandard ISO/IEC 14882:1998
+- **2003**: Opravená verzia štandardu
+- **2011**: C++11 (predtým C++0x)
+- Od 90-tych rokov patrí k najpopulárnejším jazykom
+
+**Autor:**
+- Bjarne Stroustrup vyvinul C++ v Bell Labs
+- Pôvodne nazvaný "C with Classes"
+- Rozšírenie jazyka C
+
+**Inšpirácie:**
+- **C**: Základ jazyka, rýchlosť a prenositeľnosť
+- **Simula**: Objektovo orientované vlastnosti
+- **ALGOL 68, Ada, CLU, ML**: Ďalšie inšpirácie
+
+**Využitie:**
+- Až 95% engine-ov počítačových hier používa C++
+- Systémové programovanie
+- Vstavané systémy
+- Vysoko výkonné aplikácie`
+    },
+    {
+      title: "Téma 2: Charakteristiky a vlastnosti C++",
+      content: `**Hlavné charakteristiky**
+
+C++ má statickú typovú kontrolu a podporuje viacero programovacích paradigiem.
+
+**Podporované paradigmy:**
+
+**1. Procedurálne programovanie:**
+- Funkcie a procedúry
+- Sekvenčné vykonávanie
+- Štruktúrovaný kód
+
+**2. Objektovo orientované programovanie:**
+- Triedy a objekty
+- Dedičnosť
+- Polymorfizmus
+- Zapuzdrenie
+
+**3. Generické programovanie:**
+- Šablóny (templates)
+- STL (Standard Template Library)
+- Znovupoužiteľný kód
+
+**4. Dátová abstrakcia:**
+- Skrývanie implementácie
+- Verejné rozhrania
+- Enkapsúlácia
+
+**Kľúčové vlastnosti:**
+
+**Statická typová kontrola:**
+- Typy sa kontrolujú pri kompilácii
+- Vyššia bezpečnosť
+- Odhalenie chýb pred spustením
+
+**Práca na nízkej úrovni:**
+- Priamy prístup k pamäti
+- Ukazovatele
+- Manuálna správa pamäte
+
+**Vysoká efektívnosť:**
+- Optimalizovaný kód
+- Nízka réžia
+- Rýchle vykonávanie
+
+**Prenositeľnosť:**
+- Multiplatformový jazyk
+- Štandardizovaný
+- Široká podpora kompilátorov`
+    },
+    {
+      title: "Téma 3: Filozofia a dizajn C++",
+      content: `**Princípy návrhu C++**
+
+Bjarne Stroustrup popísal v knihe "The Design and Evolution of C++" (1994) pravidlá návrhu jazyka.
+
+**Hlavné princípy:**
+
+**1. Statická typová kontrola:**
+- Jazyk všeobecného použitia
+- Efektívnosť jazyka C
+- Prenositeľnosť
+
+**2. Podpora viacerých štýlov:**
+- Procedurálne programovanie
+- Dátová abstrakcia
+- Objektovo orientované programovanie
+- Generické programovanie
+
+**3. Sloboda výberu:**
+- Programátor má voľnosť rozhodovať sa
+- Aj keď to môže viesť k chybám
+- Dôvera v programátora
+
+**4. Kompatibilita s C:**
+- Maximálna kompatibilita s jazykom C
+- Hladký prechod z C
+- Podpora C kódu
+
+**5. Žiadne platformové závislosti:**
+- Vyhýba sa features špecifickým pre platformu
+- Univerzálnosť
+- Široké použitie
+
+**6. Zero-overhead princíp:**
+- Neplatíš za to, čo nepoužívaš
+- Minimálna réžia
+- Maximálna efektívnosť
+
+**7. Jednoduchosť prostredia:**
+- Funguje bez zložitého IDE
+- Command-line kompilácia
+- Flexibilita
+
+**Názov "C++":**
+- Vytvoril Rick Mascitti v 1983
+- Operátor "++" zvyšuje hodnotu
+- Znamená evolúciu z C
+- Vtip: "postfix ++" = vylepšiť až potom`
+    },
+    {
+      title: "Téma 4: Základná syntax a program",
+      content: `**Základy syntaxe C++**
+
+C++ zdedil väčšinu syntaxe z jazyka C, ale pridal mnoho nových vlastností.
+
+**Hello World program:**
+
+\`\`\`cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, world!\\n";
+    return 0;
+}
+\`\`\`
+
+**Matematické operácie:**
+
+\`\`\`cpp
+#include<iostream>
+
+int main () {
+    int a, b;        // deklarácia premenných
+    int result;
+    a = 7;
+    b = 3;
+    a = a + 1;
+    result = a - b;
+    std::cout << result;
+    return 0;
+}
+// Výstup: 5
+\`\`\`
+
+**Kľúčové prvky:**
+
+**1. Hlavičkové súbory:**
+- #include <iostream> - vstup/výstup
+- #include <vector> - vektory
+- #include <string> - reťazce
+
+**2. Funkcia main:**
+- Každý program musí mať main()
+- Vracia celočíselnú hodnotu
+- Vstupný bod programu
+
+**3. Deklarácie premenných:**
+\`\`\`cpp
+int vek = 25;
+double vyska = 180.5;
+char iniciala = 'J';
+bool jeStudent = true;
+\`\`\`
+
+**4. Komentáre:**
+\`\`\`cpp
+// Jednoriadkový komentár
+/* Viacriadkový
+   komentár */
+\`\`\`
+
+**5. Namespace:**
+- std:: - štandardný namespace
+- Môžete vytvoriť vlastné
+- Predchádza konfliktom mien
+
+**Nové vlastnosti oproti C:**
+- Deklarácie kdekoľvek v kóde
+- Referencie (&)
+- bool typ
+- inline funkcie
+- Preťaženie funkcií`
+    },
+    {
+      title: "Téma 5: Objektovo orientované programovanie",
+      content: `**OOP v C++**
+
+C++ poskytuje rozsiahlu podporu pre objektovo orientované programovanie.
+
+**Príklad objektu:**
+
+\`\`\`cpp
+class Obluda : public Sprite
+{
+public:
+    Obluda(Okno* pOkno): Sprite(pOkno)
+    {
+    }
+    ~Obluda()
+    {
+    }
+};
+
+class Scena : public Okno
+{
+public:
+    int pridajObludu(Obluda)
+    {
+    }
+};
+\`\`\`
+
+**Kľúčové koncepty:**
+
+**1. Triedy:**
+- Definícia objektov
+- Členské premenné
+- Členské funkcie
+- Konštruktory a deštruktory
+
+**2. Zapuzdrenie (Encapsulation):**
+- public - verejné
+- private - súkromné
+- protected - chránené
+
+**Príklad:**
+\`\`\`cpp
+class Auto {
+private:
+    int rychlost;
+    string znacka;
+    
+public:
+    Auto(string z) : znacka(z), rychlost(0) {}
+    
+    void zrychli(int hodnota) {
+        rychlost += hodnota;
+    }
+    
+    int getRychlost() {
+        return rychlost;
+    }
+};
+\`\`\`
+
+**3. Dedičnosť:**
+- Znovupoužitie kódu
+- Hierarchia tried
+- Viacnásobná dedičnosť (od C++)
+
+**4. Polymorfizmus:**
+- Virtuálne funkcie
+- Abstraktné triedy
+- Preťaženie operátorov
+
+**5. Abstraktné triedy:**
+- Čisté virtuálne funkcie
+- Nemožno inštancovať
+- Definujú rozhranie
+
+**Výhody:**
+- Organizácia kódu
+- Znovupoužiteľnosť
+- Jednoduchšia údržba
+- Modelovanie reálneho sveta`
+    },
+    {
+      title: "Téma 6: Štandardná knižnica C++",
+      content: `**C++ Štandardná knižnica**
+
+Štandard C++ z roku 1998 sa skladá z dvoch častí: jadra jazyka a štandardnej knižnice.
+
+**Časti knižnice:**
+
+**1. Štandardná knižnica C:**
+- Mierne upravená pre C++
+- Základné funkcie
+- Spätná kompatibilita
+
+**2. Standard Template Library (STL):**
+- Kontajnery
+- Iterátory
+- Algoritmy
+- Funkčné objekty
+
+**STL Kontajnery:**
+
+**Sekvenčné:**
+\`\`\`cpp
+#include <vector>
+#include <list>
+#include <deque>
+
+std::vector<int> cisla;
+cisla.push_back(10);
+cisla.push_back(20);
+\`\`\`
+
+**Asociatívne:**
+\`\`\`cpp
+#include <map>
+#include <set>
+
+std::map<std::string, int> vek;
+vek["Peter"] = 25;
+vek["Jana"] = 30;
+
+std::set<int> unikatne;
+unikatne.insert(5);
+\`\`\`
+
+**Iterátory:**
+\`\`\`cpp
+std::vector<int>::iterator it;
+for(it = cisla.begin(); it != cisla.end(); ++it) {
+    std::cout << *it << std::endl;
+}
+\`\`\`
+
+**Algoritmy:**
+\`\`\`cpp
+#include <algorithm>
+
+std::sort(cisla.begin(), cisla.end());
+std::reverse(cisla.begin(), cisla.end());
+auto pos = std::find(cisla.begin(), cisla.end(), 20);
+\`\`\`
+
+**Hlavičkové súbory:**
+- 69 štandardných hlavičiek
+- #include direktíva
+- Deklarácie bez implementácie
+
+**História STL:**
+- Pôvodne HP a Silicon Graphics
+- Začlenená do štandardu
+- Samostatné implementácie (STLPort)
+
+**Výhody používania:**
+- Bezpečnejší kód
+- Ľahšie upraviteľný
+- Testovaný kód
+- Štandardizovaný`
+    },
+    {
+      title: "Téma 7: Šablóny (Templates)",
+      content: `**Generické programovanie s Templates**
+
+Šablóny umožňujú písať kód nezávislý od typov.
+
+**Šablóny funkcií:**
+
+\`\`\`cpp
+template <typename T>
+T maximum(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+// Použitie
+int x = maximum(5, 10);          // int verzia
+double y = maximum(5.5, 10.2);   // double verzia
+\`\`\`
+
+**Šablóny tried:**
+
+\`\`\`cpp
+template <typename T>
+class Zoznam {
+private:
+    T* data;
+    int velkost;
+    
+public:
+    Zoznam(int v) : velkost(v) {
+        data = new T[velkost];
+    }
+    
+    void nastav(int index, T hodnota) {
+        data[index] = hodnota;
+    }
+    
+    T ziskaj(int index) {
+        return data[index];
+    }
+    
+    ~Zoznam() {
+        delete[] data;
+    }
+};
+
+// Použitie
+Zoznam<int> cisla(10);
+Zoznam<string> mena(5);
+\`\`\`
+
+**Viacero parametrov:**
+
+\`\`\`cpp
+template <typename K, typename V>
+class Mapa {
+    // implementácia
+};
+\`\`\`
+
+**Nešablónové parametre:**
+
+\`\`\`cpp
+template <typename T, int SIZE>
+class Pole {
+private:
+    T data[SIZE];
+    
+public:
+    int velkost() { return SIZE; }
+};
+\`\`\`
+
+**Inštancovanie šablón:**
+- Deje sa pri kompilácii
+- Pre každý typ sa vytvára kópia
+- Môže zväčšiť veľkosť kódu
+- Zero-overhead abstrakcia
+
+**Rozdiel od makier:**
+- Šablóny poznajú typy
+- Typová kontrola
+- Sémantická analýza
+- Bezpečnejšie ako makrá
+
+**Výhody:**
+- Znovupoužiteľný kód
+- Typová bezpečnosť
+- Žiadna réžia za behu
+- Generické algoritmy
+
+**Nevýhody:**
+- Zložitejšie chybové hlášky
+- Dlhší čas kompilácie
+- Väčší binárny súbor`
+    },
+    {
+      title: "Téma 8: Operátory a ich preťaženie",
+      content: `**Operátory v C++**
+
+C++ poskytuje viac ako 30 operátorov a možnosť ich preťaženia.
+
+**Základné operátory:**
+
+**1. Aritmetické:**
+\`\`\`cpp
++ - * / %
+++ --
+\`\`\`
+
+**2. Porovnávacie:**
+\`\`\`cpp
+== != < > <= >=
+\`\`\`
+
+**3. Logické:**
+\`\`\`cpp
+&& || !
+\`\`\`
+
+**4. Bitové:**
+\`\`\`cpp
+& | ^ ~ << >>
+\`\`\`
+
+**5. Priradenie:**
+\`\`\`cpp
+= += -= *= /= %=
+&= |= ^= <<= >>=
+\`\`\`
+
+**Preťaženie operátorov:**
+
+**Príklad - trieda Komplexné číslo:**
+
+\`\`\`cpp
+class Komplexne {
+private:
+    double realna;
+    double imaginarna;
+    
+public:
+    Komplexne(double r, double i) : realna(r), imaginarna(i) {}
+    
+    // Preťaženie operátora +
+    Komplexne operator+(const Komplexne& other) {
+        return Komplexne(
+            realna + other.realna,
+            imaginarna + other.imaginarna
+        );
+    }
+    
+    // Preťaženie operátora <<
+    friend std::ostream& operator<<(std::ostream& os, const Komplexne& c) {
+        os << c.realna << " + " << c.imaginarna << "i";
+        return os;
+    }
+};
+
+// Použitie
+Komplexne a(3, 4);
+Komplexne b(1, 2);
+Komplexne c = a + b;
+std::cout << c;  // 4 + 6i
+\`\`\`
+
+**Pravidlá preťaženia:**
+
+**Môžu sa preťažiť:**
+- Väčšina operátorov
+- Funkčný operátor ()
+- Operátor indexu []
+
+**Nemožno preťažiť:**
+- . (bodka)
+- .* (ukazovateľ na člen)
+- :: (scope)
+- ?: (ternárny)
+- sizeof
+
+**Obmedzenia:**
+- Nemožno zmeniť prioritu
+- Nemožno zmeniť počet operandov
+- Nemožno vytvoriť nové operátory
+
+**Použitie:**
+- Inteligentné ukazovatele
+- Iterátory
+- Matematické triedy
+- Prirodzenejšia syntax`
+    },
+    {
+      title: "Téma 9: Správa pamäte a RAII",
+      content: `**Správa pamäte v C++**
+
+C++ dáva programátorovi plnú kontrolu nad pamäťou.
+
+**Operátory new a delete:**
+
+\`\`\`cpp
+// Alokácia
+int* p = new int;
+int* pole = new int[10];
+
+// Použitie
+*p = 42;
+pole[0] = 1;
+
+// Uvoľnenie
+delete p;
+delete[] pole;
+\`\`\`
+
+**Problémy s manuálnou správou:**
+
+**1. Memory leaks:**
+\`\`\`cpp
+void funkcia() {
+    int* p = new int(10);
+    // Zabudnuté delete - memory leak!
+}
+\`\`\`
+
+**2. Dangling pointers:**
+\`\`\`cpp
+int* p = new int(5);
+delete p;
+*p = 10;  // Nebezpečné!
+\`\`\`
+
+**RAII (Resource Acquisition Is Initialization):**
+
+Základný princíp C++ pre správu zdrojov.
+
+**Príklad:**
+\`\`\`cpp
+class Spravca {
+private:
+    int* data;
+    
+public:
+    // Konštruktor - získanie zdroja
+    Spravca(int velkost) {
+        data = new int[velkost];
+    }
+    
+    // Deštruktor - uvoľnenie zdroja
+    ~Spravca() {
+        delete[] data;
+    }
+    
+    // Zakázanie kopírovania
+    Spravca(const Spravca&) = delete;
+    Spravca& operator=(const Spravca&) = delete;
+};
+
+// Použitie
+{
+    Spravca s(100);
+    // Automatické uvoľnenie pri výstupe zo scope
+}
+\`\`\`
+
+**Smart Pointers (C++11):**
+
+\`\`\`cpp
+#include <memory>
+
+// unique_ptr - jediný vlastník
+std::unique_ptr<int> p1(new int(10));
+std::unique_ptr<int> p2 = std::make_unique<int>(20);
+
+// shared_ptr - zdieľaný vlastník
+std::shared_ptr<int> s1 = std::make_shared<int>(30);
+std::shared_ptr<int> s2 = s1;  // Reference count++
+
+// weak_ptr - slabý odkaz
+std::weak_ptr<int> w1 = s1;
+\`\`\`
+
+**Stack vs Heap:**
+
+**Stack:**
+- Automatická správa
+- Rýchle
+- Obmedzená veľkosť
+
+**Heap:**
+- Manuálna správa
+- Väčšia kapacita
+- Pomalší prístup
+
+**Best practices:**
+- Používať smart pointers
+- RAII princíp
+- Vyhýbať sa raw pointers kde je to možné
+- Rule of Three/Five/Zero`
+    },
+    {
+      title: "Téma 10: Moderné C++ a budúcnosť",
+      content: `**Moderné C++ (C++11 a novšie)**
+
+C++ sa neustále vyvíja a modernizuje.
+
+**C++11 (2011):**
+
+**1. Auto keyword:**
+\`\`\`cpp
+auto x = 5;              // int
+auto y = 3.14;           // double
+auto z = "text";         // const char*
+\`\`\`
+
+**2. Range-based for:**
+\`\`\`cpp
+std::vector<int> cisla = {1, 2, 3, 4, 5};
+for(auto c : cisla) {
+    std::cout << c << std::endl;
+}
+\`\`\`
+
+**3. Lambda výrazy:**
+\`\`\`cpp
+auto sucet = [](int a, int b) { return a + b; };
+int vysledok = sucet(3, 4);
+
+std::sort(cisla.begin(), cisla.end(), 
+    [](int a, int b) { return a > b; });
+\`\`\`
+
+**4. Smart pointers:**
+- unique_ptr, shared_ptr, weak_ptr
+- Automatická správa pamäte
+
+**5. Move semantika:**
+\`\`\`cpp
+std::vector<int> v1 = {1, 2, 3};
+std::vector<int> v2 = std::move(v1);  // Presun, nie kópia
+\`\`\`
+
+**C++14 (2014):**
+- Generic lambda
+- Binary literals
+- Digit separators
+
+**C++17 (2017):**
+- Structured bindings
+- if/switch s inicializáciou
+- std::optional, std::variant
+- Filesystem library
+
+**C++20 (2020):**
+
+**1. Concepts:**
+\`\`\`cpp
+template<typename T>
+concept Numeric = std::is_arithmetic_v<T>;
+
+template<Numeric T>
+T sucet(T a, T b) {
+    return a + b;
+}
+\`\`\`
+
+**2. Ranges:**
+\`\`\`cpp
+auto vysledok = cisla 
+    | std::views::filter([](int x) { return x % 2 == 0; })
+    | std::views::transform([](int x) { return x * 2; });
+\`\`\`
+
+**3. Coroutines:**
+- Asynchrónne programovanie
+- Generators
+
+**4. Modules:**
+- Náhrada za header súbory
+- Rýchlejšia kompilácia
+
+**C++23 a budúcnosť:**
+- Pattern matching
+- Reflection
+- Networking
+- Executors
+
+**Vývoj jazyka:**
+
+**Boost.org:**
+- Experimentálne knižnice
+- Testovanie nových features
+- Základ pre štandard
+
+**Trendy:**
+- Bezpečnejší kód
+- Rýchlejšia kompilácia
+- Lepšia expresivita
+- Zachovanie výkonu
+
+**Použitie dnes:**
+- Game development (95% engines)
+- Systémové programovanie
+- Embedded systémy
+- High-performance computing
+- Real-time systémy
+- Finančné aplikácie
+
+**Záver:**
+C++ zostáva relevantný vďaka neustálej modernizácii pri zachovaní kompatibility a výkonu.`
+    }
   ]
 }
 
