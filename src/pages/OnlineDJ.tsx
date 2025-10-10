@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Pause, Volume2, Music, Disc3, Radio } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 interface Track {
   id: string;
@@ -365,7 +366,7 @@ export default function OnlineDJ() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Music className="h-6 w-6" />
-              Hudobná knižnica
+              Hudobná knižnica {!loading && `(${musicLibrary.length} skladieb)`}
             </CardTitle>
             <CardDescription>Vyber skladby pre mixovanie</CardDescription>
           </CardHeader>
