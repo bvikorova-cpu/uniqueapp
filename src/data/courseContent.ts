@@ -44426,6 +44426,446 @@ Kľúčom k úspešnej budúcnosti je:
 
 Práca so seniormi bude naďalej kľúčovou oblasťou sociálnej práce, ktorá si vyžaduje profesionalitu, empatiu a záväzok k vytvoreniu spoločnosti, v ktorej môžu starší ľudia žiť dôstojne, aktívne a naplnene.`
     }
+  ],
+  "Práca s mládežou": [
+    {
+      title: "Téma 1: Úvod do práce s mládežou",
+      content: `**Práca s mládežou** je rozsiahla oblasť zameraná na podporu mladých ľudí v ich rozvoji, vzdelávaní a sociálnej integrácii prostredníctvom rôznych výchovno-vzdelávacích, sociálnych a kultúrnych aktivít.
+
+**Základné charakteristiky:**
+- Individuálne a skupinové aktivity
+- Podpora pri zvládaní problémov
+- Rozvíjanie potenciálu mladých ľudí
+- Posilňovanie občianskej participácie
+- Posilňovanie postavenia v spoločnosti
+
+**Cieľové skupiny:**
+- Deti a mladí ľudia (približne 6-30 rokov)
+- Znevýhodnená mládež
+- Mládež v riziku
+- Talentovaná mládež
+- Všetci mladí ľudia bez ohľadu na sociálne pozadie
+
+**Prečo je práca s mládežou dôležitá:**
+Mladosť je kľúčové obdobie formovania osobnosti, hodnôt a kompetencií. Kvalitná podpora v tomto období môže pozitívne ovplyvniť celý ďalší život mladého človeka a prispieť k rozvoju zdravej a demokratickej spoločnosti.`
+    },
+    {
+      title: "Téma 2: Výchovno-vzdelávacie aktivity",
+      content: `**Výchovno-vzdelávacie aktivity** sú zamerané na rozvoj kompetencií, podporu voľnočasových aktivít a zmysluplné trávenie voľného času.
+
+**Kľúčové kompetencie:**
+
+**Osobnostné kompetencie:**
+- Sebauvedomenie a sebapoznanie
+- Sebadôvera a sebaúcta
+- Kritické myslenie
+- Kreativita a inovácia
+
+**Sociálne kompetencie:**
+- Komunikácia a spolupráca
+- Empatia a tolerancia
+- Riešenie konfliktov
+- Tímová práca
+
+**Občianske kompetencie:**
+- Aktívne občianstvo
+- Demokratické hodnoty
+- Zodpovednosť
+- Environmentálne povedomie
+
+**Typy aktivít:**
+
+**Neformálne vzdelávanie:**
+- Workshopy a semináre
+- Projekty a kampane
+- Dobročinné aktivity
+- Peer education
+
+**Voľnočasové aktivity:**
+- Športové aktivity
+- Kultúrne podujatia
+- Umelecké aktivity
+- Outdoor aktivity
+
+**Digitálne vzdelávanie:**
+- Online kurzy
+- Virtuálne projekty
+- Digitálna gramotnosť
+- Tvorba obsahu`
+    },
+    {
+      title: "Téma 3: Sociálna podpora mladých ľudí",
+      content: `**Sociálna podpora** pomáha mladým ľuďom zvládať sociálne problémy, predchádzať diskriminácii a znevýhodneniu.
+
+**Oblasti sociálnej podpory:**
+
+**Prevencia rizikového správania:**
+- Predchádzanie násiliu a šikanovaniu
+- Prevencia závislostí
+- Podpora duševného zdravia
+- Bezpečné správanie online
+
+**Podpora znevýhodnenej mládeže:**
+- Mladí ľudia z marginalizovaných komunít
+- Mladí ľudia s hendikepom
+- Mladí ľudia v náhradnej starostlivosti
+- Mladí ľudia ohrození chudobou
+
+**Integračné programy:**
+- Integrácia mladých migrantov
+- Podpora inklúzie
+- Antidiskriminačné programy
+- Rovnosť príležitostí
+
+**Poradenstvo:**
+- Kariérové poradenstvo
+- Psychologické poradenstvo
+- Právne poradenstvo
+- Vzdelávacie poradenstvo
+
+**Podpora v krízových situáciách:**
+- Pomoc pri rodinných problémoch
+- Zvládanie osobných kríz
+- Podpora pri transíciách
+- Kríza intervencia`
+    },
+    {
+      title: "Téma 4: Rozvoj potenciálu mladých ľudí",
+      content: `**Rozvoj potenciálu** podporuje objavovanie a rozvíjanie schopností, ale aj prekonávanie aktuálnych limitov.
+
+**Princípy rozvoja potenciálu:**
+- Viera v schopnosti mladých ľudí
+- Podpora individuálnych talentov
+- Výzvy primerane náročné
+- Pozitívne posilňovanie
+
+**Nástroje rozvoja:**
+
+**Mentoring a koučing:**
+- Individuálna podpora
+- Rozvoj cieľov
+- Plánovanie kariéry
+- Prekonávanie prekážok
+
+**Leadership programy:**
+- Rozvoj vodcovských schopností
+- Organizačné zručnosti
+- Projektový manažment
+- Public speaking
+
+**Zážitkové vzdelávanie:**
+- Outdoor education
+- Dobrodružné aktivity
+- Team building
+- Simulácie a hry
+
+**Mobility programy:**
+- Medzinárodné výmeny
+- Európsky zbor solidarity
+- Študijné pobyty
+- Pracovné stáže
+
+**Podpora talentu:**
+- Identifikácia talentov
+- Špecializované programy
+- Súťaže a olympiády
+- Sieťovanie talentovaných mladých ľudí`
+    },
+    {
+      title: "Téma 5: Občianska participácia a zapojenie",
+      content: `**Občianska participácia** umožňuje mladým ľuďom zapojiť sa do aktivít zamerané na ich vlastný rozvoj alebo slúžiacich spoločnosti.
+
+**Formy participácie:**
+
+**Dobrovoľníctvo:**
+- Lokálne dobrovoľnícke projekty
+- Medzinárodné dobrovoľníctvo
+- Environmentálne aktivity
+- Pomoc znevýhodneným skupinám
+
+**Mladežnícke organizácie:**
+- Záujmové združenia
+- Študentské parlamenty
+- Neformálne skupiny
+- Online komunity
+
+**Občianska angažovanosť:**
+- Participácia na rozhodovaní
+- Komunitné projekty
+- Kampane a advokácia
+- Aktivizmus
+
+**Štruktúrovaný dialóg:**
+- Konzultácie s tvorcami politík
+- Mladežnícke rady
+- Verejné fóra
+- Participatívne rozpočty
+
+**Sociálne podnikanie:**
+- Mladí sociálni podnikatelia
+- Komunitné podniky
+- Sociálne inovácie
+- Udržateľné projekty`
+    },
+    {
+      title: "Téma 6: Rôznorodosť aktivít v práci s mládežou",
+      content: `**Rôznorodosť aktivít** zahŕňa rôzne činnosti sociálneho, kultúrneho, vzdelávacieho a environmentálneho charakteru.
+
+**Sociálne aktivity:**
+- Komunitné projekty
+- Kampane na podporu solidarity
+- Medzikultúrne stretnutia
+- Podpora inklúzie
+
+**Kultúrne aktivity:**
+
+**Umelecké aktivity:**
+- Divadlo a dráma
+- Hudba a tanec
+- Výtvarné umenie
+- Film a médiá
+
+**Kultúrne podujatia:**
+- Festivaly
+- Výstavy
+- Koncerty
+- Kultúrne výmeny
+
+**Vzdelávacie aktivity:**
+- Workshopy a tréningy
+- Študijné návštevy
+- Vzdelávacie programy
+- Jazykové kurzy
+
+**Environmentálne aktivity:**
+
+**Ochrana prírody:**
+- Environmentálne projekty
+- Záchranné akcie
+- Monitoring prírody
+- Výsadba stromov
+
+**Enviro-vzdelávanie:**
+- Ekologické workshopy
+- Udržateľný životný štýl
+- Zero waste aktivity
+- Klimatická spravodlivosť
+
+**Športové a outdoor aktivity:**
+- Športové turnaje
+- Turistika a kempovanie
+- Dobrodružné aktivity
+- Zdravý životný štýl`
+    },
+    {
+      title: "Téma 7: Pracovníci s mládežou - role a kompetencie",
+      content: `**Pracovníci s mládežou** sú osoby, ktoré pripravujú a organizujú programy, podujatia a vzdelávacie aktivity pre mladých ľudí.
+
+**Role pracovníkov s mládežou:**
+
+**Facilitátor:**
+- Facilitácia skupinových procesov
+- Podpora učenia sa
+- Vytváranie bezpečného prostredia
+- Moderovanie diskusií
+
+**Mentor a kouč:**
+- Individuálna podpora
+- Rozvoj talentov
+- Kariérové poradenstvo
+- Podpora sebareflexie
+
+**Projektový manažér:**
+- Plánovanie aktivít
+- Koordinácia projektov
+- Fundraising
+- Hodnotenie a reporting
+
+**Advokát:**
+- Zastupovanie záujmov mladých ľudí
+- Obhajoba práv mládeže
+- Sprostredkovanie medzi mládežou a inštitúciami
+- Zmena politík
+
+**Kľúčové kompetencie:**
+
+**Odborné kompetencie:**
+- Znalosti o práci s mládežou
+- Metódy neformálneho vzdelávania
+- Projektový manažment
+- Práca s rozmanitosťou
+
+**Sociálne kompetencie:**
+- Komunikácia
+- Empatia
+- Budovanie vzťahov
+- Riešenie konfliktov
+
+**Osobnostné kompetencie:**
+- Kreativita
+- Flexibilita
+- Odolnosť
+- Sebarefkexia`
+    },
+    {
+      title: "Téma 8: Zákonná úprava práce s mládežou na Slovensku",
+      content: `**Zákonná úprava** na Slovensku definuje rámec pre prácu s mládežou, práva a povinnosti v tejto oblasti.
+
+**Zákon o podpore práce s mládežou:**
+
+**Základné ustanovenia:**
+- Definícia práce s mládežou
+- Cieľové skupiny
+- Formy podpory
+- Financovanie
+
+**Subjekty práce s mládežou:**
+- Občianske združenia
+- Neziskové organizácie
+- Cirkvi a náboženské spoločnosti
+- Obce a mestá
+- Školy
+
+**Štátna podpora:**
+
+**Dotácie:**
+- Dotácie z ministerstva školstva
+- Grantové programy
+- Projektové financovanie
+- Inštitucionálna podpora
+
+**Infraštruktúra:**
+- Mladežnícke centrá
+- Nízkoprahové zariadenia
+- Kreatívne centrá
+- Kluby a voľnočasové zariadenia
+
+**Koordinácia:**
+- Rada mládeže Slovenska
+- Regionálne mladežnícke rady
+- IUVENTA - Slovenský inštitút mládeže
+- Európske programy (Erasmus+)
+
+**Práva a povinnosti:**
+- Právo mladých ľudí na participáciu
+- Ochrana práv mládeže
+- Povinnosti poskytovateľov služieb
+- Kvalita a štandardy
+
+**Medzinárodný rozmer:**
+- Európska charta participácie mladých ľudí
+- Stratégia EÚ pre mládež
+- Medzinárodné konvencie
+- Spolupráca s inými krajinami`
+    },
+    {
+      title: "Téma 9: Výzvy a problémy v práci s mládežou",
+      content: `**Výzvy v práci s mládežou** vyžadujú neustálu adaptáciu a inováciu prístupov k podpore mladých ľudí.
+
+**Sociálne výzvy:**
+
+**Digitalizácia:**
+- Kyberšikanovanie
+- Závislosť na technológiách
+- Falošné informácie
+- Online bezpečnosť
+
+**Duševné zdravie:**
+- Rastúce problémy s úzkosťami a depresiou
+- Tlak na výkon
+- Sociálna izolácia
+- Potreba podpory
+
+**Nerovnosti:**
+- Sociálna exklúzia
+- Ekonomické rozdiely
+- Regionálne rozdiely
+- Diskriminácia
+
+**Systémové výzvy:**
+
+**Financovanie:**
+- Nedostatočné zdroje
+- Nestabilné financovanie
+- Závislosť na projektoch
+- Potreba diverzifikácie
+
+**Profesionalizácia:**
+- Nedostatok kvalifikovaných pracovníkov
+- Nízke ohodnotenie
+- Potreba kontinuálneho vzdelávania
+- Syndróm vyhorenia
+
+**Fragmentácia:**
+- Nedostatočná koordinácia
+- Duplicita aktivít
+- Slabá spolupráca sektorov
+- Potreba integrácie služieb
+
+**Výzvy zo strany mládeže:**
+- Nízka participácia
+- Strata záujmu o tradičné formy
+- Zmeny v hodnotách
+- Rôznorodosť potrieb`
+    },
+    {
+      title: "Téma 10: Budúcnosť práce s mládežou",
+      content: `**Budúcnosť práce s mládežou** bude formovaná technologickými, sociálnymi a globálnymi trendmi.
+
+**Trendy a perspektívy:**
+
+**Digitálna transformácia:**
+- Online platformy pre mládež
+- Virtuálne mobility
+- Gamifikácia vzdelávania
+- Sociálne médiá v práci s mládežou
+
+**Personalizácia:**
+- Individualizované prístupy
+- Flexibility a voľba
+- Mladí ľudia ako spolutvorci
+- Self-directed learning
+
+**Globálne témy:**
+
+**Udržateľnosť:**
+- Environmentálna výchova
+- Green skills
+- Klimatická akcia
+- Cirkulárna ekonomika
+
+**Diverzita a inklúzia:**
+- Práca s rozmanitosťou
+- Antidiskriminačné programy
+- LGBTI+ podpora
+- Integrácia migrantov
+
+**Inovatívne metódy:**
+
+**Zážitkové vzdelávanie:**
+- Adventure education
+- Service learning
+- Experiential learning
+- Peer-to-peer učenie
+
+**Kreatívne prístupy:**
+- Design thinking
+- Storytelling
+- Umelecké metódy
+- Improvizácia
+
+**Systémové zmeny:**
+- Uznávanie neformálneho vzdelávania
+- Youthpass a certifikáty
+- Prepojenie formálneho a neformálneho
+- Cross-sektorová spolupráca
+
+**Nové formy participácie:**
+- E-participácia
+- Youth councils
+- Co-creation
+- Aktivizmus mladých ľudí`
+    },
   ]
 }
 
