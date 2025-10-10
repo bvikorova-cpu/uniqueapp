@@ -7,6 +7,7 @@ import { Play, Pause, Volume2, Music, Disc3, Radio } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import UploadAudioDialog from "@/components/dj/UploadAudioDialog";
 
 interface Track {
   id: string;
@@ -33,8 +34,6 @@ export default function OnlineDJ() {
   const [eqMidB, setEqMidB] = useState([50]);
   const [eqHighB, setEqHighB] = useState([50]);
   const [selectedGenre, setSelectedGenre] = useState<string>("All");
-  const [musicLibrary, setMusicLibrary] = useState<Track[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const audioRefA = useRef<HTMLAudioElement | null>(null);
   const audioRefB = useRef<HTMLAudioElement | null>(null);
@@ -42,30 +41,20 @@ export default function OnlineDJ() {
   const gainNodeA = useRef<GainNode | null>(null);
   const gainNodeB = useRef<GainNode | null>(null);
 
-  // Load tracks from database
-  useEffect(() => {
-    const loadTracks = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('tracks')
-          .select('*')
-          .order('artist', { ascending: true });
-        
-        if (error) throw error;
-        
-        if (data) {
-          setMusicLibrary(data);
-        }
-      } catch (error) {
-        console.error('Error loading tracks:', error);
-        toast.error('Nepodarilo sa načítať skladby');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadTracks();
-  }, []);
+  // Fetch tracks from database with refetch capability
+  const { data: musicLibrary = [], isLoading: loading, refetch } = useQuery({
+    queryKey: ['tracks'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tracks')
+        .select('*')
+        .order('artist', { ascending: true });
+      
+      if (error) throw error;
+      
+      return data || [];
+    }
+  });
 
   const genres = ["All", ...new Set(musicLibrary.map(track => track.genre))];
   const filteredTracks = selectedGenre === "All" 
@@ -116,7 +105,7 @@ export default function OnlineDJ() {
     }
   }, [volumeB, crossfader]);
 
-  const loadTrack = (track: Track, deck: 'A' | 'B') => {
+  const loadTrack = (track: any, deck: 'A' | 'B') => {
     if (deck === 'A') {
       setDeckA(track);
       setPlayingA(false);
@@ -364,11 +353,16 @@ export default function OnlineDJ() {
         {/* Music Library */}
         <Card className="bg-background/95">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Music className="h-6 w-6" />
-              Hudobná knižnica {!loading && `(${musicLibrary.length} skladieb)`}
-            </CardTitle>
-            <CardDescription>Vyber skladby pre mixovanie</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Music className="h-6 w-6" />
+                  Hudobná knižnica {!loading && `(${musicLibrary.length} skladieb)`}
+                </CardTitle>
+                <CardDescription>Vyber skladby pre mixovanie</CardDescription>
+              </div>
+              <UploadAudioDialog onUploadComplete={() => refetch()} />
+            </div>
           </CardHeader>
           <CardContent>
             {loading ? (
