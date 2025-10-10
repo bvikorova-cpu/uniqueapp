@@ -41415,6 +41415,1380 @@ Komunitná práca sa zameriava na udržateľný rozvoj a dlhodobú zmenu v komun
 
 Komunitná práca je cesta k silnejším, odolnejším a demokratickejším komunitám. Vyžaduje trpezlivosť, dôveru v ľudí a vieru v kolektívnu silu. Úspech nie je v realizácii jednotlivých projektov, ale v zmene vzťahov, štruktúr a kultúry komunity.`
     }
+  ],
+  "Case management": [
+    {
+      title: "Téma 1: Úvod do case managementu",
+      content: `**Čo je case management?**
+
+Case management je koordinovaný proces pomoci klientom prostredníctvom identifikácie ich potrieb, plánovania, implementácie a monitorovania služieb na dosiahnutie stanovených cieľov.
+
+**Základné charakteristiky:**
+
+**1. Definícia:**
+- Systematický prístup k pomoci klientom
+- Koordinácia rôznych služieb a zdrojov
+- Orientácia na individuálne potreby
+- Dlhodobé sprevádzanie klienta
+
+**2. Cieľ:**
+- Zlepšiť kvalitu života klienta
+- Zabezpečiť efektívnu podporu
+- Koordinovať rôzne služby
+- Podporiť sebestačnosť klienta
+
+**3. Hlavný nástroj:**
+- Holistický pohľad na klienta
+- Prepojenie rôznych oblastí života
+- Komplexné riešenie problémov
+- Individualizovaný prístup
+
+**História case managementu:**
+
+**1. Vznik:**
+- Počiatky v sociálnej práci (začiatok 20. storočia)
+- Rozvoj v psychiatrii a zdravotníctve
+- Reakcia na fragmentáciu služieb
+- Potreba koordinácie
+
+**2. Vývoj:**
+- 1970-80te roky: deinstitucionalizácia
+- Potreba komunitných služieb
+- Vznik koordinačných funkcií
+- Profesionalizácia role
+
+**3. Súčasnosť:**
+- Široké uplatnenie v rôznych oblastiach
+- Evidence-based prístup
+- Využitie technológií
+- Medzinárodné štandardy
+
+**Filozofia case managementu:**
+
+**1. Klient v centre:**
+- Rešpekt k dôstojnosti
+- Právo na sebaurčenie
+- Partnerský vzťah
+- Empowerment (zmocnenie)
+
+**2. Holistický prístup:**
+- Pohľad na celého človeka
+- Prepojenie všetkých oblastí života
+- Zohľadnenie kontextu
+- Systémové myslenie
+
+**3. Kontinuita starostlivosti:**
+- Dlhodobé sprevádzanie
+- Nadväznosť služieb
+- Prevencia kríz
+- Udržateľné riešenia
+
+**Kedy je case management potrebný:**
+- Komplexné životné situácie
+- Viacnásobné problémy
+- Potreba koordinácie služieb
+- Riziko "stratenia sa" v systéme`
+    },
+    {
+      title: "Téma 2: Rola case managera",
+      content: `**Kto je case manager?**
+
+Kľúčovou rolou v case managemente je nezávislý koordinátor (case manager), ktorý prepája klienta s potrebnými zdrojmi a odborníkmi.
+
+**Hlavné úlohy case managera:**
+
+**1. Koordinátor:**
+- Prepojenie klienta so službami
+- Koordinácia rôznych profesionálov
+- Zabezpečenie kontinuity starostlivosti
+- Vytváranie podpornej siete
+
+**2. Advokát:**
+- Zastupovanie záujmov klienta
+- Presadzovanie práv
+- Vyjednávanie so službami
+- Podpora hlasu klienta
+
+**3. Facilitátor:**
+- Podpora rozhodovania klienta
+- Facilitácia komunikácie
+- Sprostredkovanie medzi stranami
+- Riešenie konfliktov
+
+**4. Broker služieb:**
+- Poznanie dostupných zdrojov
+- Sprostredkovanie kontaktov
+- Zabezpečenie prístupu
+- Navigácia systémom
+
+**Kompetencie case managera:**
+
+**1. Vedomosti:**
+- Sociálna práca a pomáhajúce profesie
+- Poznanie systému služieb
+- Právne predpisy
+- Špecifické oblasti (zdravie, vzdelávanie, atď.)
+
+**2. Zručnosti:**
+- Hodnotenie potrieb (assessment)
+- Plánovanie a organizácia
+- Komunikácia a vyjednávanie
+- Krízová intervencia
+- Vedenie dokumentácie
+
+**3. Postoje:**
+- Empatia a rešpekt
+- Nezávislé uvažovanie
+- Orientácia na klienta
+- Etické správanie
+
+**Vzťah case managera a klienta:**
+
+**1. Partnerský vzťah:**
+- Rovnocennosť
+- Vzájomná dôvera
+- Spolupráca
+- Transparentnosť
+
+**2. Profesionálne hranice:**
+- Jasné vymedzenie rolí
+- Zachovanie profesionality
+- Vyhýbanie sa závislosti
+- Etické hranice
+
+**3. Empowerment:**
+- Podpora sebestačnosti
+- Rozvoj schopností klienta
+- Postupné prevzatie kontroly
+- Zmocnenie
+
+**Nezávislosť case managera:**
+
+**1. Prečo je dôležitá:**
+- Objektívne hodnotenie potrieb
+- Záujem klienta na prvom mieste
+- Nezávislosť od poskytovateľov služieb
+- Kritický pohľad na systém
+
+**2. Ako ju zabezpečiť:**
+- Organizačná nezávislosť
+- Transparentné financovanie
+- Etické kódexy
+- Supervízia
+
+**Výzvy v práci case managera:**
+
+**1. Časová záťaž:**
+- Veľký počet klientov
+- Administratíva
+- Manažment času
+- Burnout
+
+**2. Systémové bariéry:**
+- Nedostatok zdrojov
+- Fragmentácia služieb
+- Byrokracia
+- Čakacie doby
+
+**3. Etické dilemy:**
+- Konflikt záujmov
+- Obmedzené zdroje
+- Práva vs. ochrana
+- Confidencialita`
+    },
+    {
+      title: "Téma 3: Hodnotenie potrieb klienta (Assessment)",
+      content: `**Prvá fáza case managementu**
+
+Hodnotenie a plánovanie zahŕňa posúdenie potrieb klienta a vytvorenie personalizovaného plánu na riešenie jeho problémov.
+
+**Čo je assessment?**
+
+**1. Definícia:**
+- Systematické zisťovanie potrieb
+- Identifikácia problémov a silných stránok
+- Analýza situácie klienta
+- Základ pre plánovanie
+
+**2. Ciele:**
+- Pochopiť komplexnú situáciu
+- Identifikovať priority
+- Zistiť dostupné zdroje
+- Stanoviť východisko
+
+**Oblasti hodnotenia:**
+
+**1. Fyzické zdravie:**
+- Zdravotný stav
+- Funkčné schopnosti
+- Zdravotné problémy
+- Liečba a medikácia
+
+**2. Duševné zdravie:**
+- Psychický stav
+- Kognitívne schopnosti
+- Emocionálne fungovanie
+- Diagnostika duševných porúch
+
+**3. Sociálne vzťahy:**
+- Rodinná situácia
+- Sociálna sieť
+- Vzťahy a podpora
+- Izolácia vs. integrácia
+
+**4. Ekonomická situácia:**
+- Príjem a výdavky
+- Zamestnanie
+- Dlhy
+- Finančná gramotnosť
+
+**5. Bývanie:**
+- Typ bývania
+- Stabilita
+- Vhodnosť
+- Bezpečnosť
+
+**6. Vzdelávanie a zamestnanie:**
+- Vzdelanie
+- Pracovné skúsenosti
+- Zamestnanosť
+- Kariérne ciele
+
+**7. Právne záležitosti:**
+- Právny status
+- Právne problémy
+- Poručníctvo
+- Trestné konanie
+
+**Metódy hodnotenia:**
+
+**1. Rozhovor:**
+- Štruktúrovaný
+- Semi-štruktúrovaný
+- Otvorený rozhovor
+- Aktívne počúvanie
+
+**2. Pozorovanie:**
+- Priame pozorovanie
+- Domáce prostredie
+- Správanie
+- Interakcie
+
+**3. Štandardizované nástroje:**
+- Dotazníky
+- Škály
+- Testy
+- Screening nástroje
+
+**4. Zber informácií:**
+- Zdravotná dokumentácia
+- Správy od iných odborníkov
+- Úradné dokumenty
+- História prípadu
+
+**Holistické hodnotenie:**
+
+**1. Bio-psycho-sociálny model:**
+- Biologické faktory
+- Psychologické faktory
+- Sociálne faktory
+- Ich vzájomné pôsobenie
+
+**2. Silné stránky:**
+- Zdroje klienta
+- Schopnosti
+- Podporná sieť
+- Životné skúsenosti
+
+**3. Rizikové faktory:**
+- Ohrozujúce faktory
+- Zraniteľnosti
+- Bariéry
+- Rizikové správanie
+
+**Participatívne hodnotenie:**
+
+**1. Zapojenie klienta:**
+- Aktívna účasť
+- Zdieľanie perspektívy
+- Spolurozhodovanie
+- Sebahodnotenie
+
+**2. Zapojenie rodiny:**
+- Pohľad blízkych
+- Rodinná dynamika
+- Podpora rodiny
+- Rodinné zdroje
+
+**Výstup hodnotenia:**
+- Prehľadná správa
+- Identifikované potreby
+- Priority
+- Odporúčania pre plánovanie`
+    },
+    {
+      title: "Téma 4: Plánovanie starostlivosti",
+      content: `**Vytvorenie personalizovaného plánu**
+
+Na základe hodnotenia sa vytvorí individuálny plán starostlivosti, ktorý definuje ciele a kroky na ich dosiahnutie.
+
+**Čo je plán starostlivosti?**
+
+**1. Definícia:**
+- Písomný dokument
+- Stanovuje ciele a kroky
+- Definuje zodpovednosti
+- Časový rámec
+
+**2. Účel:**
+- Smer pre prácu s klientom
+- Koordinácia služieb
+- Nástroj monitorovania
+- Základ pre hodnotenie
+
+**Proces plánovania:**
+
+**1. Stanovenie cieľov:**
+- Dlhodobé ciele (vízia)
+- Strednodobé ciele
+- Krátkodobé ciele
+- SMART kritériá
+
+**2. SMART ciele:**
+- **S**pecific (špecifické)
+- **M**easurable (merateľné)
+- **A**chievable (dosiahnuteľné)
+- **R**elevant (relevantné)
+- **T**ime-bound (časovo ohraničené)
+
+**3. Príklad SMART cieľa:**
+- ❌ "Zlepšiť bývanie"
+- ✓ "Do 6 mesiacov nájsť a nasťahovať sa do 1-izbového bytu s nájomnou zmluvou"
+
+**Oblasti plánovania:**
+
+**1. Zdravotná starostlivosť:**
+- Lekárske ošetrenia
+- Medikácia
+- Terapie
+- Preventívne prehliadky
+
+**2. Sociálne služby:**
+- Terénna sociálna práca
+- Denné centrá
+- Pobytové služby
+- Asistencia
+
+**3. Ekonomická podpora:**
+- Dávky a príspevky
+- Dlhové poradenstvo
+- Finančné plánovanie
+- Zamestnanie
+
+**4. Vzdelávanie a zamestnanie:**
+- Rekvalifikácie
+- Hľadanie práce
+- Pracovná rehabilitácia
+- Podporované zamestnávanie
+
+**5. Bývanie:**
+- Hľadanie bývania
+- Podpora pri bývaní
+- Sociálne bývanie
+- Domácke prostredie
+
+**Stratégie a intervence:**
+
+**1. Formálne služby:**
+- Zdravotné služby
+- Sociálne služby
+- Vzdelávacie inštitúcie
+- Úrady
+
+**2. Neformálne zdroje:**
+- Rodina
+- Priatelia
+- Susedia
+- Komunitné skupiny
+
+**3. Individuálne intervence:**
+- Poradenstvo
+- Terapia
+- Koučing
+- Mentoring
+
+**4. Skupinové intervence:**
+- Podpora skupiny
+- Vzdelávacie skupiny
+- Skupinová terapia
+- Komunitné aktivity
+
+**Participatívne plánovanie:**
+
+**1. Spolupráca s klientom:**
+- Klient ako expert na svoj život
+- Spoločné stanovenie cieľov
+- Rešpekt k preferenciám
+- Vlastníctvo plánu
+
+**2. Zapojenie významných osôb:**
+- Rodina
+- Blízki
+- Ďalší odborníci
+- Komunitné zdroje
+
+**3. Person-centered planning:**
+- Začína pri snoch a túžbach klienta
+- Zohľadňuje hodnoty
+- Rešpektuje voľby
+- Podporuje sebaurčenie
+
+**Dokumentácia plánu:**
+
+**1. Obsah plánu:**
+- Identifikácia klienta
+- Hodnotenie (shrnutie)
+- Ciele (dlhodobé, krátkodobé)
+- Stratégie a aktivity
+- Zodpovednosti
+- Časový harmonogram
+- Podpisy
+
+**2. Formát:**
+- Jasný a prehľadný
+- Zrozumiteľný pre všetkých
+- Konkrétny
+- Akčný
+
+**Flexibilita plánu:**
+- Živý dokument
+- Prispôsobiteľný
+- Pravidelne revidovaný
+- Reagujúci na zmeny`
+    },
+    {
+      title: "Téma 5: Koordinácia služieb a zdrojov",
+      content: `**Prepojenie podpornej siete**
+
+Koordinácia spája rôzne zdroje (rodina, odborníci, sociálne a zdravotné služby) do podpornej siete okolo klienta.
+
+**Význam koordinácie:**
+
+**1. Prečo je potrebná:**
+- Fragmentácia systému služieb
+- Riziko duplicity alebo medzier
+- Komplexnosť potrieb klientov
+- Efektívne využitie zdrojov
+
+**2. Výhody:**
+- Kontinuita starostlivosti
+- Holistický prístup
+- Lepšie výsledky
+- Spokojnosť klienta
+
+**Typy zdrojov:**
+
+**1. Zdravotné služby:**
+- Všeobecní lekári
+- Špecialisti
+- Psychiatrické služby
+- Nemocnice a polikliniky
+- Domáca ošetrovateľská starostlivosť
+
+**2. Sociálne služby:**
+- Terénna sociálna práca
+- Sociálne poradenstvo
+- Krízové intervencie
+- Pobytové služby
+- Denné centrá
+
+**3. Vzdelávacie inštitúcie:**
+- Školy
+- Vzdelávacie programy
+- Rekvalifikačné kurzy
+- Špeciálne pedagogické služby
+
+**4. Zamestnávatelia:**
+- Pracovné agentúry
+- Chránené dielne
+- Podporované zamestnávanie
+- Pracovná rehabilitácia
+
+**5. Komunitné zdroje:**
+- Komunitné centrá
+- Kultúrne organizácie
+- Športové kluby
+- Náboženské komunity
+
+**6. Rodina a blízki:**
+- Rodinná podpora
+- Neformálna starostlivosť
+- Emocionálna opora
+- Praktická pomoc
+
+**Úlohy case managera v koordinácii:**
+
+**1. Identifikácia zdrojov:**
+- Mapovanie dostupných služieb
+- Poznanie systému
+- Aktualizácia informácií
+- Databáza zdrojov
+
+**2. Sprostredkovanie kontaktov:**
+- Predstavenie klienta službám
+- Dohodnutie stretnutí
+- Sprevádzanie (ak potrebné)
+- Follow-up
+
+**3. Komunikácia:**
+- Výmena informácií (s povolením klienta)
+- Koordinačné stretnutia
+- Telefonáty a emaily
+- Písomná komunikácia
+
+**4. Vyjednávanie:**
+- Dohodnutie spôsobu spolupráce
+- Riešenie nesúhlasov
+- Hľadanie kompromisov
+- Presadzovanie záujmov klienta
+
+**Koordinačné stretnutia:**
+
+**1. Typy stretnutí:**
+- Vstupné stretnutie (kick-off)
+- Pravidelné revízne stretnutia
+- Ad-hoc stretnutia pri problémoch
+- Záverečné stretnutie
+
+**2. Príprava:**
+- Agenda
+- Pozvaní účastníci
+- Rozoslanie materiálov
+- Logistika
+
+**3. Vedenie stretnutia:**
+- Facilitácia diskusie
+- Zapojenie všetkých
+- Záznam rozhodnutí
+- Akčné kroky
+
+**4. Účastníci:**
+- Klient (kľúčový účastník!)
+- Case manager
+- Poskytovatelia služieb
+- Rodina (s povolením)
+- Ďalší relevantní odborníci
+
+**Výzvy v koordinácii:**
+
+**1. Komunikačné bariéry:**
+- Rôzne jazyky profesií
+- Nedorozumenia
+- Nedostatok času na komunikáciu
+- Technologické bariéry
+
+**2. Rôzne prístupy:**
+- Odlišné filozofie
+- Konflikt názorov
+- Rozdielne priority
+- Nesúlad v metódach
+
+**3. Systémové prekážky:**
+- Byrokracia
+- Rôzne kritériá oprávnenosti
+- Financovanie
+- Geografická dostupnosť
+
+**Nástroje koordinácie:**
+
+**1. Case konferencie:**
+- Multidisciplinárne stretnutia
+- Spoločné rozhodovanie
+- Konsenzus
+
+**2. Informačné systémy:**
+- Zdieľanie dokumentácie (s povolením)
+- Elektronické systémy
+- Databázy
+
+**3. Písomné dohody:**
+- Memoranda o spolupráci
+- Protokoly
+- Dohody o spolupráci`
+    },
+    {
+      title: "Téma 6: Implementácia a podpora",
+      content: `**Realizácia plánu starostlivosti**
+
+Koordinátor pomáha klientovi pri presadzovaní plánu a zaisťuje, že dostáva potrebnú pomoc.
+
+**Fáza implementácie:**
+
+**1. Čo zahŕňa:**
+- Uvedenie plánu do praxe
+- Aktivácia služieb a zdrojov
+- Sprevádzanie klienta
+- Praktická podpora
+
+**2. Kľúčové aktivity:**
+- Dohodnutie stretnutí a termínov
+- Sprostredkovanie kontaktov
+- Pomoc pri žiadostiach
+- Sprevádzanie na úrady
+
+**Úloha case managera:**
+
+**1. Broker služieb:**
+- Spájanie klienta so službami
+- Vysvetľovanie procesov
+- Pomoc s byrokraciou
+- Navigácia systémom
+
+**2. Advokát:**
+- Zastupovanie klienta
+- Presadzovanie práv
+- Vyjednávanie
+- Riešenie sťažností
+
+**3. Mentor:**
+- Učenie nových zručností
+- Podpora pri rozhodovaní
+- Povzbudzovanie
+- Zdieľanie informácií
+
+**4. Sprievodca:**
+- Sprevádzanie na stretnutia
+- Pomoc v neznámom prostredí
+- Emocionálna podpora
+- Postupné osamostatňovanie
+
+**Podpora klienta:**
+
+**1. Emocionálna podpora:**
+- Empatické počúvanie
+- Validácia pocitov
+- Povzbudzovanie
+- Podpora nádeje
+
+**2. Praktická pomoc:**
+- Pomoc s dopravou
+- Sprevádzanie
+- Pomoc s dokumentmi
+- Telefonáty v mene klienta
+
+**3. Informačná podpora:**
+- Vysvetľovanie procesov
+- Poskytovanie informácií o právach
+- Edukácia
+- Zdieľanie zdrojov
+
+**4. Inštrumentálna podpora:**
+- Pomoc s riešením problémov
+- Rozvoj zručností
+- Tréning
+- Koučing
+
+**Empowerment v praxi:**
+
+**1. Princípy:**
+- Začať tam, kde je klient
+- Malé kroky
+- Podpora autonómie
+- Rešpekt k tempu klienta
+
+**2. Metódy:**
+- Motivačný rozhovor
+- Riešenie problémov s klientom
+- Rozvíjanie schopností
+- Postupné preberanie zodpovednosti
+
+**3. Od závislosti k sebestačnosti:**
+- Vysoká podpora na začiatku
+- Postupné znižovanie intenzity
+- Učenie stratégií
+- Podpora sebadôvery
+
+**Práca s rezistenciou:**
+
+**1. Dôvody rezistencie:**
+- Strach zo zmeny
+- Predchádzajúce zlé skúsenosti
+- Nedôvera
+- Nedostatok motivácie
+- Duševné problémy
+
+**2. Stratégie:**
+- Budovanie dôvery
+- Motivačný rozhovor
+- Malé kroky
+- Akceptácia tempa klienta
+- Hľadanie motivácie
+
+**Krízová intervencia:**
+
+**1. Rozpoznanie krízy:**
+- Varovné signály
+- Eskalácia problémov
+- Rizikové správanie
+- Žiadosť o pomoc
+
+**2. Reakcia na krízu:**
+- Rýchla dostupnosť
+- Stabilizácia situácie
+- Bezpečnosť
+- Aktivácia krízových služieb
+
+**3. Následná starostlivosť:**
+- Analýza príčin
+- Prevencia opakovanej krízy
+- Úprava plánu
+- Posilnenie podpory
+
+**Dokumentácia:**
+
+**1. Priebežné záznamy:**
+- Poznámky zo stretnutí
+- Kontakty so službami
+- Zmeny v situácii
+- Pokroky a problémy
+
+**2. Účel dokumentácie:**
+- Kontinuita starostlivosti
+- Zodpovednosť
+- Komunikácia s tímom
+- Podklad pre hodnotenie
+
+**Etické dilemy v praxi:**
+
+**1. Autonomia vs. ochrana:**
+- Rešpekt k rozhodnutiam klienta
+- Potreba ochrany
+- Hľadanie rovnováhy
+
+**2. Confidencialita:**
+- Zdieľanie informácií
+- Súhlas klienta
+- Výnimky z mlčanlivosti
+
+**3. Dualné vzťahy:**
+- Profesionálne hranice
+- Vyhýbanie sa konfliktom záujmov`
+    },
+    {
+      title: "Téma 7: Monitorovanie a hodnotenie",
+      content: `**Sledovanie pokroku prípadu**
+
+Sleduje sa priebeh prípadu, monitoruje sa pokrok a vyhodnocujú sa výsledky.
+
+**Význam monitorovania:**
+
+**1. Prečo monitorovať:**
+- Sledovanie pokroku k cieľom
+- Včasná identifikácia problémov
+- Prispôsobenie plánu
+- Zodpovednosť
+
+**2. Čo sa monitoruje:**
+- Realizácia aktivít plánu
+- Pokrok k cieľom
+- Využívanie služieb
+- Spokojnosť klienta
+- Zmeny v situácii
+
+**Metódy monitorovania:**
+
+**1. Pravidelné stretnutia s klientom:**
+- Frekvencia podľa intenzity prípadu
+- Hodnotenie pokroku
+- Diskusia o problémoch
+- Úprava plánu
+
+**2. Kontakty s poskytovateľmi služieb:**
+- Výmena informácií
+- Spätná väzba
+- Koordinácia
+- Riešenie problémov
+
+**3. Domáce návštevy:**
+- Pozorovanie v prirodzenom prostredí
+- Hodnotenie bývania
+- Kontakt s rodinou
+- Praktická podpora
+
+**4. Telefonické kontakty:**
+- Rýchla komunikácia
+- Check-in hovory
+- Riešenie urgentných záležitostí
+- Udržiavanie kontaktu
+
+**Indikátory pokroku:**
+
+**1. Kvantitatívne indikátory:**
+- Počet využitých služieb
+- Frekvencia kontaktov
+- Počet dosiah nutých dielčích cieľov
+- Finančné ukazovatele
+
+**2. Kvalitatívne indikátory:**
+- Subjektívna spokojnosť
+- Kvalita života
+- Vzťahy
+- Fungovanie v rôznych oblastiach
+
+**3. Oblasti hodnotenia:**
+- Zdravie (fyzické, duševné)
+- Bývanie
+- Zamestnanie/vzdelávanie
+- Finančná situácia
+- Sociálne vzťahy
+- Životná spokojnosť
+
+**Nástroje hodnotenia:**
+
+**1. Štandardizované škály:**
+- Škály kvality života
+- Funkčné škály
+- Škály spokojnosti
+- Škály symptómov
+
+**2. Goal Attainment Scaling (GAS):**
+- Individualizované meranie cieľov
+- 5-stupňová škála
+- Od "oveľa horší" po "oveľa lepší"
+- Citlivé na zmeny
+
+**3. Sebahodnotenie klienta:**
+- Subjektívne vnímanie
+- Spokojnosť s pokrokom
+- Silné stránky
+- Oblasti na zlepšenie
+
+**Revízia plánu:**
+
+**1. Kedy revidovať:**
+- Pravidelne (napr. každé 3-6 mesiacov)
+- Pri významných zmenách
+- Na žiadosť klienta
+- Pri nedosiahnutí cieľov
+
+**2. Proces revízie:**
+- Zhodnotenie pokroku
+- Identifikácia prekážok
+- Úprava cieľov
+- Zmena stratégií
+- Aktualizácia plánu
+
+**3. Participatívna revízia:**
+- Zapojenie klienta
+- Spätná väzba od služieb
+- Konzultácia s tímom
+- Spoločné rozhodovanie
+
+**Výsledky (Outcomes):**
+
+**1. Typy výsledkov:**
+- Výstup (Output): čo bolo urobené
+- Výsledok (Outcome): aká zmena nastala
+- Dopad (Impact): dlhodobý efekt
+
+**2. Oblasti výsledkov:**
+- Klinické výsledky (zdravie)
+- Funkčné výsledky (schopnosti)
+- Kvalita života
+- Spokojnosť
+- Náklady
+
+**3. Meranie výsledkov:**
+- Pred a po porovnanie
+- Štandardizované nástroje
+- Subjektívne hodnotenie
+- Objektívne ukazovatele
+
+**Výzvy v monitorovaní:**
+
+**1. Časová náročnosť:**
+- Vyváženie monitorovania a priamej práce
+- Efektívne nástroje
+- Systematickosť
+
+**2. Rezistencia klienta:**
+- Vnem ako kontroly
+- Odmietanie hodnotenia
+- Budovanie dôvery
+- Vysvetlenie zmyslu
+
+**3. Nedostatok štandardizácie:**
+- Rôzne nástroje
+- Neporovnateľné údaje
+- Potreba štandardov
+
+**Dokumentácia monitorovania:**
+
+**1. Priebežné záznamy:**
+- Dátumy kontaktov
+- Obsah stretnutí
+- Pokroky a problémy
+- Rozhodnutia a zmeny
+
+**2. Periodické správy:**
+- Pravidelné hodnotenie
+- Sumárne správy
+- Grafy a štatistiky
+- Odporúčania`
+    },
+    {
+      title: "Téma 8: Dôraz na klienta a jeho práva",
+      content: `**Klient v centre pomoci**
+
+Case management sa zameriava na podporu klienta, podporuje jeho sebestačnosť a právo na sebaurčenie a zabezpečuje, aby sa pri procese prihliadalo na jeho dôstojnosť.
+
+**Hodnoty case managementu:**
+
+**1. Rešpekt k dôstojnosti:**
+- Každý človek má hodnotu
+- Rešpekt bez ohľadu na okolnosti
+- Nediskriminácia
+- Humánny prístup
+
+**2. Právo na sebaurčenie:**
+- Klient rozhoduje o svojom živote
+- Informované rozhodovanie
+- Rešpekt k voľbám (aj keď sa líšia od odporúčaní)
+- Podpora autonómie
+
+**3. Individuálnosť:**
+- Každý je jedinečný
+- Individualizovaný prístup
+- Rešpekt k rozmanitosti
+- Prispôsobenie potrebám
+
+**4. Empowerment (zmocnenie):**
+- Podpora sebestačnosti
+- Rozvoj schopností
+- Posilnenie kontroly nad vlastným životom
+- Od objektu k subjektu pomoci
+
+**Práva klientov:**
+
+**1. Právo na informácie:**
+- Jasné vysvetlenie procesu
+- Informácie o službách
+- Znalost svojich práv
+- Prístup k vlastnej dokumentácii
+
+**2. Právo na participáciu:**
+- Zapojenie do plánovania
+- Spolurozhodovanie
+- Vyjadrenie názorov
+- Voľba služieb
+
+**3. Právo na súkromie:**
+- Confidencialita
+- Ochrana osobných údajov
+- Kontrola nad informáciami
+- Rešpekt k súkromiu
+
+**4. Právo sťažovať sa:**
+- Vyjadrenie nespokojnosti
+- Riešenie sťažností
+- Ochrana pred odvetou
+- Prístup k odvolacím procesom
+
+**5. Právo odmietnuť:**
+- Odmietnutie služieb
+- Odmietnutie case managementu
+- Rešpekt k rozhodnutiu
+- Právo zmeniť názor
+
+**Participatívny prístup:**
+
+**1. Klient ako expert:**
+- Najlepšie pozná svoj život
+- Jeho skúsenosti sú cenné
+- Jeho perspektíva je dôležitá
+- Spolutvorca riešení
+
+**2. Partnerský vzťah:**
+- Nie "case manager vie najlepšie"
+- Spolupráca
+- Rovnocennosť
+- Vzájomný rešpekt
+
+**3. Person-centered approach:**
+- Začať pri klientovi
+- Jeho túžby a sny
+- Jeho tempo
+- Jeho hodnoty
+
+**Podporovanie sebestačnosti:**
+
+**1. Princípy:**
+- "Učiť chytiť ryby, nie dávať ryby"
+- Postupné budovanie zručností
+- Viera v schopnosti klienta
+- Podpora sebadôvery
+
+**2. Metódy:**
+- Modelovanie (ukázať ako na to)
+- Tréning zručností
+- Postupné preberanie úloh
+- Pozitívne spätná väzba
+
+**3. Od závislosti k sebestačnosti:**
+- Vysoká podpora → nízka podpora
+- Robiť za klienta → robiť s klientom → klient robí sám
+- Postupné ukončenie
+
+**Kultúrna citlivosť:**
+
+**1. Rešpekt k rozmanitosti:**
+- Kultúrne pozadie
+- Náboženstvo
+- Jazyk
+- Tradície
+
+**2. Kultúrne kompetentný prístup:**
+- Sebareflexia case managera
+- Poznanie rôznych kultúr
+- Prispôsobenie komunikácie
+- Zapojenie kultúrnych sprostredkovateľov
+
+**3. Práca s tlmočníkmi:**
+- Potreba kvalitných tlmočníkov
+- Rešpekt k jazykovej bariére
+- Dodatočný čas
+- Neverbálna komunikácia
+
+**Etické dilemy:**
+
+**1. Autonomia vs. ochrana:**
+- Klient chce robiť rizikovú vec
+- Hľadanie rovnováhy
+- Supported decision-making
+- Len v krajnom prípade paternalizmus
+
+**2. Konflikt záujmov:**
+- Záujem klienta vs. záujem systému
+- Vždy na strane klienta
+- Advokácia
+
+**3. Transparentnosť:**
+- Otvorená komunikácia
+- Zdieľanie informácií
+- Žiadne skryté agendy
+- Dôvera`
+    },
+    {
+      title: "Téma 9: Case management v rôznych oblastiach",
+      content: `**Široké uplatnenie case managementu**
+
+Case management sa môže uplatňovať v rôznych oblastiach, ako je zdravotníctvo, sociálna práca, duševné zdravie a v iných odvetviach.
+
+**1. Zdravotníctvo:**
+
+**Charakteristiky:**
+- Koordinácia zdravotnej starostlivosti
+- Prepojenie nemocníc a ambulancií
+- Podpora adherencie k liečbe
+- Prevencie rehospitalizácií
+
+**Cieľové skupiny:**
+- Chronicky chorí pacienti
+- Pacienti s komplexnými diagnózami
+- Seniori s polymorbidity
+- Onkologickí pacienti
+
+**Špecifiká:**
+- Úzka spolupráca s lekármi
+- Poznanie medicínskych procesov
+- Edukácia o chorobe
+- Koordinácia liečby
+
+**2. Duševné zdravie:**
+
+**Charakteristiky:**
+- Komunitná psychiatrická starostlivosť
+- Podpora pri deinstitucionalizácii
+- Prevencia hospitalizácií
+- Podpora zotavenia (recovery)
+
+**Cieľové skupiny:**
+- Ľudia s vážnymi duševnými poruchami
+- Ľudia po hospitalizácii
+- Riziko bezdomovectva
+- Forenzná klientela
+
+**Špecifiká:**
+- Dlhodobé sprevádzanie
+- Krízová intervencia
+- Podpora psychosociálnej rehabilitácie
+- Boj proti stigme
+
+**Modely:**
+- Assertive Community Treatment (ACT)
+- Intensive Case Management (ICM)
+- Clinical Case Management
+- Strengths-based Case Management
+
+**3. Sociálne služby:**
+
+**Charakteristiky:**
+- Podpora zraniteľných skupín
+- Koordinácia sociálnych služieb
+- Riešenie sociálnej exklúzie
+- Podpora integrácie
+
+**Cieľové skupiny:**
+- Rodiny v krízovej situácii
+- Ľudia bez domova
+- Utečenci a migranti
+- Obete domáceho násilia
+- Seniori
+
+**Špecifiká:**
+- Práca s celou rodinou
+- Advokácia za práva
+- Prepojenie s komunitou
+- Dlhodobá podpora
+
+**4. Riadenie zdravotných prípadov (Disease Management):**
+
+**Charakteristiky:**
+- Špecializácia na konkrétne choroby
+- Evidencie-based prístupy
+- Preventívny dôraz
+- Edukácia pacientov
+
+**Oblasti:**
+- Diabetes
+- Kardiovaskulárne choroby
+- Respiračné choroby
+- HIV/AIDS
+
+**5. Geriatrický case management:**
+
+**Charakteristiky:**
+- Podpora starších ľudí
+- Koordinácia zdravotnej a sociálnej starostlivosti
+- Podpora starnutia doma
+- Zapojenie rodiny
+
+**Špecifiká:**
+- Komplexnosť potrieb
+- Poznanie geriatrie
+- Práca s rodinou
+- Paliativna starostlivosť
+
+**6. Case management pre deti a rodiny:**
+
+**Charakteristiky:**
+- Podpora detí v riziku
+- Práca s celou rodinou
+- Koordinácia s školami
+- Prevencia odobrania
+
+**Cieľové skupiny:**
+- Rodiny v krízovej situácii
+- Deti so zdravotným postihnutím
+- Deti v náhradnej starostlivosti
+- Mladí dospelí odchádzajúci z ústavov
+
+**7. Forenzný case management:**
+
+**Charakteristiky:**
+- Podpora ľudí vo výkone trestu alebo po ňom
+- Prevencia recidívy
+- Reintegrácia do spoločnosti
+- Koordinácia s justíciou
+
+**Špecifiká:**
+- Riadenie rizík
+- Spolupráca s probačnými úradmi
+- Riešenie stigmy
+- Bývanie a zamestnanie
+
+**8. Zamestnávanie (Vocational Case Management):**
+
+**Charakteristiky:**
+- Podpora pri hľadaní práce
+- Podporované zamestnávanie
+- Pracovná rehabilitácia
+- Job coaching
+
+**Cieľové skupiny:**
+- Ľudia so zdravotným postihnutím
+- Dlhodobo nezamestnaní
+- Ľudia po liečbe závislostí
+- Mladí ľudia NEET
+
+**Spoločné črty naprieč oblasťami:**
+- Holistický prístup
+- Koordinácia služieb
+- Orientácia na klienta
+- Empowerment
+- Meranie výsledkov`
+    },
+    {
+      title: "Téma 10: Výzvy, trendy a budúcnosť case managementu",
+      content: `**Vývoj a budúce smerovanie**
+
+Case management sa neustále vyvíja a čelí novým výzvam aj príležitostiam.
+
+**Aktuálne výzvy:**
+
+**1. Systémové výzvy:**
+- Nedostatok zdrojov
+- Vysoké počty klientov na case managera
+- Fragmentácia služieb
+- Byrokracia
+- Nedostatočné financovanie
+
+**2. Profesionálne výzvy:**
+- Burnout case managerov
+- Nedostatok supervízie
+- Nedostatočné vzdelávanie
+- Nejasné kompetencie
+- Nízke ohodnotenie
+
+**3. Etické výzvy:**
+- Konflikty záujmov
+- Tlak na kvantitu vs. kvalitu
+- Paternalizmus vs. autonomía
+- Confidencialita vs. koordinácia
+- Obmedzené zdroje
+
+**Trendy v case managemente:**
+
+**1. Digitalizácia:**
+- Elektronické zdravotné/sociálne záznamy
+- Aplikácie pre klientov
+- Telemedicína/teleporadenstvo
+- Online koordinácia
+- Dátová analytika
+
+**2. Evidence-based prístup:**
+- Dôraz na výsledky (outcomes)
+- Meranie efektívnosti
+- Štandardizované nástroje
+- Výskum v oblasti case managementu
+- Best practices
+
+**3. Integrácia zdravotnej a sociálnej starostlivosti:**
+- Holistický prístup
+- Prepojenie systémov
+- Spoločné financovanie
+- Multidisciplinárne tímy
+- Kontinuita starostlivosti
+
+**4. Recovery a empowerment orientácia:**
+- Dôraz na zotavenie (nie len manažment symptómov)
+- Podpora sebestačnosti
+- Peer support
+- Osobná zodpovednosť
+- Nádej a zmysel
+
+**5. Personalizácia:**
+- Individuálne rozpočty
+- Personal budgets
+- Self-directed care
+- Voliteľnosť služieb
+- Klient ako kupujúci
+
+**6. Preventívny prístup:**
+- Skorá intervencia
+- Prevencia eskalácie
+- Populačný prístup
+- Komunitné programy
+- Podpora resiliencie
+
+**Inovatívne modely:**
+
+**1. Assertive Community Treatment (ACT):**
+- Intenzívny tímový prístup
+- 24/7 dostupnosť
+- Nízky pomer pracovníkov ku klientom
+- Multidisciplinárny tím
+- Evidencia vysokej efektívnosti
+
+**2. Housing First + Case Management:**
+- Bývanie ako prvý krok
+- Bez podmienok (sobriety)
+- Intenzívna podpora
+- Harm reduction prístup
+- Úspešný pri bezdomovectve
+
+**3. Peer-supported Case Management:**
+- Zapojenie ľudí so žitou skúsenosťou
+- Peer case manažéri
+- Kombinácia profesionálnej a žitej skúsenosti
+- Podpora nádeje
+- Breaking stigma
+
+**4. Technology-enhanced Case Management:**
+- Použitie mobilných aplikácií
+- Remote monitoring
+- Online koordinácia
+- Dátová analytika pre predikciu rizík
+- Virtual reality terapia
+
+**Vzdelávanie case managerov:**
+
+**1. Formálne vzdelávanie:**
+- Špecializované programy
+- Certifikácie
+- Akademické tituly v case managemente
+- Continuous professional development
+
+**2. Kompetencie:**
+- Assessment a plánovanie
+- Koordinácia a networking
+- Komunikácia a vyjednávanie
+- Advokácia
+- Krízová intervencia
+- Kultúrne kompetencie
+- Digitálne zručnosti
+
+**3. Supervízia:**
+- Pravidelná supervízia
+- Peer supervízia
+- Podpora pri etických dilemách
+- Prevencia burnoutu
+- Kontinuálne učenie
+
+**Budúcnosť case managementu:**
+
+**1. Rastúci dopyt:**
+- Starnutie populácie
+- Chronické choroby
+- Komplexnosť potrieb
+- Deinstitucionalizácia
+- Integrácia utečencov
+
+**2. Profesionalizácia:**
+- Štandardy praxe
+- Certifikácie
+- Uznanie profesie
+- Výskum efektívnosti
+- Etablovanie v systémoch
+
+**3. Integrácia do zdravotnej a sociálnej politiky:**
+- Uznanie významu
+- Systémové financovanie
+- Legislatívna podpora
+- Národné programy
+- Medzinárodná spolupráca
+
+**4. Technologická transformácia:**
+- AI pre predikciu rizík
+- Big data analytika
+- Virtuálne platformy
+- Automatizácia administratívy
+- Personalizované intervencie
+
+**Záver:**
+
+Case management je kľúčovým nástrojom modernej zdravotnej a sociálnej starostlivosti. Jeho sila spočíva v holistickom, koordinovanom a klientom orientovanom prístupe. Úspešný case management môže transformovať životy jednotlivcov a zvýšiť efektívnosť celého systému. Budúcnosť case managementu je v integrácii, personalizácii, využití technológií a najmä v nekompromisnom dôraze na dôstojnosť, práva a empowerment klientov.`
+    }
   ]
 }
 
