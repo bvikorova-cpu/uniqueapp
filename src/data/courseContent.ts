@@ -39969,6 +39969,507 @@ Sociálna práca je profesia s obrovským potenciálom zmeniť životy jednotliv
 
 Budúcnosť sociálnej práce závisí od našej schopnosti inovovať, spolupracovať a neustále sa vzdelávať, pričom vždy zachovávame v centre nášho úsilia dôstojnosť a blaho ľudí, ktorým slúžime.`
     }
+  ],
+  "Terénna sociálna práca": [
+    {
+      title: "Téma 1: Úvod do terénnej sociálnej práce",
+      content: `**Čo je terénna sociálna práca?**
+
+Terénna sociálna práca je činnosť, ktorá sa vykonáva mimo inštitúcie, priamo v prirodzenom prostredí klienta (napr. v jeho byte), s cieľom pomáhať jednotlivcom a rodinám v riziku.
+
+**Základné charakteristiky:**
+
+**1. Práca v teréne:**
+- Sociálny pracovník navštevuje klienta v jeho domácom prostredí
+- Práca v prirodzených komunitách
+- Priamy kontakt v reálnom prostredí klienta
+
+**2. Cieľová skupina:**
+- Rizikoví klienti
+- Rodiny v ťažkých životných situáciách
+- Drogovo závislé osoby
+- Chorí a hendikepovaní
+- Ľudia bez strechy nad hlavou
+- Osoby, ktoré sa nedajú osloviť tradičnými metódami
+
+**3. Hlavné ciele:**
+- Pomôcť klientovi pochopiť svoju situáciu v spoločenskom systéme
+- Podporiť ho v riešení jeho problémov
+- Zmocnenie klienta (empowerment)
+- Podpora sociálneho začlenenia
+
+**Prečo terénna práca?**
+
+Mnohí klienti v ťažkých životných situáciách nedokážu alebo nechcú navštíviť sociálne služby. Terénna práca k nim prichádza tam, kde žijú, čím sa zvyšuje šanca na úspešnú pomoc.`
+    },
+    {
+      title: "Téma 2: Metódy a činnosti terénnej sociálnej práce",
+      content: `**Kľúčové činnosti terénneho sociálneho pracovníka**
+
+**1. Vyhľadávanie klientov:**
+- Aktívne vyhľadávanie ľudí v núdzi
+- Mapovanie komunity
+- Identifikácia rizikových skupín
+- Prvý kontakt s klientom
+
+**2. Poradenstvo:**
+- Sociálne poradenstvo priamo v teréne
+- Právne informácie
+- Finančné poradenstvo
+- Zdravotné poradenstvo
+
+**3. Krízová intervencia:**
+- Okamžitá pomoc v krizových situáciách
+- Stabilizácia akútnych problémov
+- Zabezpečenie základných potrieb
+- Prepojenie na urgentné služby
+
+**4. Individuálne aktivity:**
+- Sprevádzanie klientov na úrady
+- Pomoc pri vybavovaní dokumentov
+- Mediácia s inštitúciami
+- Praktická podpora v každodenných úkonoch
+
+**5. Skupinové aktivity:**
+- Komunitné stretnutia
+- Skupinové aktivity pre rodiny
+- Vzdelávacie workshopy
+- Podpora vrstovníckej pomoci
+
+**Prístup k práci:**
+
+**Prípadová práca (case work):**
+- Individuálny prístup ku každému klientovi
+- Dlhodobé sprevádzanie
+- Budovanie dôvery
+- Postupné riešenie problémov`
+    },
+    {
+      title: "Téma 3: Zmocňovanie klienta (Empowerment)",
+      content: `**Koncept zmocňovania v terénnej práci**
+
+Zmocňovanie je proces, pri ktorom sociálny pracovník podporuje klienta, aby získal kontrolu nad svojím životom a dokázal riešiť svoje problémy samostatne.
+
+**Princípy zmocňovania:**
+
+**1. Rešpekt k autonómii:**
+- Klient je expertom na svoj život
+- Rešpektovanie jeho rozhodnutí
+- Podpora sebaurčenia
+
+**2. Budovanie silných stránok:**
+- Zameranie na pozitíva a kapacity klienta
+- Nie len na problémy a deficity
+- Hľadanie zdrojov v klientovi samom
+
+**3. Partnerský prístup:**
+- Spolupráca namiesto direktívneho vedenia
+- Klient ako aktívny účastník riešenia
+- Rovnocenný vzťah
+
+**4. Postupné kroky:**
+- Malé, dosiahnuteľné ciele
+- Postupné zvyšovanie samostatnosti
+- Oslava úspechov
+
+**Praktické stratégie:**
+
+**1. Aktívne počúvanie:**
+- Pozorné vypočutie klienta
+- Empatické porozumenie
+- Validácia emócií
+
+**2. Reflexívne otázky:**
+- "Čo si myslíte, že by pomohlo?"
+- "Aké možnosti vidíte?"
+- "Čo ste už skúsili?"
+
+**3. Podpora rozhodovacích schopností:**
+- Pomoc pri zvažovaní možností
+- Nie rozhodovanie za klienta
+- Podpora pri implementácii vlastných riešení`
+    },
+    {
+      title: "Téma 4: Práca s rodinami v riziku",
+      content: `**Špecifiká práce s rizikovými rodinami**
+
+Rodiny v riziku čelia mnohým výzvam - chudoba, nezamestnanosť, domáce násilie, závislosti, zdravotné problémy.
+
+**Identifikácia rizikových faktorov:**
+
+**1. Ekonomické faktory:**
+- Dlhodobá nezamestnanosť
+- Finančné problémy a dlhy
+- Nevyhovujúce bývanie
+- Nedostatok základných potrieb
+
+**2. Sociálne faktory:**
+- Sociálna izolácia
+- Nefunkčná rodina
+- Absencia podpornej siete
+- Problémy so susedmi
+
+**3. Zdravotné faktory:**
+- Psychické ochorenia
+- Závislosti
+- Chronické choroby
+- Zanedbávanie zdravia
+
+**Prístup k rizikovým rodinám:**
+
+**1. Komplexný pohľad:**
+- Hodnotenie situácie celej rodiny
+- Nie len jedného člena
+- Pochopenie rodinnej dynamiky
+
+**2. Dlhodobá podpora:**
+- Pravidelné návštevy
+- Kontinuita starostlivosti
+- Budovanie dôvery v čase
+
+**3. Multidisciplinárna spolupráca:**
+- Spolupráca so školami
+- Zdravotníctvo
+- Polícia
+- Iné sociálne služby
+
+**4. Podpora rodičovských kompetencií:**
+- Výchova k rodičovstvu
+- Praktické rady
+- Modelovanie vhodného správania`
+    },
+    {
+      title: "Téma 5: Práca s ľuďmi bez domova",
+      content: `**Terénna práca s bezdomovcami**
+
+Ľudia bez strechy nad hlavou sú jednou z najzraniteľnejších skupín, ktoré vyžadujú špeciálny prístup a pochopenie.
+
+**Špecifiká práce:**
+
+**1. Budovanie dôvery:**
+- Veľa času na prvý kontakt
+- Rešpekt k ich životnému štýlu
+- Bez súdenia a moralizovania
+- Pravidelná prítomnosť v teréne
+
+**2. Základné potreby:**
+- Pomoc s jedlom a oblečením
+- Informácie o nocľahárňach
+- Zdravotná starostlivosť
+- Osobná hygiena
+
+**3. Postupná pomoc:**
+- Začať od najzákladnejších potrieb
+- Postupné kroky k zmene
+- Rešpektovanie ich tempa
+- Nerealistické očakávania sú kontraproduktívne
+
+**Aktivity v teréne:**
+
+**1. Outreach programy:**
+- Pravidelné terénne obchôdzky
+- Hľadanie ľudí v núdzi
+- Poskytovanie základnej pomoci
+- Distribúcia jedla, teplého oblečenia
+
+**2. Street work:**
+- Budovanie vzťahov na ulici
+- Poradenstvo priamo v teréne
+- Mediácia s komunitou
+- Ochrana pred násilím
+
+**3. Prepojenie na služby:**
+- Sprevádzanie na úrady
+- Pomoc s dokumentmi
+- Registrácia u lekára
+- Pomoc pri hľadaní ubytovania`
+    },
+    {
+      title: "Téma 6: Práca s drogovo závislými",
+      content: `**Harm reduction prístup**
+
+Pri práci s drogovo závislými osobami sa terénna sociálna práca často riadi princípom znižovania škôd (harm reduction).
+
+**Princípy harm reduction:**
+
+**1. Pragmatický prístup:**
+- Akceptácia reality užívania drog
+- Nie podmienka absolútnej abstinencie
+- Postupné zlepšovanie životnej situácie
+
+**2. Znižovanie rizík:**
+- Poskytovanie čistých injekčných striekačiek
+- Informácie o bezpečnejšom užívaní
+- Prevencia prenosu chorôb
+- Zdravotné poradenstvo
+
+**3. Nízkoprahový prístup:**
+- Žiadne administratívne prekážky
+- Anonymita
+- Dostupnosť služby
+- Bez moralizovania
+
+**Terénne aktivity:**
+
+**1. Kontaktná práca:**
+- Pravidelná prítomnosť v komunitách užívateľov
+- Budovanie vzťahov
+- Poskytovanie základných potrieb
+
+**2. Distribúcia harm reduction materiálov:**
+- Čisté injekčné striekačky
+- Kondómy
+- Dezinfekčné prostriedky
+- Informačné materiály
+
+**3. Krízová intervencia:**
+- Pomoc pri predávkovaní
+- Naloxon kity
+- Prvá pomoc
+- Prepojenie na zdravotnú starostlivosť
+
+**4. Motivácia k liečbe:**
+- Informácie o liečebných programoch
+- Podpora pri rozhodnutí liečiť sa
+- Sprevádzanie do zariadení`
+    },
+    {
+      title: "Téma 7: Etické princípy a hranice",
+      content: `**Etika v terénnej sociálnej práci**
+
+Práca v prirodzenom prostredí klienta prináša špecifické etické výzvy a potrebu jasných hraníc.
+
+**Základné etické princípy:**
+
+**1. Dôstojnosť a rešpekt:**
+- Rešpektovanie ľudskej dôstojnosti
+- Nediskriminácia
+- Rovnaký prístup ku všetkým
+
+**2. Právo na sebaurčenie:**
+- Rešpektovanie rozhodnutí klienta
+- Podpora autonómie
+- Informovaný súhlas
+
+**3. Mlčanlivosť:**
+- Ochrana súkromia klienta
+- Dôverné informácie
+- GDPR a ochrana osobných údajov
+
+**Hranice v terénnej práci:**
+
+**1. Osobné hranice:**
+- Čo som ochotný/á robiť
+- Čo presahuje moju kompetenciu
+- Kedy odporučím iného odborníka
+
+**2. Profesionálne hranice:**
+- Neprekračovanie do osobných vzťahov
+- Nie priateľstvo, ale profesionálny vzťah
+- Vyhýbanie sa duálnym vzťahom
+
+**3. Bezpečnostné hranice:**
+- Osobná bezpečnosť pracovníka
+- Práca v páre v rizikových situáciách
+- Informovanie kolegov o polohe
+
+**Dilemy v praxi:**
+
+**1. Konflikt záujmov:**
+- Záujem klienta vs. spoločnosť
+- Individuálne vs. rodinné potreby
+
+**2. Povinnosť ohlasovania:**
+- Podozrenie na týranie dieťaťa
+- Ohrozenie života
+
+**3. Limitované zdroje:**
+- Nedostatok času
+- Etické rozdeľovanie pomoci`
+    },
+    {
+      title: "Téma 8: Dokumentácia a hodnotenie",
+      content: `**Vedenie dokumentácie v terénnej práci**
+
+Správna dokumentácia je nevyhnutnou súčasťou profesionálnej terénnej sociálnej práce.
+
+**Druhy dokumentácie:**
+
+**1. Terénny denník:**
+- Záznamy z jednotlivých návštev
+- Dátum, čas, miesto
+- Stručný popis situácie
+- Poskytnutá pomoc
+- Plánovanie ďalších krokov
+
+**2. Individuálny plán:**
+- Ciele práce s klientom
+- Dohodnuté aktivity
+- Časový harmonogram
+- Hodnotenie pokroku
+
+**3. Správy a štatistiky:**
+- Mesačné prehľady
+- Počet klientov
+- Typy poskytnutých služieb
+- Výsledky práce
+
+**Zásady dokumentácie:**
+
+**1. Faktickosť:**
+- Zaznamenávať fakty, nie interpretácie
+- Objektívne pozorovania
+- Citácie slov klienta
+
+**2. Úplnosť:**
+- Všetky relevantné informácie
+- Kontinuita záznamov
+- Sledovateľnosť postupu
+
+**3. Ochrana údajov:**
+- Bezpečné uloženie
+- Prístup len oprávnených osôb
+- GDPR compliance
+
+**Hodnotenie efektivity:**
+
+**1. Sledovanie pokroku:**
+- Dosiahnutie stanovených cieľov
+- Zmeny v životnej situácii klienta
+- Spokojnosť klienta
+
+**2. Indikátory úspešnosti:**
+- Zlepšenie bývania
+- Získanie zamestnania
+- Zníženie rizikového správania
+- Posilnenie sociálnych väzieb`
+    },
+    {
+      title: "Téma 9: Supervízia a podpora pracovníkov",
+      content: `**Starostlivosť o terénnych sociálnych pracovníkov**
+
+Terénna sociálna práca je náročná a vystavuje pracovníkov mnohým stresorom. Supervízia a podpora sú nevyhnutné.
+
+**Výzvy terénnej práce:**
+
+**1. Emocionálna záťaž:**
+- Práca s ťažkými príbehmi
+- Trauma klientov
+- Sekundárna traumatizácia
+- Vyhorenie (burnout)
+
+**2. Fyzické riziká:**
+- Nebezpečné prostredie
+- Agresívni klienti
+- Zdravotné riziká
+
+**3. Profesionálne výzvy:**
+- Limitované zdroje
+- Byrokratické prekážky
+- Etické dilemy
+- Nedosiahnuteľné očakávania
+
+**Supervízia:**
+
+**1. Typy supervízie:**
+- Individuálna supervízia
+- Skupinová supervízia
+- Tímová supervízia
+- Intervízia s kolegami
+
+**2. Funkcie supervízie:**
+- Podpora a starostlivosť
+- Vzdelávanie a rozvoj
+- Kontrola kvality práce
+- Reflexia etických otázok
+
+**3. Pravidelnosť supervízie:**
+- Minimálne raz mesačne
+- Viac pri náročných prípadoch
+- Ad hoc pri krízach
+
+**Sebaopatera:**
+
+**1. Prevencia vyhorenia:**
+- Work-life balance
+- Stanovenie hraníc
+- Pravidelný odpočinok
+- Záľuby a voľný čas
+
+**2. Podpora tímu:**
+- Tímová podpora
+- Zdieľanie skúseností
+- Vzájomná pomoc
+- Spoločné aktivity
+
+**3. Vzdelávanie:**
+- Kontinuálny profesionálny rozvoj
+- Školenia a workshopy
+- Konferencie
+- Sebavzdelávanie`
+    },
+    {
+      title: "Téma 10: Komunitný rozvoj a sociálna zmena",
+      content: `**Od individuálnej práce ku komunitnému rozvoju**
+
+Terénna sociálna práca môže byť aj nástrojom širšej sociálnej zmeny a komunitného rozvoja.
+
+**Komunitný prístup:**
+
+**1. Komunitná diagnóza:**
+- Mapovanie potrieb komunity
+- Identifikácia zdrojov
+- Analýza problémov
+- Zapojenie obyvateľov
+
+**2. Komunitné projekty:**
+- Spoločné aktivity
+- Zlepšovanie životného prostredia
+- Kultúrne podujatia
+- Vzdelávacie programy
+
+**3. Aktivizácia komunity:**
+- Podpora občianskej participácie
+- Budovanie sietí solidarity
+- Zmocňovanie marginalizovaných skupín
+- Advokácia za práva
+
+**Sociálna zmena:**
+
+**1. Identifikácia systémových problémov:**
+- Štrukturálne príčiny chudoby
+- Diskriminácia
+- Nedostupnosť služieb
+- Nespravodlivé politiky
+
+**2. Advokačné aktivity:**
+- Lobbovanie za zmeny
+- Verejné kampane
+- Spolupráca s médiami
+- Politické zastupovanie
+
+**3. Partnerstvá:**
+- Spolupráca s organizáciami
+- Lokálna samospráva
+- Nadácie a filantropi
+- Akademické inštitúcie
+
+**Udržateľnosť zmien:**
+
+**1. Budovanie kapacít:**
+- Vzdelávanie lídrov z komunity
+- Prenos znalostí
+- Posilnenie lokálnych organizácií
+
+**2. Dlhodobá vízia:**
+- Strategické plánovanie
+- Monitorovanie a hodnotenie
+- Prispôsobovanie stratégií
+
+**Záver kurzu:**
+
+Terénna sociálna práca je kľúčovým nástrojom pomoci najzraniteľnejším skupinám spoločnosti. Vyžaduje nielen profesionálne znalosti a zručnosti, ale aj osobné kvality ako empatia, trpezlivosť a odhodlanie. Úspešní terénni sociálni pracovníci dokážu zmeniť životy jednotlivcov, rodín a celých komunít.`
+    }
   ]
 }
 
