@@ -6,6 +6,36 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Play, Clock, ChefHat, Heart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+// Import video thumbnails - weight loss
+import hiitWorkout from "@/assets/videos/hiit-workout.jpg";
+import cardioBeginners from "@/assets/videos/cardio-beginners.jpg";
+import fullBodyBurn from "@/assets/videos/full-body-burn.jpg";
+import tabataTraining from "@/assets/videos/tabata-training.jpg";
+import bellyWorkout from "@/assets/videos/belly-workout.jpg";
+import bodyweightTraining from "@/assets/videos/bodyweight-training.jpg";
+import jumpingJacks from "@/assets/videos/jumping-jacks.jpg";
+import cardioDance from "@/assets/videos/cardio-dance.jpg";
+import thighsGlutes from "@/assets/videos/thighs-glutes.jpg";
+import morningBoost from "@/assets/videos/morning-boost.jpg";
+import plankChallenge from "@/assets/videos/plank-challenge.jpg";
+
+// Import video thumbnails - health
+import morningYoga from "@/assets/videos/morning-yoga.jpg";
+import backStretching from "@/assets/videos/back-stretching.jpg";
+import meditation from "@/assets/videos/meditation.jpg";
+import pilates from "@/assets/videos/pilates.jpg";
+import kneeRehab from "@/assets/videos/knee-rehab.jpg";
+import shoulderMobility from "@/assets/videos/shoulder-mobility.jpg";
+import taiChi from "@/assets/videos/tai-chi.jpg";
+import foamRolling from "@/assets/videos/foam-rolling.jpg";
+import postureExercises from "@/assets/videos/posture-exercises.jpg";
+import eveningStretch from "@/assets/videos/evening-stretch.jpg";
+import hipExercises from "@/assets/videos/hip-exercises.jpg";
+import yinYoga from "@/assets/videos/yin-yoga.jpg";
+import mindfulness from "@/assets/videos/mindfulness.jpg";
+import carpalTunnel from "@/assets/videos/carpal-tunnel.jpg";
+import officeYoga from "@/assets/videos/office-yoga.jpg";
+
 // Import recipe images
 import grilledChickenSalad from "@/assets/recipes/grilled-chicken-salad.jpg";
 import quinoaRoastedVegetables from "@/assets/recipes/quinoa-roasted-vegetables.jpg";
@@ -52,7 +82,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Stredná",
       calories: "150 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop",
+      thumbnail: hiitWorkout,
       videoUrl: "https://www.youtube.com/embed/ml6cT4AZdqI?autoplay=1&rel=0",
     },
     {
@@ -61,7 +91,7 @@ const FitSlim = () => {
       duration: "15 min",
       difficulty: "Ľahká",
       calories: "120 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?w=800&auto=format&fit=crop",
+      thumbnail: cardioBeginners,
       videoUrl: "https://www.youtube.com/embed/gC_L9qAHVJ8?autoplay=1&rel=0",
     },
     {
@@ -70,7 +100,7 @@ const FitSlim = () => {
       duration: "20 min",
       difficulty: "Náročná",
       calories: "250 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&auto=format&fit=crop",
+      thumbnail: fullBodyBurn,
       videoUrl: "https://www.youtube.com/embed/UItWltVZZmE?autoplay=1&rel=0",
     },
     {
@@ -79,7 +109,7 @@ const FitSlim = () => {
       duration: "25 min",
       difficulty: "Náročná",
       calories: "300 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
+      thumbnail: tabataTraining,
       videoUrl: "https://www.youtube.com/embed/20LH4dEeWg0?autoplay=1&rel=0",
     },
     {
@@ -88,7 +118,7 @@ const FitSlim = () => {
       duration: "12 min",
       difficulty: "Stredná",
       calories: "100 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop",
+      thumbnail: bellyWorkout,
       videoUrl: "https://www.youtube.com/embed/1919eTCoESo?autoplay=1&rel=0",
     },
     {
@@ -97,7 +127,7 @@ const FitSlim = () => {
       duration: "18 min",
       difficulty: "Stredná",
       calories: "200 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?w=800&auto=format&fit=crop",
+      thumbnail: bodyweightTraining,
       videoUrl: "https://www.youtube.com/embed/cbKkB3POqaY?autoplay=1&rel=0",
     },
     {
@@ -106,7 +136,7 @@ const FitSlim = () => {
       duration: "14 min",
       difficulty: "Stredná",
       calories: "180 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&auto=format&fit=crop",
+      thumbnail: jumpingJacks,
       videoUrl: "https://www.youtube.com/embed/2W4ZNSwoW_4?autoplay=1&rel=0",
     },
     {
@@ -115,7 +145,7 @@ const FitSlim = () => {
       duration: "30 min",
       difficulty: "Stredná",
       calories: "320 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
+      thumbnail: cardioDance,
       videoUrl: "https://www.youtube.com/embed/gCBsupdwdVw?autoplay=1&rel=0",
     },
     {
@@ -124,7 +154,7 @@ const FitSlim = () => {
       duration: "16 min",
       difficulty: "Náročná",
       calories: "220 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop",
+      thumbnail: thighsGlutes,
       videoUrl: "https://www.youtube.com/embed/SZ6IshIbWGc?autoplay=1&rel=0",
     },
     {
@@ -133,7 +163,7 @@ const FitSlim = () => {
       duration: "8 min",
       difficulty: "Ľahká",
       calories: "90 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1483721310020-03333e577078?w=800&auto=format&fit=crop",
+      thumbnail: morningBoost,
       videoUrl: "https://www.youtube.com/embed/3sEeVJEXTfY?autoplay=1&rel=0",
     },
     {
@@ -142,7 +172,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Stredná",
       calories: "110 kcal",
-      thumbnail: "https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=800&auto=format&fit=crop",
+      thumbnail: plankChallenge,
       videoUrl: "https://www.youtube.com/embed/pSHjTRCQxIw?autoplay=1&rel=0",
     },
   ];
@@ -154,7 +184,7 @@ const FitSlim = () => {
       duration: "15 min",
       difficulty: "Ľahká",
       benefit: "Energia a flexibilita",
-      thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
+      thumbnail: morningYoga,
       videoUrl: "https://www.youtube.com/embed/v7AYKMP6rOE?autoplay=1&rel=0",
     },
     {
@@ -163,7 +193,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Ľahká",
       benefit: "Úľava od bolesti",
-      thumbnail: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
+      thumbnail: backStretching,
       videoUrl: "https://www.youtube.com/embed/qULTwquOuT4?autoplay=1&rel=0",
     },
     {
@@ -172,7 +202,7 @@ const FitSlim = () => {
       duration: "12 min",
       difficulty: "Ľahká",
       benefit: "Zníženie stresu",
-      thumbnail: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=800&auto=format&fit=crop",
+      thumbnail: meditation,
       videoUrl: "https://www.youtube.com/embed/inpok4MKVLM?autoplay=1&rel=0",
     },
     {
@@ -181,7 +211,7 @@ const FitSlim = () => {
       duration: "20 min",
       difficulty: "Stredná",
       benefit: "Spevnenie jadra",
-      thumbnail: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop",
+      thumbnail: pilates,
       videoUrl: "https://www.youtube.com/embed/K56Z12XH6WY?autoplay=1&rel=0",
     },
     {
@@ -190,7 +220,7 @@ const FitSlim = () => {
       duration: "14 min",
       difficulty: "Ľahká",
       benefit: "Posilnenie kĺbov",
-      thumbnail: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&auto=format&fit=crop",
+      thumbnail: kneeRehab,
       videoUrl: "https://www.youtube.com/embed/AXcJRHYfz5U?autoplay=1&rel=0",
     },
     {
@@ -199,7 +229,7 @@ const FitSlim = () => {
       duration: "8 min",
       difficulty: "Ľahká",
       benefit: "Odstránenie napätia",
-      thumbnail: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&auto=format&fit=crop",
+      thumbnail: shoulderMobility,
       videoUrl: "https://www.youtube.com/embed/3j_jHMy5JBQ?autoplay=1&rel=0",
     },
     {
@@ -208,7 +238,7 @@ const FitSlim = () => {
       duration: "18 min",
       difficulty: "Ľahká",
       benefit: "Rovnováha a pokoj",
-      thumbnail: "https://images.unsplash.com/photo-1599447292470-2b4f1d6e4f4a?w=800&auto=format&fit=crop",
+      thumbnail: taiChi,
       videoUrl: "https://www.youtube.com/embed/6w7IS8_UzHM?autoplay=1&rel=0",
     },
     {
@@ -217,7 +247,7 @@ const FitSlim = () => {
       duration: "12 min",
       difficulty: "Ľahká",
       benefit: "Uvoľnenie svalov",
-      thumbnail: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&auto=format&fit=crop",
+      thumbnail: foamRolling,
       videoUrl: "https://www.youtube.com/embed/IlMGY5yKS4o?autoplay=1&rel=0",
     },
     {
@@ -226,7 +256,7 @@ const FitSlim = () => {
       duration: "16 min",
       difficulty: "Stredná",
       benefit: "Správne držanie",
-      thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
+      thumbnail: postureExercises,
       videoUrl: "https://www.youtube.com/embed/RqcOCBb4arc?autoplay=1&rel=0",
     },
     {
@@ -235,7 +265,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Ľahká",
       benefit: "Lepší spánok",
-      thumbnail: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
+      thumbnail: eveningStretch,
       videoUrl: "https://www.youtube.com/embed/ErZ_5-jC-Sg?autoplay=1&rel=0",
     },
     {
@@ -244,7 +274,7 @@ const FitSlim = () => {
       duration: "14 min",
       difficulty: "Ľahká",
       benefit: "Mobilita bedrových kĺbov",
-      thumbnail: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800&auto=format&fit=crop",
+      thumbnail: hipExercises,
       videoUrl: "https://www.youtube.com/embed/YwO4GFrqXKc?autoplay=1&rel=0",
     },
     {
@@ -253,7 +283,7 @@ const FitSlim = () => {
       duration: "25 min",
       difficulty: "Ľahká",
       benefit: "Flexibilita",
-      thumbnail: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop",
+      thumbnail: yinYoga,
       videoUrl: "https://www.youtube.com/embed/LcnFzJZID18?autoplay=1&rel=0",
     },
     {
@@ -262,7 +292,7 @@ const FitSlim = () => {
       duration: "15 min",
       difficulty: "Ľahká",
       benefit: "Mentálne zdravie",
-      thumbnail: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7?w=800&auto=format&fit=crop",
+      thumbnail: mindfulness,
       videoUrl: "https://www.youtube.com/embed/ZToicYcHIOU?autoplay=1&rel=0",
     },
     {
@@ -271,7 +301,7 @@ const FitSlim = () => {
       duration: "8 min",
       difficulty: "Ľahká",
       benefit: "Zdravé zápästia",
-      thumbnail: "https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&auto=format&fit=crop",
+      thumbnail: carpalTunnel,
       videoUrl: "https://www.youtube.com/embed/fdD7CgN5FGg?autoplay=1&rel=0",
     },
     {
@@ -280,7 +310,7 @@ const FitSlim = () => {
       duration: "10 min",
       difficulty: "Ľahká",
       benefit: "Úľava pri sedení",
-      thumbnail: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop",
+      thumbnail: officeYoga,
       videoUrl: "https://www.youtube.com/embed/M-8FvC3GD8c?autoplay=1&rel=0",
     },
   ];
