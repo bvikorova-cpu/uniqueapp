@@ -2213,6 +2213,176 @@ export type Database = {
         }
         Relationships: []
       }
+      stories: {
+        Row: {
+          caption: string | null
+          created_at: string | null
+          expires_at: string
+          id: string
+          is_active: boolean | null
+          media_type: string
+          media_url: string
+          user_id: string
+          views_count: number | null
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          media_type: string
+          media_url: string
+          user_id: string
+          views_count?: number | null
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          is_active?: boolean | null
+          media_type?: string
+          media_url?: string
+          user_id?: string
+          views_count?: number | null
+        }
+        Relationships: []
+      }
+      story_poll_votes: {
+        Row: {
+          created_at: string | null
+          id: string
+          poll_id: string
+          user_id: string
+          vote: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          poll_id: string
+          user_id: string
+          vote: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          poll_id?: string
+          user_id?: string
+          vote?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "story_polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_polls: {
+        Row: {
+          created_at: string | null
+          id: string
+          option_a: string
+          option_b: string
+          question: string
+          story_id: string
+          votes_a: number | null
+          votes_b: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          option_a: string
+          option_b: string
+          question: string
+          story_id: string
+          votes_a?: number | null
+          votes_b?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          option_a?: string
+          option_b?: string
+          question?: string
+          story_id?: string
+          votes_a?: number | null
+          votes_b?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_polls_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_reactions: {
+        Row: {
+          created_at: string | null
+          id: string
+          reaction: string
+          story_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          reaction: string
+          story_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          reaction?: string
+          story_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_reactions_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_views: {
+        Row: {
+          id: string
+          story_id: string
+          user_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          id?: string
+          story_id: string
+          user_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          id?: string
+          story_id?: string
+          user_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_views_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stream_gifts: {
         Row: {
           amount: number

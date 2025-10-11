@@ -41,6 +41,7 @@ import NotFound from "./pages/NotFound";
 import AdminTransactions from "./pages/AdminTransactions";
 import Earnings from "./pages/Earnings";
 import LiveStream from "./pages/LiveStream";
+import Stories from "./pages/Stories";
 
 const queryClient = new QueryClient();
 
@@ -89,6 +90,7 @@ const App = () => (
           <Route path="/admin/transactions" element={<AdminTransactions />} />
           <Route path="/earnings" element={<Earnings />} />
           <Route path="/live/:streamId" element={<LiveStream />} />
+          <Route path="/stories/:userId" element={<Stories />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

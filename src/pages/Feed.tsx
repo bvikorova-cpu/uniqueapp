@@ -6,6 +6,8 @@ import { useToast } from "@/hooks/use-toast";
 import CreatePost from "@/components/feed/CreatePost";
 import PostCard from "@/components/feed/PostCard";
 import UserSearch from "@/components/feed/UserSearch";
+import StoriesBar from "@/components/feed/StoriesBar";
+import CreateStory from "@/components/feed/CreateStory";
 import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
@@ -128,6 +130,18 @@ const Feed = () => {
         </h1>
 
         <UserSearch />
+
+        {/* Stories Bar */}
+        <StoriesBar />
+
+        {/* Hidden trigger for CreateStory dialog */}
+        <div id="create-story-trigger" className="hidden">
+          <CreateStory />
+        </div>
+
+        <div className="mt-4">
+          <CreateStory />
+        </div>
 
         <CreatePost onPostCreated={fetchPosts} />
 
