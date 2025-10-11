@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Pause, Volume2, Music, Disc3, Radio } from "lucide-react";
+import { Play, Pause, Volume2, Music, Disc3, Radio, Sparkles } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -34,12 +35,30 @@ export default function OnlineDJ() {
   const [eqMidB, setEqMidB] = useState([50]);
   const [eqHighB, setEqHighB] = useState([50]);
   const [selectedGenre, setSelectedGenre] = useState<string>("All");
+  
+  // Style and effects state
+  const [styleA, setStyleA] = useState<string>("original");
+  const [styleB, setStyleB] = useState<string>("original");
+  const [filterA, setFilterA] = useState([1000]);
+  const [filterB, setFilterB] = useState([1000]);
+  const [reverbA, setReverbA] = useState([0]);
+  const [reverbB, setReverbB] = useState([0]);
+  const [delayA, setDelayA] = useState([0]);
+  const [delayB, setDelayB] = useState([0]);
 
   const audioRefA = useRef<HTMLAudioElement | null>(null);
   const audioRefB = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeA = useRef<GainNode | null>(null);
   const gainNodeB = useRef<GainNode | null>(null);
+  const filterNodeA = useRef<BiquadFilterNode | null>(null);
+  const filterNodeB = useRef<BiquadFilterNode | null>(null);
+  const delayNodeA = useRef<DelayNode | null>(null);
+  const delayNodeB = useRef<DelayNode | null>(null);
+  const delayGainA = useRef<GainNode | null>(null);
+  const delayGainB = useRef<GainNode | null>(null);
+  const reverbGainA = useRef<GainNode | null>(null);
+  const reverbGainB = useRef<GainNode | null>(null);
 
   // Fetch tracks from database with refetch capability
   const { data: musicLibrary = [], isLoading: loading, refetch } = useQuery({
@@ -64,11 +83,52 @@ export default function OnlineDJ() {
   useEffect(() => {
     // Initialize Web Audio API
     audioContextRef.current = new AudioContext();
-    gainNodeA.current = audioContextRef.current.createGain();
-    gainNodeB.current = audioContextRef.current.createGain();
     
-    gainNodeA.current.connect(audioContextRef.current.destination);
-    gainNodeB.current.connect(audioContextRef.current.destination);
+    // Deck A chain
+    gainNodeA.current = audioContextRef.current.createGain();
+    filterNodeA.current = audioContextRef.current.createBiquadFilter();
+    delayNodeA.current = audioContextRef.current.createDelay(5.0);
+    delayGainA.current = audioContextRef.current.createGain();
+    reverbGainA.current = audioContextRef.current.createGain();
+    
+    // Deck B chain
+    gainNodeB.current = audioContextRef.current.createGain();
+    filterNodeB.current = audioContextRef.current.createBiquadFilter();
+    delayNodeB.current = audioContextRef.current.createDelay(5.0);
+    delayGainB.current = audioContextRef.current.createGain();
+    reverbGainB.current = audioContextRef.current.createGain();
+    
+    // Setup filter defaults
+    filterNodeA.current.type = "lowpass";
+    filterNodeA.current.frequency.value = 22000;
+    filterNodeB.current.type = "lowpass";
+    filterNodeB.current.frequency.value = 22000;
+    
+    // Setup delay defaults
+    delayNodeA.current.delayTime.value = 0;
+    delayGainA.current.gain.value = 0;
+    delayNodeB.current.delayTime.value = 0;
+    delayGainB.current.gain.value = 0;
+    
+    // Setup reverb defaults
+    reverbGainA.current.gain.value = 0;
+    reverbGainB.current.gain.value = 0;
+    
+    // Connect nodes A
+    gainNodeA.current.connect(filterNodeA.current);
+    filterNodeA.current.connect(reverbGainA.current);
+    filterNodeA.current.connect(delayNodeA.current);
+    delayNodeA.current.connect(delayGainA.current);
+    delayGainA.current.connect(filterNodeA.current);
+    reverbGainA.current.connect(audioContextRef.current.destination);
+    
+    // Connect nodes B
+    gainNodeB.current.connect(filterNodeB.current);
+    filterNodeB.current.connect(reverbGainB.current);
+    filterNodeB.current.connect(delayNodeB.current);
+    delayNodeB.current.connect(delayGainB.current);
+    delayGainB.current.connect(filterNodeB.current);
+    reverbGainB.current.connect(audioContextRef.current.destination);
 
     return () => {
       audioContextRef.current?.close();
@@ -104,6 +164,124 @@ export default function OnlineDJ() {
       gainNodeB.current.gain.value = volumeValue * crossfadeValue;
     }
   }, [volumeB, crossfader]);
+
+  // Audio effects for Deck A
+  useEffect(() => {
+    if (filterNodeA.current) {
+      filterNodeA.current.frequency.value = filterA[0];
+    }
+  }, [filterA]);
+
+  useEffect(() => {
+    if (reverbGainA.current) {
+      reverbGainA.current.gain.value = reverbA[0] / 100;
+    }
+  }, [reverbA]);
+
+  useEffect(() => {
+    if (delayNodeA.current && delayGainA.current) {
+      const delayTime = delayA[0] / 100;
+      delayNodeA.current.delayTime.value = delayTime * 0.5;
+      delayGainA.current.gain.value = delayTime * 0.7;
+    }
+  }, [delayA]);
+
+  // Audio effects for Deck B
+  useEffect(() => {
+    if (filterNodeB.current) {
+      filterNodeB.current.frequency.value = filterB[0];
+    }
+  }, [filterB]);
+
+  useEffect(() => {
+    if (reverbGainB.current) {
+      reverbGainB.current.gain.value = reverbB[0] / 100;
+    }
+  }, [reverbB]);
+
+  useEffect(() => {
+    if (delayNodeB.current && delayGainB.current) {
+      const delayTime = delayB[0] / 100;
+      delayNodeB.current.delayTime.value = delayTime * 0.5;
+      delayGainB.current.gain.value = delayTime * 0.7;
+    }
+  }, [delayB]);
+
+  // Style presets
+  const applyStyle = (style: string, deck: 'A' | 'B') => {
+    const setFilter = deck === 'A' ? setFilterA : setFilterB;
+    const setReverb = deck === 'A' ? setReverbA : setReverbB;
+    const setDelay = deck === 'A' ? setDelayA : setDelayB;
+    const setEqLow = deck === 'A' ? setEqLowA : setEqLowB;
+    const setEqMid = deck === 'A' ? setEqMidA : setEqMidB;
+    const setEqHigh = deck === 'A' ? setEqHighA : setEqHighB;
+
+    switch (style) {
+      case "disko":
+        setFilter([800]);
+        setReverb([40]);
+        setDelay([25]);
+        setEqLow([70]);
+        setEqMid([60]);
+        setEqHigh([55]);
+        break;
+      case "pop":
+        setFilter([3000]);
+        setReverb([20]);
+        setDelay([10]);
+        setEqLow([45]);
+        setEqMid([55]);
+        setEqHigh([60]);
+        break;
+      case "techno":
+        setFilter([5000]);
+        setReverb([30]);
+        setDelay([40]);
+        setEqLow([80]);
+        setEqMid([45]);
+        setEqHigh([50]);
+        break;
+      case "house":
+        setFilter([2000]);
+        setReverb([35]);
+        setDelay([20]);
+        setEqLow([75]);
+        setEqMid([50]);
+        setEqHigh([45]);
+        break;
+      case "hiphop":
+        setFilter([1500]);
+        setReverb([15]);
+        setDelay([30]);
+        setEqLow([85]);
+        setEqMid([55]);
+        setEqHigh([35]);
+        break;
+      case "rock":
+        setFilter([4000]);
+        setReverb([25]);
+        setDelay([15]);
+        setEqLow([60]);
+        setEqMid([65]);
+        setEqHigh([70]);
+        break;
+      default: // original
+        setFilter([22000]);
+        setReverb([0]);
+        setDelay([0]);
+        setEqLow([50]);
+        setEqMid([50]);
+        setEqHigh([50]);
+    }
+    
+    if (deck === 'A') {
+      setStyleA(style);
+    } else {
+      setStyleB(style);
+    }
+    
+    toast.success(`${style.charAt(0).toUpperCase() + style.slice(1)} štýl aplikovaný na Deck ${deck}`);
+  };
 
   const loadTrack = (track: any, deck: 'A' | 'B') => {
     if (deck === 'A') {
@@ -191,6 +369,61 @@ export default function OnlineDJ() {
                       step={1}
                       className="w-full"
                     />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium flex items-center gap-2 mb-2">
+                      <Sparkles className="h-4 w-4" />
+                      Štýl
+                    </label>
+                    <Select value={styleA} onValueChange={(value) => applyStyle(value, 'A')}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="original">Originál</SelectItem>
+                        <SelectItem value="disko">🕺 Disko</SelectItem>
+                        <SelectItem value="pop">🎤 Pop</SelectItem>
+                        <SelectItem value="techno">🔊 Techno</SelectItem>
+                        <SelectItem value="house">🏠 House</SelectItem>
+                        <SelectItem value="hiphop">🎧 Hip-Hop</SelectItem>
+                        <SelectItem value="rock">🎸 Rock</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-medium mb-2 block">Filter: {filterA[0]} Hz</label>
+                      <Slider
+                        value={filterA}
+                        onValueChange={setFilterA}
+                        min={200}
+                        max={22000}
+                        step={100}
+                        className="w-full"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium mb-2 block">Reverb: {reverbA[0]}%</label>
+                      <Slider
+                        value={reverbA}
+                        onValueChange={setReverbA}
+                        max={100}
+                        step={1}
+                        className="w-full"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium mb-2 block">Delay: {delayA[0]}%</label>
+                      <Slider
+                        value={delayA}
+                        onValueChange={setDelayA}
+                        max={100}
+                        step={1}
+                        className="w-full"
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-3 gap-4">
@@ -281,6 +514,61 @@ export default function OnlineDJ() {
                       step={1}
                       className="w-full"
                     />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium flex items-center gap-2 mb-2">
+                      <Sparkles className="h-4 w-4" />
+                      Štýl
+                    </label>
+                    <Select value={styleB} onValueChange={(value) => applyStyle(value, 'B')}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="original">Originál</SelectItem>
+                        <SelectItem value="disko">🕺 Disko</SelectItem>
+                        <SelectItem value="pop">🎤 Pop</SelectItem>
+                        <SelectItem value="techno">🔊 Techno</SelectItem>
+                        <SelectItem value="house">🏠 House</SelectItem>
+                        <SelectItem value="hiphop">🎧 Hip-Hop</SelectItem>
+                        <SelectItem value="rock">🎸 Rock</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-medium mb-2 block">Filter: {filterB[0]} Hz</label>
+                      <Slider
+                        value={filterB}
+                        onValueChange={setFilterB}
+                        min={200}
+                        max={22000}
+                        step={100}
+                        className="w-full"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium mb-2 block">Reverb: {reverbB[0]}%</label>
+                      <Slider
+                        value={reverbB}
+                        onValueChange={setReverbB}
+                        max={100}
+                        step={1}
+                        className="w-full"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-medium mb-2 block">Delay: {delayB[0]}%</label>
+                      <Slider
+                        value={delayB}
+                        onValueChange={setDelayB}
+                        max={100}
+                        step={1}
+                        className="w-full"
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-3 gap-4">
