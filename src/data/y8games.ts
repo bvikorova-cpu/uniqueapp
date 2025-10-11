@@ -18,10 +18,7 @@ export const gameCategories = {
 
 export type GameCategory = keyof typeof gameCategories;
 
-export const y8Games: Y8Game[] = [
-  // Pre dievčatá
-  { id: "barbee_summer_nails", title: "Barbee Summer Nails", slug: "barbee_summer_nails", category: "girls", description: "Letný dizajn nechtov", rating: 8.6 },
-];
+export const y8Games: Y8Game[] = [];
 
 export function getGamesByCategory(category: GameCategory): Y8Game[] {
   return y8Games.filter(game => game.category === category);
