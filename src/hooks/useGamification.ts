@@ -2,21 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const POINT_VALUES = {
-  post: 10,
-  comment: 5,
-  like: 2,
-  video: 15,
-  story: 8,
-  friend: 20,
-  daily_login: 10,
-};
-
-export const useGamification = (userId?: string) => {
-  const queryClient = useQueryClient();
-
-  // Get user points
-  const { data: userPoints } = useQuery({
+export const useUserPoints = (userId?: string) => {
+  return useQuery({
     queryKey: ["user-points", userId],
     queryFn: async () => {
       if (!userId) return null;
@@ -28,16 +15,16 @@ export const useGamification = (userId?: string) => {
         .maybeSingle();
 
       if (error && error.code !== "PGRST116") throw error;
-
-      // Create if doesn't exist
+      
+      // Create initial points record if doesn't exist
       if (!data) {
-        const { data: newData, error: createError } = await supabase
+        const { data: newData, error: insertError } = await supabase
           .from("user_points")
           .insert({ user_id: userId })
           .select()
           .single();
-
-        if (createError) throw createError;
+        
+        if (insertError) throw insertError;
         return newData;
       }
 
@@ -45,190 +32,182 @@ export const useGamification = (userId?: string) => {
     },
     enabled: !!userId,
   });
+};
 
-  // Get user badges
-  const { data: userBadges = [] } = useQuery({
+export const useUserBadges = (userId?: string) => {
+  return useQuery({
     queryKey: ["user-badges", userId],
     queryFn: async () => {
       if (!userId) return [];
 
-      const { data, error } = await supabase
+      const { data: userBadgesData, error } = await supabase
         .from("user_badges")
-        .select(`
-          *,
-          badges(*)
-        `)
+        .select("*")
         .eq("user_id", userId)
         .order("earned_at", { ascending: false });
 
       if (error) throw error;
-      return data;
+
+      // Get badge details
+      const badgeIds = userBadgesData.map((ub) => ub.badge_id);
+      const { data: badgesData } = await supabase
+        .from("badges")
+        .select("*")
+        .in("id", badgeIds);
+
+      return userBadgesData.map((ub) => ({
+        ...ub,
+        badges: badgesData?.find((b) => b.id === ub.badge_id),
+      }));
     },
     enabled: !!userId,
   });
+};
 
-  // Get all badges
-  const { data: allBadges = [] } = useQuery({
-    queryKey: ["badges"],
+export const useAllBadges = () => {
+  return useQuery({
+    queryKey: ["all-badges"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("badges")
         .select("*")
-        .order("requirement_value", { ascending: true });
+        .order("requirement_value");
 
       if (error) throw error;
       return data;
     },
   });
+};
 
-  // Add points
-  const addPointsMutation = useMutation({
-    mutationFn: async ({
-      points,
-      activityType,
-    }: {
-      points: number;
-      activityType: string;
-    }) => {
-      if (!userId) throw new Error("No user ID");
-
-      const { error } = await supabase.rpc("add_user_points", {
-        p_user_id: userId,
-        p_points: points,
-        p_activity_type: activityType,
-      });
+export const useLeaderboard = (limit = 10) => {
+  return useQuery({
+    queryKey: ["leaderboard", limit],
+    queryFn: async () => {
+      const { data: pointsData, error } = await supabase
+        .from("user_points")
+        .select("*")
+        .order("total_points", { ascending: false })
+        .limit(limit);
 
       if (error) throw error;
-    },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["user-points", userId] });
-      queryClient.invalidateQueries({ queryKey: ["activity-logs", userId] });
-      toast.success(`+${variables.points} bodov! 🎉`);
+
+      // Get profiles
+      const userIds = pointsData.map((p) => p.user_id);
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", userIds);
+
+      return pointsData.map((points) => ({
+        ...points,
+        profile: profiles?.find((p) => p.id === points.user_id),
+      }));
     },
   });
+};
 
-  // Claim daily reward
-  const claimDailyRewardMutation = useMutation({
-    mutationFn: async () => {
-      if (!userId) throw new Error("No user ID");
+export const useDailyReward = () => {
+  const queryClient = useQueryClient();
 
-      // Check last claim
-      const { data: lastClaim } = await supabase
+  const checkCanClaim = useQuery({
+    queryKey: ["can-claim-daily"],
+    queryFn: async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return { canClaim: false, streak: 0 };
+
+      const { data } = await supabase
         .from("daily_rewards")
         .select("*")
-        .eq("user_id", userId)
+        .eq("user_id", user.id)
         .order("claimed_at", { ascending: false })
         .limit(1)
         .maybeSingle();
 
-      const now = new Date();
-      const yesterday = new Date(now);
-      yesterday.setDate(yesterday.getDate() - 1);
-
-      let streak = 1;
-      let points = POINT_VALUES.daily_login;
-
-      if (lastClaim) {
-        const lastClaimDate = new Date(lastClaim.claimed_at);
-        const hoursSinceLastClaim =
-          (now.getTime() - lastClaimDate.getTime()) / (1000 * 60 * 60);
-
-        if (hoursSinceLastClaim < 24) {
-          throw new Error("Already claimed today");
-        }
-
-        // Check if consecutive day
-        if (
-          lastClaimDate >= yesterday &&
-          lastClaimDate < now
-        ) {
-          streak = lastClaim.day_streak + 1;
-          points = POINT_VALUES.daily_login * streak; // Bonus for streak
-        }
+      if (!data) {
+        return { canClaim: true, streak: 0 };
       }
 
-      // Insert daily reward
-      const { error: rewardError } = await supabase
-        .from("daily_rewards")
-        .insert({
-          user_id: userId,
-          day_streak: streak,
-          points_earned: points,
-        });
+      const lastClaim = new Date(data.claimed_at);
+      const now = new Date();
+      const daysDiff = Math.floor((now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60 * 24));
+
+      return {
+        canClaim: daysDiff >= 1,
+        streak: daysDiff === 1 ? data.day_streak : daysDiff > 1 ? 0 : data.day_streak,
+        lastClaimDate: lastClaim,
+      };
+    },
+  });
+
+  const claimReward = useMutation({
+    mutationFn: async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not logged in");
+
+      const checkResult = await checkCanClaim.refetch();
+      if (!checkResult.data?.canClaim) {
+        throw new Error("Už si dnes získal odmenu");
+      }
+
+      const newStreak = (checkResult.data.streak || 0) + 1;
+      const basePoints = 10;
+      const streakBonus = Math.min(newStreak * 5, 50);
+      const totalPoints = basePoints + streakBonus;
+
+      const { error: rewardError } = await supabase.from("daily_rewards").insert({
+        user_id: user.id,
+        day_streak: newStreak,
+        points_earned: totalPoints,
+      });
 
       if (rewardError) throw rewardError;
 
-      // Add points
+      // Add points via RPC
       const { error: pointsError } = await supabase.rpc("add_user_points", {
-        p_user_id: userId,
-        p_points: points,
-        p_activity_type: "daily_login",
+        p_user_id: user.id,
+        p_points: totalPoints,
+        p_activity_type: "daily_reward",
       });
 
       if (pointsError) throw pointsError;
 
-      return { streak, points };
+      return { points: totalPoints, streak: newStreak };
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["user-points", userId] });
-      queryClient.invalidateQueries({ queryKey: ["daily-rewards", userId] });
-      toast.success(
-        `Denná odmena získaná! ${data.streak} dní v rade! +${data.points} bodov 🎁`
-      );
+      toast.success(`🎁 Získal si ${data.points} bodov! Streak: ${data.streak} dní`, {
+        duration: 5000,
+      });
+      queryClient.invalidateQueries({ queryKey: ["can-claim-daily"] });
+      queryClient.invalidateQueries({ queryKey: ["user-points"] });
     },
     onError: (error: any) => {
-      if (error.message === "Already claimed today") {
-        toast.info("Dnes už si odmenu získal. Príď zajtra!");
-      } else {
-        toast.error("Chyba pri získavaní odmeny");
-      }
+      toast.error(error.message || "Chyba pri získavaní odmeny");
     },
   });
 
-  // Check if can claim daily reward
-  const { data: canClaimDaily } = useQuery({
-    queryKey: ["can-claim-daily", userId],
+  return { checkCanClaim, claimReward };
+};
+
+export const useActivityLogs = (userId?: string) => {
+  return useQuery({
+    queryKey: ["activity-logs", userId],
     queryFn: async () => {
-      if (!userId) return false;
+      if (!userId) return [];
 
-      const { data: lastClaim } = await supabase
-        .from("daily_rewards")
-        .select("claimed_at")
+      const { data, error } = await supabase
+        .from("activity_logs")
+        .select("*")
         .eq("user_id", userId)
-        .order("claimed_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+        .order("created_at", { ascending: false })
+        .limit(50);
 
-      if (!lastClaim) return true;
-
-      const now = new Date();
-      const lastClaimDate = new Date(lastClaim.claimed_at);
-      const hoursSinceLastClaim =
-        (now.getTime() - lastClaimDate.getTime()) / (1000 * 60 * 60);
-
-      return hoursSinceLastClaim >= 24;
+      if (error) throw error;
+      return data;
     },
     enabled: !!userId,
-    refetchInterval: 60000, // Check every minute
   });
-
-  // Calculate points needed for next level
-  const pointsForNextLevel = userPoints
-    ? Math.pow(userPoints.level, 2) * 100
-    : 100;
-
-  const progressToNextLevel = userPoints
-    ? (userPoints.current_level_points / pointsForNextLevel) * 100
-    : 0;
-
-  return {
-    userPoints,
-    userBadges,
-    allBadges,
-    addPoints: addPointsMutation.mutate,
-    claimDailyReward: claimDailyRewardMutation.mutate,
-    canClaimDaily,
-    pointsForNextLevel,
-    progressToNextLevel,
-  };
 };
