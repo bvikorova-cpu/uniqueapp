@@ -69,6 +69,52 @@ import superheroLandingImg from "@/assets/effects/superhero-landing.jpg";
 import crystalFreezeImg from "@/assets/effects/crystal-freeze.jpg";
 import discoBallImg from "@/assets/effects/disco-ball.jpg";
 import dragonRiderImg from "@/assets/effects/dragon-rider.jpg";
+import mermaidTailImg from "@/assets/effects/mermaid-tail.jpg";
+import ninjaStealthImg from "@/assets/effects/ninja-stealth.jpg";
+import fairyGodmotherImg from "@/assets/effects/fairy-godmother.jpg";
+import pirateAdventureImg from "@/assets/effects/pirate-adventure.jpg";
+import bubbleBounceImg from "@/assets/effects/bubble-bounce.jpg";
+import neonGlowImg from "@/assets/effects/neon-glow.jpg";
+import samuraiWarriorImg from "@/assets/effects/samurai-warrior.jpg";
+import candyLandImg from "@/assets/effects/candy-land.jpg";
+import timeFreezeImg from "@/assets/effects/time-freeze.jpg";
+import firePhoenixImg from "@/assets/effects/fire-phoenix.jpg";
+import iceQueenImg from "@/assets/effects/ice-queen.jpg";
+import breakdanceImg from "@/assets/effects/breakdance.jpg";
+import galaxyPortalImg from "@/assets/effects/galaxy-portal.jpg";
+import steampunkImg from "@/assets/effects/steampunk.jpg";
+import babyFilterImg from "@/assets/effects/baby-filter.jpg";
+import oldAgeImg from "@/assets/effects/old-age.jpg";
+import elfEarsImg from "@/assets/effects/elf-ears.jpg";
+import werewolfImg from "@/assets/effects/werewolf.jpg";
+import astronautSpaceImg from "@/assets/effects/astronaut-space.jpg";
+import pixelArtImg from "@/assets/effects/pixel-art.jpg";
+import oilPaintingImg from "@/assets/effects/oil-painting.jpg";
+import comicBookImg from "@/assets/effects/comic-book.jpg";
+import hologramImg from "@/assets/effects/hologram.jpg";
+import ghostSpiritImg from "@/assets/effects/ghost-spirit.jpg";
+import clownMakeupImg from "@/assets/effects/clown-makeup.jpg";
+import tribalPaintImg from "@/assets/effects/tribal-paint.jpg";
+import bunnyEarsImg from "@/assets/effects/bunny-ears.jpg";
+import catWhiskersImg from "@/assets/effects/cat-whiskers.jpg";
+import dogFilterImg from "@/assets/effects/dog-filter.jpg";
+import unicornHornImg from "@/assets/effects/unicorn-horn.jpg";
+import devilHornsImg from "@/assets/effects/devil-horns.jpg";
+import haloAngelImg from "@/assets/effects/halo-angel.jpg";
+import matrixCodeImg from "@/assets/effects/matrix-code.jpg";
+import sunflowerCrownImg from "@/assets/effects/sunflower-crown.jpg";
+import rosePetalsImg from "@/assets/effects/rose-petals.jpg";
+import confettiBlastImg from "@/assets/effects/confetti-blast.jpg";
+import laserEyesImg from "@/assets/effects/laser-eyes.jpg";
+import fireBreathImg from "@/assets/effects/fire-breath.jpg";
+import waterSplashImg from "@/assets/effects/water-splash.jpg";
+import thunderStormImg from "@/assets/effects/thunder-storm.jpg";
+import cherryBlossomImg from "@/assets/effects/cherry-blossom.jpg";
+import autumnLeavesImg from "@/assets/effects/autumn-leaves.jpg";
+import tropicalParadiseImg from "@/assets/effects/tropical-paradise.jpg";
+import northernLightsImg from "@/assets/effects/northern-lights.jpg";
+import shootingStarImg from "@/assets/effects/shooting-star.jpg";
+import crownJewelsImg from "@/assets/effects/crown-jewels.jpg";
 
 type EffectCategory = "all" | "interactions" | "pets" | "appearance" | "entertainment" | "heroes" | "fanciful" | "dance" | "emotions";
 
@@ -147,52 +193,52 @@ const aiEffects: AIEffect[] = [
   { id: "crystal-freeze", name: "Crystal Freeze", category: "fanciful", image: crystalFreezeImg, description: "Kryštálové zamrznutie" },
   { id: "disco-ball", name: "Disco Ball", category: "dance", image: discoBallImg, description: "Disco guľa" },
   { id: "dragon-rider", name: "Dragon Rider", category: "heroes", image: dragonRiderImg, description: "Jazdec na drakovi", isHot: true },
-  { id: "mermaid-tail", name: "Mermaid Tail", category: "fanciful", image: becomeFemaleImg, description: "Morský chvost" },
-  { id: "ninja-stealth", name: "Ninja Stealth", category: "heroes", image: kungfuClubImg, description: "Ninja nenápadnosť" },
-  { id: "fairy-godmother", name: "Fairy Godmother", category: "fanciful", image: bloomMagicImg, description: "Dobrá víla" },
-  { id: "pirate-adventure", name: "Pirate Adventure", category: "entertainment", image: fashionStrideImg, description: "Pirátske dobrodružstvo" },
-  { id: "bubble-bounce", name: "Bubble Bounce", category: "fanciful", image: balloonFlyawayImg, description: "Skákanie v bublinách" },
-  { id: "neon-glow", name: "Neon Glow", category: "fanciful", image: aliveArtImg, description: "Neónová žiara", isHot: true },
-  { id: "samurai-warrior", name: "Samurai Warrior", category: "heroes", image: kungfuClubImg, description: "Samurajský bojovník" },
-  { id: "candy-land", name: "Candy Land", category: "entertainment", image: cartoonDollImg, description: "Cukrová krajina" },
-  { id: "time-freeze", name: "Time Freeze", category: "fanciful", image: napMeImg, description: "Zastavenie času" },
-  { id: "fire-phoenix", name: "Fire Phoenix", category: "heroes", image: flameCarpetImg, description: "Ohnivý fénix", isHot: true },
-  { id: "ice-queen", name: "Ice Queen", category: "heroes", image: becomeFemaleImg, description: "Ľadová kráľovná" },
-  { id: "breakdance", name: "Breakdance", category: "dance", image: bodyshakeImg, description: "Breakdance" },
-  { id: "galaxy-portal", name: "Galaxy Portal", category: "fanciful", image: earthZoomOutImg, description: "Galaktický portál" },
-  { id: "steampunk", name: "Steampunk", category: "appearance", image: styleMeImg, description: "Steampunk štýl" },
-  { id: "baby-filter", name: "Baby Filter", category: "appearance", image: cartoonDollImg, description: "Detský filter" },
-  { id: "old-age", name: "Old Age", category: "appearance", image: warmthOfJesusImg, description: "Staroba" },
-  { id: "elf-ears", name: "Elf Ears", category: "fanciful", image: ghibliImg, description: "Elfie uši" },
-  { id: "werewolf", name: "Werewolf", category: "heroes", image: beastCompanionImg, description: "Vlkodlak" },
-  { id: "astronaut-space", name: "Astronaut Space", category: "heroes", image: earthZoomInImg, description: "Astronaut vo vesmíre", isHot: true },
-  { id: "pixel-art", name: "Pixel Art", category: "entertainment", image: minecraftImg, description: "Pixel art" },
-  { id: "oil-painting", name: "Oil Painting", category: "appearance", image: aliveArtImg, description: "Olejomaľba" },
-  { id: "comic-book", name: "Comic Book", category: "entertainment", image: papermanImg, description: "Komiks" },
-  { id: "hologram", name: "Hologram", category: "fanciful", image: anythingRobotImg, description: "Hologram" },
-  { id: "ghost-spirit", name: "Ghost Spirit", category: "fanciful", image: meltImg, description: "Duch" },
-  { id: "clown-makeup", name: "Clown Makeup", category: "entertainment", image: surprisedImg, description: "Klaunský make-up" },
-  { id: "tribal-paint", name: "Tribal Paint", category: "appearance", image: styleMeImg, description: "Kmeňové maľovanie" },
-  { id: "bunny-ears", name: "Bunny Ears", category: "pets", image: sheepCurlsImg, description: "Zajačie uši" },
-  { id: "cat-whiskers", name: "Cat Whiskers", category: "pets", image: petLoversImg, description: "Mačacie fúzy" },
-  { id: "dog-filter", name: "Dog Filter", category: "pets", image: petLoversImg, description: "Psí filter" },
-  { id: "unicorn-horn", name: "Unicorn Horn", category: "fanciful", image: bloomDoorobearImg, description: "Jednorožcový roh" },
-  { id: "devil-horns", name: "Devil Horns", category: "entertainment", image: wildLaughImg, description: "Diablove rohy" },
-  { id: "halo-angel", name: "Halo Angel", category: "heroes", image: holyWingsImg, description: "Svätožiara anjela" },
-  { id: "matrix-code", name: "Matrix Code", category: "entertainment", image: anythingRobotImg, description: "Matrix kód", isHot: true },
-  { id: "sunflower-crown", name: "Sunflower Crown", category: "appearance", image: bloomMagicImg, description: "Slnečnicová koruna" },
-  { id: "rose-petals", name: "Rose Petals", category: "interactions", image: sendRosesImg, description: "Ružové lupene" },
-  { id: "confetti-blast", name: "Confetti Blast", category: "fanciful", image: paperFallImg, description: "Konfetový výbuch" },
-  { id: "laser-eyes", name: "Laser Eyes", category: "heroes", image: surprisedImg, description: "Laserové oči" },
-  { id: "fire-breath", name: "Fire Breath", category: "heroes", image: wildLaughImg, description: "Ohnivý dych" },
-  { id: "water-splash", name: "Water Splash", category: "fanciful", image: waveDanceImg, description: "Vodný šplech" },
-  { id: "thunder-storm", name: "Thunder Storm", category: "fanciful", image: explosionImg, description: "Búrka s bleskami" },
-  { id: "cherry-blossom", name: "Cherry Blossom", category: "appearance", image: bloomMagicImg, description: "Čerešňový kvet" },
-  { id: "autumn-leaves", name: "Autumn Leaves", category: "fanciful", image: paperFallImg, description: "Jesenné lístie" },
-  { id: "tropical-paradise", name: "Tropical Paradise", category: "fanciful", image: sendRosesImg, description: "Tropický raj" },
-  { id: "northern-lights", name: "Northern Lights", category: "fanciful", image: earthZoomOutImg, description: "Polárna žiara", isHot: true },
-  { id: "shooting-star", name: "Shooting Star", category: "fanciful", image: flyingImg, description: "Padajúca hviezda" },
-  { id: "crown-jewels", name: "Crown Jewels", category: "appearance", image: styleMeImg, description: "Korunové klenoty" },
+  { id: "mermaid-tail", name: "Mermaid Tail", category: "fanciful", image: mermaidTailImg, description: "Morský chvost" },
+  { id: "ninja-stealth", name: "Ninja Stealth", category: "heroes", image: ninjaStealthImg, description: "Ninja nenápadnosť" },
+  { id: "fairy-godmother", name: "Fairy Godmother", category: "fanciful", image: fairyGodmotherImg, description: "Dobrá víla" },
+  { id: "pirate-adventure", name: "Pirate Adventure", category: "entertainment", image: pirateAdventureImg, description: "Pirátske dobrodružstvo" },
+  { id: "bubble-bounce", name: "Bubble Bounce", category: "fanciful", image: bubbleBounceImg, description: "Skákanie v bublinách" },
+  { id: "neon-glow", name: "Neon Glow", category: "fanciful", image: neonGlowImg, description: "Neónová žiara", isHot: true },
+  { id: "samurai-warrior", name: "Samurai Warrior", category: "heroes", image: samuraiWarriorImg, description: "Samurajský bojovník" },
+  { id: "candy-land", name: "Candy Land", category: "entertainment", image: candyLandImg, description: "Cukrová krajina" },
+  { id: "time-freeze", name: "Time Freeze", category: "fanciful", image: timeFreezeImg, description: "Zastavenie času" },
+  { id: "fire-phoenix", name: "Fire Phoenix", category: "heroes", image: firePhoenixImg, description: "Ohnivý fénix", isHot: true },
+  { id: "ice-queen", name: "Ice Queen", category: "heroes", image: iceQueenImg, description: "Ľadová kráľovná" },
+  { id: "breakdance", name: "Breakdance", category: "dance", image: breakdanceImg, description: "Breakdance" },
+  { id: "galaxy-portal", name: "Galaxy Portal", category: "fanciful", image: galaxyPortalImg, description: "Galaktický portál" },
+  { id: "steampunk", name: "Steampunk", category: "appearance", image: steampunkImg, description: "Steampunk štýl" },
+  { id: "baby-filter", name: "Baby Filter", category: "appearance", image: babyFilterImg, description: "Detský filter" },
+  { id: "old-age", name: "Old Age", category: "appearance", image: oldAgeImg, description: "Staroba" },
+  { id: "elf-ears", name: "Elf Ears", category: "fanciful", image: elfEarsImg, description: "Elfie uši" },
+  { id: "werewolf", name: "Werewolf", category: "heroes", image: werewolfImg, description: "Vlkodlak" },
+  { id: "astronaut-space", name: "Astronaut Space", category: "heroes", image: astronautSpaceImg, description: "Astronaut vo vesmíre", isHot: true },
+  { id: "pixel-art", name: "Pixel Art", category: "entertainment", image: pixelArtImg, description: "Pixel art" },
+  { id: "oil-painting", name: "Oil Painting", category: "appearance", image: oilPaintingImg, description: "Olejomaľba" },
+  { id: "comic-book", name: "Comic Book", category: "entertainment", image: comicBookImg, description: "Komiks" },
+  { id: "hologram", name: "Hologram", category: "fanciful", image: hologramImg, description: "Hologram" },
+  { id: "ghost-spirit", name: "Ghost Spirit", category: "fanciful", image: ghostSpiritImg, description: "Duch" },
+  { id: "clown-makeup", name: "Clown Makeup", category: "entertainment", image: clownMakeupImg, description: "Klaunský make-up" },
+  { id: "tribal-paint", name: "Tribal Paint", category: "appearance", image: tribalPaintImg, description: "Kmeňové maľovanie" },
+  { id: "bunny-ears", name: "Bunny Ears", category: "pets", image: bunnyEarsImg, description: "Zajačie uši" },
+  { id: "cat-whiskers", name: "Cat Whiskers", category: "pets", image: catWhiskersImg, description: "Mačacie fúzy" },
+  { id: "dog-filter", name: "Dog Filter", category: "pets", image: dogFilterImg, description: "Psí filter" },
+  { id: "unicorn-horn", name: "Unicorn Horn", category: "fanciful", image: unicornHornImg, description: "Jednorožcový roh" },
+  { id: "devil-horns", name: "Devil Horns", category: "entertainment", image: devilHornsImg, description: "Diablove rohy" },
+  { id: "halo-angel", name: "Halo Angel", category: "heroes", image: haloAngelImg, description: "Svätožiara anjela" },
+  { id: "matrix-code", name: "Matrix Code", category: "entertainment", image: matrixCodeImg, description: "Matrix kód", isHot: true },
+  { id: "sunflower-crown", name: "Sunflower Crown", category: "appearance", image: sunflowerCrownImg, description: "Slnečnicová koruna" },
+  { id: "rose-petals", name: "Rose Petals", category: "interactions", image: rosePetalsImg, description: "Ružové lupene" },
+  { id: "confetti-blast", name: "Confetti Blast", category: "fanciful", image: confettiBlastImg, description: "Konfetový výbuch" },
+  { id: "laser-eyes", name: "Laser Eyes", category: "heroes", image: laserEyesImg, description: "Laserové oči" },
+  { id: "fire-breath", name: "Fire Breath", category: "heroes", image: fireBreathImg, description: "Ohnivý dych" },
+  { id: "water-splash", name: "Water Splash", category: "fanciful", image: waterSplashImg, description: "Vodný šplech" },
+  { id: "thunder-storm", name: "Thunder Storm", category: "fanciful", image: thunderStormImg, description: "Búrka s bleskami" },
+  { id: "cherry-blossom", name: "Cherry Blossom", category: "appearance", image: cherryBlossomImg, description: "Čerešňový kvet" },
+  { id: "autumn-leaves", name: "Autumn Leaves", category: "fanciful", image: autumnLeavesImg, description: "Jesenné lístie" },
+  { id: "tropical-paradise", name: "Tropical Paradise", category: "fanciful", image: tropicalParadiseImg, description: "Tropický raj" },
+  { id: "northern-lights", name: "Northern Lights", category: "fanciful", image: northernLightsImg, description: "Polárna žiara", isHot: true },
+  { id: "shooting-star", name: "Shooting Star", category: "fanciful", image: shootingStarImg, description: "Padajúca hviezda" },
+  { id: "crown-jewels", name: "Crown Jewels", category: "appearance", image: crownJewelsImg, description: "Korunové klenoty" },
 ];
 
 const AIGeneration = () => {
