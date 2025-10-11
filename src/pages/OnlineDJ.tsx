@@ -315,6 +315,13 @@ export default function OnlineDJ() {
       }
       setDeckA(track);
       setPlayingA(false);
+      // Load the audio file after setting the track
+      setTimeout(() => {
+        if (audioRefA.current) {
+          audioRefA.current.load();
+          console.log("Deck A loaded:", track.title, track.audio_url);
+        }
+      }, 100);
       toast.success(`${track.title} nahraný do Deck A`);
     } else {
       // Reset source if exists
@@ -324,6 +331,13 @@ export default function OnlineDJ() {
       }
       setDeckB(track);
       setPlayingB(false);
+      // Load the audio file after setting the track
+      setTimeout(() => {
+        if (audioRefB.current) {
+          audioRefB.current.load();
+          console.log("Deck B loaded:", track.title, track.audio_url);
+        }
+      }, 100);
       toast.success(`${track.title} nahraný do Deck B`);
     }
   };
@@ -333,6 +347,8 @@ export default function OnlineDJ() {
     const isPlaying = deck === 'A' ? playingA : playingB;
     const setPlaying = deck === 'A' ? setPlayingA : setPlayingB;
 
+    console.log(`Toggle play ${deck}:`, { audio: !!audio, isPlaying, audioContext: audioContextRef.current?.state });
+
     if (!audio) {
       toast.error("Najprv nahraj skladbu");
       return;
@@ -340,6 +356,7 @@ export default function OnlineDJ() {
 
     // Resume AudioContext if it's suspended
     if (audioContextRef.current?.state === 'suspended') {
+      console.log("Resuming AudioContext");
       await audioContextRef.current.resume();
     }
 
@@ -347,13 +364,15 @@ export default function OnlineDJ() {
       if (isPlaying) {
         audio.pause();
         setPlaying(false);
+        console.log(`${deck} paused`);
       } else {
         await audio.play();
         setPlaying(true);
+        console.log(`${deck} playing`, audio.currentTime, audio.duration);
       }
     } catch (error) {
       console.error("Playback error:", error);
-      toast.error("Chyba pri prehrávaní");
+      toast.error("Chyba pri prehrávaní: " + error);
     }
   };
 
