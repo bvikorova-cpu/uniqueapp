@@ -53,55 +53,66 @@ const Subscription = () => {
     if (!user) return;
 
     try {
-      // TODO: Integrate with Tatra Banka payment gateway
-      toast({
-        title: "Platba pripravená",
-        description: "Tu bude integrácia s platobnou bránou Tatra banky",
-      });
-
-      const expiresAt = tier !== 'free' 
-        ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-        : null;
-
-      const { error } = await supabase
-        .from('subscriptions')
-        .insert({
-          user_id: user.id,
-          tier: tier as 'free' | 'basic' | 'premium' | 'business',
-          price,
-          expires_at: expiresAt,
-          status: 'active',
+      if (tier === 'free') {
+        toast({
+          title: "Free tier",
+          description: "Už používate free tier",
         });
+        return;
+      }
+
+      // Create Stripe checkout session
+      const { data, error } = await supabase.functions.invoke('create-subscription-checkout', {
+        body: { tier }
+      });
 
       if (error) throw error;
 
-      // Create transaction record
-      await supabase
-        .from('transactions')
-        .insert({
-          user_id: user.id,
-          transaction_type: 'subscription',
-          amount: price,
-          commission_rate: 0,
-          commission_amount: price,
-          status: 'completed',
-        });
-
-      toast({
-        title: "Úspech!",
-        description: `Predplatné ${tier.toUpperCase()} bolo aktivované`,
-      });
-
-      setCurrentTier(tier);
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
     } catch (error) {
       console.error('Subscription error:', error);
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa aktivovať predplatné",
+        description: "Nepodarilo sa vytvoriť platbu",
         variant: "destructive",
       });
     }
   };
+
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const success = urlParams.get('success');
+      const tier = urlParams.get('tier');
+
+      if (success === 'true' && tier) {
+        toast({
+          title: "Platba prebieha",
+          description: "Overujem stav predplatného...",
+        });
+
+        // Check subscription status
+        const { data, error } = await supabase.functions.invoke('check-subscription');
+        
+        if (!error && data?.tier) {
+          setCurrentTier(data.tier);
+          toast({
+            title: "Úspech!",
+            description: `Predplatné ${tier.toUpperCase()} bolo aktivované`,
+          });
+        }
+
+        // Clean URL
+        window.history.replaceState({}, '', '/subscription');
+      }
+    };
+
+    if (user) {
+      checkPaymentStatus();
+    }
+  }, [user]);
 
   if (loading) {
     return <div className="min-h-screen bg-background flex items-center justify-center">Načítavam...</div>;

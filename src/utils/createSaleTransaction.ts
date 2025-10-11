@@ -18,7 +18,32 @@ export const createSaleTransaction = async ({
   commissionRate,
 }: CreateSaleTransactionParams) => {
   try {
-    const commissionAmount = (totalAmount * commissionRate) / 100;
+    // Get seller's subscription to apply correct commission
+    const { data: subscription } = await supabase
+      .from('subscriptions')
+      .select('tier')
+      .eq('user_id', sellerId)
+      .eq('status', 'active')
+      .maybeSingle();
+
+    let actualCommissionRate = commissionRate;
+    
+    // Apply commission based on subscription tier
+    if (subscription) {
+      switch (subscription.tier) {
+        case 'premium':
+        case 'business':
+          actualCommissionRate = 0; // No commission
+          break;
+        case 'basic':
+          actualCommissionRate = 3; // 3% commission
+          break;
+        default:
+          actualCommissionRate = 5; // 5% for free tier
+      }
+    }
+
+    const commissionAmount = (totalAmount * actualCommissionRate) / 100;
     const sellerAmount = totalAmount - commissionAmount;
 
     const { data, error } = await supabase

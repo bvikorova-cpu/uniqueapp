@@ -84,8 +84,7 @@ const App = () => (
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/subscription" element={<Subscription />} />
-          <Route path="/ai-credits" element={<AICreditsStore />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/ai-credits-store" element={<AICreditsStore />} />
           <Route path="/admin/transactions" element={<AdminTransactions />} />
           <Route path="/earnings" element={<Earnings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
