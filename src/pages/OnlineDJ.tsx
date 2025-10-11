@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Play, Pause, Volume2, Music, Disc3, Radio, Sparkles } from "lucide-react";
+import { Play, Pause, Volume2, Music, Disc3, Radio, Sparkles, Download, Circle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -45,6 +45,12 @@ export default function OnlineDJ() {
   const [reverbB, setReverbB] = useState([0]);
   const [delayA, setDelayA] = useState([0]);
   const [delayB, setDelayB] = useState([0]);
+  
+  // Recording state
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamDestinationRef = useRef<MediaStreamAudioDestinationNode | null>(null);
 
   const audioRefA = useRef<HTMLAudioElement | null>(null);
   const audioRefB = useRef<HTMLAudioElement | null>(null);
@@ -84,6 +90,9 @@ export default function OnlineDJ() {
     // Initialize Web Audio API
     audioContextRef.current = new AudioContext();
     
+    // Create stream destination for recording
+    streamDestinationRef.current = audioContextRef.current.createMediaStreamDestination();
+    
     // Deck A chain
     gainNodeA.current = audioContextRef.current.createGain();
     filterNodeA.current = audioContextRef.current.createBiquadFilter();
@@ -121,6 +130,7 @@ export default function OnlineDJ() {
     delayNodeA.current.connect(delayGainA.current);
     delayGainA.current.connect(filterNodeA.current);
     reverbGainA.current.connect(audioContextRef.current.destination);
+    reverbGainA.current.connect(streamDestinationRef.current);
     
     // Connect nodes B
     gainNodeB.current.connect(filterNodeB.current);
@@ -129,6 +139,7 @@ export default function OnlineDJ() {
     delayNodeB.current.connect(delayGainB.current);
     delayGainB.current.connect(filterNodeB.current);
     reverbGainB.current.connect(audioContextRef.current.destination);
+    reverbGainB.current.connect(streamDestinationRef.current);
 
     return () => {
       audioContextRef.current?.close();
@@ -308,6 +319,63 @@ export default function OnlineDJ() {
       }
       setPlaying(!isPlaying);
     }
+  };
+
+  const startRecording = () => {
+    if (!streamDestinationRef.current) {
+      toast.error("Audio systém nie je pripravený");
+      return;
+    }
+
+    try {
+      const stream = streamDestinationRef.current.stream;
+      const recorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      const chunks: Blob[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
+      };
+
+      recorder.onstop = () => {
+        setRecordedChunks(chunks);
+      };
+
+      recorder.start();
+      recorderRef.current = recorder;
+      setIsRecording(true);
+      toast.success("Nahrávanie spustené!");
+    } catch (error) {
+      console.error("Error starting recording:", error);
+      toast.error("Chyba pri spustení nahrávania");
+    }
+  };
+
+  const stopRecording = () => {
+    if (recorderRef.current && isRecording) {
+      recorderRef.current.stop();
+      setIsRecording(false);
+      toast.success("Nahrávanie ukončené!");
+    }
+  };
+
+  const downloadRecording = () => {
+    if (recordedChunks.length === 0) {
+      toast.error("Žiadna nahrávka na stiahnutie");
+      return;
+    }
+
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dj-mix-${Date.now()}.webm`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("Mix stiahnutý!");
   };
 
   return (
@@ -614,6 +682,56 @@ export default function OnlineDJ() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Recording Controls */}
+        <Card className="mb-6 bg-gradient-to-r from-pink-950/30 to-purple-950/30 border-pink-500/30">
+          <CardHeader>
+            <CardTitle className="text-center flex items-center justify-center gap-2">
+              <Music className="h-5 w-5" />
+              Nahrávanie Mixu
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-center gap-4">
+              {!isRecording ? (
+                <Button
+                  onClick={startRecording}
+                  size="lg"
+                  className="bg-red-600 hover:bg-red-700"
+                  disabled={!deckA && !deckB}
+                >
+                  <Circle className="h-5 w-5 mr-2 fill-white" />
+                  Spustiť nahrávanie
+                </Button>
+              ) : (
+                <Button
+                  onClick={stopRecording}
+                  size="lg"
+                  variant="destructive"
+                >
+                  <Pause className="h-5 w-5 mr-2" />
+                  Zastaviť nahrávanie
+                </Button>
+              )}
+              
+              {recordedChunks.length > 0 && (
+                <Button
+                  onClick={downloadRecording}
+                  size="lg"
+                  variant="outline"
+                >
+                  <Download className="h-5 w-5 mr-2" />
+                  Stiahnuť Mix
+                </Button>
+              )}
+            </div>
+            {isRecording && (
+              <p className="text-center text-sm text-muted-foreground mt-4 animate-pulse">
+                🔴 Nahrávam...
+              </p>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Crossfader */}
         <Card className="mb-6 bg-gradient-to-r from-blue-950/30 via-purple-950/30 to-red-950/30 border-purple-500/30">
