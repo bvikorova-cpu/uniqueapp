@@ -63,6 +63,12 @@ import snowGlobeImg from "@/assets/effects/snow-globe.jpg";
 import butterflyWingsImg from "@/assets/effects/butterfly-wings.jpg";
 import vampireModeImg from "@/assets/effects/vampire-mode.jpg";
 import plushiePartyImg from "@/assets/effects/plushie-party.jpg";
+import rainbowAuraImg from "@/assets/effects/rainbow-aura.jpg";
+import zombieWalkImg from "@/assets/effects/zombie-walk.jpg";
+import superheroLandingImg from "@/assets/effects/superhero-landing.jpg";
+import crystalFreezeImg from "@/assets/effects/crystal-freeze.jpg";
+import discoBallImg from "@/assets/effects/disco-ball.jpg";
+import dragonRiderImg from "@/assets/effects/dragon-rider.jpg";
 
 type EffectCategory = "all" | "interactions" | "pets" | "appearance" | "entertainment" | "heroes" | "fanciful" | "dance" | "emotions";
 
@@ -135,12 +141,12 @@ const aiEffects: AIEffect[] = [
   { id: "vampire-mode", name: "Vampire Mode", category: "heroes", image: vampireModeImg, description: "Upírsky režim" },
   { id: "plushie-party", name: "Plushie Party", category: "pets", image: plushiePartyImg, description: "Párty plyšákov" },
   
-  { id: "rainbow-aura", name: "Rainbow Aura", category: "fanciful", image: bloomMagicImg, description: "Dúhová aura" },
-  { id: "zombie-walk", name: "Zombie Walk", category: "entertainment", image: wildLaughImg, description: "Zombie chôdza" },
-  { id: "superhero-landing", name: "Superhero Landing", category: "heroes", image: holyWingsImg, description: "Pristátie superhrdinu" },
-  { id: "crystal-freeze", name: "Crystal Freeze", category: "fanciful", image: earthZoomInImg, description: "Kryštálové zamrznutie" },
-  { id: "disco-ball", name: "Disco Ball", category: "dance", image: swayDanceImg, description: "Disco guľa" },
-  { id: "dragon-rider", name: "Dragon Rider", category: "heroes", image: beastCompanionImg, description: "Jazdec na drakovi", isHot: true },
+  { id: "rainbow-aura", name: "Rainbow Aura", category: "fanciful", image: rainbowAuraImg, description: "Dúhová aura" },
+  { id: "zombie-walk", name: "Zombie Walk", category: "entertainment", image: zombieWalkImg, description: "Zombie chôdza" },
+  { id: "superhero-landing", name: "Superhero Landing", category: "heroes", image: superheroLandingImg, description: "Pristátie superhrdinu" },
+  { id: "crystal-freeze", name: "Crystal Freeze", category: "fanciful", image: crystalFreezeImg, description: "Kryštálové zamrznutie" },
+  { id: "disco-ball", name: "Disco Ball", category: "dance", image: discoBallImg, description: "Disco guľa" },
+  { id: "dragon-rider", name: "Dragon Rider", category: "heroes", image: dragonRiderImg, description: "Jazdec na drakovi", isHot: true },
   { id: "mermaid-tail", name: "Mermaid Tail", category: "fanciful", image: becomeFemaleImg, description: "Morský chvost" },
   { id: "ninja-stealth", name: "Ninja Stealth", category: "heroes", image: kungfuClubImg, description: "Ninja nenápadnosť" },
   { id: "fairy-godmother", name: "Fairy Godmother", category: "fanciful", image: bloomMagicImg, description: "Dobrá víla" },
