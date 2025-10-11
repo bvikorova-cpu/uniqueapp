@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 
 interface NotificationData {
@@ -326,6 +326,12 @@ const Navbar = () => {
                       <Link to="/ai-credits" className="w-full cursor-pointer">
                         <Sparkles className="h-4 w-4 mr-2" />
                         AI Kredity
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/earnings" className="w-full cursor-pointer">
+                        <Euro className="h-4 w-4 mr-2" />
+                        Moje zárobky
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>

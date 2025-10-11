@@ -39,6 +39,7 @@ import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
 import NotFound from "./pages/NotFound";
 import AdminTransactions from "./pages/AdminTransactions";
+import Earnings from "./pages/Earnings";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,7 @@ const App = () => (
           <Route path="/ai-credits" element={<AICreditsStore />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/transactions" element={<AdminTransactions />} />
+          <Route path="/earnings" element={<Earnings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
