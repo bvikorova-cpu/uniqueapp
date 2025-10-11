@@ -55,6 +55,8 @@ export default function OnlineDJ() {
   const audioRefA = useRef<HTMLAudioElement | null>(null);
   const audioRefB = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceNodeA = useRef<MediaElementAudioSourceNode | null>(null);
+  const sourceNodeB = useRef<MediaElementAudioSourceNode | null>(null);
   const gainNodeA = useRef<GainNode | null>(null);
   const gainNodeB = useRef<GainNode | null>(null);
   const filterNodeA = useRef<BiquadFilterNode | null>(null);
@@ -147,16 +149,24 @@ export default function OnlineDJ() {
   }, []);
 
   useEffect(() => {
-    if (audioRefA.current && gainNodeA.current && audioContextRef.current) {
-      const source = audioContextRef.current.createMediaElementSource(audioRefA.current);
-      source.connect(gainNodeA.current);
+    if (audioRefA.current && gainNodeA.current && audioContextRef.current && !sourceNodeA.current) {
+      try {
+        sourceNodeA.current = audioContextRef.current.createMediaElementSource(audioRefA.current);
+        sourceNodeA.current.connect(gainNodeA.current);
+      } catch (error) {
+        console.error("Error creating audio source A:", error);
+      }
     }
   }, [deckA]);
 
   useEffect(() => {
-    if (audioRefB.current && gainNodeB.current && audioContextRef.current) {
-      const source = audioContextRef.current.createMediaElementSource(audioRefB.current);
-      source.connect(gainNodeB.current);
+    if (audioRefB.current && gainNodeB.current && audioContextRef.current && !sourceNodeB.current) {
+      try {
+        sourceNodeB.current = audioContextRef.current.createMediaElementSource(audioRefB.current);
+        sourceNodeB.current.connect(gainNodeB.current);
+      } catch (error) {
+        console.error("Error creating audio source B:", error);
+      }
     }
   }, [deckB]);
 
