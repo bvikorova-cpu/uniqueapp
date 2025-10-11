@@ -88,6 +88,7 @@ const App = () => (
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/subscription" element={<Subscription />} />
           <Route path="/ai-credits-store" element={<AICreditsStore />} />
+          <Route path="/ai-credits" element={<AICreditsStore />} />
           <Route path="/admin/transactions" element={<AdminTransactions />} />
           <Route path="/earnings" element={<Earnings />} />
           <Route path="/live/:streamId" element={<LiveStream />} />
