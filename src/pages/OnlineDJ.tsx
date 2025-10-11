@@ -306,28 +306,52 @@ export default function OnlineDJ() {
 
   const loadTrack = (track: any, deck: 'A' | 'B') => {
     if (deck === 'A') {
+      // Reset source if exists
+      if (sourceNodeA.current) {
+        sourceNodeA.current.disconnect();
+        sourceNodeA.current = null;
+      }
       setDeckA(track);
       setPlayingA(false);
-      toast.success(`${track.title} loaded to Deck A`);
+      toast.success(`${track.title} nahraný do Deck A`);
     } else {
+      // Reset source if exists
+      if (sourceNodeB.current) {
+        sourceNodeB.current.disconnect();
+        sourceNodeB.current = null;
+      }
       setDeckB(track);
       setPlayingB(false);
-      toast.success(`${track.title} loaded to Deck B`);
+      toast.success(`${track.title} nahraný do Deck B`);
     }
   };
 
-  const togglePlay = (deck: 'A' | 'B') => {
+  const togglePlay = async (deck: 'A' | 'B') => {
     const audio = deck === 'A' ? audioRefA.current : audioRefB.current;
     const isPlaying = deck === 'A' ? playingA : playingB;
     const setPlaying = deck === 'A' ? setPlayingA : setPlayingB;
 
-    if (audio) {
+    if (!audio) {
+      toast.error("Najprv nahraj skladbu");
+      return;
+    }
+
+    // Resume AudioContext if it's suspended
+    if (audioContextRef.current?.state === 'suspended') {
+      await audioContextRef.current.resume();
+    }
+
+    try {
       if (isPlaying) {
         audio.pause();
+        setPlaying(false);
       } else {
-        audio.play();
+        await audio.play();
+        setPlaying(true);
       }
-      setPlaying(!isPlaying);
+    } catch (error) {
+      console.error("Playback error:", error);
+      toast.error("Chyba pri prehrávaní");
     }
   };
 
