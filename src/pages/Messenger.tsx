@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Search, MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import VideoCall from "@/components/messenger/VideoCall";
 
 interface Profile {
   id: string;
@@ -384,14 +385,24 @@ const Messenger = () => {
           <Card className="col-span-1 md:col-span-2 p-4 flex flex-col">
             {selectedConversation ? (
               <>
-                <div className="flex items-center gap-3 pb-4 border-b">
-                  <Avatar>
-                    <AvatarImage src={otherUser?.avatar_url || undefined} />
-                    <AvatarFallback>{otherUser?.full_name?.[0] || "U"}</AvatarFallback>
-                  </Avatar>
-                  <h3 className="text-xl font-semibold">
-                    {otherUser?.full_name || "Používateľ"}
-                  </h3>
+                <div className="flex items-center justify-between gap-3 pb-4 border-b">
+                  <div className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarImage src={otherUser?.avatar_url || undefined} />
+                      <AvatarFallback>{otherUser?.full_name?.[0] || "U"}</AvatarFallback>
+                    </Avatar>
+                    <h3 className="text-xl font-semibold">
+                      {otherUser?.full_name || "Používateľ"}
+                    </h3>
+                  </div>
+                  {otherUser && (
+                    <VideoCall
+                      conversationId={selectedConversation}
+                      userId={user.id}
+                      otherUserId={otherUser.id}
+                      otherUserName={otherUser.full_name || "Používateľ"}
+                    />
+                  )}
                 </div>
 
                 <ScrollArea className="flex-1 py-4">
