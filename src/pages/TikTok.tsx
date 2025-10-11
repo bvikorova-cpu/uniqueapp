@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle, Bookmark, Eye, Flag, Download, Facebook, Instagram, Mail, Link2, Twitter, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle, Bookmark, Eye, Flag, Download, Facebook, Instagram, Mail, Link2, Twitter, Trash2, Smile } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -40,6 +41,12 @@ interface Comment {
   created_at: string;
 }
 
+interface Reaction {
+  emoji: string;
+  count: number;
+  userReacted: boolean;
+}
+
 const TikTok = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -63,9 +70,12 @@ const TikTok = () => {
   const [savedVideos, setSavedVideos] = useState<Set<string>>(new Set());
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [videoToDelete, setVideoToDelete] = useState<string | null>(null);
+  const [videoReactions, setVideoReactions] = useState<Map<string, Reaction[]>>(new Map());
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const viewedVideos = useRef<Set<string>>(new Set());
   const previewVideoRef = useRef<HTMLVideoElement>(null);
+
+  const EMOJI_OPTIONS = ['❤️', '😂', '😮', '😢', '😡', '👍', '👏', '🔥', '🎉', '💯'];
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -94,8 +104,9 @@ const TikTok = () => {
       fetchVideos();
       fetchLikedVideos();
       fetchFollowing();
+      videos.forEach(video => fetchReactions(video.id));
     }
-  }, [user]);
+  }, [user, videos.length]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -530,6 +541,58 @@ const TikTok = () => {
     });
   };
 
+  const fetchReactions = async (videoId: string) => {
+    const { data: reactionsData } = await supabase
+      .from("video_reactions")
+      .select("emoji, user_id")
+      .eq("video_id", videoId);
+
+    if (!reactionsData) return;
+
+    const emojiCounts = new Map<string, { count: number; users: Set<string> }>();
+    
+    reactionsData.forEach((reaction) => {
+      if (!emojiCounts.has(reaction.emoji)) {
+        emojiCounts.set(reaction.emoji, { count: 0, users: new Set() });
+      }
+      const current = emojiCounts.get(reaction.emoji)!;
+      current.count++;
+      current.users.add(reaction.user_id);
+    });
+
+    const reactions: Reaction[] = Array.from(emojiCounts.entries()).map(([emoji, data]) => ({
+      emoji,
+      count: data.count,
+      userReacted: data.users.has(user?.id || ''),
+    }));
+
+    setVideoReactions(prev => new Map(prev).set(videoId, reactions));
+  };
+
+  const toggleReaction = async (videoId: string, emoji: string) => {
+    const reactions = videoReactions.get(videoId) || [];
+    const reaction = reactions.find(r => r.emoji === emoji);
+
+    if (reaction?.userReacted) {
+      await supabase
+        .from("video_reactions")
+        .delete()
+        .eq("video_id", videoId)
+        .eq("user_id", user.id)
+        .eq("emoji", emoji);
+    } else {
+      await supabase
+        .from("video_reactions")
+        .insert({
+          video_id: videoId,
+          user_id: user.id,
+          emoji,
+        });
+    }
+
+    await fetchReactions(videoId);
+  };
+
   const handleDeleteVideo = async () => {
     if (!videoToDelete) return;
 
@@ -893,6 +956,39 @@ const TikTok = () => {
                     </div>
                     <span className="text-xs font-semibold">Stiahnuť</span>
                   </button>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110">
+                        <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
+                          <Smile className="h-7 w-7" />
+                        </div>
+                        <span className="text-xs font-semibold">Reakcie</span>
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent side="left" className="w-auto p-2">
+                      <div className="grid grid-cols-5 gap-2">
+                        {EMOJI_OPTIONS.map((emoji) => {
+                          const reactions = videoReactions.get(video.id) || [];
+                          const reaction = reactions.find(r => r.emoji === emoji);
+                          return (
+                            <button
+                              key={emoji}
+                              onClick={() => toggleReaction(video.id, emoji)}
+                              className={`text-2xl p-2 rounded-lg transition-all hover:scale-125 ${
+                                reaction?.userReacted ? 'bg-primary/20 scale-110' : 'hover:bg-accent'
+                              }`}
+                            >
+                              {emoji}
+                              {reaction && reaction.count > 0 && (
+                                <span className="text-xs ml-1">{reaction.count}</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
 
                   <div className="flex flex-col items-center gap-1 text-white">
                     <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
