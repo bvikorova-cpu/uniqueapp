@@ -17,7 +17,7 @@ const SUBSCRIPTION_LIMITS: Record<string, SubscriptionLimits> = {
     bazaarListingsPerMonth: 5,
     auctionListingsPerMonth: 3,
     commissionRate: 5,
-    aiGenerationsPerMonth: 5,
+    aiGenerationsPerMonth: 5, // Free: 5 uses then need to buy credits
     featuredListingsPerMonth: 0,
     hasAnalytics: false,
   },
@@ -26,7 +26,7 @@ const SUBSCRIPTION_LIMITS: Record<string, SubscriptionLimits> = {
     bazaarListingsPerMonth: 10,
     auctionListingsPerMonth: 10,
     commissionRate: 3,
-    aiGenerationsPerMonth: 20,
+    aiGenerationsPerMonth: 20, // Basic: 20 included monthly
     featuredListingsPerMonth: 1,
     hasAnalytics: false,
   },

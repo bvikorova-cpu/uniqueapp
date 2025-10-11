@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          last_used_at: string | null
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_used_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          last_used_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_usage_history: {
+        Row: {
+          created_at: string
+          credits_used: number
+          description: string | null
+          id: string
+          usage_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          description?: string | null
+          id?: string
+          usage_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          description?: string | null
+          id?: string
+          usage_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       auction_bids: {
         Row: {
           auction_id: string
@@ -795,6 +852,45 @@ export type Database = {
           location?: string
           name?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      featured_listings: {
+        Row: {
+          created_at: string
+          duration_days: number
+          expires_at: string
+          id: string
+          is_active: boolean
+          item_id: string
+          item_type: string
+          price: number
+          started_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_days?: number
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          item_id: string
+          item_type: string
+          price: number
+          started_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_days?: number
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          item_id?: string
+          item_type?: string
+          price?: number
+          started_at?: string
           user_id?: string
         }
         Relationships: []
@@ -2218,6 +2314,10 @@ export type Database = {
       }
     }
     Functions: {
+      expire_featured_listings: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

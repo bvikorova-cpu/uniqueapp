@@ -36,6 +36,7 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import OnlineDJ from "./pages/OnlineDJ";
 import Subscription from "./pages/Subscription";
+import AICreditsStore from "./pages/AICreditsStore";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -81,6 +82,7 @@ const App = () => (
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/subscription" element={<Subscription />} />
+          <Route path="/ai-credits" element={<AICreditsStore />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

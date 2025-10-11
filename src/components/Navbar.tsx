@@ -322,6 +322,12 @@ const Navbar = () => {
                         Predplatné
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/ai-credits" className="w-full cursor-pointer">
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        AI Kredity
+                      </Link>
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button onClick={handleLogout} variant="outline">
