@@ -59,7 +59,43 @@ const Auction = () => {
   useEffect(() => {
     checkUser();
     fetchAuctions();
+    checkPaymentStatus();
   }, []);
+
+  const checkPaymentStatus = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    const sessionId = urlParams.get('session_id');
+
+    if (paymentStatus === 'success' && sessionId) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        const { data, error } = await supabase.functions.invoke('verify-payment', {
+          body: { session_id: sessionId },
+          headers: session?.access_token ? {
+            Authorization: `Bearer ${session.access_token}`
+          } : undefined
+        });
+
+        if (error) throw error;
+
+        toast.success("Platba úspešná! Váš nákup bol spracovaný.");
+
+        // Remove URL parameters
+        window.history.replaceState({}, '', window.location.pathname);
+        
+        // Reload auctions
+        fetchAuctions();
+      } catch (error) {
+        console.error('Error verifying payment:', error);
+        toast.error("Nepodarilo sa overiť platbu. Kontaktujte podporu.");
+      }
+    } else if (paymentStatus === 'canceled') {
+      toast.error("Platba bola zrušená.");
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  };
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();

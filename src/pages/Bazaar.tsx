@@ -61,7 +61,54 @@ const Bazaar = () => {
   useEffect(() => {
     loadItems();
     checkCurrentUser();
+    checkPaymentStatus();
   }, []);
+
+  const checkPaymentStatus = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    const sessionId = urlParams.get('session_id');
+
+    if (paymentStatus === 'success' && sessionId) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        const { data, error } = await supabase.functions.invoke('verify-payment', {
+          body: { session_id: sessionId },
+          headers: session?.access_token ? {
+            Authorization: `Bearer ${session.access_token}`
+          } : undefined
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Platba úspešná!",
+          description: "Váš nákup bol úspešne spracovaný.",
+        });
+
+        // Remove URL parameters
+        window.history.replaceState({}, '', window.location.pathname);
+        
+        // Reload items to reflect changes
+        loadItems();
+      } catch (error) {
+        console.error('Error verifying payment:', error);
+        toast({
+          title: "Chyba",
+          description: "Nepodarilo sa overiť platbu. Kontaktujte podporu.",
+          variant: "destructive",
+        });
+      }
+    } else if (paymentStatus === 'canceled') {
+      toast({
+        title: "Platba zrušená",
+        description: "Platba bola zrušená.",
+        variant: "destructive",
+      });
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  };
 
   const checkCurrentUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();

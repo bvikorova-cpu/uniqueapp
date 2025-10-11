@@ -67,8 +67,9 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/bazaar?payment=success`,
+      success_url: `${req.headers.get("origin")}/bazaar?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/bazaar?payment=canceled`,
+      client_reference_id: user.id,
       metadata: {
         item_id: itemId,
         item_type: "bazaar",

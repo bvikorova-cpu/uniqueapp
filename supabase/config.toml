@@ -30,5 +30,5 @@ verify_jwt = false
 [functions.convert-to-mp3]
 verify_jwt = false
 
-[functions.stripe-webhook]
+[functions.verify-payment]
 verify_jwt = false

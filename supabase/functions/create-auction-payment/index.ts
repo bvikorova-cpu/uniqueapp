@@ -74,8 +74,9 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/auction?payment=success`,
+      success_url: `${req.headers.get("origin")}/auction?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/auction?payment=canceled`,
+      client_reference_id: user.id,
       metadata: {
         item_id: auctionId,
         item_type: "auction",
