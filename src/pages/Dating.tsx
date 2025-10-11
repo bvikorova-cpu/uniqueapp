@@ -224,7 +224,7 @@ const Dating = () => {
     setSentGifts(gifts || []);
   };
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
     if (!user) {
       toast({
         title: "Vyžaduje sa prihlásenie",
@@ -234,11 +234,26 @@ const Dating = () => {
       return;
     }
 
+    // Placeholder for payment gateway integration
+    // TODO: Integrate Tatra Banka payment gateway here
+    toast({
+      title: "Platba pripravená",
+      description: "Tu bude integrácia s platobnou bránou Tatra banky",
+    });
+
+    // For now, activate subscription directly (remove this when payment is integrated)
+    const price = planType === 'monthly' ? 2.00 : 20.00;
+    const expiresAt = planType === 'monthly' 
+      ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+      : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 365 days
+
     const { error } = await supabase
       .from("dating_subscriptions")
       .insert([{
         user_id: user.id,
-        price: 2.00,
+        price: price,
+        subscription_type: planType,
+        expires_at: expiresAt.toISOString(),
       }]);
 
     if (error) {
@@ -719,7 +734,10 @@ const Dating = () => {
   };
 
   // Subscription landing page
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('monthly');
+  
   if (!isSubscribed) {
+
     return (
       <div className="min-h-screen bg-background pt-20 pb-12">
         <div className="container mx-auto px-4 max-w-4xl">
@@ -735,35 +753,74 @@ const Dating = () => {
               Pripojte sa k tisíckam ľudí, ktorí už našli svoju polovičku. Swipujte, matchujte a chatujte!
             </p>
 
-            <Card className="max-w-md mx-auto">
-              <CardHeader className="text-center">
-                <div className="text-5xl font-bold text-pink-500 mb-2">2 €</div>
-                <p className="text-muted-foreground">mesačne</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-5 w-5 text-pink-500" />
-                    <span>Neobmedzené swipovanie</span>
+            <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+              {/* Monthly Plan */}
+              <Card className={`relative cursor-pointer transition-all ${selectedPlan === 'monthly' ? 'ring-2 ring-pink-500' : ''}`} onClick={() => setSelectedPlan('monthly')}>
+                <CardHeader className="text-center">
+                  <div className="text-5xl font-bold text-pink-500 mb-2">2 €</div>
+                  <p className="text-muted-foreground">mesačne</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Heart className="h-5 w-5 text-pink-500" />
+                      <span>Neobmedzené swipovanie</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="h-5 w-5 text-pink-500" />
+                      <span>Chat s matchmi</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-pink-500" />
+                      <span>Prémiové filtre</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <User className="h-5 w-5 text-pink-500" />
+                      <span>Detailné profily</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <MessageCircle className="h-5 w-5 text-pink-500" />
-                    <span>Chat s matchmi</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-pink-500" />
-                    <span>Prémiové filtre</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <User className="h-5 w-5 text-pink-500" />
-                    <span>Detailné profily</span>
-                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Yearly Plan */}
+              <Card className={`relative cursor-pointer transition-all ${selectedPlan === 'yearly' ? 'ring-2 ring-pink-500' : ''}`} onClick={() => setSelectedPlan('yearly')}>
+                <div className="absolute -top-3 right-4">
+                  <Badge className="bg-green-500 text-white">Ušetríte 2 mesiace!</Badge>
                 </div>
-                <Button onClick={handleSubscribe} className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600">
-                  Začať hľadať
-                </Button>
-              </CardContent>
-            </Card>
+                <CardHeader className="text-center">
+                  <div className="text-5xl font-bold text-pink-500 mb-2">20 €</div>
+                  <p className="text-muted-foreground">ročne</p>
+                  <p className="text-sm text-green-500 font-medium">Len 1,67 € / mesiac</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Heart className="h-5 w-5 text-pink-500" />
+                      <span>Neobmedzené swipovanie</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="h-5 w-5 text-pink-500" />
+                      <span>Chat s matchmi</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-pink-500" />
+                      <span>Prémiové filtre</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <User className="h-5 w-5 text-pink-500" />
+                      <span>Detailné profily</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Button 
+              onClick={() => handleSubscribe(selectedPlan)} 
+              className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+            >
+              Začať hľadať ({selectedPlan === 'monthly' ? '2 €/mesiac' : '20 €/rok'})
+            </Button>
           </div>
         </div>
       </div>
