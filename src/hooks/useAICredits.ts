@@ -60,7 +60,7 @@ export const useAICredits = () => {
     }
   };
 
-  const useCredit = async (type: 'image_generation' | 'avatar' | 'effect' | 'course', description?: string): Promise<boolean> => {
+  const useCredit = async (type: 'image_generation' | 'avatar' | 'effect' | 'course' | 'custom_generation', description?: string): Promise<boolean> => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;

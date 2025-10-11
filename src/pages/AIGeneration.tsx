@@ -250,6 +250,9 @@ const AIGeneration = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
   const [processingEffect, setProcessingEffect] = useState<string | null>(null);
+  const [customPrompt, setCustomPrompt] = useState("");
+  const [isGeneratingCustom, setIsGeneratingCustom] = useState(false);
+  const [customGeneratedImage, setCustomGeneratedImage] = useState<string | null>(null);
 
   const filteredEffects = selectedCategory === "all" 
     ? aiEffects 
@@ -363,6 +366,56 @@ const AIGeneration = () => {
     setPreviewUrl(url);
     
     toast.success("Obrázok úspešne nahratý!");
+  };
+
+  const handleGenerateCustomImage = async () => {
+    if (!customPrompt.trim()) {
+      toast.error("Zadajte popis obrázka!");
+      return;
+    }
+
+    if (credits.credits_remaining <= 0) {
+      toast.error("Nemáte dostatok AI kreditov!", {
+        action: {
+          label: "Kúpiť kredity",
+          onClick: () => navigate('/ai-credits-store')
+        }
+      });
+      return;
+    }
+
+    setIsGeneratingCustom(true);
+    setCustomGeneratedImage(null);
+
+    try {
+      const creditUsed = await useCredit('custom_generation', `Generated custom image: ${customPrompt.substring(0, 50)}`);
+      
+      if (!creditUsed) {
+        toast.error("Nepodarilo sa použiť AI kredit");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('generate-custom-image', {
+        body: { prompt: customPrompt }
+      });
+
+      if (error) throw error;
+
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      setCustomGeneratedImage(data.imageUrl);
+      toast.success("Obrázok úspešne vygenerovaný!");
+      await refreshCredits();
+
+    } catch (error) {
+      console.error('Error generating custom image:', error);
+      toast.error("Nepodarilo sa vygenerovať obrázok. Skúste to znova.");
+    } finally {
+      setIsGeneratingCustom(false);
+    }
   };
 
   return (
@@ -495,8 +548,85 @@ const AIGeneration = () => {
           </div>
         )}
 
-        {/* Upload Section */}
+        {/* Custom Image Generation Section */}
         <div className="mt-12 max-w-4xl mx-auto">
+          <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Vlastné AI generovanie
+              </CardTitle>
+              <CardDescription>
+                Vytvorte úplne nový obrázok pomocou AI podľa vášho popisu
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="custom-prompt" className="text-sm font-medium">
+                  Popíšte obrázok, ktorý chcete vytvoriť
+                </label>
+                <textarea
+                  id="custom-prompt"
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                  placeholder="Napríklad: Krásny západ slnka nad horami, realistický štýl, vysoká kvalita..."
+                  className="w-full min-h-[120px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                  disabled={isGeneratingCustom}
+                />
+              </div>
+              
+              <Button
+                onClick={handleGenerateCustomImage}
+                disabled={isGeneratingCustom || !customPrompt.trim()}
+                className="w-full"
+                size="lg"
+              >
+                {isGeneratingCustom ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Generujem obrázok...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="w-4 h-4 mr-2" />
+                    Vygenerovať obrázok (1 kredit)
+                  </>
+                )}
+              </Button>
+
+              {customGeneratedImage && (
+                <div className="mt-6 border rounded-lg p-4 bg-background">
+                  <div className="relative group">
+                    <img
+                      src={customGeneratedImage}
+                      alt="Vygenerovaný obrázok"
+                      className="w-full rounded-lg"
+                    />
+                    <Button
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = customGeneratedImage;
+                        link.download = `ai-generated-${Date.now()}.png`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        toast.success("Obrázok sa sťahuje!");
+                      }}
+                      className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                      size="sm"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Stiahnuť
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Upload Section */}
+        <div className="mt-8 max-w-4xl mx-auto">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -504,7 +634,7 @@ const AIGeneration = () => {
                 Nahrať súbor
               </CardTitle>
               <CardDescription>
-                Nahrajte svoj obrázok alebo video pre aplikáciu AI efektov
+                Nahrajte svoj obrázok pre aplikáciu AI efektov
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -512,7 +642,7 @@ const AIGeneration = () => {
                 <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
                   <Wand2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground mb-2">
-                    Kliknite pre nahratie obrázka alebo ho presuňte sem
+                    Kliknite pre nahratie obrázka
                   </p>
                   <p className="text-xs text-muted-foreground">
                     Podporované formáty: JPG, PNG, WEBP (max 10MB)
@@ -570,9 +700,9 @@ const AIGeneration = () => {
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Upload className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">1. Nahrajte</h3>
+                <h3 className="font-semibold mb-2">1. Vygenerujte alebo nahrajte</h3>
                 <p className="text-sm text-muted-foreground">
-                  Vyberte svoj obrázok alebo video
+                  Vytvorte vlastný obrázok AI alebo nahrajte svoj
                 </p>
               </div>
               <div className="text-center">
