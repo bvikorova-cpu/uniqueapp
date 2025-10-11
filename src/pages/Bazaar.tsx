@@ -6,10 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2 } from "lucide-react";
+import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2, Crown, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useSubscription } from "@/hooks/useSubscription";
+import { Link } from "react-router-dom";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface BazaarItem {
   id: string;
@@ -52,6 +55,7 @@ const Bazaar = () => {
     listing_type: "sell",
   });
   const { toast } = useToast();
+  const { limits, canCreateListing, calculateCommission } = useSubscription();
 
   useEffect(() => {
     loadItems();
@@ -152,6 +156,17 @@ const Bazaar = () => {
       return;
     }
 
+    // Check subscription limits
+    const canCreate = await canCreateListing('bazaar');
+    if (!canCreate) {
+      toast({
+        title: "Limit dosiahnutý",
+        description: `Dosiahli ste limit ${limits.bazaarListingsPerMonth} inzerátov/mesiac. Upgradujte predplatné pre viac.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -181,12 +196,15 @@ const Bazaar = () => {
         imageUrl = publicUrl;
       }
 
+      const price = parseFloat(formData.price);
+      const commission = calculateCommission(price);
+
       const { error: insertError } = await supabase
         .from('bazaar_items')
         .insert({
           user_id: user.id,
           title: formData.title,
-          price: parseFloat(formData.price),
+          price: price,
           location: formData.location,
           description: formData.description,
           category: formData.category,
@@ -199,7 +217,9 @@ const Bazaar = () => {
 
       toast({
         title: "Úspech",
-        description: "Inzerát bol pridaný",
+        description: commission > 0 
+          ? `Inzerát bol pridaný. Pri predaji bude účtovaná provízia ${limits.commissionRate}% (${commission.toFixed(2)}€)`
+          : "Inzerát bol pridaný bez provízie",
       });
 
       setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Ako nový", listing_type: "sell" });
@@ -335,25 +355,40 @@ const Bazaar = () => {
               Kupuj a predávaj s dôverou v našej komunite
             </p>
           </div>
-          
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="hero" size="lg">
-                <Plus className="h-5 w-5 mr-2" />
-                Pridať inzerát
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>Nový inzerát</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Typ inzerátu</label>
-                  <Select 
-                    value={formData.listing_type} 
-                    onValueChange={(value) => setFormData({...formData, listing_type: value})}
-                  >
+
+          <div className="flex flex-col gap-2">
+            {limits.bazaarListingsPerMonth !== -1 && (
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Limit: {limits.bazaarListingsPerMonth} inzerátov/mesiac • Provízia: {limits.commissionRate}%
+                  {limits.tier === 'free' && (
+                    <Link to="/subscription" className="ml-2 text-primary hover:underline">
+                      Upgradujte
+                    </Link>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
+            
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="hero" size="lg">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Pridať inzerát
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Nový inzerát</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Typ inzerátu</label>
+                    <Select 
+                      value={formData.listing_type} 
+                      onValueChange={(value) => setFormData({...formData, listing_type: value})}
+                    >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
