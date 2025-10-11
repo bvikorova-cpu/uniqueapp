@@ -29,7 +29,7 @@ serve(async (req) => {
     // Get item details
     const { data: item, error: itemError } = await supabaseClient
       .from("bazaar_items")
-      .select("*, profiles!bazaar_items_user_id_fkey(email)")
+      .select("*")
       .eq("id", itemId)
       .single();
 
@@ -84,7 +84,8 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Error in create-bazaar-payment:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

@@ -29,7 +29,7 @@ serve(async (req) => {
     // Get auction details
     const { data: auction, error: auctionError } = await supabaseClient
       .from("auction_items")
-      .select("*, profiles!auction_items_user_id_fkey(email)")
+      .select("*")
       .eq("id", auctionId)
       .single();
 
@@ -92,7 +92,8 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Error in create-auction-payment:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
