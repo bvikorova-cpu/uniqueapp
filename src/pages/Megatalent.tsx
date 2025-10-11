@@ -4,62 +4,85 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-const categories = [
-  // Umenie a kreativita
-  { value: "drawing", label: "🎨 Kreslenie" },
-  { value: "painting", label: "🖌️ Maľovanie" },
-  { value: "digital_art", label: "💻 Digitálne umenie" },
-  { value: "sculpture", label: "🗿 Socha / Modelovanie" },
-  { value: "photography", label: "📸 Fotografia" },
-  { value: "handmade", label: "✂️ Handmade výrobky" },
-  { value: "makeup_art", label: "💄 Makeup art" },
-  { value: "tattoo", label: "⚡ Najlepšie tetovanie" },
-  
-  // Hudba
-  { value: "singing", label: "🎤 Spev" },
-  { value: "instrument", label: "🎸 Hra na hudobný nástroj" },
-  { value: "music_production", label: "🎧 Tvorba hudby / DJ" },
-  { value: "beatbox", label: "🎵 Beatbox" },
-  { value: "rap", label: "🎙️ Rap / Freestyle" },
-  
-  // Tanec a pohyb
-  { value: "dance", label: "💃 Tanec" },
-  { value: "breakdance", label: "🕺 Breakdance" },
-  { value: "gymnastics", label: "🤸 Gymnastika / Akrobacia" },
-  { value: "parkour", label: "🏃 Parkour / Freerunning" },
-  
-  // Šport a fitness
-  { value: "training", label: "💪 Najlepší tréning" },
-  { value: "yoga", label: "🧘 Jóga / Pilates" },
-  { value: "martial_arts", label: "🥋 Bojové umenia" },
-  { value: "extreme_sport", label: "🛹 Extrémne športy" },
-  { value: "sport_trick", label: "⚽ Športové triky" },
-  
-  // Stand-up a zábava
-  { value: "funny_video", label: "😂 Najsmiešnejšie video" },
-  { value: "standup", label: "🎭 Stand-up / Komediálne vystúpenie" },
-  { value: "impressions", label: "🎪 Imitácie / Parodie" },
-  { value: "magic", label: "🎩 Kúzla / Ilúzie" },
-  { value: "pranks", label: "😜 Pranky / Skrytá kamera" },
-  
-  // Vzdelávanie a know-how
-  { value: "life_advice", label: "💡 Najlepšia rada do života" },
-  { value: "tutorial", label: "📚 Návod / Tutorial" },
-  { value: "cooking", label: "👨‍🍳 Varenie / Pečenie" },
-  { value: "diy", label: "🔧 DIY projekty" },
-  { value: "science", label: "🔬 Veda / Experimenty" },
-  
-  // Ostatné
-  { value: "best_selfie", label: "🤳 Najlepšie selfie" },
-  { value: "transformation", label: "✨ Transformácia (predtým/potom)" },
-  { value: "pet_talent", label: "🐾 Talent domáceho miláčika" },
-  { value: "other", label: "🌟 Iné talenty" },
+const categoryGroups = [
+  {
+    group: "🎨 Umenie & Kreativita",
+    categories: [
+      { value: "drawing", label: "🎨 Kreslenie" },
+      { value: "painting", label: "🖌️ Maľovanie" },
+      { value: "digital_art", label: "💻 Digitálne umenie" },
+      { value: "sculpture", label: "🗿 Socha / Modelovanie" },
+      { value: "photography", label: "📸 Fotografia" },
+      { value: "handmade", label: "✂️ Handmade výrobky" },
+      { value: "makeup_art", label: "💄 Makeup art" },
+      { value: "tattoo", label: "⚡ Najlepšie tetovanie" },
+    ]
+  },
+  {
+    group: "🎤 Hudba",
+    categories: [
+      { value: "singing", label: "🎤 Spev" },
+      { value: "instrument", label: "🎸 Hra na hudobný nástroj" },
+      { value: "music_production", label: "🎧 Tvorba hudby / DJ" },
+      { value: "beatbox", label: "🎵 Beatbox" },
+      { value: "rap", label: "🎙️ Rap / Freestyle" },
+    ]
+  },
+  {
+    group: "💃 Tanec & Pohyb",
+    categories: [
+      { value: "dance", label: "💃 Tanec" },
+      { value: "breakdance", label: "🕺 Breakdance" },
+      { value: "gymnastics", label: "🤸 Gymnastika / Akrobacia" },
+      { value: "parkour", label: "🏃 Parkour / Freerunning" },
+    ]
+  },
+  {
+    group: "💪 Šport & Fitness",
+    categories: [
+      { value: "training", label: "💪 Najlepší tréning" },
+      { value: "yoga", label: "🧘 Jóga / Pilates" },
+      { value: "martial_arts", label: "🥋 Bojové umenia" },
+      { value: "extreme_sport", label: "🛹 Extrémne športy" },
+      { value: "sport_trick", label: "⚽ Športové triky" },
+    ]
+  },
+  {
+    group: "😂 Zábava",
+    categories: [
+      { value: "funny_video", label: "😂 Najsmiešnejšie video" },
+      { value: "standup", label: "🎭 Stand-up / Komediálne vystúpenie" },
+      { value: "impressions", label: "🎪 Imitácie / Parodie" },
+      { value: "magic", label: "🎩 Kúzla / Ilúzie" },
+      { value: "pranks", label: "😜 Pranky / Skrytá kamera" },
+    ]
+  },
+  {
+    group: "💡 Vzdelávanie",
+    categories: [
+      { value: "life_advice", label: "💡 Najlepšia rada do života" },
+      { value: "tutorial", label: "📚 Návod / Tutorial" },
+      { value: "cooking", label: "👨‍🍳 Varenie / Pečenie" },
+      { value: "diy", label: "🔧 DIY projekty" },
+      { value: "science", label: "🔬 Veda / Experimenty" },
+    ]
+  },
+  {
+    group: "🌟 Ostatné",
+    categories: [
+      { value: "best_selfie", label: "🤳 Najlepšie selfie" },
+      { value: "transformation", label: "✨ Transformácia (predtým/potom)" },
+      { value: "pet_talent", label: "🐾 Talent domáceho miláčika" },
+      { value: "other", label: "🌟 Iné talenty" },
+    ]
+  },
 ];
 
 const Megatalent = () => {
@@ -472,18 +495,38 @@ const Megatalent = () => {
                 )}
               </CardHeader>
               <CardContent className="space-y-4">
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Vyberte kategóriu" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.value} value={cat.value}>
-                        {cat.label}
-                      </SelectItem>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Vybraná kategória:</p>
+                  <Badge variant="outline" className="text-sm">
+                    {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Vyberte kategóriu"}
+                  </Badge>
+                </div>
+                
+                <ScrollArea className="h-[400px] rounded-md border p-4">
+                  <Accordion type="single" collapsible className="w-full">
+                    {categoryGroups.map((group, idx) => (
+                      <AccordionItem key={idx} value={`group-${idx}`}>
+                        <AccordionTrigger className="text-sm font-medium">
+                          {group.group}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-1">
+                            {group.categories.map((cat) => (
+                              <Button
+                                key={cat.value}
+                                variant={selectedCategory === cat.value ? "default" : "ghost"}
+                                className="w-full justify-start text-sm"
+                                onClick={() => setSelectedCategory(cat.value)}
+                              >
+                                {cat.label}
+                              </Button>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </Accordion>
+                </ScrollArea>
                 
                 <input
                   ref={photoInputRef}
@@ -556,102 +599,88 @@ const Megatalent = () => {
 
           {/* Feed */}
           <div className="lg:col-span-2 space-y-6">
-            <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 gap-2 h-auto p-2 bg-card/50 mb-6">
-                {categories.map((cat) => (
-                  <TabsTrigger 
-                    key={cat.value} 
-                    value={cat.value} 
-                    className="text-sm py-3 px-4 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                  >
-                    {cat.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">
+                {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Príspevky"}
+              </h2>
+              <Badge className="bg-gold text-gold-foreground">
+                <TrendingUp className="h-4 w-4 mr-1" />
+                Trending
+              </Badge>
+            </div>
 
-              {categories.map((cat) => (
-                <TabsContent key={cat.value} value={cat.value} className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold">{cat.label}</h2>
-                    <Badge className="bg-gold text-gold-foreground">
-                      <TrendingUp className="h-4 w-4 mr-1" />
-                      Trending
-                    </Badge>
-                  </div>
-
-                  {/* Real Posts from Database */}
-                  {submissions.length === 0 ? (
-                    <Card className="p-8 text-center">
-                      <p className="text-muted-foreground">
-                        Zatiaľ žiadne príspevky v tejto kategórii. Buďte prvý!
-                      </p>
-                    </Card>
-                  ) : (
-                    submissions.map((submission) => (
-                      <Card key={submission.id} className="overflow-hidden">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-white font-semibold">
-                                {submission.profiles?.full_name?.[0] || 'U'}
-                              </div>
-                              <div>
-                                <p className="font-semibold">
-                                  {submission.profiles?.full_name || 'Používateľ'}
-                                </p>
-                                <p className="text-sm text-muted-foreground">
-                                  {new Date(submission.created_at).toLocaleDateString('sk-SK')}
-                                </p>
-                              </div>
-                            </div>
-                            <Badge variant="secondary">{cat.label}</Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                          <h3 className="font-semibold text-lg">{submission.title}</h3>
-                          {submission.media_type === 'image' ? (
-                            <img 
-                              src={submission.media_url} 
-                              alt={submission.title}
-                              className="w-full aspect-video object-cover rounded-lg"
-                            />
-                          ) : (
-                            <video 
-                              src={submission.media_url} 
-                              controls
-                              className="w-full aspect-video rounded-lg"
-                            />
-                          )}
-                          <p className="text-sm">
-                            {submission.description}
+            {/* Real Posts from Database */}
+            {submissions.length === 0 ? (
+              <Card className="p-8 text-center">
+                <p className="text-muted-foreground">
+                  Zatiaľ žiadne príspevky v tejto kategórii. Buďte prvý!
+                </p>
+              </Card>
+            ) : (
+              submissions.map((submission) => (
+                <Card key={submission.id} className="overflow-hidden">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-white font-semibold">
+                          {submission.profiles?.full_name?.[0] || 'U'}
+                        </div>
+                        <div>
+                          <p className="font-semibold">
+                            {submission.profiles?.full_name || 'Používateľ'}
                           </p>
-                          <div className="flex items-center justify-between pt-2">
-                            <div className="flex items-center space-x-4">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleVote('like')}
-                                className="text-green-500 hover:text-green-600"
-                              >
-                                <Heart className="h-4 w-4 mr-1" />
-                                {submission.votes_count || 0}
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <MessageCircle className="h-4 w-4 mr-1" />
-                                0
-                              </Button>
-                            </div>
-                            <Button variant="ghost" size="sm">
-                              <Share2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
-                  )}
-                </TabsContent>
-              ))}
-            </Tabs>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(submission.created_at).toLocaleDateString('sk-SK')}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant="secondary">
+                        {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <h3 className="font-semibold text-lg">{submission.title}</h3>
+                    {submission.media_type === 'image' ? (
+                      <img 
+                        src={submission.media_url} 
+                        alt={submission.title}
+                        className="w-full aspect-video object-cover rounded-lg"
+                      />
+                    ) : (
+                      <video 
+                        src={submission.media_url} 
+                        controls
+                        className="w-full aspect-video rounded-lg"
+                      />
+                    )}
+                    <p className="text-sm">
+                      {submission.description}
+                    </p>
+                    <div className="flex items-center justify-between pt-2">
+                      <div className="flex items-center space-x-4">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleVote('like')}
+                          className="text-green-500 hover:text-green-600"
+                        >
+                          <Heart className="h-4 w-4 mr-1" />
+                          {submission.votes_count || 0}
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <MessageCircle className="h-4 w-4 mr-1" />
+                          0
+                        </Button>
+                      </div>
+                      <Button variant="ghost" size="sm">
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
 
           {/* Sidebar */}
