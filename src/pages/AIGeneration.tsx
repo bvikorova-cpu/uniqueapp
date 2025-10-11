@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Sparkles, Wand2, Image as ImageIcon, Video, Music, Upload, Loader2, Download } from "lucide-react";
+import { Sparkles, Wand2, Image as ImageIcon, Video, Music, Upload, Loader2, Download, CreditCard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAICredits } from "@/hooks/useAICredits";
+import { useNavigate } from "react-router-dom";
 import swayDanceImg from "@/assets/effects/sway-dance.jpg";
 import waveDanceImg from "@/assets/effects/wave-dance.jpg";
 import ghibliImg from "@/assets/effects/ghibli.jpg";
@@ -121,11 +123,14 @@ const aiEffects: AIEffect[] = [
 ];
 
 const AIGeneration = () => {
+  const navigate = useNavigate();
+  const { credits, useCredit, refresh: refreshCredits } = useAICredits();
   const [selectedCategory, setSelectedCategory] = useState<EffectCategory>("all");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [resultImage, setResultImage] = useState<string | null>(null);
+  const [processingEffect, setProcessingEffect] = useState<string | null>(null);
 
   const filteredEffects = selectedCategory === "all" 
     ? aiEffects 
@@ -137,10 +142,30 @@ const AIGeneration = () => {
       return;
     }
 
+    // Check if user has credits
+    if (credits.credits_remaining <= 0) {
+      toast.error("Nemáte dostatok AI kreditov!", {
+        action: {
+          label: "Kúpiť kredity",
+          onClick: () => navigate('/ai-credits-store')
+        }
+      });
+      return;
+    }
+
     setIsProcessing(true);
+    setProcessingEffect(effect.id);
     setResultImage(null);
 
     try {
+      // Use AI credit
+      const creditUsed = await useCredit('effect', `Applied ${effect.name} effect`);
+      
+      if (!creditUsed) {
+        toast.error("Nepodarilo sa použiť AI kredit");
+        return;
+      }
+
       // Convert file to base64
       const reader = new FileReader();
       const base64Promise = new Promise<string>((resolve, reject) => {
@@ -154,6 +179,8 @@ const AIGeneration = () => {
 
       const base64Image = await base64Promise;
 
+      toast.info(`Aplikujem ${effect.name}...`, { duration: 2000 });
+
       const { data, error } = await supabase.functions.invoke('apply-ai-effect', {
         body: {
           imageUrl: base64Image,
@@ -162,19 +189,36 @@ const AIGeneration = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(error.message || 'Chyba pri volaní funkcie');
+      }
+
+      if (data?.error) {
+        if (data.error.includes('Rate limit')) {
+          toast.error("Prekročený limit požiadaviek. Skúste neskôr.");
+        } else if (data.error.includes('Payment required')) {
+          toast.error("Nedostatok kreditov v Lovable AI workspace.");
+        } else {
+          toast.error(data.error);
+        }
+        return;
+      }
 
       if (data?.imageUrl) {
         setResultImage(data.imageUrl);
         toast.success(`${effect.name} efekt úspešne aplikovaný!`);
+        await refreshCredits();
       } else {
-        throw new Error('Nepodarilo sa aplikovať efekt');
+        throw new Error('Nepodarilo sa aplikovať efekt - žiadny výsledok');
       }
     } catch (error: any) {
       console.error('Error applying effect:', error);
-      toast.error(error.message || 'Chyba pri aplikovaní efektu');
+      const errorMessage = error.message || 'Chyba pri aplikovaní efektu';
+      toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
+      setProcessingEffect(null);
     }
   };
 
@@ -216,6 +260,19 @@ const AIGeneration = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Transformujte svoje fotky pomocou pokročilých AI efektov
           </p>
+          <div className="mt-4 flex items-center justify-center gap-4">
+            <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg">
+              <CreditCard className="w-4 h-4 text-primary" />
+              <span className="font-semibold">{credits.credits_remaining} kreditov</span>
+            </div>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate('/ai-credits-store')}
+            >
+              Kúpiť kredity
+            </Button>
+          </div>
         </div>
 
         {/* Category Filters */}
@@ -246,7 +303,8 @@ const AIGeneration = () => {
         {isProcessing && (
           <div className="text-center py-8">
             <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-            <p className="text-muted-foreground">Aplikujem efekt na váš súbor...</p>
+            <p className="text-muted-foreground">Aplikujem AI efekt... Toto môže trvať 10-30 sekúnd.</p>
+            <p className="text-sm text-muted-foreground/70 mt-2">Prosím čakajte, AI spracováva váš obrázok</p>
           </div>
         )}
 
@@ -255,7 +313,9 @@ const AIGeneration = () => {
             {filteredEffects.map((effect) => (
               <Card
                 key={effect.id}
-                className="cursor-pointer hover:shadow-elegant transition-all group relative overflow-hidden"
+                className={`cursor-pointer hover:shadow-elegant transition-all group relative overflow-hidden ${
+                  isProcessing && processingEffect === effect.id ? 'ring-2 ring-primary' : ''
+                } ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}
                 onClick={() => handleEffectClick(effect)}
               >
                 <CardContent className="p-0">
