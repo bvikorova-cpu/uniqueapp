@@ -394,16 +394,30 @@ const Auction = () => {
     <div className="min-h-screen bg-background pt-16">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
+        <div className="flex justify-between items-start mb-8">
+          <div className="flex-1">
             <h1 className="text-4xl font-bold mb-2">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Online Aukcia
               </span>
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mb-4">
               Kupuj a predávaj produkty v aukcii
             </p>
+            
+            {limits.auctionListingsPerMonth !== -1 && (
+              <Alert className="max-w-xl">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  Limit: {limits.auctionListingsPerMonth} aukcií/mesiac • Provízia: {limits.commissionRate}%
+                  {limits.tier === 'free' && (
+                    <Link to="/subscription" className="ml-2 text-primary hover:underline">
+                      Upgradujte
+                    </Link>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
 
           <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
