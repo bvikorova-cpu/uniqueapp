@@ -1745,6 +1745,7 @@ export type Database = {
           created_at: string
           email: string | null
           full_name: string | null
+          iban: string | null
           id: string
           interests: string[] | null
           location: string | null
@@ -1762,6 +1763,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           full_name?: string | null
+          iban?: string | null
           id: string
           interests?: string[] | null
           location?: string | null
@@ -1779,6 +1781,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           full_name?: string | null
+          iban?: string | null
           id?: string
           interests?: string[] | null
           location?: string | null
