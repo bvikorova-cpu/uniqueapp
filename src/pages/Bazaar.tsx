@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2, Crown, AlertCircle } from "lucide-react";
+import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2, Crown, AlertCircle, ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { createSaleTransaction } from "@/utils/createSaleTransaction";
 
 interface BazaarItem {
   id: string;
@@ -334,6 +335,49 @@ const Bazaar = () => {
       toast({
         title: "Chyba",
         description: "Nepodarilo sa odstrániť inzerát",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBuyItem = async () => {
+    if (!selectedItem || !currentUserId) return;
+
+    try {
+      const commissionAmount = calculateCommission(selectedItem.price);
+      
+      // Create transaction with commission
+      const { error: transError } = await createSaleTransaction({
+        itemId: selectedItem.id,
+        itemType: 'bazaar_sale',
+        sellerId: selectedItem.user_id,
+        buyerId: currentUserId,
+        totalAmount: selectedItem.price,
+        commissionRate: limits.commissionRate,
+      });
+
+      if (transError) throw transError;
+
+      // Mark item as sold
+      const { error: updateError } = await supabase
+        .from('bazaar_items')
+        .update({ is_active: false })
+        .eq('id', selectedItem.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Nákup úspešný!",
+        description: `Zaplatili ste €${selectedItem.price.toFixed(2)}. Provízia: €${commissionAmount.toFixed(2)}`,
+      });
+
+      setIsDetailOpen(false);
+      loadItems();
+    } catch (error) {
+      console.error('Buy item error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa dokončiť nákup",
         variant: "destructive",
       });
     }
@@ -667,14 +711,40 @@ const Bazaar = () => {
                     </div>
                   )}
 
+                  {/* Commission Info */}
+                  {selectedItem.listing_type === 'sell' && limits.commissionRate > 0 && currentUserId !== selectedItem.user_id && (
+                    <Alert>
+                      <AlertCircle className="h-4 w-4" />
+                      <AlertDescription>
+                        Provízia platformy: {limits.commissionRate}% (€{calculateCommission(selectedItem.price).toFixed(2)})
+                        <br />
+                        <Link to="/subscription" className="text-primary hover:underline text-sm">
+                          Upgrade na Premium = 0% provízie
+                        </Link>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
                   <div className="flex gap-2">
+                    {currentUserId !== selectedItem.user_id && selectedItem.listing_type === 'sell' && (
+                      <Button 
+                        className="flex-1" 
+                        size="lg"
+                        onClick={handleBuyItem}
+                      >
+                        <ShoppingCart className="h-5 w-5 mr-2" />
+                        Kúpiť teraz
+                      </Button>
+                    )}
+                    
                     <Button 
                       className="flex-1" 
                       size="lg"
+                      variant="outline"
                       onClick={() => handleContact(selectedItem)}
                     >
                       <MessageCircle className="h-5 w-5 mr-2" />
-                      Kontaktovať predajcu
+                      Kontaktovať
                     </Button>
                     
                     {currentUserId === selectedItem.user_id && (

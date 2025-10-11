@@ -8,10 +8,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Gavel, Clock, TrendingUp, Plus, Upload, X } from "lucide-react";
+import { Gavel, Clock, TrendingUp, Plus, Upload, X, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useSubscription } from "@/hooks/useSubscription";
+import { createSaleTransaction } from "@/utils/createSaleTransaction";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface AuctionItem {
   id: string;
@@ -51,6 +54,7 @@ const Auction = () => {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [detailAuction, setDetailAuction] = useState<AuctionItem | null>(null);
   const [auctionPhotos, setAuctionPhotos] = useState<string[]>([]);
+  const { limits, calculateCommission } = useSubscription();
 
   useEffect(() => {
     checkUser();
