@@ -125,8 +125,8 @@ const Subscription = () => {
       price: 0,
       icon: Sparkles,
       features: [
-        '5 inzerátov v Bazári/mesiac',
-        '3 aukcie/mesiac',
+        '1 inzerát v Bazári/mesiac',
+        '1 aukcia/mesiac',
         'Základné funkcie',
         '5% provízia z predaja',
         'Obmedzené AI funkcie'
@@ -140,8 +140,8 @@ const Subscription = () => {
       icon: Check,
       popular: false,
       features: [
-        '10 inzerátov v Bazári/mesiac',
-        '10 aukcií/mesiac',
+        '5 inzerátov v Bazári/mesiac',
+        '5 aukcií/mesiac',
         'Všetky základné funkcie',
         '3% provízia z predaja (do 100€)',
         '20 AI generácií/mesiac',
