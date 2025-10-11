@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle, Bookmark, Eye, Flag, Download, Facebook, Instagram, Mail, Link2, Twitter } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle, Bookmark, Eye, Flag, Download, Facebook, Instagram, Mail, Link2, Twitter, Trash2 } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -60,6 +61,8 @@ const TikTok = () => {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [bookmarkedVideos, setBookmarkedVideos] = useState<Set<string>>(new Set());
   const [savedVideos, setSavedVideos] = useState<Set<string>>(new Set());
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [videoToDelete, setVideoToDelete] = useState<string | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const viewedVideos = useRef<Set<string>>(new Set());
   const previewVideoRef = useRef<HTMLVideoElement>(null);
@@ -527,6 +530,35 @@ const TikTok = () => {
     });
   };
 
+  const handleDeleteVideo = async () => {
+    if (!videoToDelete) return;
+
+    try {
+      const { error } = await supabase
+        .from("videos")
+        .delete()
+        .eq("id", videoToDelete);
+
+      if (error) throw error;
+
+      toast({
+        title: "Video zmazané",
+        description: "Video bolo úspešne zmazané",
+      });
+
+      setDeleteDialogOpen(false);
+      setVideoToDelete(null);
+      fetchVideos();
+    } catch (error) {
+      console.error("Error deleting video:", error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa zmazať video",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pt-16">
       {/* Kruhové tlačidlo pre nahratie videa - dolná časť v strede */}
@@ -878,12 +910,46 @@ const TikTok = () => {
                     </div>
                     <span className="text-xs font-semibold">Nahlásiť</span>
                   </button>
+
+                  {video.user_id === user?.id && (
+                    <button
+                      onClick={() => {
+                        setVideoToDelete(video.id);
+                        setDeleteDialogOpen(true);
+                      }}
+                      className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
+                    >
+                      <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
+                        <Trash2 className="h-6 w-6 text-red-500" />
+                      </div>
+                      <span className="text-xs font-semibold">Zmazať</span>
+                    </button>
+                  )}
                 </div>
               </div>
             );
           })
         )}
       </div>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Zmazať video?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Táto akcia je nevratná. Video bude natrvalo odstránené.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setVideoToDelete(null)}>
+              Zrušiť
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteVideo} className="bg-red-600 hover:bg-red-700">
+              Zmazať
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
