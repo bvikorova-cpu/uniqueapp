@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle, Bookmark, Eye, Flag, Download } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle, Bookmark, Eye, Flag, Download, Facebook, Instagram, Mail, Link2, Twitter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -500,27 +500,31 @@ const TikTok = () => {
     }
   };
 
-  const shareVideo = async (video: Video) => {
+  const shareToFacebook = (video: Video) => {
     const shareUrl = `${window.location.origin}/tiktok?video=${video.id}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: video.title || "Pozri si toto video!",
-          text: video.description || "",
-          url: shareUrl,
-        });
-      } catch (err) {
-        // User cancelled share
-      }
-    } else {
-      // Fallback: copy to clipboard
-      await navigator.clipboard.writeText(shareUrl);
-      toast({
-        title: "Odkaz skopírovaný",
-        description: "Odkaz bol skopírovaný do schránky",
-      });
-    }
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank');
+  };
+
+  const shareToTwitter = (video: Video) => {
+    const shareUrl = `${window.location.origin}/tiktok?video=${video.id}`;
+    const text = video.title || "Pozri si toto video!";
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const shareToEmail = (video: Video) => {
+    const shareUrl = `${window.location.origin}/tiktok?video=${video.id}`;
+    const subject = video.title || "Pozri si toto video!";
+    const body = `${video.description || ""}\n\n${shareUrl}`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  const copyLink = async (video: Video) => {
+    const shareUrl = `${window.location.origin}/tiktok?video=${video.id}`;
+    await navigator.clipboard.writeText(shareUrl);
+    toast({
+      title: "Odkaz skopírovaný",
+      description: "Odkaz bol skopírovaný do schránky",
+    });
   };
 
   return (
@@ -774,15 +778,55 @@ const TikTok = () => {
                     </SheetContent>
                   </Sheet>
 
-                  <button
-                    onClick={() => shareVideo(video)}
-                    className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
-                  >
-                    <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
-                      <Share2 className="h-7 w-7" />
-                    </div>
-                    <span className="text-xs font-semibold">Zdieľať</span>
-                  </button>
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <button className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110">
+                        <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
+                          <Share2 className="h-7 w-7" />
+                        </div>
+                        <span className="text-xs font-semibold">Zdieľať</span>
+                      </button>
+                    </SheetTrigger>
+                    <SheetContent side="bottom" className="h-auto">
+                      <SheetHeader>
+                        <SheetTitle>Zdieľať video</SheetTitle>
+                      </SheetHeader>
+                      <div className="grid grid-cols-2 gap-4 mt-6 pb-6">
+                        <Button
+                          variant="outline"
+                          className="flex flex-col gap-2 h-24"
+                          onClick={() => shareToFacebook(video)}
+                        >
+                          <Facebook className="h-8 w-8 text-blue-600" />
+                          <span className="text-sm">Facebook</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="flex flex-col gap-2 h-24"
+                          onClick={() => shareToTwitter(video)}
+                        >
+                          <Twitter className="h-8 w-8 text-sky-500" />
+                          <span className="text-sm">Twitter</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="flex flex-col gap-2 h-24"
+                          onClick={() => shareToEmail(video)}
+                        >
+                          <Mail className="h-8 w-8 text-red-500" />
+                          <span className="text-sm">Email</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="flex flex-col gap-2 h-24"
+                          onClick={() => copyLink(video)}
+                        >
+                          <Link2 className="h-8 w-8 text-green-600" />
+                          <span className="text-sm">Kopírovať odkaz</span>
+                        </Button>
+                      </div>
+                    </SheetContent>
+                  </Sheet>
 
                   <button
                     onClick={() => toggleBookmark(video.id)}
