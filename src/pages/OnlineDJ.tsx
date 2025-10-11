@@ -149,10 +149,11 @@ export default function OnlineDJ() {
   }, []);
 
   useEffect(() => {
-    if (audioRefA.current && gainNodeA.current && audioContextRef.current && !sourceNodeA.current) {
+    if (deckA && audioRefA.current && gainNodeA.current && audioContextRef.current && !sourceNodeA.current) {
       try {
         sourceNodeA.current = audioContextRef.current.createMediaElementSource(audioRefA.current);
         sourceNodeA.current.connect(gainNodeA.current);
+        console.log("Deck A audio source created");
       } catch (error) {
         console.error("Error creating audio source A:", error);
       }
@@ -160,10 +161,11 @@ export default function OnlineDJ() {
   }, [deckA]);
 
   useEffect(() => {
-    if (audioRefB.current && gainNodeB.current && audioContextRef.current && !sourceNodeB.current) {
+    if (deckB && audioRefB.current && gainNodeB.current && audioContextRef.current && !sourceNodeB.current) {
       try {
         sourceNodeB.current = audioContextRef.current.createMediaElementSource(audioRefB.current);
         sourceNodeB.current.connect(gainNodeB.current);
+        console.log("Deck B audio source created");
       } catch (error) {
         console.error("Error creating audio source B:", error);
       }
