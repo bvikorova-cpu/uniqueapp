@@ -1846,6 +1846,42 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          price: number
+          started_at: string
+          status: string
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          price?: number
+          started_at?: string
+          status?: string
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          price?: number
+          started_at?: string
+          status?: string
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       talent_submissions: {
         Row: {
           category: Database["public"]["Enums"]["talent_category"]
@@ -1960,6 +1996,45 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          commission_amount: number
+          commission_rate: number
+          created_at: string
+          id: string
+          item_id: string | null
+          status: string
+          transaction_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          commission_amount: number
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          status?: string
+          transaction_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          status?: string
+          transaction_type?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -2181,6 +2256,7 @@ export type Database = {
         | "teaching"
         | "creative"
         | "other"
+      subscription_tier: "free" | "basic" | "premium" | "business"
       talent_category:
         | "drawing"
         | "funny_video"
@@ -2342,6 +2418,7 @@ export const Constants = {
         "creative",
         "other",
       ],
+      subscription_tier: ["free", "basic", "premium", "business"],
       talent_category: [
         "drawing",
         "funny_video",

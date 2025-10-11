@@ -1,203 +1,289 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { 
-  Users, 
-  Crown, 
-  ShoppingBag, 
-  Euro, 
-  TrendingUp, 
-  AlertTriangle,
-  Eye,
-  Ban,
-  CheckCircle,
-  XCircle
-} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { DollarSign, Users, TrendingUp, CreditCard, Search } from "lucide-react";
 
 const Admin = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
   
-  // Mock data
-  const stats = {
-    totalUsers: 1248,
-    premiumUsers: 892,
-    totalEarnings: 8920,
-    monthlyGrowth: 12.5,
-    activeContests: 3,
-    pendingPayouts: 245
+  // Stats
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    premiumUsers: 0,
+    totalRevenue: 0,
+    monthlyRevenue: 0,
+  });
+  
+  // Data
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    checkAdminAccess();
+  }, []);
+
+  const checkAdminAccess = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
+
+      // Check if user has admin role
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (!roles) {
+        toast({
+          title: "Prístup zamietnutý",
+          description: "Nemáte oprávnenie na prístup k admin panelu",
+          variant: "destructive",
+        });
+        navigate('/');
+        return;
+      }
+
+      setIsAdmin(true);
+      await loadData();
+    } catch (error) {
+      console.error('Admin check error:', error);
+      navigate('/');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const recentUsers = [
-    { id: 1, name: "Peter Novák", email: "peter@email.com", status: "premium", joined: "2024-01-15" },
-    { id: 2, name: "Anna Svoboda", email: "anna@email.com", status: "free", joined: "2024-01-14" },
-    { id: 3, name: "Tomáš Černý", email: "tomas@email.com", status: "premium", joined: "2024-01-13" },
-    { id: 4, name: "Jana Horáková", email: "jana@email.com", status: "premium", joined: "2024-01-12" },
-  ];
+  const loadData = async () => {
+    try {
+      // Load subscriptions
+      const { data: subs } = await supabase
+        .from('subscriptions')
+        .select(`
+          *,
+          profiles:user_id (
+            id,
+            email,
+            full_name
+          )
+        `)
+        .order('created_at', { ascending: false });
 
-  const pendingContent = [
-    { id: 1, user: "Martin Kováč", type: "Video", title: "Tanečný cover", reports: 2, status: "pending" },
-    { id: 2, user: "Lucia Dvořák", type: "Foto", title: "Spevácky výkon", reports: 0, status: "pending" },
-    { id: 3, user: "Michal Procházka", type: "Video", title: "Gitarová improvizácia", reports: 1, status: "pending" },
-  ];
+      setSubscriptions(subs || []);
 
-  const payoutRequests = [
-    { id: 1, user: "Peter Novák", amount: 45, type: "Referral", status: "pending", date: "2024-01-15" },
-    { id: 2, user: "Anna Svoboda", amount: 25, type: "Contest", status: "approved", date: "2024-01-14" },
-    { id: 3, user: "Tomáš Černý", amount: 5, type: "Referral", status: "pending", date: "2024-01-13" },
-  ];
+      // Load transactions
+      const { data: trans } = await supabase
+        .from('transactions')
+        .select(`
+          *,
+          profiles:user_id (
+            id,
+            email,
+            full_name
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      setTransactions(trans || []);
+
+      // Calculate stats
+      const totalUsers = new Set(subs?.map(s => s.user_id) || []).size;
+      const premiumUsers = subs?.filter(s => s.tier !== 'free' && s.status === 'active').length || 0;
+      
+      const totalRevenue = trans?.reduce((sum, t) => {
+        const commission = parseFloat(String(t.commission_amount)) || 0;
+        return sum + commission;
+      }, 0) || 0;
+      
+      const monthStart = new Date();
+      monthStart.setDate(1);
+      monthStart.setHours(0, 0, 0, 0);
+      
+      const monthlyRevenue = trans?.filter(t => new Date(t.created_at) >= monthStart)
+        .reduce((sum, t) => {
+          const commission = parseFloat(String(t.commission_amount)) || 0;
+          return sum + commission;
+        }, 0) || 0;
+
+      setStats({
+        totalUsers,
+        premiumUsers,
+        totalRevenue,
+        monthlyRevenue,
+      });
+    } catch (error) {
+      console.error('Load data error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa načítať dáta",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateTransactionStatus = async (transactionId: string, status: string) => {
+    try {
+      const { error } = await supabase
+        .from('transactions')
+        .update({ status })
+        .eq('id', transactionId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspech",
+        description: "Status transakcie bol aktualizovaný",
+      });
+      
+      await loadData();
+    } catch (error) {
+      console.error('Update error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa aktualizovať status",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (loading) {
+    return <div className="min-h-screen bg-background flex items-center justify-center">Načítavam...</div>;
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
+
+  const filteredSubscriptions = subscriptions.filter(sub =>
+    sub.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    sub.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredTransactions = transactions.filter(trans =>
+    trans.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    trans.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold">
-              Admin{" "}
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Panel
-              </span>
-            </h1>
-            <p className="text-muted-foreground mt-2">Správa Megatalent platformy</p>
-          </div>
-          <Badge className="bg-gold text-gold-foreground px-4 py-2">
-            Administrátor
-          </Badge>
-        </div>
+      <div className="container mx-auto px-4">
+        <h1 className="text-4xl font-bold mb-8">Admin Panel</h1>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Celkom používateľov</p>
-                  <p className="text-2xl font-bold">{stats.totalUsers}</p>
-                </div>
-                <Users className="h-8 w-8 text-primary" />
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Celkový počet užívateľov</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalUsers}</div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Premium členi</p>
-                  <p className="text-2xl font-bold">{stats.premiumUsers}</p>
-                </div>
-                <Crown className="h-8 w-8 text-gold" />
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Prémiový užívatelia</CardTitle>
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.premiumUsers}</div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Mesačné príjmy</p>
-                  <p className="text-2xl font-bold">€{stats.totalEarnings}</p>
-                </div>
-                <Euro className="h-8 w-8 text-success" />
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Celkový príjem</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalRevenue.toFixed(2)} €</div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Rast (%)</p>
-                  <p className="text-2xl font-bold">+{stats.monthlyGrowth}%</p>
-                </div>
-                <TrendingUp className="h-8 w-8 text-success" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Aktívne súťaže</p>
-                  <p className="text-2xl font-bold">{stats.activeContests}</p>
-                </div>
-                <Crown className="h-8 w-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Čakajúce výplaty</p>
-                  <p className="text-2xl font-bold">{stats.pendingPayouts}</p>
-                </div>
-                <AlertTriangle className="h-8 w-8 text-destructive" />
-              </div>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">Mesačný príjem</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.monthlyRevenue.toFixed(2)} €</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content */}
-        <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="users">Používatelia</TabsTrigger>
-            <TabsTrigger value="content">Obsah</TabsTrigger>
-            <TabsTrigger value="payouts">Výplaty</TabsTrigger>
-            <TabsTrigger value="settings">Nastavenia</TabsTrigger>
+        {/* Search */}
+        <div className="mb-6">
+          <div className="relative">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Hľadať podľa emailu alebo mena..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <Tabs defaultValue="subscriptions" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="subscriptions">Predplatné</TabsTrigger>
+            <TabsTrigger value="transactions">Transakcie</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="users" className="space-y-6">
+          <TabsContent value="subscriptions">
             <Card>
               <CardHeader>
-                <CardTitle>Správa používateľov</CardTitle>
-                <div className="flex gap-4">
-                  <Input
-                    placeholder="Hľadať používateľa..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="max-w-sm"
-                  />
-                </div>
+                <CardTitle>Predplatné</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Meno</TableHead>
+                      <TableHead>Užívateľ</TableHead>
                       <TableHead>Email</TableHead>
+                      <TableHead>Tier</TableHead>
+                      <TableHead>Cena</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Dátum registrácie</TableHead>
-                      <TableHead>Akcie</TableHead>
+                      <TableHead>Začiatok</TableHead>
+                      <TableHead>Koniec</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {recentUsers.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell className="font-medium">{user.name}</TableCell>
-                        <TableCell>{user.email}</TableCell>
+                    {filteredSubscriptions.map((sub) => (
+                      <TableRow key={sub.id}>
+                        <TableCell>{sub.profiles?.full_name || 'N/A'}</TableCell>
+                        <TableCell>{sub.profiles?.email || 'N/A'}</TableCell>
                         <TableCell>
-                          <Badge variant={user.status === 'premium' ? 'default' : 'secondary'}>
-                            {user.status === 'premium' ? 'Premium' : 'Bezplatný'}
+                          <Badge variant={sub.tier === 'free' ? 'secondary' : 'default'}>
+                            {sub.tier.toUpperCase()}
                           </Badge>
                         </TableCell>
-                        <TableCell>{user.joined}</TableCell>
+                        <TableCell>{parseFloat(sub.price).toFixed(2)} €</TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Ban className="h-4 w-4" />
-                            </Button>
-                          </div>
+                          <Badge variant={sub.status === 'active' ? 'default' : 'secondary'}>
+                            {sub.status}
+                          </Badge>
                         </TableCell>
+                        <TableCell>{new Date(sub.started_at).toLocaleDateString('sk-SK')}</TableCell>
+                        <TableCell>{sub.expires_at ? new Date(sub.expires_at).toLocaleDateString('sk-SK') : 'Neobmedzene'}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -206,154 +292,71 @@ const Admin = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="content" className="space-y-6">
+          <TabsContent value="transactions">
             <Card>
               <CardHeader>
-                <CardTitle>Moderácia obsahu</CardTitle>
+                <CardTitle>Transakcie</CardTitle>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Používateľ</TableHead>
+                      <TableHead>Užívateľ</TableHead>
                       <TableHead>Typ</TableHead>
-                      <TableHead>Názov</TableHead>
-                      <TableHead>Nahlásenia</TableHead>
+                      <TableHead>Suma</TableHead>
+                      <TableHead>Provízia %</TableHead>
+                      <TableHead>Provízia €</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Dátum</TableHead>
                       <TableHead>Akcie</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {pendingContent.map((content) => (
-                      <TableRow key={content.id}>
-                        <TableCell className="font-medium">{content.user}</TableCell>
-                        <TableCell>{content.type}</TableCell>
-                        <TableCell>{content.title}</TableCell>
+                    {filteredTransactions.map((trans) => (
+                      <TableRow key={trans.id}>
+                        <TableCell>{trans.profiles?.email || 'N/A'}</TableCell>
                         <TableCell>
-                          {content.reports > 0 && (
-                            <Badge variant="destructive">{content.reports}</Badge>
+                          <Badge variant="outline">
+                            {trans.transaction_type.replace('_', ' ')}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{parseFloat(trans.amount).toFixed(2)} €</TableCell>
+                        <TableCell>{parseFloat(trans.commission_rate).toFixed(2)}%</TableCell>
+                        <TableCell className="font-bold">{parseFloat(trans.commission_amount).toFixed(2)} €</TableCell>
+                        <TableCell>
+                          <Badge variant={
+                            trans.status === 'completed' ? 'default' :
+                            trans.status === 'pending' ? 'secondary' : 'destructive'
+                          }>
+                            {trans.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{new Date(trans.created_at).toLocaleDateString('sk-SK')}</TableCell>
+                        <TableCell>
+                          {trans.status === 'pending' && (
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                onClick={() => updateTransactionStatus(trans.id, 'completed')}
+                              >
+                                Schváliť
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => updateTransactionStatus(trans.id, 'refunded')}
+                              >
+                                Vrátiť
+                              </Button>
+                            </div>
                           )}
                         </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">
-                            {content.status === 'pending' ? 'Čaká' : 'Schválený'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="sm">
-                              <CheckCircle className="h-4 w-4 text-success" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <XCircle className="h-4 w-4 text-destructive" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          <TabsContent value="payouts" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Správa výplat</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Používateľ</TableHead>
-                      <TableHead>Suma</TableHead>
-                      <TableHead>Typ</TableHead>
-                      <TableHead>Dátum</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Akcie</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {payoutRequests.map((payout) => (
-                      <TableRow key={payout.id}>
-                        <TableCell className="font-medium">{payout.user}</TableCell>
-                        <TableCell className="font-semibold">€{payout.amount}</TableCell>
-                        <TableCell>{payout.type}</TableCell>
-                        <TableCell>{payout.date}</TableCell>
-                        <TableCell>
-                          <Badge variant={payout.status === 'approved' ? 'default' : 'secondary'}>
-                            {payout.status === 'approved' ? 'Schválené' : 'Čaká'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Button variant="ghost" size="sm">
-                              <CheckCircle className="h-4 w-4 text-success" />
-                            </Button>
-                            <Button variant="ghost" size="sm">
-                              <XCircle className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="settings" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Nastavenia súťaže</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium">Mesačná výhra (€)</label>
-                    <Input type="number" defaultValue="100000" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Cena predplatného (€)</label>
-                    <Input type="number" defaultValue="10" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Referenčná odmena (€)</label>
-                    <Input type="number" defaultValue="5" />
-                  </div>
-                  <Button variant="hero">Uložiť zmeny</Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Systémové nastavenia</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium">Maximálna veľkosť videa (MB)</label>
-                    <Input type="number" defaultValue="100" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Limit nahrávaní za deň</label>
-                    <Input type="number" defaultValue="5" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium">Auto-moderácia</label>
-                    <div className="flex items-center space-x-2">
-                      <input type="checkbox" defaultChecked />
-                      <span className="text-sm">Povoliť automatickú moderáciu obsahu</span>
-                    </div>
-                  </div>
-                  <Button variant="hero">Uložiť zmeny</Button>
-                </CardContent>
-              </Card>
-            </div>
           </TabsContent>
         </Tabs>
       </div>
