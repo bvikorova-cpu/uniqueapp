@@ -128,11 +128,11 @@ interface AIEffect {
 }
 
 const aiEffects: AIEffect[] = [
-  { id: "sway-dance", name: "Sway Dance", category: "dance", image: swayDanceImg, description: "Tancujte so štýlom" },
-  { id: "my-girlfriendssss", name: "My Girlfriendssss", category: "interactions", image: myGirlfriendsssssImg, description: "Vytvorte romantický moment" },
-  { id: "my-boyfriendssss", name: "My Boyfriendssss", category: "interactions", image: myBoyfriendssssImg, description: "Vytvorte romantický moment" },
-  { id: "earth-zoom-out", name: "Earth Zoom Out", category: "fanciful", image: earthZoomOutImg, description: "Oddialenie Zeme" },
-  { id: "wave-dance", name: "Wave Dance", category: "dance", image: waveDanceImg, description: "Vlnový tanec" },
+  { id: "magic-sparkle", name: "Magic Sparkle", category: "fanciful", image: magicSparkleImg, description: "Magické iskry", isHot: true },
+  { id: "fire-phoenix", name: "Fire Phoenix", category: "heroes", image: firePhoenixImg, description: "Ohnivý fénix", isHot: true },
+  { id: "dragon-rider", name: "Dragon Rider", category: "heroes", image: dragonRiderImg, description: "Jazdec na drakovi", isHot: true },
+  { id: "neon-glow", name: "Neon Glow", category: "fanciful", image: neonGlowImg, description: "Neónová žiara", isHot: true },
+  { id: "astronaut-space", name: "Astronaut Space", category: "heroes", image: astronautSpaceImg, description: "Astronaut vo vesmíre", isHot: true },
   { id: "earth-zoom-in", name: "Earth Zoom In", category: "fanciful", image: earthZoomInImg, description: "Priblíženie Zeme" },
   { id: "minecraft", name: "Minecraft", category: "entertainment", image: minecraftImg, description: "Minecraft transformácia" },
   { id: "box-me", name: "Box Me", category: "entertainment", image: boxMeImg, description: "Box efekt" },
