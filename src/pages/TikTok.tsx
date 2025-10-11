@@ -6,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Video {
   id: string;
@@ -53,8 +54,13 @@ const TikTok = () => {
   const [selectedVideoComments, setSelectedVideoComments] = useState<string | null>(null);
   const [comments, setComments] = useState<Map<string, Comment[]>>(new Map());
   const [newComment, setNewComment] = useState("");
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const viewedVideos = useRef<Set<string>>(new Set());
+  const previewVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -219,11 +225,74 @@ const TikTok = () => {
     }
   };
 
-  const handleUpload = async () => {
-    if (!uploadFile) {
+  const startRecording = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: "user" }, 
+        audio: true 
+      });
+      
+      setStream(mediaStream);
+      
+      if (previewVideoRef.current) {
+        previewVideoRef.current.srcObject = mediaStream;
+        previewVideoRef.current.play();
+      }
+
+      const recorder = new MediaRecorder(mediaStream, {
+        mimeType: 'video/webm;codecs=vp8,opus'
+      });
+
+      const chunks: BlobPart[] = [];
+      
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        setRecordedBlob(blob);
+        
+        if (previewVideoRef.current) {
+          previewVideoRef.current.srcObject = null;
+          previewVideoRef.current.src = URL.createObjectURL(blob);
+        }
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+    } catch (error) {
+      console.error("Error starting recording:", error);
       toast({
         title: "Chyba",
-        description: "Vyberte video súbor",
+        description: "Nepodarilo sa spustiť kameru",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+      setIsRecording(false);
+      
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        setStream(null);
+      }
+    }
+  };
+
+  const handleUpload = async () => {
+    const fileToUpload = uploadFile || (recordedBlob ? new File([recordedBlob], `recording-${Date.now()}.webm`, { type: 'video/webm' }) : null);
+
+    if (!fileToUpload) {
+      toast({
+        title: "Chyba",
+        description: "Vyberte video súbor alebo nahrajte video",
         variant: "destructive",
       });
       return;
@@ -240,8 +309,8 @@ const TikTok = () => {
 
     // Check file size (50MB limit)
     const maxSizeInBytes = 50 * 1024 * 1024;
-    if (uploadFile.size > maxSizeInBytes) {
-      const fileSizeInMB = (uploadFile.size / (1024 * 1024)).toFixed(2);
+    if (fileToUpload.size > maxSizeInBytes) {
+      const fileSizeInMB = (fileToUpload.size / (1024 * 1024)).toFixed(2);
       toast({
         title: "Video je príliš veľké",
         description: `Súbor má ${fileSizeInMB}MB. Max. 50MB. Prosím zvýšte limit v Supabase Storage Settings.`,
@@ -251,12 +320,12 @@ const TikTok = () => {
     }
 
     try {
-      const fileExt = uploadFile.name.split('.').pop();
+      const fileExt = fileToUpload.name.split('.').pop();
       const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from("videos")
-        .upload(filePath, uploadFile, {
+        .upload(filePath, fileToUpload, {
           cacheControl: '3600',
           upsert: false
         });
@@ -316,6 +385,7 @@ const TikTok = () => {
       setUploadFile(null);
       setUploadTitle("");
       setUploadDescription("");
+      setRecordedBlob(null);
       fetchVideos();
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -407,37 +477,115 @@ const TikTok = () => {
               <Plus className="h-8 w-8" />
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>Nahrať nové video</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Input
-                  type="file"
-                  accept="video/*"
-                  onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
-                />
-              </div>
-              <div>
-                <Input
-                  placeholder="Názov videa"
-                  value={uploadTitle}
-                  onChange={(e) => setUploadTitle(e.target.value)}
-                />
-              </div>
-              <div>
-                <Textarea
-                  placeholder="Popis videa"
-                  value={uploadDescription}
-                  onChange={(e) => setUploadDescription(e.target.value)}
-                  rows={3}
-                />
-              </div>
-              <Button onClick={handleUpload} className="w-full" disabled={!uploadFile}>
-                Nahrať
-              </Button>
-            </div>
+            
+            <Tabs defaultValue="upload" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="upload">
+                  <Upload className="h-4 w-4 mr-2" />
+                  Nahrať súbor
+                </TabsTrigger>
+                <TabsTrigger value="record">
+                  <Camera className="h-4 w-4 mr-2" />
+                  Nahrávať online
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="upload" className="space-y-4">
+                <div>
+                  <Input
+                    type="file"
+                    accept="video/*"
+                    onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
+                  />
+                </div>
+                <div>
+                  <Input
+                    placeholder="Názov videa"
+                    value={uploadTitle}
+                    onChange={(e) => setUploadTitle(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Textarea
+                    placeholder="Popis videa"
+                    value={uploadDescription}
+                    onChange={(e) => setUploadDescription(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                <Button onClick={handleUpload} className="w-full" disabled={!uploadFile}>
+                  Nahrať
+                </Button>
+              </TabsContent>
+              
+              <TabsContent value="record" className="space-y-4">
+                <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                  <video
+                    ref={previewVideoRef}
+                    className="w-full h-full object-cover"
+                    playsInline
+                    muted
+                  />
+                </div>
+                
+                <div className="flex gap-2 justify-center">
+                  {!isRecording && !recordedBlob && (
+                    <Button onClick={startRecording} className="flex-1">
+                      <Video className="h-4 w-4 mr-2" />
+                      Spustiť nahrávanie
+                    </Button>
+                  )}
+                  
+                  {isRecording && (
+                    <Button onClick={stopRecording} variant="destructive" className="flex-1">
+                      <StopCircle className="h-4 w-4 mr-2" />
+                      Zastaviť nahrávanie
+                    </Button>
+                  )}
+                  
+                  {recordedBlob && (
+                    <Button 
+                      onClick={() => {
+                        setRecordedBlob(null);
+                        if (previewVideoRef.current) {
+                          previewVideoRef.current.src = '';
+                        }
+                      }} 
+                      variant="outline"
+                    >
+                      Nahrať znova
+                    </Button>
+                  )}
+                </div>
+                
+                {recordedBlob && (
+                  <>
+                    <div>
+                      <Input
+                        placeholder="Názov videa"
+                        value={uploadTitle}
+                        onChange={(e) => setUploadTitle(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Textarea
+                        placeholder="Popis videa"
+                        value={uploadDescription}
+                        onChange={(e) => setUploadDescription(e.target.value)}
+                        rows={3}
+                      />
+                    </div>
+                    <Button onClick={handleUpload} className="w-full">
+                      Nahrať video
+                    </Button>
+                  </>
+                )}
+              </TabsContent>
+            </Tabs>
           </DialogContent>
         </Dialog>
       </div>
