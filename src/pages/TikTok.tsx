@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus, Camera, Video, StopCircle, Bookmark, Eye, Flag, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -58,6 +58,8 @@ const TikTok = () => {
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
+  const [bookmarkedVideos, setBookmarkedVideos] = useState<Set<string>>(new Set());
+  const [savedVideos, setSavedVideos] = useState<Set<string>>(new Set());
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const viewedVideos = useRef<Set<string>>(new Set());
   const previewVideoRef = useRef<HTMLVideoElement>(null);
@@ -200,6 +202,63 @@ const TikTok = () => {
         .insert({ video_id: videoId, user_id: user.id });
       
       setLikedVideos(prev => new Set([...prev, videoId]));
+    }
+  };
+
+  const toggleBookmark = (videoId: string) => {
+    setBookmarkedVideos(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(videoId)) {
+        newSet.delete(videoId);
+        toast({ title: "Odstránené zo záložiek" });
+      } else {
+        newSet.add(videoId);
+        toast({ title: "Pridané do záložiek" });
+      }
+      return newSet;
+    });
+  };
+
+  const toggleSave = (videoId: string) => {
+    setSavedVideos(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(videoId)) {
+        newSet.delete(videoId);
+        toast({ title: "Odstránené z uložených" });
+      } else {
+        newSet.add(videoId);
+        toast({ title: "Uložené do obľúbených" });
+      }
+      return newSet;
+    });
+  };
+
+  const handleReport = (videoId: string) => {
+    toast({
+      title: "Video nahlásené",
+      description: "Ďakujeme za nahlásenie. Skontrolujeme obsah.",
+    });
+  };
+
+  const handleDownload = async (video: Video) => {
+    try {
+      const response = await fetch(video.video_url);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${video.title || 'video'}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      toast({ title: "Video sťahuje sa..." });
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa stiahnuť video",
+        variant: "destructive",
+      });
     }
   };
 
@@ -714,6 +773,67 @@ const TikTok = () => {
                       </div>
                     </SheetContent>
                   </Sheet>
+
+                  <button
+                    onClick={() => shareVideo(video)}
+                    className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
+                  >
+                    <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
+                      <Share2 className="h-7 w-7" />
+                    </div>
+                    <span className="text-xs font-semibold">Zdieľať</span>
+                  </button>
+
+                  <button
+                    onClick={() => toggleBookmark(video.id)}
+                    className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
+                  >
+                    <div className={`p-3 rounded-full bg-black/30 backdrop-blur-sm transition-all ${bookmarkedVideos.has(video.id) ? 'scale-110' : ''}`}>
+                      <Bookmark
+                        className={`h-7 w-7 transition-all ${bookmarkedVideos.has(video.id) ? 'fill-yellow-500 text-yellow-500' : ''}`}
+                      />
+                    </div>
+                    <span className="text-xs font-semibold">Záložka</span>
+                  </button>
+
+                  <button
+                    onClick={() => toggleSave(video.id)}
+                    className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
+                  >
+                    <div className={`p-3 rounded-full bg-black/30 backdrop-blur-sm transition-all ${savedVideos.has(video.id) ? 'scale-110' : ''}`}>
+                      <Heart
+                        className={`h-7 w-7 transition-all ${savedVideos.has(video.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+                      />
+                    </div>
+                    <span className="text-xs font-semibold">Uložiť</span>
+                  </button>
+
+                  <button
+                    onClick={() => handleDownload(video)}
+                    className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
+                  >
+                    <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
+                      <Download className="h-7 w-7" />
+                    </div>
+                    <span className="text-xs font-semibold">Stiahnuť</span>
+                  </button>
+
+                  <div className="flex flex-col items-center gap-1 text-white">
+                    <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
+                      <Eye className="h-7 w-7" />
+                    </div>
+                    <span className="text-xs font-semibold">{video.views_count}</span>
+                  </div>
+
+                  <button
+                    onClick={() => handleReport(video.id)}
+                    className="flex flex-col items-center gap-1 text-white transition-transform hover:scale-110"
+                  >
+                    <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
+                      <Flag className="h-6 w-6" />
+                    </div>
+                    <span className="text-xs font-semibold">Nahlásiť</span>
+                  </button>
                 </div>
               </div>
             );
