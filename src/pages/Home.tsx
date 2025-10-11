@@ -32,7 +32,7 @@ const Home = () => {
     { name: "Online Aukcie", path: "/auction", keywords: ["aukcie", "auction", "dražba"] },
     { name: "AI Generovanie", path: "/ai-generation", keywords: ["ai", "generovanie", "obrázky"] },
     { name: "Best Friend", path: "/best-friend", keywords: ["best friend", "priateľ", "chatbot"] },
-    { name: "Online DJ", path: "/online-dj", keywords: ["dj", "mixovanie", "hudba", "mix", "mixer"] },
+    
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -395,19 +395,6 @@ const Home = () => {
               </Card>
             </Link>
 
-            <Link to="/online-dj">
-              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer bg-gradient-to-br from-purple-950/30 to-background">
-                <CardHeader>
-                  <Disc3 className="h-12 w-12 text-purple-500 mx-auto mb-4 animate-spin" style={{ animationDuration: '3s' }} />
-                  <CardTitle>Online DJ</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Mixuj hudbu ako profesionálny DJ
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
 
             <Link to="/cooking">
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">

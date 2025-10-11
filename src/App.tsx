@@ -34,7 +34,7 @@ import BestFriend from "./pages/BestFriend";
 import Cooking from "./pages/Cooking";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
-import OnlineDJ from "./pages/OnlineDJ";
+
 import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
 import NotFound from "./pages/NotFound";
@@ -80,7 +80,7 @@ const App = () => (
           <Route path="/education" element={<Education />} />
           <Route path="/course/:courseName" element={<CourseDetail />} />
           <Route path="/quiz" element={<Quiz />} />
-          <Route path="/online-dj" element={<OnlineDJ />} />
+          
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/subscription" element={<Subscription />} />
