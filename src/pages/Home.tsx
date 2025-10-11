@@ -61,7 +61,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-black/60"></div>
         <div className="relative z-10 text-center space-y-8 px-4">
           <Badge className="bg-gold text-gold-foreground animate-glow text-lg px-4 py-2">
-            💰 Vyhraj až 100.000 € každý mesiac!
+            💰 Vyhraj 10.000 € každý mesiac v každej kategórii!
           </Badge>
           <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
             Vitaj v{" "}
