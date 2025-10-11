@@ -294,6 +294,39 @@ export type Database = {
           },
         ]
       }
+      certificate_purchases: {
+        Row: {
+          amount: number
+          certificate_url: string | null
+          course_name: string
+          created_at: string | null
+          id: string
+          status: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          certificate_url?: string | null
+          course_name: string
+          created_at?: string | null
+          id?: string
+          status?: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          certificate_url?: string | null
+          course_name?: string
+          created_at?: string | null
+          id?: string
+          status?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       completed_courses: {
         Row: {
           certificate_url: string | null
@@ -1230,6 +1263,47 @@ export type Database = {
         }
         Relationships: []
       }
+      influencer_tips: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          influencer_id: string | null
+          message: string | null
+          sender_id: string
+          status: string
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          influencer_id?: string | null
+          message?: string | null
+          sender_id: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          influencer_id?: string | null
+          message?: string | null
+          sender_id?: string
+          status?: string
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_tips_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_applications: {
         Row: {
           applicant_id: string
@@ -1264,6 +1338,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_listing_payments: {
+        Row: {
+          amount: number
+          created_at: string | null
+          duration_days: number
+          expires_at: string
+          id: string
+          job_id: string | null
+          status: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          duration_days?: number
+          expires_at: string
+          id?: string
+          job_id?: string | null
+          status?: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          duration_days?: number
+          expires_at?: string
+          id?: string
+          job_id?: string | null
+          status?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_listing_payments_job_id_fkey"
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "job_listings"
@@ -1607,6 +1725,33 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_gifts: {
+        Row: {
+          category: string
+          created_at: string | null
+          icon: string
+          id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          icon: string
+          id?: string
+          name: string
+          price: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          icon?: string
+          id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       post_comments: {
         Row: {
           content: string
@@ -1902,6 +2047,47 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      sent_platform_gifts: {
+        Row: {
+          context_id: string | null
+          context_type: string
+          created_at: string | null
+          gift_id: string | null
+          id: string
+          message: string | null
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          context_id?: string | null
+          context_type: string
+          created_at?: string | null
+          gift_id?: string | null
+          id?: string
+          message?: string | null
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          context_id?: string | null
+          context_type?: string
+          created_at?: string | null
+          gift_id?: string | null
+          id?: string
+          message?: string | null
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sent_platform_gifts_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "platform_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       skill_offerings: {
         Row: {
