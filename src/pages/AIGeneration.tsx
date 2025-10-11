@@ -128,11 +128,11 @@ interface AIEffect {
 }
 
 const aiEffects: AIEffect[] = [
-  { id: "magic-sparkle", name: "Magic Sparkle", category: "fanciful", image: magicSparkleImg, description: "Magické iskry", isHot: true },
-  { id: "fire-phoenix", name: "Fire Phoenix", category: "heroes", image: firePhoenixImg, description: "Ohnivý fénix", isHot: true },
-  { id: "dragon-rider", name: "Dragon Rider", category: "heroes", image: dragonRiderImg, description: "Jazdec na drakovi", isHot: true },
-  { id: "neon-glow", name: "Neon Glow", category: "fanciful", image: neonGlowImg, description: "Neónová žiara", isHot: true },
-  { id: "astronaut-space", name: "Astronaut Space", category: "heroes", image: astronautSpaceImg, description: "Astronaut vo vesmíre", isHot: true },
+  { id: "kungfu-club", name: "Kungfu Club", category: "entertainment", image: kungfuClubImg, description: "Kung-fu klub", isHot: true },
+  { id: "bloom-magic", name: "Bloom Magic", category: "fanciful", image: bloomMagicImg, description: "Kúzlo kvitnutia", isHot: true },
+  { id: "galaxy-portal", name: "Galaxy Portal", category: "fanciful", image: galaxyPortalImg, description: "Galaktický portál" },
+  { id: "cyborg-transform", name: "Cyborg Transform", category: "heroes", image: cyborgTransformImg, description: "Kyborg transformácia", isHot: true },
+  { id: "ice-queen", name: "Ice Queen", category: "heroes", image: iceQueenImg, description: "Ľadová kráľovná" },
   { id: "earth-zoom-in", name: "Earth Zoom In", category: "fanciful", image: earthZoomInImg, description: "Priblíženie Zeme" },
   { id: "minecraft", name: "Minecraft", category: "entertainment", image: minecraftImg, description: "Minecraft transformácia" },
   { id: "box-me", name: "Box Me", category: "entertainment", image: boxMeImg, description: "Box efekt" },
