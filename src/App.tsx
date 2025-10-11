@@ -40,6 +40,7 @@ import AICreditsStore from "./pages/AICreditsStore";
 import NotFound from "./pages/NotFound";
 import AdminTransactions from "./pages/AdminTransactions";
 import Earnings from "./pages/Earnings";
+import LiveStream from "./pages/LiveStream";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const App = () => (
           <Route path="/ai-credits-store" element={<AICreditsStore />} />
           <Route path="/admin/transactions" element={<AdminTransactions />} />
           <Route path="/earnings" element={<Earnings />} />
+          <Route path="/live/:streamId" element={<LiveStream />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

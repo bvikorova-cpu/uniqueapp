@@ -1,0 +1,332 @@
+import { useState, useEffect, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { Video, Send, Users, Gift, ArrowLeft } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+interface Message {
+  id: string;
+  user_id: string;
+  message: string;
+  created_at: string;
+  profiles?: {
+    full_name: string;
+    avatar_url: string;
+  };
+}
+
+interface GiftType {
+  id: string;
+  name: string;
+  icon: string;
+  amount: number;
+}
+
+const GIFTS: GiftType[] = [
+  { id: "rose", name: "Ruža", icon: "🌹", amount: 0.50 },
+  { id: "heart", name: "Srdce", icon: "❤️", amount: 1.00 },
+  { id: "diamond", name: "Diamant", icon: "💎", amount: 5.00 },
+  { id: "crown", name: "Koruna", icon: "👑", amount: 10.00 },
+];
+
+export default function LiveStream() {
+  const { streamId } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [message, setMessage] = useState("");
+  const [user, setUser] = useState<any>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+  }, []);
+
+  // Fetch stream details
+  const { data: stream } = useQuery({
+    queryKey: ["stream", streamId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("live_streams")
+        .select(`
+          *,
+          influencer_profiles(
+            display_name,
+            profile_photo_url
+          )
+        `)
+        .eq("id", streamId)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // Fetch messages with realtime updates
+  const { data: messages = [] } = useQuery({
+    queryKey: ["stream-messages", streamId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("stream_messages")
+        .select("*")
+        .eq("stream_id", streamId)
+        .order("created_at", { ascending: true })
+        .limit(100);
+
+      if (error) throw error;
+      
+      // Fetch user profiles separately
+      const userIds = [...new Set(data.map(m => m.user_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", userIds);
+
+      // Merge profiles with messages
+      return data.map(msg => ({
+        ...msg,
+        profiles: profiles?.find(p => p.id === msg.user_id)
+      })) as Message[];
+    },
+    refetchInterval: 2000,
+  });
+
+  // Join stream
+  useEffect(() => {
+    if (!user || !streamId) return;
+
+    const joinStream = async () => {
+      await supabase.from("stream_viewers").insert({
+        stream_id: streamId,
+        user_id: user.id,
+      });
+    };
+
+    const leaveStream = async () => {
+      await supabase
+        .from("stream_viewers")
+        .update({ left_at: new Date().toISOString() })
+        .eq("stream_id", streamId)
+        .eq("user_id", user.id)
+        .is("left_at", null);
+    };
+
+    joinStream();
+    return () => {
+      leaveStream();
+    };
+  }, [user, streamId]);
+
+  // Send message mutation
+  const sendMessageMutation = useMutation({
+    mutationFn: async (text: string) => {
+      if (!user) throw new Error("Must be logged in");
+
+      const { error } = await supabase.from("stream_messages").insert({
+        stream_id: streamId,
+        user_id: user.id,
+        message: text,
+      });
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setMessage("");
+      queryClient.invalidateQueries({ queryKey: ["stream-messages", streamId] });
+    },
+    onError: (error) => {
+      toast.error("Chyba pri odoslaní správy");
+      console.error(error);
+    },
+  });
+
+  // Send gift mutation
+  const sendGiftMutation = useMutation({
+    mutationFn: async (gift: GiftType) => {
+      if (!user) throw new Error("Must be logged in");
+
+      const { error } = await supabase.from("stream_gifts").insert({
+        stream_id: streamId,
+        sender_id: user.id,
+        gift_type: gift.id,
+        amount: gift.amount,
+      });
+
+      if (error) throw error;
+    },
+    onSuccess: (_, gift) => {
+      toast.success(`Poslal si ${gift.name} ${gift.icon}!`);
+    },
+  });
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  if (!stream) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Načítavam stream...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background pt-20">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <Button
+          onClick={() => navigate("/influ-king")}
+          variant="ghost"
+          className="mb-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Späť
+        </Button>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Video Section */}
+          <div className="lg:col-span-2">
+            <Card>
+              <CardContent className="p-0">
+                <div className="relative bg-black aspect-video rounded-t-lg flex items-center justify-center">
+                  <Video className="h-24 w-24 text-white/20" />
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <Badge variant="destructive" className="animate-pulse">
+                      🔴 LIVE
+                    </Badge>
+                    <Badge variant="secondary">
+                      <Users className="h-3 w-3 mr-1" />
+                      {stream.viewer_count}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-4 mb-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={stream.influencer_profiles?.profile_photo_url} />
+                      <AvatarFallback>
+                        {stream.influencer_profiles?.display_name?.[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h2 className="text-xl font-bold">{stream.title}</h2>
+                      <p className="text-sm text-muted-foreground">
+                        {stream.influencer_profiles?.display_name}
+                      </p>
+                    </div>
+                  </div>
+                  {stream.description && (
+                    <p className="text-muted-foreground">{stream.description}</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Chat Section */}
+          <div className="lg:col-span-1">
+            <Card className="h-[600px] flex flex-col">
+              <CardHeader className="border-b">
+                <CardTitle className="flex items-center justify-between">
+                  <span>Live Chat</span>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <Gift className="h-4 w-4 mr-2" />
+                        Darčeky
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Pošli virtuálny darček</DialogTitle>
+                        <DialogDescription>
+                          Podpor svojho obľúbeného influencera
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid grid-cols-2 gap-4 py-4">
+                        {GIFTS.map((gift) => (
+                          <Button
+                            key={gift.id}
+                            variant="outline"
+                            className="h-24 flex flex-col gap-2"
+                            onClick={() => sendGiftMutation.mutate(gift)}
+                            disabled={!user}
+                          >
+                            <span className="text-4xl">{gift.icon}</span>
+                            <span className="text-sm">{gift.name}</span>
+                            <span className="text-xs text-muted-foreground">
+                              €{gift.amount.toFixed(2)}
+                            </span>
+                          </Button>
+                        ))}
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </CardTitle>
+              </CardHeader>
+
+              <ScrollArea className="flex-1 p-4">
+                <div className="space-y-4">
+                  {messages.map((msg) => (
+                    <div key={msg.id} className="flex gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={msg.profiles?.avatar_url} />
+                        <AvatarFallback>
+                          {msg.profiles?.full_name?.[0] || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">
+                          {msg.profiles?.full_name || "Používateľ"}
+                        </p>
+                        <p className="text-sm text-muted-foreground">{msg.message}</p>
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+              </ScrollArea>
+
+              <div className="p-4 border-t">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (message.trim()) {
+                      sendMessageMutation.mutate(message);
+                    }
+                  }}
+                  className="flex gap-2"
+                >
+                  <Input
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder={user ? "Napíš správu..." : "Prihlás sa pre chat"}
+                    disabled={!user}
+                  />
+                  <Button type="submit" disabled={!user || !message.trim()}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </form>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

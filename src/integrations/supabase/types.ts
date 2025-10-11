@@ -1458,6 +1458,59 @@ export type Database = {
         }
         Relationships: []
       }
+      live_streams: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ended_at: string | null
+          id: string
+          influencer_id: string
+          is_live: boolean | null
+          started_at: string | null
+          stream_key: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+          viewer_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          influencer_id: string
+          is_live?: boolean | null
+          started_at?: string | null
+          stream_key: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          influencer_id?: string
+          is_live?: boolean | null
+          started_at?: string | null
+          stream_key?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_streams_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       marketplace_responses: {
         Row: {
           created_at: string | null
@@ -2159,6 +2212,108 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      stream_gifts: {
+        Row: {
+          amount: number
+          created_at: string | null
+          gift_type: string
+          id: string
+          message: string | null
+          sender_id: string
+          stream_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string | null
+          gift_type: string
+          id?: string
+          message?: string | null
+          sender_id: string
+          stream_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          gift_type?: string
+          id?: string
+          message?: string | null
+          sender_id?: string
+          stream_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_gifts_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stream_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          stream_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          stream_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          stream_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_messages_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stream_viewers: {
+        Row: {
+          id: string
+          joined_at: string | null
+          left_at: string | null
+          stream_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          left_at?: string | null
+          stream_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          left_at?: string | null
+          stream_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stream_viewers_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {

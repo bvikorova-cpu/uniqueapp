@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Crown, Users, Heart, Eye, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import { GoLiveButton } from "@/components/influencer/GoLiveButton";
 
 interface InfluencerProfile {
   id: string;
@@ -553,6 +554,7 @@ const InfluKing = () => {
                   </div>
                 </DialogContent>
               </Dialog>
+              <GoLiveButton influencerId={myProfile.id} />
               <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>
                 Môj profil
               </Button>
