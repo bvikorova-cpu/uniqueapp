@@ -35,6 +35,7 @@ import Cooking from "./pages/Cooking";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import OnlineDJ from "./pages/OnlineDJ";
+import Subscription from "./pages/Subscription";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -79,6 +80,7 @@ const App = () => (
           <Route path="/online-dj" element={<OnlineDJ />} />
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/subscription" element={<Subscription />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

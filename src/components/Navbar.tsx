@@ -316,6 +316,12 @@ const Navbar = () => {
                         Upraviť profil
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/subscription" className="w-full cursor-pointer">
+                        <Crown className="h-4 w-4 mr-2" />
+                        Predplatné
+                      </Link>
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button onClick={handleLogout} variant="outline">
