@@ -58,26 +58,21 @@ const AICreditsStore = () => {
   const handlePurchase = async (pkg: typeof creditPackages[0]) => {
     setLoading(true);
     try {
-      toast({
-        title: "Platba pripravená",
-        description: "Tu bude integrácia s platobnou bránou Tatra banky",
-      });
-
       const success = await purchaseCredits(pkg.credits, pkg.price);
 
       if (success) {
         toast({
-          title: "Úspech!",
-          description: `Zakúpili ste ${pkg.credits} AI kreditov`,
+          title: "Platba pripravená",
+          description: "Otvorilo sa okno s platbou cez Stripe",
         });
       } else {
-        throw new Error("Failed to purchase credits");
+        throw new Error("Failed to open payment");
       }
     } catch (error) {
       console.error('Purchase error:', error);
       toast({
         title: "Chyba",
-        description: "Nepodarilo sa zakúpiť kredity",
+        description: "Nepodarilo sa otvoriť platobnú bránu",
         variant: "destructive",
       });
     } finally {

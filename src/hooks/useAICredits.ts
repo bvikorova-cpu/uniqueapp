@@ -110,39 +110,23 @@ export const useAICredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
 
-      // TODO: Integrate with Tatra Banka payment gateway
-      
-      // Update credits after successful payment
-      const { error: updateError } = await supabase
-        .from('ai_credits')
-        .update({
-          credits_remaining: credits.credits_remaining + amount,
-          total_credits_purchased: credits.total_credits_purchased + amount,
-        })
-        .eq('user_id', user.id);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return false;
 
-      if (updateError) throw updateError;
+      const { data, error } = await supabase.functions.invoke('create-credits-payment', {
+        body: { credits: amount, price },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
 
-      // Create transaction record
-      await supabase
-        .from('transactions')
-        .insert({
-          user_id: user.id,
-          transaction_type: 'subscription',
-          amount: price,
-          commission_rate: 0,
-          commission_amount: price,
-          status: 'completed',
-        });
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        return true;
+      }
 
-      // Update local state
-      setCredits(prev => ({
-        ...prev,
-        credits_remaining: prev.credits_remaining + amount,
-        total_credits_purchased: prev.total_credits_purchased + amount,
-      }));
-
-      return true;
+      return false;
     } catch (error) {
       console.error('Purchase credits error:', error);
       return false;
