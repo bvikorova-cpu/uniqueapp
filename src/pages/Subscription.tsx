@@ -143,7 +143,7 @@ const Subscription = () => {
         '5 inzerátov v Bazári/mesiac',
         '5 aukcií/mesiac',
         'Všetky základné funkcie',
-        '3% provízia z predaja (do 100€)',
+        '3% provízia z predaja',
         '20 AI generácií/mesiac',
         'Podpora emailom'
       ],
