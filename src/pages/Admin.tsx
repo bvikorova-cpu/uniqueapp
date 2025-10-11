@@ -87,12 +87,22 @@ const Admin = () => {
 
       setSubscriptions(subs || []);
 
-      // Load transactions
+      // Load transactions with seller and buyer profiles
       const { data: trans } = await supabase
         .from('transactions')
         .select(`
           *,
-          profiles:user_id (
+          user:user_id (
+            id,
+            email,
+            full_name
+          ),
+          seller:seller_id (
+            id,
+            email,
+            full_name
+          ),
+          buyer:buyer_id (
             id,
             email,
             full_name
@@ -176,8 +186,11 @@ const Admin = () => {
   );
 
   const filteredTransactions = transactions.filter(trans =>
-    trans.profiles?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    trans.profiles?.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    trans.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    trans.user?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    trans.seller?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    trans.buyer?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    trans.item_type?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -301,10 +314,10 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Užívateľ</TableHead>
+                      <TableHead>Užívateľ/Kupec</TableHead>
+                      <TableHead>Predajca</TableHead>
                       <TableHead>Typ</TableHead>
                       <TableHead>Suma</TableHead>
-                      <TableHead>Provízia %</TableHead>
                       <TableHead>Provízia €</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Dátum</TableHead>
@@ -314,15 +327,15 @@ const Admin = () => {
                   <TableBody>
                     {filteredTransactions.map((trans) => (
                       <TableRow key={trans.id}>
-                        <TableCell>{trans.profiles?.email || 'N/A'}</TableCell>
+                        <TableCell>{trans.user?.email || trans.buyer?.email || 'N/A'}</TableCell>
+                        <TableCell>{trans.seller?.email || '-'}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {trans.transaction_type.replace('_', ' ')}
+                            {trans.item_type || trans.transaction_type || 'N/A'}
                           </Badge>
                         </TableCell>
-                        <TableCell>{parseFloat(trans.amount).toFixed(2)} €</TableCell>
-                        <TableCell>{parseFloat(trans.commission_rate).toFixed(2)}%</TableCell>
-                        <TableCell className="font-bold">{parseFloat(trans.commission_amount).toFixed(2)} €</TableCell>
+                        <TableCell>{parseFloat(trans.amount || 0).toFixed(2)} €</TableCell>
+                        <TableCell className="font-bold">{parseFloat(trans.commission_amount || 0).toFixed(2)} €</TableCell>
                         <TableCell>
                           <Badge variant={
                             trans.status === 'completed' ? 'default' :

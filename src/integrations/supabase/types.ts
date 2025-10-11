@@ -2098,11 +2098,15 @@ export type Database = {
       transactions: {
         Row: {
           amount: number
+          buyer_id: string | null
           commission_amount: number
           commission_rate: number
           created_at: string
           id: string
           item_id: string | null
+          item_type: string | null
+          seller_amount: number | null
+          seller_id: string | null
           status: string
           transaction_type: string
           updated_at: string
@@ -2110,11 +2114,15 @@ export type Database = {
         }
         Insert: {
           amount: number
+          buyer_id?: string | null
           commission_amount: number
           commission_rate?: number
           created_at?: string
           id?: string
           item_id?: string | null
+          item_type?: string | null
+          seller_amount?: number | null
+          seller_id?: string | null
           status?: string
           transaction_type: string
           updated_at?: string
@@ -2122,11 +2130,15 @@ export type Database = {
         }
         Update: {
           amount?: number
+          buyer_id?: string | null
           commission_amount?: number
           commission_rate?: number
           created_at?: string
           id?: string
           item_id?: string | null
+          item_type?: string | null
+          seller_amount?: number | null
+          seller_id?: string | null
           status?: string
           transaction_type?: string
           updated_at?: string
