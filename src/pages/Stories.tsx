@@ -6,7 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { ArrowLeft, Heart, Send, X } from "lucide-react";
+import { ArrowLeft, Heart, Send, X, Trash2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
@@ -45,6 +55,7 @@ export default function Stories() {
   const [progress, setProgress] = useState(0);
   const [user, setUser] = useState<any>(null);
   const [reaction, setReaction] = useState("");
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -165,6 +176,41 @@ export default function Stories() {
     },
   });
 
+  // Delete story
+  const deleteStoryMutation = useMutation({
+    mutationFn: async (storyId: string) => {
+      if (!user) throw new Error("Not logged in");
+
+      const { error } = await supabase
+        .from("stories")
+        .delete()
+        .eq("id", storyId)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Story odstránená!");
+      queryClient.invalidateQueries({ queryKey: ["stories", userId] });
+      setShowDeleteDialog(false);
+      
+      // Navigate to next story or back to feed
+      if (currentIndex < stories.length - 1) {
+        setCurrentIndex((i) => i + 1);
+        setProgress(0);
+      } else if (currentIndex > 0) {
+        setCurrentIndex((i) => i - 1);
+        setProgress(0);
+      } else {
+        navigate("/feed");
+      }
+    },
+    onError: (error) => {
+      toast.error("Chyba pri odstraňovaní story");
+      console.error(error);
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
@@ -222,14 +268,27 @@ export default function Stories() {
             </p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate("/feed")}
-          className="text-white hover:bg-white/20"
-        >
-          <X className="h-6 w-6" />
-        </Button>
+        <div className="flex gap-2">
+          {/* Delete button (only for own stories) */}
+          {user && currentStory.user_id === user.id && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowDeleteDialog(true)}
+              className="text-white hover:bg-white/20"
+            >
+              <Trash2 className="h-5 w-5" />
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/feed")}
+            className="text-white hover:bg-white/20"
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
       </div>
 
       {/* Story content */}
@@ -364,6 +423,27 @@ export default function Stories() {
           }}
         />
       </div>
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="bg-background">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Odstrániť Story?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Táto akcia je nezvratná. Story bude natrvalo odstránená.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => currentStory && deleteStoryMutation.mutate(currentStory.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Odstrániť
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
