@@ -360,22 +360,41 @@ export default function OnlineDJ() {
     }
   };
 
-  const downloadRecording = () => {
+  const downloadRecording = async () => {
     if (recordedChunks.length === 0) {
       toast.error("Žiadna nahrávka na stiahnutie");
       return;
     }
 
-    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `dj-mix-${Date.now()}.webm`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success("Mix stiahnutý!");
+    try {
+      toast.loading("Konvertujem do MP3...");
+      
+      const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+      const formData = new FormData();
+      formData.append('audio', blob, 'recording.webm');
+
+      const { data, error } = await supabase.functions.invoke('convert-to-mp3', {
+        body: formData,
+      });
+
+      if (error) throw error;
+
+      // Create download link for MP3
+      const mp3Blob = new Blob([data], { type: 'audio/mpeg' });
+      const url = URL.createObjectURL(mp3Blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `dj-mix-${Date.now()}.mp3`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast.success("Mix stiahnutý v MP3 formáte!");
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error("Chyba pri konverzii do MP3");
+    }
   };
 
   return (
