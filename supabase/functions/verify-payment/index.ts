@@ -42,14 +42,29 @@ serve(async (req) => {
 
     // Get metadata from session
     const itemId = session.metadata?.item_id;
-    const itemType = session.metadata?.item_type;
+    const itemType = session.metadata?.item_type || session.metadata?.type;
     const sellerId = session.metadata?.seller_id;
     const platformFee = parseFloat(session.metadata?.platform_fee || "0.50");
     const sellerAmount = parseFloat(session.metadata?.seller_amount || "0");
+    
+    // Stream gift specific metadata
+    const streamId = session.metadata?.stream_id;
+    const giftId = session.metadata?.gift_id;
+    const senderId = session.metadata?.sender_id;
+    const influencerId = session.metadata?.influencer_id;
+    const message = session.metadata?.message || "";
 
-    if (!itemId || !itemType || !sellerId) {
-      console.error("Missing required metadata");
-      throw new Error("Missing required metadata");
+    // Validate metadata based on payment type
+    if (itemType === "stream_gift") {
+      if (!streamId || !giftId || !senderId || !influencerId) {
+        console.error("Missing required stream gift metadata");
+        throw new Error("Missing required metadata for stream gift");
+      }
+    } else {
+      if (!itemId || !itemType || !sellerId) {
+        console.error("Missing required metadata");
+        throw new Error("Missing required metadata");
+      }
     }
 
     const totalAmount = session.amount_total ? session.amount_total / 100 : 0;
@@ -89,25 +104,71 @@ serve(async (req) => {
       throw transactionError;
     }
 
-    console.log(`[Verify Payment] Transaction created for ${itemType} ${itemId}`);
+    console.log(`[Verify Payment] Transaction created for ${itemType} ${itemId || streamId}`);
 
-    // Mark item as sold
-    if (itemType === "bazaar") {
+    // Handle stream gift
+    if (itemType === "stream_gift") {
+      // Calculate commission (20%)
+      const commissionAmount = totalAmount * 0.20;
+      const influencerAmount = totalAmount - commissionAmount;
+
+      // Create stream gift record
+      const { error: giftError } = await supabase
+        .from("stream_gifts")
+        .insert({
+          stream_id: streamId,
+          sender_id: senderId,
+          gift_id: giftId,
+          gift_type: giftId,
+          amount: totalAmount,
+          message: message,
+          status: "completed",
+          stripe_session_id: session_id
+        });
+
+      if (giftError) {
+        console.error("Error creating stream gift:", giftError);
+        throw giftError;
+      }
+
+      // Create transaction for influencer earnings
       await supabase
-        .from("bazaar_items")
-        .update({ is_active: false })
-        .eq("id", itemId);
-    } else if (itemType === "auction") {
-      await supabase
-        .from("auction_items")
-        .update({ 
-          is_active: false, 
-          winner_id: session.client_reference_id || session.customer as string 
-        })
-        .eq("id", itemId);
+        .from("transactions")
+        .insert({
+          user_id: influencerId,
+          seller_id: influencerId,
+          buyer_id: senderId,
+          stream_id: streamId,
+          item_id: giftId,
+          item_type: "stream_gift",
+          amount: totalAmount,
+          commission_amount: commissionAmount,
+          seller_amount: influencerAmount,
+          status: "completed",
+          transaction_type: "stream_gift",
+          stripe_payment_id: session.payment_intent as string
+        });
+
+      console.log(`[Verify Payment] Stream gift recorded with 20% commission`);
+    } else {
+      // Mark item as sold for bazaar/auction
+      if (itemType === "bazaar") {
+        await supabase
+          .from("bazaar_items")
+          .update({ is_active: false })
+          .eq("id", itemId);
+      } else if (itemType === "auction") {
+        await supabase
+          .from("auction_items")
+          .update({ 
+            is_active: false, 
+            winner_id: session.client_reference_id || session.customer as string 
+          })
+          .eq("id", itemId);
+      }
+
+      console.log(`[Verify Payment] Item marked as sold`);
     }
-
-    console.log(`[Verify Payment] Item marked as sold`);
 
     return new Response(JSON.stringify({ success: true }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

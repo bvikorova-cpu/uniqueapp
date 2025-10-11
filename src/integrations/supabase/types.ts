@@ -2217,31 +2217,47 @@ export type Database = {
         Row: {
           amount: number
           created_at: string | null
+          gift_id: string | null
           gift_type: string
           id: string
           message: string | null
           sender_id: string
+          status: string | null
           stream_id: string
+          stripe_session_id: string | null
         }
         Insert: {
           amount?: number
           created_at?: string | null
+          gift_id?: string | null
           gift_type: string
           id?: string
           message?: string | null
           sender_id: string
+          status?: string | null
           stream_id: string
+          stripe_session_id?: string | null
         }
         Update: {
           amount?: number
           created_at?: string | null
+          gift_id?: string | null
           gift_type?: string
           id?: string
           message?: string | null
           sender_id?: string
+          status?: string | null
           stream_id?: string
+          stripe_session_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "stream_gifts_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "platform_gifts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "stream_gifts_stream_id_fkey"
             columns: ["stream_id"]
@@ -2481,6 +2497,7 @@ export type Database = {
           seller_amount: number | null
           seller_id: string | null
           status: string
+          stream_id: string | null
           transaction_type: string
           updated_at: string
           user_id: string
@@ -2497,6 +2514,7 @@ export type Database = {
           seller_amount?: number | null
           seller_id?: string | null
           status?: string
+          stream_id?: string | null
           transaction_type: string
           updated_at?: string
           user_id: string
@@ -2513,11 +2531,20 @@ export type Database = {
           seller_amount?: number | null
           seller_id?: string | null
           status?: string
+          stream_id?: string | null
           transaction_type?: string
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "transactions_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_follows: {
         Row: {

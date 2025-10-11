@@ -34,23 +34,39 @@ interface GiftType {
   id: string;
   name: string;
   icon: string;
-  amount: number;
+  price: number;
 }
 
-const GIFTS: GiftType[] = [
-  { id: "rose", name: "Ruža", icon: "🌹", amount: 0.50 },
-  { id: "heart", name: "Srdce", icon: "❤️", amount: 1.00 },
-  { id: "diamond", name: "Diamant", icon: "💎", amount: 5.00 },
-  { id: "crown", name: "Koruna", icon: "👑", amount: 10.00 },
-];
+const GIFT_IDS = {
+  rose: "00000000-0000-0000-0000-000000000001",
+  heart: "00000000-0000-0000-0000-000000000002",
+  diamond: "00000000-0000-0000-0000-000000000003",
+  crown: "00000000-0000-0000-0000-000000000004",
+};
 
 export default function LiveStream() {
   const { streamId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
+  const [giftMessage, setGiftMessage] = useState("");
   const [user, setUser] = useState<any>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Fetch available gifts
+  const { data: gifts = [] } = useQuery({
+    queryKey: ["platform-gifts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("platform_gifts")
+        .select("*")
+        .eq("category", "stream_gift")
+        .order("price", { ascending: true });
+      
+      if (error) throw error;
+      return data as GiftType[];
+    },
+  });
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -160,17 +176,27 @@ export default function LiveStream() {
     mutationFn: async (gift: GiftType) => {
       if (!user) throw new Error("Must be logged in");
 
-      const { error } = await supabase.from("stream_gifts").insert({
-        stream_id: streamId,
-        sender_id: user.id,
-        gift_type: gift.id,
-        amount: gift.amount,
+      const { data, error } = await supabase.functions.invoke("send-stream-gift", {
+        body: {
+          streamId,
+          giftId: gift.id,
+          message: giftMessage,
+        },
       });
 
       if (error) throw error;
+      return data;
     },
-    onSuccess: (_, gift) => {
-      toast.success(`Poslal si ${gift.name} ${gift.icon}!`);
+    onSuccess: (data, gift) => {
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast.success(`Otváram platbu za ${gift.name} ${gift.icon}`);
+        setGiftMessage("");
+      }
+    },
+    onError: (error) => {
+      toast.error("Chyba pri odoslaní darčeku");
+      console.error(error);
     },
   });
 
@@ -258,22 +284,29 @@ export default function LiveStream() {
                           Podpor svojho obľúbeného influencera
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="grid grid-cols-2 gap-4 py-4">
-                        {GIFTS.map((gift) => (
-                          <Button
-                            key={gift.id}
-                            variant="outline"
-                            className="h-24 flex flex-col gap-2"
-                            onClick={() => sendGiftMutation.mutate(gift)}
-                            disabled={!user}
-                          >
-                            <span className="text-4xl">{gift.icon}</span>
-                            <span className="text-sm">{gift.name}</span>
-                            <span className="text-xs text-muted-foreground">
-                              €{gift.amount.toFixed(2)}
-                            </span>
-                          </Button>
-                        ))}
+                      <div className="space-y-4 py-4">
+                        <Input
+                          placeholder="Pridaj správu k darčeku (voliteľné)"
+                          value={giftMessage}
+                          onChange={(e) => setGiftMessage(e.target.value)}
+                        />
+                        <div className="grid grid-cols-2 gap-4">
+                          {gifts.map((gift) => (
+                            <Button
+                              key={gift.id}
+                              variant="outline"
+                              className="h-24 flex flex-col gap-2"
+                              onClick={() => sendGiftMutation.mutate(gift)}
+                              disabled={!user || sendGiftMutation.isPending}
+                            >
+                              <span className="text-4xl">{gift.icon}</span>
+                              <span className="text-sm">{gift.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                €{gift.price.toFixed(2)}
+                              </span>
+                            </Button>
+                          ))}
+                        </div>
                       </div>
                     </DialogContent>
                   </Dialog>
