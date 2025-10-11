@@ -77,6 +77,15 @@ const TikTok = () => {
 
   const EMOJI_OPTIONS = ['❤️', '😂', '😮', '😢', '😡', '👍', '👏', '🔥', '🎉', '💯'];
 
+  const fetchSavedVideos = async () => {
+    const { data } = await supabase
+      .from("saved_videos")
+      .select("video_id")
+      .eq("user_id", user.id);
+
+    setSavedVideos(new Set(data?.map(s => s.video_id) || []));
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
@@ -104,6 +113,7 @@ const TikTok = () => {
       fetchVideos();
       fetchLikedVideos();
       fetchFollowing();
+      fetchSavedVideos();
       videos.forEach(video => fetchReactions(video.id));
     }
   }, [user, videos.length]);
@@ -233,18 +243,27 @@ const TikTok = () => {
     });
   };
 
-  const toggleSave = (videoId: string) => {
-    setSavedVideos(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(videoId)) {
-        newSet.delete(videoId);
-        toast({ title: "Odstránené z uložených" });
-      } else {
-        newSet.add(videoId);
-        toast({ title: "Uložené do obľúbených" });
-      }
-      return newSet;
-    });
+  const toggleSave = async (videoId: string) => {
+    if (savedVideos.has(videoId)) {
+      await supabase
+        .from("saved_videos")
+        .delete()
+        .eq("video_id", videoId)
+        .eq("user_id", user.id);
+
+      toast({ title: "Odstránené z uložených" });
+    } else {
+      await supabase
+        .from("saved_videos")
+        .insert({
+          video_id: videoId,
+          user_id: user.id,
+        });
+
+      toast({ title: "Uložené do obľúbených" });
+    }
+
+    fetchSavedVideos();
   };
 
   const handleReport = (videoId: string) => {

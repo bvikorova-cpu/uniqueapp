@@ -7,10 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp } from "lucide-react";
+import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp, Video, Bookmark, Trophy, GraduationCap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
 import { CourseHistory } from "@/components/profile/CourseHistory";
+import { UserVideos } from "@/components/profile/UserVideos";
+import { SavedVideos } from "@/components/profile/SavedVideos";
+import { UserContests } from "@/components/profile/UserContests";
 
 interface Profile {
   id: string;
@@ -61,7 +64,11 @@ const Profile = () => {
     postsCount: 0,
     likesGiven: 0,
     commentsGiven: 0,
-    friendsCount: 0
+    friendsCount: 0,
+    videosCount: 0,
+    savedVideosCount: 0,
+    submissionsCount: 0,
+    completedCoursesCount: 0
   });
 
   useEffect(() => {
@@ -159,11 +166,36 @@ const Profile = () => {
           .select("*", { count: 'exact', head: true })
           .eq("user_id", userId);
 
+        const { count: videosCount } = await supabase
+          .from("videos")
+          .select("*", { count: 'exact', head: true })
+          .eq("user_id", userId)
+          .eq("is_active", true);
+
+        const { count: savedVideosCount } = await supabase
+          .from("saved_videos")
+          .select("*", { count: 'exact', head: true })
+          .eq("user_id", userId);
+
+        const { count: submissionsCount } = await supabase
+          .from("talent_submissions")
+          .select("*", { count: 'exact', head: true })
+          .eq("user_id", userId);
+
+        const { count: completedCoursesCount } = await supabase
+          .from("completed_courses")
+          .select("*", { count: 'exact', head: true })
+          .eq("user_id", userId);
+
         setStats({
           postsCount: postsData?.length || 0,
           likesGiven: likesCount || 0,
           commentsGiven: commentsCount || 0,
-          friendsCount: friendsData?.length || 0
+          friendsCount: friendsData?.length || 0,
+          videosCount: videosCount || 0,
+          savedVideosCount: savedVideosCount || 0,
+          submissionsCount: submissionsCount || 0,
+          completedCoursesCount: completedCoursesCount || 0
         });
 
       } catch (error: any) {
@@ -483,6 +515,22 @@ const Profile = () => {
               <div className="text-sm text-muted-foreground">Priateľov</div>
             </div>
             <div className="text-center">
+              <div className="text-3xl font-bold text-primary">{stats.videosCount}</div>
+              <div className="text-sm text-muted-foreground">Videí</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">{stats.savedVideosCount}</div>
+              <div className="text-sm text-muted-foreground">Uložených</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">{stats.submissionsCount}</div>
+              <div className="text-sm text-muted-foreground">Súťaží</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-primary">{stats.completedCoursesCount}</div>
+              <div className="text-sm text-muted-foreground">Kurzov</div>
+            </div>
+            <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.likesGiven}</div>
               <div className="text-sm text-muted-foreground">Lajkov</div>
             </div>
@@ -494,10 +542,13 @@ const Profile = () => {
         </Card>
 
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="posts">Príspevky</TabsTrigger>
-            <TabsTrigger value="friends">Priatelia ({friends.length})</TabsTrigger>
-            <TabsTrigger value="education">Vzdelávanie</TabsTrigger>
+            <TabsTrigger value="videos">Videá</TabsTrigger>
+            <TabsTrigger value="saved">Uložené</TabsTrigger>
+            <TabsTrigger value="contests">Súťaže</TabsTrigger>
+            <TabsTrigger value="education">Kurzy</TabsTrigger>
+            <TabsTrigger value="friends">Priatelia</TabsTrigger>
           </TabsList>
           
           <TabsContent value="posts" className="space-y-4 mt-4">
@@ -514,6 +565,22 @@ const Profile = () => {
                 />
               ))
             )}
+          </TabsContent>
+
+          <TabsContent value="videos" className="mt-4">
+            <UserVideos userId={userId!} />
+          </TabsContent>
+
+          <TabsContent value="saved" className="mt-4">
+            <SavedVideos userId={userId!} />
+          </TabsContent>
+
+          <TabsContent value="contests" className="mt-4">
+            <UserContests userId={userId!} />
+          </TabsContent>
+
+          <TabsContent value="education" className="mt-4">
+            <CourseHistory />
           </TabsContent>
 
           <TabsContent value="friends" className="mt-4">
@@ -544,10 +611,6 @@ const Profile = () => {
                 ))}
               </div>
             )}
-          </TabsContent>
-
-          <TabsContent value="education" className="mt-4">
-            <CourseHistory />
           </TabsContent>
         </Tabs>
       </div>
