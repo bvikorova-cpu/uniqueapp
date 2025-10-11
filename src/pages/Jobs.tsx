@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe } from "lucide-react";
+import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe, Download } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 
 interface JobListing {
@@ -83,6 +83,7 @@ const Jobs = () => {
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
   const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
   const [showJobSeekerDialog, setShowJobSeekerDialog] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
   
   // Form states for job seeker profile
   const [jobSeekerProfile, setJobSeekerProfile] = useState({
@@ -314,6 +315,35 @@ const Jobs = () => {
         description: error.message || "Nepodarilo sa vytvoriť profil",
         variant: "destructive",
       });
+    },
+  });
+
+  // Import SK jobs mutation
+  const importSKJobsMutation = useMutation({
+    mutationFn: async (source: 'profesie' | 'kariera' | 'profesia') => {
+      setIsImporting(true);
+      const { data, error } = await supabase.functions.invoke('import-jobs-sk', {
+        body: { source, keyword: searchQuery, limit: 30 }
+      });
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      toast({
+        title: "✅ Import úspešný",
+        description: `Importovaných ${data.imported} z ${data.total} pracovných ponúk z ${data.source}`,
+      });
+      setIsImporting(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "❌ Chyba pri importe",
+        description: error.message || "Nepodarilo sa importovať pracovné ponuky",
+        variant: "destructive",
+      });
+      setIsImporting(false);
     },
   });
 
@@ -638,6 +668,38 @@ const Jobs = () => {
                 </Select>
               </div>
             )}
+            
+            {/* Import buttons */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <p className="text-sm text-muted-foreground w-full mb-2">Importovať pracovné ponuky:</p>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isImporting}
+                onClick={() => importSKJobsMutation.mutate('profesie')}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {isImporting ? "Importujem..." : "Profesie.sk"}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isImporting}
+                onClick={() => importSKJobsMutation.mutate('profesia')}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {isImporting ? "Importujem..." : "Profesia.sk"}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                disabled={isImporting}
+                onClick={() => importSKJobsMutation.mutate('kariera')}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {isImporting ? "Importujem..." : "Kariera.sk"}
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
