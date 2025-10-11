@@ -115,6 +115,37 @@ import tropicalParadiseImg from "@/assets/effects/tropical-paradise.jpg";
 import northernLightsImg from "@/assets/effects/northern-lights.jpg";
 import shootingStarImg from "@/assets/effects/shooting-star.jpg";
 import crownJewelsImg from "@/assets/effects/crown-jewels.jpg";
+import robotDanceImg from "@/assets/effects/robot-dance.jpg";
+import underwaterDreamImg from "@/assets/effects/underwater-dream.jpg";
+import goldenTouchImg from "@/assets/effects/golden-touch.jpg";
+import timeTravelerImg from "@/assets/effects/time-traveler.jpg";
+import neonCityImg from "@/assets/effects/neon-city.jpg";
+import crystalWingsImg from "@/assets/effects/crystal-wings.jpg";
+import shadowCloneImg from "@/assets/effects/shadow-clone.jpg";
+import flowerPowerImg from "@/assets/effects/flower-power.jpg";
+import stormWarriorImg from "@/assets/effects/storm-warrior.jpg";
+import desertMirageImg from "@/assets/effects/desert-mirage.jpg";
+import oceanWaveImg from "@/assets/effects/ocean-wave.jpg";
+import cosmicEnergyImg from "@/assets/effects/cosmic-energy.jpg";
+import fireDragonImg from "@/assets/effects/fire-dragon.jpg";
+import iceDragonImg from "@/assets/effects/ice-dragon.jpg";
+import lightningStrikeImg from "@/assets/effects/lightning-strike.jpg";
+import mysticPortalImg from "@/assets/effects/mystic-portal.jpg";
+import ancientWarriorImg from "@/assets/effects/ancient-warrior.jpg";
+import futureSoldierImg from "@/assets/effects/future-soldier.jpg";
+import fairyTaleImg from "@/assets/effects/fairy-tale.jpg";
+import wildWestImg from "@/assets/effects/wild-west.jpg";
+import spaceExplorerImg from "@/assets/effects/space-explorer.jpg";
+import deepSeaImg from "@/assets/effects/deep-sea.jpg";
+import mountainPeakImg from "@/assets/effects/mountain-peak.jpg";
+import forestSpiritImg from "@/assets/effects/forest-spirit.jpg";
+import cityLightsImg from "@/assets/effects/city-lights.jpg";
+import sunsetGlowImg from "@/assets/effects/sunset-glow.jpg";
+import moonlightImg from "@/assets/effects/moonlight.jpg";
+import starlightImg from "@/assets/effects/starlight.jpg";
+import rainbowBridgeImg from "@/assets/effects/rainbow-bridge.jpg";
+import cloudNineImg from "@/assets/effects/cloud-nine.jpg";
+
 
 type EffectCategory = "all" | "interactions" | "pets" | "appearance" | "entertainment" | "heroes" | "fanciful" | "dance" | "emotions";
 
@@ -239,6 +270,38 @@ const aiEffects: AIEffect[] = [
   { id: "northern-lights", name: "Northern Lights", category: "fanciful", image: northernLightsImg, description: "Polárna žiara", isHot: true },
   { id: "shooting-star", name: "Shooting Star", category: "fanciful", image: shootingStarImg, description: "Padajúca hviezda" },
   { id: "crown-jewels", name: "Crown Jewels", category: "appearance", image: crownJewelsImg, description: "Korunové klenoty" },
+  
+  // Nové efekty - 30 nových
+  { id: "robot-dance", name: "Robot Dance", category: "dance", image: robotDanceImg, description: "Robotický tanec", isHot: true },
+  { id: "underwater-dream", name: "Underwater Dream", category: "fanciful", image: underwaterDreamImg, description: "Podmorský sen" },
+  { id: "golden-touch", name: "Golden Touch", category: "fanciful", image: goldenTouchImg, description: "Zlatý dotyk", isHot: true },
+  { id: "time-traveler", name: "Time Traveler", category: "heroes", image: timeTravelerImg, description: "Cestovateľ časom" },
+  { id: "neon-city", name: "Neon City", category: "fanciful", image: neonCityImg, description: "Neónové mesto" },
+  { id: "crystal-wings", name: "Crystal Wings", category: "fanciful", image: crystalWingsImg, description: "Kryštálové krídla", isHot: true },
+  { id: "shadow-clone", name: "Shadow Clone", category: "heroes", image: shadowCloneImg, description: "Tieňový klon" },
+  { id: "flower-power", name: "Flower Power", category: "fanciful", image: flowerPowerImg, description: "Kvetinová sila" },
+  { id: "storm-warrior", name: "Storm Warrior", category: "heroes", image: stormWarriorImg, description: "Búrkový bojovník", isHot: true },
+  { id: "desert-mirage", name: "Desert Mirage", category: "fanciful", image: desertMirageImg, description: "Púštna miráž" },
+  { id: "ocean-wave", name: "Ocean Wave", category: "fanciful", image: oceanWaveImg, description: "Oceánska vlna" },
+  { id: "cosmic-energy", name: "Cosmic Energy", category: "heroes", image: cosmicEnergyImg, description: "Kosmická energia", isHot: true },
+  { id: "fire-dragon", name: "Fire Dragon", category: "heroes", image: fireDragonImg, description: "Ohnivý drak", isHot: true },
+  { id: "ice-dragon", name: "Ice Dragon", category: "heroes", image: iceDragonImg, description: "Ľadový drak", isHot: true },
+  { id: "lightning-strike", name: "Lightning Strike", category: "heroes", image: lightningStrikeImg, description: "Úder blesku" },
+  { id: "mystic-portal", name: "Mystic Portal", category: "fanciful", image: mysticPortalImg, description: "Mystický portál", isHot: true },
+  { id: "ancient-warrior", name: "Ancient Warrior", category: "heroes", image: ancientWarriorImg, description: "Starovký bojovník" },
+  { id: "future-soldier", name: "Future Soldier", category: "heroes", image: futureSoldierImg, description: "Budúci vojak" },
+  { id: "fairy-tale", name: "Fairy Tale", category: "fanciful", image: fairyTaleImg, description: "Rozprávka" },
+  { id: "wild-west", name: "Wild West", category: "entertainment", image: wildWestImg, description: "Divoký západ" },
+  { id: "space-explorer", name: "Space Explorer", category: "heroes", image: spaceExplorerImg, description: "Vesmírny prieskumník" },
+  { id: "deep-sea", name: "Deep Sea", category: "fanciful", image: deepSeaImg, description: "Hlboké more" },
+  { id: "mountain-peak", name: "Mountain Peak", category: "fanciful", image: mountainPeakImg, description: "Horský vrchol" },
+  { id: "forest-spirit", name: "Forest Spirit", category: "fanciful", image: forestSpiritImg, description: "Lesný duch" },
+  { id: "city-lights", name: "City Lights", category: "entertainment", image: cityLightsImg, description: "Mestské svetlá" },
+  { id: "sunset-glow", name: "Sunset Glow", category: "fanciful", image: sunsetGlowImg, description: "Žiara západu slnka" },
+  { id: "moonlight", name: "Moonlight", category: "fanciful", image: moonlightImg, description: "Mesačné svetlo" },
+  { id: "starlight", name: "Starlight", category: "fanciful", image: starlightImg, description: "Hviezdne svetlo", isHot: true },
+  { id: "rainbow-bridge", name: "Rainbow Bridge", category: "fanciful", image: rainbowBridgeImg, description: "Dúhový most" },
+  { id: "cloud-nine", name: "Cloud Nine", category: "fanciful", image: cloudNineImg, description: "Deviaty oblak" },
 ];
 
 const AIGeneration = () => {
