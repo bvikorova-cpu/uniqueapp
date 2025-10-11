@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, UserPlus, UserMinus, Send, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -396,12 +396,15 @@ const TikTok = () => {
 
   return (
     <div className="min-h-screen bg-background pt-16">
-      <div className="fixed top-16 right-4 z-50 flex flex-col gap-2">
+      {/* Kruhové tlačidlo pre nahratie videa - dolná časť v strede */}
+      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50">
         <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
           <DialogTrigger asChild>
-            <Button size="lg" className="rounded-full shadow-elegant">
-              <Upload className="h-5 w-5 mr-2" />
-              Nahrať video
+            <Button 
+              size="icon"
+              className="h-16 w-16 rounded-full shadow-elegant bg-primary hover:bg-primary/90 hover:scale-110 transition-all duration-300"
+            >
+              <Plus className="h-8 w-8" />
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -437,36 +440,6 @@ const TikTok = () => {
             </div>
           </DialogContent>
         </Dialog>
-        
-        <Button 
-          size="lg" 
-          variant="destructive"
-          className="rounded-full shadow-elegant"
-          onClick={async () => {
-            if (!user) return;
-            
-            const { error } = await supabase
-              .from('videos')
-              .delete()
-              .eq('user_id', user.id);
-            
-            if (error) {
-              toast({
-                title: "Chyba",
-                description: "Nepodarilo sa vymazať videá",
-                variant: "destructive",
-              });
-            } else {
-              toast({
-                title: "Úspech",
-                description: "Všetky vaše videá boli vymazané",
-              });
-              fetchVideos();
-            }
-          }}
-        >
-          Vymazať moje videá
-        </Button>
       </div>
 
       <div className="h-[calc(100vh-4rem)] overflow-y-scroll snap-y snap-mandatory scrollbar-hide">
