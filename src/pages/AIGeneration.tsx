@@ -548,8 +548,72 @@ const AIGeneration = () => {
           </div>
         )}
 
+        {/* Upload Section */}
+        <div className="mt-8 max-w-4xl mx-auto">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="w-5 h-5" />
+                Nahrať súbor
+              </CardTitle>
+              <CardDescription>
+                Nahrajte svoj obrázok pre aplikáciu AI efektov
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <label htmlFor="file-upload" className="block">
+                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
+                  <Wand2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Kliknite pre nahratie obrázka
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Podporované formáty: JPG, PNG, WEBP (max 10MB)
+                  </p>
+                </div>
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="image/jpeg,image/png,image/jpg,image/webp"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </label>
+
+              {/* Preview */}
+              {previewUrl && uploadedFile && (
+                <div className="border rounded-lg p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-1">
+                      <p className="font-medium mb-2">{uploadedFile.name}</p>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
+                      </p>
+                      <img
+                        src={previewUrl}
+                        alt="Preview"
+                        className="max-h-64 rounded-lg object-contain"
+                      />
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setUploadedFile(null);
+                        setPreviewUrl(null);
+                      }}
+                    >
+                      Odstrániť
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Custom Image Generation Section */}
-        <div className="mt-12 max-w-4xl mx-auto">
+        <div className="mt-8 max-w-4xl mx-auto">
           <Card className="bg-gradient-to-br from-primary/5 to-secondary/5 border-2 border-primary/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -625,72 +689,8 @@ const AIGeneration = () => {
           </Card>
         </div>
 
-        {/* Upload Section */}
-        <div className="mt-8 max-w-4xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Upload className="w-5 h-5" />
-                Nahrať súbor
-              </CardTitle>
-              <CardDescription>
-                Nahrajte svoj obrázok pre aplikáciu AI efektov
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <label htmlFor="file-upload" className="block">
-                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
-                  <Wand2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Kliknite pre nahratie obrázka
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Podporované formáty: JPG, PNG, WEBP (max 10MB)
-                  </p>
-                </div>
-                <input
-                  id="file-upload"
-                  type="file"
-                  accept="image/jpeg,image/png,image/jpg,image/webp"
-                  onChange={handleFileUpload}
-                  className="hidden"
-                />
-              </label>
-
-              {/* Preview */}
-              {previewUrl && uploadedFile && (
-                <div className="border rounded-lg p-4">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-1">
-                      <p className="font-medium mb-2">{uploadedFile.name}</p>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB
-                      </p>
-                      <img
-                        src={previewUrl}
-                        alt="Preview"
-                        className="max-h-64 rounded-lg object-contain"
-                      />
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setUploadedFile(null);
-                        setPreviewUrl(null);
-                      }}
-                    >
-                      Odstrániť
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Info Section */}
-        <div className="mt-8 max-w-4xl mx-auto">
+        <div className="mt-12 max-w-4xl mx-auto">
           <Card>
             <CardHeader>
               <CardTitle>Ako to funguje?</CardTitle>
