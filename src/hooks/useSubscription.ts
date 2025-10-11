@@ -14,8 +14,8 @@ export interface SubscriptionLimits {
 const SUBSCRIPTION_LIMITS: Record<string, SubscriptionLimits> = {
   free: {
     tier: 'free',
-    bazaarListingsPerMonth: 5,
-    auctionListingsPerMonth: 3,
+    bazaarListingsPerMonth: 1,
+    auctionListingsPerMonth: 1,
     commissionRate: 5,
     aiGenerationsPerMonth: 5, // Free: 5 uses then need to buy credits
     featuredListingsPerMonth: 0,
@@ -23,8 +23,8 @@ const SUBSCRIPTION_LIMITS: Record<string, SubscriptionLimits> = {
   },
   basic: {
     tier: 'basic',
-    bazaarListingsPerMonth: 10,
-    auctionListingsPerMonth: 10,
+    bazaarListingsPerMonth: 5,
+    auctionListingsPerMonth: 5,
     commissionRate: 3,
     aiGenerationsPerMonth: 20, // Basic: 20 included monthly
     featuredListingsPerMonth: 1,
