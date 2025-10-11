@@ -11,12 +11,55 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
-  { value: "drawing", label: "Kreslenie" },
-  { value: "funny_video", label: "Najsmiešnejšie video" },
-  { value: "life_advice", label: "Najlepšia rada do života" },
-  { value: "tattoo", label: "Najlepšie tetovanie" },
-  { value: "training", label: "Najlepší tréning" },
-  { value: "best_selfie", label: "Najlepšie selfie" },
+  // Umenie a kreativita
+  { value: "drawing", label: "🎨 Kreslenie" },
+  { value: "painting", label: "🖌️ Maľovanie" },
+  { value: "digital_art", label: "💻 Digitálne umenie" },
+  { value: "sculpture", label: "🗿 Socha / Modelovanie" },
+  { value: "photography", label: "📸 Fotografia" },
+  { value: "handmade", label: "✂️ Handmade výrobky" },
+  { value: "makeup_art", label: "💄 Makeup art" },
+  { value: "tattoo", label: "⚡ Najlepšie tetovanie" },
+  
+  // Hudba
+  { value: "singing", label: "🎤 Spev" },
+  { value: "instrument", label: "🎸 Hra na hudobný nástroj" },
+  { value: "music_production", label: "🎧 Tvorba hudby / DJ" },
+  { value: "beatbox", label: "🎵 Beatbox" },
+  { value: "rap", label: "🎙️ Rap / Freestyle" },
+  
+  // Tanec a pohyb
+  { value: "dance", label: "💃 Tanec" },
+  { value: "breakdance", label: "🕺 Breakdance" },
+  { value: "gymnastics", label: "🤸 Gymnastika / Akrobacia" },
+  { value: "parkour", label: "🏃 Parkour / Freerunning" },
+  
+  // Šport a fitness
+  { value: "training", label: "💪 Najlepší tréning" },
+  { value: "yoga", label: "🧘 Jóga / Pilates" },
+  { value: "martial_arts", label: "🥋 Bojové umenia" },
+  { value: "extreme_sport", label: "🛹 Extrémne športy" },
+  { value: "sport_trick", label: "⚽ Športové triky" },
+  
+  // Stand-up a zábava
+  { value: "funny_video", label: "😂 Najsmiešnejšie video" },
+  { value: "standup", label: "🎭 Stand-up / Komediálne vystúpenie" },
+  { value: "impressions", label: "🎪 Imitácie / Parodie" },
+  { value: "magic", label: "🎩 Kúzla / Ilúzie" },
+  { value: "pranks", label: "😜 Pranky / Skrytá kamera" },
+  
+  // Vzdelávanie a know-how
+  { value: "life_advice", label: "💡 Najlepšia rada do života" },
+  { value: "tutorial", label: "📚 Návod / Tutorial" },
+  { value: "cooking", label: "👨‍🍳 Varenie / Pečenie" },
+  { value: "diy", label: "🔧 DIY projekty" },
+  { value: "science", label: "🔬 Veda / Experimenty" },
+  
+  // Ostatné
+  { value: "best_selfie", label: "🤳 Najlepšie selfie" },
+  { value: "transformation", label: "✨ Transformácia (predtým/potom)" },
+  { value: "pet_talent", label: "🐾 Talent domáceho miláčika" },
+  { value: "other", label: "🌟 Iné talenty" },
 ];
 
 const Megatalent = () => {
