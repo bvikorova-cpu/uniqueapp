@@ -37,12 +37,14 @@ const Navbar = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
         loadNotifications(session.user.id);
+        checkAdminRole(session.user.id);
       }
     });
 
@@ -51,15 +53,28 @@ const Navbar = () => {
         setUser(session?.user ?? null);
         if (session?.user) {
           loadNotifications(session.user.id);
+          checkAdminRole(session.user.id);
         } else {
           setNotifications([]);
           setUnreadCount(0);
+          setIsAdmin(false);
         }
       }
     );
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkAdminRole = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    
+    setIsAdmin(!!data);
+  };
 
   const loadNotifications = async (userId: string) => {
     // Load marketplace notifications
@@ -335,12 +350,14 @@ const Navbar = () => {
                         Moje zárobky
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin" className="w-full cursor-pointer">
-                        <Settings className="h-4 w-4 mr-2" />
-                        Admin Panel
-                      </Link>
-                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="w-full cursor-pointer">
+                          <Settings className="h-4 w-4 mr-2" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button onClick={handleLogout} variant="outline">
