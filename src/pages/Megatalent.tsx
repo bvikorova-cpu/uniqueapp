@@ -197,9 +197,26 @@ const Megatalent = () => {
         return;
       }
 
+      // Check if user already has or had any subscription (active, expired, or cancelled)
+      const { data: existingSub } = await supabase
+        .from("megatalent_subscriptions")
+        .select("id, status")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
       // Validate and get referrer if referral code is provided
       let referrerId = null;
       if (referralCode.trim()) {
+        // Only new users can use referral codes
+        if (existingSub) {
+          toast({
+            title: "Kód nie je platný",
+            description: "Referenčný kód môže použiť len nový účastník súťaže. Ak si už bol v súťaži, nemôžeš použiť kód.",
+            variant: "destructive",
+          });
+          return;
+        }
+
         const { data: referralData } = await supabase
           .from("megatalent_referral_codes")
           .select("user_id")
@@ -218,30 +235,21 @@ const Megatalent = () => {
         if (referralData.user_id === user.id) {
           toast({
             title: "Chyba",
-            description: "Nemôžete použiť vlastný referenčný kód",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        // Check if user already has active subscription
-        const { data: existingSub } = await supabase
-          .from("megatalent_subscriptions")
-          .select("id")
-          .eq("user_id", user.id)
-          .eq("status", "active")
-          .maybeSingle();
-
-        if (existingSub) {
-          toast({
-            title: "Chyba",
-            description: "Už máte aktívne predplatné, nemôžete použiť referenčný kód",
+            description: "Nemôžeš použiť vlastný referenčný kód",
             variant: "destructive",
           });
           return;
         }
 
         referrerId = referralData.user_id;
+      } else if (existingSub && existingSub.status === 'active') {
+        // User already has active subscription, just inform them
+        toast({
+          title: "Už máš aktívne predplatné",
+          description: "Už si prihlásený do súťaže Megatalent",
+          variant: "destructive",
+        });
+        return;
       }
 
       const price = tier === 'premium' ? 10 : 15;

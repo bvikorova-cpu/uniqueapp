@@ -133,6 +133,7 @@ export const ReferralProgram = () => {
             <li>• Pri registrácii zadajú tvoj kód</li>
             <li>• Zarobíš 5€ mesačne za každého aktívneho účastníka</li>
             <li>• Výnosy dostávaš každý mesiac, kým sú aktívni</li>
+            <li className="text-amber-600 font-medium">⚠️ POZOR: Kód môže použiť len nový účastník! Ak je osoba už v súťaži, nemôže použiť referenčný kód a ty za ňu nedostaneš 5€</li>
           </ul>
         </div>
       </Card>
