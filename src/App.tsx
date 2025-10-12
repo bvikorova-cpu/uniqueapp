@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Feed from "./pages/Feed";
 import TikTok from "./pages/TikTok";
@@ -52,51 +53,56 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/feed" element={<Feed />} />
-          <Route path="/tiktok" element={<TikTok />} />
-          <Route path="/messenger" element={<Messenger />} />
-          <Route path="/megatalent" element={<Megatalent />} />
-          <Route path="/megaforum" element={<Megaforum />} />
-          <Route path="/psychologist" element={<Psychology />} />
-          <Route path="/vacationer" element={<Vacationer />} />
-          <Route path="/dating" element={<Dating />} />
-          <Route path="/first-aid" element={<FirstAid />} />
-          <Route path="/fit-slim" element={<FitSlim />} />
-          <Route path="/marketplace" element={<Marketplace />} />
-          
-          <Route path="/bazaar" element={<Bazaar />} />
-          <Route path="/referral" element={<Referral />} />
-          <Route path="/games" element={<Games />} />
-          <Route path="/jobs" element={<Jobs />} />
-          <Route path="/influ-king" element={<InfluKing />} />
-          <Route path="/auction" element={<Auction />} />
-          <Route path="/ai-generation" element={<AIGeneration />} />
-          <Route path="/best-friend" element={<BestFriend />} />
-          <Route path="/cooking" element={<Cooking />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/education" element={<Education />} />
-          <Route path="/course/:courseName" element={<CourseDetail />} />
-          <Route path="/quiz" element={<Quiz />} />
-          
-          <Route path="/profile/:userId" element={<Profile />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
-          <Route path="/subscription" element={<Subscription />} />
-          <Route path="/ai-credits-store" element={<AICreditsStore />} />
-          <Route path="/ai-credits" element={<AICreditsStore />} />
-          <Route path="/admin/transactions" element={<AdminTransactions />} />
-          <Route path="/earnings" element={<Earnings />} />
-          <Route path="/live/:streamId" element={<LiveStream />} />
-          <Route path="/stories/:userId" element={<Stories />} />
-          <Route path="/rewards" element={<Rewards />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/feed" element={<Feed />} />
+              <Route path="/tiktok" element={<TikTok />} />
+              <Route path="/messenger" element={<Messenger />} />
+              <Route path="/megatalent" element={<Megatalent />} />
+              <Route path="/megaforum" element={<Megaforum />} />
+              <Route path="/psychologist" element={<Psychology />} />
+              <Route path="/vacationer" element={<Vacationer />} />
+              <Route path="/dating" element={<Dating />} />
+              <Route path="/first-aid" element={<FirstAid />} />
+              <Route path="/fit-slim" element={<FitSlim />} />
+              <Route path="/marketplace" element={<Marketplace />} />
+              
+              <Route path="/bazaar" element={<Bazaar />} />
+              <Route path="/referral" element={<Referral />} />
+              <Route path="/games" element={<Games />} />
+              <Route path="/jobs" element={<Jobs />} />
+              <Route path="/influ-king" element={<InfluKing />} />
+              <Route path="/auction" element={<Auction />} />
+              <Route path="/ai-generation" element={<AIGeneration />} />
+              <Route path="/best-friend" element={<BestFriend />} />
+              <Route path="/cooking" element={<Cooking />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/education" element={<Education />} />
+              <Route path="/course/:courseName" element={<CourseDetail />} />
+              <Route path="/quiz" element={<Quiz />} />
+              
+              <Route path="/profile/:userId" element={<Profile />} />
+              <Route path="/edit-profile" element={<EditProfile />} />
+              <Route path="/subscription" element={<Subscription />} />
+              <Route path="/ai-credits-store" element={<AICreditsStore />} />
+              <Route path="/ai-credits" element={<AICreditsStore />} />
+              <Route path="/admin/transactions" element={<AdminTransactions />} />
+              <Route path="/earnings" element={<Earnings />} />
+              <Route path="/live/:streamId" element={<LiveStream />} />
+              <Route path="/stories/:userId" element={<Stories />} />
+              <Route path="/rewards" element={<Rewards />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
