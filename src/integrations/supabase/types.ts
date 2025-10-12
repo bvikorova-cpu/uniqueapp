@@ -1695,6 +1695,27 @@ export type Database = {
           },
         ]
       }
+      megatalent_referral_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       megatalent_referral_earnings: {
         Row: {
           amount: number
@@ -3126,6 +3147,10 @@ export type Database = {
       expire_featured_listings: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      generate_referral_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       has_role: {
         Args: {

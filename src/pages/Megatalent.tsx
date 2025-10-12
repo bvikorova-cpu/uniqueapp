@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 
 const categoryGroups = [
   {
@@ -100,6 +101,7 @@ const Megatalent = () => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const [referralCode, setReferralCode] = useState("");
 
   useEffect(() => {
     checkSubscription();
@@ -195,6 +197,53 @@ const Megatalent = () => {
         return;
       }
 
+      // Validate and get referrer if referral code is provided
+      let referrerId = null;
+      if (referralCode.trim()) {
+        const { data: referralData } = await supabase
+          .from("megatalent_referral_codes")
+          .select("user_id")
+          .eq("code", referralCode.trim().toUpperCase())
+          .maybeSingle();
+
+        if (!referralData) {
+          toast({
+            title: "Neplatný kód",
+            description: "Zadaný referenčný kód neexistuje",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (referralData.user_id === user.id) {
+          toast({
+            title: "Chyba",
+            description: "Nemôžete použiť vlastný referenčný kód",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        // Check if user already has active subscription
+        const { data: existingSub } = await supabase
+          .from("megatalent_subscriptions")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("status", "active")
+          .maybeSingle();
+
+        if (existingSub) {
+          toast({
+            title: "Chyba",
+            description: "Už máte aktívne predplatné, nemôžete použiť referenčný kód",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        referrerId = referralData.user_id;
+      }
+
       const price = tier === 'premium' ? 10 : 15;
       const bonusVotes = tier === 'top_premium' ? 100000 : 0;
       const winChanceBoost = tier === 'top_premium' ? 50 : 0;
@@ -208,6 +257,7 @@ const Megatalent = () => {
           bonus_votes: bonusVotes,
           win_chance_boost: winChanceBoost,
           status: 'active',
+          referred_by: referrerId,
         });
 
       if (error) throw error;
@@ -386,6 +436,25 @@ const Megatalent = () => {
               </p>
             </div>
 
+            <div className="mb-8 max-w-2xl mx-auto">
+              <div className="p-4 bg-muted rounded-lg">
+                <label className="text-sm font-medium mb-2 block">
+                  Máš unikátny kód od priateľa?
+                </label>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Tu ho môžeš zadať a začať zarábať pozvaním priateľa, za ktorého dostaneš 5 Eur pri registrácii do súťaže Megatalent
+                </p>
+                <Input
+                  type="text"
+                  placeholder="Zadaj referenčný kód (nepovinné)"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                  maxLength={8}
+                  className="text-center tracking-wider font-mono text-lg"
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
               {/* Premium Tier */}
               <Card className="bg-gradient-secondary border-border/50">
@@ -473,9 +542,17 @@ const Megatalent = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Upload Section */}
-          <div className="lg:col-span-1">
+        <Tabs defaultValue="feed" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 mb-6">
+            <TabsTrigger value="feed">Súťaž</TabsTrigger>
+            <TabsTrigger value="upload">Nahrať príspevok</TabsTrigger>
+            <TabsTrigger value="referral">Referenčný program</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="feed" className="mt-0">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Upload Section */}
+              <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
                 {(subscriptionTier === 'premium' || subscriptionTier === 'top_premium') && (
@@ -594,11 +671,11 @@ const Megatalent = () => {
                   {submitting ? 'Zverejňujem...' : 'Zverejniť'}
                 </Button>
               </CardContent>
-            </Card>
-          </div>
+              </Card>
+              </div>
 
-          {/* Feed */}
-          <div className="lg:col-span-2 space-y-6">
+              {/* Feed */}
+              <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">
                 {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Príspevky"}
@@ -680,11 +757,11 @@ const Megatalent = () => {
                   </CardContent>
                 </Card>
               ))
-            )}
-          </div>
+              )}
+              </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
+              {/* Sidebar */}
+              <div className="lg:col-span-1 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Mesačná súťaž</CardTitle>
@@ -747,11 +824,29 @@ const Megatalent = () => {
                     ></div>
                   </div>
                 </div>
+                </CardContent>
+              </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="upload" className="mt-0">
+            <Card className="max-w-2xl mx-auto">
+              <CardHeader>
+                <CardTitle>Nahrať príspevok do súťaže</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-muted-foreground">Nahrajte svoj príspevok cez ľavé menu v záložke "Súťaž"</p>
               </CardContent>
             </Card>
+          </TabsContent>
 
-          </div>
-        </div>
+          <TabsContent value="referral" className="mt-0">
+            <div className="max-w-4xl mx-auto">
+              <ReferralProgram />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
