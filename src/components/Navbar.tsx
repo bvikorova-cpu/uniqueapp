@@ -350,6 +350,12 @@ const Navbar = () => {
                         Moje zárobky
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/contact" className="w-full cursor-pointer">
+                        <Mail className="h-4 w-4 mr-2" />
+                        Kontakt
+                      </Link>
+                    </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem asChild>
                         <Link to="/admin" className="w-full cursor-pointer">
