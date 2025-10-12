@@ -9,7 +9,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Copyright className="h-4 w-4" />
-            <span>{currentYear} Megatalent. Všetky práva vyhradené.</span>
+            <span>{currentYear} Unique. Všetky práva vyhradené.</span>
           </div>
           
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
