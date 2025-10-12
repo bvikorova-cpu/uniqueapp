@@ -27,6 +27,7 @@ const Admin = () => {
   // Data
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -111,6 +112,14 @@ const Admin = () => {
         .order('created_at', { ascending: false });
 
       setTransactions(trans || []);
+
+      // Load contact messages
+      const { data: msgs } = await supabase
+        .from('contact_messages')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      setMessages(msgs || []);
 
       // Calculate stats
       const totalUsers = new Set(subs?.map(s => s.user_id) || []).size;
@@ -259,6 +268,7 @@ const Admin = () => {
           <TabsList>
             <TabsTrigger value="subscriptions">Predplatné</TabsTrigger>
             <TabsTrigger value="transactions">Transakcie</TabsTrigger>
+            <TabsTrigger value="messages">Správy</TabsTrigger>
           </TabsList>
 
           <TabsContent value="subscriptions">
@@ -362,6 +372,65 @@ const Admin = () => {
                                 Vrátiť
                               </Button>
                             </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="messages">
+            <Card>
+              <CardHeader>
+                <CardTitle>Kontaktné správy</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Meno</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Predmet</TableHead>
+                      <TableHead>Správa</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Dátum</TableHead>
+                      <TableHead>Akcia</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {messages.filter(msg =>
+                      msg.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      msg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      msg.subject?.toLowerCase().includes(searchTerm.toLowerCase())
+                    ).map((msg) => (
+                      <TableRow key={msg.id} className={!msg.is_read ? 'font-bold' : ''}>
+                        <TableCell>{msg.name}</TableCell>
+                        <TableCell>{msg.email}</TableCell>
+                        <TableCell>{msg.subject}</TableCell>
+                        <TableCell className="max-w-md truncate">{msg.message}</TableCell>
+                        <TableCell>
+                          <Badge variant={msg.is_read ? 'secondary' : 'default'}>
+                            {msg.is_read ? 'Prečítané' : 'Nové'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{new Date(msg.created_at).toLocaleDateString('sk-SK')}</TableCell>
+                        <TableCell>
+                          {!msg.is_read && (
+                            <Button
+                              size="sm"
+                              onClick={async () => {
+                                await supabase
+                                  .from('contact_messages')
+                                  .update({ is_read: true })
+                                  .eq('id', msg.id);
+                                await loadData();
+                              }}
+                            >
+                              Označiť ako prečítané
+                            </Button>
                           )}
                         </TableCell>
                       </TableRow>

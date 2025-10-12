@@ -25,6 +25,12 @@ const Footer = () => {
             >
               Ochrana súkromia
             </a>
+            <a 
+              href="/contact" 
+              className="hover:text-foreground transition-colors"
+            >
+              Kontakt
+            </a>
           </div>
         </div>
       </div>

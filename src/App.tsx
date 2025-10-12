@@ -23,6 +23,7 @@ import Games from "./pages/Games";
 import Jobs from "./pages/Jobs";
 import InfluKing from "./pages/InfluKing";
 import Admin from "./pages/Admin";
+import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import Terms from "./pages/Terms";
@@ -80,6 +81,7 @@ const App = () => (
               <Route path="/best-friend" element={<BestFriend />} />
               <Route path="/cooking" element={<Cooking />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/terms" element={<Terms />} />
