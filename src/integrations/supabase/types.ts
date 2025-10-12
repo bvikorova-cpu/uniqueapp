@@ -1695,6 +1695,50 @@ export type Database = {
           },
         ]
       }
+      megatalent_referral_earnings: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          paid: boolean | null
+          period_end: string
+          period_start: string
+          referred_user_id: string
+          referrer_id: string
+          subscription_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          paid?: boolean | null
+          period_end: string
+          period_start: string
+          referred_user_id: string
+          referrer_id: string
+          subscription_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          paid?: boolean | null
+          period_end?: string
+          period_start?: string
+          referred_user_id?: string
+          referrer_id?: string
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "megatalent_referral_earnings_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "megatalent_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       megatalent_subscriptions: {
         Row: {
           bonus_votes: number | null
@@ -1702,6 +1746,7 @@ export type Database = {
           expires_at: string | null
           id: string
           price: number
+          referred_by: string | null
           started_at: string
           status: string | null
           tier: Database["public"]["Enums"]["megatalent_tier"]
@@ -1715,6 +1760,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           price: number
+          referred_by?: string | null
           started_at?: string
           status?: string | null
           tier?: Database["public"]["Enums"]["megatalent_tier"]
@@ -1728,6 +1774,7 @@ export type Database = {
           expires_at?: string | null
           id?: string
           price?: number
+          referred_by?: string | null
           started_at?: string
           status?: string | null
           tier?: Database["public"]["Enums"]["megatalent_tier"]
