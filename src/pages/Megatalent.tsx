@@ -551,9 +551,8 @@ const Megatalent = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
         <Tabs defaultValue="feed" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="feed">Súťaž</TabsTrigger>
-            <TabsTrigger value="upload">Nahrať príspevok</TabsTrigger>
             <TabsTrigger value="referral">Referenčný program</TabsTrigger>
           </TabsList>
 
@@ -838,16 +837,6 @@ const Megatalent = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="upload" className="mt-0">
-            <Card className="max-w-2xl mx-auto">
-              <CardHeader>
-                <CardTitle>Nahrať príspevok do súťaže</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground">Nahrajte svoj príspevok cez ľavé menu v záložke "Súťaž"</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="referral" className="mt-0">
             <div className="max-w-4xl mx-auto">
