@@ -844,6 +844,54 @@ const Megatalent = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Copyright Protection Section */}
+        <Card className="mt-12 border-muted">
+          <CardHeader>
+            <CardTitle className="text-xl">⚖️ Ochrana autorského práva</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm text-muted-foreground">
+            <div className="space-y-3">
+              <p className="font-semibold text-foreground">
+                Dôležité informácie pre všetkých účastníkov súťaže Megatalent:
+              </p>
+              
+              <div className="space-y-2">
+                <h3 className="font-medium text-foreground">📸 Práva k nahranému obsahu:</h3>
+                <ul className="list-disc list-inside space-y-1 pl-2">
+                  <li>Nahraním príspevku potvrdzujete, že ste autorom alebo máte právo obsah zverejniť</li>
+                  <li>Nesmú sa nahrávať cudzie fotografie, videá ani iný chránený obsah bez povolenia</li>
+                  <li>Za nahratie cudzieho obsahu nesie plnú zodpovednosť autor príspevku</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-medium text-foreground">🛡️ Naše zodpovednosti:</h3>
+                <ul className="list-disc list-inside space-y-1 pl-2">
+                  <li>Platforma Megatalent slúži len ako priestor pre zverejnenie obsahu</li>
+                  <li>Prevádzkovateľ platformy nezodpovedá za obsah nahraný používateľmi</li>
+                  <li>V prípade porušenia autorských práv bude obsah okamžite odstránený</li>
+                  <li>Vyhradujeme si právo zablokovať používateľov, ktorí porušujú pravidlá</li>
+                </ul>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-medium text-foreground">⚠️ Upozornenie:</h3>
+                <ul className="list-disc list-inside space-y-1 pl-2">
+                  <li>Porušenie autorských práv môže mať vážne právne následky</li>
+                  <li>Nahraním obsahu súhlasíte s týmito podmienkami</li>
+                  <li>V prípade pochybností o pravosti obsahu môžeme požiadať o overenie autorstva</li>
+                </ul>
+              </div>
+
+              <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                <p className="text-amber-700 dark:text-amber-400 font-medium">
+                  🚨 Nahrajte len svoj vlastný, originálny obsah. Porušenie autorských práv vás môže diskvalifikovať zo súťaže a vystaviť právnym následkom.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
