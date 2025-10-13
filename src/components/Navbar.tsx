@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
+import { useTranslation } from "react-i18next";
 
 interface NotificationData {
   id: string;
@@ -31,6 +32,7 @@ interface NotificationData {
 }
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -154,33 +156,33 @@ const Navbar = () => {
   };
 
   const mainNavItems = [
-    { path: "/feed", label: "Feed", icon: MessageSquare },
-    { path: "/jobs", label: "Práca", icon: Briefcase },
-    { path: "/games", label: "Hry", icon: Gamepad2 },
-    { path: "/rewards", label: "Odmeny", icon: Trophy },
-    { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
+    { path: "/feed", label: t('services.feed.title'), icon: MessageSquare },
+    { path: "/jobs", label: t('navbar.work'), icon: Briefcase },
+    { path: "/games", label: t('navbar.games'), icon: Gamepad2 },
+    { path: "/rewards", label: t('navbar.rewards'), icon: Trophy },
+    { path: "/megatalent", label: t('services.megatalent.title'), icon: Crown, premium: true },
   ];
 
   const otherServices = [
-    { path: "/tiktok", label: "Videá", icon: Video },
-    { path: "/messenger", label: "Messenger", icon: Mail },
-    { path: "/influ-king", label: "Influ-King", icon: Star },
-    { path: "/megaforum", label: "Megafórum", icon: Users },
-    { path: "/psychologist", label: "Psychológ", icon: Brain },
-    { path: "/vacationer", label: "Vacationer", icon: Plane },
-    { path: "/dating", label: "Zoznamka", icon: Heart },
-    { path: "/first-aid", label: "Prvá pomoc", icon: Activity },
-    { path: "/fit-slim", label: "Fit & Slim", icon: Apple },
-    { path: "/cooking", label: "Varenie", icon: ChefHat },
+    { path: "/tiktok", label: t('navbar.videos'), icon: Video },
+    { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
+    { path: "/influ-king", label: t('navbar.influ_king'), icon: Star },
+    { path: "/megaforum", label: t('navbar.megaforum'), icon: Users },
+    { path: "/psychologist", label: t('navbar.psychologist'), icon: Brain },
+    { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
+    { path: "/dating", label: t('navbar.dating'), icon: Heart },
+    { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
+    { path: "/fit-slim", label: t('services.fit_slim.title'), icon: Apple },
+    { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
     
-    { path: "/marketplace", label: "Marketplace zručností", icon: Briefcase },
-    { path: "/bazaar", label: "Bazár", icon: Store },
-    { path: "/ai-generation", label: "AI Generovanie", icon: Sparkles },
-    { path: "/auction", label: "Online aukcie", icon: Gavel },
-    { path: "/best-friend", label: "Best Friend", icon: UserPlus },
-    { path: "/referral", label: "Pozvi priateľa", icon: User },
-    { path: "/education", label: "Vzdelávanie", icon: GraduationCap },
-    { path: "/terms", label: "Podmienky", icon: FileText },
+    { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
+    { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
+    { path: "/ai-generation", label: t('navbar.ai_generation'), icon: Sparkles },
+    { path: "/auction", label: t('navbar.auction'), icon: Gavel },
+    { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
+    { path: "/referral", label: t('navbar.invite_friend'), icon: User },
+    { path: "/education", label: t('navbar.education'), icon: GraduationCap },
+    { path: "/terms", label: t('navbar.terms'), icon: FileText },
   ];
 
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
@@ -226,7 +228,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant={isOtherServiceActive ? "premium" : "ghost"}>
                   <MoreHorizontal className="h-4 w-4" />
-                  Ostatné služby
+                  {t('navbar.other_services')}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -267,7 +269,7 @@ const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-80">
                     <div className="flex items-center justify-between p-2 border-b">
-                      <span className="font-semibold">Upozornenia</span>
+                      <span className="font-semibold">{t('navbar.notifications')}</span>
                       {unreadCount > 0 && (
                         <Button 
                           variant="ghost" 
@@ -275,13 +277,13 @@ const Navbar = () => {
                           onClick={markAllAsRead}
                           className="text-xs h-auto p-1"
                         >
-                          Označiť ako prečítané
+                          {t('navbar.mark_read')}
                         </Button>
                       )}
                     </div>
                     {notifications.length === 0 ? (
                       <div className="p-4 text-center text-sm text-muted-foreground">
-                        Žiadne nové upozornenia
+                        {t('navbar.no_notifications')}
                       </div>
                     ) : (
                       <div className="max-h-96 overflow-y-auto">
@@ -296,8 +298,8 @@ const Navbar = () => {
                           >
                             <div className="font-medium text-sm">
                               {notification.type === 'marketplace' 
-                                ? `Nový záujem: ${notification.skill_offerings?.title}`
-                                : `Nová správa: ${notification.bazaar_items?.title}`
+                                ? `${t('navbar.new_interest')}: ${notification.skill_offerings?.title}`
+                                : `${t('navbar.new_message')}: ${notification.bazaar_items?.title}`
                               }
                             </div>
                             <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
@@ -323,60 +325,60 @@ const Navbar = () => {
                     <DropdownMenuItem asChild>
                       <Link to={`/profile/${user.id}`} className="w-full cursor-pointer">
                         <UserCircle className="h-4 w-4 mr-2" />
-                        Zobraziť profil
+                        {t('navbar.view_profile')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/edit-profile" className="w-full cursor-pointer">
                         <Settings className="h-4 w-4 mr-2" />
-                        Upraviť profil
+                        {t('navbar.edit_profile')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/subscription" className="w-full cursor-pointer">
                         <Crown className="h-4 w-4 mr-2" />
-                        Predplatné
+                        {t('navbar.subscription')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/ai-credits" className="w-full cursor-pointer">
                         <Sparkles className="h-4 w-4 mr-2" />
-                        AI Kredity
+                        {t('navbar.ai_credits')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/earnings" className="w-full cursor-pointer">
                         <Euro className="h-4 w-4 mr-2" />
-                        Moje zárobky
+                        {t('navbar.earnings')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/contact" className="w-full cursor-pointer">
                         <Mail className="h-4 w-4 mr-2" />
-                        Kontakt
+                        {t('navbar.contact')}
                       </Link>
                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem asChild>
                         <Link to="/admin" className="w-full cursor-pointer">
                           <Settings className="h-4 w-4 mr-2" />
-                          Admin Panel
+                          {t('navbar.admin_panel')}
                         </Link>
                       </DropdownMenuItem>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button onClick={handleLogout} variant="outline">
-                  Odhlásiť sa
+                  {t('navbar.logout')}
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/auth">
-                  <Button variant="outline">Prihlásiť sa</Button>
+                  <Button variant="outline">{t('navbar.login')}</Button>
                 </Link>
                 <Link to="/auth">
-                  <Button variant="hero">Registrácia</Button>
+                  <Button variant="hero">{t('navbar.register')}</Button>
                 </Link>
               </>
             )}
@@ -424,58 +426,58 @@ const Navbar = () => {
                   <Link to={`/profile/${user.id}`} onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <UserCircle className="h-4 w-4 mr-2" />
-                      Zobraziť profil
+                      {t('navbar.view_profile')}
                     </Button>
                   </Link>
                   <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Settings className="h-4 w-4 mr-2" />
-                      Upraviť profil
+                      {t('navbar.edit_profile')}
                     </Button>
                   </Link>
                   <Link to="/subscription" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Crown className="h-4 w-4 mr-2" />
-                      Predplatné
+                      {t('navbar.subscription')}
                     </Button>
                   </Link>
                   <Link to="/ai-credits" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Sparkles className="h-4 w-4 mr-2" />
-                      AI Kredity
+                      {t('navbar.ai_credits')}
                     </Button>
                   </Link>
                   <Link to="/earnings" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Euro className="h-4 w-4 mr-2" />
-                      Moje zárobky
+                      {t('navbar.earnings')}
                     </Button>
                   </Link>
                   <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Mail className="h-4 w-4 mr-2" />
-                      Kontakt
+                      {t('navbar.contact')}
                     </Button>
                   </Link>
                   {isAdmin && (
                     <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start">
                         <Settings className="h-4 w-4 mr-2" />
-                        Admin Panel
+                        {t('navbar.admin_panel')}
                       </Button>
                     </Link>
                   )}
                   <Button onClick={handleLogout} variant="outline" className="w-full">
-                    Odhlásiť sa
+                    {t('navbar.logout')}
                   </Button>
                 </>
               ) : (
               <>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">Prihlásiť sa</Button>
+                  <Button variant="outline" className="w-full">{t('navbar.login')}</Button>
                 </Link>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="hero" className="w-full">Registrácia</Button>
+                  <Button variant="hero" className="w-full">{t('navbar.register')}</Button>
                 </Link>
                 </>
               )}
