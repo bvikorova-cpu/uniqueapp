@@ -7,9 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
+import ghibliImg from "@/assets/effects/ghibli.jpg";
 import swayDanceImg from "@/assets/effects/sway-dance.jpg";
 import waveDanceImg from "@/assets/effects/wave-dance.jpg";
-import ghibliImg from "@/assets/effects/ghibli.jpg";
 import minecraftImg from "@/assets/effects/minecraft.jpg";
 import earthZoomOutImg from "@/assets/effects/earth-zoom-out.jpg";
 import earthZoomInImg from "@/assets/effects/earth-zoom-in.jpg";
@@ -228,9 +228,9 @@ const aiEffects: AIEffect[] = [
   { id: "candy-land", name: "Candy Land", category: "entertainment", image: candyLandImg, description: "Cukrová krajina" },
   { id: "time-freeze", name: "Time Freeze", category: "fanciful", image: timeFreezeImg, description: "Zastavenie času" },
   { id: "fire-phoenix", name: "Fire Phoenix", category: "heroes", image: firePhoenixImg, description: "Ohnivý fénix", isHot: true },
-  { id: "ice-queen", name: "Ice Queen", category: "heroes", image: iceQueenImg, description: "Ľadová kráľovná" },
   { id: "breakdance", name: "Breakdance", category: "dance", image: breakdanceImg, description: "Breakdance" },
-  { id: "galaxy-portal", name: "Galaxy Portal", category: "fanciful", image: galaxyPortalImg, description: "Galaktický portál" },
+  { id: "sway-dance", name: "Sway Dance", category: "dance", image: swayDanceImg, description: "Kolísavý tanec" },
+  { id: "wave-dance", name: "Wave Dance", category: "dance", image: waveDanceImg, description: "Vlnový tanec" },
   { id: "steampunk", name: "Steampunk", category: "appearance", image: steampunkImg, description: "Steampunk štýl" },
   { id: "baby-filter", name: "Baby Filter", category: "appearance", image: babyFilterImg, description: "Detský filter" },
   { id: "old-age", name: "Old Age", category: "appearance", image: oldAgeImg, description: "Staroba" },
