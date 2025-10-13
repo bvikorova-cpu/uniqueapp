@@ -25,50 +25,50 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `Si odborný vzdelávací asistent, ktorý vytvára detailné kurzy v slovenčine.
-Pre každý kurz vytvoríš 10 tém, kde každá téma má:
-- Názov (napr. "Téma 1: ...")
-- Obsah 400-600 slov s konkrétnymi informáciami, príkladmi a podrobnosťami
+    const systemPrompt = `You are an expert educational content creator who creates detailed courses in English.
+For each course you will create 10 topics, where each topic has:
+- Title (e.g., "Topic 1: ...")
+- Content of 400-600 words with specific information, examples, and details
 
-DÔLEŽITÉ: Obsah MUSÍ byť špecifický pre danú oblasť. Napríklad:
-- Pre "Marketing a reklama": konkrétne formy marketingu (digitálny, content, email marketing), stratégie, nástroje, metriky, príklady kampaní
-- Pre "Základy účtovníctva": konkrétne účtovné postupy, doklady, výkazy, príklady účtovania
-- Pre "Prvá pomoc": konkrétne postupy, techniky, situácie, kroky
+IMPORTANT: Content MUST be specific to the subject area. For example:
+- For "Marketing and Advertising": specific forms of marketing (digital, content, email marketing), strategies, tools, metrics, campaign examples
+- For "Accounting Basics": specific accounting procedures, documents, statements, bookkeeping examples
+- For "First Aid": specific procedures, techniques, situations, steps
 
-Každá téma má štruktúru:
-**Nadpis sekcie:**
-Text s konkrétnymi informáciami, príkladmi, postupmi...
+Each topic has structure:
+**Section Heading:**
+Text with specific information, examples, procedures...
 
-Vrať JSON objekt s týmto formátom:
+Return a JSON object with this format:
 {
   "topics": [
     {
-      "title": "Téma 1: ...",
-      "content": "detailný obsah 400-600 slov..."
+      "title": "Topic 1: ...",
+      "content": "detailed content 400-600 words..."
     },
-    ... ďalších 9 tém
+    ... 9 more topics
   ]
 }`;
 
-    const userPrompt = `Vytvor 10 detailných tém pre kurz: "${courseName}"
+    const userPrompt = `Create 10 detailed topics for the course: "${courseName}"
 
-Každá téma musí obsahovať:
-1. Konkrétne informácie špecifické pre túto oblasť
-2. Praktické príklady a situácie
-3. Postupy a techniky
-4. 400-600 slov
+Each topic must contain:
+1. Specific information related to this field
+2. Practical examples and situations
+3. Procedures and techniques
+4. 400-600 words
 
-Postupnosť tém:
-1. Úvod a základy
-2. Kľúčové pojmy a terminológia
-3. Praktické aplikácie a príklady
-4. Pokročilé techniky a metódy
-5. Riešenie bežných problémov
-6. Reálne prípadové štúdie
-7. Najlepšie postupy a odporúčania
-8. Nástroje a zdroje
-9. Trendy a budúcnosť
-10. Zhrnutie a certifikácia`;
+Topic sequence:
+1. Introduction and basics
+2. Key concepts and terminology
+3. Practical applications and examples
+4. Advanced techniques and methods
+5. Solving common problems
+6. Real case studies
+7. Best practices and recommendations
+8. Tools and resources
+9. Trends and future developments
+10. Summary and certification preparation`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -90,13 +90,13 @@ Postupnosť tém:
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Prekročený limit požiadaviek. Skúste neskôr." }),
+          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Potrebné doplniť kredity v Lovable AI workspace." }),
+          JSON.stringify({ error: "Payment required. Please add credits to your Lovable AI workspace." }),
           { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
