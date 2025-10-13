@@ -1647,6 +1647,1085 @@ $50,000 × 25 = $1,250,000
     }
   ],
 
+  "Entrepreneurship 101": [
+    {
+      title: "Topic 1: Introduction to Entrepreneurship",
+      content: `**What is Entrepreneurship?**
+
+Entrepreneurship is the process of creating, developing, and managing a new business venture to make a profit while taking on financial risks.
+
+**Key Characteristics of Entrepreneurs:**
+- Innovation and creativity
+- Risk-taking ability
+- Vision and passion
+- Resilience and perseverance
+- Problem-solving skills
+- Self-motivation
+- Adaptability
+
+**Types of Entrepreneurs:**
+
+**Small Business Entrepreneur:**
+- Local businesses
+- Lifestyle businesses
+- Family-run enterprises
+
+**Scalable Startup:**
+- High-growth potential
+- Venture capital backed
+- Technology-focused
+- Global market
+
+**Social Entrepreneur:**
+- Mission-driven
+- Social impact focus
+- Sustainable solutions
+
+**Innovation Entrepreneur:**
+- New products/services
+- Disruptive technologies
+- Market transformation
+
+**Benefits of Entrepreneurship:**
+- Financial independence
+- Creative freedom
+- Flexible schedule
+- Personal fulfillment
+- Building something meaningful
+- Job creation
+- Community impact
+
+**Challenges:**
+- Financial uncertainty
+- Long working hours
+- High stress levels
+- Resource limitations
+- Market competition
+- Work-life balance
+
+**Entrepreneurial Mindset:**
+- Growth-oriented thinking
+- Opportunity recognition
+- Calculated risk-taking
+- Continuous learning
+- Customer-focused
+- Solution-oriented
+- Action-biased`
+    },
+    {
+      title: "Topic 2: Identifying Business Opportunities",
+      content: `**Finding Your Business Idea**
+
+Successful businesses solve real problems or meet unfulfilled needs in the market.
+
+**Sources of Business Ideas:**
+
+**Personal Experience:**
+- Your own pain points
+- Skills and expertise
+- Hobbies and interests
+- Career background
+
+**Market Gaps:**
+- Unmet customer needs
+- Poor existing solutions
+- Emerging trends
+- Underserved markets
+
+**Innovation:**
+- Technology advances
+- Process improvements
+- Product enhancements
+- Service innovations
+
+**Observation:**
+- Customer complaints
+- Industry inefficiencies
+- Social changes
+- Economic shifts
+
+**Evaluating Business Ideas:**
+
+**Market Analysis:**
+- Target market size
+- Customer demand
+- Market growth potential
+- Competition level
+
+**Feasibility Check:**
+- Technical feasibility
+- Financial viability
+- Resource requirements
+- Legal compliance
+
+**Competitive Advantage:**
+- Unique value proposition
+- Differentiation factors
+- Barriers to entry
+- Sustainability
+
+**Validation Process:**
+
+**1. Problem Validation:**
+- Does problem exist?
+- Is it significant?
+- Are people seeking solutions?
+
+**2. Solution Validation:**
+- Does your solution work?
+- Is it better than alternatives?
+- Will customers pay?
+
+**3. Market Validation:**
+- Talk to potential customers
+- Conduct surveys
+- Create MVP
+- Test pricing
+
+**Red Flags:**
+- No clear customer
+- Saturated market
+- Low margins
+- High barriers
+- Unclear value proposition`
+    },
+    {
+      title: "Topic 3: Creating a Business Plan",
+      content: `**The Blueprint for Success**
+
+A business plan is a comprehensive document outlining your business goals, strategies, and financial projections.
+
+**Essential Components:**
+
+**1. Executive Summary:**
+- Business concept
+- Mission statement
+- Key success factors
+- Financial highlights
+- Funding requirements
+
+**2. Company Description:**
+- Business structure
+- Products/services
+- Target market
+- Competitive advantages
+- Industry overview
+
+**3. Market Analysis:**
+- Industry research
+- Target market definition
+- Customer demographics
+- Market size and growth
+- Competitive analysis
+
+**4. Organization and Management:**
+- Organizational structure
+- Management team
+- Board of directors
+- Personnel plan
+- Advisory board
+
+**5. Products and Services:**
+- Detailed description
+- Unique features
+- Benefits to customers
+- Product lifecycle
+- Intellectual property
+
+**6. Marketing and Sales:**
+- Marketing strategy
+- Sales strategy
+- Pricing strategy
+- Distribution channels
+- Customer acquisition
+
+**7. Financial Projections:**
+- Startup costs
+- Revenue projections
+- Expense budgets
+- Cash flow statements
+- Break-even analysis
+- Profit and loss
+
+**8. Funding Request:**
+- Funding amount needed
+- Use of funds
+- Future funding needs
+- Repayment terms
+- Exit strategy
+
+**Types of Business Plans:**
+
+**Lean Startup Plan:**
+- One-page format
+- Key elements only
+- Quick to create
+- Easy to update
+
+**Traditional Plan:**
+- Comprehensive
+- Detailed sections
+- For investors/banks
+- 20-40 pages
+
+**Tips for Success:**
+- Be realistic
+- Use data and research
+- Show passion
+- Highlight team strengths
+- Address risks honestly
+- Keep it clear and concise
+- Update regularly`
+    },
+    {
+      title: "Topic 4: Legal Structure and Registration",
+      content: `**Setting Up Your Business Legally**
+
+Choosing the right business structure impacts taxes, liability, and operations.
+
+**Business Structures:**
+
+**Sole Proprietorship:**
+- Simplest form
+- Complete control
+- Personal liability
+- Pass-through taxation
+- Minimal paperwork
+
+**Pros:**
+- Easy to start
+- Low cost
+- Direct control
+- Simple taxes
+
+**Cons:**
+- Unlimited liability
+- Hard to raise capital
+- Limited life
+- All responsibility on owner
+
+**Partnership:**
+- Two or more owners
+- Shared responsibility
+- Pass-through taxation
+- Partnership agreement needed
+
+**Types:**
+- General Partnership
+- Limited Partnership
+- Limited Liability Partnership
+
+**Limited Liability Company (LLC):**
+- Liability protection
+- Flexible taxation
+- Less formality
+- Operating agreement
+
+**Advantages:**
+- Personal asset protection
+- Tax flexibility
+- Easier to manage
+- Credibility
+
+**Corporation:**
+- Separate legal entity
+- Shareholders own
+- Limited liability
+- Double taxation (C-Corp)
+
+**S-Corporation:**
+- Pass-through taxation
+- Ownership restrictions
+- Salary requirements
+
+**C-Corporation:**
+- Unlimited shareholders
+- Double taxation
+- Easier to raise capital
+- Going public possible
+
+**Registration Steps:**
+
+**1. Choose Business Name:**
+- Check availability
+- Register trademark
+- Secure domain
+- Check social media
+
+**2. Register Business:**
+- File formation documents
+- Get EIN
+- State registration
+- Local permits
+
+**3. Licenses and Permits:**
+- Business license
+- Professional licenses
+- Industry-specific permits
+- Zoning permits
+
+**4. Open Business Bank Account:**
+- Separate finances
+- Build business credit
+- Professional appearance
+- Easier accounting
+
+**5. Set Up Accounting:**
+- Choose system
+- Track expenses
+- Invoice management
+- Tax preparation`
+    },
+    {
+      title: "Topic 5: Funding Your Business",
+      content: `**Securing Capital for Growth**
+
+Adequate funding is crucial for starting and growing your business.
+
+**Funding Options:**
+
+**Bootstrapping:**
+- Personal savings
+- Credit cards
+- Home equity
+- Retain profits
+
+**Pros:**
+- Full control
+- No debt
+- Build financial discipline
+
+**Cons:**
+- Limited capital
+- Personal risk
+- Slower growth
+
+**Friends and Family:**
+- Informal loans
+- Lower interest
+- Flexible terms
+- Relationship risk
+
+**Small Business Loans:**
+
+**SBA Loans:**
+- Government guaranteed
+- Lower down payments
+- Competitive rates
+- Long terms
+
+**Traditional Bank Loans:**
+- Established banks
+- Collateral required
+- Good credit needed
+- Fixed payments
+
+**Microloans:**
+- Smaller amounts
+- Easier qualification
+- Community lenders
+
+**Business Lines of Credit:**
+- Flexible borrowing
+- Pay interest on used amount
+- Revolving credit
+
+**Investors:**
+
+**Angel Investors:**
+- Individual investors
+- $25k - $500k typical
+- Mentorship often included
+- Equity in exchange
+
+**Venture Capital:**
+- Larger amounts
+- High-growth companies
+- Equity stake
+- Board involvement
+- Exit expectations
+
+**Crowdfunding:**
+
+**Platforms:**
+- Kickstarter
+- Indiegogo
+- GoFundMe
+- SeedInvest
+
+**Types:**
+- Rewards-based
+- Equity-based
+- Donation-based
+- Debt-based
+
+**Grants:**
+- Government grants
+- Private foundations
+- Industry-specific
+- No repayment needed
+
+**Requirements:**
+- Specific criteria
+- Application process
+- Competitive
+- Reporting requirements
+
+**Preparing for Funding:**
+
+**What Investors Want:**
+- Solid business plan
+- Strong team
+- Market opportunity
+- Competitive advantage
+- Scalability
+- Exit strategy
+- Financial projections
+
+**Pitch Deck Elements:**
+- Problem and solution
+- Market opportunity
+- Business model
+- Competitive analysis
+- Team credentials
+- Financial projections
+- Funding ask`
+    },
+    {
+      title: "Topic 6: Building Your Team",
+      content: `**Assembling the Right People**
+
+Your team can make or break your business success.
+
+**When to Hire:**
+- Consistent workload
+- Specific expertise needed
+- Growth opportunities
+- Tasks outside skills
+- Time constraints
+
+**Hiring Strategies:**
+
+**Employees vs Contractors:**
+
+**Employees:**
+- Long-term commitment
+- Full control
+- Company culture fit
+- Benefits and taxes
+
+**Independent Contractors:**
+- Project-based
+- Specialized skills
+- No benefits
+- Flexible arrangement
+
+**Hiring Process:**
+
+**1. Define Role:**
+- Job description
+- Required skills
+- Responsibilities
+- Compensation range
+
+**2. Source Candidates:**
+- Job boards
+- LinkedIn
+- Referrals
+- Recruiters
+- Industry events
+
+**3. Interview Process:**
+- Screen resumes
+- Phone interviews
+- In-person meetings
+- Skills assessment
+- Reference checks
+
+**4. Onboarding:**
+- Orientation program
+- Training schedule
+- Set expectations
+- Provide resources
+- Assign mentor
+
+**Building Culture:**
+
+**Company Values:**
+- Define core values
+- Lead by example
+- Integrate in hiring
+- Reinforce regularly
+
+**Team Development:**
+- Clear communication
+- Regular feedback
+- Growth opportunities
+- Recognition programs
+- Team building
+
+**Compensation and Benefits:**
+
+**Salary Structure:**
+- Market research
+- Budget constraints
+- Performance-based
+- Regular reviews
+
+**Benefits:**
+- Health insurance
+- Retirement plans
+- Paid time off
+- Professional development
+- Flexible arrangements
+
+**Outsourcing:**
+
+**Functions to Outsource:**
+- Accounting
+- IT support
+- Marketing
+- Legal services
+- Customer service
+
+**Benefits:**
+- Cost-effective
+- Access to expertise
+- Focus on core business
+- Scalability
+
+**Managing Remote Teams:**
+- Communication tools
+- Clear expectations
+- Regular check-ins
+- Trust and autonomy
+- Results-focused
+- Virtual team building`
+    },
+    {
+      title: "Topic 7: Marketing and Customer Acquisition",
+      content: `**Getting Your First Customers**
+
+Effective marketing drives customer acquisition and business growth.
+
+**Marketing Fundamentals:**
+
+**Target Market:**
+- Demographics
+- Psychographics
+- Behaviors
+- Pain points
+- Buying patterns
+
+**Unique Value Proposition:**
+- What makes you different
+- Customer benefits
+- Why choose you
+- Clear and compelling
+
+**Marketing Channels:**
+
+**Digital Marketing:**
+
+**Website:**
+- Professional design
+- Mobile-responsive
+- Clear messaging
+- SEO optimized
+- Lead capture
+
+**Social Media:**
+- Platform selection
+- Content strategy
+- Engagement tactics
+- Paid advertising
+- Community building
+
+**Email Marketing:**
+- Build email list
+- Welcome sequences
+- Regular newsletters
+- Promotional campaigns
+- Segmentation
+
+**Content Marketing:**
+- Blog posts
+- Videos
+- Podcasts
+- Infographics
+- E-books
+
+**Paid Advertising:**
+- Google Ads
+- Facebook Ads
+- LinkedIn Ads
+- Instagram Ads
+- Retargeting
+
+**Traditional Marketing:**
+
+**Networking:**
+- Industry events
+- Local chambers
+- Professional groups
+- Partnerships
+- Referrals
+
+**Print Marketing:**
+- Business cards
+- Flyers
+- Brochures
+- Local publications
+
+**Public Relations:**
+- Press releases
+- Media outreach
+- Speaking engagements
+- Awards and recognition
+
+**Customer Acquisition Strategies:**
+
+**Pre-Launch:**
+- Build anticipation
+- Email list building
+- Beta testers
+- Early bird offers
+
+**Launch:**
+- Special promotions
+- Influencer partnerships
+- PR campaign
+- Launch event
+
+**Growth:**
+- Referral programs
+- Partnerships
+- Content marketing
+- Paid advertising
+
+**Measuring Success:**
+
+**Key Metrics:**
+- Customer acquisition cost
+- Lifetime value
+- Conversion rates
+- Traffic sources
+- Engagement rates
+- ROI by channel
+
+**Tools:**
+- Google Analytics
+- Social media insights
+- Email metrics
+- CRM data
+- A/B testing
+
+**Scaling Marketing:**
+- Test and optimize
+- Automate processes
+- Expand successful channels
+- Build systems
+- Hire specialists`
+    },
+    {
+      title: "Topic 8: Sales and Revenue Generation",
+      content: `**Converting Prospects into Customers**
+
+Sales drive revenue and business sustainability.
+
+**Sales Process:**
+
+**1. Prospecting:**
+- Identify potential customers
+- Research prospects
+- Qualify leads
+- Build pipeline
+
+**2. Initial Contact:**
+- Cold outreach
+- Warm introductions
+- Networking events
+- Online engagement
+
+**3. Needs Assessment:**
+- Ask questions
+- Listen actively
+- Identify pain points
+- Understand goals
+
+**4. Presentation:**
+- Tailor solution
+- Demonstrate value
+- Address concerns
+- Show ROI
+
+**5. Handling Objections:**
+- Listen fully
+- Acknowledge concerns
+- Provide evidence
+- Offer solutions
+
+**6. Closing:**
+- Ask for sale
+- Create urgency
+- Overcome hesitation
+- Secure commitment
+
+**7. Follow-up:**
+- Thank customer
+- Ensure satisfaction
+- Request referrals
+- Upsell opportunities
+
+**Sales Strategies:**
+
+**Consultative Selling:**
+- Focus on customer needs
+- Provide expertise
+- Build relationships
+- Long-term approach
+
+**Solution Selling:**
+- Identify problems
+- Offer solutions
+- Demonstrate value
+- Customized approach
+
+**Value-Based Selling:**
+- Emphasize ROI
+- Quantify benefits
+- Justify pricing
+- Business impact
+
+**Pricing Strategies:**
+
+**Cost-Plus Pricing:**
+- Cost + markup
+- Simple calculation
+- Predictable margins
+
+**Value-Based Pricing:**
+- Based on value delivered
+- Higher margins possible
+- Customer perception
+
+**Competitive Pricing:**
+- Match competitors
+- Market positioning
+- Volume considerations
+
+**Premium Pricing:**
+- Higher quality
+- Exclusive positioning
+- Brand value
+
+**Sales Tools:**
+
+**CRM Systems:**
+- Contact management
+- Pipeline tracking
+- Activity logging
+- Reporting
+
+**Sales Automation:**
+- Email sequences
+- Follow-up reminders
+- Proposal generation
+- Contract management
+
+**Building Sales Team:**
+
+**Hiring Salespeople:**
+- Track record
+- Industry knowledge
+- Communication skills
+- Self-motivated
+
+**Training:**
+- Product knowledge
+- Sales process
+- CRM usage
+- Role-playing
+
+**Compensation:**
+- Base salary
+- Commission structure
+- Bonuses
+- Incentives
+
+**Performance Management:**
+- Set quotas
+- Track metrics
+- Regular coaching
+- Performance reviews`
+    },
+    {
+      title: "Topic 9: Operations and Scaling",
+      content: `**Building Efficient Systems**
+
+Efficient operations enable sustainable growth and scaling.
+
+**Operations Management:**
+
+**Process Development:**
+- Document workflows
+- Create SOPs
+- Identify bottlenecks
+- Optimize efficiency
+
+**Quality Control:**
+- Set standards
+- Regular monitoring
+- Customer feedback
+- Continuous improvement
+
+**Inventory Management:**
+- Track levels
+- Reorder points
+- Supplier relationships
+- Just-in-time systems
+
+**Technology and Tools:**
+
+**Essential Software:**
+
+**Project Management:**
+- Asana
+- Trello
+- Monday.com
+- ClickUp
+
+**Communication:**
+- Slack
+- Microsoft Teams
+- Zoom
+- Email platforms
+
+**Accounting:**
+- QuickBooks
+- Xero
+- FreshBooks
+- Wave
+
+**CRM:**
+- Salesforce
+- HubSpot
+- Pipedrive
+- Zoho
+
+**Productivity:**
+- Google Workspace
+- Microsoft 365
+- Notion
+- Airtable
+
+**Scaling Strategies:**
+
+**Horizontal Scaling:**
+- Expand to new markets
+- Add product lines
+- Open new locations
+- Franchise model
+
+**Vertical Scaling:**
+- Improve efficiency
+- Increase capacity
+- Automate processes
+- Upgrade systems
+
+**Growth Challenges:**
+
+**Managing Growth:**
+- Maintain quality
+- Cash flow management
+- Culture preservation
+- System strain
+
+**Common Pitfalls:**
+- Growing too fast
+- Insufficient capital
+- Team overwhelm
+- Quality decline
+- Customer service issues
+
+**Metrics to Track:**
+
+**Financial:**
+- Revenue growth
+- Profit margins
+- Cash flow
+- Burn rate
+
+**Operational:**
+- Productivity rates
+- Error rates
+- Cycle time
+- Utilization
+
+**Customer:**
+- Satisfaction scores
+- Retention rate
+- Churn rate
+- NPS score
+
+**Outsourcing:**
+
+**Functions to Outsource:**
+- Accounting
+- IT support
+- HR services
+- Manufacturing
+- Customer service
+
+**Benefits:**
+- Cost savings
+- Focus on core
+- Access expertise
+- Flexibility
+
+**Building Systems:**
+- Document everything
+- Create templates
+- Automate routine tasks
+- Train team thoroughly
+- Regular review and update`
+    },
+    {
+      title: "Topic 10: Sustaining and Exiting Your Business",
+      content: `**Long-term Success and Exit Planning**
+
+Building a sustainable business and planning for the future.
+
+**Sustainability Strategies:**
+
+**Business Model:**
+- Recurring revenue
+- Multiple income streams
+- Scalable systems
+- Market adaptability
+
+**Innovation:**
+- Continuous improvement
+- Stay ahead of trends
+- Invest in R&D
+- Customer feedback
+
+**Financial Health:**
+- Positive cash flow
+- Profitability
+- Reserve funds
+- Debt management
+
+**Team Development:**
+- Leadership pipeline
+- Skill development
+- Succession planning
+- Knowledge retention
+
+**Common Challenges:**
+
+**Burnout Prevention:**
+- Work-life balance
+- Delegate effectively
+- Take breaks
+- Build support system
+
+**Market Changes:**
+- Stay informed
+- Be adaptable
+- Pivot when needed
+- Diversify offerings
+
+**Competition:**
+- Monitor competitors
+- Maintain advantage
+- Innovate continuously
+- Focus on customer value
+
+**Exit Strategies:**
+
+**Types of Exits:**
+
+**Acquisition:**
+- Sell to competitor
+- Strategic buyer
+- Private equity
+- Highest valuations
+
+**IPO:**
+- Go public
+- Liquidity for shares
+- Complex process
+- Ongoing obligations
+
+**Management Buyout:**
+- Sell to team
+- Preserve culture
+- Smooth transition
+- May take time
+
+**Family Succession:**
+- Pass to next generation
+- Family legacy
+- Gradual transition
+- Requires planning
+
+**Liquidation:**
+- Sell assets
+- Close business
+- Last resort
+- Minimal value
+
+**Preparing for Exit:**
+
+**Build Value:**
+- Strong financials
+- Documented systems
+- Customer diversity
+- Growth potential
+- Clean legal standing
+
+**Timeline:**
+- Start early (3-5 years)
+- Clean up operations
+- Maximize value
+- Plan transition
+
+**Valuation:**
+- Multiple of earnings
+- Asset-based
+- Market comparison
+- Discounted cash flow
+
+**Exit Team:**
+- Business broker
+- Accountant
+- Attorney
+- Financial advisor
+
+**Due Diligence:**
+- Financial records
+- Legal documents
+- Customer contracts
+- Employee agreements
+- Intellectual property
+
+**Lessons Learned:**
+- Celebrate successes
+- Learn from failures
+- Share knowledge
+- Stay connected to community
+- Consider next venture
+
+**Life After Exit:**
+- Financial planning
+- New opportunities
+- Mentorship
+- Philanthropy
+- Retirement planning`
+    }
+  ],
+
   "default": [
     {
       title: "Introduction to the Course",
@@ -1695,7 +2774,7 @@ export const generateDefaultTopics = (courseName: string): Topic[] => {
   return [
     {
       title: `Introduction to ${courseName}`,
-      content: `Welcome to the ${courseName} course. This comprehensive program will guide you through all essential aspects of this subject.`
+      content: `Welcome to the ${courseName} course. This comprehensive program will guide you through all essential aspects of this subject with detailed lessons and practical examples.`
     },
     {
       title: "Fundamentals and Core Concepts",
