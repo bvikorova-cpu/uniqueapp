@@ -81,20 +81,20 @@ const Referral = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <div className="min-h-screen bg-background pt-20 pb-12 px-2 sm:px-4">
+      <div className="container mx-auto max-w-6xl">
         {/* Header */}
-        <div className="text-center space-y-4 mb-12">
-          <Badge className="bg-gold text-gold-foreground animate-glow text-lg px-4 py-2">
+        <div className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-12">
+          <Badge className="bg-gold text-gold-foreground animate-glow text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2">
             💰 5€ za každého priateľa
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold px-2">
             Referenčný{" "}
             <span className="bg-gradient-gold bg-clip-text text-transparent">
               Program
             </span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
             Pozvi svojich priateľov do Megatalent a zarábaj 5€ za každého, 
             kto si aktivuje Premium predplatné
           </p>
@@ -110,24 +110,24 @@ const Referral = () => {
                   Tvoj referenčný kód
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center space-x-4">
-                  <div className="flex-1 bg-background/10 rounded-lg p-4">
-                    <div className="text-2xl font-mono font-bold tracking-wider">
+              <CardContent className="space-y-4 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                  <div className="flex-1 bg-background/10 rounded-lg p-3 sm:p-4">
+                    <div className="text-xl sm:text-2xl font-mono font-bold tracking-wider break-all">
                       {stats?.code || "Načítavam..."}
                     </div>
                   </div>
                   <Button 
                     variant="secondary" 
                     onClick={copyReferralCode}
-                    className="px-6"
+                    className="px-4 sm:px-6 w-full sm:w-auto"
                   >
                     <Copy className="h-4 w-4 mr-2" />
                     Kopírovať
                   </Button>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <Button 
                     variant="secondary" 
                     onClick={shareReferral}
@@ -154,38 +154,38 @@ const Referral = () => {
                 <CardTitle>Ako to funguje?</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-6">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm sm:text-base flex-shrink-0">
                       1
                     </div>
                     <div>
-                      <h3 className="font-semibold">Zdieľaj svoj kód</h3>
-                      <p className="text-muted-foreground">
+                      <h3 className="font-semibold text-sm sm:text-base">Zdieľaj svoj kód</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Pošli svoj referenčný kód priateľom cez social media, email alebo priamo
                       </p>
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm sm:text-base flex-shrink-0">
                       2
                     </div>
                     <div>
-                      <h3 className="font-semibold">Priateľ sa registruje</h3>
-                      <p className="text-muted-foreground">
+                      <h3 className="font-semibold text-sm sm:text-base">Priateľ sa registruje</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Tvoj priateľ použije tvoj kód pri registrácii a aktivuje si Premium predplatné
                       </p>
                     </div>
                   </div>
                   
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-gold rounded-full flex items-center justify-center text-gold-foreground font-bold">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gold rounded-full flex items-center justify-center text-gold-foreground font-bold text-sm sm:text-base flex-shrink-0">
                       3
                     </div>
                     <div>
-                      <h3 className="font-semibold">Získaš 5€</h3>
-                      <p className="text-muted-foreground">
+                      <h3 className="font-semibold text-sm sm:text-base">Získaš 5€</h3>
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         Automaticky dostaneš 5€ na svoj účet po aktivácii predplatného
                       </p>
                     </div>
@@ -201,16 +201,16 @@ const Referral = () => {
               </CardHeader>
               <CardContent>
                 {stats?.recentReferrals && stats.recentReferrals.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {stats.recentReferrals.map((referral) => (
-                      <div key={referral.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-primary-foreground font-bold">
+                      <div key={referral.id} className="flex items-center justify-between p-2 sm:p-3 border rounded-lg gap-2">
+                        <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-primary rounded-full flex items-center justify-center text-primary-foreground font-bold text-sm sm:text-base flex-shrink-0">
                             {referral.profiles?.full_name?.charAt(0) || "?"}
                           </div>
-                          <div>
-                            <p className="font-semibold">{referral.profiles?.full_name || "Nový používateľ"}</p>
-                            <p className="text-sm text-muted-foreground">
+                          <div className="min-w-0">
+                            <p className="font-semibold text-sm sm:text-base truncate">{referral.profiles?.full_name || "Nový používateľ"}</p>
+                            <p className="text-xs sm:text-sm text-muted-foreground">
                               {formatDistanceToNow(new Date(referral.created_at), { 
                                 addSuffix: true,
                                 locale: sk 
@@ -218,11 +218,11 @@ const Referral = () => {
                             </p>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold text-success">+{referral.amount}€</div>
+                        <div className="text-right flex-shrink-0">
+                          <div className="text-base sm:text-lg font-bold text-success">+{referral.amount}€</div>
                           <Badge 
                             variant={referral.paid ? 'default' : 'secondary'}
-                            className={referral.paid ? 'bg-success' : ''}
+                            className={`text-xs ${referral.paid ? 'bg-success' : ''}`}
                           >
                             {referral.paid ? 'Vyplatené' : 'Čaká'}
                           </Badge>
@@ -251,21 +251,21 @@ const Referral = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center space-y-2">
-                  <div className="text-3xl font-bold text-success">{stats?.totalEarnings.toFixed(2) || 0}€</div>
-                  <p className="text-muted-foreground">Celkové zárobky</p>
+                  <div className="text-2xl sm:text-3xl font-bold text-success">{stats?.totalEarnings.toFixed(2) || 0}€</div>
+                  <p className="text-sm sm:text-base text-muted-foreground">Celkové zárobky</p>
                 </div>
                 
                 <div className="text-center space-y-2">
-                  <div className="text-3xl font-bold text-primary">{stats?.totalReferrals || 0}</div>
-                  <p className="text-muted-foreground">Úspešné pozvánky</p>
+                  <div className="text-2xl sm:text-3xl font-bold text-primary">{stats?.totalReferrals || 0}</div>
+                  <p className="text-sm sm:text-base text-muted-foreground">Úspešné pozvánky</p>
                 </div>
                 
                 <div className="space-y-2">
                   <div className="text-center">
-                    <div className="text-xl font-semibold text-gold">{stats?.pendingEarnings.toFixed(2) || 0}€</div>
+                    <div className="text-lg sm:text-xl font-semibold text-gold">{stats?.pendingEarnings.toFixed(2) || 0}€</div>
                     <p className="text-xs text-muted-foreground">Čaká na výplatu</p>
                   </div>
-                  <Button variant="hero" className="w-full" disabled={!stats?.pendingEarnings}>
+                  <Button variant="hero" className="w-full text-sm sm:text-base" disabled={!stats?.pendingEarnings}>
                     <Euro className="h-4 w-4 mr-2" />
                     Vybrať peniaze
                   </Button>
