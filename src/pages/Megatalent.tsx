@@ -15,74 +15,74 @@ import { useTranslation } from "react-i18next";
 
 const categoryGroups = [
   {
-    group: "🎨 Umenie & Kreativita",
+    group: "🎨 Art & Creativity",
     categories: [
-      { value: "drawing", label: "🎨 Kreslenie" },
-      { value: "painting", label: "🖌️ Maľovanie" },
-      { value: "digital_art", label: "💻 Digitálne umenie" },
-      { value: "sculpture", label: "🗿 Socha / Modelovanie" },
-      { value: "photography", label: "📸 Fotografia" },
-      { value: "handmade", label: "✂️ Handmade výrobky" },
-      { value: "makeup_art", label: "💄 Makeup art" },
-      { value: "tattoo", label: "⚡ Najlepšie tetovanie" },
+      { value: "drawing", label: "🎨 Drawing" },
+      { value: "painting", label: "🖌️ Painting" },
+      { value: "digital_art", label: "💻 Digital Art" },
+      { value: "sculpture", label: "🗿 Sculpture / Modeling" },
+      { value: "photography", label: "📸 Photography" },
+      { value: "handmade", label: "✂️ Handmade Crafts" },
+      { value: "makeup_art", label: "💄 Makeup Art" },
+      { value: "tattoo", label: "⚡ Best Tattoo" },
     ]
   },
   {
-    group: "🎤 Hudba",
+    group: "🎤 Music",
     categories: [
-      { value: "singing", label: "🎤 Spev" },
-      { value: "instrument", label: "🎸 Hra na hudobný nástroj" },
-      { value: "music_production", label: "🎧 Tvorba hudby / DJ" },
+      { value: "singing", label: "🎤 Singing" },
+      { value: "instrument", label: "🎸 Musical Instrument" },
+      { value: "music_production", label: "🎧 Music Production / DJ" },
       { value: "beatbox", label: "🎵 Beatbox" },
       { value: "rap", label: "🎙️ Rap / Freestyle" },
     ]
   },
   {
-    group: "💃 Tanec & Pohyb",
+    group: "💃 Dance & Movement",
     categories: [
-      { value: "dance", label: "💃 Tanec" },
+      { value: "dance", label: "💃 Dance" },
       { value: "breakdance", label: "🕺 Breakdance" },
-      { value: "gymnastics", label: "🤸 Gymnastika / Akrobacia" },
+      { value: "gymnastics", label: "🤸 Gymnastics / Acrobatics" },
       { value: "parkour", label: "🏃 Parkour / Freerunning" },
     ]
   },
   {
-    group: "💪 Šport & Fitness",
+    group: "💪 Sports & Fitness",
     categories: [
-      { value: "training", label: "💪 Najlepší tréning" },
-      { value: "yoga", label: "🧘 Jóga / Pilates" },
-      { value: "martial_arts", label: "🥋 Bojové umenia" },
-      { value: "extreme_sport", label: "🛹 Extrémne športy" },
-      { value: "sport_trick", label: "⚽ Športové triky" },
+      { value: "training", label: "💪 Best Training" },
+      { value: "yoga", label: "🧘 Yoga / Pilates" },
+      { value: "martial_arts", label: "🥋 Martial Arts" },
+      { value: "extreme_sport", label: "🛹 Extreme Sports" },
+      { value: "sport_trick", label: "⚽ Sport Tricks" },
     ]
   },
   {
-    group: "😂 Zábava",
+    group: "😂 Entertainment",
     categories: [
-      { value: "funny_video", label: "😂 Najsmiešnejšie video" },
-      { value: "standup", label: "🎭 Stand-up / Komediálne vystúpenie" },
-      { value: "impressions", label: "🎪 Imitácie / Parodie" },
-      { value: "magic", label: "🎩 Kúzla / Ilúzie" },
-      { value: "pranks", label: "😜 Pranky / Skrytá kamera" },
+      { value: "funny_video", label: "😂 Funniest Video" },
+      { value: "standup", label: "🎭 Stand-up / Comedy" },
+      { value: "impressions", label: "🎪 Impressions / Parodies" },
+      { value: "magic", label: "🎩 Magic / Illusions" },
+      { value: "pranks", label: "😜 Pranks / Hidden Camera" },
     ]
   },
   {
-    group: "💡 Vzdelávanie",
+    group: "💡 Education",
     categories: [
-      { value: "life_advice", label: "💡 Najlepšia rada do života" },
-      { value: "tutorial", label: "📚 Návod / Tutorial" },
-      { value: "cooking", label: "👨‍🍳 Varenie / Pečenie" },
-      { value: "diy", label: "🔧 DIY projekty" },
-      { value: "science", label: "🔬 Veda / Experimenty" },
+      { value: "life_advice", label: "💡 Best Life Advice" },
+      { value: "tutorial", label: "📚 Tutorial / How-to" },
+      { value: "cooking", label: "👨‍🍳 Cooking / Baking" },
+      { value: "diy", label: "🔧 DIY Projects" },
+      { value: "science", label: "🔬 Science / Experiments" },
     ]
   },
   {
-    group: "🌟 Ostatné",
+    group: "🌟 Other",
     categories: [
-      { value: "best_selfie", label: "🤳 Najlepšie selfie" },
-      { value: "transformation", label: "✨ Transformácia (predtým/potom)" },
-      { value: "pet_talent", label: "🐾 Talent domáceho miláčika" },
-      { value: "other", label: "🌟 Iné talenty" },
+      { value: "best_selfie", label: "🤳 Best Selfie" },
+      { value: "transformation", label: "✨ Transformation (Before/After)" },
+      { value: "pet_talent", label: "🐾 Pet Talent" },
+      { value: "other", label: "🌟 Other Talents" },
     ]
   },
 ];
@@ -597,14 +597,14 @@ const Megatalent = () => {
                 {(subscriptionTier === 'premium' || subscriptionTier === 'top_premium') && (
                   <div className="p-4 rounded-lg bg-gradient-primary border border-gold/30">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Celkový počet hlasov:</span>
+                      <span className="text-sm font-medium">{t('megatalent.your_votes')}</span>
                       <Badge className="bg-gold text-gold-foreground text-base font-bold">
-                        {totalVotes.toLocaleString('sk-SK')}
+                        {totalVotes.toLocaleString('en-US')}
                       </Badge>
                     </div>
                     {subscriptionTier === 'top_premium' && (
                       <p className="text-xs text-muted-foreground mt-2">
-                        Obsahuje bonus +100,000 hlasov
+                        {t('megatalent.bonus_votes')}
                       </p>
                     )}
                   </div>
@@ -612,9 +612,9 @@ const Megatalent = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <p className="text-sm font-medium">Vybraná kategória:</p>
+                  <p className="text-sm font-medium">{t('megatalent.select_category')}</p>
                   <Badge variant="outline" className="text-sm">
-                    {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Vyberte kategóriu"}
+                    {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || t('megatalent.select_category')}
                   </Badge>
                 </div>
                 
@@ -666,7 +666,7 @@ const Megatalent = () => {
                   disabled={uploading}
                 >
                   <Camera className="h-4 w-4" />
-                  {uploading ? 'Nahrávam...' : 'Nahrať foto'}
+                  {uploading ? t('megatalent.uploading') : t('megatalent.upload_photo')}
                 </Button>
                 <Button 
                   variant="premium" 
@@ -675,7 +675,7 @@ const Megatalent = () => {
                   disabled={uploading}
                 >
                   <Video className="h-4 w-4" />
-                  {uploading ? 'Nahrávam...' : 'Nahrať video'}
+                  {uploading ? t('megatalent.uploading') : t('megatalent.upload_video')}
                 </Button>
                 
                 {uploadedFile && (
@@ -689,13 +689,13 @@ const Megatalent = () => {
                 )}
                 
                 <Input 
-                  placeholder="Názov príspevku..."
+                  placeholder={t('megatalent.submit_title_placeholder')}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   maxLength={100}
                 />
                 <Textarea 
-                  placeholder="Napíš popis svojho talentu..." 
+                  placeholder={t('megatalent.submit_description_placeholder')}
                   className="min-h-20"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -707,7 +707,7 @@ const Megatalent = () => {
                   onClick={handleSubmit}
                   disabled={submitting || uploading}
                 >
-                  {submitting ? 'Zverejňujem...' : 'Zverejniť'}
+                  {submitting ? t('megatalent.publishing') : t('megatalent.publish')}
                 </Button>
               </CardContent>
               </Card>
