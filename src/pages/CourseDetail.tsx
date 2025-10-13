@@ -94,7 +94,7 @@ const CourseDetail = () => {
       <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Načítavam kurz...</p>
+          <p className="text-muted-foreground">Loading course...</p>
         </div>
       </div>
     );
@@ -122,7 +122,7 @@ const CourseDetail = () => {
             className="mb-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Späť na kurz
+            Back to course
           </Button>
           <CourseTest
             courseName={courseName || ""}
@@ -138,9 +138,9 @@ const CourseDetail = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
         <Card className="p-8 text-center max-w-md">
-          <p className="text-muted-foreground mb-4">Nepodarilo sa načítať obsah kurzu.</p>
+          <p className="text-muted-foreground mb-4">Failed to load course content.</p>
           <Button onClick={() => navigate("/education")}>
-            Späť na vzdelávanie
+            Back to Education
           </Button>
         </Card>
       </div>
@@ -156,7 +156,7 @@ const CourseDetail = () => {
               <div>
                 <CardTitle className="text-3xl">{courseName}</CardTitle>
                 <CardDescription className="mt-2">
-                  Online kurz s certifikáciou
+                  Online course with certification
                 </CardDescription>
               </div>
               <Award className="h-12 w-12 text-primary" />
@@ -166,18 +166,18 @@ const CourseDetail = () => {
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">Postup kurzu</span>
+                  <span className="text-sm font-medium">Course Progress</span>
                   <span className="text-sm text-muted-foreground">
-                    {completedTopics.length}/{topics.length} tém dokončených
+                    {completedTopics.length}/{topics.length} topics completed
                   </span>
                 </div>
                 <Progress value={progressPercentage} className="h-2" />
               </div>
               {statistics && (
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span>Čas strávený: {statistics.time_spent_minutes} min</span>
+                  <span>Time spent: {statistics.time_spent_minutes} min</span>
                   <span>•</span>
-                  <span>Dokončených tém: {completedTopics.length}/{topics.length}</span>
+                  <span>Completed topics: {completedTopics.length}/{topics.length}</span>
                 </div>
               )}
             </div>
