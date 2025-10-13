@@ -1253,6 +1253,841 @@ if (password_verify($input, $hash)) {
       title: "Final Review and Assessment Preparation",
       content: `Review all key concepts and prepare for your final assessment. This topic consolidates everything you've learned.`
     }
+  ],
+  "Financial Planning": [
+    {
+      title: "Introduction to Financial Planning",
+        content: `# Introduction to Financial Planning
+
+Financial planning is a systematic approach to managing your finances to achieve life goals. It involves assessing your current financial situation, setting objectives, and creating strategies to meet those objectives.
+
+## What is Financial Planning?
+
+Financial planning is the process of:
+- Analyzing your current financial position
+- Setting short-term and long-term financial goals
+- Developing strategies to achieve those goals
+- Implementing and monitoring your plan
+- Adjusting as circumstances change
+
+## Benefits of Financial Planning
+
+1. **Clarity and Direction**: Provides a roadmap for your financial future
+2. **Better Decision Making**: Helps you make informed choices about money
+3. **Financial Security**: Builds a safety net for emergencies
+4. **Goal Achievement**: Increases likelihood of reaching financial objectives
+5. **Reduced Stress**: Provides peace of mind about your financial future
+
+## The Financial Planning Process
+
+1. Establish goals and objectives
+2. Gather financial data
+3. Analyze current situation
+4. Develop the plan
+5. Implement the plan
+6. Monitor and review regularly
+
+Financial planning is not a one-time event but an ongoing process that evolves with your life circumstances.`
+      },
+      {
+        title: "Setting Financial Goals",
+        content: `# Setting Financial Goals
+
+Effective financial planning starts with clear, well-defined goals. Your financial goals guide all your financial decisions and strategies.
+
+## Types of Financial Goals
+
+### Short-term Goals (1-3 years)
+- Emergency fund
+- Vacation savings
+- Small purchases
+- Paying off credit card debt
+
+### Medium-term Goals (3-10 years)
+- Down payment for a house
+- Starting a business
+- Major home renovation
+- Paying off student loans
+
+### Long-term Goals (10+ years)
+- Retirement savings
+- Children's education
+- Financial independence
+- Estate planning
+
+## SMART Goal Framework
+
+Make your goals SMART:
+- **Specific**: Clearly defined and detailed
+- **Measurable**: Quantifiable with specific numbers
+- **Achievable**: Realistic given your situation
+- **Relevant**: Aligned with your values and priorities
+- **Time-bound**: Has a specific deadline
+
+### Example of a SMART Goal
+❌ "I want to save money"
+✅ "I will save $10,000 for a house down payment within 2 years by setting aside $420 per month"
+
+## Prioritizing Your Goals
+
+1. List all your financial goals
+2. Categorize by timeframe
+3. Rank by importance
+4. Consider trade-offs
+5. Focus on what matters most
+
+Remember: It's okay to have multiple goals, but prioritize to avoid spreading yourself too thin.`
+      },
+      {
+        title: "Creating a Budget",
+        content: `# Creating a Budget
+
+A budget is the foundation of financial planning. It helps you track income and expenses, ensuring you're living within your means and working toward your goals.
+
+## Why Budget?
+
+- Control your spending
+- Avoid debt
+- Save for goals
+- Prepare for emergencies
+- Reduce financial stress
+
+## Popular Budgeting Methods
+
+### 50/30/20 Rule
+- 50% - Needs (housing, food, utilities)
+- 30% - Wants (entertainment, dining out)
+- 20% - Savings and debt repayment
+
+### Zero-Based Budget
+Every dollar is assigned a specific purpose. Income minus expenses equals zero.
+
+### Envelope System
+Cash is divided into envelopes for different spending categories.
+
+### Pay Yourself First
+Save a set amount before budgeting for expenses.
+
+## Steps to Create Your Budget
+
+1. **Calculate Your Income**
+   - Salary (after taxes)
+   - Side income
+   - Investment returns
+   - Other sources
+
+2. **Track Your Expenses**
+   - Fixed expenses (rent, insurance)
+   - Variable expenses (groceries, gas)
+   - Discretionary spending (entertainment)
+
+3. **Set Spending Limits**
+   - Based on your income
+   - Aligned with your goals
+   - Realistic and sustainable
+
+4. **Monitor and Adjust**
+   - Review monthly
+   - Identify overspending
+   - Make necessary changes
+
+## Budgeting Tools
+
+- Spreadsheets
+- Mobile apps (Mint, YNAB, EveryDollar)
+- Banking tools
+- Pen and paper
+
+The best budget is one you'll actually stick to!`
+      },
+      {
+        title: "Emergency Funds and Savings",
+        content: `# Emergency Funds and Savings
+
+An emergency fund is one of the most important components of financial security. It provides a financial cushion for unexpected expenses or income loss.
+
+## What is an Emergency Fund?
+
+An emergency fund is money set aside specifically for unexpected expenses such as:
+- Medical emergencies
+- Job loss
+- Car repairs
+- Home repairs
+- Unexpected travel
+
+## How Much Should You Save?
+
+### General Guidelines
+- **Minimum**: $1,000 for basic emergencies
+- **Standard**: 3-6 months of expenses
+- **Extended**: 6-12 months for single income, self-employed, or unstable industries
+
+### Calculate Your Target
+1. Add up monthly essential expenses
+2. Multiply by 3-6 (or more)
+3. This is your emergency fund goal
+
+Example: $3,000/month × 6 months = $18,000 target
+
+## Building Your Emergency Fund
+
+### Step-by-Step Approach
+1. Start with a small goal ($500-$1,000)
+2. Automate savings transfers
+3. Save windfalls (tax refunds, bonuses)
+4. Reduce expenses temporarily
+5. Gradually increase to full target
+
+### Where to Keep Emergency Funds
+- High-yield savings account
+- Money market account
+- Easily accessible, liquid accounts
+- NOT in stocks or long-term investments
+
+## Beyond Emergency Funds: Other Savings Goals
+
+1. **Short-term Savings**
+   - Vacation fund
+   - Gift fund
+   - Annual expenses (insurance, taxes)
+
+2. **Sinking Funds**
+   - Car replacement
+   - Home maintenance
+   - Technology upgrades
+
+3. **Opportunity Fund**
+   - For unexpected opportunities
+   - Career development
+   - Strategic investments
+
+Remember: Save first, spend what's left!`
+      },
+      {
+        title: "Managing Debt",
+        content: `# Managing Debt
+
+Effective debt management is crucial for financial health. Not all debt is bad, but understanding how to manage it is essential.
+
+## Types of Debt
+
+### Good Debt
+Debt that can increase your net worth or income:
+- Student loans (education investment)
+- Mortgage (home ownership)
+- Business loans (income generation)
+
+### Bad Debt
+Debt used for depreciating items or consumption:
+- Credit card debt (high interest)
+- Auto loans for luxury vehicles
+- Payday loans
+
+## Debt Repayment Strategies
+
+### Debt Snowball Method
+1. List debts from smallest to largest
+2. Pay minimums on all debts
+3. Put extra money toward smallest debt
+4. When paid off, roll payment to next smallest
+5. Repeat until debt-free
+
+**Advantage**: Psychological wins, builds momentum
+
+### Debt Avalanche Method
+1. List debts from highest to lowest interest rate
+2. Pay minimums on all debts
+3. Put extra money toward highest interest debt
+4. When paid off, move to next highest
+5. Repeat until debt-free
+
+**Advantage**: Saves most money on interest
+
+## Credit Score Management
+
+Your credit score (300-850) affects:
+- Loan approval
+- Interest rates
+- Insurance premiums
+- Housing applications
+
+### Factors Affecting Credit Score
+- Payment history (35%)
+- Credit utilization (30%)
+- Length of credit history (15%)
+- New credit (10%)
+- Credit mix (10%)
+
+### Improving Your Credit Score
+1. Pay bills on time, always
+2. Keep credit utilization below 30%
+3. Don't close old credit cards
+4. Limit new credit applications
+5. Monitor your credit report regularly
+
+## When to Avoid New Debt
+
+- During financial instability
+- For wants vs. needs
+- When emergency fund is depleted
+- If struggling with existing debt
+
+Focus on becoming debt-free to build wealth!`
+      },
+      {
+        title: "Investment Basics",
+        content: `# Investment Basics
+
+Investing is how you grow your wealth over time. Understanding investment fundamentals is key to achieving long-term financial goals.
+
+## Why Invest?
+
+- **Compound Growth**: Your money grows exponentially over time
+- **Beat Inflation**: Preserve purchasing power
+- **Build Wealth**: Achieve financial independence
+- **Passive Income**: Generate income without active work
+
+## Investment Vehicles
+
+### Stocks (Equities)
+- Ownership shares in companies
+- Higher risk, higher potential return
+- Suitable for long-term growth
+
+### Bonds (Fixed Income)
+- Loans to governments or corporations
+- Lower risk, lower return
+- Provides steady income
+
+### Mutual Funds
+- Pooled investments managed professionally
+- Diversification in one purchase
+- Various types (stock, bond, balanced)
+
+### Index Funds
+- Tracks market indexes (S&P 500)
+- Low fees
+- Passive management
+
+### ETFs (Exchange-Traded Funds)
+- Similar to index funds
+- Trade like stocks
+- Very low fees
+
+### Real Estate
+- Physical property investment
+- Rental income + appreciation
+- Requires more capital and management
+
+## Key Investment Principles
+
+### 1. Diversification
+Don't put all eggs in one basket. Spread investments across:
+- Different asset classes
+- Various industries
+- Geographic regions
+
+### 2. Asset Allocation
+Mix of investments based on:
+- Age
+- Risk tolerance
+- Time horizon
+- Goals
+
+Example: 60% stocks, 30% bonds, 10% cash
+
+### 3. Time Horizon
+- Short-term (< 3 years): Conservative, liquid investments
+- Medium-term (3-10 years): Balanced approach
+- Long-term (10+ years): Aggressive growth
+
+### 4. Risk vs. Return
+- Higher potential returns = Higher risk
+- Lower risk = Lower potential returns
+- Match risk to your comfort level
+
+## Getting Started
+
+1. **Max out employer 401(k) match** (free money!)
+2. **Open an IRA** (Individual Retirement Account)
+3. **Start with index funds** (simple, diversified)
+4. **Invest regularly** (dollar-cost averaging)
+5. **Don't try to time the market**
+6. **Stay invested long-term**
+
+Remember: Time in the market beats timing the market!`
+      },
+      {
+        title: "Retirement Planning",
+        content: `# Retirement Planning
+
+Planning for retirement is one of the most important aspects of financial planning. The earlier you start, the better positioned you'll be.
+
+## Why Start Early?
+
+### The Power of Compound Interest
+
+Example: Starting at 25 vs. 35
+- Starting at 25: Save $200/month until 65 = $470,000
+- Starting at 35: Save $200/month until 65 = $230,000
+
+Starting 10 years earlier more than doubles your retirement savings!
+
+## How Much Do You Need?
+
+### The 25x Rule
+Multiply annual retirement expenses by 25
+
+Example: $40,000/year × 25 = $1,000,000 needed
+
+### The 4% Rule
+Withdraw 4% of retirement savings annually
+
+Example: $1,000,000 × 4% = $40,000/year
+
+## Retirement Accounts
+
+### Employer-Sponsored Plans
+
+**401(k) / 403(b)**
+- Tax-deferred contributions
+- Employer match (free money!)
+- 2024 limit: $23,000/year
+- Withdrawals taxed in retirement
+
+**Roth 401(k)**
+- After-tax contributions
+- Tax-free withdrawals in retirement
+- No income limits
+
+### Individual Retirement Accounts (IRAs)
+
+**Traditional IRA**
+- Tax-deductible contributions
+- Tax-deferred growth
+- Withdrawals taxed in retirement
+- 2024 limit: $7,000/year
+
+**Roth IRA**
+- After-tax contributions
+- Tax-free growth and withdrawals
+- Income limits apply
+- More withdrawal flexibility
+
+## Retirement Planning Strategy
+
+### In Your 20s-30s
+- Take advantage of time
+- Invest aggressively (80-90% stocks)
+- Maximize employer match
+- Start Roth IRA
+
+### In Your 40s-50s
+- Increase savings rate
+- Moderate risk (60-70% stocks)
+- Catch-up contributions
+- Diversify investments
+
+### In Your 60s+
+- Reduce risk (40-50% stocks)
+- Plan withdrawal strategy
+- Consider healthcare costs
+- Social Security timing
+
+## Additional Considerations
+
+- **Social Security**: Understand benefits and timing
+- **Healthcare**: Plan for Medicare and supplemental insurance
+- **Long-term Care**: Consider insurance or savings
+- **Estate Planning**: Wills, trusts, beneficiaries
+
+Start planning today for a comfortable tomorrow!`
+      },
+      {
+        title: "Tax Planning Strategies",
+        content: `# Tax Planning Strategies
+
+Effective tax planning can significantly impact your financial health. Understanding tax strategies helps you keep more of your hard-earned money.
+
+## Why Tax Planning Matters
+
+- Reduce taxable income legally
+- Maximize deductions and credits
+- Optimize investment returns
+- Plan for future tax liability
+- Increase cash flow
+
+## Tax-Advantaged Accounts
+
+### Retirement Accounts
+**Benefits:**
+- Reduce current taxable income
+- Tax-deferred or tax-free growth
+- Build retirement savings
+
+**Options:**
+- 401(k), 403(b), Traditional IRA (tax-deferred)
+- Roth IRA, Roth 401(k) (tax-free growth)
+- SEP IRA, Solo 401(k) (self-employed)
+
+### Health Savings Account (HSA)
+**Triple Tax Advantage:**
+1. Tax-deductible contributions
+2. Tax-free growth
+3. Tax-free withdrawals for medical expenses
+
+**Requirements:**
+- High-deductible health plan
+- 2024 limit: $4,150 (individual), $8,300 (family)
+
+### 529 Education Savings Plans
+- Tax-free growth for education
+- Tax-free withdrawals for qualified expenses
+- Some states offer tax deductions
+
+## Common Tax Deductions
+
+### Standard vs. Itemized Deductions
+- Standard deduction (2024): $14,600 (single), $29,200 (married)
+- Itemize if deductions exceed standard
+
+### Itemizable Deductions
+- Mortgage interest
+- State and local taxes (SALT) - $10,000 limit
+- Charitable contributions
+- Medical expenses (>7.5% of AGI)
+
+## Tax Credits (Better Than Deductions!)
+
+### Refundable Credits
+- Earned Income Tax Credit (EITC)
+- Child Tax Credit
+- American Opportunity Credit (education)
+
+### Non-Refundable Credits
+- Lifetime Learning Credit
+- Child and Dependent Care Credit
+- Retirement Savings Contribution Credit (Saver's Credit)
+
+## Investment Tax Strategies
+
+### Tax-Loss Harvesting
+- Sell investments at a loss
+- Offset capital gains
+- Reduce taxable income (up to $3,000/year)
+- Reinvest in similar assets
+
+### Long-Term Capital Gains
+- Hold investments >1 year
+- Lower tax rates (0%, 15%, 20%)
+- vs. short-term (ordinary income rates)
+
+### Dividend Strategy
+- Qualified dividends taxed at lower rates
+- Consider dividend-paying stocks in taxable accounts
+
+## Business and Self-Employment
+
+### Deductions for Self-Employed
+- Home office deduction
+- Business expenses
+- Health insurance premiums
+- Retirement contributions (SEP-IRA, Solo 401(k))
+- Self-employment tax deduction (50%)
+
+## Year-End Tax Strategies
+
+1. **Maximize retirement contributions**
+2. **Harvest tax losses**
+3. **Make charitable donations**
+4. **Pay deductible expenses**
+5. **Consider Roth conversions**
+6. **Review withholdings**
+
+Consult a tax professional for personalized advice!`
+      },
+      {
+        title: "Insurance and Risk Management",
+        content: `# Insurance and Risk Management
+
+Insurance is a critical component of financial planning. It protects you from financial devastation due to unexpected events.
+
+## Why Insurance Matters
+
+- Protects against financial catastrophes
+- Provides peace of mind
+- Required by law (some types)
+- Protects your family's financial future
+
+## Types of Insurance
+
+### Life Insurance
+
+**Purpose**: Provides for dependents after your death
+
+**Term Life Insurance**
+- Coverage for specific period (10, 20, 30 years)
+- Lower premiums
+- No cash value
+- Best for most people
+
+**Permanent Life Insurance**
+- Whole life, universal life
+- Lifetime coverage
+- Cash value component
+- Higher premiums
+- More complex
+
+**How Much Do You Need?**
+- 10-12x annual income
+- Or enough to cover: debts + income replacement + future expenses
+
+### Health Insurance
+
+**Essential Coverage:**
+- Medical expenses
+- Preventive care
+- Emergency care
+- Prescriptions
+
+**Key Concepts:**
+- Premium: Monthly payment
+- Deductible: Amount you pay before insurance kicks in
+- Copay: Fixed amount per visit
+- Out-of-pocket maximum: Most you'll pay per year
+
+### Disability Insurance
+
+**Purpose**: Replaces income if you can't work due to illness/injury
+
+**Types:**
+- Short-term disability (3-6 months)
+- Long-term disability (until retirement age)
+
+**Coverage Amount:**
+- Typically 60-70% of income
+- Often provided by employer
+- Consider supplemental coverage
+
+### Homeowners/Renters Insurance
+
+**Homeowners Insurance Covers:**
+- Dwelling and structures
+- Personal property
+- Liability
+- Additional living expenses
+
+**Renters Insurance Covers:**
+- Personal property
+- Liability
+- Additional living expenses
+- Often very affordable ($15-30/month)
+
+### Auto Insurance
+
+**Required Coverage (varies by state):**
+- Liability (bodily injury and property damage)
+
+**Recommended Coverage:**
+- Collision
+- Comprehensive
+- Uninsured/underinsured motorist
+- Medical payments
+
+### Umbrella Insurance
+
+- Additional liability coverage
+- Kicks in after other policies max out
+- Covers: lawsuits, injuries, property damage
+- Relatively inexpensive ($150-300/year for $1M)
+
+## Long-Term Care Insurance
+
+**Purpose**: Covers nursing home, assisted living, in-home care
+
+**Considerations:**
+- Average cost: $100,000/year for nursing home
+- Medicare doesn't cover long-term care
+- Buy in your 50s-60s for best rates
+- Alternative: Save aggressively in HSA/investments
+
+## Insurance Best Practices
+
+### Do:
+1. **Shop around** for best rates
+2. **Review annually** and adjust as needed
+3. **Increase deductibles** to lower premiums
+4. **Bundle policies** for discounts
+5. **Maintain good credit** (affects rates)
+6. **Take advantage of discounts** (safety features, good driver)
+
+### Don't:
+1. **Under-insure** to save money
+2. **Over-insure** what you don't need
+3. **Let policies lapse**
+4. **Ignore policy details**
+
+## Emergency Preparedness
+
+Beyond insurance:
+- Emergency fund (3-6 months expenses)
+- Important documents in safe place
+- Estate planning documents
+- Family emergency plan
+
+Proper insurance = Financial safety net!`
+      },
+      {
+        title: "Estate Planning Basics",
+        content: `# Estate Planning Basics
+
+Estate planning ensures your assets are distributed according to your wishes and your loved ones are cared for after you're gone.
+
+## What is Estate Planning?
+
+Estate planning involves:
+- Deciding how assets are distributed
+- Naming guardians for minor children
+- Minimizing taxes and legal fees
+- Providing for dependents
+- Making healthcare decisions
+- Planning for incapacity
+
+## Essential Estate Planning Documents
+
+### 1. Last Will and Testament
+
+**Purpose**: Specifies how assets are distributed
+
+**Should Include:**
+- Executor (person who carries out will)
+- Beneficiaries (who receives what)
+- Guardians for minor children
+- Specific bequests (heirlooms, property)
+
+**Without a Will:**
+- State decides asset distribution
+- May not align with your wishes
+- Longer, more expensive process
+
+### 2. Living Trust
+
+**Purpose**: Manages assets during life and after death
+
+**Benefits:**
+- Avoids probate (faster, private)
+- Maintains control while alive
+- Reduces estate taxes
+- Protects assets
+
+**Types:**
+- Revocable (can be changed)
+- Irrevocable (permanent, stronger protection)
+
+### 3. Power of Attorney (POA)
+
+**Financial POA:**
+- Manages finances if you're incapacitated
+- Pays bills, manages investments
+- Files taxes
+
+**Healthcare POA:**
+- Makes medical decisions if you can't
+- Also called healthcare proxy
+
+### 4. Living Will (Advance Directive)
+
+**Purpose**: Specifies end-of-life medical preferences
+
+**Covers:**
+- Life support decisions
+- Resuscitation preferences
+- Organ donation
+- Pain management
+
+### 5. Beneficiary Designations
+
+**Accounts with Beneficiaries:**
+- Retirement accounts (401(k), IRA)
+- Life insurance policies
+- Bank/investment accounts (TOD/POD)
+
+**Important:**
+- Review and update regularly
+- Supersede will
+- Avoid naming minors directly
+
+## Estate Tax Planning
+
+### Federal Estate Tax
+- 2024 exemption: $13.61 million per person
+- 40% tax on amount over exemption
+- Married couples: Double exemption
+
+### Strategies to Reduce Estate Taxes
+- Annual gift exclusion ($18,000/person in 2024)
+- Charitable donations
+- Trusts (bypass, charitable)
+- Life insurance trusts
+
+## Special Considerations
+
+### For Parents
+- Name guardians in will
+- Create trusts for minor children
+- Consider life insurance
+- Education savings (529 plans)
+
+### For Business Owners
+- Succession plan
+- Buy-sell agreements
+- Business valuation
+- Key person insurance
+
+### For Blended Families
+- Clear documentation
+- Consider trusts
+- Update beneficiaries
+- Communicate with family
+
+## Digital Estate Planning
+
+Don't forget digital assets:
+- Email and social media accounts
+- Digital photos and files
+- Cryptocurrency
+- Online banking
+- Subscription services
+
+**Create a Digital Asset Inventory:**
+- List of accounts
+- Usernames (not passwords in will!)
+- Instructions for executor
+- Use password manager with emergency access
+
+## When to Update Your Estate Plan
+
+Review and update after:
+- Marriage or divorce
+- Birth/adoption of children
+- Death of beneficiary or executor
+- Significant change in assets
+- Moving to another state
+- Major tax law changes
+- Every 3-5 years minimum
+
+## Getting Started
+
+1. **Take inventory** of assets and debts
+2. **Decide on beneficiaries** and guardians
+3. **Choose executors and POAs**
+4. **Consult an attorney** for will/trust
+5. **Complete documents** and sign properly
+6. **Store safely** and inform family
+7. **Review regularly** and update as needed
+
+Estate planning isn't just for the wealthy—it's for everyone who cares about their family's future!`
+    }
   ]
 };
 
