@@ -381,7 +381,7 @@ const OnlinePsychologist = () => {
             </div>
 
             <p className="text-xs text-muted-foreground text-center">
-              This is an AI assistant. In case of a serious crisis, seek professional help or call the crisis hotline 0800 500 444
+              This is an AI assistant. In case of a serious crisis, seek professional help or call the crisis hotline.
             </p>
           </CardContent>
         </Card>
