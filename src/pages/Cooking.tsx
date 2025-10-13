@@ -199,9 +199,15 @@ const Cooking = () => {
                           alt={recipe.title}
                           className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                         />
-                        <Badge className={`absolute top-2 right-2 ${getDifficultyColor(recipe.difficulty)}`}>
-                          {recipe.difficulty}
-                        </Badge>
+                        <div className="absolute top-2 right-2">
+                          <Button 
+                            size="sm" 
+                            variant="premium"
+                            className="pointer-events-none"
+                          >
+                            {recipe.difficulty}
+                          </Button>
+                        </div>
                       </div>
                       <CardHeader>
                         <CardTitle className="line-clamp-1">{recipe.title}</CardTitle>
