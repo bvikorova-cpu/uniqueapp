@@ -247,7 +247,7 @@ const OnlinePsychologist = () => {
             Online Psychologist
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            An anonymous space where you can share your worries and get support from an AI psychologist.
+            Share your concerns in an anonymous and safe space. I am here to listen to you.
           </p>
         </div>
 
@@ -256,7 +256,7 @@ const OnlinePsychologist = () => {
           <Card>
             <CardContent className="pt-6 text-center">
               <Lock className="h-8 w-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">100% Anonymous</h3>
+              <h3 className="font-semibold mb-1">Anonymous</h3>
               <p className="text-sm text-muted-foreground">
                 No registration or personal information required
               </p>
@@ -265,18 +265,18 @@ const OnlinePsychologist = () => {
           <Card>
             <CardContent className="pt-6 text-center">
               <Heart className="h-8 w-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">Empathetic Approach</h3>
+              <h3 className="font-semibold mb-1">Empathy</h3>
               <p className="text-sm text-muted-foreground">
-                Professional support with understanding
+                Non-judgmental and supportive approach
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
               <MessageCircle className="h-8 w-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">Anytime</h3>
+              <h3 className="font-semibold mb-1">AI Assistant</h3>
               <p className="text-sm text-muted-foreground">
-                Available 24/7 without waiting
+                Available 24/7 for immediate support
               </p>
             </CardContent>
           </Card>
@@ -296,9 +296,9 @@ const OnlinePsychologist = () => {
               {messages.length === 0 && (
                 <div className="text-center text-muted-foreground py-20">
                   <Heart className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg mb-2">Welcome to a safe space</p>
+                  <p className="text-lg mb-2">Hello 👋 I'm here for you.</p>
                   <p className="text-sm">
-                    Feel free to write what troubles you. I am here for you.
+                    This space is anonymous and safe. You can write anything that troubles you. How are you feeling today?
                   </p>
                 </div>
               )}
@@ -381,7 +381,7 @@ const OnlinePsychologist = () => {
             </div>
 
             <p className="text-xs text-muted-foreground text-center">
-              This is an AI assistant. In case of a serious crisis, seek professional help or call the crisis hotline.
+              Important: This is an AI assistant. In case of serious problems, we recommend consulting a professional psychologist.
             </p>
           </CardContent>
         </Card>
