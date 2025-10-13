@@ -174,7 +174,7 @@ const Referral = () => {
                     <div>
                       <h3 className="font-semibold text-sm sm:text-base">Friend signs up</h3>
                       <p className="text-xs sm:text-sm text-muted-foreground">
-                        Your friend uses your code during registration and activates Premium subscription
+                        Your friend uses your code when registering for the contest and activates Premium subscription in the Megatalent contest
                       </p>
                     </div>
                   </div>
