@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Brain, GraduationCap, Send, Loader2 } from "lucide-react";
+import { BookOpen, Brain, GraduationCap, Send, Loader2, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -693,6 +693,16 @@ export default function Education() {
           </TabsContent>
 
           <TabsContent value="courses">
+            <div className="mb-6 flex justify-end">
+              <Button
+                onClick={() => navigate('/generate-courses')}
+                variant="outline"
+                className="gap-2"
+              >
+                <Wand2 className="h-4 w-4" />
+                Generate Course Content
+              </Button>
+            </div>
             <div className="space-y-8">
               {courseCategories.map((category, idx) => (
                 <Card key={idx}>
