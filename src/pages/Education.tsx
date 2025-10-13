@@ -9,91 +9,91 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 const quizCategories = [
-  { id: "math", name: "Matematika", icon: "📐" },
-  { id: "biology", name: "Biológia", icon: "🧬" },
-  { id: "physics", name: "Fyzika", icon: "⚛️" },
-  { id: "chemistry", name: "Chémia", icon: "🧪" },
-  { id: "geography", name: "Geografia", icon: "🌍" },
-  { id: "history", name: "História", icon: "📜" },
-  { id: "literature", name: "Literatura", icon: "📚" },
-  { id: "english", name: "Angličtina", icon: "🇬🇧" },
-  { id: "computer", name: "Informatika", icon: "💻" },
-  { id: "art", name: "Umenie", icon: "🎨" },
-  { id: "celebrity", name: "Celebrity", icon: "⭐" },
-  { id: "sport", name: "Šport", icon: "⚽" },
-  { id: "movies", name: "Film a TV", icon: "🎬" },
-  { id: "music", name: "Hudba", icon: "🎵" },
-  { id: "food", name: "Jedlo a varenie", icon: "🍳" },
-  { id: "travel", name: "Cestovanie", icon: "✈️" },
-  { id: "fashion", name: "Móda", icon: "👗" },
-  { id: "nature", name: "Príroda", icon: "🌿" },
-  { id: "cars", name: "Automobily", icon: "🚗" },
+  { id: "math", name: "Mathematics", icon: "📐" },
+  { id: "biology", name: "Biology", icon: "🧬" },
+  { id: "physics", name: "Physics", icon: "⚛️" },
+  { id: "chemistry", name: "Chemistry", icon: "🧪" },
+  { id: "geography", name: "Geography", icon: "🌍" },
+  { id: "history", name: "History", icon: "📜" },
+  { id: "literature", name: "Literature", icon: "📚" },
+  { id: "english", name: "English", icon: "🇬🇧" },
+  { id: "computer", name: "Computer Science", icon: "💻" },
+  { id: "art", name: "Art", icon: "🎨" },
+  { id: "celebrity", name: "Celebrities", icon: "⭐" },
+  { id: "sport", name: "Sports", icon: "⚽" },
+  { id: "movies", name: "Film & TV", icon: "🎬" },
+  { id: "music", name: "Music", icon: "🎵" },
+  { id: "food", name: "Food & Cooking", icon: "🍳" },
+  { id: "travel", name: "Travel", icon: "✈️" },
+  { id: "fashion", name: "Fashion", icon: "👗" },
+  { id: "nature", name: "Nature", icon: "🌿" },
+  { id: "cars", name: "Cars", icon: "🚗" },
   { id: "gaming", name: "Gaming", icon: "🎮" },
-  { id: "business", name: "Biznis", icon: "💼" },
-  { id: "psychology", name: "Psychológia", icon: "🧠" },
-  { id: "health", name: "Zdravie a fitness", icon: "💪" },
-  { id: "technology", name: "Technológie", icon: "📱" },
-  { id: "science", name: "Veda", icon: "🔬" },
-  { id: "politics", name: "Politika", icon: "🏛️" },
-  { id: "economics", name: "Ekonómia", icon: "💰" },
-  { id: "astronomy", name: "Astronómia", icon: "🌟" },
-  { id: "animals", name: "Zvieratá", icon: "🦁" },
-  { id: "architecture", name: "Architektúra", icon: "🏗️" },
-  { id: "languages", name: "Jazyky sveta", icon: "🗣️" },
-  { id: "mythology", name: "Mytológia", icon: "⚡" },
-  { id: "religion", name: "Náboženstvá", icon: "🕉️" },
-  { id: "philosophy", name: "Filozofia", icon: "🤔" },
-  { id: "law", name: "Právo", icon: "⚖️" },
-  { id: "medicine", name: "Medicína", icon: "⚕️" },
-  { id: "environment", name: "Životné prostredie", icon: "♻️" },
-  { id: "beauty", name: "Krása a starostlivosť", icon: "💄" },
-  { id: "photography", name: "Fotografia", icon: "📷" },
-  { id: "dance", name: "Tanec", icon: "💃" },
-  { id: "cooking", name: "Kuchárstvo", icon: "👨‍🍳" },
-  { id: "wine", name: "Víno a gastronómia", icon: "🍷" },
-  { id: "coffee", name: "Káva", icon: "☕" },
-  { id: "pets", name: "Domáce zvieratá", icon: "🐕" },
-  { id: "gardening", name: "Záhradníctvo", icon: "🌱" },
-  { id: "diy", name: "DIY a remeslá", icon: "🔨" },
-  { id: "magic", name: "Kúzla a ilúzie", icon: "🎩" },
-  { id: "comics", name: "Komiksy", icon: "💥" },
-  { id: "anime", name: "Anime a manga", icon: "🎌" },
-  { id: "socialMedia", name: "Sociálne siete", icon: "📲" },
-  { id: "brands", name: "Značky a logo", icon: "™️" },
-  { id: "flags", name: "Vlajky a krajiny", icon: "🏁" },
+  { id: "business", name: "Business", icon: "💼" },
+  { id: "psychology", name: "Psychology", icon: "🧠" },
+  { id: "health", name: "Health & Fitness", icon: "💪" },
+  { id: "technology", name: "Technology", icon: "📱" },
+  { id: "science", name: "Science", icon: "🔬" },
+  { id: "politics", name: "Politics", icon: "🏛️" },
+  { id: "economics", name: "Economics", icon: "💰" },
+  { id: "astronomy", name: "Astronomy", icon: "🌟" },
+  { id: "animals", name: "Animals", icon: "🦁" },
+  { id: "architecture", name: "Architecture", icon: "🏗️" },
+  { id: "languages", name: "World Languages", icon: "🗣️" },
+  { id: "mythology", name: "Mythology", icon: "⚡" },
+  { id: "religion", name: "Religions", icon: "🕉️" },
+  { id: "philosophy", name: "Philosophy", icon: "🤔" },
+  { id: "law", name: "Law", icon: "⚖️" },
+  { id: "medicine", name: "Medicine", icon: "⚕️" },
+  { id: "environment", name: "Environment", icon: "♻️" },
+  { id: "beauty", name: "Beauty & Care", icon: "💄" },
+  { id: "photography", name: "Photography", icon: "📷" },
+  { id: "dance", name: "Dance", icon: "💃" },
+  { id: "cooking", name: "Culinary Arts", icon: "👨‍🍳" },
+  { id: "wine", name: "Wine & Gastronomy", icon: "🍷" },
+  { id: "coffee", name: "Coffee", icon: "☕" },
+  { id: "pets", name: "Pets", icon: "🐕" },
+  { id: "gardening", name: "Gardening", icon: "🌱" },
+  { id: "diy", name: "DIY & Crafts", icon: "🔨" },
+  { id: "magic", name: "Magic & Illusions", icon: "🎩" },
+  { id: "comics", name: "Comics", icon: "💥" },
+  { id: "anime", name: "Anime & Manga", icon: "🎌" },
+  { id: "socialMedia", name: "Social Media", icon: "📲" },
+  { id: "brands", name: "Brands & Logos", icon: "™️" },
+  { id: "flags", name: "Flags & Countries", icon: "🏁" },
 ];
 
 const courseCategories = [
   {
-    name: "Ekonomické kurzy",
+    name: "Business Courses",
     icon: "💼",
     courses: [
-      "Základy účtovníctva", "Finančné plánovanie", "Investovanie pre začiatočníkov",
-      "Marketing a reklama", "Podnikanie od A po Z", "E-commerce", 
-      "Manažment projektov", "Business plán", "Analýza trhu", "Osobné financie",
-      "Kryptomeny", "Logistika a dodávateľský reťazec"
+      "Accounting Basics", "Financial Planning", "Investing for Beginners",
+      "Marketing and Advertising", "Entrepreneurship A to Z", "E-commerce", 
+      "Project Management", "Business Plan", "Market Analysis", "Personal Finance",
+      "Cryptocurrency", "Logistics and Supply Chain"
     ]
   },
   {
-    name: "Krása a zdravie",
+    name: "Beauty and Health",
     icon: "💄",
     courses: [
-      "Make-up pre začiatočníkov", "Starostlivosť o pleť", "Manikúra",
-      "Pedikúra", "Styling a móda", "Nechtový dizajn", "Vlasoví styling",
-      "Masáže", "Aromaterapia", "Jóga", "Pilates", "Fitness tréning"
+      "Makeup for Beginners", "Skincare", "Manicure",
+      "Pedicure", "Styling and Fashion", "Nail Design", "Hair Styling",
+      "Massage", "Aromatherapy", "Yoga", "Pilates", "Fitness Training"
     ]
   },
   {
-    name: "Osobnostný rozvoj",
+    name: "Personal Development",
     icon: "🌟",
     courses: [
-      "Time management", "Produktivita", "Mindfulness", "Meditácia",
-      "Stres manažment", "Emocionálna inteligencia", "Komunikácia", "Asertivita",
-      "Public speaking", "Prezentačné zručnosti", "Leadership", "Team building"
+      "Time Management", "Productivity", "Mindfulness", "Meditation",
+      "Stress Management", "Emotional Intelligence", "Communication", "Assertiveness",
+      "Public Speaking", "Presentation Skills", "Leadership", "Team Building"
     ]
   },
   {
-    name: "IT a počítače",
+    name: "IT and Computers",
     icon: "💻",
     courses: [
       "HTML/CSS", "JavaScript", "React", "Python",
@@ -102,21 +102,21 @@ const courseCategories = [
     ]
   },
   {
-    name: "Školstvo",
+    name: "Education",
     icon: "🎓",
     courses: [
-      "Pedagogika", "Didaktika", "Metodika vyučovania", "Psychológia dieťaťa",
-      "Špeciálna pedagogika", "Inkluzívne vzdelávanie", "Montessori metóda", "Waldorfská pedagogika",
-      "Projektové vyučovanie", "Digitálne vzdelávanie", "E-learning tvorba", "Gamifikácia"
+      "Pedagogy", "Didactics", "Teaching Methodology", "Child Psychology",
+      "Special Education", "Inclusive Education", "Montessori Method", "Waldorf Pedagogy",
+      "Project-Based Learning", "Digital Education", "E-learning Creation", "Gamification"
     ]
   },
   {
-    name: "Sociálne odvetvia",
+    name: "Social Services",
     icon: "🤝",
     courses: [
-      "Sociálna práca", "Terénna sociálna práca", "Komunitná práca", "Case management",
-      "Práca s rodinami", "Práca so seniormi", "Práca s mládežou", "Adiktológia a práca so závislosťami",
-      "Sociálna práca s osobami bez domova", "Krízová intervencia", "Domáce násilie", "Supervízia a prevencia vyhorenia"
+      "Social Work", "Field Social Work", "Community Work", "Case Management",
+      "Family Work", "Work with Seniors", "Youth Work", "Addiction and Dependency Work",
+      "Homelessness Social Work", "Crisis Intervention", "Domestic Violence", "Supervision and Burnout Prevention"
     ]
   }
 ];
@@ -147,8 +147,8 @@ export default function Education() {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať správu",
+        title: "Error",
+        description: "Failed to send message",
         variant: "destructive"
       });
     } finally {
@@ -169,10 +169,10 @@ export default function Education() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Vzdelávanie
+            Education
           </h1>
           <p className="text-muted-foreground text-lg">
-            Online doučovanie, kvízy a kurzy pre váš osobný rozvoj
+            Online tutoring, quizzes and courses for your personal development
           </p>
         </div>
 
@@ -180,24 +180,24 @@ export default function Education() {
           <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="tutoring" className="gap-2">
               <Brain className="h-4 w-4" />
-              Doučovanie
+              Tutoring
             </TabsTrigger>
             <TabsTrigger value="quiz" className="gap-2">
               <BookOpen className="h-4 w-4" />
-              Kvíz
+              Quiz
             </TabsTrigger>
             <TabsTrigger value="courses" className="gap-2">
               <GraduationCap className="h-4 w-4" />
-              Kurzy
+              Courses
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="tutoring">
             <Card>
               <CardHeader>
-                <CardTitle>Online Doučovanie</CardTitle>
+                <CardTitle>Online Tutoring</CardTitle>
                 <CardDescription>
-                  Opýtajte sa na čokoľvek a získajte okamžitú odpoveď
+                  Ask anything and get an instant answer
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -205,7 +205,7 @@ export default function Education() {
                   {chatHistory.length === 0 ? (
                     <div className="text-center text-muted-foreground py-12">
                       <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                      <p>Začnite konverzáciu položením otázky</p>
+                      <p>Start a conversation by asking a question</p>
                     </div>
                   ) : (
                     chatHistory.map((msg, idx) => (
@@ -224,13 +224,13 @@ export default function Education() {
                   {isLoading && (
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <p>Učiteľ premýšľa...</p>
+                      <p>Teacher is thinking...</p>
                     </div>
                   )}
                 </div>
                 <div className="flex gap-2">
                   <Textarea
-                    placeholder="Napíšte svoju otázku..."
+                    placeholder="Write your question..."
                     value={chatMessage}
                     onChange={(e) => setChatMessage(e.target.value)}
                     onKeyDown={(e) => {
@@ -263,14 +263,14 @@ export default function Education() {
                       <span className="text-3xl">{category.icon}</span>
                       {category.name}
                     </CardTitle>
-                    <CardDescription>20 otázok</CardDescription>
+                    <CardDescription>20 questions</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button
                       onClick={() => handleStartQuiz(category.id)}
                       className="w-full"
                     >
-                      Štart
+                      Start
                     </Button>
                   </CardContent>
                 </Card>
@@ -288,7 +288,7 @@ export default function Education() {
                       {category.name}
                     </CardTitle>
                     <CardDescription>
-                      {category.courses.length} dostupných kurzov
+                      {category.courses.length} available courses
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
