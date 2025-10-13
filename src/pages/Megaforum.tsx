@@ -336,8 +336,8 @@ const Megaforum = () => {
 
     if (!newPostTitle.trim() || !newPostContent.trim()) {
       toast({
-        title: "Chyba",
-        description: "Vyplňte prosím názov aj obsah príspevku.",
+        title: "Error",
+        description: "Please fill in both the title and content of the post.",
         variant: "destructive"
       });
       return;
@@ -381,13 +381,13 @@ const Megaforum = () => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (diffInSeconds < 60) return "pred chvíľou";
+    if (diffInSeconds < 60) return "just now";
     const diffInMinutes = Math.floor(diffInSeconds / 60);
-    if (diffInMinutes < 60) return `pred ${diffInMinutes} minútami`;
+    if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
     const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `pred ${diffInHours} hodinami`;
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
     const diffInDays = Math.floor(diffInHours / 24);
-    return `pred ${diffInDays} dňami`;
+    return `${diffInDays} days ago`;
   };
 
   const filteredPosts = posts.filter(post => 
@@ -402,13 +402,13 @@ const Megaforum = () => {
         <div className="text-center space-y-4 mb-8">
           <Badge className="bg-gradient-primary text-white">
             <Users className="h-4 w-4 mr-1" />
-            Otvorené pre všetkých
+            Open to Everyone
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Megafórum
+            Megaforum
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Komunita kde sa môže zapojiť každý. Diskutujte, zdieľajte a inšpirujte sa navzájom.
+            A community where everyone can participate. Discuss, share and inspire each other.
           </p>
         </div>
 
@@ -417,7 +417,7 @@ const Megaforum = () => {
           <div className="lg:col-span-1 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Kategórie</CardTitle>
+                <CardTitle className="text-lg">Categories</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 {categories.map((category) => (
@@ -437,13 +437,13 @@ const Megaforum = () => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <TrendingUp className="h-4 w-4" />
-                  Štatistiky
+                  Statistics
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Príspevky:</span>
+                    <span className="text-muted-foreground">Posts:</span>
                     <span className="font-semibold">{posts.length}</span>
                   </div>
                 </div>
@@ -478,12 +478,12 @@ const Megaforum = () => {
                   </div>
                 </div>
                 <Input
-                  placeholder="Názov príspevku..."
+                  placeholder="Post title..."
                   value={newPostTitle}
                   onChange={(e) => setNewPostTitle(e.target.value)}
                 />
                 <Textarea
-                  placeholder="Čo chcete zdieľať s komunitou?"
+                  placeholder="What would you like to share with the community?"
                   className="min-h-32"
                   value={newPostContent}
                   onChange={(e) => setNewPostContent(e.target.value)}
@@ -503,7 +503,7 @@ const Megaforum = () => {
             {/* Forum Posts */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h2 className="text-2xl font-bold">Najnovšie diskusie</h2>
+                <h2 className="text-2xl font-bold">Latest Discussions</h2>
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <div className="relative flex-1 sm:flex-initial sm:w-64">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -515,7 +515,7 @@ const Megaforum = () => {
                     />
                   </div>
                   <Badge variant="secondary">
-                    {filteredPosts.length} príspevkov
+                    {filteredPosts.length} posts
                   </Badge>
                 </div>
               </div>
@@ -557,7 +557,7 @@ const Megaforum = () => {
                                   </Badge>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
-                                  {profile?.full_name || "Používateľ"} • {getTimeSince(post.created_at)}
+                                  {profile?.full_name || "User"} • {getTimeSince(post.created_at)}
                                 </p>
                               </div>
                               {user?.id === post.user_id && (
@@ -575,7 +575,7 @@ const Megaforum = () => {
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                      <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
                                       <AlertDialogAction 
                                         onClick={() => handleDeletePost(post.id)}
                                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
@@ -610,7 +610,7 @@ const Megaforum = () => {
                                     onClick={() => setSelectedPost(post.id)}
                                   >
                                     <Reply className="h-4 w-4 mr-1" />
-                                    {post.replies_count} odpovedí
+                                    {post.replies_count} replies
                                   </Button>
                                 </SheetTrigger>
                                 <SheetContent side="bottom" className="h-[70vh]">
@@ -629,7 +629,7 @@ const Megaforum = () => {
                                               <AvatarFallback>{commentProfile?.full_name?.[0] || "U"}</AvatarFallback>
                                             </Avatar>
                                             <div className="flex-1">
-                                              <p className="text-sm font-semibold">{commentProfile?.full_name || "Používateľ"}</p>
+                                              <p className="text-sm font-semibold">{commentProfile?.full_name || "User"}</p>
                                               <p className="text-sm text-muted-foreground">{comment.content}</p>
                                               <div className="flex items-center gap-3 mt-1">
                                                 <p className="text-xs text-muted-foreground">
