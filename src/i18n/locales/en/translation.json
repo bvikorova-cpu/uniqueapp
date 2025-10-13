@@ -10,6 +10,16 @@
     "services_title_highlight": "services",
     "services_subtitle": "Complete platform for all your needs"
   },
+  "index": {
+    "welcome": "Welcome to Unique",
+    "subtitle": "Your unique social network for unique people"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy",
+    "contact": "Contact"
+  },
   "services": {
     "feed": {
       "title": "Feed",

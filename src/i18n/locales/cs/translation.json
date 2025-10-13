@@ -10,6 +10,16 @@
     "services_title_highlight": "služby",
     "services_subtitle": "Kompletní platforma pro všechny vaše potřeby"
   },
+  "index": {
+    "welcome": "Vítejte v Unique",
+    "subtitle": "Vaše jedinečná sociální síť pro jedinečné lidi"
+  },
+  "footer": {
+    "rights": "Všechna práva vyhrazena.",
+    "terms": "Podmínky použití",
+    "privacy": "Ochrana soukromí",
+    "contact": "Kontakt"
+  },
   "services": {
     "feed": {
       "title": "Feed",

@@ -10,6 +10,16 @@
     "services_title_highlight": "Dienstleistungen",
     "services_subtitle": "Komplette Plattform für alle Ihre Bedürfnisse"
   },
+  "index": {
+    "welcome": "Willkommen bei Unique",
+    "subtitle": "Ihr einzigartiges soziales Netzwerk für einzigartige Menschen"
+  },
+  "footer": {
+    "rights": "Alle Rechte vorbehalten.",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutz",
+    "contact": "Kontakt"
+  },
   "services": {
     "feed": {
       "title": "Feed",
