@@ -197,14 +197,14 @@ const InfluKing = () => {
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
       setShowCreateDialog(false);
       toast({
-        title: "✅ Profil vytvorený",
-        description: "Tvoj influencer profil bol úspešne vytvorený!",
+        title: "✅ Profile Created",
+        description: "Your influencer profile has been successfully created!",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "❌ Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť profil",
+        title: "❌ Error",
+        description: error.message || "Failed to create profile",
         variant: "destructive",
       });
     },
@@ -232,7 +232,7 @@ const InfluKing = () => {
       return publicUrl;
     } catch (error: any) {
       toast({
-        title: "Chyba pri nahrávaní",
+        title: "Upload Error",
         description: error.message,
         variant: "destructive",
       });
@@ -253,8 +253,8 @@ const InfluKing = () => {
     if (url) {
       setNewPost({ ...newPost, media_url: url, media_type: mediaType });
       toast({
-        title: "Súbor nahratý",
-        description: "Môžete pokračovať v pridávaní príspevku",
+        title: "File Uploaded",
+        description: "You can continue adding your post",
       });
     }
   };
@@ -287,8 +287,8 @@ const InfluKing = () => {
         if (url) {
           setNewPost({ ...newPost, media_url: url, media_type: 'video' });
           toast({
-            title: "Nahrávka uložená",
-            description: "Video bolo úspešne nahrané",
+            title: "Recording Saved",
+            description: "Video has been successfully uploaded",
           });
         }
         
@@ -302,7 +302,7 @@ const InfluKing = () => {
       
     } catch (error: any) {
       toast({
-        title: "Chyba kamery",
+        title: "Camera Error",
         description: error.message,
         variant: "destructive",
       });
@@ -338,14 +338,14 @@ const InfluKing = () => {
       setShowPostDialog(false);
       setNewPost({ title: "", content: "", media_url: "", media_type: "image" });
       toast({
-        title: "✅ Príspevok pridaný",
-        description: "Tvoj príspevok bol úspešne zverejnený!",
+        title: "✅ Post Added",
+        description: "Your post has been successfully published!",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "❌ Chyba",
-        description: error.message || "Nepodarilo sa pridať príspevok",
+        title: "❌ Error",
+        description: error.message || "Failed to add post",
         variant: "destructive",
       });
     },
@@ -375,8 +375,8 @@ const InfluKing = () => {
       queryClient.invalidateQueries({ queryKey: ["isFollowing"] });
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
       toast({
-        title: isFollowing ? "❌ Už nesleduješ" : "✅ Sledovanie",
-        description: isFollowing ? "Prestali ste sledovať influencera" : "Teraz sledujete tohto influencera",
+        title: isFollowing ? "❌ Unfollowed" : "✅ Following",
+        description: isFollowing ? "You stopped following this influencer" : "You are now following this influencer",
       });
     },
   });
@@ -422,14 +422,14 @@ const InfluKing = () => {
       <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
         <Card className="max-w-md w-full">
           <CardHeader>
-            <CardTitle>Prihlásenie potrebné</CardTitle>
+            <CardTitle>Login Required</CardTitle>
             <CardDescription>
-              Pre prístup k Influ-King sa musíte prihlásiť
+              You need to log in to access Influ-King
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button className="w-full" onClick={() => window.location.href = "/auth"}>
-              Prihlásiť sa
+              Log In
             </Button>
           </CardContent>
         </Card>
@@ -450,7 +450,7 @@ const InfluKing = () => {
             <Crown className="h-12 w-12 text-yellow-500" />
           </div>
           <p className="text-muted-foreground text-lg mb-6">
-            Staň sa TOP influencerom vo svete!
+            Become a TOP influencer in the world!
           </p>
 
           {myProfile ? (
@@ -459,33 +459,33 @@ const InfluKing = () => {
                 <DialogTrigger asChild>
                   <Button size="lg">
                     <Plus className="h-5 w-5 mr-2" />
-                    Pridať príspevok
+                    Add Post
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle>Nový príspevok</DialogTitle>
+                    <DialogTitle>New Post</DialogTitle>
                     <DialogDescription>
-                      Zverejni nový obsah pre svojich followerov
+                      Publish new content for your followers
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="post-title">Nadpis</Label>
+                      <Label htmlFor="post-title">Title</Label>
                       <Input
                         id="post-title"
                         value={newPost.title}
                         onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-                        placeholder="Zadaj nadpis..."
+                        placeholder="Enter title..."
                       />
                     </div>
                     <div>
-                      <Label htmlFor="post-content">Obsah</Label>
+                      <Label htmlFor="post-content">Content</Label>
                       <Textarea
                         id="post-content"
                         value={newPost.content}
                         onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
-                        placeholder="Napíš niečo zaujímavé..."
+                        placeholder="Write something interesting..."
                         rows={4}
                       />
                     </div>
@@ -512,7 +512,7 @@ const InfluKing = () => {
                             disabled={uploadingMedia}
                           >
                             <Camera className="h-4 w-4 mr-2" />
-                            Spustiť kameru
+                            Start Camera
                           </Button>
                         ) : (
                           <Button
@@ -520,7 +520,7 @@ const InfluKing = () => {
                             variant="destructive"
                             onClick={stopRecording}
                           >
-                            Zastaviť nahrávanie
+                            Stop Recording
                           </Button>
                         )}
                       </div>
@@ -549,21 +549,21 @@ const InfluKing = () => {
                       onClick={() => createPostMutation.mutate()}
                       disabled={createPostMutation.isPending || uploadingMedia || isRecording}
                     >
-                      {uploadingMedia ? "Nahrávam..." : createPostMutation.isPending ? "Pridávam..." : "Zverejniť"}
+                      {uploadingMedia ? "Uploading..." : createPostMutation.isPending ? "Adding..." : "Publish"}
                     </Button>
                   </div>
                 </DialogContent>
               </Dialog>
               <GoLiveButton influencerId={myProfile.id} />
               <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>
-                Môj profil
+                My Profile
               </Button>
               <Button 
                 variant="destructive" 
                 onClick={async () => {
                   if (!myProfile || !user) return;
                   
-                  const confirmDelete = window.confirm('Naozaj chceš vymazať svoj influencer profil? Táto akcia je nevratná.');
+                  const confirmDelete = window.confirm('Do you really want to delete your influencer profile? This action is irreversible.');
                   if (!confirmDelete) return;
                   
                   const { error } = await supabase
@@ -574,21 +574,21 @@ const InfluKing = () => {
                   
                   if (error) {
                     toast({
-                      title: "❌ Chyba",
-                      description: "Nepodarilo sa vymazať profil",
+                      title: "❌ Error",
+                      description: "Failed to delete profile",
                       variant: "destructive",
                     });
                   } else {
                     queryClient.invalidateQueries({ queryKey: ["myInfluencerProfile"] });
                     queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
                     toast({
-                      title: "✅ Profil vymazaný",
-                      description: "Tvoj influencer profil bol odstránený",
+                      title: "✅ Profile Deleted",
+                      description: "Your influencer profile has been removed",
                     });
                   }
                 }}
               >
-                Vymazať profil
+                Delete Profile
               </Button>
             </div>
           ) : (
@@ -596,38 +596,38 @@ const InfluKing = () => {
               <DialogTrigger asChild>
                 <Button size="lg">
                   <Star className="h-5 w-5 mr-2" />
-                  Staň sa influencerom
+                  Become an Influencer
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Vytvor si influencer profil</DialogTitle>
+                  <DialogTitle>Create Your Influencer Profile</DialogTitle>
                   <DialogDescription>
-                    Začni svoju cestu k sláve!
+                    Start your path to fame!
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="name">Meno / Nick *</Label>
+                    <Label htmlFor="name">Name / Nickname *</Label>
                     <Input
                       id="name"
                       value={newProfile.display_name}
                       onChange={(e) => setNewProfile({ ...newProfile, display_name: e.target.value })}
-                      placeholder="napr. @influencer_king"
+                      placeholder="e.g. @influencer_king"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="bio">O mne</Label>
+                    <Label htmlFor="bio">About Me</Label>
                     <Textarea
                       id="bio"
                       value={newProfile.bio}
                       onChange={(e) => setNewProfile({ ...newProfile, bio: e.target.value })}
-                      placeholder="Napíš niečo o sebe..."
+                      placeholder="Write something about yourself..."
                       rows={3}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="category">Kategória *</Label>
+                    <Label htmlFor="category">Category *</Label>
                     <select
                       id="category"
                       value={newProfile.category}
@@ -642,7 +642,7 @@ const InfluKing = () => {
                     </select>
                   </div>
                   <div>
-                    <Label htmlFor="profile-photo">URL profilovej fotky</Label>
+                    <Label htmlFor="profile-photo">Profile Photo URL</Label>
                     <Input
                       id="profile-photo"
                       value={newProfile.profile_photo_url}
@@ -651,7 +651,7 @@ const InfluKing = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="cover-photo">URL cover fotky</Label>
+                    <Label htmlFor="cover-photo">Cover Photo URL</Label>
                     <Input
                       id="cover-photo"
                       value={newProfile.cover_photo_url}
@@ -702,7 +702,7 @@ const InfluKing = () => {
                     onClick={() => createProfileMutation.mutate()}
                     disabled={createProfileMutation.isPending}
                   >
-                    {createProfileMutation.isPending ? "Vytváram..." : "Vytvoriť profil"}
+                    {createProfileMutation.isPending ? "Creating..." : "Create Profile"}
                   </Button>
                 </div>
               </DialogContent>
@@ -765,7 +765,7 @@ const InfluKing = () => {
                         disabled={followMutation.isPending}
                         variant={isFollowing ? "outline" : "default"}
                       >
-                        {isFollowing ? "Už sledujem" : "Sledovať"}
+                        {isFollowing ? "Following" : "Follow"}
                       </Button>
                     )}
 
@@ -789,9 +789,9 @@ const InfluKing = () => {
 
                 {/* Posts */}
                 <div className="mt-6">
-                  <h3 className="text-xl font-bold mb-4">Príspevky</h3>
+                  <h3 className="text-xl font-bold mb-4">Posts</h3>
                   {influencerPosts.length === 0 ? (
-                    <p className="text-center text-muted-foreground py-8">Zatiaľ žiadne príspevky</p>
+                    <p className="text-center text-muted-foreground py-8">No posts yet</p>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {influencerPosts.map((post) => (
@@ -840,21 +840,21 @@ const InfluKing = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-6 w-6 text-yellow-500" />
-                TOP Influenceri
+                TOP Influencers
               </CardTitle>
               <CardDescription>
-                Rebríček najlepších influencerov podľa počtu followerov
+                Leaderboard of top influencers by follower count
               </CardDescription>
             </CardHeader>
             <CardContent>
               {isLoading ? (
                 <div className="text-center py-12">
-                  <p className="text-muted-foreground">Načítavam...</p>
+                  <p className="text-muted-foreground">Loading...</p>
                 </div>
               ) : topInfluencers.length === 0 ? (
                 <div className="text-center py-12">
                   <Camera className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Zatiaľ tu nie sú žiadni influenceri</p>
+                  <p className="text-muted-foreground">No influencers yet</p>
                 </div>
               ) : (
                 <div className="space-y-4">
