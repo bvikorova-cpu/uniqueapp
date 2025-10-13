@@ -1,19 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Copy, Share2, Users, Euro, Gift, TrendingUp } from "lucide-react";
+import { Copy, Share2, Users, Euro, Gift, TrendingUp, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useReferralProgram } from "@/hooks/useReferralProgram";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { formatDistanceToNow } from "date-fns";
+import { sk } from "date-fns/locale";
 
 const Referral = () => {
-  const [referralCode] = useState("MEGA2024XYZ");
-  const [earnings] = useState(45); // Mock earnings
-  const [referrals] = useState(9); // Mock referral count
+  const { stats, loading, refreshStats } = useReferralProgram();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+      setUser(user);
+    };
+    checkUser();
+  }, [navigate]);
 
   const copyReferralCode = () => {
-    navigator.clipboard.writeText(referralCode);
+    if (!stats?.code) return;
+    navigator.clipboard.writeText(stats.code);
     toast({
       title: "Skopírované!",
       description: "Referenčný kód bol skopírovaný do schránky",
@@ -21,8 +38,9 @@ const Referral = () => {
   };
 
   const shareReferral = () => {
-    const shareText = `Pripoj sa k Megatalent a súťaž o 100.000€! Použi môj kód: ${referralCode}`;
-    const shareUrl = `https://megatalent.app/register?ref=${referralCode}`;
+    if (!stats?.code) return;
+    const shareText = `Pripoj sa k Megatalent a súťaž o 100.000€! Použi môj kód: ${stats.code}`;
+    const shareUrl = `${window.location.origin}/auth?ref=${stats.code}`;
     
     if (navigator.share) {
       navigator.share({
@@ -39,11 +57,13 @@ const Referral = () => {
     }
   };
 
-  const recentReferrals = [
-    { name: "Martina K.", date: "pred 2 dňami", earnings: 5, status: "paid" },
-    { name: "Tomáš H.", date: "pred 1 týždňom", earnings: 5, status: "paid" },
-    { name: "Jana S.", date: "pred 2 týždňami", earnings: 5, status: "pending" },
-  ];
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
@@ -79,7 +99,7 @@ const Referral = () => {
                 <div className="flex items-center space-x-4">
                   <div className="flex-1 bg-background/10 rounded-lg p-4">
                     <div className="text-2xl font-mono font-bold tracking-wider">
-                      {referralCode}
+                      {stats?.code || "Načítavam..."}
                     </div>
                   </div>
                   <Button 
@@ -161,30 +181,41 @@ const Referral = () => {
                 <CardTitle>Nedávne pozvánky</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {recentReferrals.map((referral, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-primary-foreground font-bold">
-                          {referral.name.charAt(0)}
+                {stats?.recentReferrals && stats.recentReferrals.length > 0 ? (
+                  <div className="space-y-4">
+                    {stats.recentReferrals.map((referral) => (
+                      <div key={referral.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center text-primary-foreground font-bold">
+                            {referral.profiles?.full_name?.charAt(0) || "?"}
+                          </div>
+                          <div>
+                            <p className="font-semibold">{referral.profiles?.full_name || "Nový používateľ"}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {formatDistanceToNow(new Date(referral.created_at), { 
+                                addSuffix: true,
+                                locale: sk 
+                              })}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-semibold">{referral.name}</p>
-                          <p className="text-sm text-muted-foreground">{referral.date}</p>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-success">+{referral.amount}€</div>
+                          <Badge 
+                            variant={referral.paid ? 'default' : 'secondary'}
+                            className={referral.paid ? 'bg-success' : ''}
+                          >
+                            {referral.paid ? 'Vyplatené' : 'Čaká'}
+                          </Badge>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-lg font-bold text-success">+{referral.earnings}€</div>
-                        <Badge 
-                          variant={referral.status === 'paid' ? 'default' : 'secondary'}
-                          className={referral.status === 'paid' ? 'bg-success' : ''}
-                        >
-                          {referral.status === 'paid' ? 'Vyplatené' : 'Čaká'}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">
+                    Zatiaľ nemáš žiadne úspešné pozvánky
+                  </p>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -201,19 +232,25 @@ const Referral = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center space-y-2">
-                  <div className="text-3xl font-bold text-success">{earnings}€</div>
+                  <div className="text-3xl font-bold text-success">{stats?.totalEarnings.toFixed(2) || 0}€</div>
                   <p className="text-muted-foreground">Celkové zárobky</p>
                 </div>
                 
                 <div className="text-center space-y-2">
-                  <div className="text-3xl font-bold text-primary">{referrals}</div>
+                  <div className="text-3xl font-bold text-primary">{stats?.totalReferrals || 0}</div>
                   <p className="text-muted-foreground">Úspešné pozvánky</p>
                 </div>
                 
-                <Button variant="hero" className="w-full">
-                  <Euro className="h-4 w-4 mr-2" />
-                  Vybrať peniaze
-                </Button>
+                <div className="space-y-2">
+                  <div className="text-center">
+                    <div className="text-xl font-semibold text-gold">{stats?.pendingEarnings.toFixed(2) || 0}€</div>
+                    <p className="text-xs text-muted-foreground">Čaká na výplatu</p>
+                  </div>
+                  <Button variant="hero" className="w-full" disabled={!stats?.pendingEarnings}>
+                    <Euro className="h-4 w-4 mr-2" />
+                    Vybrať peniaze
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -224,31 +261,26 @@ const Referral = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Najlepší refereri tohto mesiaca
+                  </p>
                   {[
-                    { name: "Peter M.", referrals: 23, earnings: 115 },
-                    { name: "Anna K.", referrals: 18, earnings: 90 },
-                    { name: "Michal T.", referrals: 15, earnings: 75 },
-                    { name: "Ty", referrals: referrals, earnings: earnings },
-                  ].sort((a, b) => b.referrals - a.referrals).map((person, index) => (
+                    { name: "Ty", referrals: stats?.totalReferrals || 0, earnings: stats?.totalEarnings || 0, isYou: true },
+                  ].map((person, index) => (
                     <div key={index} className={`flex items-center justify-between p-2 rounded ${
-                      person.name === "Ty" ? "bg-gold/10 border border-gold/20" : ""
+                      person.isYou ? "bg-gold/10 border border-gold/20" : ""
                     }`}>
                       <div className="flex items-center space-x-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                          index === 0 ? 'bg-gold text-gold-foreground' :
-                          index === 1 ? 'bg-gray-400 text-white' :
-                          index === 2 ? 'bg-orange-400 text-white' :
-                          'bg-secondary'
-                        }`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold bg-gold text-gold-foreground`}>
                           {index + 1}
                         </div>
-                        <span className={person.name === "Ty" ? "font-bold" : ""}>
+                        <span className="font-bold">
                           {person.name}
                         </span>
                       </div>
                       <div className="text-right">
                         <div className="font-semibold">{person.referrals}</div>
-                        <div className="text-xs text-muted-foreground">{person.earnings}€</div>
+                        <div className="text-xs text-muted-foreground">{person.earnings.toFixed(2)}€</div>
                       </div>
                     </div>
                   ))}
@@ -268,11 +300,11 @@ const Referral = () => {
                 <div className="w-full bg-gold-foreground/20 rounded-full h-3 mb-2">
                   <div 
                     className="bg-gold-foreground h-3 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min((referrals / 10) * 100, 100)}%` }}
+                    style={{ width: `${Math.min(((stats?.totalReferrals || 0) / 10) * 100, 100)}%` }}
                   ></div>
                 </div>
                 <p className="text-xs text-center">
-                  {referrals}/10 priateľov
+                  {stats?.totalReferrals || 0}/10 priateľov
                 </p>
               </CardContent>
             </Card>
