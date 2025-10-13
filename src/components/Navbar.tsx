@@ -421,12 +421,50 @@ const Navbar = () => {
             <div className="pt-4 space-y-2">
               {user ? (
                 <>
-                  <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
+                  <Link to={`/profile/${user.id}`} onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <UserCircle className="h-4 w-4 mr-2" />
-                      Môj profil
+                      Zobraziť profil
                     </Button>
                   </Link>
+                  <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Upraviť profil
+                    </Button>
+                  </Link>
+                  <Link to="/subscription" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Crown className="h-4 w-4 mr-2" />
+                      Predplatné
+                    </Button>
+                  </Link>
+                  <Link to="/ai-credits" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      AI Kredity
+                    </Button>
+                  </Link>
+                  <Link to="/earnings" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Euro className="h-4 w-4 mr-2" />
+                      Moje zárobky
+                    </Button>
+                  </Link>
+                  <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Kontakt
+                    </Button>
+                  </Link>
+                  {isAdmin && (
+                    <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="ghost" className="w-full justify-start">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Admin Panel
+                      </Button>
+                    </Link>
+                  )}
                   <Button onClick={handleLogout} variant="outline" className="w-full">
                     Odhlásiť sa
                   </Button>
