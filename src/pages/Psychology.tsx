@@ -273,6 +273,10 @@ const Psychology = () => {
     }
   };
 
+  const handleNewSession = () => {
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-6">
       <div className="container mx-auto px-4 max-w-5xl">
@@ -295,9 +299,14 @@ const Psychology = () => {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Brain className="h-5 w-5" />
-                  About the Service
+                <CardTitle className="text-lg flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Brain className="h-5 w-5" />
+                    About the Service
+                  </div>
+                  <Button variant="outline" size="sm" onClick={handleNewSession}>
+                    New
+                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
