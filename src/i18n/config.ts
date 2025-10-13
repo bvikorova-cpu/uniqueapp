@@ -21,6 +21,7 @@ i18n
       es: { translation: es },
       fr: { translation: fr },
     },
+    lng: 'sk', // Predvolený jazyk
     fallbackLng: 'sk',
     interpolation: {
       escapeValue: false,
@@ -28,6 +29,7 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
     },
   });
 
