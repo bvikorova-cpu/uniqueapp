@@ -4,6 +4,527 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
+  "Accounting Basics": [
+    {
+      title: "Topic 1: Introduction to Accounting",
+      content: `**What is Accounting?**
+
+Accounting is the systematic recording, reporting, and analysis of financial transactions of a business. It helps track income, expenses, assets, and liabilities.
+
+**Purpose of Accounting:**
+- Recording all business transactions
+- Preparing financial statements
+- Helping in decision-making
+- Ensuring compliance with laws
+- Providing information to stakeholders
+
+**Who Uses Accounting?**
+- Business owners and managers
+- Investors and shareholders
+- Tax authorities
+- Creditors and lenders
+- Government agencies
+
+**Types of Accounting:**
+
+**1. Financial Accounting:**
+- External reporting
+- Following standards (GAAP, IFRS)
+- Annual financial statements
+
+**2. Management Accounting:**
+- Internal use
+- Planning and budgeting
+- Performance analysis
+
+**3. Tax Accounting:**
+- Tax return preparation
+- Tax planning
+- Compliance with tax laws
+
+**Importance:**
+Accounting is essential for understanding the financial health of a business and making informed decisions.`
+    },
+    {
+      title: "Topic 2: Double-Entry Bookkeeping",
+      content: `**Double-Entry System**
+
+Every transaction affects at least two accounts - one account is debited and another is credited. This ensures the accounting equation remains balanced.
+
+**Accounting Equation:**
+Assets = Liabilities + Equity
+
+**Debit and Credit Rules:**
+
+**Assets:**
+- Debit increases
+- Credit decreases
+
+**Liabilities:**
+- Debit decreases
+- Credit increases
+
+**Equity:**
+- Debit decreases
+- Credit increases
+
+**Revenue:**
+- Debit decreases
+- Credit increases
+
+**Expenses:**
+- Debit increases
+- Credit decreases
+
+**Example Transaction:**
+Company purchases equipment for $5,000 cash.
+- Debit: Equipment $5,000
+- Credit: Cash $5,000
+
+**Benefits of Double-Entry:**
+- Accuracy through balance checking
+- Complete record of transactions
+- Detection of errors
+- Preparation of financial statements
+
+**Journal Entries:**
+All transactions are first recorded in the journal with:
+- Date
+- Accounts affected
+- Debit and credit amounts
+- Brief description`
+    },
+    {
+      title: "Topic 3: Financial Statements",
+      content: `**Main Financial Statements**
+
+**1. Balance Sheet:**
+Shows financial position at a specific date.
+
+**Components:**
+- Assets (what the company owns)
+- Liabilities (what the company owes)
+- Equity (owner's investment)
+
+**2. Income Statement:**
+Shows profitability over a period.
+
+**Components:**
+- Revenue (sales, fees earned)
+- Expenses (costs of doing business)
+- Net Income (profit or loss)
+
+**3. Cash Flow Statement:**
+Shows cash inflows and outflows.
+
+**Categories:**
+- Operating activities
+- Investing activities
+- Financing activities
+
+**4. Statement of Changes in Equity:**
+Shows changes in owner's equity.
+
+**Reading Financial Statements:**
+
+**Liquidity Analysis:**
+- Current ratio
+- Quick ratio
+- Cash ratio
+
+**Profitability Analysis:**
+- Gross profit margin
+- Net profit margin
+- Return on assets
+
+**Importance:**
+Financial statements provide crucial information for investors, creditors, and management to assess company performance.`
+    },
+    {
+      title: "Topic 4: Accounts and Ledgers",
+      content: `**Chart of Accounts**
+
+A systematic listing of all accounts used by a business.
+
+**Categories:**
+
+**1. Assets:**
+- Current assets (cash, receivables)
+- Fixed assets (property, equipment)
+- Intangible assets (patents, goodwill)
+
+**2. Liabilities:**
+- Current liabilities (payables, short-term debt)
+- Long-term liabilities (loans, bonds)
+
+**3. Equity:**
+- Capital
+- Retained earnings
+- Drawings
+
+**4. Revenue:**
+- Sales revenue
+- Service revenue
+- Other income
+
+**5. Expenses:**
+- Cost of goods sold
+- Operating expenses
+- Interest expense
+
+**General Ledger:**
+
+The master record of all accounts.
+
+**Process:**
+1. Transactions recorded in journal
+2. Posted to general ledger
+3. Trial balance prepared
+4. Financial statements created
+
+**Account Format:**
+- T-account format
+- Running balance format
+
+**Posting:**
+Transferring journal entries to ledger accounts.`
+    },
+    {
+      title: "Topic 5: Revenue and Expense Recognition",
+      content: `**Accrual Accounting**
+
+Revenue is recognized when earned, not when cash is received. Expenses are recognized when incurred, not when paid.
+
+**Revenue Recognition Principles:**
+
+**1. When to Recognize:**
+- Performance obligation satisfied
+- Goods delivered or services performed
+- Amount can be measured reliably
+
+**2. Examples:**
+- Sale on credit: recognize immediately
+- Advance payment: recognize when earned
+- Long-term contracts: recognize progressively
+
+**Expense Matching Principle:**
+
+Match expenses with related revenues in the same period.
+
+**Types of Expenses:**
+
+**1. Direct Expenses:**
+- Cost of goods sold
+- Direct labor
+- Direct materials
+
+**2. Indirect Expenses:**
+- Rent
+- Utilities
+- Salaries
+- Depreciation
+
+**Adjusting Entries:**
+
+**Prepaid Expenses:**
+- Insurance paid in advance
+- Prepaid rent
+
+**Accrued Expenses:**
+- Salaries payable
+- Interest payable
+
+**Unearned Revenue:**
+- Advance payments received
+- Deferred revenue
+
+**Accrued Revenue:**
+- Services performed but not billed
+- Interest receivable`
+    },
+    {
+      title: "Topic 6: Inventory Accounting",
+      content: `**Inventory Valuation Methods**
+
+**1. FIFO (First-In, First-Out):**
+- Oldest items sold first
+- Ending inventory at recent costs
+- Higher profits in rising prices
+
+**2. LIFO (Last-In, First-Out):**
+- Newest items sold first
+- Ending inventory at older costs
+- Lower profits in rising prices
+- Not allowed under IFRS
+
+**3. Weighted Average:**
+- Average cost of all units
+- Smooths price fluctuations
+- Simple to calculate
+
+**Inventory Systems:**
+
+**Periodic System:**
+- Count inventory periodically
+- Calculate COGS at period end
+- Simpler for small businesses
+
+**Perpetual System:**
+- Continuous tracking
+- Real-time inventory records
+- Better control and accuracy
+
+**Cost Components:**
+
+**Purchase Cost:**
+- Invoice price
+- Transportation costs
+- Import duties
+- Less: trade discounts
+
+**Lower of Cost or Market:**
+Write down inventory if market value falls below cost.
+
+**Inventory Turnover:**
+= Cost of Goods Sold / Average Inventory
+Measures how quickly inventory is sold.`
+    },
+    {
+      title: "Topic 7: Depreciation",
+      content: `**What is Depreciation?**
+
+Systematic allocation of an asset's cost over its useful life.
+
+**Factors:**
+- Cost of asset
+- Estimated useful life
+- Estimated salvage value
+
+**Depreciation Methods:**
+
+**1. Straight-Line Method:**
+Annual Depreciation = (Cost - Salvage Value) / Useful Life
+
+**Example:**
+- Cost: $10,000
+- Salvage: $1,000
+- Life: 5 years
+- Annual depreciation: $1,800
+
+**2. Declining Balance Method:**
+Higher depreciation in early years.
+
+**Formula:**
+Depreciation = Book Value × Depreciation Rate
+
+**3. Units of Production:**
+Based on actual usage.
+
+**Formula:**
+Depreciation per unit = (Cost - Salvage) / Total units
+Annual depreciation = Units produced × Rate
+
+**Recording Depreciation:**
+
+**Journal Entry:**
+- Debit: Depreciation Expense
+- Credit: Accumulated Depreciation
+
+**Balance Sheet Presentation:**
+Equipment $10,000
+Less: Accumulated Depreciation ($3,600)
+Net Book Value $6,400
+
+**Impact:**
+- Reduces net income
+- Does not affect cash
+- Reduces asset value
+- Tax deductible`
+    },
+    {
+      title: "Topic 8: Bank Reconciliation",
+      content: `**Purpose of Bank Reconciliation**
+
+Matching the bank statement balance with the cash book balance.
+
+**Reasons for Differences:**
+
+**1. Timing Differences:**
+- Outstanding checks
+- Deposits in transit
+- Bank charges not recorded
+- Interest earned not recorded
+
+**2. Errors:**
+- Recording errors in books
+- Bank errors
+
+**Reconciliation Process:**
+
+**Step 1: Start with Bank Balance**
+Add: Deposits in transit
+Less: Outstanding checks
+= Adjusted Bank Balance
+
+**Step 2: Start with Book Balance**
+Add: Bank credits not recorded
+Less: Bank charges not recorded
+= Adjusted Book Balance
+
+**Both should match!**
+
+**Common Items:**
+
+**Bank Side:**
+- Outstanding checks
+- Deposits not yet credited
+
+**Book Side:**
+- NSF (bounced) checks
+- Bank service charges
+- Direct deposits
+- Electronic transfers
+- Interest earned
+
+**Adjusting Entries:**
+Make journal entries for items affecting book balance.
+
+**Example Entry:**
+Debit: Cash $50 (interest earned)
+Credit: Interest Income $50
+
+**Importance:**
+- Ensures accuracy
+- Detects errors and fraud
+- Proper cash management`
+    },
+    {
+      title: "Topic 9: Payroll Accounting",
+      content: `**Payroll Components**
+
+**Gross Pay:**
+Total earnings before deductions.
+
+**Types:**
+- Hourly wages
+- Salaries
+- Overtime
+- Bonuses
+- Commissions
+
+**Deductions:**
+
+**1. Mandatory:**
+- Income tax withholding
+- Social security tax
+- Medicare tax
+- State taxes
+
+**2. Voluntary:**
+- Health insurance
+- Retirement contributions
+- Life insurance
+- Union dues
+
+**Net Pay:**
+Gross pay minus all deductions.
+
+**Employer Payroll Taxes:**
+
+**Additional Costs:**
+- Employer portion of social security
+- Employer portion of Medicare
+- Unemployment taxes
+- Workers' compensation
+
+**Recording Payroll:**
+
+**Employee Compensation:**
+Debit: Salaries Expense
+Credit: Salaries Payable
+Credit: Various tax withholdings
+
+**Employer Taxes:**
+Debit: Payroll Tax Expense
+Credit: Various tax payables
+
+**Payment:**
+Debit: Salaries Payable
+Credit: Cash
+
+**Payroll Records:**
+- Employee earnings record
+- Payroll register
+- Tax forms (W-2, 1099)
+
+**Compliance:**
+- Timely tax deposits
+- Quarterly reports
+- Annual filings
+- Record retention`
+    },
+    {
+      title: "Topic 10: Financial Analysis and Ratios",
+      content: `**Financial Ratio Analysis**
+
+**Liquidity Ratios:**
+
+**1. Current Ratio:**
+= Current Assets / Current Liabilities
+Measures ability to pay short-term obligations.
+Good ratio: 2:1 or higher
+
+**2. Quick Ratio (Acid Test):**
+= (Current Assets - Inventory) / Current Liabilities
+More conservative measure.
+Good ratio: 1:1 or higher
+
+**Profitability Ratios:**
+
+**1. Gross Profit Margin:**
+= (Gross Profit / Sales) × 100
+Shows pricing power and efficiency.
+
+**2. Net Profit Margin:**
+= (Net Income / Sales) × 100
+Overall profitability measure.
+
+**3. Return on Assets (ROA):**
+= Net Income / Total Assets
+How efficiently assets generate profit.
+
+**4. Return on Equity (ROE):**
+= Net Income / Shareholders' Equity
+Return to investors.
+
+**Efficiency Ratios:**
+
+**1. Inventory Turnover:**
+= Cost of Goods Sold / Average Inventory
+How fast inventory sells.
+
+**2. Accounts Receivable Turnover:**
+= Net Credit Sales / Average Accounts Receivable
+Collection efficiency.
+
+**Leverage Ratios:**
+
+**1. Debt-to-Equity:**
+= Total Debt / Total Equity
+Financial leverage measure.
+
+**2. Debt Ratio:**
+= Total Debt / Total Assets
+Proportion of assets financed by debt.
+
+**Interpretation:**
+- Compare with industry averages
+- Track trends over time
+- Consider company's business model
+- Look at ratios in combination`
+    }
+  ],
+
   "PHP": [
     {
       title: "Topic 1: Introduction to PHP - What is PHP?",
