@@ -116,7 +116,7 @@ import tropicalParadiseImg from "@/assets/effects/tropical-paradise.jpg";
 import northernLightsImg from "@/assets/effects/northern-lights.jpg";
 import shootingStarImg from "@/assets/effects/shooting-star.jpg";
 import crownJewelsImg from "@/assets/effects/crown-jewels.jpg";
-import robotDanceImg from "@/assets/effects/robot-dance.jpg";
+import kawaiianimeImg from "@/assets/effects/kawaii-anime.jpg";
 import underwaterDreamImg from "@/assets/effects/underwater-dream.jpg";
 import goldenTouchImg from "@/assets/effects/golden-touch.jpg";
 import timeTravelerImg from "@/assets/effects/time-traveler.jpg";
@@ -299,7 +299,7 @@ const aiEffects: AIEffect[] = [
   { id: "crown-jewels", name: "Crown Jewels", category: "appearance", image: crownJewelsImg, description: "Korunové klenoty" },
   
   // Nové efekty - 30 nových
-  { id: "robot-dance", name: "Robot Dance", category: "dance", image: robotDanceImg, description: "Robotický tanec", isHot: true },
+  { id: "kawaii-anime", name: "Kawaii Anime", category: "appearance", image: kawaiianimeImg, description: "Roztomilé anime", isHot: true },
   { id: "underwater-dream", name: "Underwater Dream", category: "fanciful", image: underwaterDreamImg, description: "Podmorský sen" },
   { id: "golden-touch", name: "Golden Touch", category: "fanciful", image: goldenTouchImg, description: "Zlatý dotyk", isHot: true },
   { id: "time-traveler", name: "Time Traveler", category: "heroes", image: timeTravelerImg, description: "Cestovateľ časom" },

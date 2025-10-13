@@ -142,7 +142,7 @@ serve(async (req) => {
       'sugar-skull': 'Transform into Mexican Día de los Muertos sugar skull with colorful floral patterns and traditional calavera design',
       'gothic-castle': 'Place person in front of dark Gothic castle with spires, gargoyles, misty atmosphere, and medieval fortress',
       'medusa-gaze': 'Transform hair into writhing snakes like Medusa with serpent hair and mythological Greek monster appearance',
-      'robot-dance': 'Transform into dancing robot with mechanical movements, LED lights, and electronic dance aesthetic',
+      'kawaii-anime': 'Transform into adorable kawaii anime style with big sparkling eyes, cute chibi proportions, pastel colors, and Japanese manga aesthetic',
       'underwater-dream': 'Create underwater scene with swimming motion, bubbles, coral reef, and oceanic dreamscape',
       'golden-touch': 'Transform into solid gold statue with shiny metallic golden surface like King Midas touch effect',
       'time-traveler': 'Add time travel effects with clock gears, temporal distortion, and sci-fi time machine aesthetic',
