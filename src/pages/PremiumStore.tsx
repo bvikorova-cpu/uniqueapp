@@ -258,19 +258,32 @@ const PremiumStore = () => {
           {/* Premium Themes */}
           <TabsContent value="themes" className="mt-6">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {themes.map((theme) => {
+              {themes.map((theme, index) => {
                 const owned = userThemes.some(ut => ut.theme_id === theme.id);
+                const themeGradients = [
+                  'from-purple-500 via-pink-500 to-red-500',
+                  'from-blue-500 via-cyan-500 to-teal-500',
+                  'from-orange-500 via-red-500 to-pink-500',
+                  'from-green-500 via-emerald-500 to-teal-500',
+                  'from-indigo-500 via-purple-500 to-pink-500',
+                  'from-yellow-500 via-orange-500 to-red-500'
+                ];
+                const gradient = themeGradients[index % themeGradients.length];
+                
                 return (
                   <Card key={theme.id} className={owned ? 'ring-2 ring-primary' : ''}>
                     <CardHeader>
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center">
-                          <Palette className="h-6 w-6 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{theme.name}</CardTitle>
+                      <div className="mb-3">
+                        <div className={`h-32 rounded-lg bg-gradient-to-br ${gradient} relative overflow-hidden`}>
+                          <div className="absolute inset-0 bg-black/20" />
+                          <div className="absolute bottom-2 left-2 right-2">
+                            <div className="bg-white/90 backdrop-blur-sm rounded px-2 py-1 text-xs font-medium text-gray-900">
+                              Theme Preview
+                            </div>
+                          </div>
                         </div>
                       </div>
+                      <CardTitle className="text-lg">{theme.name}</CardTitle>
                       <CardDescription>{theme.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
