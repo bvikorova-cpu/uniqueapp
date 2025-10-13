@@ -63,7 +63,63 @@ const quizCategories = [
   { id: "flags", name: "Flags & Countries", icon: "🏁" },
 ];
 
-const courseCategories: Array<{name: string; icon: string; courses: string[]}> = [];
+const courseCategories = [
+  {
+    name: "Business & Finance",
+    icon: "💼",
+    courses: [
+      "Digital Marketing Mastery",
+      "Financial Planning Essentials",
+      "Entrepreneurship 101",
+      "E-commerce Success",
+      "Investment Strategies"
+    ]
+  },
+  {
+    name: "Technology & Programming",
+    icon: "💻",
+    courses: [
+      "Web Development Fundamentals",
+      "Python Programming",
+      "Data Science Basics",
+      "Mobile App Development",
+      "Cybersecurity Essentials"
+    ]
+  },
+  {
+    name: "Health & Wellness",
+    icon: "💪",
+    courses: [
+      "Nutrition and Diet Planning",
+      "Fitness Training",
+      "Mental Health Awareness",
+      "Yoga and Mindfulness",
+      "Stress Management"
+    ]
+  },
+  {
+    name: "Personal Development",
+    icon: "🌟",
+    courses: [
+      "Time Management Mastery",
+      "Public Speaking",
+      "Leadership Skills",
+      "Emotional Intelligence",
+      "Goal Setting and Achievement"
+    ]
+  },
+  {
+    name: "Creative Arts",
+    icon: "🎨",
+    courses: [
+      "Photography Basics",
+      "Graphic Design",
+      "Creative Writing",
+      "Music Production",
+      "Digital Illustration"
+    ]
+  }
+];
 
 export default function Education() {
   const navigate = useNavigate();

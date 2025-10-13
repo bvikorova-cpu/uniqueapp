@@ -4,1254 +4,793 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
-  "Základy účtovníctva": [
+  "Digital Marketing Mastery": [
     {
-      title: "Téma 1: Úvod do účtovníctva",
-      content: `**Čo je účtovníctvo?**
+      title: "Topic 1: Introduction to Digital Marketing",
+      content: `**What is Digital Marketing?**
 
-Účtovníctvo je systematický proces evidovania, spracovania a vykazovania finančných transakcií podniku. Pomáha sledovať príjmy, výdavky, aktíva a záväzky.
+Digital marketing encompasses all marketing efforts that use electronic devices and the internet. It's how businesses connect with customers where they spend most of their time - online.
 
-**Účel účtovníctva:**
-- Evidencia všetkých obchodných transakcií
-- Príprava finančných výkazov
-- Pomoc pri rozhodovaní
-- Zabezpečenie dodržiavania zákonov
-- Poskytovanie informácií zainteresovaným stranám
+**Key Components:**
+- Search Engine Optimization (SEO)
+- Social Media Marketing
+- Email Marketing
+- Content Marketing
+- Pay-Per-Click Advertising (PPC)
+- Affiliate Marketing
+- Mobile Marketing
 
-**Kto používa účtovníctvo?**
-- Majitelia a manažéri podnikov
-- Investori a akcionári
-- Daňové úrady
-- Veritelia a poskytovatelia úverov
-- Štátne inštitúcie
+**Why Digital Marketing Matters:**
+- Cost-effective compared to traditional marketing
+- Measurable results and ROI
+- Precise targeting capabilities
+- Global reach
+- Real-time engagement with customers
 
-**Typy účtovníctva:**
+**Digital Marketing vs Traditional Marketing:**
+- Two-way communication vs one-way
+- Trackable metrics vs difficult measurement
+- Lower costs vs higher costs
+- Instant feedback vs delayed results
 
-**1. Finančné účtovníctvo:**
-- Externé výkazníctvo
-- Dodržiavanie štandardov
-- Ročné finančné výkazy
-
-**2. Manažérske účtovníctvo:**
-- Vnútorné použitie
-- Plánovanie a rozpočtovanie
-- Analýza výkonnosti
-
-**3. Daňové účtovníctvo:**
-- Príprava daňových priznaní
-- Daňové plánovanie
-- Dodržiavanie daňových zákonov
-
-**Význam:**
-Účtovníctvo je nevyhnutné pre pochopenie finančného zdravia podniku a prijímanie informovaných rozhodnutí.`
+**Career Opportunities:**
+Digital marketing opens doors to roles like SEO specialist, content strategist, social media manager, and digital marketing analyst.`
     },
     {
-      title: "Téma 2: Podvojné účtovníctvo",
-      content: `**Systém podvojného účtovníctva**
+      title: "Topic 2: Search Engine Optimization (SEO)",
+      content: `**Understanding SEO**
 
-Každá transakcia ovplyvňuje minimálne dva účty - jeden účet sa účtuje na ťarchu (MD) a druhý na dobropisu (D). Toto zabezpečuje, že účtovná rovnica zostáva v rovnováhe.
+SEO is the practice of optimizing your website to rank higher in search engine results pages (SERPs), increasing organic (non-paid) traffic.
 
-**Účtovná rovnica:**
-Aktíva = Pasíva + Vlastné imanie
+**Types of SEO:**
 
-**Pravidlá účtovania na MD a D:**
+**1. On-Page SEO:**
+- Keyword optimization
+- Meta tags and descriptions
+- Header tags (H1, H2, H3)
+- URL structure
+- Internal linking
+- Image alt text
+- Page speed optimization
 
-**Aktíva:**
-- MD zvyšuje
-- D znižuje
+**2. Off-Page SEO:**
+- Backlink building
+- Social media signals
+- Brand mentions
+- Guest posting
+- Influencer outreach
 
-**Pasíva:**
-- MD znižuje
-- D zvyšuje
+**3. Technical SEO:**
+- Site architecture
+- Mobile responsiveness
+- SSL certificates
+- XML sitemaps
+- Robots.txt files
+- Structured data markup
 
-**Vlastné imanie:**
-- MD znižuje
-- D zvyšuje
+**Keyword Research:**
+- Identify search terms your audience uses
+- Analyze search volume and competition
+- Focus on long-tail keywords
+- Use tools like Google Keyword Planner
 
-**Výnosy:**
-- MD znižuje
-- D zvyšuje
-
-**Náklady:**
-- MD zvyšuje
-- D znižuje
-
-**Príklad transakcie:**
-Spoločnosť zakúpila zariadenie za 5 000 € v hotovosti.
-- MD: Zariadenie 5 000 €
-- D: Pokladňa 5 000 €
-
-**Výhody podvojného účtovníctva:**
-- Presnosť kontrolou rovnováhy
-- Úplný záznam transakcií
-- Odhalenie chýb
-- Príprava finančných výkazov
-
-**Účtovné zápisy:**
-Všetky transakcie sa najskôr zaznamenávajú do denníka s uvedením:
-- Dátumu
-- Dotknutých účtov
-- Súm na MD a D
-- Stručného popisu`
+**SEO Best Practices:**
+- Create high-quality, relevant content
+- Optimize for user experience
+- Build authoritative backlinks
+- Keep content fresh and updated
+- Monitor analytics and adjust strategy`
     },
     {
-      title: "Téma 3: Finančné výkazy",
-      content: `**Hlavné finančné výkazy**
+      title: "Topic 3: Social Media Marketing",
+      content: `**Social Media Platforms Overview**
 
-**1. Súvaha (Bilancia):**
-Zobrazuje finančnú pozíciu k určitému dátumu.
+Each platform serves different purposes and audiences. Understanding these differences is crucial for success.
 
-**Zložky:**
-- Aktíva (čo spoločnosť vlastní)
-- Pasíva (čo spoločnosť dlhuje)
-- Vlastné imanie (investícia vlastníka)
+**Major Platforms:**
 
-**2. Výkaz ziskov a strát:**
-Zobrazuje ziskovosť za obdobie.
+**Facebook:**
+- 2.9+ billion users
+- Great for community building
+- Effective paid advertising
+- Best for B2C marketing
 
-**Zložky:**
-- Výnosy (tržby, poplatky)
-- Náklady (náklady na podnikanie)
-- Čistý zisk (zisk alebo strata)
+**Instagram:**
+- Visual storytelling platform
+- Younger demographic
+- Stories and Reels for engagement
+- Influencer partnerships
 
-**3. Výkaz peňažných tokov:**
-Zobrazuje prílevy a odlevy peňazí.
+**LinkedIn:**
+- Professional networking
+- B2B marketing excellence
+- Thought leadership content
+- Lead generation
 
-**Kategórie:**
-- Prevádzkové činnosti
-- Investičné činnosti
-- Finančné činnosti
+**Twitter/X:**
+- Real-time conversations
+- News and trending topics
+- Customer service
+- Brand personality
 
-**4. Výkaz zmien vlastného imania:**
-Zobrazuje zmeny vo vlastnom imaní.
+**TikTok:**
+- Short-form video content
+- Gen Z and millennials
+- Viral potential
+- Creative storytelling
 
-**Čítanie finančných výkazov:**
+**Social Media Strategy:**
 
-**Analýza likvidity:**
-- Bežný pomer
-- Rýchly pomer
-- Peňažný pomer
+**1. Define Goals:**
+- Brand awareness
+- Lead generation
+- Customer engagement
+- Sales conversion
 
-**Analýza ziskovosti:**
-- Hrubá zisková marža
-- Čistá zisková marža
-- Rentabilita aktív
+**2. Know Your Audience:**
+- Demographics
+- Interests and behaviors
+- Pain points
+- Platform preferences
 
-**Význam:**
-Finančné výkazy poskytujú dôležité informácie pre investorov, veriteľov a manažment na posúdenie výkonnosti spoločnosti.`
+**3. Content Planning:**
+- Content calendar
+- Mix of content types
+- Consistent posting schedule
+- Engaging visuals
+
+**4. Engagement:**
+- Respond to comments
+- Ask questions
+- Run contests
+- User-generated content
+
+**5. Analytics:**
+- Track key metrics
+- A/B testing
+- Adjust strategy based on data`
     },
     {
-      title: "Téma 4: Účty a účtovné knihy",
-      content: `**Účtový rozvrh**
+      title: "Topic 4: Content Marketing",
+      content: `**The Power of Content**
 
-Systematický zoznam všetkých účtov používaných podnikom.
+Content marketing focuses on creating and distributing valuable, relevant content to attract and retain a clearly defined audience.
 
-**Kategórie:**
+**Types of Content:**
 
-**1. Aktíva:**
-- Obežné aktíva (pokladňa, pohľadávky)
-- Dlhodobý majetok (nehnuteľnosti, zariadenia)
-- Nehmotný majetok (patenty, goodwill)
+**1. Blog Posts:**
+- Educational articles
+- How-to guides
+- Industry insights
+- Case studies
 
-**2. Pasíva:**
-- Krátkodobé záväzky (záväzky, krátkodobé úvery)
-- Dlhodobé záväzky (úvery, dlhopisy)
+**2. Videos:**
+- Tutorials
+- Product demonstrations
+- Behind-the-scenes
+- Customer testimonials
 
-**3. Vlastné imanie:**
-- Základné imanie
-- Nerozdelený zisk
-- Výbery
+**3. Infographics:**
+- Visual data representation
+- Step-by-step processes
+- Statistics and facts
 
-**4. Výnosy:**
-- Tržby z predaja
-- Tržby zo služieb
-- Ostatné výnosy
+**4. Podcasts:**
+- Industry discussions
+- Expert interviews
+- Educational series
 
-**5. Náklady:**
-- Náklady na predaný tovar
-- Prevádzkové náklady
-- Úrokové náklady
+**5. E-books and Whitepapers:**
+- In-depth guides
+- Research reports
+- Lead magnets
 
-**Hlavná kniha:**
+**Content Creation Process:**
 
-Hlavný záznam všetkých účtov.
+**1. Research:**
+- Understand your audience
+- Identify pain points
+- Analyze competitors
+- Find content gaps
 
-**Proces:**
-1. Transakcie zaznamenané v denníku
-2. Zaúčtované do hlavnej knihy
-3. Pripravená súhrnná bilancia
-4. Vytvorené finančné výkazy
+**2. Planning:**
+- Editorial calendar
+- Content themes
+- Distribution channels
+- Resource allocation
 
-**Formát účtu:**
-- T-účet formát
-- Formát bežného zostatku
+**3. Creation:**
+- Write compelling headlines
+- Use storytelling
+- Include visuals
+- Optimize for SEO
 
-**Zaúčtovanie:**
-Prenos denníkových zápisov na účty hlavnej knihy.`
+**4. Distribution:**
+- Email newsletters
+- Social media sharing
+- Guest posting
+- Content syndication
+
+**5. Promotion:**
+- Paid advertising
+- Influencer partnerships
+- Social media campaigns
+
+**Measuring Success:**
+- Traffic and engagement
+- Lead generation
+- Conversion rates
+- Social shares
+- Time on page`
     },
     {
-      title: "Téma 5: Uznávanie výnosov a nákladov",
-      content: `**Akruálne účtovníctvo**
+      title: "Topic 5: Email Marketing",
+      content: `**Email Marketing Fundamentals**
 
-Výnosy sa uznávajú, keď sú zarobené, nie keď sú prijaté peniaze. Náklady sa uznávajú, keď vzniknú, nie keď sú zaplatené.
+Despite being one of the oldest digital marketing channels, email remains one of the most effective with an average ROI of $42 for every $1 spent.
 
-**Princípy uznávania výnosov:**
+**Building Your Email List:**
 
-**1. Kedy uznať:**
-- Splnený výkonový záväzok
-- Dodaný tovar alebo poskytnuté služby
-- Suma je spoľahlivo merateľná
+**1. Lead Magnets:**
+- Free e-books
+- Discount codes
+- Webinars
+- Templates and tools
+- Exclusive content
 
-**2. Príklady:**
-- Predaj na úver: uznať okamžite
-- Platba vopred: uznať pri zarobení
-- Dlhodobé zmluvy: uznať postupne
+**2. Signup Forms:**
+- Website pop-ups
+- Landing pages
+- Social media
+- Checkout process
 
-**Princíp priraďovania nákladov:**
+**Types of Email Campaigns:**
 
-Priraďovanie nákladov k súvisiacim výnosom v rovnakom období.
+**1. Welcome Series:**
+- Introduce your brand
+- Set expectations
+- Deliver lead magnet
+- First purchase incentive
 
-**Typy nákladov:**
+**2. Newsletter:**
+- Regular updates
+- Curated content
+- Company news
+- Industry insights
 
-**1. Priame náklady:**
-- Náklady na predaný tovar
-- Priama práca
-- Priame materiály
+**3. Promotional:**
+- Sales announcements
+- Limited-time offers
+- New product launches
+- Seasonal campaigns
 
-**2. Nepriame náklady:**
-- Nájomné
-- Energie
-- Mzdy
-- Odpisy
+**4. Transactional:**
+- Order confirmations
+- Shipping notifications
+- Password resets
+- Account updates
 
-**Úpravy účtov:**
+**5. Re-engagement:**
+- Win back inactive subscribers
+- Special offers
+- Survey requests
+- Update preferences
 
-**Vopred platené náklady:**
-- Vopred platené poistenie
-- Vopred platené nájomné
+**Email Best Practices:**
 
-**Časovo rozlíšené náklady:**
-- Mzdy na úhradu
-- Úroky na úhradu
+**Subject Lines:**
+- Keep under 50 characters
+- Create urgency
+- Personalize when possible
+- A/B test different versions
 
-**Výnosy budúcich období:**
-- Prijaté zálohy
-- Odložené výnosy
+**Email Content:**
+- Mobile-responsive design
+- Clear call-to-action
+- Scannable formatting
+- Relevant images
+- Personalization
 
-**Časovo rozlíšené výnosy:**
-- Poskytnuté služby, ale nefakturované
-- Úroky na prijatie`
+**Timing:**
+- Test send times
+- Consider time zones
+- Avoid weekends (for B2B)
+- Consistent schedule
+
+**Compliance:**
+- Include unsubscribe link
+- Honor opt-out requests
+- Follow GDPR/CAN-SPAM
+- Maintain clean lists`
     },
     {
-      title: "Téma 6: Oceňovanie zásob",
-      content: `**Metódy oceňovania zásob**
+      title: "Topic 6: Pay-Per-Click Advertising (PPC)",
+      content: `**Understanding PPC**
 
-**1. FIFO (First-In, First-Out):**
-- Prvé položky sa predajú ako prvé
-- Konečné zásoby v aktuálnych nákladoch
-- Vyššie zisky pri rastúcich cenách
+PPC is an advertising model where advertisers pay each time a user clicks on their ads. It's a way to buy visits to your site rather than earning them organically.
 
-**2. LIFO (Last-In, First-Out):**
-- Najnovšie položky sa predajú ako prvé
-- Konečné zásoby v starších nákladoch
-- Nižšie zisky pri rastúcich cenách
-- Nie je povolené podľa IFRS
+**Major PPC Platforms:**
 
-**3. Vážený priemer:**
-- Priemerné náklady všetkých jednotiek
-- Vyrovnáva kolísanie cien
-- Jednoduché na výpočet
+**Google Ads:**
+- Search network ads
+- Display network ads
+- Shopping ads
+- Video ads (YouTube)
+- App campaigns
 
-**Systémy evidencie zásob:**
+**Facebook/Instagram Ads:**
+- Feed ads
+- Stories ads
+- Messenger ads
+- Audience Network
 
-**Periodický systém:**
-- Inventúra zásob periodicky
-- Výpočet nákladov na konci obdobia
-- Jednoduchšie pre malé podniky
+**LinkedIn Ads:**
+- Sponsored content
+- Message ads
+- Dynamic ads
+- Text ads
 
-**Perpetuálny systém:**
-- Kontinuálne sledovanie
-- Záznamy v reálnom čase
-- Lepšia kontrola a presnosť
+**PPC Campaign Structure:**
 
-**Komponenty nákladov:**
+**1. Campaign Level:**
+- Budget allocation
+- Geographic targeting
+- Device targeting
+- Schedule
 
-**Nákupné náklady:**
-- Faktúrna cena
-- Prepravné náklady
-- Dovozné clá
-- Mínus: obchodné zľavy
+**2. Ad Group Level:**
+- Keyword themes
+- Ad variations
+- Bidding strategy
 
-**Ocenenie na nižšiu hodnotu:**
-Odpísať zásoby, ak trhová hodnota klesne pod náklady.
+**3. Ad Level:**
+- Headlines
+- Descriptions
+- Display URLs
+- Extensions
 
-**Obrat zásob:**
-= Náklady na predaný tovar / Priemerné zásoby
-Meria, ako rýchlo sa zásoby predávajú.`
+**Keyword Strategy:**
+
+**Match Types:**
+- Broad match
+- Phrase match
+- Exact match
+- Negative keywords
+
+**Quality Score:**
+Factors affecting your score:
+- Click-through rate (CTR)
+- Ad relevance
+- Landing page experience
+- Historical account performance
+
+**Ad Copy Best Practices:**
+- Include target keywords
+- Highlight unique selling points
+- Strong call-to-action
+- Use ad extensions
+- A/B test variations
+
+**Landing Page Optimization:**
+- Message match with ad
+- Clear headline
+- Compelling visuals
+- Single call-to-action
+- Fast loading speed
+- Mobile optimization
+
+**Budget Management:**
+- Start small and scale
+- Monitor daily spend
+- Adjust bids based on performance
+- Use automated bidding strategies
+- Track conversions not just clicks`
     },
     {
-      title: "Téma 7: Odpisy",
-      content: `**Čo sú odpisy?**
+      title: "Topic 7: Analytics and Data-Driven Marketing",
+      content: `**The Importance of Analytics**
 
-Systematické rozloženie nákladov na majetok počas jeho životnosti.
+Data-driven marketing uses customer data to optimize marketing strategies and measure campaign effectiveness.
 
-**Faktory:**
-- Náklady na majetok
-- Odhadovaná životnosť
-- Odhadovaná zostatková hodnota
+**Key Metrics to Track:**
 
-**Metódy odpisovania:**
+**Website Metrics:**
+- Traffic sources
+- Page views
+- Bounce rate
+- Average session duration
+- Pages per session
+- Conversion rate
 
-**1. Rovnomerné odpisy:**
-Ročný odpis = (Náklady - Zostatková hodnota) / Životnosť
+**Social Media Metrics:**
+- Reach and impressions
+- Engagement rate
+- Click-through rate
+- Follower growth
+- Share of voice
 
-**Príklad:**
-- Náklady: 10 000 €
-- Zostatková: 1 000 €
-- Životnosť: 5 rokov
-- Ročný odpis: 1 800 €
+**Email Metrics:**
+- Open rate
+- Click-through rate
+- Conversion rate
+- Unsubscribe rate
+- List growth rate
 
-**2. Zrýchlené odpisy:**
-Vyššie odpisy v prvých rokoch.
+**Paid Advertising Metrics:**
+- Cost per click (CPC)
+- Cost per acquisition (CPA)
+- Return on ad spend (ROAS)
+- Quality score
+- Impression share
 
-**Vzorec:**
-Odpis = Účtovná hodnota × Sadzba odpisovania
+**Google Analytics:**
 
-**3. Výkonové odpisy:**
-Založené na skutočnom používaní.
+**Key Features:**
+- Real-time reporting
+- Audience insights
+- Acquisition channels
+- Behavior flow
+- Conversion tracking
+- Custom dashboards
 
-**Vzorec:**
-Odpis na jednotku = (Náklady - Zostatková) / Celkové jednotky
-Ročný odpis = Vyprodukované jednotky × Sadzba
+**Setting Up Goals:**
+- Destination goals
+- Duration goals
+- Pages/screens per session
+- Event goals
 
-**Zaúčtovanie odpisov:**
+**UTM Parameters:**
+Track campaign performance:
+- utm_source (Facebook, Google)
+- utm_medium (social, email, cpc)
+- utm_campaign (summer_sale)
+- utm_content (ad_variant_A)
+- utm_term (keyword)
 
-**Denníkový zápis:**
-- MD: Náklad na odpisy
-- D: Oprávky
+**A/B Testing:**
 
-**Zobrazenie v súvahe:**
-Zariadenie 10 000 €
-Mínus: Oprávky (3 600 €)
-Čistá účtovná hodnota 6 400 €
+**What to Test:**
+- Headlines
+- Call-to-action buttons
+- Images
+- Email subject lines
+- Landing page layouts
+- Ad copy
 
-**Vplyv:**
-- Znižuje čistý zisk
-- Neovplyvňuje peňažné toky
-- Znižuje hodnotu majetku
-- Daňovo uznateľný`
+**Testing Process:**
+1. Identify variable to test
+2. Create variations
+3. Split traffic evenly
+4. Run for statistical significance
+5. Analyze results
+6. Implement winner
+
+**Data Visualization:**
+- Create dashboards
+- Use charts and graphs
+- Share insights with stakeholders
+- Regular reporting schedule`
     },
     {
-      title: "Téma 8: Bankové odsúhlasenie",
-      content: `**Účel bankového odsúhlasenia**
+      title: "Topic 8: Conversion Rate Optimization (CRO)",
+      content: `**What is CRO?**
 
-Zosúladenie zostatku na bankovom výpise so zostatkom v pokladničnej knihe.
+Conversion Rate Optimization is the systematic process of increasing the percentage of website visitors who take desired actions.
 
-**Dôvody rozdielov:**
+**Understanding Conversions:**
 
-**1. Časové rozdiely:**
-- Nevyrovnané šeky
-- Prevodové vklady
-- Nezaúčtované bankové poplatky
-- Nezaúčtované úroky
+**Macro Conversions:**
+- Purchase completion
+- Lead form submission
+- Account signup
+- Demo request
 
-**2. Chyby:**
-- Chyby v záznamoch
-- Bankové chyby
+**Micro Conversions:**
+- Newsletter signup
+- PDF download
+- Video watch
+- Add to cart
+- Social share
 
-**Proces odsúhlasenia:**
+**The CRO Process:**
 
-**Krok 1: Začať s bankovým zostatkom**
-Pridať: Prevodové vklady
-Mínus: Nevyrovnané šeky
-= Upravený bankový zostatok
+**1. Research and Analysis:**
+- Analyze user behavior
+- Heat maps and recordings
+- User surveys
+- Customer feedback
+- Competitor analysis
 
-**Krok 2: Začať so zostatkom v knihách**
-Pridať: Nezaúčtované bankové kredity
-Mínus: Nezaúčtované bankové poplatky
-= Upravený zostatok v knihách
+**2. Hypothesis Formation:**
+Example: "Adding customer testimonials above the fold will increase conversions by 10%"
 
-**Oba by sa mali zhodovať!**
+**3. Testing:**
+- A/B testing
+- Multivariate testing
+- Split URL testing
 
-**Bežné položky:**
+**4. Implementation:**
+- Deploy winning variations
+- Monitor performance
+- Iterate and improve
 
-**Strana banky:**
-- Nevyrovnané šeky
-- Ešte nepripísané vklady
+**Landing Page Optimization:**
 
-**Strana knihy:**
-- NSF (odmietnuté) šeky
-- Bankové servisné poplatky
-- Priame vklady
-- Elektronické prevody
-- Zarobené úroky
+**Key Elements:**
+- Compelling headline
+- Clear value proposition
+- Trust signals (testimonials, badges)
+- Strong visuals
+- Single call-to-action
+- Minimal distractions
+- Mobile responsiveness
 
-**Opravné zápisy:**
-Vytvoriť denníkové zápisy pre položky ovplyvňujúce zostatok v knihách.
+**Psychological Triggers:**
 
-**Príklad zápisu:**
-MD: Pokladňa 50 € (zarobené úroky)
-D: Úrokové výnosy 50 €
+**1. Urgency:**
+- Limited-time offers
+- Countdown timers
+- Stock limitations
 
-**Význam:**
-- Zabezpečuje presnosť
-- Odhaľuje chyby a podvody
-- Správna hotovostná správa`
+**2. Social Proof:**
+- Customer testimonials
+- Case studies
+- User reviews
+- Trust badges
+- Media mentions
+
+**3. Authority:**
+- Expert endorsements
+- Certifications
+- Awards
+- Years in business
+
+**4. Scarcity:**
+- Limited availability
+- Exclusive access
+- VIP memberships
+
+**Common CRO Mistakes:**
+- Testing too many variables
+- Ending tests too early
+- Ignoring mobile users
+- Not tracking micro conversions
+- Making changes based on gut feeling`
     },
     {
-      title: "Téma 9: Mzdové účtovníctvo",
-      content: `**Zložky mzdy**
+      title: "Topic 9: Marketing Automation",
+      content: `**What is Marketing Automation?**
 
-**Hrubá mzda:**
-Celkové zárobky pred zrážkami.
+Marketing automation uses software to automate repetitive marketing tasks, nurture leads, and personalize customer experiences at scale.
 
-**Typy:**
-- Hodinová mzda
-- Platy
-- Príplatky
-- Bonusy
-- Provízie
+**Benefits of Automation:**
+- Save time and resources
+- Improve lead nurturing
+- Better lead scoring
+- Personalized messaging
+- Consistent communication
+- Data-driven insights
 
-**Zrážky:**
+**Popular Automation Tools:**
+- HubSpot
+- Mailchimp
+- ActiveCampaign
+- Marketo
+- Pardot
+- Drip
 
-**1. Povinné:**
-- Zrážka dane z príjmu
-- Sociálne poistenie
-- Zdravotné poistenie
-- Štátne dane
+**Automated Workflows:**
 
-**2. Dobrovoľné:**
-- Zdravotné poistenie
-- Dôchodkové príspevky
-- Životné poistenie
-- Odborové príspevky
+**1. Welcome Series:**
+Email 1: Welcome and introduction
+Email 2: Share valuable content
+Email 3: Product/service overview
+Email 4: Special offer
 
-**Čistá mzda:**
-Hrubá mzda mínus všetky zrážky.
+**2. Abandoned Cart:**
+Email 1: Reminder (1 hour later)
+Email 2: Incentive (24 hours later)
+Email 3: Last chance (48 hours later)
 
-**Mzdové dane zamestnávateľa:**
+**3. Lead Nurturing:**
+Drip campaigns based on:
+- User behavior
+- Content downloads
+- Page visits
+- Email engagement
 
-**Dodatočné náklady:**
-- Podiel zamestnávateľa na sociálnom poistení
-- Podiel zamestnávateľa na zdravotnom poistení
-- Dane z nezamestnanosti
-- Úrazové poistenie
+**4. Re-engagement:**
+Target inactive users:
+- Special offers
+- Survey requests
+- New features announcement
+- Win-back campaigns
 
-**Zaúčtovanie mzdy:**
+**Lead Scoring:**
 
-**Odmena zamestnancov:**
-MD: Mzdové náklady
-D: Mzdy na úhradu
-D: Rôzne daňové zrážky
+**Assign Points Based On:**
+- Demographics (job title, company size)
+- Behavior (email opens, website visits)
+- Engagement (content downloads, webinar attendance)
+- Social activity
 
-**Dane zamestnávateľa:**
-MD: Náklad na mzdové dane
-D: Rôzne daňové záväzky
+**Scoring Thresholds:**
+- Cold: 0-25 points
+- Warm: 26-50 points
+- Hot: 51-75 points
+- Sales Ready: 76+ points
 
-**Výplata:**
-MD: Mzdy na úhradu
-D: Pokladňa
+**Personalization:**
 
-**Mzdové záznamy:**
-- Záznam zárobkov zamestnancov
-- Mzdový register
-- Daňové formuláre
+**Dynamic Content:**
+- Name personalization
+- Location-based content
+- Previous purchase history
+- Browsing behavior
+- Industry-specific messaging
 
-**Dodržiavanie:**
-- Včasné daňové vklady
-- Štvrťročné výkazy
-- Ročné podania
-- Uchovávanie záznamov`
+**Segmentation:**
+- Demographics
+- Purchase history
+- Engagement level
+- Lifecycle stage
+- Interests
+
+**Best Practices:**
+- Start simple, scale gradually
+- Map customer journey
+- Test and optimize
+- Integrate with CRM
+- Monitor and adjust
+- Don't over-automate personal touch`
     },
     {
-      title: "Téma 10: Finančná analýza a pomery",
-      content: `**Analýza finančných pomerov**
-
-**Pomery likvidity:**
-
-**1. Bežný pomer:**
-= Obežné aktíva / Krátkodobé záväzky
-Meria schopnosť splácať krátkodobé záväzky.
-Dobrý pomer: 2:1 alebo vyšší
-
-**2. Rýchly pomer (Acid Test):**
-= (Obežné aktíva - Zásoby) / Krátkodobé záväzky
-Konzervatívnejšie meranie.
-Dobrý pomer: 1:1 alebo vyšší
-
-**Pomery ziskovosti:**
-
-**1. Hrubá zisková marža:**
-= (Hrubý zisk / Tržby) × 100
-Ukazuje cenovú silu a efektívnosť.
-
-**2. Čistá zisková marža:**
-= (Čistý zisk / Tržby) × 100
-Celkové meranie ziskovosti.
-
-**3. Rentabilita aktív (ROA):**
-= Čistý zisk / Celkové aktíva
-Ako efektívne aktíva generujú zisk.
-
-**4. Rentabilita vlastného imania (ROE):**
-= Čistý zisk / Vlastné imanie
-Návratnosť pre investorov.
-
-**Pomery efektívnosti:**
-
-**1. Obrat zásob:**
-= Náklady na predaný tovar / Priemerné zásoby
-Ako rýchlo sa zásoby predávajú.
-
-**2. Obrat pohľadávok:**
-= Čisté úverové tržby / Priemerné pohľadávky
-Efektívnosť inkasa.
-
-**Pomery zadlženosti:**
-
-**1. Dlh k vlastnému imaniu:**
-= Celkový dlh / Celkové vlastné imanie
-Miera finančného pákového efektu.
-
-**2. Pomer zadlženosti:**
-= Celkový dlh / Celkové aktíva
-Podiel aktív financovaných dlhom.
-
-**Interpretácia:**
-- Porovnať s priemernými hodnotami v odvetví
-- Sledovať trendy v čase
-- Zvážiť obchodný model spoločnosti
-- Pozerať sa na pomery v kombinácii`
-    }
-  ],
-
-  "PHP": [
-    {
-      title: "Téma 1: Úvod do PHP - Čo je PHP?",
-      content: `**Čo je PHP?**
-
-PHP (Hypertext Preprocessor) je open source skriptovací jazyk používaný primárne na strane servera pre vytváranie dynamického webového obsahu a webových aplikácií.
-
-**História PHP:**
-- Vytvorené v roku 1994
-- Autor: Rasmus Lerdorf
-- Pôvodne "Personal Home Page Tools"
-- Dnes jeden z najpoužívanejších webových jazykov
-
-**Základné charakteristiky:**
-
-**1. Server-side jazyk:**
-- PHP kód sa spracováva na serveri
-- Nie v prehliadači používateľa
-- Výsledok sa posiela ako HTML
-
-**2. Open Source:**
-- Bezplatný programovací jazyk
-- Otvorený zdrojový kód
-- Aktívna komunita vývojárov
-
-**3. Dynamický obsah:**
-- Umožňuje meniť obsah stránky
-- Reaguje na akcie používateľa
-- Prispôsobené prostredie namiesto statických stránok
-
-**Praktický význam:**
-PHP umožňuje webovým stránkam reagovať na akcie používateľov, vytvárať interaktívne a prispôsobené prostredie namiesto statických stránok.`
-    },
-    {
-      title: "Téma 2: Spracovanie na serveri a výhody",
-      content: `**Spracovanie PHP na serveri**
-
-PHP kód sa vykonáva na webovom serveri a výsledok sa posiela do prehliadača používateľa ako štandardný HTML.
-
-**Ako to funguje:**
-
-**1. Priebeh spracovania:**
-- Používateľ požiada o stránku
-- Server spracuje PHP kód
-- Vygeneruje HTML
-- Pošle do prehliadača
-
-**2. Bezpečnosť:**
-- Používateľ nevidí PHP zdrojový kód
-- Ochrana aplikačnej logiky
-- Bezpečnejšie než klientske skripty
-
-**3. Výkon:**
-- Spracovanie na výkonných serveroch
-- Nezávislé od zariadenia používateľa
-- Efektívne využitie zdrojov
-
-**Výhody servera:**
-
-**1. Kompatibilita:**
-- Funguje vo všetkých prehliadačoch
-- Nezávislé od klientskeho zariadenia
-- Konzistentné výsledky
-
-**2. Prístup k dátam:**
-- Priamy prístup k databáze
-- Manipulácia so súbormi na serveri
-- Spracovanie citlivých informácií
-
-**3. Flexibilita:**
-- Možnosť integrovať rôzne služby
-- Práca s externými API
-- Komplexné aplikácie`
-    },
-    {
-      title: "Téma 3: Dynamický obsah a interaktivita",
-      content: `**Vytváranie dynamického obsahu**
-
-PHP umožňuje meniť obsah stránky na základe prihlásenia používateľa, preferencií alebo iných podmienok.
-
-**Príklady dynamického obsahu:**
-
-**1. Prispôsobenie používateľovi:**
-\`\`\`php
-<?php
-session_start();
-if (isset($_SESSION['username'])) {
-    echo "Vitaj späť, " . $_SESSION['username'];
-} else {
-    echo "Vitaj, návštevník!";
-}
-?>
-\`\`\`
-
-**2. Časové zobrazenie:**
-\`\`\`php
-<?php
-$hour = date("H");
-if ($hour < 12) {
-    echo "Dobré ráno!";
-} elseif ($hour < 18) {
-    echo "Dobré popoludnie!";
-} else {
-    echo "Dobrý večer!";
-}
-?>
-\`\`\`
-
-**3. Personalizovaný obsah:**
-- Odporúčania produktov
-- Používateľské preferencie
-- História prehliadania
-- Prispôsobené dashboardy
-
-**Interaktívne funkcie:**
-
-**1. Formuláre:**
-- Spracovanie vstupov
-- Validácia dát
-- Uloženie do databázy
-
-**2. Používateľské účty:**
-- Registrácia
-- Prihlásenie
-- Správa profilu
-
-**3. Komentáre a hodnotenia:**
-- Pridávanie komentárov
-- Hodnotenie systém
-- Spätná väzba`
-    },
-    {
-      title: "Téma 4: Open Source vlastnosti a komunita",
-      content: `**PHP ako Open Source projekt**
-
-PHP je bezplatný programovací jazyk s otvoreným zdrojovým kódom, ktorý má obrovskú komunitu vývojárov.
-
-**Výhody Open Source:**
-
-**1. Bezplatnosť:**
-- Žiadne licenčné poplatky
-- Voľné použitie pre akýkoľvek projekt
-- Bez obmedzení
-
-**2. Transparentnosť:**
-- Otvorený zdrojový kód
-- Možnosť bezpečnostného auditu
-- Dôveryhodnosť
-
-**3. Flexibilita:**
-- Možnosť upraviť podľa potreby
-- Prispievanie do projektu
-- Vytváranie vlastných rozšírení
-
-**PHP komunita:**
-
-**1. Rozsiahle zdroje:**
-- Milióny vývojárov po celom svete
-- Obrovské množstvo dokumentácie
-- Fóra a diskusie
-- Online tutoriály
-
-**2. Knižnice a frameworky:**
-- Laravel
-- Symfony
-- CodeIgniter
-- Zend Framework
-- CakePHP
-
-**3. Podpora:**
-- Stack Overflow
-- PHP oficiálna dokumentácia
-- GitHub repozitáre
-- Aktívne blogy a články
-
-**Vývoj jazyka:**
-
-**Pravidelné aktualizácie:**
-- Nové verzie s vylepšeniami
-- Bezpečnostné opravy
-- Nové funkcie
-- Lepší výkon
-
-**Moderné PHP:**
-- PHP 8.x s JIT kompilátorom
-- Vylepšená syntax
-- Lepší výkon
-- Moderné programovacie koncepty`
-    },
-    {
-      title: "Téma 5: Kompatibilita a všestrannosť",
-      content: `**Multiplatformová podpora PHP**
-
-PHP sa dá používať na rôznych operačných systémoch a funguje s rôznymi databázami.
-
-**Podporované operačné systémy:**
-
-**1. Windows:**
-- PHP na IIS serveri
-- Apache pre Windows
-- XAMPP balík
-
-**2. Mac OS:**
-- Predinštalované v macOS
-- MAMP balík
-- Jednoduchá inštalácia
-
-**3. Linux:**
-- Najpoužívanejšia platforma
-- LAMP stack
-- Optimálny výkon
-
-**Podpora databáz:**
-
-**1. MySQL/MariaDB:**
-\`\`\`php
-<?php
-$conn = mysqli_connect("localhost", "user", "pass", "db");
-if (!$conn) {
-    die("Pripojenie zlyhalo: " . mysqli_connect_error());
-}
-?>
-\`\`\`
-
-**2. PostgreSQL:**
-- Pokročilá databáza
-- Podpora komplexných dát
-- Vysoký výkon
-
-**3. SQLite:**
-- Ľahká databáza
-- Bez servera
-- Vhodná pre menšie projekty
-
-**4. Iné databázy:**
-- Oracle
-- Microsoft SQL Server
-- MongoDB (cez rozšírenie)
-
-**Webové servery:**
-
-**1. Apache:**
-- Najpoužívanejší
-- Podpora .htaccess
-- Modulárna architektúra
-
-**2. Nginx:**
-- Vysoký výkon
-- Moderná alternatíva
-- Efektívne spracovanie
-
-**Všestrannosť použitia:**
-
-**Nad rámec webových aplikácií:**
-- CLI aplikácie
-- Automatizácia úloh
-- API servery
-- Mikroslužby`
-    },
-    {
-      title: "Téma 6: Základná syntax a štruktúra PHP",
-      content: `**Základy PHP syntaxe**
-
-Každý PHP kód začína značkou <?php a končí ?>
-
-**Základná štruktúra:**
-
-\`\`\`php
-<?php
-// Toto je komentár
-
-/* Viacriadkový
-   komentár */
-
-echo "Ahoj, svet!";
-?>
-\`\`\`
-
-**PHP v HTML:**
-
-\`\`\`php
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Moja stránka</title>
-</head>
-<body>
-    <h1><?php echo "Vitajte v PHP"; ?></h1>
-    <p>Aktuálny čas: <?php echo date("H:i:s"); ?></p>
-</body>
-</html>
-\`\`\`
-
-**Výpis textu:**
-
-**1. Echo:**
-\`\`\`php
-<?php
-echo "Text";
-echo "Viacero ", "parametrov";
-?>
-\`\`\`
-
-**2. Print:**
-\`\`\`php
-<?php
-print "Text";
-?>
-\`\`\`
-
-**Premenné:**
-
-**Základy:**
-\`\`\`php
-<?php
-$meno = "Peter";
-$vek = 25;
-$vyska = 180.5;
-$student = true;
-
-echo "Meno: $meno, Vek: $vek";
-?>
-\`\`\`
-
-**Pravidlá pre premenné:**
-- Začínajú znakom $
-- Prvý znak musí byť písmeno alebo _
-- Rozlišujú veľké a malé písmená ($Meno ≠ $meno)
-- Môžu obsahovať písmená, čísla, _
-
-**Dátové typy:**
-
-**1. String:**
-\`\`\`php
-$text = "Ahoj";
-$text2 = 'Svet';
-?>
-\`\`\`
-
-**2. Integer:**
-\`\`\`php
-$cislo = 123;
-?>
-\`\`\`
-
-**3. Float:**
-\`\`\`php
-$desatinne = 12.5;
-?>
-\`\`\`
-
-**4. Boolean:**
-\`\`\`php
-$pravda = true;
-?>
-\`\`\`
-
-**5. Array:**
-\`\`\`php
-$pole = array(1, 2, 3);
-$pole2 = [4, 5, 6];
-?>
-\`\`\``
-    },
-    {
-      title: "Téma 7: Práca s formulármi a HTTP",
-      content: `**Spracovanie formulárov v PHP**
-
-PHP umožňuje jednoduché spracovanie formulárov pomocou superglobálnych premenných.
-
-**GET metóda:**
-
-**HTML formulár:**
-\`\`\`html
-<form method="GET" action="spracuj.php">
-    <input type="text" name="meno">
-    <input type="submit" value="Odoslať">
-</form>
-\`\`\`
-
-**Spracovanie:**
-\`\`\`php
-<?php
-if (isset($_GET['meno'])) {
-    $meno = $_GET['meno'];
-    echo "Vaše meno je: " . htmlspecialchars($meno);
-}
-?>
-\`\`\`
-
-**POST metóda:**
-
-**HTML formulár:**
-\`\`\`html
-<form method="POST" action="spracuj.php">
-    <input type="email" name="email">
-    <input type="password" name="heslo">
-    <input type="submit" value="Prihlásiť">
-</form>
-\`\`\`
-
-**Spracovanie:**
-\`\`\`php
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $heslo = $_POST['heslo'];
-    
-    // Validácia
-    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo "Email je platný";
-    }
-}
-?>
-\`\`\`
-
-**Validácia vstupov:**
-
-**1. Kontrola prázdnych polí:**
-\`\`\`php
-<?php
-if (empty($_POST['meno'])) {
-    echo "Meno je povinné";
-}
-?>
-\`\`\`
-
-**2. Sanitizácia:**
-\`\`\`php
-<?php
-$meno = htmlspecialchars($_POST['meno']);
-$email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-?>
-\`\`\`
-
-**Nahrávanie súborov:**
-
-**HTML:**
-\`\`\`html
-<form method="POST" enctype="multipart/form-data">
-    <input type="file" name="subor">
-    <input type="submit" value="Nahrať">
-</form>
-\`\`\`
-
-**PHP:**
-\`\`\`php
-<?php
-if (isset($_FILES['subor'])) {
-    $nazov = $_FILES['subor']['name'];
-    $tmp = $_FILES['subor']['tmp_name'];
-    move_uploaded_file($tmp, "nahrate/" . $nazov);
-}
-?>
-\`\`\``
-    },
-    {
-      title: "Téma 8: Pripojenie k MySQL databáze",
-      content: `**Práca s MySQL databázou**
-
-PHP poskytuje niekoľko spôsobov pripojenia a práce s MySQL databázou.
-
-**MySQLi - Objektovo orientované:**
-
-**1. Pripojenie:**
-\`\`\`php
-<?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "mojaDB";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Pripojenie zlyhalo: " . $conn->connect_error);
-}
-echo "Pripojenie úspešné";
-?>
-\`\`\`
-
-**2. SELECT dopyt:**
-\`\`\`php
-<?php
-$sql = "SELECT id, meno, email FROM pouzivatelia";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        echo "id: " . $row["id"] . " - Meno: " . $row["meno"];
-    }
-} else {
-    echo "0 výsledkov";
-}
-$conn->close();
-?>
-\`\`\`
-
-**3. INSERT dopyt:**
-\`\`\`php
-<?php
-$sql = "INSERT INTO pouzivatelia (meno, email) VALUES ('Ján', 'jan@example.com')";
-
-if ($conn->query($sql) === TRUE) {
-    echo "Nový záznam úspešne vytvorený";
-} else {
-    echo "Chyba: " . $sql . "<br>" . $conn->error;
-}
-?>
-\`\`\`
-
-**Prepared Statements:**
-
-**Bezpečnosť:**
-\`\`\`php
-<?php
-$stmt = $conn->prepare("INSERT INTO pouzivatelia (meno, email) VALUES (?, ?)");
-$stmt->bind_param("ss", $meno, $email);
-
-$meno = "Ján";
-$email = "jan@example.com";
-$stmt->execute();
-
-echo "Záznam úspešne vložený";
-$stmt->close();
-?>
-\`\`\``
-    },
-    {
-      title: "Téma 9: Relácie a cookies",
-      content: `**Správa používateľských relácií**
-
-Relácie a cookies umožňujú ukladať informácie o používateľovi naprieč viacerými stránkami.
-
-**Relácie:**
-
-**1. Spustenie relácie:**
-\`\`\`php
-<?php
-session_start();
-$_SESSION['username'] = "Ján";
-$_SESSION['logged_in'] = true;
-?>
-\`\`\`
-
-**2. Čítanie relácie:**
-\`\`\`php
-<?php
-session_start();
-if (isset($_SESSION['username'])) {
-    echo "Vitaj " . $_SESSION['username'];
-}
-?>
-\`\`\`
-
-**3. Zničenie relácie:**
-\`\`\`php
-<?php
-session_start();
-session_destroy();
-?>
-\`\`\`
-
-**Cookies:**
-
-**1. Nastavenie cookie:**
-\`\`\`php
-<?php
-setcookie("user", "Ján", time() + (86400 * 30), "/");
-?>
-\`\`\`
-
-**2. Čítanie cookie:**
-\`\`\`php
-<?php
-if (isset($_COOKIE['user'])) {
-    echo "Používateľ je: " . $_COOKIE['user'];
-}
-?>
-\`\`\`
-
-**Príklad prihlasovacieho systému:**
-
-\`\`\`php
-<?php
-session_start();
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    
-    // Overenie prihlasovacích údajov (zjednodušené)
-    if ($username == "admin" && $password == "heslo123") {
-        $_SESSION['logged_in'] = true;
-        $_SESSION['username'] = $username;
-        header("Location: dashboard.php");
-    } else {
-        echo "Neplatné prihlasovacie údaje";
-    }
-}
-?>
-\`\`\``
-    },
-    {
-      title: "Téma 10: Najlepšie postupy a bezpečnosť",
-      content: `**PHP bezpečnosť a najlepšie postupy**
-
-Dodržiavanie najlepších postupov a bezpečnostných zásad je nevyhnutné pre profesionálny PHP vývoj.
-
-**Základy bezpečnosti:**
-
-**1. Validácia vstupov:**
-\`\`\`php
-<?php
-$email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
-if (!$email) {
-    die("Neplatný email");
-}
-?>
-\`\`\`
-
-**2. Prevencia SQL injection:**
-\`\`\`php
-<?php
-// ZLE - zraniteľné voči SQL injection
-$sql = "SELECT * FROM pouzivatelia WHERE meno = '$username'";
-
-// SPRÁVNE - použitie prepared statements
-$stmt = $conn->prepare("SELECT * FROM pouzivatelia WHERE meno = ?");
-$stmt->bind_param("s", $username);
-$stmt->execute();
-?>
-\`\`\`
-
-**3. Prevencia XSS:**
-\`\`\`php
-<?php
-// Vždy escapovať výstup
-echo htmlspecialchars($user_input, ENT_QUOTES, 'UTF-8');
-?>
-\`\`\`
-
-**Najlepšie postupy:**
-
-**1. Spracovanie chýb:**
-\`\`\`php
-<?php
-// V produkcii
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
-
-// Použiť try-catch
-try {
-    // Kód
-} catch (Exception $e) {
-    error_log($e->getMessage());
-}
-?>
-\`\`\`
-
-**2. Bezpečnosť hesiel:**
-\`\`\`php
-<?php
-// Hashovanie hesla
-$hash = password_hash($password, PASSWORD_DEFAULT);
-
-// Overenie hesla
-if (password_verify($input, $hash)) {
-    echo "Platné heslo";
-}
-?>
-\`\`\`
-
-**3. Bezpečnosť nahrávania súborov:**
-- Validovať typy súborov
-- Obmedziť veľkosť súborov
-- Uložiť mimo webového root-u
-- Generovať jedinečné názvy súborov
-
-**Organizácia kódu:**
-- Používať funkcie a triedy
-- Dodržiavať PSR štandardy
-- Komentovať kód
-- Používať zmysluplné názvy premenných`
+      title: "Topic 10: Digital Marketing Strategy and Planning",
+      content: `**Creating Your Digital Marketing Strategy**
+
+A comprehensive digital marketing strategy aligns your marketing efforts with business objectives.
+
+**Strategy Framework:**
+
+**1. Situation Analysis:**
+- Current market position
+- Competitor analysis
+- SWOT analysis
+- Industry trends
+- Customer insights
+
+**2. Define Objectives:**
+Use SMART goals:
+- Specific
+- Measurable
+- Achievable
+- Relevant
+- Time-bound
+
+Examples:
+- Increase website traffic by 50% in 6 months
+- Generate 100 qualified leads per month
+- Achieve 5% conversion rate by Q4
+
+**3. Identify Target Audience:**
+
+**Create Buyer Personas:**
+- Demographics
+- Job title and role
+- Goals and challenges
+- Information sources
+- Buying behavior
+- Preferred channels
+
+**4. Choose Marketing Channels:**
+Select based on:
+- Audience preferences
+- Budget allocation
+- Business goals
+- Resources available
+
+**5. Content Strategy:**
+- Content themes
+- Content calendar
+- Distribution plan
+- Promotion tactics
+
+**6. Budget Allocation:**
+
+**Typical Distribution:**
+- Paid advertising: 40%
+- Content creation: 30%
+- Tools and software: 20%
+- Training and development: 10%
+
+**7. Implementation Timeline:**
+Create quarterly plan:
+- Q1: Foundation and setup
+- Q2: Testing and optimization
+- Q3: Scaling what works
+- Q4: Review and plan next year
+
+**Measurement and KPIs:**
+
+**Awareness Stage:**
+- Website traffic
+- Social media reach
+- Brand mentions
+- Impressions
+
+**Consideration Stage:**
+- Email subscribers
+- Content downloads
+- Webinar registrations
+- Time on site
+
+**Conversion Stage:**
+- Lead generation
+- Sales revenue
+- Customer acquisition cost
+- Conversion rate
+
+**Retention Stage:**
+- Customer lifetime value
+- Repeat purchase rate
+- Churn rate
+- Net promoter score
+
+**Reporting:**
+- Weekly tactical reports
+- Monthly performance reviews
+- Quarterly strategic analysis
+- Annual comprehensive review
+
+**Staying Current:**
+- Follow industry blogs
+- Attend webinars and conferences
+- Test new platforms early
+- Network with professionals
+- Continuous learning and certification`
     }
   ],
 
   "default": [
     {
-      title: `Úvod do kurzu`,
-      content: `Vitajte v tomto kurze. Tento komplexný program vás prevedie všetkými základnými aspektami tejto témy.`
+      title: "Introduction to the Course",
+      content: "Welcome to this comprehensive course. This program will guide you through all essential aspects of this subject with detailed lessons and practical examples."
     },
     {
-      title: "Základy a kľúčové koncepty",
-      content: `V tejto téme preskúmame základné princípy a kľúčové koncepty, ktoré tvoria základ tejto oblasti.`
+      title: "Fundamentals and Core Concepts",
+      content: "In this topic, we'll explore the fundamental principles and core concepts that form the foundation of this field."
     },
     {
-      title: "Praktické aplikácie",
-      content: `Naučte sa, ako aplikovať teoretické vedomosti v reálnych scenároch a praktických situáciách.`
+      title: "Practical Applications",
+      content: "Learn how to apply theoretical knowledge in real-world scenarios and practical situations."
     },
     {
-      title: "Pokročilé techniky",
-      content: `Ponorte sa hlbšie do pokročilých metód a techník používaných profesionálmi v tejto oblasti.`
+      title: "Advanced Techniques",
+      content: "Dive deeper into advanced methods and techniques used by professionals in the field."
     },
     {
-      title: "Nástroje a zdroje",
-      content: `Objavte základné nástroje, zdroje a platformy, ktoré zlepšia vaše učenie a prax.`
+      title: "Tools and Resources",
+      content: "Discover the essential tools, resources, and platforms that will enhance your learning and practice."
     },
     {
-      title: "Najlepšie postupy",
-      content: `Naučte sa osvedčené postupy a metodológie, aby ste vynikli v tejto oblasti.`
+      title: "Best Practices",
+      content: "Learn industry-standard best practices and methodologies to excel in this area."
     },
     {
-      title: "Bežné výzvy a riešenia",
-      content: `Pochopte bežné prekážky, ktorým môžete čeliť, a efektívne stratégie na ich prekonanie.`
+      title: "Common Challenges and Solutions",
+      content: "Understand common obstacles you might face and effective strategies to overcome them."
     },
     {
-      title: "Prípadové štúdie",
-      content: `Analyzujte reálne prípadové štúdie a príklady pre lepšie pochopenie praktických implementácií.`
+      title: "Case Studies",
+      content: "Analyze real-world case studies and examples to better understand practical implementations."
     },
     {
-      title: "Budúce trendy",
-      content: `Preskúmajte vznikajúce trendy a budúci vývoj v tejto oblasti.`
+      title: "Future Trends",
+      content: "Explore emerging trends and future developments in this field."
     },
     {
-      title: "Záverečné zhrnutie a príprava na hodnotenie",
-      content: `Zopakujte si všetky kľúčové koncepty a pripravte sa na záverečné hodnotenie. Táto téma konsoliduje všetko, čo ste sa naučili.`
+      title: "Final Review and Assessment Preparation",
+      content: "Review all key concepts and prepare for your final assessment. This topic consolidates everything you've learned."
     }
   ]
 };
@@ -1259,44 +798,44 @@ if (password_verify($input, $hash)) {
 export const generateDefaultTopics = (courseName: string): Topic[] => {
   return [
     {
-      title: `Úvod do ${courseName}`,
-      content: `Vitajte v kurze ${courseName}. Tento komplexný program vás prevedie všetkými základnými aspektmi tejto témy.`
+      title: `Introduction to ${courseName}`,
+      content: `Welcome to the ${courseName} course. This comprehensive program will guide you through all essential aspects of this subject.`
     },
     {
-      title: "Základy a kľúčové koncepty",
-      content: `V tejto téme preskúmame základné princípy a kľúčové koncepty, ktoré tvoria základ ${courseName}.`
+      title: "Fundamentals and Core Concepts",
+      content: `In this topic, we'll explore the fundamental principles and core concepts that form the foundation of ${courseName}.`
     },
     {
-      title: "Praktické aplikácie",
-      content: `Naučte sa, ako aplikovať teoretické vedomosti v reálnych scenároch a praktických situáciách.`
+      title: "Practical Applications",
+      content: "Learn how to apply theoretical knowledge in real-world scenarios and practical situations."
     },
     {
-      title: "Pokročilé techniky",
-      content: `Ponorte sa hlbšie do pokročilých metód a techník používaných profesionálmi v tejto oblasti.`
+      title: "Advanced Techniques",
+      content: "Dive deeper into advanced methods and techniques used by professionals in the field."
     },
     {
-      title: "Nástroje a zdroje",
-      content: `Objavte základné nástroje, zdroje a platformy, ktoré zlepšia vaše učenie a prax.`
+      title: "Tools and Resources",
+      content: "Discover the essential tools, resources, and platforms that will enhance your learning and practice."
     },
     {
-      title: "Najlepšie postupy",
-      content: `Naučte sa osvedčené postupy a metodológie, aby ste vynikli v ${courseName}.`
+      title: "Best Practices",
+      content: `Learn industry-standard best practices and methodologies to excel in ${courseName}.`
     },
     {
-      title: "Bežné výzvy a riešenia",
-      content: `Pochopte bežné prekážky, ktorým môžete čeliť, a efektívne stratégie na ich prekonanie.`
+      title: "Common Challenges and Solutions",
+      content: "Understand common obstacles you might face and effective strategies to overcome them."
     },
     {
-      title: "Prípadové štúdie",
-      content: `Analyzujte reálne prípadové štúdie a príklady pre lepšie pochopenie praktických implementácií.`
+      title: "Case Studies",
+      content: "Analyze real-world case studies and examples to better understand practical implementations."
     },
     {
-      title: "Budúce trendy",
-      content: `Preskúmajte vznikajúce trendy a budúci vývoj v oblasti ${courseName}.`
+      title: "Future Trends",
+      content: `Explore emerging trends and future developments in the field of ${courseName}.`
     },
     {
-      title: "Záverečné zhrnutie a príprava na hodnotenie",
-      content: `Zopakujte si všetky kľúčové koncepty a pripravte sa na záverečné hodnotenie. Táto téma konsoliduje všetko, čo ste sa naučili.`
+      title: "Final Review and Assessment Preparation",
+      content: "Review all key concepts and prepare for your final assessment. This topic consolidates everything you've learned."
     }
   ];
 };
