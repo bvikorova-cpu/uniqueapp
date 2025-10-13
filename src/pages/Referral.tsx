@@ -8,7 +8,7 @@ import { useReferralProgram } from "@/hooks/useReferralProgram";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
-import { sk } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 
 const Referral = () => {
   const { stats, loading, refreshStats } = useReferralProgram();
@@ -32,21 +32,21 @@ const Referral = () => {
     if (!stats?.code) return;
     navigator.clipboard.writeText(stats.code);
     toast({
-      title: "Skopírované!",
-      description: "Referenčný kód bol skopírovaný do schránky",
+      title: "Copied!",
+      description: "Referral code was copied to clipboard",
     });
   };
 
   const shareReferral = async () => {
     if (!stats?.code) return;
     const shareUrl = `${window.location.origin}/auth?ref=${stats.code}`;
-    const shareText = `Pripoj sa k Megatalent a súťaž o 100.000€! Použi môj kód: ${stats.code}`;
+    const shareText = `Join Megatalent and compete for €100,000! Use my code: ${stats.code}`;
     
     // Try native share first (works on mobile)
     if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       try {
         await navigator.share({
-          title: 'Megatalent - Súťaž o 100.000€',
+          title: 'Megatalent - Compete for €100,000',
           text: shareText,
           url: shareUrl,
         });
@@ -65,9 +65,9 @@ const Referral = () => {
 
   const inviteByEmail = () => {
     if (!stats?.code) return;
-    const subject = encodeURIComponent('Pozvánka do Megatalent - Súťaž o 100.000€');
+    const subject = encodeURIComponent('Invitation to Megatalent - Compete for €100,000');
     const body = encodeURIComponent(
-      `Ahoj!\n\nChcel by som ťa pozvať do Megatalent, kde môžeš súťažiť o 100.000€!\n\nPouži môj referenčný kód pri registrácii: ${stats.code}\n\nRegistruj sa tu: ${window.location.origin}/auth?ref=${stats.code}\n\nTešíme sa na teba!`
+      `Hi!\n\nI'd like to invite you to Megatalent, where you can compete for €100,000!\n\nUse my referral code when registering: ${stats.code}\n\nSign up here: ${window.location.origin}/auth?ref=${stats.code}\n\nLooking forward to seeing you!`
     );
     window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
@@ -86,17 +86,17 @@ const Referral = () => {
         {/* Header */}
         <div className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-12">
           <Badge className="bg-gold text-gold-foreground animate-glow text-sm sm:text-lg px-3 sm:px-4 py-1.5 sm:py-2">
-            💰 5€ za každého priateľa
+            💰 €5 for each friend
           </Badge>
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold px-2">
-            Referenčný{" "}
+            Referral{" "}
             <span className="bg-gradient-gold bg-clip-text text-transparent">
               Program
             </span>
           </h1>
           <p className="text-base sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
-            Pozvi svojich priateľov do Megatalent a zarábaj 5€ za každého, 
-            kto si aktivuje Premium predplatné
+            Invite your friends to Megatalent and earn €5 for each one 
+            who activates a Premium subscription
           </p>
         </div>
 
@@ -107,14 +107,14 @@ const Referral = () => {
               <CardHeader>
                 <CardTitle className="text-2xl flex items-center gap-2">
                   <Gift className="h-8 w-8" />
-                  Tvoj referenčný kód
+                  Your referral code
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 sm:space-y-6">
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                   <div className="flex-1 bg-background/10 rounded-lg p-3 sm:p-4">
                     <div className="text-xl sm:text-2xl font-mono font-bold tracking-wider break-all">
-                      {stats?.code || "Načítavam..."}
+                      {stats?.code || "Loading..."}
                     </div>
                   </div>
                   <Button 
@@ -123,7 +123,7 @@ const Referral = () => {
                     className="px-4 sm:px-6 w-full sm:w-auto"
                   >
                     <Copy className="h-4 w-4 mr-2" />
-                    Kopírovať
+                    Copy
                   </Button>
                 </div>
                 
@@ -134,7 +134,7 @@ const Referral = () => {
                     className="w-full"
                   >
                     <Share2 className="h-4 w-4 mr-2" />
-                    Zdieľať odkaz
+                    Share link
                   </Button>
                   <Button 
                     variant="secondary" 
@@ -142,7 +142,7 @@ const Referral = () => {
                     onClick={inviteByEmail}
                   >
                     <Users className="h-4 w-4 mr-2" />
-                    Pozvať emailom
+                    Invite by email
                   </Button>
                 </div>
               </CardContent>
@@ -151,7 +151,7 @@ const Referral = () => {
             {/* How it works */}
             <Card>
               <CardHeader>
-                <CardTitle>Ako to funguje?</CardTitle>
+                <CardTitle>How does it work?</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4 sm:space-y-6">
@@ -160,9 +160,9 @@ const Referral = () => {
                       1
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm sm:text-base">Zdieľaj svoj kód</h3>
+                      <h3 className="font-semibold text-sm sm:text-base">Share your code</h3>
                       <p className="text-xs sm:text-sm text-muted-foreground">
-                        Pošli svoj referenčný kód priateľom cez social media, email alebo priamo
+                        Send your referral code to friends via social media, email or directly
                       </p>
                     </div>
                   </div>
@@ -172,9 +172,9 @@ const Referral = () => {
                       2
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm sm:text-base">Priateľ sa registruje</h3>
+                      <h3 className="font-semibold text-sm sm:text-base">Friend signs up</h3>
                       <p className="text-xs sm:text-sm text-muted-foreground">
-                        Tvoj priateľ použije tvoj kód pri registrácii a aktivuje si Premium predplatné
+                        Your friend uses your code during registration and activates Premium subscription
                       </p>
                     </div>
                   </div>
@@ -184,9 +184,9 @@ const Referral = () => {
                       3
                     </div>
                     <div>
-                      <h3 className="font-semibold text-sm sm:text-base">Získaš 5€</h3>
+                      <h3 className="font-semibold text-sm sm:text-base">You get €5</h3>
                       <p className="text-xs sm:text-sm text-muted-foreground">
-                        Automaticky dostaneš 5€ na svoj účet po aktivácii predplatného
+                        You automatically receive €5 to your account after subscription activation
                       </p>
                     </div>
                   </div>
@@ -197,7 +197,7 @@ const Referral = () => {
             {/* Recent Referrals */}
             <Card>
               <CardHeader>
-                <CardTitle>Nedávne pozvánky</CardTitle>
+                <CardTitle>Recent invitations</CardTitle>
               </CardHeader>
               <CardContent>
                 {stats?.recentReferrals && stats.recentReferrals.length > 0 ? (
@@ -209,11 +209,11 @@ const Referral = () => {
                             {referral.profiles?.full_name?.charAt(0) || "?"}
                           </div>
                           <div className="min-w-0">
-                            <p className="font-semibold text-sm sm:text-base truncate">{referral.profiles?.full_name || "Nový používateľ"}</p>
+                            <p className="font-semibold text-sm sm:text-base truncate">{referral.profiles?.full_name || "New user"}</p>
                             <p className="text-xs sm:text-sm text-muted-foreground">
                               {formatDistanceToNow(new Date(referral.created_at), { 
                                 addSuffix: true,
-                                locale: sk 
+                                locale: enUS 
                               })}
                             </p>
                           </div>
@@ -224,7 +224,7 @@ const Referral = () => {
                             variant={referral.paid ? 'default' : 'secondary'}
                             className={`text-xs ${referral.paid ? 'bg-success' : ''}`}
                           >
-                            {referral.paid ? 'Vyplatené' : 'Čaká'}
+                            {referral.paid ? 'Paid' : 'Pending'}
                           </Badge>
                         </div>
                       </div>
@@ -232,7 +232,7 @@ const Referral = () => {
                   </div>
                 ) : (
                   <p className="text-center text-muted-foreground py-8">
-                    Zatiaľ nemáš žiadne úspešné pozvánky
+                    You don't have any successful invitations yet
                   </p>
                 )}
               </CardContent>
@@ -246,28 +246,28 @@ const Referral = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
-                  Tvoje štatistiky
+                  Your statistics
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center space-y-2">
-                  <div className="text-2xl sm:text-3xl font-bold text-success">{stats?.totalEarnings.toFixed(2) || 0}€</div>
-                  <p className="text-sm sm:text-base text-muted-foreground">Celkové zárobky</p>
+                  <div className="text-2xl sm:text-3xl font-bold text-success">€{stats?.totalEarnings.toFixed(2) || 0}</div>
+                  <p className="text-sm sm:text-base text-muted-foreground">Total earnings</p>
                 </div>
                 
                 <div className="text-center space-y-2">
                   <div className="text-2xl sm:text-3xl font-bold text-primary">{stats?.totalReferrals || 0}</div>
-                  <p className="text-sm sm:text-base text-muted-foreground">Úspešné pozvánky</p>
+                  <p className="text-sm sm:text-base text-muted-foreground">Successful invitations</p>
                 </div>
                 
                 <div className="space-y-2">
                   <div className="text-center">
-                    <div className="text-lg sm:text-xl font-semibold text-gold">{stats?.pendingEarnings.toFixed(2) || 0}€</div>
-                    <p className="text-xs text-muted-foreground">Čaká na výplatu</p>
+                    <div className="text-lg sm:text-xl font-semibold text-gold">€{stats?.pendingEarnings.toFixed(2) || 0}</div>
+                    <p className="text-xs text-muted-foreground">Pending payout</p>
                   </div>
                   <Button variant="hero" className="w-full text-sm sm:text-base" disabled={!stats?.pendingEarnings}>
                     <Euro className="h-4 w-4 mr-2" />
-                    Vybrať peniaze
+                    Withdraw money
                   </Button>
                 </div>
               </CardContent>
@@ -276,15 +276,15 @@ const Referral = () => {
             {/* Leaderboard */}
             <Card>
               <CardHeader>
-                <CardTitle>🏆 Top refereri</CardTitle>
+                <CardTitle>🏆 Top referrers</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground mb-4">
-                    Najlepší refereri tohto mesiaca
+                    Best referrers this month
                   </p>
                   {[
-                    { name: "Ty", referrals: stats?.totalReferrals || 0, earnings: stats?.totalEarnings || 0, isYou: true },
+                    { name: "You", referrals: stats?.totalReferrals || 0, earnings: stats?.totalEarnings || 0, isYou: true },
                   ].map((person, index) => (
                     <div key={index} className={`flex items-center justify-between p-2 rounded ${
                       person.isYou ? "bg-gold/10 border border-gold/20" : ""
@@ -299,7 +299,7 @@ const Referral = () => {
                       </div>
                       <div className="text-right">
                         <div className="font-semibold">{person.referrals}</div>
-                        <div className="text-xs text-muted-foreground">{person.earnings.toFixed(2)}€</div>
+                        <div className="text-xs text-muted-foreground">€{person.earnings.toFixed(2)}</div>
                       </div>
                     </div>
                   ))}
