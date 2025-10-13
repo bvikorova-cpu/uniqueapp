@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
+import { useTranslation } from "react-i18next";
 
 const categoryGroups = [
   {
@@ -87,6 +88,7 @@ const categoryGroups = [
 ];
 
 const Megatalent = () => {
+  const { t } = useTranslation();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriptionTier, setSubscriptionTier] = useState<'premium' | 'top_premium' | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("drawing");
@@ -191,8 +193,8 @@ const Megatalent = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
-          title: "Prihlásenie potrebné",
-          description: "Musíte byť prihlásený pre aktiváciu premium.",
+          title: t('megatalent.login_required'),
+          description: t('megatalent.login_required_desc'),
           variant: "destructive",
         });
         return;
@@ -211,8 +213,8 @@ const Megatalent = () => {
         // Only new users can use referral codes
         if (existingSub) {
           toast({
-            title: "Kód nie je platný",
-            description: "Referenčný kód môže použiť len nový účastník súťaže. Ak si už bol v súťaži, nemôžeš použiť kód.",
+            title: t('megatalent.code_invalid'),
+            description: t('megatalent.code_invalid_desc'),
             variant: "destructive",
           });
           return;
@@ -226,8 +228,8 @@ const Megatalent = () => {
 
         if (!referralData) {
           toast({
-            title: "Neplatný kód",
-            description: "Zadaný referenčný kód neexistuje",
+            title: t('megatalent.invalid_code'),
+            description: t('megatalent.invalid_code_desc'),
             variant: "destructive",
           });
           return;
@@ -235,8 +237,8 @@ const Megatalent = () => {
 
         if (referralData.user_id === user.id) {
           toast({
-            title: "Chyba",
-            description: "Nemôžeš použiť vlastný referenčný kód",
+            title: t('megatalent.error'),
+            description: t('megatalent.own_code_error'),
             variant: "destructive",
           });
           return;
@@ -246,8 +248,8 @@ const Megatalent = () => {
       } else if (existingSub && existingSub.status === 'active') {
         // User already has active subscription, just inform them
         toast({
-          title: "Už máš aktívne predplatné",
-          description: "Už si prihlásený do súťaže Megatalent",
+          title: t('megatalent.already_subscribed'),
+          description: t('megatalent.already_subscribed_desc'),
           variant: "destructive",
         });
         return;
@@ -272,16 +274,16 @@ const Megatalent = () => {
       if (error) throw error;
 
       toast({
-        title: "Úspešne aktivované!",
-        description: `${tier === 'premium' ? 'Premium' : 'TOP Premium'} predplatné bolo aktivované.`,
+        title: t('megatalent.successfully_activated'),
+        description: tier === 'premium' ? t('megatalent.premium_activated') : t('megatalent.top_premium_activated'),
       });
 
       setIsSubscribed(true);
     } catch (error) {
       console.error('Error subscribing:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa aktivovať predplatné.",
+        title: t('megatalent.error'),
+        description: t('megatalent.activation_error'),
         variant: "destructive",
       });
     }
@@ -300,16 +302,16 @@ const Megatalent = () => {
       if (error) throw error;
 
       toast({
-        title: "Predplatné zrušené",
-        description: data.message || "Predplatné bude zrušené na konci aktuálneho obdobia",
+        title: t('megatalent.subscription_cancelled'),
+        description: data.message || t('megatalent.subscription_cancelled_desc'),
       });
 
       await checkSubscription();
     } catch (error) {
       console.error('Cancellation error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa zrušiť predplatné",
+        title: t('megatalent.error'),
+        description: t('megatalent.cancel_error'),
         variant: "destructive",
       });
     } finally {
@@ -319,8 +321,8 @@ const Megatalent = () => {
 
   const handleVote = (type: 'like' | 'dislike') => {
     toast({
-      title: "Hlasovanie",
-      description: `${type === 'like' ? 'Páči sa mi' : 'Nepáči sa mi'} - potrebné pripojenie databázy`,
+      title: t('megatalent.voting'),
+      description: `${type === 'like' ? t('megatalent.like') : t('megatalent.dislike')} ${t('megatalent.voting_desc')}`,
     });
   };
 
@@ -331,8 +333,8 @@ const Megatalent = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Musíte byť prihlásený pre nahrávanie súborov.",
+        title: t('megatalent.login_required'),
+        description: t('megatalent.upload_required_login'),
         variant: "destructive",
       });
       return;
@@ -357,8 +359,8 @@ const Megatalent = () => {
       setUploadedFile({ url: publicUrl, type });
       
       toast({
-        title: "Úspešne nahrané!",
-        description: `${type === 'image' ? 'Fotka' : 'Video'} bolo úspešne nahrané.`,
+        title: t('megatalent.successfully_uploaded'),
+        description: type === 'image' ? t('megatalent.photo_uploaded') : t('megatalent.video_uploaded'),
       });
     } catch (error) {
       console.error('Upload error:', error);
@@ -375,8 +377,8 @@ const Megatalent = () => {
   const handleSubmit = async () => {
     if (!title.trim()) {
       toast({
-        title: "Chyba",
-        description: "Prosím zadajte názov príspevku.",
+        title: t('megatalent.error'),
+        description: t('megatalent.title_required'),
         variant: "destructive",
       });
       return;
@@ -384,8 +386,8 @@ const Megatalent = () => {
 
     if (!description.trim()) {
       toast({
-        title: "Chyba",
-        description: "Prosím zadajte popis.",
+        title: t('megatalent.error'),
+        description: t('megatalent.description_required'),
         variant: "destructive",
       });
       return;
@@ -393,8 +395,8 @@ const Megatalent = () => {
 
     if (!uploadedFile) {
       toast({
-        title: "Chyba",
-        description: "Prosím nahrajte foto alebo video.",
+        title: t('megatalent.error'),
+        description: t('megatalent.media_required'),
         variant: "destructive",
       });
       return;
@@ -403,8 +405,8 @@ const Megatalent = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Musíte byť prihlásený pre zverejnenie príspevku.",
+        title: t('megatalent.login_required'),
+        description: t('megatalent.publish_required_login'),
         variant: "destructive",
       });
       return;
@@ -426,8 +428,8 @@ const Megatalent = () => {
       if (error) throw error;
 
       toast({
-        title: "Úspešne zverejnené!",
-        description: "Váš príspevok bol pridaný do súťaže.",
+        title: t('megatalent.successfully_published'),
+        description: t('megatalent.submission_added'),
       });
 
       // Reset form
@@ -440,8 +442,8 @@ const Megatalent = () => {
     } catch (error) {
       console.error('Submit error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa zverejniť príspevok.",
+        title: t('megatalent.error'),
+        description: t('megatalent.publish_error'),
         variant: "destructive",
       });
     } finally {
@@ -452,7 +454,7 @@ const Megatalent = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
-        <p className="text-lg">Načítavam...</p>
+        <p className="text-lg">{t('megatalent.loading')}</p>
       </div>
     );
   }
@@ -464,28 +466,27 @@ const Megatalent = () => {
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <div className="space-y-4">
               <Badge className="bg-gold text-gold-foreground animate-glow">
-                💰 Mesačná výhra 10.000 €
+                {t('megatalent.monthly_prize')}
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Vstup do Megatalent
+                {t('megatalent.enter_megatalent')}
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Prihláste sa do exkluzívnej súťaže kde môžete vyhrať až 10.000 € každý mesiac!
-                Zdieľajte svoj talent a súťažte s najlepšími.
+                {t('megatalent.subtitle')}
               </p>
             </div>
 
             <div className="mb-8 max-w-2xl mx-auto">
               <div className="p-4 bg-muted rounded-lg">
                 <label className="text-sm font-medium mb-2 block">
-                  Máš unikátny kód od priateľa?
+                  {t('megatalent.referral_title')}
                 </label>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Tu ho môžeš zadať a začať zarábať pozvaním priateľa, za ktorého dostaneš 5 Eur pri registrácii do súťaže Megatalent
+                  {t('megatalent.referral_description')}
                 </p>
                 <Input
                   type="text"
-                  placeholder="Zadaj referenčný kód (nepovinné)"
+                  placeholder={t('megatalent.referral_placeholder')}
                   value={referralCode}
                   onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
                   maxLength={8}
@@ -498,25 +499,25 @@ const Megatalent = () => {
               {/* Premium Tier */}
               <Card className="bg-gradient-secondary border-border/50">
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">Premium</CardTitle>
-                  <div className="text-4xl font-bold text-gold">10 €<span className="text-lg">/mesiac</span></div>
+                  <CardTitle className="text-2xl">{t('megatalent.premium_title')}</CardTitle>
+                  <div className="text-4xl font-bold text-gold">10 €<span className="text-lg">{t('megatalent.price_month')}</span></div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <span>✨ Prístup do Megatalent súťaže</span>
+                      <span>{t('megatalent.access_contest')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>🎯 Šanca vyhrať 10.000 €</span>
+                      <span>{t('megatalent.chance_win')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>📱 Nahrávanie foto & video</span>
+                      <span>{t('megatalent.upload_media')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>👥 Hlasovanie a komentáre</span>
+                      <span>{t('megatalent.voting_comments')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>🎁 Referenčný program 5 €</span>
+                      <span>{t('megatalent.referral_5')}</span>
                     </div>
                   </div>
                   <Button 
@@ -525,10 +526,10 @@ const Megatalent = () => {
                     className="w-full"
                     onClick={() => handleSubscribe('premium')}
                   >
-                    Aktivovať Premium
+                    {t('megatalent.activate_premium')}
                   </Button>
                   <p className="text-xs text-muted-foreground text-center">
-                    Mesačné predplatné sa automaticky obnovuje
+                    {t('megatalent.monthly_renews')}
                   </p>
                 </CardContent>
               </Card>
@@ -536,26 +537,26 @@ const Megatalent = () => {
               {/* TOP Premium Tier */}
               <Card className="bg-gradient-primary border-gold/50 relative overflow-hidden">
                 <Badge className="absolute top-4 right-4 bg-gold text-gold-foreground">
-                  ODPORÚČANÉ
+                  {t('megatalent.recommended')}
                 </Badge>
                 <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">TOP Premium</CardTitle>
-                  <div className="text-4xl font-bold text-gold">15 €<span className="text-lg">/mesiac</span></div>
+                  <CardTitle className="text-2xl">{t('megatalent.top_premium_title')}</CardTitle>
+                  <div className="text-4xl font-bold text-gold">15 €<span className="text-lg">{t('megatalent.price_month')}</span></div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <p className="text-sm font-semibold text-gold">Všetko z Premium +</p>
+                    <p className="text-sm font-semibold text-gold">{t('megatalent.all_from_premium')}</p>
                     <div className="flex items-center gap-2">
-                      <span>🏆 50% šanca na výhru</span>
+                      <span>{t('megatalent.boost_win')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>🎯 +100,000 hlasov automaticky</span>
+                      <span>{t('megatalent.auto_votes')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>⭐ Prioritné zobrazenie</span>
+                      <span>{t('megatalent.priority_display')}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span>💎 Exkluzívny badge</span>
+                      <span>{t('megatalent.exclusive_badge_item')}</span>
                     </div>
                   </div>
                   <Button 
@@ -564,10 +565,10 @@ const Megatalent = () => {
                     className="w-full bg-gold hover:bg-gold/90"
                     onClick={() => handleSubscribe('top_premium')}
                   >
-                    Aktivovať TOP Premium
+                    {t('megatalent.activate_top_premium')}
                   </Button>
                   <p className="text-xs text-muted-foreground text-center">
-                    Mesačné predplatné sa automaticky obnovuje
+                    {t('megatalent.monthly_renews')}
                   </p>
                 </CardContent>
               </Card>
@@ -583,8 +584,8 @@ const Megatalent = () => {
       <div className="container mx-auto px-4 max-w-6xl">
         <Tabs defaultValue="feed" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="feed">Súťaž</TabsTrigger>
-            <TabsTrigger value="referral">Referenčný program</TabsTrigger>
+            <TabsTrigger value="feed">{t('megatalent.contest')}</TabsTrigger>
+            <TabsTrigger value="referral">{t('megatalent.referral_program')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="feed" className="mt-0">
