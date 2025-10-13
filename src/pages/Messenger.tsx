@@ -256,8 +256,8 @@ const Messenger = () => {
 
     if (convError || !conversation) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa vytvoriť konverzáciu",
+        title: "Error",
+        description: "Failed to create conversation",
         variant: "destructive",
       });
       return;
@@ -272,8 +272,8 @@ const Messenger = () => {
 
     if (participantsError) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa pridať účastníkov",
+        title: "Error",
+        description: "Failed to add participants",
         variant: "destructive",
       });
       return;
@@ -294,8 +294,8 @@ const Messenger = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať správu",
+        title: "Error",
+        description: "Failed to send message",
         variant: "destructive",
       });
       return;
@@ -318,13 +318,13 @@ const Messenger = () => {
           <Card className="col-span-1 p-4 flex flex-col">
             <div className="flex items-center gap-2 mb-4">
               <MessageCircle className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-bold">Správy</h2>
+              <h2 className="text-2xl font-bold">Messages</h2>
             </div>
 
             <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Hľadať používateľov..."
+                placeholder="Search users..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -347,7 +347,7 @@ const Messenger = () => {
                         <AvatarImage src={u.avatar_url || undefined} />
                         <AvatarFallback>{u.full_name?.[0] || "U"}</AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{u.full_name || "Používateľ"}</span>
+                      <span className="font-medium">{u.full_name || "User"}</span>
                     </div>
                   ))}
                 </div>
@@ -369,7 +369,7 @@ const Messenger = () => {
                       </Avatar>
                       <div className="flex-1 overflow-hidden">
                         <p className="font-medium truncate">
-                          {conv.otherUser?.full_name || "Používateľ"}
+                          {conv.otherUser?.full_name || "User"}
                         </p>
                         {conv.lastMessage && (
                           <p className="text-sm opacity-70 truncate">{conv.lastMessage.content}</p>
@@ -392,7 +392,7 @@ const Messenger = () => {
                       <AvatarFallback>{otherUser?.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
                     <h3 className="text-xl font-semibold">
-                      {otherUser?.full_name || "Používateľ"}
+                      {otherUser?.full_name || "User"}
                     </h3>
                   </div>
                   {otherUser && (
@@ -400,7 +400,7 @@ const Messenger = () => {
                       conversationId={selectedConversation}
                       userId={user.id}
                       otherUserId={otherUser.id}
-                      otherUserName={otherUser.full_name || "Používateľ"}
+                      otherUserName={otherUser.full_name || "User"}
                     />
                   )}
                 </div>
@@ -441,7 +441,7 @@ const Messenger = () => {
 
                 <div className="flex items-center gap-2 pt-4 border-t">
                   <Input
-                    placeholder="Napíšte správu..."
+                    placeholder="Write a message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && sendMessage()}
@@ -455,7 +455,7 @@ const Messenger = () => {
               <div className="flex-1 flex items-center justify-center text-muted-foreground">
                 <div className="text-center">
                   <MessageCircle className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                  <p>Vyberte konverzáciu alebo začnite novú</p>
+                  <p>Select a conversation or start a new one</p>
                 </div>
               </div>
             )}
