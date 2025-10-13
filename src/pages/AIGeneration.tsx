@@ -8,9 +8,10 @@ import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
 import ghibliImg from "@/assets/effects/ghibli.jpg";
-import swayDanceImg from "@/assets/effects/sway-dance.jpg";
-import waveDanceImg from "@/assets/effects/wave-dance.jpg";
 import minecraftImg from "@/assets/effects/minecraft.jpg";
+import vintagePhotoImg from "@/assets/effects/vintage-photo.jpg";
+import watercolorImg from "@/assets/effects/watercolor.jpg";
+import popArtImg from "@/assets/effects/pop-art.jpg";
 import earthZoomOutImg from "@/assets/effects/earth-zoom-out.jpg";
 import earthZoomInImg from "@/assets/effects/earth-zoom-in.jpg";
 import boxMeImg from "@/assets/effects/box-me.jpg";
@@ -145,6 +146,26 @@ import moonlightImg from "@/assets/effects/moonlight.jpg";
 import starlightImg from "@/assets/effects/starlight.jpg";
 import rainbowBridgeImg from "@/assets/effects/rainbow-bridge.jpg";
 import cloudNineImg from "@/assets/effects/cloud-nine.jpg";
+import angelWingsImg from "@/assets/effects/angel-wings.jpg";
+import demonWingsImg from "@/assets/effects/demon-wings.jpg";
+import knightArmorImg from "@/assets/effects/knight-armor.jpg";
+import samuraiArmorImg from "@/assets/effects/samurai-armor.jpg";
+import vikingWarriorImg from "@/assets/effects/viking-warrior.jpg";
+import pharaohGoldImg from "@/assets/effects/pharaoh-gold.jpg";
+import greekStatueImg from "@/assets/effects/greek-statue.jpg";
+import bronzeStatueImg from "@/assets/effects/bronze-statue.jpg";
+import iceScultureImg from "@/assets/effects/ice-sculpture.jpg";
+import stainedGlassImg from "@/assets/effects/stained-glass.jpg";
+import mosaicTilesImg from "@/assets/effects/mosaic-tiles.jpg";
+import origamiFoldImg from "@/assets/effects/origami-fold.jpg";
+import paperCutoutImg from "@/assets/effects/paper-cutout.jpg";
+import glitterBombImg from "@/assets/effects/glitter-bomb.jpg";
+import cottonCandyImg from "@/assets/effects/cotton-candy.jpg";
+import masqueradeImg from "@/assets/effects/masquerade.jpg";
+import tikiMaskImg from "@/assets/effects/tiki-mask.jpg";
+import sugarSkullImg from "@/assets/effects/sugar-skull.jpg";
+import gothicCastleImg from "@/assets/effects/gothic-castle.jpg";
+import medusaGazeImg from "@/assets/effects/medusa-gaze.jpg";
 
 
 type EffectCategory = "all" | "interactions" | "pets" | "appearance" | "entertainment" | "heroes" | "fanciful" | "dance" | "emotions";
@@ -176,15 +197,15 @@ const aiEffects: AIEffect[] = [
   { id: "sexy-me", name: "Sexy Me", category: "appearance", image: sexyMeImg, description: "Sexi transformácia" },
   { id: "gender-swap", name: "Gender Swap", category: "appearance", image: genderSwapImg, description: "Výmena pohlavia" },
   { id: "smile", name: "Smile", category: "emotions", image: smileImg, description: "Úsmev efekt" },
-  { id: "bodyshake", name: "Bodyshake", category: "dance", image: bodyshakeImg, description: "Trasenie telom" },
   { id: "melt", name: "Melt", category: "fanciful", image: meltImg, description: "Topenie sa" },
+  { id: "watercolor", name: "Watercolor", category: "appearance", image: watercolorImg, description: "Akvarelový efekt" },
   { id: "paperman", name: "Paperman", category: "heroes", image: papermanImg, description: "Papierový muž" },
-  { id: "flying", name: "Flying", category: "fanciful", image: flyingImg, description: "Lietanie", isHot: true },
-  { id: "balloon-flyaway", name: "Balloon Flyaway", category: "fanciful", image: balloonFlyawayImg, description: "Balóny odletia" },
-  { id: "expansion", name: "Expansion", category: "fanciful", image: expansionImg, description: "Expanzia" },
+  { id: "pop-art", name: "Pop Art", category: "appearance", image: popArtImg, description: "Pop art štýl" },
+  { id: "angel-wings", name: "Angel Wings", category: "fanciful", image: angelWingsImg, description: "Anjelské krídla" },
+  { id: "demon-wings", name: "Demon Wings", category: "fanciful", image: demonWingsImg, description: "Démonské krídla" },
   { id: "pet-lovers", name: "Pet Lovers", category: "pets", image: petLoversImg, description: "Milovníci zvierat" },
-  { id: "flame-carpet", name: "Flame Carpet", category: "fanciful", image: flameCarpetImg, description: "Plameňový koberec" },
-  { id: "fashion-stride", name: "Fashion Stride", category: "appearance", image: fashionStrideImg, description: "Módny krok" },
+  { id: "knight-armor", name: "Knight Armor", category: "heroes", image: knightArmorImg, description: "Rytierska zbroj" },
+  { id: "samurai-armor", name: "Samurai Armor", category: "heroes", image: samuraiArmorImg, description: "Samurajská zbroj" },
   { id: "send-roses", name: "Send Roses", category: "interactions", image: sendRosesImg, description: "Poslať ruže", isHot: true },
   { id: "finger-heart", name: "Finger Heart", category: "emotions", image: fingerHeartImg, description: "Prstové srdce" },
   { id: "cartoon-doll", name: "Cartoon Doll", category: "appearance", image: cartoonDollImg, description: "Kreslená bábika" },
@@ -195,8 +216,8 @@ const aiEffects: AIEffect[] = [
   { id: "warmth-of-jesus", name: "Warmth of Jesus", category: "heroes", image: warmthOfJesusImg, description: "Teplo Ježiša", isHot: true },
   { id: "wild-laugh", name: "Wild Laugh", category: "emotions", image: wildLaughImg, description: "Divý smiech" },
   { id: "surprised", name: "Surprised", category: "emotions", image: surprisedImg, description: "Prekvapený" },
-  { id: "explosion", name: "Explosion", category: "fanciful", image: explosionImg, description: "Explózia" },
-  { id: "face-punch", name: "Face Punch", category: "entertainment", image: facePunchImg, description: "Facka" },
+  { id: "viking-warrior", name: "Viking Warrior", category: "heroes", image: vikingWarriorImg, description: "Vikingský bojovník" },
+  { id: "pharaoh-gold", name: "Pharaoh Gold", category: "heroes", image: pharaohGoldImg, description: "Zlatý faraón" },
   { id: "ai-kiss", name: "AI Kiss", category: "interactions", image: aiKissImg, description: "AI bozk" },
   { id: "holy-wings", name: "Holy Wings", category: "heroes", image: holyWingsImg, description: "Sväté krídla" },
   { id: "sheep-curls", name: "Sheep Curls", category: "pets", image: sheepCurlsImg, description: "Ovčie kučery", isHot: true },
@@ -216,21 +237,33 @@ const aiEffects: AIEffect[] = [
   { id: "zombie-walk", name: "Zombie Walk", category: "entertainment", image: zombieWalkImg, description: "Zombie chôdza" },
   { id: "superhero-landing", name: "Superhero Landing", category: "heroes", image: superheroLandingImg, description: "Pristátie superhrdinu" },
   { id: "crystal-freeze", name: "Crystal Freeze", category: "fanciful", image: crystalFreezeImg, description: "Kryštálové zamrznutie" },
-  { id: "disco-ball", name: "Disco Ball", category: "dance", image: discoBallImg, description: "Disco guľa" },
+  { id: "greek-statue", name: "Greek Statue", category: "appearance", image: greekStatueImg, description: "Grécka socha" },
   { id: "dragon-rider", name: "Dragon Rider", category: "heroes", image: dragonRiderImg, description: "Jazdec na drakovi", isHot: true },
   { id: "mermaid-tail", name: "Mermaid Tail", category: "fanciful", image: mermaidTailImg, description: "Morský chvost" },
   { id: "ninja-stealth", name: "Ninja Stealth", category: "heroes", image: ninjaStealthImg, description: "Ninja nenápadnosť" },
   { id: "fairy-godmother", name: "Fairy Godmother", category: "fanciful", image: fairyGodmotherImg, description: "Dobrá víla" },
   { id: "pirate-adventure", name: "Pirate Adventure", category: "entertainment", image: pirateAdventureImg, description: "Pirátske dobrodružstvo" },
-  { id: "bubble-bounce", name: "Bubble Bounce", category: "fanciful", image: bubbleBounceImg, description: "Skákanie v bublinách" },
+  { id: "bronze-statue", name: "Bronze Statue", category: "appearance", image: bronzeStatueImg, description: "Bronzová socha" },
   { id: "neon-glow", name: "Neon Glow", category: "fanciful", image: neonGlowImg, description: "Neónová žiara", isHot: true },
   { id: "samurai-warrior", name: "Samurai Warrior", category: "heroes", image: samuraiWarriorImg, description: "Samurajský bojovník" },
   { id: "candy-land", name: "Candy Land", category: "entertainment", image: candyLandImg, description: "Cukrová krajina" },
   { id: "time-freeze", name: "Time Freeze", category: "fanciful", image: timeFreezeImg, description: "Zastavenie času" },
   { id: "fire-phoenix", name: "Fire Phoenix", category: "heroes", image: firePhoenixImg, description: "Ohnivý fénix", isHot: true },
-  { id: "breakdance", name: "Breakdance", category: "dance", image: breakdanceImg, description: "Breakdance" },
-  { id: "sway-dance", name: "Sway Dance", category: "dance", image: swayDanceImg, description: "Kolísavý tanec" },
-  { id: "wave-dance", name: "Wave Dance", category: "dance", image: waveDanceImg, description: "Vlnový tanec" },
+  { id: "ice-queen", name: "Ice Queen", category: "heroes", image: iceQueenImg, description: "Ľadová kráľovná" },
+  { id: "galaxy-portal", name: "Galaxy Portal", category: "fanciful", image: galaxyPortalImg, description: "Galaktický portál" },
+  { id: "vintage-photo", name: "Vintage Photo", category: "appearance", image: vintagePhotoImg, description: "Vintage fotografia" },
+  { id: "ice-sculpture", name: "Ice Sculpture", category: "appearance", image: iceScultureImg, description: "Ľadová socha" },
+  { id: "stained-glass", name: "Stained Glass", category: "appearance", image: stainedGlassImg, description: "Farebné vitráže" },
+  { id: "mosaic-tiles", name: "Mosaic Tiles", category: "appearance", image: mosaicTilesImg, description: "Mozaikové dlaždice" },
+  { id: "origami-fold", name: "Origami Fold", category: "appearance", image: origamiFoldImg, description: "Origami preloženie" },
+  { id: "paper-cutout", name: "Paper Cutout", category: "appearance", image: paperCutoutImg, description: "Papierový výrez" },
+  { id: "glitter-bomb", name: "Glitter Bomb", category: "fanciful", image: glitterBombImg, description: "Trblietavá bomba" },
+  { id: "cotton-candy", name: "Cotton Candy", category: "fanciful", image: cottonCandyImg, description: "Cukrová vata" },
+  { id: "masquerade", name: "Masquerade", category: "entertainment", image: masqueradeImg, description: "Maškarný ples" },
+  { id: "tiki-mask", name: "Tiki Mask", category: "entertainment", image: tikiMaskImg, description: "Tiki maska" },
+  { id: "sugar-skull", name: "Sugar Skull", category: "entertainment", image: sugarSkullImg, description: "Cukrová lebka" },
+  { id: "gothic-castle", name: "Gothic Castle", category: "fanciful", image: gothicCastleImg, description: "Gotický hrad" },
+  { id: "medusa-gaze", name: "Medusa Gaze", category: "heroes", image: medusaGazeImg, description: "Medúzin pohľad" },
   { id: "steampunk", name: "Steampunk", category: "appearance", image: steampunkImg, description: "Steampunk štýl" },
   { id: "baby-filter", name: "Baby Filter", category: "appearance", image: babyFilterImg, description: "Detský filter" },
   { id: "old-age", name: "Old Age", category: "appearance", image: oldAgeImg, description: "Staroba" },
