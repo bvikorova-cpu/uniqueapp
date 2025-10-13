@@ -13,6 +13,7 @@ const Subscription = () => {
   const [user, setUser] = useState<any>(null);
   const [currentTier, setCurrentTier] = useState<string>('free');
   const [loading, setLoading] = useState(true);
+  const [canceling, setCanceling] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -78,6 +79,35 @@ const Subscription = () => {
         description: "Nepodarilo sa vytvoriť platbu",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!user || currentTier === 'free') return;
+
+    setCanceling(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
+        body: { subscriptionType: 'general' }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Predplatné zrušené",
+        description: data.message || "Predplatné bude zrušené na konci aktuálneho obdobia",
+      });
+
+      await checkAuth();
+    } catch (error) {
+      console.error('Cancellation error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa zrušiť predplatné",
+        variant: "destructive",
+      });
+    } finally {
+      setCanceling(false);
     }
   };
 
@@ -266,9 +296,23 @@ const Subscription = () => {
           })}
         </div>
 
+        {currentTier !== 'free' && (
+          <div className="mt-8 text-center">
+            <Button 
+              variant="outline" 
+              onClick={handleCancelSubscription}
+              disabled={canceling}
+              className="text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+            >
+              {canceling ? 'Ruším...' : 'Zrušiť predplatné'}
+            </Button>
+          </div>
+        )}
+
         <div className="mt-12 text-center text-sm text-muted-foreground">
           <p>Všetky ceny sú uvedené v EUR. Predplatné je mesačné a môže byť kedykoľvek zrušené.</p>
           <p className="mt-2">Provízie sa účtujú len pri úspešnom predaji v Aukciách a Bazári.</p>
+          <p className="mt-2">Pri zrušení predplatného zostáva aktívne do konca zaplateného obdobia. Vyplatená suma sa nevracia.</p>
         </div>
       </div>
     </div>

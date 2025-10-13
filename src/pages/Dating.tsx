@@ -98,6 +98,7 @@ const Dating = () => {
   const [lastSwipe, setLastSwipe] = useState<{ swiped_profile_id: string; action: string } | null>(null);
   const [likesYouCount, setLikesYouCount] = useState(0);
   const [superLikesRemaining, setSuperLikesRemaining] = useState(5);
+  const [cancelingSubscription, setCancelingSubscription] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -684,6 +685,35 @@ const Dating = () => {
     if (data) {
       setCanRewind(true);
       setLastSwipe(data);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!user) return;
+
+    setCancelingSubscription(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
+        body: { subscriptionType: 'dating' }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Predplatné zrušené",
+        description: data.message || "Predplatné bude zrušené na konci aktuálneho obdobia",
+      });
+
+      await checkSubscription(user.id);
+    } catch (error) {
+      console.error('Cancellation error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa zrušiť predplatné",
+        variant: "destructive",
+      });
+    } finally {
+      setCancelingSubscription(false);
     }
   };
 
@@ -1308,6 +1338,55 @@ const Dating = () => {
                       Zatiaľ žiadne ďalšie fotky
                     </p>
                   )}
+                </div>
+
+                {/* Subscription management section */}
+                <div className="pt-6 border-t">
+                  <h3 className="text-lg font-semibold mb-4">Predplatné</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                      <div>
+                        <p className="font-medium">Status predplatného</p>
+                        <p className="text-sm text-muted-foreground">
+                          {isSubscribed ? "Aktívne" : "Neaktívne"}
+                        </p>
+                      </div>
+                      <Badge variant={isSubscribed ? "default" : "secondary"}>
+                        {isSubscribed ? "Aktívne" : "Neaktívne"}
+                      </Badge>
+                    </div>
+                    {isSubscribed && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button 
+                            variant="outline" 
+                            className="w-full text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+                            disabled={cancelingSubscription}
+                          >
+                            {cancelingSubscription ? 'Ruším...' : 'Zrušiť predplatné'}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Zrušiť predplatné?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Vaše predplatné zostane aktívne do konca zaplateného obdobia. 
+                              Vyplatená suma sa nevracia. Po uplynutí obdobia stratíte prístup k premium funkciám.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Zavrieť</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={handleCancelSubscription}
+                              className="bg-red-500 hover:bg-red-600"
+                            >
+                              Potvrdiť zrušenie
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>

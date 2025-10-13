@@ -102,6 +102,7 @@ const Megatalent = () => {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const [referralCode, setReferralCode] = useState("");
+  const [cancelingSubscription, setCancelingSubscription] = useState(false);
 
   useEffect(() => {
     checkSubscription();
@@ -283,6 +284,36 @@ const Megatalent = () => {
         description: "Nepodarilo sa aktivovať predplatné.",
         variant: "destructive",
       });
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    setCancelingSubscription(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
+        body: { subscriptionType: 'megatalent' }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Predplatné zrušené",
+        description: data.message || "Predplatné bude zrušené na konci aktuálneho obdobia",
+      });
+
+      await checkSubscription();
+    } catch (error) {
+      console.error('Cancellation error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa zrušiť predplatné",
+        variant: "destructive",
+      });
+    } finally {
+      setCancelingSubscription(false);
     }
   };
 
@@ -839,8 +870,44 @@ const Megatalent = () => {
 
 
           <TabsContent value="referral" className="mt-0">
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto space-y-6">
               <ReferralProgram />
+              
+              {/* Subscription Management */}
+              {isSubscribed && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl">Správa predplatného</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                      <div>
+                        <p className="font-medium">Aktuálne predplatné</p>
+                        <p className="text-sm text-muted-foreground capitalize">
+                          {subscriptionTier === 'top_premium' ? 'Top Premium' : 'Premium'}
+                        </p>
+                      </div>
+                      <Badge variant="default">Aktívne</Badge>
+                    </div>
+                    
+                    <div className="p-4 border rounded-lg bg-muted/50">
+                      <p className="text-sm text-muted-foreground">
+                        Pri zrušení predplatného zostane aktívne do konca zaplateného obdobia. 
+                        Vyplatená suma sa nevracia.
+                      </p>
+                    </div>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
+                      onClick={handleCancelSubscription}
+                      disabled={cancelingSubscription}
+                    >
+                      {cancelingSubscription ? 'Ruším...' : 'Zrušiť predplatné'}
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </TabsContent>
         </Tabs>
