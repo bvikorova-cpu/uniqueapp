@@ -72,8 +72,8 @@ const Vacationer = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa načítať destinácie",
+        title: "Error",
+        description: "Failed to load destinations",
         variant: "destructive",
       });
     } else {
@@ -84,8 +84,8 @@ const Vacationer = () => {
   const handleAddDestination = async () => {
     if (!user) {
       toast({
-        title: "Vyžaduje sa prihlásenie",
-        description: "Pre pridanie destinácie sa musíte prihlásiť",
+        title: "Login Required",
+        description: "You must be logged in to add a destination",
         variant: "destructive",
       });
       return;
@@ -93,8 +93,8 @@ const Vacationer = () => {
 
     if (!newDestination.name || !newDestination.location || !newDestination.description) {
       toast({
-        title: "Neúplné údaje",
-        description: "Vyplňte všetky polia",
+        title: "Incomplete Data",
+        description: "Please fill in all fields",
         variant: "destructive",
       });
       return;
@@ -144,8 +144,8 @@ const Vacationer = () => {
       }
 
       toast({
-        title: "Úspech",
-        description: "Destinácia bola pridaná",
+        title: "Success",
+        description: "Destination has been added",
       });
       setNewDestination({ name: "", location: "", description: "" });
       setSelectedFiles([]);
@@ -153,8 +153,8 @@ const Vacationer = () => {
       fetchDestinations();
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa pridať destináciu",
+        title: "Error",
+        description: error.message || "Failed to add destination",
         variant: "destructive",
       });
     } finally {
@@ -171,8 +171,8 @@ const Vacationer = () => {
       
       if (!isImage && !isVideo) {
         toast({
-          title: "Neplatný súbor",
-          description: `${file.name} nie je obrázok ani video`,
+          title: "Invalid File",
+          description: `${file.name} is not an image or video`,
           variant: "destructive",
         });
         return false;
@@ -180,8 +180,8 @@ const Vacationer = () => {
       
       if (!isUnder10MB) {
         toast({
-          title: "Súbor je príliš veľký",
-          description: `${file.name} presahuje limit 10MB`,
+          title: "File Too Large",
+          description: `${file.name} exceeds the 10MB limit`,
           variant: "destructive",
         });
         return false;
@@ -200,8 +200,8 @@ const Vacationer = () => {
   const handleAddReview = async () => {
     if (!user) {
       toast({
-        title: "Vyžaduje sa prihlásenie",
-        description: "Pre pridanie recenzie sa musíte prihlásiť",
+        title: "Login Required",
+        description: "You must be logged in to add a review",
         variant: "destructive",
       });
       return;
@@ -209,8 +209,8 @@ const Vacationer = () => {
 
     if (!selectedDestination || !newReview.comment) {
       toast({
-        title: "Neúplné údaje",
-        description: "Napíšte komentár",
+        title: "Incomplete Data",
+        description: "Please write a comment",
         variant: "destructive",
       });
       return;
@@ -227,14 +227,14 @@ const Vacationer = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa pridať recenziu",
+        title: "Error",
+        description: "Failed to add review",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Úspech",
-        description: "Recenzia bola pridaná",
+        title: "Success",
+        description: "Review has been added",
       });
       setNewReview({ rating: 5, comment: "" });
       setIsReviewDialogOpen(false);
@@ -256,15 +256,15 @@ const Vacationer = () => {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Destinácia bola odstránená",
+        title: "Success",
+        description: "Destination has been deleted",
       });
       setIsDetailDialogOpen(false);
       fetchDestinations();
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa odstrániť destináciu",
+        title: "Error",
+        description: error.message || "Failed to delete destination",
         variant: "destructive",
       });
     }
@@ -283,53 +283,53 @@ const Vacationer = () => {
         <div className="text-center space-y-4 mb-12">
           <Badge className="bg-primary text-primary-foreground">
             <Plane className="h-4 w-4 mr-1" />
-            Dovolenkové destinácie
+            Holiday Destinations
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold bg-gradient-primary bg-clip-text text-transparent">
             Vacationer
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Objavte úžasné dovolenkové destinácie a zdieľajte svoje zážitky
+            Discover amazing holiday destinations and share your experiences
           </p>
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="hero" size="lg">
                 <Plus className="h-5 w-5 mr-2" />
-                Pridať destináciu
+                Add Destination
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Nová destinácia</DialogTitle>
+                <DialogTitle>New Destination</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium">Názov</label>
+                  <label className="text-sm font-medium">Name</label>
                   <Input
                     value={newDestination.name}
                     onChange={(e) => setNewDestination({ ...newDestination, name: e.target.value })}
-                    placeholder="Napríklad: Krásna pláž v Chorvátsku"
+                    placeholder="For example: Beautiful Beach in Croatia"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Lokalita</label>
+                  <label className="text-sm font-medium">Location</label>
                   <Input
                     value={newDestination.location}
                     onChange={(e) => setNewDestination({ ...newDestination, location: e.target.value })}
-                    placeholder="Napríklad: Dubrovník, Chorvátsko"
+                    placeholder="For example: Dubrovnik, Croatia"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Popis</label>
+                  <label className="text-sm font-medium">Description</label>
                   <Textarea
                     value={newDestination.description}
                     onChange={(e) => setNewDestination({ ...newDestination, description: e.target.value })}
-                    placeholder="Opíšte destináciu..."
+                    placeholder="Describe the destination..."
                     className="min-h-24"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Obrázky a videá (max 5, do 10MB)</label>
+                  <label className="text-sm font-medium">Images and Videos (max 5, up to 10MB)</label>
                   <div className="mt-2 space-y-3">
                     <div className="flex items-center gap-2">
                       <Input
@@ -351,12 +351,12 @@ const Vacationer = () => {
                         >
                           <span>
                             <Upload className="h-4 w-4 mr-2" />
-                            Vybrať súbory
+                            Select Files
                           </span>
                         </Button>
                       </label>
                       <span className="text-sm text-muted-foreground">
-                        {selectedFiles.length}/5 súborov
+                        {selectedFiles.length}/5 files
                       </span>
                     </div>
                     {selectedFiles.length > 0 && (
@@ -396,7 +396,7 @@ const Vacationer = () => {
                 </div>
                 <Button onClick={handleAddDestination} className="w-full" disabled={isUploading}>
                   <Send className="h-4 w-4 mr-2" />
-                  {isUploading ? "Nahrávam..." : "Pridať destináciu"}
+                  {isUploading ? "Uploading..." : "Add Destination"}
                 </Button>
               </div>
             </DialogContent>
@@ -469,7 +469,7 @@ const Vacationer = () => {
                     }}
                   >
                     <Eye className="h-4 w-4 mr-2" />
-                    Detail
+                    Details
                   </Button>
                   <Button 
                     variant="outline" 
@@ -481,7 +481,7 @@ const Vacationer = () => {
                     }}
                   >
                     <Star className="h-4 w-4 mr-2" />
-                    Recenzia
+                    Review
                   </Button>
                 </div>
               </CardContent>
@@ -510,18 +510,18 @@ const Vacationer = () => {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Odstrániť destináciu?</AlertDialogTitle>
+                        <AlertDialogTitle>Delete Destination?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Táto akcia sa nedá vrátiť späť. Destinácia a všetky jej fotky a recenzie budú natrvalo vymazané.
+                          This action cannot be undone. The destination and all its photos and reviews will be permanently deleted.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction 
                           onClick={() => selectedDestination && handleDeleteDestination(selectedDestination.id)}
                           className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                          Odstrániť
+                          Delete
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
@@ -565,13 +565,13 @@ const Vacationer = () => {
                     {calculateAverageRating(selectedDestination)}
                   </span>
                   <span className="text-muted-foreground">
-                    ({selectedDestination.reviews?.length || 0} recenzií)
+                    ({selectedDestination.reviews?.length || 0} reviews)
                   </span>
                 </div>
 
                 {/* Description */}
                 <div>
-                  <h3 className="font-semibold text-lg mb-2">Popis</h3>
+                  <h3 className="font-semibold text-lg mb-2">Description</h3>
                   <p className="text-muted-foreground whitespace-pre-wrap">
                     {selectedDestination.description}
                   </p>
@@ -581,7 +581,7 @@ const Vacationer = () => {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-lg">
-                      Recenzie ({selectedDestination.reviews?.length || 0})
+                      Reviews ({selectedDestination.reviews?.length || 0})
                     </h3>
                     <Button 
                       variant="outline" 
@@ -592,7 +592,7 @@ const Vacationer = () => {
                       }}
                     >
                       <Plus className="h-4 w-4 mr-2" />
-                      Pridať recenziu
+                      Add Review
                     </Button>
                   </div>
                   
@@ -607,7 +607,7 @@ const Vacationer = () => {
                               </Avatar>
                               <div className="flex-1 space-y-2">
                                 <div className="flex items-center justify-between">
-                                  <span className="font-semibold">Používateľ</span>
+                                  <span className="font-semibold">User</span>
                                   <div className="flex">
                                     {[1, 2, 3, 4, 5].map((star) => (
                                       <Star
@@ -630,7 +630,7 @@ const Vacationer = () => {
                     </div>
                   ) : (
                     <p className="text-center text-muted-foreground py-6">
-                      Zatiaľ žiadne recenzie. Buďte prvý, kto pridá recenziu!
+                      No reviews yet. Be the first to add a review!
                     </p>
                   )}
                 </div>
@@ -643,11 +643,11 @@ const Vacationer = () => {
         <Dialog open={isReviewDialogOpen} onOpenChange={setIsReviewDialogOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Pridať recenziu - {selectedDestination?.name}</DialogTitle>
+              <DialogTitle>Add Review - {selectedDestination?.name}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Hodnotenie</label>
+                <label className="text-sm font-medium">Rating</label>
                 <div className="flex items-center gap-2 mt-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -663,17 +663,17 @@ const Vacationer = () => {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium">Komentár</label>
+                <label className="text-sm font-medium">Comment</label>
                 <Textarea
                   value={newReview.comment}
                   onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                  placeholder="Napíšte svoju recenziu..."
+                  placeholder="Write your review..."
                   className="min-h-24"
                 />
               </div>
               <Button onClick={handleAddReview} className="w-full">
                 <Send className="h-4 w-4 mr-2" />
-                Odoslať recenziu
+                Submit Review
               </Button>
             </div>
           </DialogContent>
@@ -683,7 +683,7 @@ const Vacationer = () => {
           <div className="text-center py-12">
             <Plane className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <p className="text-xl text-muted-foreground">
-              Zatiaľ žiadne destinácie. Buďte prvý, kto pridá destináciu!
+              No destinations yet. Be the first to add a destination!
             </p>
           </div>
         )}
