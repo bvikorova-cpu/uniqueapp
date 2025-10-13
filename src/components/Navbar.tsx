@@ -341,6 +341,12 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
+                      <Link to="/premium-store" className="w-full cursor-pointer">
+                        <Award className="h-4 w-4 mr-2" />
+                        Unlock Premium Features
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
                       <Link to="/ai-credits" className="w-full cursor-pointer">
                         <Sparkles className="h-4 w-4 mr-2" />
                         {t('navbar.ai_credits')}
