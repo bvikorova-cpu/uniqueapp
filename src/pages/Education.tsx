@@ -72,7 +72,31 @@ const courseCategories = [
       "Financial Planning Essentials",
       "Entrepreneurship 101",
       "E-commerce Success",
-      "Investment Strategies"
+      "Investment Strategies",
+      "SEO and Content Marketing",
+      "Social Media Marketing",
+      "Email Marketing Strategies",
+      "Brand Building",
+      "Sales Techniques",
+      "Customer Service Excellence",
+      "Business Analytics",
+      "Corporate Strategy",
+      "Negotiation Skills",
+      "Strategic Planning",
+      "Risk Management",
+      "Business Intelligence",
+      "Real Estate Investing",
+      "Stock Market Trading",
+      "Forex Trading",
+      "Options Trading",
+      "Retirement Planning",
+      "Tax Planning",
+      "Estate Planning",
+      "Insurance Planning",
+      "Debt Management",
+      "Credit Score Improvement",
+      "Budgeting Mastery",
+      "Personal Finance"
     ]
   },
   {
@@ -83,7 +107,41 @@ const courseCategories = [
       "Python Programming",
       "Data Science Basics",
       "Mobile App Development",
-      "Cybersecurity Essentials"
+      "Cybersecurity Essentials",
+      "Data Analytics with Excel",
+      "SQL for Data Analysis",
+      "R Programming",
+      "Machine Learning Basics",
+      "Artificial Intelligence Fundamentals",
+      "Deep Learning",
+      "Natural Language Processing",
+      "Computer Vision",
+      "Blockchain Technology",
+      "Cryptocurrency Trading",
+      "Cloud Computing AWS",
+      "Cloud Computing Azure",
+      "DevOps Engineering",
+      "Docker and Kubernetes",
+      "Linux Administration",
+      "Network Security",
+      "Ethical Hacking",
+      "Penetration Testing",
+      "Information Security Management",
+      "GDPR Compliance",
+      "JavaScript Advanced",
+      "React Development",
+      "Angular Framework",
+      "Vue.js Development",
+      "Node.js Backend",
+      "PHP Programming",
+      "Ruby on Rails",
+      "Java Programming",
+      "C++ Programming",
+      "Swift iOS Development",
+      "Android Development",
+      "Flutter Development",
+      "Game Development Unity",
+      "Unreal Engine"
     ]
   },
   {
@@ -94,7 +152,18 @@ const courseCategories = [
       "Fitness Training",
       "Mental Health Awareness",
       "Yoga and Mindfulness",
-      "Stress Management"
+      "Stress Management",
+      "Yoga Teacher Training",
+      "Pilates Instructor",
+      "Personal Training Certification",
+      "Nutrition Coaching",
+      "Weight Loss Strategies",
+      "Muscle Building",
+      "Sports Nutrition",
+      "Vegan Cooking",
+      "Sustainable Living",
+      "Zero Waste Lifestyle",
+      "Minimalism"
     ]
   },
   {
@@ -105,18 +174,138 @@ const courseCategories = [
       "Public Speaking",
       "Leadership Skills",
       "Emotional Intelligence",
-      "Goal Setting and Achievement"
+      "Goal Setting and Achievement",
+      "Conflict Resolution",
+      "Team Building",
+      "Change Management"
     ]
   },
   {
-    name: "Creative Arts",
+    name: "Creative Arts & Design",
     icon: "🎨",
     courses: [
       "Photography Basics",
       "Graphic Design",
       "Creative Writing",
       "Music Production",
-      "Digital Illustration"
+      "Digital Illustration",
+      "UI/UX Design",
+      "Adobe Photoshop",
+      "Adobe Illustrator",
+      "Video Editing Premiere Pro",
+      "After Effects Animation",
+      "3D Modeling Blender",
+      "AutoCAD Design",
+      "Interior Design",
+      "Fashion Design",
+      "Jewelry Design",
+      "Product Design",
+      "Packaging Design",
+      "Web Design",
+      "Logo Design",
+      "Typography",
+      "Color Theory",
+      "Drawing and Sketching",
+      "Oil Painting",
+      "Watercolor Techniques",
+      "Digital Painting"
+    ]
+  },
+  {
+    name: "Photography & Video",
+    icon: "📷",
+    courses: [
+      "Portrait Photography",
+      "Landscape Photography",
+      "Wedding Photography",
+      "Food Photography",
+      "Product Photography",
+      "Street Photography",
+      "Lightroom Editing",
+      "Photo Retouching",
+      "Video Production",
+      "Cinematography"
+    ]
+  },
+  {
+    name: "Writing & Content",
+    icon: "✍️",
+    courses: [
+      "Screenwriting",
+      "Storytelling",
+      "Copywriting",
+      "Technical Writing",
+      "Content Writing",
+      "Blog Writing",
+      "Academic Writing",
+      "Resume Writing",
+      "Grant Writing",
+      "Poetry Writing",
+      "Fiction Writing",
+      "Journalism"
+    ]
+  },
+  {
+    name: "Music & Performance",
+    icon: "🎵",
+    courses: [
+      "Voice Acting",
+      "Podcasting",
+      "Audio Engineering",
+      "Music Theory",
+      "Guitar Mastery",
+      "Piano Lessons",
+      "Singing Techniques",
+      "Drum Lessons",
+      "Electronic Music Production",
+      "DJ Techniques",
+      "Songwriting",
+      "Music Business",
+      "Dance Choreography",
+      "Ballet Training",
+      "Hip Hop Dance",
+      "Salsa Dancing",
+      "Ballroom Dancing"
+    ]
+  },
+  {
+    name: "Project & Operations Management",
+    icon: "📊",
+    courses: [
+      "Project Management Professional",
+      "Agile and Scrum Methodologies",
+      "Human Resources Management",
+      "Supply Chain Management",
+      "Operations Management",
+      "Quality Management",
+      "Lean Six Sigma"
+    ]
+  },
+  {
+    name: "Culinary Arts",
+    icon: "👨‍🍳",
+    courses: [
+      "Baking Masterclass",
+      "Pastry Arts",
+      "Wine Tasting",
+      "Coffee Brewing",
+      "Cocktail Mixing"
+    ]
+  },
+  {
+    name: "Lifestyle & Home",
+    icon: "🏡",
+    courses: [
+      "Gardening Basics",
+      "Organic Farming",
+      "Permaculture Design",
+      "Beekeeping",
+      "Home Organization",
+      "Feng Shui",
+      "Wedding Planning",
+      "Event Planning",
+      "Party Planning",
+      "Travel Planning"
     ]
   }
 ];
