@@ -96,7 +96,10 @@ const courseCategories = [
       "Debt Management",
       "Credit Score Improvement",
       "Budgeting Mastery",
-      "Personal Finance"
+      "Personal Finance",
+      "Luxury Brand Management",
+      "Fashion Marketing",
+      "Pet Business"
     ]
   },
   {
@@ -160,10 +163,23 @@ const courseCategories = [
       "Weight Loss Strategies",
       "Muscle Building",
       "Sports Nutrition",
-      "Vegan Cooking",
       "Sustainable Living",
       "Zero Waste Lifestyle",
-      "Minimalism"
+      "Minimalism",
+      "Meditation Mastery",
+      "Mindfulness Practice",
+      "Breathwork",
+      "Tai Chi",
+      "Qigong",
+      "Sleep Improvement",
+      "Insomnia Solutions",
+      "Mental Health First Aid",
+      "Addiction Recovery",
+      "Grief Counseling",
+      "Trauma Healing",
+      "PTSD Management",
+      "Anxiety Relief",
+      "Depression Support"
     ]
   },
   {
@@ -177,7 +193,71 @@ const courseCategories = [
       "Goal Setting and Achievement",
       "Conflict Resolution",
       "Team Building",
-      "Change Management"
+      "Change Management",
+      "Communication Skills",
+      "Positive Discipline",
+      "Positive Affirmations",
+      "Gratitude Practice",
+      "Vision Board Creation",
+      "Life Coaching",
+      "Career Coaching",
+      "Executive Coaching",
+      "Business Coaching"
+    ]
+  },
+  {
+    name: "Beauty & Makeup",
+    icon: "💄",
+    courses: [
+      "Makeup Artistry",
+      "Skincare Routine",
+      "Hair Styling Techniques",
+      "Nail Art Design",
+      "Bridal Makeup",
+      "Special Effects Makeup",
+      "Airbrush Makeup",
+      "Color Analysis",
+      "Perfume Making",
+      "Aromatherapy",
+      "Essential Oils"
+    ]
+  },
+  {
+    name: "Fashion & Style",
+    icon: "👗",
+    courses: [
+      "Fashion Design",
+      "Personal Styling",
+      "Wardrobe Planning",
+      "Fashion Trends",
+      "Sustainable Fashion",
+      "Vintage Fashion",
+      "Textile Design",
+      "Pattern Making",
+      "Sewing Techniques",
+      "Knitting and Crochet",
+      "Embroidery",
+      "Quilting",
+      "Leather Working",
+      "Shoe Design",
+      "Accessory Design",
+      "Hat Making",
+      "Jewelry Design"
+    ]
+  },
+  {
+    name: "Wellness & Spa",
+    icon: "🧖",
+    courses: [
+      "Massage Therapy",
+      "Reflexology",
+      "Acupressure",
+      "Reiki Healing",
+      "Crystal Healing",
+      "Sound Therapy",
+      "Energy Healing",
+      "Chakra Balancing",
+      "Aura Reading"
     ]
   },
   {
@@ -197,8 +277,6 @@ const courseCategories = [
       "3D Modeling Blender",
       "AutoCAD Design",
       "Interior Design",
-      "Fashion Design",
-      "Jewelry Design",
       "Product Design",
       "Packaging Design",
       "Web Design",
@@ -224,7 +302,9 @@ const courseCategories = [
       "Lightroom Editing",
       "Photo Retouching",
       "Video Production",
-      "Cinematography"
+      "Cinematography",
+      "Wildlife Photography",
+      "Pet Photography"
     ]
   },
   {
@@ -269,6 +349,75 @@ const courseCategories = [
     ]
   },
   {
+    name: "Martial Arts & Sports",
+    icon: "🥋",
+    courses: [
+      "Martial Arts",
+      "Self Defense",
+      "Boxing Training",
+      "Kickboxing",
+      "MMA Fundamentals",
+      "Wrestling Techniques",
+      "Judo",
+      "Karate",
+      "Taekwondo",
+      "Brazilian Jiu Jitsu",
+      "Muay Thai"
+    ]
+  },
+  {
+    name: "Relationships & Family",
+    icon: "❤️",
+    courses: [
+      "Relationship Coaching",
+      "Dating Mastery",
+      "Marriage Counseling",
+      "Parenting Skills",
+      "Child Development",
+      "Teenage Psychology",
+      "Baby Care",
+      "Breastfeeding Support",
+      "Pregnancy Fitness",
+      "Prenatal Yoga",
+      "Postpartum Recovery",
+      "Family Therapy",
+      "Homeschooling",
+      "Educational Games",
+      "Child Nutrition",
+      "Sleep Training",
+      "Potty Training",
+      "Speech Development",
+      "Sign Language for Babies",
+      "Adoption Guide",
+      "Foster Parenting",
+      "Blended Family Management",
+      "Single Parenting",
+      "Co-Parenting",
+      "Elderly Care",
+      "Dementia Care",
+      "Disability Support"
+    ]
+  },
+  {
+    name: "Spiritual & Metaphysical",
+    icon: "🔮",
+    courses: [
+      "Dream Analysis",
+      "Lucid Dreaming",
+      "Astrology Basics",
+      "Tarot Reading",
+      "Numerology",
+      "Palm Reading",
+      "Feng Shui Mastery",
+      "Vastu Shastra",
+      "Psychic Development",
+      "Intuition Training",
+      "Manifestation Techniques",
+      "Law of Attraction",
+      "Spiritual Coaching"
+    ]
+  },
+  {
     name: "Project & Operations Management",
     icon: "📊",
     courses: [
@@ -285,6 +434,7 @@ const courseCategories = [
     name: "Culinary Arts",
     icon: "👨‍🍳",
     courses: [
+      "Vegan Cooking",
       "Baking Masterclass",
       "Pastry Arts",
       "Wine Tasting",
@@ -293,7 +443,7 @@ const courseCategories = [
     ]
   },
   {
-    name: "Lifestyle & Home",
+    name: "Home & Lifestyle",
     icon: "🏡",
     courses: [
       "Gardening Basics",
@@ -305,7 +455,82 @@ const courseCategories = [
       "Wedding Planning",
       "Event Planning",
       "Party Planning",
-      "Travel Planning"
+      "Travel Planning",
+      "Decluttering",
+      "Minimalist Living",
+      "Tiny House Living",
+      "Van Life",
+      "RV Living",
+      "Off-Grid Living",
+      "Homesteading"
+    ]
+  },
+  {
+    name: "Outdoor & Adventure",
+    icon: "🏔️",
+    courses: [
+      "Survival Skills",
+      "Wilderness Survival",
+      "Urban Survival",
+      "Emergency Preparedness",
+      "First Aid Advanced",
+      "CPR Certification",
+      "Disaster Management",
+      "Fire Safety",
+      "Water Safety",
+      "Outdoor Adventures",
+      "Camping Skills",
+      "Hiking Guide",
+      "Rock Climbing",
+      "Mountaineering",
+      "Kayaking",
+      "Canoeing",
+      "Surfing",
+      "Scuba Diving",
+      "Snorkeling",
+      "Sailing",
+      "Fishing Techniques",
+      "Fly Fishing",
+      "Ice Fishing",
+      "Hunting Basics"
+    ]
+  },
+  {
+    name: "Nature & Science",
+    icon: "🔬",
+    courses: [
+      "Bird Watching",
+      "Marine Biology",
+      "Oceanography",
+      "Meteorology",
+      "Geology",
+      "Botany",
+      "Mycology",
+      "Entomology"
+    ]
+  },
+  {
+    name: "Pet Care & Training",
+    icon: "🐾",
+    courses: [
+      "Veterinary Care",
+      "Dog Training",
+      "Cat Behavior",
+      "Horse Training",
+      "Bird Care",
+      "Reptile Care",
+      "Aquarium Management",
+      "Pet Grooming",
+      "Animal Rescue"
+    ]
+  },
+  {
+    name: "Coaching & Counseling",
+    icon: "🎯",
+    courses: [
+      "Health Coaching",
+      "Financial Coaching",
+      "Retirement Planning Coaching"
     ]
   }
 ];
