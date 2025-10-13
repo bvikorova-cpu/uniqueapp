@@ -39,7 +39,7 @@ export const GameDistributionWrapper = ({
           className="mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Späť na hry
+          Back to games
         </Button>
         
         <h1 className="text-2xl font-bold mb-6">{title}</h1>

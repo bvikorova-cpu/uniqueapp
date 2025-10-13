@@ -16,7 +16,7 @@ export const Y8GameWrapper = ({ slug, title, onBack }: Y8GameWrapperProps) => {
       <div className="absolute top-4 left-4 z-50">
         <Button onClick={onBack} variant="secondary">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Späť na hry
+          Back to games
         </Button>
       </div>
       <iframe

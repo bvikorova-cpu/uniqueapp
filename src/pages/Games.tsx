@@ -42,10 +42,10 @@ const Games = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
-            Online Hry
+            Online Games
           </h1>
           <p className="text-muted-foreground text-lg">
-            Vyber si kategóriu a svoju obľúbenú hru!
+            Choose a category and your favorite game!
           </p>
         </div>
 
@@ -88,13 +88,13 @@ const Games = () => {
                         <div className="flex items-center gap-2">
                           <Trophy className="h-4 w-4 text-yellow-500" />
                           <span className="text-sm text-muted-foreground">
-                            {game.rating ? `${game.rating}/10` : "Nové"}
+                            {game.rating ? `${game.rating}/10` : "New"}
                           </span>
                         </div>
                       </div>
                       <Button className="w-full" variant="default">
                         <Gamepad2 className="h-4 w-4 mr-2" />
-                        Hrať
+                        Play
                       </Button>
                     </CardContent>
                   </Card>

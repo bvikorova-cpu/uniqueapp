@@ -12,7 +12,7 @@ export const GlitterMakeupGame = ({ onBack }: GlitterMakeupGameProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button onClick={onBack} variant="secondary">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Späť na hry
+            Back to games
           </Button>
           <h1 className="text-2xl font-bold">Barbie Glitter Makeup</h1>
         </div>

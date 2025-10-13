@@ -33,25 +33,25 @@ interface JobListing {
 
 const CATEGORIES = {
   it_software: "IT & Software",
-  marketing_sales: "Marketing & Predaj",
-  finance_accounting: "Financie & Účtovníctvo",
-  healthcare: "Zdravotníctvo",
-  education: "Vzdelávanie",
-  engineering: "Inžinierstvo",
-  hospitality: "Pohostinstvo",
-  retail: "Maloobchod",
-  manufacturing: "Výroba",
-  construction: "Stavebníctvo",
-  transportation: "Doprava",
-  other: "Ostatné",
+  marketing_sales: "Marketing & Sales",
+  finance_accounting: "Finance & Accounting",
+  healthcare: "Healthcare",
+  education: "Education",
+  engineering: "Engineering",
+  hospitality: "Hospitality",
+  retail: "Retail",
+  manufacturing: "Manufacturing",
+  construction: "Construction",
+  transportation: "Transportation",
+  other: "Other",
 };
 
 const JOB_TYPES = {
-  full_time: "Plný úväzok",
-  part_time: "Čiastočný úväzok",
-  contract: "Zmluva",
-  internship: "Stáž",
-  remote: "Na diaľku",
+  full_time: "Full Time",
+  part_time: "Part Time",
+  contract: "Contract",
+  internship: "Internship",
+  remote: "Remote",
 };
 
 const Jobs = () => {
@@ -210,14 +210,14 @@ const Jobs = () => {
         contact_email: "",
       });
       toast({
-        title: "✅ Pozícia vytvorená",
-        description: "Pracovná ponuka bola úspešne pridaná",
+        title: "✅ Position Created",
+        description: "Job listing has been successfully added",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "❌ Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť pozíciu",
+        title: "❌ Error",
+        description: error.message || "Failed to create position",
         variant: "destructive",
       });
     },
@@ -245,14 +245,14 @@ const Jobs = () => {
         resume_url: "",
       });
       toast({
-        title: "✅ Žiadosť odoslaná",
-        description: "Vaša žiadosť bola úspešne odoslaná zamestnávateľovi",
+        title: "✅ Application Sent",
+        description: "Your application has been successfully sent to the employer",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "❌ Chyba",
-        description: error.message || "Nepodarilo sa odoslať žiadosť",
+        title: "❌ Error",
+        description: error.message || "Failed to send application",
         variant: "destructive",
       });
     },
@@ -274,14 +274,14 @@ const Jobs = () => {
       queryClient.invalidateQueries({ queryKey: ["userRole"] });
       setIsEmployer(true);
       toast({
-        title: "✅ Registrácia úspešná",
-        description: "Teraz môžete pridávať pracovné ponuky",
+        title: "✅ Registration Successful",
+        description: "You can now add job listings",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "❌ Chyba",
-        description: error.message || "Nepodarilo sa zaregistrovať ako zamestnávateľ",
+        title: "❌ Error",
+        description: error.message || "Failed to register as employer",
         variant: "destructive",
       });
     },
@@ -304,14 +304,14 @@ const Jobs = () => {
         description: "",
       });
       toast({
-        title: "✅ Profil vytvorený",
-        description: "Váš profil hľadajúceho prácu bol vytvorený",
+        title: "✅ Profile Created",
+        description: "Your job seeker profile has been created",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "❌ Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť profil",
+        title: "❌ Error",
+        description: error.message || "Failed to create profile",
         variant: "destructive",
       });
     },
@@ -323,14 +323,14 @@ const Jobs = () => {
       <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
         <Card className="max-w-md w-full">
           <CardHeader>
-            <CardTitle>Prihlásenie potrebné</CardTitle>
+            <CardTitle>Sign In Required</CardTitle>
             <CardDescription>
-              Pre prístup k pracovným ponukám sa musíte prihlásiť
+              You must be signed in to access job listings
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button className="w-full" onClick={() => window.location.href = "/auth"}>
-              Prihlásiť sa
+              Sign In
             </Button>
           </CardContent>
         </Card>
@@ -344,10 +344,10 @@ const Jobs = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
-              Pracovné Ponuky
+              Job Listings
             </h1>
             <p className="text-muted-foreground">
-              Nájdite svoju vysnívanú prácu z celého sveta
+              Find your dream job from around the world
             </p>
           </div>
           <div className="flex gap-2">
@@ -355,42 +355,42 @@ const Jobs = () => {
               <DialogTrigger asChild>
                 <Button>
                   <Search className="h-4 w-4 mr-2" />
-                  Hľadám prácu
+                  Looking for a Job
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle>Hľadám prácu</DialogTitle>
+                  <DialogTitle>Looking for a Job</DialogTitle>
                   <DialogDescription>
-                    Zadajte údaje o tom, akú prácu hľadáte
+                    Enter details about what kind of job you're looking for
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="seeker-position">Pozícia *</Label>
+                    <Label htmlFor="seeker-position">Position *</Label>
                     <Input
                       id="seeker-position"
                       value={jobSeekerProfile.position}
                       onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, position: e.target.value })}
-                      placeholder="napr. Frontend Developer"
+                      placeholder="e.g. Frontend Developer"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="seeker-location">Lokalita *</Label>
+                    <Label htmlFor="seeker-location">Location *</Label>
                     <Input
                       id="seeker-location"
                       value={jobSeekerProfile.location}
                       onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, location: e.target.value })}
-                      placeholder="napr. Bratislava alebo Remote"
+                      placeholder="e.g. Bratislava or Remote"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="seeker-description">Popis *</Label>
+                    <Label htmlFor="seeker-description">Description *</Label>
                     <Textarea
                       id="seeker-description"
                       value={jobSeekerProfile.description}
                       onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, description: e.target.value })}
-                      placeholder="Popíšte svoje skúsenosti, zručnosti a čo hľadáte..."
+                      placeholder="Describe your experience, skills and what you're looking for..."
                       rows={6}
                     />
                   </div>
@@ -399,7 +399,7 @@ const Jobs = () => {
                     onClick={() => createJobSeekerMutation.mutate()}
                     disabled={createJobSeekerMutation.isPending || !jobSeekerProfile.position || !jobSeekerProfile.location || !jobSeekerProfile.description}
                   >
-                    {createJobSeekerMutation.isPending ? "Vytváram..." : "Vytvoriť profil"}
+                    {createJobSeekerMutation.isPending ? "Creating..." : "Create Profile"}
                   </Button>
                 </div>
               </DialogContent>
@@ -409,58 +409,58 @@ const Jobs = () => {
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Pridať pozíciu
+                    Add Position
                   </Button>
                 </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader>
-                  <DialogTitle>Pridať pracovnú pozíciu</DialogTitle>
+                  <DialogTitle>Add Job Position</DialogTitle>
                   <DialogDescription>
-                    Vytvorte novú pracovnú ponuku
+                    Create a new job listing
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="title">Názov pozície *</Label>
+                    <Label htmlFor="title">Position Title *</Label>
                     <Input
                       id="title"
                       value={newJob.title}
                       onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
-                      placeholder="napr. Senior React Developer"
+                      placeholder="e.g. Senior React Developer"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="company">Názov firmy *</Label>
+                    <Label htmlFor="company">Company Name *</Label>
                     <Input
                       id="company"
                       value={newJob.company_name}
                       onChange={(e) => setNewJob({ ...newJob, company_name: e.target.value })}
-                      placeholder="napr. Tech Solutions s.r.o."
+                      placeholder="e.g. Tech Solutions Ltd."
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="location">Lokalita *</Label>
+                      <Label htmlFor="location">Location *</Label>
                       <Input
                         id="location"
                         value={newJob.location}
                         onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
-                        placeholder="napr. Bratislava"
+                        placeholder="e.g. Bratislava"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="country">Krajina *</Label>
+                      <Label htmlFor="country">Country *</Label>
                       <Input
                         id="country"
                         value={newJob.country}
                         onChange={(e) => setNewJob({ ...newJob, country: e.target.value })}
-                        placeholder="napr. Slovensko"
+                        placeholder="e.g. Slovakia"
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="category">Kategória *</Label>
+                      <Label htmlFor="category">Category *</Label>
                       <Select value={newJob.category} onValueChange={(value) => setNewJob({ ...newJob, category: value })}>
                         <SelectTrigger>
                           <SelectValue />
@@ -475,7 +475,7 @@ const Jobs = () => {
                       </Select>
                     </div>
                     <div>
-                      <Label htmlFor="type">Typ práce *</Label>
+                      <Label htmlFor="type">Job Type *</Label>
                       <Select value={newJob.job_type} onValueChange={(value) => setNewJob({ ...newJob, job_type: value })}>
                         <SelectTrigger>
                           <SelectValue />
@@ -492,7 +492,7 @@ const Jobs = () => {
                   </div>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="salary_min">Plat od</Label>
+                      <Label htmlFor="salary_min">Salary From</Label>
                       <Input
                         id="salary_min"
                         type="number"
@@ -502,7 +502,7 @@ const Jobs = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="salary_max">Plat do</Label>
+                      <Label htmlFor="salary_max">Salary To</Label>
                       <Input
                         id="salary_max"
                         type="number"
@@ -512,7 +512,7 @@ const Jobs = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="currency">Mena</Label>
+                      <Label htmlFor="currency">Currency</Label>
                       <Input
                         id="currency"
                         value={newJob.salary_currency}
@@ -522,37 +522,37 @@ const Jobs = () => {
                     </div>
                   </div>
                   <div>
-                    <Label htmlFor="description">Popis pozície *</Label>
+                    <Label htmlFor="description">Job Description *</Label>
                     <Textarea
                       id="description"
                       value={newJob.description}
                       onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
-                      placeholder="Popíšte pracovnú pozíciu..."
+                      placeholder="Describe the job position..."
                       rows={4}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="requirements">Požiadavky</Label>
+                    <Label htmlFor="requirements">Requirements</Label>
                     <Textarea
                       id="requirements"
                       value={newJob.requirements}
                       onChange={(e) => setNewJob({ ...newJob, requirements: e.target.value })}
-                      placeholder="Vymenujte požiadavky..."
+                      placeholder="List requirements..."
                       rows={3}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="benefits">Benefity</Label>
+                    <Label htmlFor="benefits">Benefits</Label>
                     <Textarea
                       id="benefits"
                       value={newJob.benefits}
                       onChange={(e) => setNewJob({ ...newJob, benefits: e.target.value })}
-                      placeholder="Aké benefity ponúkate?"
+                      placeholder="What benefits do you offer?"
                       rows={3}
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">Kontaktný email *</Label>
+                    <Label htmlFor="email">Contact Email *</Label>
                     <Input
                       id="email"
                       type="email"
@@ -566,7 +566,7 @@ const Jobs = () => {
                     onClick={() => createJobMutation.mutate()}
                     disabled={createJobMutation.isPending}
                   >
-                    {createJobMutation.isPending ? "Vytváram..." : "Vytvoriť pozíciu"}
+                    {createJobMutation.isPending ? "Creating..." : "Create Position"}
                   </Button>
                 </div>
               </DialogContent>
@@ -574,7 +574,7 @@ const Jobs = () => {
             ) : (
               <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending}>
                 <Building2 className="h-4 w-4 mr-2" />
-                {registerEmployerMutation.isPending ? "Registrujem..." : "Registrovať ako zamestnávateľ"}
+                {registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}
               </Button>
             )}
           </div>
@@ -588,7 +588,7 @@ const Jobs = () => {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Hľadať pozície..."
+                    placeholder="Search positions..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
@@ -597,10 +597,10 @@ const Jobs = () => {
               </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Kategória" />
+                  <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Všetky kategórie</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {Object.entries(CATEGORIES).map(([key, label]) => (
                     <SelectItem key={key} value={key}>
                       {label}
@@ -610,10 +610,10 @@ const Jobs = () => {
               </Select>
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Typ práce" />
+                  <SelectValue placeholder="Job Type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Všetky typy</SelectItem>
+                  <SelectItem value="all">All Types</SelectItem>
                   {Object.entries(JOB_TYPES).map(([key, label]) => (
                     <SelectItem key={key} value={key}>
                       {label}
@@ -626,10 +626,10 @@ const Jobs = () => {
               <div className="mt-4">
                 <Select value={selectedCountry} onValueChange={setSelectedCountry}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Krajina" />
+                    <SelectValue placeholder="Country" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Všetky krajiny</SelectItem>
+                    <SelectItem value="all">All Countries</SelectItem>
                     {countries.map((country) => (
                       <SelectItem key={country} value={country}>
                         {country}
@@ -645,12 +645,12 @@ const Jobs = () => {
         {/* Jobs List */}
         {isLoading ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">Načítavam pozície...</p>
+            <p className="text-muted-foreground">Loading positions...</p>
           </div>
         ) : jobs.length === 0 ? (
           <div className="text-center py-12">
             <Briefcase className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">Žiadne pozície neboli nájdené</p>
+            <p className="text-muted-foreground">No positions found</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6">
@@ -702,7 +702,7 @@ const Jobs = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-sm mb-2">Popis pozície</h4>
+                    <h4 className="font-semibold text-sm mb-2">Job Description</h4>
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
                       {job.description}
                     </p>
@@ -710,7 +710,7 @@ const Jobs = () => {
                   
                   {job.requirements && (
                     <div>
-                      <h4 className="font-semibold text-sm mb-2">Požiadavky</h4>
+                      <h4 className="font-semibold text-sm mb-2">Requirements</h4>
                       <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
                         {job.requirements}
                       </p>
@@ -719,7 +719,7 @@ const Jobs = () => {
                   
                   {job.benefits && (
                     <div>
-                      <h4 className="font-semibold text-sm mb-2">Benefity</h4>
+                      <h4 className="font-semibold text-sm mb-2">Benefits</h4>
                       <p className="text-sm text-muted-foreground whitespace-pre-wrap break-words">
                         {job.benefits}
                       </p>
@@ -727,13 +727,13 @@ const Jobs = () => {
                   )}
                   
                   <div className="bg-muted/50 p-3 rounded-lg">
-                    <h4 className="font-semibold text-sm mb-2">Kontakt</h4>
+                    <h4 className="font-semibold text-sm mb-2">Contact</h4>
                     <p className="text-sm text-muted-foreground">{job.contact_email}</p>
                   </div>
                   
                   <div className="flex items-center justify-between pt-2 border-t border-border">
                     <span className="text-sm text-muted-foreground">
-                      {job.applications_count} žiadostí
+                      {job.applications_count} applications
                     </span>
                     <Button
                       onClick={() => {
@@ -741,7 +741,7 @@ const Jobs = () => {
                         setShowApplyDialog(true);
                       }}
                     >
-                      Reagovať na ponuku
+                      Apply for Position
                     </Button>
                   </div>
                 </CardContent>
@@ -772,7 +772,7 @@ const Jobs = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
-                      Zverejnené: {selectedJob && new Date(selectedJob.created_at).toLocaleDateString('sk-SK')}
+                      Posted: {selectedJob && new Date(selectedJob.created_at).toLocaleDateString('en-US')}
                     </div>
                   </div>
                 </div>
@@ -801,7 +801,7 @@ const Jobs = () => {
               <div className="bg-muted/50 p-6 rounded-lg border border-border">
                 <h3 className="font-bold text-xl mb-3 flex items-center gap-2">
                   <Briefcase className="h-5 w-5 text-primary" />
-                  Popis pracovnej pozície
+                  Job Description
                 </h3>
                 <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
                   {selectedJob?.description}
@@ -815,7 +815,7 @@ const Jobs = () => {
                     <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Požiadavky a kvalifikácia
+                    Requirements and Qualifications
                   </h3>
                   <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
                     {selectedJob.requirements}
@@ -830,7 +830,7 @@ const Jobs = () => {
                     <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
                     </svg>
-                    Benefity a výhody
+                    Benefits and Perks
                   </h3>
                   <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
                     {selectedJob.benefits}
@@ -843,19 +843,19 @@ const Jobs = () => {
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 p-6 rounded-lg border border-green-200 dark:border-green-800">
                   <h3 className="font-bold text-xl mb-3 flex items-center gap-2">
                     <DollarSign className="h-5 w-5 text-green-700 dark:text-green-400" />
-                    Platové ohodnotenie
+                    Salary Range
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">Minimálny plat</p>
+                      <p className="text-sm text-muted-foreground mb-1">Minimum Salary</p>
                       <p className="text-lg font-semibold">{selectedJob.salary_min} {selectedJob.salary_currency}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">Maximálny plat</p>
+                      <p className="text-sm text-muted-foreground mb-1">Maximum Salary</p>
                       <p className="text-lg font-semibold">{selectedJob.salary_max} {selectedJob.salary_currency}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">Mena</p>
+                      <p className="text-sm text-muted-foreground mb-1">Currency</p>
                       <p className="text-lg font-semibold">{selectedJob.salary_currency}</p>
                     </div>
                   </div>
@@ -868,24 +868,24 @@ const Jobs = () => {
                   <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  Kontaktné informácie
+                  Contact Information
                 </h3>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-muted-foreground mb-1">Email pre žiadosti</p>
+                    <p className="text-sm text-muted-foreground mb-1">Application Email</p>
                     <p className="font-semibold text-lg">{selectedJob?.contact_email}</p>
                   </div>
                   <div className="flex items-center gap-6 text-sm pt-2 border-t border-border">
                     <div>
-                      <p className="text-muted-foreground">Počet žiadostí</p>
+                      <p className="text-muted-foreground">Number of Applications</p>
                       <p className="font-semibold text-lg">{selectedJob?.applications_count}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Typ úväzku</p>
+                      <p className="text-muted-foreground">Employment Type</p>
                       <p className="font-semibold">{selectedJob && JOB_TYPES[selectedJob.job_type as keyof typeof JOB_TYPES]}</p>
                     </div>
                     <div>
-                      <p className="text-muted-foreground">Kategória</p>
+                      <p className="text-muted-foreground">Category</p>
                       <p className="font-semibold">{selectedJob && CATEGORIES[selectedJob.category as keyof typeof CATEGORIES]}</p>
                     </div>
                   </div>
@@ -901,7 +901,7 @@ const Jobs = () => {
                 }}
               >
                 <Search className="h-5 w-5 mr-2" />
-                Reagovať na túto pozíciu
+                Apply for This Position
               </Button>
             </div>
           </DialogContent>
@@ -911,24 +911,24 @@ const Jobs = () => {
         <Dialog open={showApplyDialog} onOpenChange={setShowApplyDialog}>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
-              <DialogTitle>Reagovať na pozíciu</DialogTitle>
+              <DialogTitle>Apply for Position</DialogTitle>
               <DialogDescription>
                 {selectedJob?.title} - {selectedJob?.company_name}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="cover_letter">Motivačný list</Label>
+                <Label htmlFor="cover_letter">Cover Letter</Label>
                 <Textarea
                   id="cover_letter"
                   value={application.cover_letter}
                   onChange={(e) => setApplication({ ...application, cover_letter: e.target.value })}
-                  placeholder="Napíšte prečo ste vhodným kandidátom..."
+                  placeholder="Write why you're a suitable candidate..."
                   rows={6}
                 />
               </div>
               <div>
-                <Label htmlFor="resume">Odkaz na životopis (voliteľné)</Label>
+                <Label htmlFor="resume">Resume Link (optional)</Label>
                 <Input
                   id="resume"
                   type="url"
@@ -939,7 +939,7 @@ const Jobs = () => {
               </div>
               <div className="bg-muted p-4 rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  <strong>Kontakt:</strong> {selectedJob?.contact_email}
+                  <strong>Contact:</strong> {selectedJob?.contact_email}
                 </p>
               </div>
               <Button 
@@ -947,7 +947,7 @@ const Jobs = () => {
                 onClick={() => applyMutation.mutate()}
                 disabled={applyMutation.isPending}
               >
-                {applyMutation.isPending ? "Odosielam..." : "Odoslať žiadosť"}
+                {applyMutation.isPending ? "Sending..." : "Send Application"}
               </Button>
             </div>
           </DialogContent>

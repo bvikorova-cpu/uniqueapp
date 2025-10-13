@@ -8,12 +8,12 @@ export interface Y8Game {
 }
 
 export const gameCategories = {
-  girls: "Pre dievčatá",
-  action: "Akčné",
-  puzzle: "Logické",
-  sports: "Športové",
-  adventure: "Dobrodružné",
-  racing: "Závodné",
+  girls: "For Girls",
+  action: "Action",
+  puzzle: "Puzzle",
+  sports: "Sports",
+  adventure: "Adventure",
+  racing: "Racing",
 } as const;
 
 export type GameCategory = keyof typeof gameCategories;

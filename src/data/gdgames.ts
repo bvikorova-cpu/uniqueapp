@@ -1,5 +1,5 @@
 // GameDistribution Games Data
-// Po registrácii na GameDistribution.com nahraď "PLACEHOLDER_ID" skutočnými game ID
+// After registering on GameDistribution.com, replace "PLACEHOLDER_ID" with actual game IDs
 
 export type GameCategory = "girls" | "action" | "puzzle" | "sports" | "adventure" | "racing";
 
@@ -15,15 +15,15 @@ export interface GDGame {
 }
 
 export const gameCategories: Record<GameCategory, string> = {
-  girls: "Pre dievčatá",
-  action: "Akčné",
-  puzzle: "Logické",
-  sports: "Športové",
-  adventure: "Dobrodružné",
-  racing: "Závodné"
+  girls: "For Girls",
+  action: "Action",
+  puzzle: "Puzzle",
+  sports: "Sports",
+  adventure: "Adventure",
+  racing: "Racing"
 };
 
-// PLACEHOLDER GAMES - Po registrácii doplň skutočné game IDs z GameDistribution katalógu
+// PLACEHOLDER GAMES - After registration, add actual game IDs from GameDistribution catalog
 export const gdGames: GDGame[] = [];
 
 export const getGamesByCategory = (category: GameCategory): GDGame[] => {
