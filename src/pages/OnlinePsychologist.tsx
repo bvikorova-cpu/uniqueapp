@@ -40,8 +40,8 @@ const OnlinePsychologist = () => {
         if (error) {
           console.error("Error creating session:", error);
           toast({
-            title: "Chyba",
-            description: "Nepodarilo sa vytvoriť sedenie. Skúste to prosím znova.",
+            title: "Error",
+            description: "Failed to create session. Please try again.",
             variant: "destructive"
           });
           return;
@@ -164,7 +164,7 @@ const OnlinePsychologist = () => {
       });
 
       if (!response.ok || !response.body) {
-        throw new Error("Chyba pri komunikácii so serverom");
+        throw new Error("Error communicating with server");
       }
 
       const reader = response.body.getReader();
@@ -224,8 +224,8 @@ const OnlinePsychologist = () => {
     } catch (error) {
       console.error("Error:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať správu. Skúste to prosím znova.",
+        title: "Error",
+        description: "Failed to send message. Please try again.",
         variant: "destructive"
       });
       setMessages(prev => prev.slice(0, -1));
@@ -241,13 +241,13 @@ const OnlinePsychologist = () => {
         <div className="text-center space-y-4 mb-8">
           <Badge className="bg-primary/10 text-primary">
             <Lock className="h-3 w-3 mr-1" />
-            Anonymné a dôverné
+            Anonymous and Confidential
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Online Psychológ
+            Online Psychologist
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Anonymný priestor kde môžete zdieľať svoje starosti a získať podporu od AI psychológa.
+            An anonymous space where you can share your worries and get support from an AI psychologist.
           </p>
         </div>
 
@@ -256,27 +256,27 @@ const OnlinePsychologist = () => {
           <Card>
             <CardContent className="pt-6 text-center">
               <Lock className="h-8 w-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">100% Anonymné</h3>
+              <h3 className="font-semibold mb-1">100% Anonymous</h3>
               <p className="text-sm text-muted-foreground">
-                Nemusíte sa registrovať ani uvádzať osobné údaje
+                No registration or personal information required
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
               <Heart className="h-8 w-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">Empatický prístup</h3>
+              <h3 className="font-semibold mb-1">Empathetic Approach</h3>
               <p className="text-sm text-muted-foreground">
-                Profesionálna podpora s porozumením
+                Professional support with understanding
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-6 text-center">
               <MessageCircle className="h-8 w-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold mb-1">Kedykoľvek</h3>
+              <h3 className="font-semibold mb-1">Anytime</h3>
               <p className="text-sm text-muted-foreground">
-                K dispozícii 24/7 bez čakania
+                Available 24/7 without waiting
               </p>
             </CardContent>
           </Card>
@@ -287,7 +287,7 @@ const OnlinePsychologist = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5" />
-              Rozhovor s psychológom
+              Conversation with Psychologist
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -296,9 +296,9 @@ const OnlinePsychologist = () => {
               {messages.length === 0 && (
                 <div className="text-center text-muted-foreground py-20">
                   <Heart className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg mb-2">Vitajte v bezpečnom priestore</p>
+                  <p className="text-lg mb-2">Welcome to a safe space</p>
                   <p className="text-sm">
-                    Pokojne napíšte čo vás trápi. Som tu pre vás.
+                    Feel free to write what troubles you. I am here for you.
                   </p>
                 </div>
               )}
@@ -359,7 +359,7 @@ const OnlinePsychologist = () => {
             {/* Input */}
             <div className="flex gap-2">
               <Input
-                placeholder="Napíšte čo vás trápi..."
+                placeholder="Write what troubles you..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => {
@@ -381,7 +381,7 @@ const OnlinePsychologist = () => {
             </div>
 
             <p className="text-xs text-muted-foreground text-center">
-              Toto je AI asistent. V prípade vážnej krízy vyhľadajte odbornú pomoc alebo zavolajte na krízovú linku 0800 500 444
+              This is an AI assistant. In case of a serious crisis, seek professional help or call the crisis hotline 0800 500 444
             </p>
           </CardContent>
         </Card>
