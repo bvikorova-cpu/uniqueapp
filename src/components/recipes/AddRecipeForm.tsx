@@ -79,7 +79,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("Musíte byť prihlásený");
+        toast.error("You must be logged in");
         return;
       }
 
@@ -118,7 +118,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
 
       if (error) throw error;
 
-      toast.success("Recept úspešne pridaný!");
+      toast.success("Recipe successfully added!");
       setFormData({
         title: "",
         description: "",
@@ -135,7 +135,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
       setImagePreview("");
       onSuccess();
     } catch (error: any) {
-      toast.error("Chyba pri pridávaní receptu: " + error.message);
+      toast.error("Error adding recipe: " + error.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -143,58 +143,58 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-card p-6 rounded-lg border">
-      <h2 className="text-2xl font-bold">Pridať nový recept</h2>
+      <h2 className="text-2xl font-bold">Add New Recipe</h2>
 
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">Názov receptu</label>
+          <label className="block text-sm font-medium mb-2">Recipe Name</label>
           <Input
             required
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            placeholder="Napr. Gulášová polievka"
+            placeholder="E.g. Goulash Soup"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Popis</label>
+          <label className="block text-sm font-medium mb-2">Description</label>
           <Textarea
             required
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            placeholder="Stručný popis receptu"
+            placeholder="Brief recipe description"
             rows={3}
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Kategória</label>
+            <label className="block text-sm font-medium mb-2">Category</label>
             <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
               <SelectTrigger>
-                <SelectValue placeholder="Vyberte kategóriu" />
+                <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Polievky">Polievky</SelectItem>
-                <SelectItem value="Hlavné jedlá">Hlavné jedlá</SelectItem>
-                <SelectItem value="Dezerty">Dezerty</SelectItem>
-                <SelectItem value="Šaláty">Šaláty</SelectItem>
-                <SelectItem value="Predjedlá">Predjedlá</SelectItem>
-                <SelectItem value="Nápoje">Nápoje</SelectItem>
+                <SelectItem value="Soups">Soups</SelectItem>
+                <SelectItem value="Main Dishes">Main Dishes</SelectItem>
+                <SelectItem value="Desserts">Desserts</SelectItem>
+                <SelectItem value="Salads">Salads</SelectItem>
+                <SelectItem value="Appetizers">Appetizers</SelectItem>
+                <SelectItem value="Drinks">Drinks</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Obtiažnosť</label>
+            <label className="block text-sm font-medium mb-2">Difficulty</label>
             <Select value={formData.difficulty} onValueChange={(value) => setFormData({ ...formData, difficulty: value })}>
               <SelectTrigger>
-                <SelectValue placeholder="Vyberte obtiažnosť" />
+                <SelectValue placeholder="Select difficulty" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Ľahké">Ľahké</SelectItem>
-                <SelectItem value="Stredné">Stredné</SelectItem>
-                <SelectItem value="Náročné">Náročné</SelectItem>
+                <SelectItem value="Easy">Easy</SelectItem>
+                <SelectItem value="Medium">Medium</SelectItem>
+                <SelectItem value="Hard">Hard</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -202,17 +202,17 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Čas prípravy</label>
+            <label className="block text-sm font-medium mb-2">Preparation Time</label>
             <Input
               required
               value={formData.time}
               onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-              placeholder="Napr. 45 min"
+              placeholder="E.g. 45 min"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Počet porcií</label>
+            <label className="block text-sm font-medium mb-2">Number of Servings</label>
             <Input
               required
               type="number"
@@ -223,7 +223,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Kalórie (na porciu)</label>
+            <label className="block text-sm font-medium mb-2">Calories (per serving)</label>
             <Input
               required
               type="number"
@@ -235,11 +235,11 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Fotka receptu</label>
+          <label className="block text-sm font-medium mb-2">Recipe Photo</label>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md cursor-pointer hover:bg-primary/90">
               <Upload className="h-4 w-4" />
-              Nahrať fotku
+              Upload Photo
               <input
                 type="file"
                 accept="image/*"
@@ -255,9 +255,9 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
 
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium">Ingrediencie</label>
+            <label className="block text-sm font-medium">Ingredients</label>
             <Button type="button" variant="outline" size="sm" onClick={addIngredient}>
-              <Plus className="h-4 w-4 mr-1" /> Pridať
+              <Plus className="h-4 w-4 mr-1" /> Add
             </Button>
           </div>
           <div className="space-y-2">
@@ -267,7 +267,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
                   required
                   value={ingredient}
                   onChange={(e) => updateIngredient(index, e.target.value)}
-                  placeholder={`Ingrediencia ${index + 1}`}
+                  placeholder={`Ingredient ${index + 1}`}
                 />
                 {formData.ingredients.length > 1 && (
                   <Button
@@ -286,9 +286,9 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
 
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium">Postup prípravy</label>
+            <label className="block text-sm font-medium">Preparation Instructions</label>
             <Button type="button" variant="outline" size="sm" onClick={addInstruction}>
-              <Plus className="h-4 w-4 mr-1" /> Pridať krok
+              <Plus className="h-4 w-4 mr-1" /> Add Step
             </Button>
           </div>
           <div className="space-y-2">
@@ -298,7 +298,7 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
                   required
                   value={instruction}
                   onChange={(e) => updateInstruction(index, e.target.value)}
-                  placeholder={`Krok ${index + 1}`}
+                  placeholder={`Step ${index + 1}`}
                   rows={2}
                 />
                 {formData.instructions.length > 1 && (
@@ -317,17 +317,17 @@ export const AddRecipeForm = ({ onSuccess }: AddRecipeFormProps) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">Tagy (oddelené čiarkou)</label>
+          <label className="block text-sm font-medium mb-2">Tags (comma separated)</label>
           <Input
             value={formData.tags}
             onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-            placeholder="napr. vegetariánske, rýchle, zdravé"
+            placeholder="e.g. vegetarian, quick, healthy"
           />
         </div>
       </div>
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? "Ukladám..." : "Pridať recept"}
+        {isSubmitting ? "Saving..." : "Add Recipe"}
       </Button>
     </form>
   );
