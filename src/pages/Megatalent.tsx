@@ -365,8 +365,8 @@ const Megatalent = () => {
     } catch (error) {
       console.error('Upload error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa nahrať súbor.",
+        title: t('megatalent.error'),
+        description: t('megatalent.upload_error'),
         variant: "destructive",
       });
     } finally {
@@ -717,7 +717,7 @@ const Megatalent = () => {
               <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold">
-                {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Príspevky"}
+                {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label || "Posts"}
               </h2>
               <Badge className="bg-gold text-gold-foreground">
                 <TrendingUp className="h-4 w-4 mr-1" />
@@ -729,7 +729,7 @@ const Megatalent = () => {
             {submissions.length === 0 ? (
               <Card className="p-8 text-center">
                 <p className="text-muted-foreground">
-                  Zatiaľ žiadne príspevky v tejto kategórii. Buďte prvý!
+                  No posts in this category yet. Be the first!
                 </p>
               </Card>
             ) : (
@@ -743,10 +743,10 @@ const Megatalent = () => {
                         </div>
                         <div>
                           <p className="font-semibold">
-                            {submission.profiles?.full_name || 'Používateľ'}
+                            {submission.profiles?.full_name || 'User'}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(submission.created_at).toLocaleDateString('sk-SK')}
+                            {new Date(submission.created_at).toLocaleDateString('en-US')}
                           </p>
                         </div>
                       </div>
@@ -803,12 +803,12 @@ const Megatalent = () => {
               <div className="lg:col-span-1 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Mesačná súťaž</CardTitle>
+                <CardTitle className="text-lg">Monthly Contest</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-gold">10.000 €</div>
-                  <p className="text-sm text-muted-foreground">Hlavná výhra</p>
+                  <div className="text-3xl font-bold text-gold">€10,000</div>
+                  <p className="text-sm text-muted-foreground">Grand Prize</p>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
@@ -878,23 +878,23 @@ const Megatalent = () => {
               {isSubscribed && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-xl">Správa predplatného</CardTitle>
+                    <CardTitle className="text-xl">Subscription Management</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium">Aktuálne predplatné</p>
+                        <p className="font-medium">Current Subscription</p>
                         <p className="text-sm text-muted-foreground capitalize">
                           {subscriptionTier === 'top_premium' ? 'Top Premium' : 'Premium'}
                         </p>
                       </div>
-                      <Badge variant="default">Aktívne</Badge>
+                      <Badge variant="default">Active</Badge>
                     </div>
                     
                     <div className="p-4 border rounded-lg bg-muted/50">
                       <p className="text-sm text-muted-foreground">
-                        Pri zrušení predplatného zostane aktívne do konca zaplateného obdobia. 
-                        Vyplatená suma sa nevracia.
+                        If you cancel your subscription, it will remain active until the end of the paid period. 
+                        The paid amount is non-refundable.
                       </p>
                     </div>
                     
@@ -904,7 +904,7 @@ const Megatalent = () => {
                       onClick={handleCancelSubscription}
                       disabled={cancelingSubscription}
                     >
-                      {cancelingSubscription ? 'Ruším...' : 'Zrušiť predplatné'}
+                      {cancelingSubscription ? 'Canceling...' : 'Cancel Subscription'}
                     </Button>
                   </CardContent>
                 </Card>
@@ -916,45 +916,45 @@ const Megatalent = () => {
         {/* Copyright Protection Section */}
         <Card className="mt-12 border-muted">
           <CardHeader>
-            <CardTitle className="text-xl">⚖️ Ochrana autorského práva</CardTitle>
+            <CardTitle className="text-xl">⚖️ Copyright Protection</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted-foreground">
             <div className="space-y-3">
               <p className="font-semibold text-foreground">
-                Dôležité informácie pre všetkých účastníkov súťaže Megatalent:
+                Important information for all Megatalent contest participants:
               </p>
               
               <div className="space-y-2">
-                <h3 className="font-medium text-foreground">📸 Práva k nahranému obsahu:</h3>
+                <h3 className="font-medium text-foreground">📸 Rights to Uploaded Content:</h3>
                 <ul className="list-disc list-inside space-y-1 pl-2">
-                  <li>Nahraním príspevku potvrdzujete, že ste autorom alebo máte právo obsah zverejniť</li>
-                  <li>Nesmú sa nahrávať cudzie fotografie, videá ani iný chránený obsah bez povolenia</li>
-                  <li>Za nahratie cudzieho obsahu nesie plnú zodpovednosť autor príspevku</li>
+                  <li>By uploading a post, you confirm that you are the author or have the right to publish the content</li>
+                  <li>You must not upload others' photos, videos, or other protected content without permission</li>
+                  <li>The author of the post bears full responsibility for uploading others' content</li>
                 </ul>
               </div>
 
               <div className="space-y-2">
-                <h3 className="font-medium text-foreground">🛡️ Naše zodpovednosti:</h3>
+                <h3 className="font-medium text-foreground">🛡️ Our Responsibilities:</h3>
                 <ul className="list-disc list-inside space-y-1 pl-2">
-                  <li>Platforma Megatalent slúži len ako priestor pre zverejnenie obsahu</li>
-                  <li>Prevádzkovateľ platformy nezodpovedá za obsah nahraný používateľmi</li>
-                  <li>V prípade porušenia autorských práv bude obsah okamžite odstránený</li>
-                  <li>Vyhradujeme si právo zablokovať používateľov, ktorí porušujú pravidlá</li>
+                  <li>The Megatalent platform serves only as a space for publishing content</li>
+                  <li>The platform operator is not responsible for content uploaded by users</li>
+                  <li>In case of copyright infringement, the content will be immediately removed</li>
+                  <li>We reserve the right to block users who violate the rules</li>
                 </ul>
               </div>
 
               <div className="space-y-2">
-                <h3 className="font-medium text-foreground">⚠️ Upozornenie:</h3>
+                <h3 className="font-medium text-foreground">⚠️ Warning:</h3>
                 <ul className="list-disc list-inside space-y-1 pl-2">
-                  <li>Porušenie autorských práv môže mať vážne právne následky</li>
-                  <li>Nahraním obsahu súhlasíte s týmito podmienkami</li>
-                  <li>V prípade pochybností o pravosti obsahu môžeme požiadať o overenie autorstva</li>
+                  <li>Copyright infringement can have serious legal consequences</li>
+                  <li>By uploading content, you agree to these terms</li>
+                  <li>In case of doubts about the authenticity of content, we may request verification of authorship</li>
                 </ul>
               </div>
 
               <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-lg">
                 <p className="text-amber-700 dark:text-amber-400 font-medium">
-                  🚨 Nahrajte len svoj vlastný, originálny obsah. Porušenie autorských práv vás môže diskvalifikovať zo súťaže a vystaviť právnym následkom.
+                  🚨 Upload only your own original content. Copyright infringement may disqualify you from the contest and expose you to legal consequences.
                 </p>
               </div>
             </div>

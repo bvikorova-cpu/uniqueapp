@@ -72,13 +72,13 @@ export const ReferralProgram = () => {
   const copyReferralCode = () => {
     navigator.clipboard.writeText(referralCode);
     toast({
-      title: "Kód skopírovaný!",
-      description: "Referenčný kód bol skopírovaný do schránky.",
+      title: "Code copied!",
+      description: "Referral code has been copied to clipboard.",
     });
   };
 
   if (loading) {
-    return <div>Načítavam...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
@@ -86,16 +86,16 @@ export const ReferralProgram = () => {
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4">
           <span className="bg-gradient-primary bg-clip-text text-transparent">
-            Referenčný program
+            Referral Program
           </span>
         </h2>
         
         <p className="text-muted-foreground mb-6">
-          Pozvi priateľov do súťaže a zarábaš 5€ mesačne za každého aktívneho účastníka!
+          Invite friends to the contest and earn €5 monthly for each active participant!
         </p>
 
         <div className="bg-muted p-4 rounded-lg mb-6">
-          <p className="text-sm text-muted-foreground mb-2">Tvoj unikátny kód:</p>
+          <p className="text-sm text-muted-foreground mb-2">Your unique code:</p>
           <div className="flex items-center gap-2">
             <code className="text-2xl font-bold tracking-wider">{referralCode}</code>
             <Button
@@ -112,7 +112,7 @@ export const ReferralProgram = () => {
           <Card className="p-4">
             <div className="flex items-center gap-2 mb-2">
               <Users className="h-5 w-5 text-primary" />
-              <span className="text-sm text-muted-foreground">Pozvaní priatelia</span>
+              <span className="text-sm text-muted-foreground">Invited Friends</span>
             </div>
             <p className="text-3xl font-bold">{referredCount}</p>
           </Card>
@@ -120,20 +120,20 @@ export const ReferralProgram = () => {
           <Card className="p-4">
             <div className="flex items-center gap-2 mb-2">
               <DollarSign className="h-5 w-5 text-primary" />
-              <span className="text-sm text-muted-foreground">Celkové výnosy</span>
+              <span className="text-sm text-muted-foreground">Total Earnings</span>
             </div>
-            <p className="text-3xl font-bold">{earnings.toFixed(2)}€</p>
+            <p className="text-3xl font-bold">€{earnings.toFixed(2)}</p>
           </Card>
         </div>
 
         <div className="mt-6 p-4 bg-primary/10 rounded-lg">
-          <h3 className="font-semibold mb-2">Ako to funguje?</h3>
+          <h3 className="font-semibold mb-2">How does it work?</h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• Zdieľaj svoj kód s priateľmi</li>
-            <li>• Pri registrácii zadajú tvoj kód</li>
-            <li>• Zarobíš 5€ mesačne za každého aktívneho účastníka</li>
-            <li>• Výnosy dostávaš každý mesiac, kým sú aktívni</li>
-            <li className="text-amber-600 font-medium">⚠️ POZOR: Kód môže použiť len nový účastník! Ak je osoba už v súťaži, nemôže použiť referenčný kód a ty za ňu nedostaneš 5€</li>
+            <li>• Share your code with friends</li>
+            <li>• They enter your code during registration</li>
+            <li>• You earn €5 monthly for each active participant</li>
+            <li>• You receive earnings every month while they are active</li>
+            <li className="text-amber-600 font-medium">⚠️ WARNING: Only new participants can use the code! If the person is already in the contest, they cannot use a referral code and you will not receive €5 for them</li>
           </ul>
         </div>
       </Card>

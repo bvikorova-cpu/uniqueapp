@@ -24,7 +24,7 @@ export default function Rewards() {
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Načítavam...</p>
+        <p className="text-muted-foreground">Loading...</p>
       </div>
     );
   }
@@ -33,7 +33,7 @@ export default function Rewards() {
     <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-6xl">
         <h1 className="text-4xl font-bold mb-8 bg-gradient-primary bg-clip-text text-transparent text-center">
-          🎮 Gamifikácia & Odmeny
+          🎮 Gamification & Rewards
         </h1>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
@@ -45,8 +45,8 @@ export default function Rewards() {
 
         <Tabs defaultValue="badges" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="badges">Odznaky</TabsTrigger>
-            <TabsTrigger value="leaderboard">Žebříček</TabsTrigger>
+            <TabsTrigger value="badges">Badges</TabsTrigger>
+            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
           </TabsList>
 
           <TabsContent value="badges">
