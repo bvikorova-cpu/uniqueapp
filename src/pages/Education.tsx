@@ -65,35 +65,35 @@ const quizCategories = [
 
 const courseCategories = [
   {
-    name: "Business Courses",
+    name: "Obchodné kurzy",
     icon: "💼",
     courses: [
-      "Accounting Basics", "Financial Planning", "Investing for Beginners",
-      "Marketing and Advertising", "Entrepreneurship A to Z", "E-commerce", 
-      "Project Management", "Business Plan", "Market Analysis", "Personal Finance",
-      "Cryptocurrency", "Logistics and Supply Chain"
+      "Základy účtovníctva", "Finančné plánovanie", "Investovanie pre začiatočníkov",
+      "Marketing a reklama", "Podnikanie od A po Z", "E-commerce", 
+      "Projektový manažment", "Obchodný plán", "Analýza trhu", "Osobné financie",
+      "Kryptomeny", "Logistika a dodávateľský reťazec"
     ]
   },
   {
-    name: "Beauty and Health",
+    name: "Krása a zdravie",
     icon: "💄",
     courses: [
-      "Makeup for Beginners", "Skincare", "Manicure",
-      "Pedicure", "Styling and Fashion", "Nail Design", "Hair Styling",
-      "Massage", "Aromatherapy", "Yoga", "Pilates", "Fitness Training"
+      "Makeup pre začiatočníkov", "Starostlivosť o pleť", "Manikúra",
+      "Pedikúra", "Styling a móda", "Dizajn nechtov", "Úprava vlasov",
+      "Masáže", "Aromaterapia", "Jóga", "Pilates", "Fitness tréning"
     ]
   },
   {
-    name: "Personal Development",
+    name: "Osobný rozvoj",
     icon: "🌟",
     courses: [
-      "Time Management", "Productivity", "Mindfulness", "Meditation",
-      "Stress Management", "Emotional Intelligence", "Communication", "Assertiveness",
-      "Public Speaking", "Presentation Skills", "Leadership", "Team Building"
+      "Time management", "Produktivita", "Všímavosť", "Meditácia",
+      "Zvládanie stresu", "Emocionálna inteligencia", "Komunikácia", "Asertivita",
+      "Verejné vystupovanie", "Prezentačné zručnosti", "Vedenie", "Tímová práca"
     ]
   },
   {
-    name: "IT and Computers",
+    name: "IT a počítače",
     icon: "💻",
     courses: [
       "HTML/CSS", "JavaScript", "React", "Python",
@@ -102,21 +102,21 @@ const courseCategories = [
     ]
   },
   {
-    name: "Education",
+    name: "Vzdelávanie",
     icon: "🎓",
     courses: [
-      "Pedagogy", "Didactics", "Teaching Methodology", "Child Psychology",
-      "Special Education", "Inclusive Education", "Montessori Method", "Waldorf Pedagogy",
-      "Project-Based Learning", "Digital Education", "E-learning Creation", "Gamification"
+      "Pedagogika", "Didaktika", "Metodika výučby", "Detská psychológia",
+      "Špeciálna pedagogika", "Inkluzívne vzdelávanie", "Montessori metóda", "Waldorfská pedagogika",
+      "Projektové učenie", "Digitálne vzdelávanie", "Tvorba e-learningu", "Gamifikácia"
     ]
   },
   {
-    name: "Social Services",
+    name: "Sociálne služby",
     icon: "🤝",
     courses: [
-      "Social Work", "Field Social Work", "Community Work", "Case Management",
-      "Family Work", "Work with Seniors", "Youth Work", "Addiction and Dependency Work",
-      "Homelessness Social Work", "Crisis Intervention", "Domestic Violence", "Supervision and Burnout Prevention"
+      "Sociálna práca", "Terénna sociálna práca", "Komunitná práca", "Prípadové manažovanie",
+      "Rodinná práca", "Práca so seniormi", "Práca s mládežou", "Práca so závislosťami",
+      "Sociálna práca s bezdomovcami", "Krízová intervencia", "Domáce násilie", "Supervízia a prevencia vyhorenia"
     ]
   }
 ];

@@ -4,7 +4,7 @@ export interface Topic {
 }
 
 export const courseContent: Record<string, Topic[]> = {
-  "Accounting Basics": [
+  "Základy účtovníctva": [
     {
       title: "Téma 1: Úvod do účtovníctva",
       content: `**Čo je účtovníctvo?**
