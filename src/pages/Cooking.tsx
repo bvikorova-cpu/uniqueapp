@@ -319,11 +319,15 @@ const Cooking = () => {
                       alt={selectedRecipe.title}
                       className="w-full h-full object-cover"
                     />
-                    <Badge 
-                      className={`absolute top-4 right-4 ${getDifficultyColor(selectedRecipe.difficulty)}`}
-                    >
-                      {selectedRecipe.difficulty}
-                    </Badge>
+                    <div className="absolute top-4 right-4">
+                      <Button 
+                        size="sm" 
+                        variant="premium"
+                        className="pointer-events-none"
+                      >
+                        {selectedRecipe.difficulty}
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Recipe Info */}
