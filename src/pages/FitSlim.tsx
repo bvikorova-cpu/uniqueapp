@@ -78,99 +78,99 @@ const FitSlim = () => {
   const weightLossVideos = [
     {
       id: 1,
-      title: "10-minútový HIIT tréning na chudnutie",
+      title: "10-Minute HIIT Workout for Weight Loss",
       duration: "10 min",
-      difficulty: "Stredná",
+      difficulty: "Medium",
       calories: "150 kcal",
       thumbnail: hiitWorkout,
       videoUrl: "https://www.youtube.com/embed/ml6cT4AZdqI?autoplay=1&rel=0",
     },
     {
       id: 2,
-      title: "Kardio pre začiatočníkov",
+      title: "Cardio for Beginners",
       duration: "15 min",
-      difficulty: "Ľahká",
+      difficulty: "Easy",
       calories: "120 kcal",
       thumbnail: cardioBeginners,
       videoUrl: "https://www.youtube.com/embed/gC_L9qAHVJ8?autoplay=1&rel=0",
     },
     {
       id: 3,
-      title: "Celé telo - spaľovanie tukov",
+      title: "Full Body - Fat Burning",
       duration: "20 min",
-      difficulty: "Náročná",
+      difficulty: "Hard",
       calories: "250 kcal",
       thumbnail: fullBodyBurn,
       videoUrl: "https://www.youtube.com/embed/UItWltVZZmE?autoplay=1&rel=0",
     },
     {
       id: 4,
-      title: "Tabata tréning - intenzívne spaľovanie kalórií",
+      title: "Tabata Training - Intense Calorie Burn",
       duration: "25 min",
-      difficulty: "Náročná",
+      difficulty: "Hard",
       calories: "300 kcal",
       thumbnail: tabataTraining,
       videoUrl: "https://www.youtube.com/embed/20LH4dEeWg0?autoplay=1&rel=0",
     },
     {
       id: 5,
-      title: "Cvičenie na chudnutie brucha",
+      title: "Belly Fat Loss Workout",
       duration: "12 min",
-      difficulty: "Stredná",
+      difficulty: "Medium",
       calories: "100 kcal",
       thumbnail: bellyWorkout,
       videoUrl: "https://www.youtube.com/embed/1919eTCoESo?autoplay=1&rel=0",
     },
     {
       id: 6,
-      title: "Bodyweight tréning na chudnutie",
+      title: "Bodyweight Training for Weight Loss",
       duration: "18 min",
-      difficulty: "Stredná",
+      difficulty: "Medium",
       calories: "200 kcal",
       thumbnail: bodyweightTraining,
       videoUrl: "https://www.youtube.com/embed/cbKkB3POqaY?autoplay=1&rel=0",
     },
     {
       id: 7,
-      title: "Jumping Jacks - intervalový tréning",
+      title: "Jumping Jacks - Interval Training",
       duration: "14 min",
-      difficulty: "Stredná",
+      difficulty: "Medium",
       calories: "180 kcal",
       thumbnail: jumpingJacks,
       videoUrl: "https://www.youtube.com/embed/2W4ZNSwoW_4?autoplay=1&rel=0",
     },
     {
       id: 8,
-      title: "Cardio Dance - zábavné chudnutie",
+      title: "Cardio Dance - Fun Weight Loss",
       duration: "30 min",
-      difficulty: "Stredná",
+      difficulty: "Medium",
       calories: "320 kcal",
       thumbnail: cardioDance,
       videoUrl: "https://www.youtube.com/embed/gCBsupdwdVw?autoplay=1&rel=0",
     },
     {
       id: 9,
-      title: "Tréning stehien a zadku",
+      title: "Thighs and Glutes Training",
       duration: "16 min",
-      difficulty: "Náročná",
+      difficulty: "Hard",
       calories: "220 kcal",
       thumbnail: thighsGlutes,
       videoUrl: "https://www.youtube.com/embed/SZ6IshIbWGc?autoplay=1&rel=0",
     },
     {
       id: 10,
-      title: "Ranný metabolizmus boost",
+      title: "Morning Metabolism Boost",
       duration: "8 min",
-      difficulty: "Ľahká",
+      difficulty: "Easy",
       calories: "90 kcal",
       thumbnail: morningBoost,
       videoUrl: "https://www.youtube.com/embed/3sEeVJEXTfY?autoplay=1&rel=0",
     },
     {
       id: 11,
-      title: "Plank challenge - spevnenie jadra",
+      title: "Plank Challenge - Core Strengthening",
       duration: "10 min",
-      difficulty: "Stredná",
+      difficulty: "Medium",
       calories: "110 kcal",
       thumbnail: plankChallenge,
       videoUrl: "https://www.youtube.com/embed/pSHjTRCQxIw?autoplay=1&rel=0",
@@ -995,7 +995,7 @@ const FitSlim = () => {
             Fit & Slim
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Vaša cesta k zdravšiemu životnému štýlu začína tu. Nájdite tréningy, recepty a tipy pre lepšiu kondíciu.
+            Your journey to a healthier lifestyle starts here. Find workouts, recipes and tips for better fitness.
           </p>
         </div>
 
@@ -1003,19 +1003,19 @@ const FitSlim = () => {
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 mb-8">
             <TabsTrigger value="weight-loss-videos">
               <Play className="h-4 w-4 mr-2" />
-              Chudnutie
+              Weight Loss
             </TabsTrigger>
             <TabsTrigger value="health-videos">
               <Heart className="h-4 w-4 mr-2" />
-              Zdravie
+              Health
             </TabsTrigger>
             <TabsTrigger value="weight-loss-recipes">
               <ChefHat className="h-4 w-4 mr-2" />
-              Recepty na chudnutie
+              Weight Loss Recipes
             </TabsTrigger>
             <TabsTrigger value="healthy-recipes">
               <ChefHat className="h-4 w-4 mr-2" />
-              Zdravé recepty
+              Healthy Recipes
             </TabsTrigger>
           </TabsList>
 
@@ -1044,7 +1044,7 @@ const FitSlim = () => {
                   <CardHeader>
                     <CardTitle className="text-lg">{video.title}</CardTitle>
                     <CardDescription className="flex items-center justify-between">
-                      <span>Náročnosť: {video.difficulty}</span>
+                      <span>Difficulty: {video.difficulty}</span>
                       <span className="text-primary font-semibold">{video.calories}</span>
                     </CardDescription>
                   </CardHeader>
@@ -1078,7 +1078,7 @@ const FitSlim = () => {
                   <CardHeader>
                     <CardTitle className="text-lg">{video.title}</CardTitle>
                     <CardDescription className="flex items-center justify-between">
-                      <span>Náročnosť: {video.difficulty}</span>
+                      <span>Difficulty: {video.difficulty}</span>
                       <span className="text-primary font-semibold flex items-center">
                         <Heart className="h-3 w-3 mr-1" />
                         {video.benefit}
@@ -1116,7 +1116,7 @@ const FitSlim = () => {
                     <CardDescription>
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-primary font-semibold">{recipe.calories}</span>
-                        <span>Bielkoviny: {recipe.protein}</span>
+                        <span>Protein: {recipe.protein}</span>
                       </div>
                     </CardDescription>
                   </CardHeader>
@@ -1168,9 +1168,9 @@ const FitSlim = () => {
         <Dialog open={!!selectedVideo} onOpenChange={() => setSelectedVideo(null)}>
           <DialogContent className="max-w-5xl p-0">
             <DialogHeader className="px-6 pt-6">
-              <DialogTitle>Video prehrávač</DialogTitle>
+              <DialogTitle>Video Player</DialogTitle>
               <DialogDescription>
-                Pozrite si tréningové video
+                Watch the workout video
               </DialogDescription>
             </DialogHeader>
             <div className="w-full px-6 pb-6">
@@ -1204,7 +1204,7 @@ const FitSlim = () => {
                       {selectedRecipe.time}
                     </span>
                     <span className="text-primary font-semibold">{selectedRecipe.calories}</span>
-                    {selectedRecipe.protein && <span>Bielkoviny: {selectedRecipe.protein}</span>}
+                    {selectedRecipe.protein && <span>Protein: {selectedRecipe.protein}</span>}
                     {selectedRecipe.benefit && (
                       <span className="flex items-center">
                         <Heart className="h-4 w-4 mr-1" />
@@ -1227,7 +1227,7 @@ const FitSlim = () => {
                     <div>
                       <h3 className="text-lg font-semibold mb-3 flex items-center">
                         <ChefHat className="h-5 w-5 mr-2" />
-                        Ingrediencie
+                        Ingredients
                       </h3>
                       <ul className="space-y-2">
                         {selectedRecipe.ingredients.map((ingredient: string, index: number) => (
@@ -1242,7 +1242,7 @@ const FitSlim = () => {
 
                   {selectedRecipe.instructions && (
                     <div>
-                      <h3 className="text-lg font-semibold mb-3">Postup prípravy</h3>
+                      <h3 className="text-lg font-semibold mb-3">Preparation Instructions</h3>
                       <div className="prose prose-sm max-w-none">
                         <p className="whitespace-pre-line text-muted-foreground leading-relaxed">
                           {selectedRecipe.instructions}
