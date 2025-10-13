@@ -288,26 +288,6 @@ const Referral = () => {
               </CardContent>
             </Card>
 
-            {/* Bonus Info */}
-            <Card className="bg-gradient-gold text-gold-foreground">
-              <CardHeader>
-                <CardTitle>🎁 Bonus za 10 priateľov</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm mb-4">
-                  Pozvi 10 priateľov a získaj bonus 25€!
-                </p>
-                <div className="w-full bg-gold-foreground/20 rounded-full h-3 mb-2">
-                  <div 
-                    className="bg-gold-foreground h-3 rounded-full transition-all duration-300"
-                    style={{ width: `${Math.min(((stats?.totalReferrals || 0) / 10) * 100, 100)}%` }}
-                  ></div>
-                </div>
-                <p className="text-xs text-center">
-                  {stats?.totalReferrals || 0}/10 priateľov
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
