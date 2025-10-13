@@ -812,23 +812,23 @@ const Megatalent = () => {
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span>Aktuálny mesiac:</span>
+                    <span>Current Month:</span>
                     <span className="font-semibold">
                       {(() => {
                         const now = new Date();
                         const startDate = new Date('2026-01-01');
                         
                         if (now < startDate) {
-                          return 'Začína 01.01.2026';
+                          return 'Starts 01.01.2026';
                         }
                         
-                        const currentMonth = now.toLocaleDateString('sk-SK', { month: 'long', year: 'numeric' });
-                        return currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
+                        const currentMonth = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                        return currentMonth;
                       })()}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>Zostáva:</span>
+                    <span>Remaining:</span>
                     <span className="font-semibold">
                       {(() => {
                         const now = new Date();
@@ -836,12 +836,12 @@ const Megatalent = () => {
                         
                         if (now < startDate) {
                           const daysUntilStart = Math.ceil((startDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                          return `Štart o ${daysUntilStart} dní`;
+                          return `Starts in ${daysUntilStart} days`;
                         }
                         
                         const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
                         const daysLeft = Math.ceil((lastDayOfMonth.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-                        return `${daysLeft} ${daysLeft === 1 ? 'deň' : daysLeft < 5 ? 'dni' : 'dní'}`;
+                        return `${daysLeft} ${daysLeft === 1 ? 'day' : 'days'}`;
                       })()}
                     </span>
                   </div>
