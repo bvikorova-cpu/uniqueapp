@@ -178,7 +178,6 @@ const aiEffects: AIEffect[] = [
   { id: "smile", name: "Smile", category: "emotions", image: smileImg, description: "Úsmev efekt" },
   { id: "bodyshake", name: "Bodyshake", category: "dance", image: bodyshakeImg, description: "Trasenie telom" },
   { id: "melt", name: "Melt", category: "fanciful", image: meltImg, description: "Topenie sa" },
-  { id: "bloom-magic", name: "Bloom Magic", category: "fanciful", image: bloomMagicImg, description: "Kúzlo kvitnutia", isHot: true },
   { id: "paperman", name: "Paperman", category: "heroes", image: papermanImg, description: "Papierový muž" },
   { id: "flying", name: "Flying", category: "fanciful", image: flyingImg, description: "Lietanie", isHot: true },
   { id: "balloon-flyaway", name: "Balloon Flyaway", category: "fanciful", image: balloonFlyawayImg, description: "Balóny odletia" },
@@ -199,7 +198,6 @@ const aiEffects: AIEffect[] = [
   { id: "explosion", name: "Explosion", category: "fanciful", image: explosionImg, description: "Explózia" },
   { id: "face-punch", name: "Face Punch", category: "entertainment", image: facePunchImg, description: "Facka" },
   { id: "ai-kiss", name: "AI Kiss", category: "interactions", image: aiKissImg, description: "AI bozk" },
-  { id: "kungfu-club", name: "Kungfu Club", category: "entertainment", image: kungfuClubImg, description: "Kung-fu klub", isHot: true },
   { id: "holy-wings", name: "Holy Wings", category: "heroes", image: holyWingsImg, description: "Sväté krídla" },
   { id: "sheep-curls", name: "Sheep Curls", category: "pets", image: sheepCurlsImg, description: "Ovčie kučery", isHot: true },
   { id: "ai-muscle-generator", name: "AI Muscle Generator", category: "appearance", image: aiMuscleGeneratorImg, description: "AI generátor svalov", isHot: true },
@@ -209,15 +207,11 @@ const aiEffects: AIEffect[] = [
   { id: "alive-art", name: "Alive Art", category: "fanciful", image: aliveArtImg, description: "Živé umenie" },
   { id: "become-female", name: "Become Female", category: "appearance", image: becomeFemaleImg, description: "Staň sa ženou" },
   { id: "anything-robot", name: "Anything, Robot", category: "entertainment", image: anythingRobotImg, description: "Čokoľvek, robot", isHot: true },
-  
-  // Nové efekty
   { id: "magic-sparkle", name: "Magic Sparkle", category: "fanciful", image: magicSparkleImg, description: "Magické iskry", isHot: true },
-  { id: "cyborg-transform", name: "Cyborg Transform", category: "heroes", image: cyborgTransformImg, description: "Kyborg transformácia", isHot: true },
   { id: "snow-globe", name: "Snow Globe", category: "fanciful", image: snowGlobeImg, description: "Snežná guľa" },
   { id: "butterfly-wings", name: "Butterfly Wings", category: "fanciful", image: butterflyWingsImg, description: "Motýlie krídla" },
   { id: "vampire-mode", name: "Vampire Mode", category: "heroes", image: vampireModeImg, description: "Upírsky režim" },
   { id: "plushie-party", name: "Plushie Party", category: "pets", image: plushiePartyImg, description: "Párty plyšákov" },
-  
   { id: "rainbow-aura", name: "Rainbow Aura", category: "fanciful", image: rainbowAuraImg, description: "Dúhová aura" },
   { id: "zombie-walk", name: "Zombie Walk", category: "entertainment", image: zombieWalkImg, description: "Zombie chôdza" },
   { id: "superhero-landing", name: "Superhero Landing", category: "heroes", image: superheroLandingImg, description: "Pristátie superhrdinu" },
