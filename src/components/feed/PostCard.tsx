@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
-import { sk } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 
 interface PostCardProps {
   post: {
@@ -56,20 +56,20 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const { toast } = useToast();
 
   const reactions = [
-    { type: "heart", emoji: "❤️", label: "Láska" },
-    { type: "fire", emoji: "🔥", label: "Bomba" },
-    { type: "laugh", emoji: "😂", label: "Smiech" },
+    { type: "heart", emoji: "❤️", label: "Love" },
+    { type: "fire", emoji: "🔥", label: "Fire" },
+    { type: "laugh", emoji: "😂", label: "Laugh" },
     { type: "wow", emoji: "😮", label: "Wow" },
-    { type: "sad", emoji: "😢", label: "Smutné" },
-    { type: "angry", emoji: "😡", label: "Nahnevaný" },
+    { type: "sad", emoji: "😢", label: "Sad" },
+    { type: "angry", emoji: "😡", label: "Angry" },
     { type: "thumbsup", emoji: "👍", label: "Like" },
-    { type: "clap", emoji: "👏", label: "Potlesk" },
+    { type: "clap", emoji: "👏", label: "Clap" },
     { type: "party", emoji: "🎉", label: "Party" },
-    { type: "sparkle", emoji: "✨", label: "Iskra" },
+    { type: "sparkle", emoji: "✨", label: "Sparkle" },
   ];
 
   const handleDelete = async () => {
-    if (!confirm("Naozaj chceš zmazať tento príspevok?")) return;
+    if (!confirm("Do you really want to delete this post?")) return;
 
     setDeleting(true);
     try {
@@ -79,8 +79,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       if (user?.id !== post.user_id) {
         toast({
-          title: "Nie je možné zmazať",
-          description: "Môžeš mazať len vlastné príspevky",
+          title: "Cannot delete",
+          description: "You can only delete your own posts",
           variant: "destructive",
         });
         return;
@@ -91,14 +91,14 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Príspevok bol zmazaný",
+        title: "Success",
+        description: "Post was deleted",
       });
 
       onDelete();
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -129,7 +129,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       }
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -164,7 +164,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       }
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -190,7 +190,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       setComments(data || []);
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -217,12 +217,12 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       fetchComments();
 
       toast({
-        title: "Úspech",
-        description: "Komentár bol pridaný",
+        title: "Success",
+        description: "Comment was added",
       });
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -233,20 +233,20 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: "Príspevok",
+          title: "Post",
           text: post.content || "",
           url: window.location.href,
         });
       } else {
         await navigator.clipboard.writeText(window.location.href);
         toast({
-          title: "Úspech",
-          description: "Odkaz bol skopírovaný",
+          title: "Success",
+          description: "Link was copied",
         });
       }
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -272,11 +272,11 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-semibold">{post.profiles?.full_name || "Používateľ"}</p>
+              <p className="font-semibold">{post.profiles?.full_name || "User"}</p>
               <p className="text-sm text-muted-foreground">
                 {formatDistanceToNow(new Date(post.created_at), {
                   addSuffix: true,
-                  locale: sk,
+                  locale: enUS,
                 })}
               </p>
             </div>
@@ -383,21 +383,21 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         <div className="mt-4 pt-4 border-t space-y-4">
           <div className="flex gap-2">
             <Textarea
-              placeholder="Napíš komentár..."
+              placeholder="Write a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               className="min-h-[60px]"
             />
             <Button onClick={handleComment} disabled={!newComment.trim()}>
-              Odoslať
+              Send
             </Button>
           </div>
 
           <div className="space-y-3">
             {loadingComments ? (
-              <p className="text-sm text-muted-foreground">Načítavam...</p>
+              <p className="text-sm text-muted-foreground">Loading...</p>
             ) : comments.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Zatiaľ žiadne komentáre</p>
+              <p className="text-sm text-muted-foreground">No comments yet</p>
             ) : (
               comments.map((comment) => (
                 <div key={comment.id} className="flex gap-3">
@@ -409,13 +409,13 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                   </Avatar>
                   <div className="flex-1">
                     <p className="text-sm font-semibold">
-                      {comment.profiles?.full_name || "Používateľ"}
+                      {comment.profiles?.full_name || "User"}
                     </p>
                     <p className="text-sm">{comment.content}</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {formatDistanceToNow(new Date(comment.created_at), {
                         addSuffix: true,
-                        locale: sk,
+                        locale: enUS,
                       })}
                     </p>
                   </div>

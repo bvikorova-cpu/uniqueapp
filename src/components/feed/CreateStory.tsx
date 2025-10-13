@@ -31,12 +31,12 @@ export default function CreateStory() {
 
   const createStoryMutation = useMutation({
     mutationFn: async () => {
-      if (!mediaFile) throw new Error("Vyber médium");
+      if (!mediaFile) throw new Error("Select media");
 
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      if (!user) throw new Error("Nie si prihlásený");
+      if (!user) throw new Error("You are not logged in");
 
       // Upload media
       const fileExt = mediaFile.name.split(".").pop();
@@ -80,7 +80,7 @@ export default function CreateStory() {
       return story;
     },
     onSuccess: () => {
-      toast.success("Story vytvorená!");
+      toast.success("Story created!");
       setOpen(false);
       setMediaFile(null);
       setCaption("");
@@ -91,7 +91,7 @@ export default function CreateStory() {
       queryClient.invalidateQueries({ queryKey: ["stories"] });
     },
     onError: (error) => {
-      toast.error("Chyba pri vytváraní story");
+      toast.error("Error creating story");
       console.error(error);
     },
   });
@@ -101,20 +101,20 @@ export default function CreateStory() {
       <DialogTrigger asChild>
         <Button className="w-full gap-2">
           <Plus className="h-4 w-4" />
-          Pridať Story
+          Add Story
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle>Vytvor novú Story</DialogTitle>
-          <DialogDescription>Zdieľaj moment s priateľmi (24h)</DialogDescription>
+          <DialogTitle>Create new Story</DialogTitle>
+          <DialogDescription>Share a moment with friends (24h)</DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="image" onValueChange={(v) => setMediaType(v as "image" | "video")}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="image" className="gap-2">
               <ImageIcon className="h-4 w-4" />
-              Fotka
+              Photo
             </TabsTrigger>
             <TabsTrigger value="video" className="gap-2">
               <Video className="h-4 w-4" />
@@ -124,7 +124,7 @@ export default function CreateStory() {
 
           <TabsContent value="image" className="space-y-4 mt-4">
             <div>
-              <Label htmlFor="image-file">Nahraj fotku</Label>
+              <Label htmlFor="image-file">Upload photo</Label>
               <Input
                 id="image-file"
                 type="file"
@@ -136,7 +136,7 @@ export default function CreateStory() {
 
           <TabsContent value="video" className="space-y-4 mt-4">
             <div>
-              <Label htmlFor="video-file">Nahraj video</Label>
+              <Label htmlFor="video-file">Upload video</Label>
               <Input
                 id="video-file"
                 type="file"
@@ -149,12 +149,12 @@ export default function CreateStory() {
 
         <div className="space-y-4">
           <div>
-            <Label htmlFor="caption">Popis (voliteľné)</Label>
+            <Label htmlFor="caption">Description (optional)</Label>
             <Textarea
               id="caption"
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
-              placeholder="Čo sa deje?"
+              placeholder="What's happening?"
               rows={2}
             />
           </div>
@@ -168,41 +168,41 @@ export default function CreateStory() {
               className="h-4 w-4"
             />
             <Label htmlFor="include-poll" className="cursor-pointer">
-              Pridať anketu
+              Add poll
             </Label>
           </div>
 
           {includePoll && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Anketa</CardTitle>
+                <CardTitle className="text-lg">Poll</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 <div>
-                  <Label htmlFor="poll-question">Otázka</Label>
+                  <Label htmlFor="poll-question">Question</Label>
                   <Input
                     id="poll-question"
                     value={pollQuestion}
                     onChange={(e) => setPollQuestion(e.target.value)}
-                    placeholder="Napr: Čo je lepšie?"
+                    placeholder="E.g: What's better?"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="poll-a">Možnosť A</Label>
+                  <Label htmlFor="poll-a">Option A</Label>
                   <Input
                     id="poll-a"
                     value={pollOptionA}
                     onChange={(e) => setPollOptionA(e.target.value)}
-                    placeholder="Napr: Leto"
+                    placeholder="E.g: Summer"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="poll-b">Možnosť B</Label>
+                  <Label htmlFor="poll-b">Option B</Label>
                   <Input
                     id="poll-b"
                     value={pollOptionB}
                     onChange={(e) => setPollOptionB(e.target.value)}
-                    placeholder="Napr: Zima"
+                    placeholder="E.g: Winter"
                   />
                 </div>
               </CardContent>
@@ -214,7 +214,7 @@ export default function CreateStory() {
             disabled={!mediaFile || createStoryMutation.isPending}
             className="w-full"
           >
-            {createStoryMutation.isPending ? "Vytváram..." : "Zdieľať Story"}
+            {createStoryMutation.isPending ? "Creating..." : "Share Story"}
           </Button>
         </div>
       </DialogContent>

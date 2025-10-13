@@ -41,7 +41,7 @@ const UserSearch = () => {
       setSearchResults(data || []);
     } catch (error: any) {
       toast({
-        title: "Chyba pri vyhľadávaní",
+        title: "Search error",
         description: error.message,
         variant: "destructive",
       });
@@ -57,7 +57,7 @@ const UserSearch = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Vyhľadať používateľov..."
+            placeholder="Search users..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             className="pl-10"
@@ -86,7 +86,7 @@ const UserSearch = () => {
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">
-                    {profile.full_name || "Bez mena"}
+                    {profile.full_name || "No name"}
                   </p>
                   <p className="text-sm text-muted-foreground truncate">
                     {profile.email}
@@ -99,7 +99,7 @@ const UserSearch = () => {
 
         {!searching && searchQuery && searchResults.length === 0 && (
           <p className="text-center text-muted-foreground py-4">
-            Žiadni používatelia nenájdení
+            No users found
           </p>
         )}
       </Card>

@@ -130,7 +130,7 @@ export default function StoriesBar() {
             )}
           </div>
           <span className="text-xs text-center font-medium truncate w-full">
-            {hasOwnStory ? "Tvoja Story" : "Pridať"}
+            {hasOwnStory ? "Your Story" : "Add"}
           </span>
         </button>
 

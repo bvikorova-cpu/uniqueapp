@@ -32,8 +32,8 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
 
     if (!content.trim() && files.length === 0) {
       toast({
-        title: "Prázdny príspevok",
-        description: "Pridaj text alebo súbory",
+        title: "Empty post",
+        description: "Add text or files",
         variant: "destructive",
       });
       return;
@@ -48,8 +48,8 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
 
       if (!user) {
         toast({
-          title: "Musíš byť prihlásený",
-          description: "Pre pridanie príspevkov sa prihlás",
+          title: "You must be logged in",
+          description: "Please log in to add posts",
           variant: "destructive",
         });
         return;
@@ -96,8 +96,8 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
       }
 
       toast({
-        title: "Úspech!",
-        description: "Príspevok bol pridaný",
+        title: "Success!",
+        description: "Post was added",
       });
 
       setContent("");
@@ -105,7 +105,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
       onPostCreated();
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -118,7 +118,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
     <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <Textarea
-          placeholder="Čo máš na mysli?"
+          placeholder="What's on your mind?"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           className="min-h-[100px] resize-none"
@@ -193,10 +193,10 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
             {uploading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Pridávam...
+                Adding...
               </>
             ) : (
-              "Pridať príspevok"
+              "Add post"
             )}
           </Button>
         </div>

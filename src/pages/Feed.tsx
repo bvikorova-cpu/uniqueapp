@@ -69,7 +69,7 @@ const Feed = () => {
       setPosts(postsWithProfiles);
     } catch (error: any) {
       toast({
-        title: "Chyba pri načítaní príspevkov",
+        title: "Error loading posts",
         description: error.message,
         variant: "destructive",
       });
@@ -152,7 +152,7 @@ const Feed = () => {
             </Card>
           ) : posts.length === 0 ? (
             <Card className="p-8 text-center text-muted-foreground">
-              Zatiaľ žiadne príspevky. Buď prvý, kto niečo pridá!
+              No posts yet. Be the first to add something!
             </Card>
           ) : (
             posts.map((post) => (
