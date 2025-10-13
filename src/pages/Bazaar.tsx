@@ -52,7 +52,7 @@ const Bazaar = () => {
     location: "",
     description: "",
     category: "electronics",
-    condition: "Ako nový",
+    condition: "Like New",
     listing_type: "sell",
   });
   const { toast } = useToast();
@@ -83,8 +83,8 @@ const Bazaar = () => {
         if (error) throw error;
 
         toast({
-          title: "Platba úspešná!",
-          description: "Váš nákup bol úspešne spracovaný.",
+          title: "Payment successful!",
+          description: "Your purchase has been processed successfully.",
         });
 
         // Remove URL parameters
@@ -95,15 +95,15 @@ const Bazaar = () => {
       } catch (error) {
         console.error('Error verifying payment:', error);
         toast({
-          title: "Chyba",
-          description: "Nepodarilo sa overiť platbu. Kontaktujte podporu.",
+          title: "Error",
+          description: "Failed to verify payment. Please contact support.",
           variant: "destructive",
         });
       }
     } else if (paymentStatus === 'canceled') {
       toast({
-        title: "Platba zrušená",
-        description: "Platba bola zrušená.",
+        title: "Payment canceled",
+        description: "Payment was canceled.",
         variant: "destructive",
       });
       window.history.replaceState({}, '', window.location.pathname);
@@ -135,8 +135,8 @@ const Bazaar = () => {
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         toast({
-          title: "Súbor je príliš veľký",
-          description: "Maximálna veľkosť obrázka je 5MB",
+          title: "File too large",
+          description: "Maximum image size is 5MB",
           variant: "destructive",
         });
         return;
@@ -156,20 +156,20 @@ const Bazaar = () => {
   };
 
   const categories = [
-    { id: "all", name: "Všetko" },
-    { id: "electronics", name: "Elektronika" },
-    { id: "clothing", name: "Oblečenie" },
-    { id: "home", name: "Dom & záhrada" },
-    { id: "sports", name: "Šport" },
-    { id: "books", name: "Knihy" },
-    { id: "other", name: "Ostatné" },
+    { id: "all", name: "All" },
+    { id: "electronics", name: "Electronics" },
+    { id: "clothing", name: "Clothing" },
+    { id: "home", name: "Home & Garden" },
+    { id: "sports", name: "Sports" },
+    { id: "books", name: "Books" },
+    { id: "other", name: "Other" },
   ];
 
-  const conditions = ["Ako nový", "Veľmi dobré", "Dobré", "Použité"];
+  const conditions = ["Like New", "Very Good", "Good", "Used"];
 
   const listingTypes = [
-    { id: "sell", name: "Predám" },
-    { id: "buy", name: "Kúpim" },
+    { id: "sell", name: "Sell" },
+    { id: "buy", name: "Buy" },
   ];
 
   const filteredItems = items.filter(item => {
@@ -184,21 +184,21 @@ const Bazaar = () => {
     const diffInMs = now.getTime() - date.getTime();
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
     
-    if (diffInHours < 1) return "pred chvíľou";
-    if (diffInHours < 24) return `pred ${diffInHours} hodinami`;
+    if (diffInHours < 1) return "just now";
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
     const diffInDays = Math.floor(diffInHours / 24);
-    if (diffInDays === 1) return "pred 1 dňom";
-    if (diffInDays < 7) return `pred ${diffInDays} dňami`;
+    if (diffInDays === 1) return "1 day ago";
+    if (diffInDays < 7) return `${diffInDays} days ago`;
     const diffInWeeks = Math.floor(diffInDays / 7);
-    if (diffInWeeks === 1) return "pred 1 týždňom";
-    return `pred ${diffInWeeks} týždňami`;
+    if (diffInWeeks === 1) return "1 week ago";
+    return `${diffInWeeks} weeks ago`;
   };
 
   const handleSubmit = async () => {
     if (!formData.title || !formData.price || !formData.location) {
       toast({
-        title: "Chyba",
-        description: "Vyplňte všetky povinné polia",
+        title: "Error",
+        description: "Fill in all required fields",
         variant: "destructive",
       });
       return;
@@ -208,8 +208,8 @@ const Bazaar = () => {
     const canCreate = await canCreateListing('bazaar');
     if (!canCreate) {
       toast({
-        title: "Limit dosiahnutý",
-        description: `Dosiahli ste limit ${limits.bazaarListingsPerMonth} inzerátov/mesiac. Upgradujte predplatné pre viac.`,
+        title: "Limit reached",
+        description: `You have reached the limit of ${limits.bazaarListingsPerMonth} listings/month. Upgrade your subscription for more.`,
         variant: "destructive",
       });
       return;
@@ -220,8 +220,8 @@ const Bazaar = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
-          title: "Chyba",
-          description: "Musíte byť prihlásený",
+          title: "Error",
+          description: "You must be logged in",
           variant: "destructive",
         });
         setUploading(false);
@@ -264,13 +264,13 @@ const Bazaar = () => {
       if (insertError) throw insertError;
 
       toast({
-        title: "Úspech",
+        title: "Success",
         description: commission > 0 
-          ? `Inzerát bol pridaný. Pri predaji bude účtovaná provízia ${limits.commissionRate}% (${commission.toFixed(2)}€)`
-          : "Inzerát bol pridaný bez provízie",
+          ? `Listing added. On sale, a ${limits.commissionRate}% commission (€${commission.toFixed(2)}) will be charged`
+          : "Listing added without commission",
       });
 
-      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Ako nový", listing_type: "sell" });
+      setFormData({ title: "", price: "", location: "", description: "", category: "electronics", condition: "Like New", listing_type: "sell" });
       setImageFile(null);
       setImagePreview("");
       setIsDialogOpen(false);
@@ -278,8 +278,8 @@ const Bazaar = () => {
     } catch (error) {
       console.error('Error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa pridať inzerát",
+        title: "Error",
+        description: "Failed to add listing",
         variant: "destructive",
       });
     } finally {
@@ -290,8 +290,8 @@ const Bazaar = () => {
   const handleContact = (item: BazaarItem) => {
     if (!currentUserId) {
       toast({
-        title: "Chyba",
-        description: "Musíte byť prihlásený",
+        title: "Error",
+        description: "You must be logged in",
         variant: "destructive",
       });
       return;
@@ -299,8 +299,8 @@ const Bazaar = () => {
     
     if (currentUserId === item.user_id) {
       toast({
-        title: "Upozornenie",
-        description: "Nemôžete kontaktovať seba",
+        title: "Warning",
+        description: "You cannot contact yourself",
         variant: "destructive",
       });
       return;
@@ -322,8 +322,8 @@ const Bazaar = () => {
   const handleSendMessage = async () => {
     if (!selectedItem || !currentUserId || !contactMessage.trim()) {
       toast({
-        title: "Chyba",
-        description: "Vyplňte správu",
+        title: "Error",
+        description: "Fill in message",
         variant: "destructive",
       });
       return;
@@ -342,8 +342,8 @@ const Bazaar = () => {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Správa bola odoslaná predajcovi",
+        title: "Success",
+        description: "Message sent to seller",
       });
 
       setContactMessage("");
@@ -351,8 +351,8 @@ const Bazaar = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať správu",
+        title: "Error",
+        description: "Failed to send message",
         variant: "destructive",
       });
     }
@@ -370,8 +370,8 @@ const Bazaar = () => {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Inzerát bol odstránený",
+        title: "Success",
+        description: "Listing deleted",
       });
 
       setIsDeleteDialogOpen(false);
@@ -380,8 +380,8 @@ const Bazaar = () => {
     } catch (error) {
       console.error('Error deleting item:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odstrániť inzerát",
+        title: "Error",
+        description: "Failed to delete listing",
         variant: "destructive",
       });
     }
@@ -414,8 +414,8 @@ const Bazaar = () => {
       if (updateError) throw updateError;
 
       toast({
-        title: "Nákup úspešný!",
-        description: `Zaplatili ste €${selectedItem.price.toFixed(2)}. Provízia: €${commissionAmount.toFixed(2)}`,
+        title: "Purchase successful!",
+        description: `You paid €${selectedItem.price.toFixed(2)}. Commission: €${commissionAmount.toFixed(2)}`,
       });
 
       setIsDetailOpen(false);
@@ -423,8 +423,8 @@ const Bazaar = () => {
     } catch (error) {
       console.error('Buy item error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa dokončiť nákup",
+        title: "Error",
+        description: "Failed to complete purchase",
         variant: "destructive",
       });
     }
@@ -439,11 +439,11 @@ const Bazaar = () => {
             <h1 className="text-4xl md:text-5xl font-bold">
               Online{" "}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Bazár
+                Bazaar
               </span>
             </h1>
             <p className="text-xl text-muted-foreground mt-2">
-              Kupuj a predávaj s dôverou v našej komunite
+              Buy and sell with confidence in our community
             </p>
           </div>
 
@@ -452,10 +452,10 @@ const Bazaar = () => {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Limit: {limits.bazaarListingsPerMonth} inzerátov/mesiac • Provízia: {limits.commissionRate}%
+                  Limit: {limits.bazaarListingsPerMonth} listings/month • Commission: {limits.commissionRate}%
                   {limits.tier === 'free' && (
                     <Link to="/subscription" className="ml-2 text-primary hover:underline">
-                      Upgradujte
+                      Upgrade
                     </Link>
                   )}
                 </AlertDescription>
@@ -466,16 +466,16 @@ const Bazaar = () => {
               <DialogTrigger asChild>
                 <Button variant="hero" size="lg">
                   <Plus className="h-5 w-5 mr-2" />
-                  Pridať inzerát
+                  Add Listing
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Nový inzerát</DialogTitle>
+                  <DialogTitle>New Listing</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium mb-2 block">Typ inzerátu</label>
+                    <label className="text-sm font-medium mb-2 block">Listing Type</label>
                     <Select 
                       value={formData.listing_type} 
                       onValueChange={(value) => setFormData({...formData, listing_type: value})}
@@ -494,30 +494,30 @@ const Bazaar = () => {
                   </div>
 
                 <Input
-                  placeholder="Názov produktu" 
+                  placeholder="Product Name" 
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                 />
                 <Input 
-                  placeholder="Cena (€)" 
+                  placeholder="Price (€)" 
                   type="number"
                   value={formData.price}
                   onChange={(e) => setFormData({...formData, price: e.target.value})}
                 />
                 <Input 
-                  placeholder="Lokalita"
+                  placeholder="Location"
                   value={formData.location}
                   onChange={(e) => setFormData({...formData, location: e.target.value})}
                 />
                 <Textarea 
-                  placeholder="Popis produktu..." 
+                  placeholder="Product description..." 
                   className="min-h-20"
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
                 />
                 
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Kategória</label>
+                  <label className="text-sm font-medium mb-2 block">Category</label>
                   <Select 
                     value={formData.category} 
                     onValueChange={(value) => setFormData({...formData, category: value})}
@@ -536,7 +536,7 @@ const Bazaar = () => {
                 </div>
 
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Stav</label>
+                  <label className="text-sm font-medium mb-2 block">Condition</label>
                   <Select 
                     value={formData.condition} 
                     onValueChange={(value) => setFormData({...formData, condition: value})}
@@ -556,12 +556,12 @@ const Bazaar = () => {
                 
                 {/* Image Upload */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Obrázok produktu</label>
+                  <label className="text-sm font-medium">Product Image</label>
                   {imagePreview ? (
                     <div className="relative">
                       <img 
                         src={imagePreview} 
-                        alt="Náhľad" 
+                        alt="Preview" 
                         className="w-full h-48 object-cover rounded-lg"
                       />
                       <Button
@@ -579,7 +579,7 @@ const Bazaar = () => {
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <Upload className="h-8 w-8 text-muted-foreground mb-2" />
                         <p className="text-sm text-muted-foreground">
-                          Kliknite pre nahratie obrázka
+                          Click to upload image
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
                           Max. 5MB (JPG, PNG, WEBP)
@@ -596,7 +596,7 @@ const Bazaar = () => {
                 </div>
 
                 <Button variant="hero" className="w-full" disabled={uploading} onClick={handleSubmit}>
-                  {uploading ? "Nahrávam..." : "Zverejniť inzerát"}
+                  {uploading ? "Uploading..." : "Publish Listing"}
                 </Button>
               </div>
             </DialogContent>
@@ -609,7 +609,7 @@ const Bazaar = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Hľadať v bazári..."
+              placeholder="Search in bazaar..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -634,11 +634,11 @@ const Bazaar = () => {
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="space-y-2 mb-4 md:mb-0">
-                <h3 className="text-xl font-bold">🛡️ Bezpečný nákup garantovaný</h3>
-                <p className="text-muted-foreground">Všetci predajcovia sú overení členi našej komunity</p>
+                <h3 className="text-xl font-bold">🛡️ Secure Shopping Guaranteed</h3>
+                <p className="text-muted-foreground">All sellers are verified members of our community</p>
               </div>
               <Badge className="bg-success text-success-foreground">
-                ✓ Overené profily
+                ✓ Verified Profiles
               </Badge>
             </div>
           </CardContent>
@@ -686,7 +686,7 @@ const Bazaar = () => {
                   </div>
                   <div className="flex items-center gap-1">
                     <User className="h-4 w-4" />
-                    {item.profiles?.full_name || "Anonymný užívateľ"}
+                    {item.profiles?.full_name || "Anonymous user"}
                   </div>
                 </div>
 
@@ -738,12 +738,12 @@ const Bazaar = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4 text-muted-foreground" />
-                      <span>{selectedItem.profiles?.full_name || "Anonymný užívateľ"}</span>
+                      <span>{selectedItem.profiles?.full_name || "Anonymous user"}</span>
                     </div>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">Kategória</h4>
+                    <h4 className="font-semibold mb-2">Category</h4>
                     <p className="text-muted-foreground">
                       {categories.find(c => c.id === selectedItem.category)?.name}
                     </p>
@@ -751,7 +751,7 @@ const Bazaar = () => {
 
                   {selectedItem.description && (
                     <div>
-                      <h4 className="font-semibold mb-2">Popis</h4>
+                      <h4 className="font-semibold mb-2">Description</h4>
                       <p className="text-muted-foreground whitespace-pre-wrap">
                         {selectedItem.description}
                       </p>
@@ -763,10 +763,10 @@ const Bazaar = () => {
                     <Alert>
                       <AlertCircle className="h-4 w-4" />
                       <AlertDescription>
-                        Provízia platformy: {limits.commissionRate}% (€{calculateCommission(selectedItem.price).toFixed(2)})
+                        Platform commission: {limits.commissionRate}% (€{calculateCommission(selectedItem.price).toFixed(2)})
                         <br />
                         <Link to="/subscription" className="text-primary hover:underline text-sm">
-                          Upgrade na Premium = 0% provízie
+                          Upgrade to Premium = 0% commission
                         </Link>
                       </AlertDescription>
                     </Alert>
@@ -780,7 +780,7 @@ const Bazaar = () => {
                         onClick={handleBuyItem}
                       >
                         <ShoppingCart className="h-5 w-5 mr-2" />
-                        Kúpiť teraz
+                        Buy Now
                       </Button>
                     )}
                     
@@ -791,7 +791,7 @@ const Bazaar = () => {
                       onClick={() => handleContact(selectedItem)}
                     >
                       <MessageCircle className="h-5 w-5 mr-2" />
-                      Kontaktovať
+                      Contact
                     </Button>
                     
                     {currentUserId === selectedItem.user_id && (
@@ -814,15 +814,15 @@ const Bazaar = () => {
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Odstrániť inzerát?</AlertDialogTitle>
+              <AlertDialogTitle>Delete listing?</AlertDialogTitle>
               <AlertDialogDescription>
-                Táto akcia je nevratná. Inzerát bude trvalo odstránený.
+                This action is irreversible. The listing will be permanently deleted.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Odstrániť
+                Delete
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -832,15 +832,15 @@ const Bazaar = () => {
         <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Kontaktovať predajcu</DialogTitle>
+              <DialogTitle>Contact Seller</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-muted-foreground mb-2">
-                  Pošlite správu predajcovi týkajúcu sa: <strong>{selectedItem?.title}</strong>
+                  Send a message to the seller regarding: <strong>{selectedItem?.title}</strong>
                 </p>
                 <Textarea
-                  placeholder="Napíšte vašu správu..."
+                  placeholder="Write your message..."
                   value={contactMessage}
                   onChange={(e) => setContactMessage(e.target.value)}
                   className="min-h-32"
@@ -852,7 +852,7 @@ const Bazaar = () => {
                 disabled={!contactMessage.trim()}
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
-                Odoslať správu
+                Send Message
               </Button>
             </div>
           </DialogContent>
@@ -860,7 +860,7 @@ const Bazaar = () => {
 
         {filteredItems.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-xl text-muted-foreground">Žiadne inzeráty sa nenašli</p>
+            <p className="text-xl text-muted-foreground">No listings found</p>
             <Button 
               variant="outline" 
               onClick={() => {
@@ -869,7 +869,7 @@ const Bazaar = () => {
               }}
               className="mt-4"
             >
-              Vymazať filtre
+              Clear filters
             </Button>
           </div>
         )}
@@ -878,27 +878,27 @@ const Bazaar = () => {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card className="text-center">
             <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">🔒 Bezpečnosť</h3>
+              <h3 className="font-semibold mb-2">🔒 Security</h3>
               <p className="text-sm text-muted-foreground">
-                Všetky transakcie sú chránené našim systémom
+                All transactions are protected by our system
               </p>
             </CardContent>
           </Card>
           
           <Card className="text-center">
             <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">⚡ Rýchle doručenie</h3>
+              <h3 className="font-semibold mb-2">⚡ Fast Delivery</h3>
               <p className="text-sm text-muted-foreground">
-                Lokálni predajcovia pre rýchle vyzdvihnutie
+                Local sellers for quick pickup
               </p>
             </CardContent>
           </Card>
           
           <Card className="text-center">
             <CardContent className="p-6">
-              <h3 className="font-semibold mb-2">💬 Podpora</h3>
+              <h3 className="font-semibold mb-2">💬 Support</h3>
               <p className="text-sm text-muted-foreground">
-                24/7 podpora pre všetkých členov komunity
+                24/7 support for all community members
               </p>
             </CardContent>
           </Card>
