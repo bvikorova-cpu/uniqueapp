@@ -6,74 +6,111 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
-import { usePremiumFeatures } from "@/hooks/usePremiumFeatures";
-import { Sparkles, Zap, Star, Crown, Gift, Heart, Palette, Image } from "lucide-react";
+import { usePremiumStore } from "@/hooks/usePremiumStore";
+import { 
+  Sparkles, Zap, Star, Crown, Gift, MessageCircle, Heart, 
+  TrendingUp, Palette, Image as ImageIcon, Award, Loader2
+} from "lucide-react";
 
 const PremiumStore = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { credits } = useAICredits();
   const {
-    storyEffects,
-    livestreamGifts,
-    datingGifts,
-    premiumBadges,
-    premiumThemes,
-    premiumAvatars,
+    features,
+    badges,
+    themes,
+    avatars,
+    userBadges,
+    userThemes,
+    userAvatars,
     purchaseFeature,
+    purchaseBadge,
+    purchaseTheme,
+    purchaseAvatar,
     loading
-  } = usePremiumFeatures();
-  
-  const [purchasing, setPurchasing] = useState(false);
+  } = usePremiumStore();
 
-  const handlePurchase = async (featureId: string, featureName: string, cost: number) => {
+  const [purchasing, setPurchasing] = useState<string | null>(null);
+
+  const handlePurchase = async (
+    type: 'feature' | 'badge' | 'theme' | 'avatar',
+    id: string,
+    name: string,
+    cost: number
+  ) => {
     if (credits.credits_remaining < cost) {
       toast({
-        title: "Insufficient Credits",
-        description: "You don't have enough credits. Purchase more to continue.",
+        title: "Not enough credits",
+        description: `You need ${cost} credits. You have ${credits.credits_remaining}.`,
         variant: "destructive",
       });
-      navigate('/ai-credits');
       return;
     }
 
-    setPurchasing(true);
+    setPurchasing(id);
     try {
-      const success = await purchaseFeature(featureId, featureName, cost);
+      let success = false;
+      
+      switch (type) {
+        case 'feature':
+          success = await purchaseFeature(id, name, cost);
+          break;
+        case 'badge':
+          success = await purchaseBadge(id, cost);
+          break;
+        case 'theme':
+          success = await purchaseTheme(id, cost);
+          break;
+        case 'avatar':
+          success = await purchaseAvatar(id, cost);
+          break;
+      }
+
       if (success) {
         toast({
-          title: "Purchase Successful! 🎉",
-          description: `${featureName} has been added to your collection.`,
+          title: "Purchase successful!",
+          description: `You've unlocked ${name}`,
         });
       } else {
         throw new Error("Purchase failed");
       }
     } catch (error) {
+      console.error('Purchase error:', error);
       toast({
-        title: "Purchase Failed",
-        description: "Something went wrong. Please try again.",
+        title: "Purchase failed",
+        description: "Please try again",
         variant: "destructive",
       });
     } finally {
-      setPurchasing(false);
+      setPurchasing(null);
     }
   };
 
-  const getRarityColor = (rarity: string) => {
+  const getRarityBadge = (rarity: string) => {
     switch (rarity) {
-      case 'legendary': return 'bg-gradient-to-r from-yellow-500 to-orange-500';
-      case 'epic': return 'bg-gradient-to-r from-purple-500 to-pink-500';
-      case 'rare': return 'bg-gradient-to-r from-blue-500 to-cyan-500';
-      default: return 'bg-gradient-to-r from-gray-500 to-gray-600';
+      case 'legendary': return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
+      case 'epic': return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
+      case 'rare': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+      default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4">
+        {/* Header */}
         <div className="text-center mb-12">
           <Badge className="mb-4" variant="default">
-            <Sparkles className="h-3 w-3 mr-1" />
+            <Crown className="h-3 w-3 mr-1" />
             Premium Store
           </Badge>
           
@@ -85,34 +122,40 @@ const PremiumStore = () => {
           </h1>
           
           <p className="text-xl text-muted-foreground mb-6">
-            Enhance your experience with exclusive premium features
+            Enhance your experience with exclusive premium items
           </p>
 
+          {/* Credits Display */}
           <Card className="max-w-md mx-auto">
             <CardContent className="pt-6">
               <div className="flex items-center justify-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
                 <div>
                   <span className="text-3xl font-bold">{credits.credits_remaining}</span>
-                  <span className="text-muted-foreground ml-2">available credits</span>
+                  <span className="text-muted-foreground ml-2">credits available</span>
                 </div>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="mt-4"
                 onClick={() => navigate('/ai-credits')}
               >
-                Get More Credits
+                Buy More Credits
               </Button>
             </CardContent>
           </Card>
         </div>
 
-        <Tabs defaultValue="badges" className="max-w-7xl mx-auto">
-          <TabsList className="grid w-full grid-cols-6">
+        {/* Tabs */}
+        <Tabs defaultValue="features" className="max-w-7xl mx-auto">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="features">
+              <Zap className="h-4 w-4 mr-2" />
+              Features
+            </TabsTrigger>
             <TabsTrigger value="badges">
-              <Crown className="h-4 w-4 mr-2" />
+              <Award className="h-4 w-4 mr-2" />
               Badges
             </TabsTrigger>
             <TabsTrigger value="themes">
@@ -120,192 +163,188 @@ const PremiumStore = () => {
               Themes
             </TabsTrigger>
             <TabsTrigger value="avatars">
-              <Image className="h-4 w-4 mr-2" />
+              <ImageIcon className="h-4 w-4 mr-2" />
               Avatars
-            </TabsTrigger>
-            <TabsTrigger value="story">
-              <Sparkles className="h-4 w-4 mr-2" />
-              Story
-            </TabsTrigger>
-            <TabsTrigger value="livestream">
-              <Gift className="h-4 w-4 mr-2" />
-              Live
-            </TabsTrigger>
-            <TabsTrigger value="dating">
-              <Heart className="h-4 w-4 mr-2" />
-              Dating
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="badges" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {premiumBadges.map((badge) => (
-                <Card key={badge.id} className="relative overflow-hidden">
-                  <div className={`absolute inset-0 opacity-5 ${getRarityColor(badge.rarity)}`} />
+          {/* Premium Features */}
+          <TabsContent value="features" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {features.map((feature) => (
+                <Card key={feature.id}>
                   <CardHeader>
                     <div className="flex items-start justify-between">
-                      <div className="text-4xl mb-2">{badge.icon}</div>
-                      <Badge className={getRarityColor(badge.rarity)}>
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl">{feature.icon}</span>
+                        <div>
+                          <CardTitle className="text-lg">{feature.feature_name}</CardTitle>
+                          <CardDescription className="text-sm">{feature.description}</CardDescription>
+                        </div>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                        <span className="font-bold">{feature.credit_cost}</span>
+                        <span className="text-sm text-muted-foreground">credits</span>
+                      </div>
+                      <Button
+                        size="sm"
+                        onClick={() => handlePurchase('feature', feature.id, feature.feature_name, feature.credit_cost)}
+                        disabled={purchasing === feature.id}
+                      >
+                        {purchasing === feature.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          'Unlock'
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* Premium Badges */}
+          <TabsContent value="badges" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {badges.map((badge) => {
+                const owned = userBadges.some(ub => ub.badge_id === badge.id);
+                return (
+                  <Card key={badge.id} className={owned ? 'ring-2 ring-primary' : ''}>
+                    <CardHeader className="text-center">
+                      <div className="flex justify-center mb-2">
+                        <span className="text-4xl">{badge.icon}</span>
+                      </div>
+                      <CardTitle className="text-lg">{badge.name}</CardTitle>
+                      <CardDescription className="text-sm">{badge.description}</CardDescription>
+                      <Badge variant="outline" className={getRarityBadge(badge.rarity)}>
                         {badge.rarity}
                       </Badge>
-                    </div>
-                    <CardTitle>{badge.name}</CardTitle>
-                    <CardDescription>{badge.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">{badge.credit_cost} credits</span>
-                      <Button
-                        disabled={purchasing || loading}
-                        onClick={() => handlePurchase(badge.id, badge.name, badge.credit_cost)}
-                      >
-                        <Star className="h-4 w-4 mr-2" />
-                        Unlock
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="themes" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {premiumThemes.map((theme) => (
-                <Card key={theme.id}>
-                  <CardHeader>
-                    <div className="h-20 rounded-lg mb-4" 
-                         style={{ background: `hsl(${theme.theme_data.primary})` }} 
-                    />
-                    <CardTitle>{theme.name}</CardTitle>
-                    <CardDescription>{theme.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">{theme.credit_cost} credits</span>
-                      <Button
-                        disabled={purchasing || loading}
-                        onClick={() => handlePurchase(theme.id, theme.name, theme.credit_cost)}
-                      >
-                        <Palette className="h-4 w-4 mr-2" />
-                        Unlock
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="avatars" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {premiumAvatars.map((avatar) => (
-                <Card key={avatar.id} className="relative overflow-hidden">
-                  <div className={`absolute inset-0 opacity-5 ${getRarityColor(avatar.rarity)}`} />
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-2">
-                        {avatar.is_animated ? '🎬' : '🖼️'}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          <Sparkles className="h-4 w-4 text-primary" />
+                          <span className="font-bold">{badge.credit_cost}</span>
+                        </div>
+                        {owned ? (
+                          <Badge variant="secondary">Owned</Badge>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={() => handlePurchase('badge', badge.id, badge.name, badge.credit_cost)}
+                            disabled={purchasing === badge.id}
+                          >
+                            {purchasing === badge.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              'Unlock'
+                            )}
+                          </Button>
+                        )}
                       </div>
-                      <Badge className={getRarityColor(avatar.rarity)}>
-                        {avatar.rarity}
-                      </Badge>
-                    </div>
-                    <CardTitle>{avatar.name}</CardTitle>
-                    <CardDescription>{avatar.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">{avatar.credit_cost} credits</span>
-                      <Button
-                        disabled={purchasing || loading}
-                        onClick={() => handlePurchase(avatar.id, avatar.name, avatar.credit_cost)}
-                      >
-                        <Image className="h-4 w-4 mr-2" />
-                        Unlock
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </TabsContent>
 
-          <TabsContent value="story" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {storyEffects.map((effect) => (
-                <Card key={effect.id}>
-                  <CardHeader>
-                    <div className="text-4xl mb-2">{effect.icon}</div>
-                    <CardTitle>{effect.feature_name}</CardTitle>
-                    <CardDescription>{effect.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">{effect.credit_cost} credits</span>
-                      <Button
-                        disabled={purchasing || loading}
-                        onClick={() => handlePurchase(effect.id, effect.feature_name, effect.credit_cost)}
-                      >
-                        <Sparkles className="h-4 w-4 mr-2" />
-                        Unlock
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+          {/* Premium Themes */}
+          <TabsContent value="themes" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {themes.map((theme) => {
+                const owned = userThemes.some(ut => ut.theme_id === theme.id);
+                return (
+                  <Card key={theme.id} className={owned ? 'ring-2 ring-primary' : ''}>
+                    <CardHeader>
+                      <CardTitle>{theme.name}</CardTitle>
+                      <CardDescription>{theme.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          <Sparkles className="h-4 w-4 text-primary" />
+                          <span className="font-bold">{theme.credit_cost}</span>
+                        </div>
+                        {owned ? (
+                          <Badge variant="secondary">Owned</Badge>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={() => handlePurchase('theme', theme.id, theme.name, theme.credit_cost)}
+                            disabled={purchasing === theme.id}
+                          >
+                            {purchasing === theme.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              'Unlock'
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </TabsContent>
 
-          <TabsContent value="livestream" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {livestreamGifts.map((gift) => (
-                <Card key={gift.id}>
-                  <CardHeader>
-                    <div className="text-4xl mb-2">{gift.icon}</div>
-                    <CardTitle>{gift.feature_name}</CardTitle>
-                    <CardDescription>{gift.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">{gift.credit_cost} credits</span>
-                      <Button
-                        disabled={purchasing || loading}
-                        onClick={() => handlePurchase(gift.id, gift.feature_name, gift.credit_cost)}
-                      >
-                        <Gift className="h-4 w-4 mr-2" />
-                        Send Gift
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="dating" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {datingGifts.map((gift) => (
-                <Card key={gift.id}>
-                  <CardHeader>
-                    <div className="text-4xl mb-2">{gift.icon}</div>
-                    <CardTitle>{gift.feature_name}</CardTitle>
-                    <CardDescription>{gift.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold">{gift.credit_cost} credits</span>
-                      <Button
-                        disabled={purchasing || loading}
-                        onClick={() => handlePurchase(gift.id, gift.feature_name, gift.credit_cost)}
-                      >
-                        <Heart className="h-4 w-4 mr-2" />
-                        Send Gift
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+          {/* Premium Avatars */}
+          <TabsContent value="avatars" className="mt-6">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {avatars.map((avatar) => {
+                const owned = userAvatars.some(ua => ua.avatar_id === avatar.id);
+                return (
+                  <Card key={avatar.id} className={owned ? 'ring-2 ring-primary' : ''}>
+                    <CardHeader className="text-center">
+                      <div className="flex justify-center mb-2">
+                        <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
+                          <ImageIcon className="h-8 w-8" />
+                        </div>
+                      </div>
+                      <CardTitle className="text-lg">{avatar.name}</CardTitle>
+                      <CardDescription className="text-sm">{avatar.description}</CardDescription>
+                      <div className="flex gap-2 justify-center">
+                        <Badge variant="outline" className={getRarityBadge(avatar.rarity)}>
+                          {avatar.rarity}
+                        </Badge>
+                        {avatar.is_animated && (
+                          <Badge variant="outline">Animated</Badge>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          <Sparkles className="h-4 w-4 text-primary" />
+                          <span className="font-bold">{avatar.credit_cost}</span>
+                        </div>
+                        {owned ? (
+                          <Badge variant="secondary">Owned</Badge>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={() => handlePurchase('avatar', avatar.id, avatar.name, avatar.credit_cost)}
+                            disabled={purchasing === avatar.id}
+                          >
+                            {purchasing === avatar.id ? (
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                              'Unlock'
+                            )}
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </TabsContent>
         </Tabs>

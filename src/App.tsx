@@ -46,6 +46,7 @@ import LiveStream from "./pages/LiveStream";
 import Stories from "./pages/Stories";
 import Rewards from "./pages/Rewards";
 import GenerateCourses from "./pages/GenerateCourses";
+import PremiumStore from "./pages/PremiumStore";
 
 const queryClient = new QueryClient();
 
@@ -101,6 +102,7 @@ const App = () => (
               <Route path="/stories/:userId" element={<Stories />} />
               <Route path="/rewards" element={<Rewards />} />
               <Route path="/generate-courses" element={<GenerateCourses />} />
+              <Route path="/premium-store" element={<PremiumStore />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
