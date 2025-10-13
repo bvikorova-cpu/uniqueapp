@@ -34,26 +34,26 @@ interface Recipe {
 }
 
 const categories = [
-  "Všetko",
-  "Predjedlá",
-  "Hlavné jedlá",
-  "Dezerty",
-  "Polievky",
-  "Šaláty",
-  "Cestoviny",
+  "All",
+  "Appetizers",
+  "Main Dishes",
+  "Desserts",
+  "Soups",
+  "Salads",
+  "Pasta",
   "Pizza",
-  "Múčniky",
-  "Nápoje",
-  "Vegetariánske",
-  "Vegánske",
-  "Bezlepkové",
+  "Pastries",
+  "Drinks",
+  "Vegetarian",
+  "Vegan",
+  "Gluten-Free",
   "Fitness",
 ];
 
 const Cooking = () => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Všetko");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalRecipes, setTotalRecipes] = useState(0);
@@ -80,8 +80,8 @@ const Cooking = () => {
     } catch (error) {
       console.error('Error fetching recipes:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa načítať recepty",
+        title: "Error",
+        description: "Failed to load recipes",
         variant: "destructive",
       });
     } finally {
@@ -92,17 +92,20 @@ const Cooking = () => {
   const filteredRecipes = recipes.filter((recipe) => {
     const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          recipe.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "Všetko" || recipe.category === selectedCategory;
+    const matchesCategory = selectedCategory === "All" || recipe.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
+      case "Easy":
       case "Ľahké":
         return "bg-green-500/10 text-green-700 dark:text-green-400";
+      case "Medium":
       case "Stredné":
         return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400";
+      case "Hard":
       case "Náročné":
         return "bg-red-500/10 text-red-700 dark:text-red-400";
       default:
@@ -124,13 +127,13 @@ const Cooking = () => {
             <ChefHat className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
-            Varenie a recepty
+            Cooking & Recipes
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Objavte recepty pre každú príležitosť - od rýchlych jedál až po gurmánske pokrmy
+            Discover recipes for every occasion - from quick meals to gourmet dishes
           </p>
           <Badge variant="secondary" className="mt-4 text-lg px-4 py-2">
-            {totalRecipes}+ receptov
+            {totalRecipes}+ recipes
           </Badge>
         </div>
 
@@ -140,7 +143,7 @@ const Cooking = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
             <Input
               type="text"
-              placeholder="Hľadať recepty..."
+              placeholder="Search recipes..."
               className="pl-10 h-12 text-lg"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -154,7 +157,7 @@ const Cooking = () => {
             <DialogTrigger asChild>
               <Button size="lg" className="gap-2 bg-gradient-primary hover:opacity-90">
                 <Plus className="h-5 w-5" />
-                Pridať vlastný recept
+                Add Your Own Recipe
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -182,7 +185,7 @@ const Cooking = () => {
             {loading ? (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Načítavam recepty...</p>
+                <p className="text-muted-foreground">Loading recipes...</p>
               </div>
             ) : (
               <>
@@ -214,7 +217,7 @@ const Cooking = () => {
                           </div>
                           <div className="flex items-center gap-1">
                             <Users className="w-4 h-4" />
-                            <span>{recipe.servings} porcie</span>
+                            <span>{recipe.servings} servings</span>
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
@@ -224,7 +227,7 @@ const Cooking = () => {
                             variant="premium"
                             onClick={() => handleRecipeClick(recipe)}
                           >
-                            Pozrieť recept
+                            View Recipe
                           </Button>
                         </div>
                       </CardContent>
@@ -235,9 +238,9 @@ const Cooking = () => {
                 {filteredRecipes.length === 0 && (
                   <div className="text-center py-12">
                     <ChefHat className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">Nenašli sa žiadne recepty</h3>
+                    <h3 className="text-xl font-semibold mb-2">No recipes found</h3>
                     <p className="text-muted-foreground">
-                      Skúste zmeniť vyhľadávací výraz alebo kategóriu
+                      Try changing the search term or category
                     </p>
                   </div>
                 )}
@@ -253,11 +256,11 @@ const Cooking = () => {
               <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-2">
                 <ChefHat className="w-6 h-6 text-white" />
               </div>
-              <CardTitle>{totalRecipes}+ Receptov</CardTitle>
+              <CardTitle>{totalRecipes}+ Recipes</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Široká databáza receptov pre každú príležitosť
+                Wide database of recipes for every occasion
               </p>
             </CardContent>
           </Card>
@@ -267,11 +270,11 @@ const Cooking = () => {
               <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-2">
                 <Users className="w-6 h-6 text-white" />
               </div>
-              <CardTitle>Pre každého</CardTitle>
+              <CardTitle>For Everyone</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Od začiatočníkov po skúsených kuchárov
+                From beginners to experienced chefs
               </p>
             </CardContent>
           </Card>
@@ -281,11 +284,11 @@ const Cooking = () => {
               <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-2">
                 <Clock className="w-6 h-6 text-white" />
               </div>
-              <CardTitle>Rýchle & Jednoduché</CardTitle>
+              <CardTitle>Quick & Easy</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                Podrobné návody krok za krokom
+                Detailed step-by-step instructions
               </p>
             </CardContent>
           </Card>
@@ -325,7 +328,7 @@ const Cooking = () => {
                     </div>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Users className="w-5 h-5" />
-                      <span>{selectedRecipe.servings} porcie</span>
+                      <span>{selectedRecipe.servings} servings</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline">{selectedRecipe.calories} kcal</Badge>
@@ -351,7 +354,7 @@ const Cooking = () => {
                   {/* Ingredients */}
                   {selectedRecipe.ingredients && selectedRecipe.ingredients.length > 0 && (
                     <div>
-                      <h3 className="text-xl font-semibold mb-4">Ingrediencie</h3>
+                      <h3 className="text-xl font-semibold mb-4">Ingredients</h3>
                       <ul className="space-y-2">
                         {selectedRecipe.ingredients.map((ingredient, index) => (
                           <li key={index} className="flex items-start gap-2">
@@ -366,7 +369,7 @@ const Cooking = () => {
                   {/* Instructions */}
                   {selectedRecipe.instructions && selectedRecipe.instructions.length > 0 && (
                     <div>
-                      <h3 className="text-xl font-semibold mb-4">Postup prípravy</h3>
+                      <h3 className="text-xl font-semibold mb-4">Preparation Instructions</h3>
                       <ol className="space-y-3">
                         {selectedRecipe.instructions.map((instruction, index) => (
                           <li key={index} className="flex gap-3">
