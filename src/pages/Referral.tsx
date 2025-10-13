@@ -39,29 +39,28 @@ const Referral = () => {
 
   const shareReferral = async () => {
     if (!stats?.code) return;
-    const shareText = `Pripoj sa k Megatalent a súťaž o 100.000€! Použi môj kód: ${stats.code}`;
     const shareUrl = `${window.location.origin}/auth?ref=${stats.code}`;
+    const shareText = `Pripoj sa k Megatalent a súťaž o 100.000€! Použi môj kód: ${stats.code}`;
     
-    if (navigator.share) {
+    // Try native share first (works on mobile)
+    if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
       try {
         await navigator.share({
           title: 'Megatalent - Súťaž o 100.000€',
           text: shareText,
           url: shareUrl,
         });
+        return;
       } catch (error) {
         if ((error as Error).name !== 'AbortError') {
           console.error('Error sharing:', error);
         }
       }
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
-      toast({
-        title: "Skopírované!",
-        description: "Odkaz bol skopírovaný do schránky",
-      });
     }
+    
+    // Desktop fallback - open social media sharing
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+    window.open(facebookUrl, '_blank', 'width=600,height=400');
   };
 
   const inviteByEmail = () => {
