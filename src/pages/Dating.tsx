@@ -73,8 +73,8 @@ const Dating = () => {
   const [editForm, setEditForm] = useState({
     display_name: "",
     age: 18,
-    gender: "muž",
-    looking_for: "žena",
+    gender: "male",
+    looking_for: "female",
     bio: "",
     location: "",
   });
@@ -82,8 +82,8 @@ const Dating = () => {
   const [profileForm, setProfileForm] = useState({
     display_name: "",
     age: 18,
-    gender: "muž",
-    looking_for: "žena",
+    gender: "male",
+    looking_for: "female",
     bio: "",
     location: "",
   });
@@ -228,8 +228,8 @@ const Dating = () => {
   const handleSubscribe = async (planType: 'monthly' | 'yearly') => {
     if (!user) {
       toast({
-        title: "Vyžaduje sa prihlásenie",
-        description: "Pre prístup sa musíte prihlásiť",
+        title: "Login Required",
+        description: "You must log in to access",
         variant: "destructive",
       });
       return;
@@ -238,8 +238,8 @@ const Dating = () => {
     // Placeholder for payment gateway integration
     // TODO: Integrate Tatra Banka payment gateway here
     toast({
-      title: "Platba pripravená",
-      description: "Tu bude integrácia s platobnou bránou Tatra banky",
+      title: "Payment Ready",
+      description: "Tatra Banka payment gateway integration will be here",
     });
 
     // For now, activate subscription directly (remove this when payment is integrated)
@@ -259,14 +259,14 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa aktivovať predplatné",
+        title: "Error",
+        description: "Failed to activate subscription",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Úspech",
-        description: "Predplatné bolo aktivované",
+        title: "Success",
+        description: "Subscription has been activated",
       });
       setIsSubscribed(true);
       setShowProfileDialog(true);
@@ -276,8 +276,8 @@ const Dating = () => {
   const handleCreateProfile = async () => {
     if (!user || !profileForm.display_name || !profileForm.bio) {
       toast({
-        title: "Neúplné údaje",
-        description: "Vyplňte všetky polia",
+        title: "Incomplete Data",
+        description: "Fill in all fields",
         variant: "destructive",
       });
       return;
@@ -292,14 +292,14 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa vytvoriť profil",
+        title: "Error",
+        description: "Failed to create profile",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Úspech",
-        description: "Profil bol vytvorený",
+        title: "Success",
+        description: "Profile has been created",
       });
       setShowProfileDialog(false);
       await loadUserProfile(user.id);
@@ -334,8 +334,8 @@ const Dating = () => {
 
       if (superError) {
         toast({
-          title: "Chyba",
-          description: "Nepodarilo sa odoslať Super Like",
+          title: "Error",
+          description: "Failed to send Super Like",
           variant: "destructive",
         });
         return;
@@ -343,7 +343,7 @@ const Dating = () => {
 
       toast({
         title: "⭐ Super Like!",
-        description: `${currentCard.display_name} dostane notifikáciu!`,
+        description: `${currentCard.display_name} will be notified!`,
       });
       
       setSuperLikesRemaining(superLikesRemaining - 1);
@@ -359,8 +359,8 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa uložiť swipe",
+        title: "Error",
+        description: "Failed to save swipe",
         variant: "destructive",
       });
       return;
@@ -386,7 +386,7 @@ const Dating = () => {
       if (data) {
         toast({
           title: "🎉 It's a Match!",
-          description: `Máte zhodu s ${currentCard.display_name}!`,
+          description: `You matched with ${currentCard.display_name}!`,
         });
         await loadMatches(user.id);
       }
@@ -408,8 +408,8 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať správu",
+        title: "Error",
+        description: "Failed to send message",
         variant: "destructive",
       });
     } else {
@@ -421,8 +421,8 @@ const Dating = () => {
   const handleUpdateProfile = async () => {
     if (!user || !currentProfile || !editForm.display_name || !editForm.bio) {
       toast({
-        title: "Neúplné údaje",
-        description: "Vyplňte všetky polia",
+        title: "Incomplete Data",
+        description: "Fill in all fields",
         variant: "destructive",
       });
       return;
@@ -442,14 +442,14 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa aktualizovať profil",
+        title: "Error",
+        description: "Failed to update profile",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Úspech",
-        description: "Profil bol aktualizovaný",
+        title: "Success",
+        description: "Profile has been updated",
       });
       setShowEditDialog(false);
       await loadUserProfile(user.id);
@@ -467,14 +467,14 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odstrániť profil",
+        title: "Error",
+        description: "Failed to delete profile",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Úspech",
-        description: "Profil bol odstránený",
+        title: "Success",
+        description: "Profile has been deleted",
       });
       setCurrentProfile(null);
     }
@@ -509,15 +509,15 @@ const Dating = () => {
       if (updateError) throw updateError;
 
       toast({
-        title: "Úspech",
-        description: "Profilová fotka bola nahratá",
+        title: "Success",
+        description: "Profile photo has been uploaded",
       });
       
       await loadUserProfile(user.id);
     } catch (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa nahrať fotku",
+        title: "Error",
+        description: "Failed to upload photo",
         variant: "destructive",
       });
     } finally {
@@ -563,15 +563,15 @@ const Dating = () => {
       if (updateError) throw updateError;
 
       toast({
-        title: "Úspech",
-        description: `${uploadedUrls.length} fotiek bolo nahratých`,
+        title: "Success",
+        description: `${uploadedUrls.length} photos have been uploaded`,
       });
       
       await loadUserProfile(user.id);
     } catch (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa nahrať fotky",
+        title: "Error",
+        description: "Failed to upload photos",
         variant: "destructive",
       });
     } finally {
@@ -591,14 +591,14 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odstrániť fotku",
+        title: "Error",
+        description: "Failed to remove photo",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Úspech",
-        description: "Fotka bola odstránená",
+        title: "Success",
+        description: "Photo has been removed",
       });
       await loadUserProfile(user.id);
     }
@@ -631,14 +631,14 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať darček",
+        title: "Error",
+        description: "Failed to send gift",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "Darček odoslaný! 🎁",
-        description: "Váš darček bol doručený",
+        title: "Gift Sent! 🎁",
+        description: "Your gift has been delivered",
       });
       setShowGiftDialog(false);
       await loadMessages(selectedMatch.id);
@@ -657,8 +657,8 @@ const Dating = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa vrátiť swipe",
+        title: "Error",
+        description: "Failed to rewind swipe",
         variant: "destructive",
       });
       return;
@@ -670,8 +670,8 @@ const Dating = () => {
     setLastSwipe(null);
 
     toast({
-      title: "Swipe vrátený!",
-      description: "Môžete si to rozmyslieť",
+      title: "Swipe Rewinded!",
+      description: "You can change your mind",
     });
   };
 
@@ -700,16 +700,16 @@ const Dating = () => {
       if (error) throw error;
 
       toast({
-        title: "Predplatné zrušené",
-        description: data.message || "Predplatné bude zrušené na konci aktuálneho obdobia",
+        title: "Subscription Cancelled",
+        description: data.message || "Subscription will be cancelled at the end of current period",
       });
 
       await checkSubscription(user.id);
     } catch (error) {
       console.error('Cancellation error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa zrušiť predplatné",
+        title: "Error",
+        description: "Failed to cancel subscription",
         variant: "destructive",
       });
     } finally {
@@ -750,15 +750,15 @@ const Dating = () => {
         .eq("liked_id", user.id);
       
       toast({
-        title: `${data.length} ľudí vás lajklo!`,
-        description: "Pozrite si ich profily vo swipe sekcii",
+        title: `${data.length} people liked you!`,
+        description: "Check their profiles in swipe section",
       });
       
       setLikesYouCount(0);
     } else {
       toast({
-        title: "Zatiaľ žiadne lajky",
-        description: "Pokračujte v swipovaní!",
+        title: "No Likes Yet",
+        description: "Keep swiping!",
       });
     }
   };
@@ -774,13 +774,13 @@ const Dating = () => {
           <div className="text-center space-y-8">
             <Badge className="bg-pink-500 text-white">
               <Heart className="h-4 w-4 mr-1" />
-              Zoznamka
+              Dating
             </Badge>
             <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-              Nájdite svoju lásku
+              Find Your Love
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Pripojte sa k tisíckam ľudí, ktorí už našli svoju polovičku. Swipujte, matchujte a chatujte!
+              Join thousands of people who have already found their match. Swipe, match, and chat!
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
@@ -788,25 +788,25 @@ const Dating = () => {
               <Card className={`relative cursor-pointer transition-all ${selectedPlan === 'monthly' ? 'ring-2 ring-pink-500' : ''}`} onClick={() => setSelectedPlan('monthly')}>
                 <CardHeader className="text-center">
                   <div className="text-5xl font-bold text-pink-500 mb-2">2 €</div>
-                  <p className="text-muted-foreground">mesačne</p>
+                  <p className="text-muted-foreground">monthly</p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Heart className="h-5 w-5 text-pink-500" />
-                      <span>Neobmedzené swipovanie</span>
+                      <span>Unlimited swiping</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <MessageCircle className="h-5 w-5 text-pink-500" />
-                      <span>Chat s matchmi</span>
+                      <span>Chat with matches</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-5 w-5 text-pink-500" />
-                      <span>Prémiové filtre</span>
+                      <span>Premium filters</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <User className="h-5 w-5 text-pink-500" />
-                      <span>Detailné profily</span>
+                      <span>Detailed profiles</span>
                     </div>
                   </div>
                 </CardContent>
@@ -815,30 +815,30 @@ const Dating = () => {
               {/* Yearly Plan */}
               <Card className={`relative cursor-pointer transition-all ${selectedPlan === 'yearly' ? 'ring-2 ring-pink-500' : ''}`} onClick={() => setSelectedPlan('yearly')}>
                 <div className="absolute -top-3 right-4">
-                  <Badge className="bg-green-500 text-white">Ušetríte 2 mesiace!</Badge>
+                  <Badge className="bg-green-500 text-white">Save 2 months!</Badge>
                 </div>
                 <CardHeader className="text-center">
                   <div className="text-5xl font-bold text-pink-500 mb-2">20 €</div>
-                  <p className="text-muted-foreground">ročne</p>
-                  <p className="text-sm text-green-500 font-medium">Len 1,67 € / mesiac</p>
+                  <p className="text-muted-foreground">yearly</p>
+                  <p className="text-sm text-green-500 font-medium">Just 1.67 € / month</p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <Heart className="h-5 w-5 text-pink-500" />
-                      <span>Neobmedzené swipovanie</span>
+                      <span>Unlimited swiping</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <MessageCircle className="h-5 w-5 text-pink-500" />
-                      <span>Chat s matchmi</span>
+                      <span>Chat with matches</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Sparkles className="h-5 w-5 text-pink-500" />
-                      <span>Prémiové filtre</span>
+                      <span>Premium filters</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <User className="h-5 w-5 text-pink-500" />
-                      <span>Detailné profily</span>
+                      <span>Detailed profiles</span>
                     </div>
                   </div>
                 </CardContent>
@@ -849,7 +849,7 @@ const Dating = () => {
               onClick={() => handleSubscribe(selectedPlan)} 
               className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
             >
-              Začať hľadať ({selectedPlan === 'monthly' ? '2 €/mesiac' : '20 €/rok'})
+              Start Searching ({selectedPlan === 'monthly' ? '2 €/month' : '20 €/year'})
             </Button>
           </div>
         </div>
@@ -867,70 +867,64 @@ const Dating = () => {
       }}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Vytvorte si profil</DialogTitle>
+            <DialogTitle>Create Your Profile</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Meno</label>
+              <label className="text-sm font-medium">Name</label>
               <Input
                 value={profileForm.display_name}
                 onChange={(e) => setProfileForm({ ...profileForm, display_name: e.target.value })}
-                placeholder="Vaše meno"
+                placeholder="Your name"
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Vek</label>
-              <Input
-                type="number"
-                value={profileForm.age}
-                onChange={(e) => setProfileForm({ ...profileForm, age: parseInt(e.target.value) })}
-                min={18}
-                max={100}
-              />
+              <label className="text-sm font-medium">Age</label>
+...
             </div>
             <div>
-              <label className="text-sm font-medium">Pohlavie</label>
+              <label className="text-sm font-medium">Gender</label>
               <select 
                 className="w-full p-2 border rounded bg-background text-foreground"
                 value={profileForm.gender}
                 onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
               >
-                <option value="muž">Muž</option>
-                <option value="žena">Žena</option>
-                <option value="iné">Iné</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
               </select>
             </div>
             <div>
-              <label className="text-sm font-medium">Hľadám</label>
+              <label className="text-sm font-medium">Looking For</label>
               <select 
                 className="w-full p-2 border rounded bg-background text-foreground"
                 value={profileForm.looking_for}
                 onChange={(e) => setProfileForm({ ...profileForm, looking_for: e.target.value })}
               >
-                <option value="muž">Muža</option>
-                <option value="žena">Ženu</option>
-                <option value="iné">Iné</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
               </select>
             </div>
             <div>
-              <label className="text-sm font-medium">O mne</label>
+              <label className="text-sm font-medium">About Me</label>
               <Textarea
                 value={profileForm.bio}
                 onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                placeholder="Napíšte niečo o sebe..."
+                placeholder="Write something about yourself..."
                 className="min-h-24"
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Lokalita</label>
+              <label className="text-sm font-medium">Location</label>
               <Input
                 value={profileForm.location}
                 onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
-                placeholder="Mesto"
+                placeholder="City"
               />
             </div>
             <Button onClick={handleCreateProfile} className="w-full">
-              Vytvoriť profil
+              Create Profile
             </Button>
           </div>
         </DialogContent>
@@ -949,15 +943,15 @@ const Dating = () => {
             </TabsTrigger>
             <TabsTrigger value="matches">
               <MessageCircle className="h-4 w-4 mr-2" />
-              Matche ({matches.length})
+              Matches ({matches.length})
             </TabsTrigger>
             <TabsTrigger value="likes">
               <Eye className="h-4 w-4 mr-2" />
-              Páčia sa ({likesYouCount})
+              Likes You ({likesYouCount})
             </TabsTrigger>
             <TabsTrigger value="profile">
               <Settings className="h-4 w-4 mr-2" />
-              Profil
+              Profile
             </TabsTrigger>
           </TabsList>
 
@@ -1041,7 +1035,7 @@ const Dating = () => {
                         </Button>
                       </div>
                       <p className="text-center text-sm text-muted-foreground">
-                        Super Likes: {superLikesRemaining}/5 dnes
+                        Super Likes: {superLikesRemaining}/5 today
                       </p>
                     </div>
                   </div>
@@ -1050,8 +1044,8 @@ const Dating = () => {
             ) : (
               <Card className="w-full max-w-sm p-12 text-center">
                 <Sparkles className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2">Už ste videli všetkých!</h3>
-                <p className="text-muted-foreground">Skontrolujte neskôr nových ľudí</p>
+                <h3 className="text-xl font-bold mb-2">You've seen everyone!</h3>
+                <p className="text-muted-foreground">Check back later for new people</p>
               </Card>
             )}
           </TabsContent>
@@ -1060,7 +1054,7 @@ const Dating = () => {
           <TabsContent value="matches">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h3 className="text-xl font-bold">Vaše matche</h3>
+                <h3 className="text-xl font-bold">Your Matches</h3>
                 <ScrollArea className="h-[600px]">
                   <div className="space-y-2">
                     {matches.map((match) => (
@@ -1081,7 +1075,7 @@ const Dating = () => {
                           <div>
                             <p className="font-semibold">{match.profile?.display_name}</p>
                             <p className="text-sm text-muted-foreground">
-                              {match.profile?.age} rokov
+                              {match.profile?.age} years old
                             </p>
                           </div>
                         </CardContent>
@@ -1089,7 +1083,7 @@ const Dating = () => {
                     ))}
                     {matches.length === 0 && (
                       <p className="text-center text-muted-foreground py-8">
-                        Zatiaľ žiadne matche. Pokračujte v swipovaní!
+                        No matches yet. Keep swiping!
                       </p>
                     )}
                   </div>
@@ -1128,16 +1122,16 @@ const Dating = () => {
                               {message.content}
                             </div>
                             {message.sender_id === user?.id && (
-                              <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                               <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                                 {message.read_at ? (
                                   <>
                                     <CheckCheck className="h-3 w-3 text-blue-500" />
-                                    Prečítané
+                                    Read
                                   </>
                                 ) : (
                                   <>
                                     <Check className="h-3 w-3" />
-                                    Doručené
+                                    Delivered
                                   </>
                                 )}
                               </div>
@@ -1170,7 +1164,7 @@ const Dating = () => {
                       <Input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Napíšte správu..."
+                        placeholder="Write a message..."
                         onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                       />
                       <Button onClick={handleSendMessage}>
@@ -1188,33 +1182,33 @@ const Dating = () => {
             <Card className="max-w-2xl mx-auto">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold">Môj profil</h3>
+                  <h3 className="text-2xl font-bold">My Profile</h3>
                   <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setShowEditDialog(true)}>
                       <Settings className="h-4 w-4 mr-2" />
-                      Upraviť
+                      Edit
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="destructive">
                           <Trash2 className="h-4 w-4 mr-2" />
-                          Odstrániť
+                          Delete
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Odstrániť profil?</AlertDialogTitle>
+                          <AlertDialogTitle>Delete Profile?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            Táto akcia sa nedá vrátiť späť. Váš profil, všetky matche a správy budú natrvalo vymazané.
+                            This action cannot be undone. Your profile, all matches and messages will be permanently deleted.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction 
                             onClick={handleDeleteProfile}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                           >
-                            Odstrániť profil
+                            Delete Profile
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -1252,26 +1246,26 @@ const Dating = () => {
                   </div>
                   <div className="space-y-3 flex-1">
                     <div>
-                      <label className="text-sm text-muted-foreground">Meno</label>
+                      <label className="text-sm text-muted-foreground">Name</label>
                       <p className="text-lg font-semibold">{currentProfile?.display_name}</p>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-sm text-muted-foreground">Vek</label>
-                        <p className="font-medium">{currentProfile?.age} rokov</p>
+                        <label className="text-sm text-muted-foreground">Age</label>
+                        <p className="font-medium">{currentProfile?.age} years old</p>
                       </div>
                       <div>
-                        <label className="text-sm text-muted-foreground">Pohlavie</label>
+                        <label className="text-sm text-muted-foreground">Gender</label>
                         <p className="font-medium capitalize">{currentProfile?.gender}</p>
                       </div>
                     </div>
                     <div>
-                      <label className="text-sm text-muted-foreground">Hľadám</label>
+                      <label className="text-sm text-muted-foreground">Looking For</label>
                       <p className="font-medium capitalize">{currentProfile?.looking_for}</p>
                     </div>
                     {currentProfile?.location && (
                       <div>
-                        <label className="text-sm text-muted-foreground">Lokalita</label>
+                        <label className="text-sm text-muted-foreground">Location</label>
                         <p className="font-medium">{currentProfile.location}</p>
                       </div>
                     )}
@@ -1279,7 +1273,7 @@ const Dating = () => {
                 </div>
                 {currentProfile?.bio && (
                   <div>
-                    <label className="text-sm text-muted-foreground">O mne</label>
+                    <label className="text-sm text-muted-foreground">About Me</label>
                     <p className="mt-2 text-sm whitespace-pre-wrap">{currentProfile.bio}</p>
                   </div>
                 )}
@@ -1287,7 +1281,7 @@ const Dating = () => {
                 {/* Additional Photos Section */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">Ďalšie fotky</label>
+                    <label className="text-sm font-medium">Additional Photos</label>
                     <label className="cursor-pointer">
                       <Button 
                         variant="outline" 
@@ -1297,7 +1291,7 @@ const Dating = () => {
                       >
                         <span>
                           <ImageIcon className="h-4 w-4 mr-2" />
-                          {uploadingAdditional ? "Nahrávam..." : "Pridať fotky"}
+                          {uploadingAdditional ? "Uploading..." : "Add Photos"}
                         </span>
                       </Button>
                       <input
@@ -1335,24 +1329,24 @@ const Dating = () => {
                   )}
                   {(!currentProfile?.additional_photos || currentProfile.additional_photos.length === 0) && (
                     <p className="text-sm text-muted-foreground text-center py-4">
-                      Zatiaľ žiadne ďalšie fotky
+                      No additional photos yet
                     </p>
                   )}
                 </div>
 
                 {/* Subscription management section */}
                 <div className="pt-6 border-t">
-                  <h3 className="text-lg font-semibold mb-4">Predplatné</h3>
+                  <h3 className="text-lg font-semibold mb-4">Subscription</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium">Status predplatného</p>
+                        <p className="font-medium">Subscription Status</p>
                         <p className="text-sm text-muted-foreground">
-                          {isSubscribed ? "Aktívne" : "Neaktívne"}
+                          {isSubscribed ? "Active" : "Inactive"}
                         </p>
                       </div>
                       <Badge variant={isSubscribed ? "default" : "secondary"}>
-                        {isSubscribed ? "Aktívne" : "Neaktívne"}
+                        {isSubscribed ? "Active" : "Inactive"}
                       </Badge>
                     </div>
                     {isSubscribed && (
@@ -1363,24 +1357,24 @@ const Dating = () => {
                             className="w-full text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
                             disabled={cancelingSubscription}
                           >
-                            {cancelingSubscription ? 'Ruším...' : 'Zrušiť predplatné'}
+                            {cancelingSubscription ? 'Canceling...' : 'Cancel Subscription'}
                           </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Zrušiť predplatné?</AlertDialogTitle>
+                            <AlertDialogTitle>Cancel Subscription?</AlertDialogTitle>
                             <AlertDialogDescription>
-                              Vaše predplatné zostane aktívne do konca zaplateného obdobia. 
-                              Vyplatená suma sa nevracia. Po uplynutí obdobia stratíte prístup k premium funkciám.
+                              Your subscription will remain active until the end of paid period. 
+                              Paid amount is non-refundable. After expiration you will lose access to premium features.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Zavrieť</AlertDialogCancel>
+                            <AlertDialogCancel>Close</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={handleCancelSubscription}
                               className="bg-red-500 hover:bg-red-600"
                             >
-                              Potvrdiť zrušenie
+                              Confirm Cancellation
                             </AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
@@ -1397,70 +1391,64 @@ const Dating = () => {
         <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Upraviť profil</DialogTitle>
+              <DialogTitle>Edit Profile</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium">Meno</label>
+                <label className="text-sm font-medium">Name</label>
                 <Input
                   value={editForm.display_name}
                   onChange={(e) => setEditForm({ ...editForm, display_name: e.target.value })}
-                  placeholder="Vaše meno"
+                  placeholder="Your name"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Vek</label>
-                <Input
-                  type="number"
-                  value={editForm.age}
-                  onChange={(e) => setEditForm({ ...editForm, age: parseInt(e.target.value) })}
-                  min={18}
-                  max={100}
-                />
+                <label className="text-sm font-medium">Age</label>
+...
               </div>
               <div>
-                <label className="text-sm font-medium">Pohlavie</label>
+                <label className="text-sm font-medium">Gender</label>
                 <select 
                   className="w-full p-2 border rounded bg-background text-foreground"
                   value={editForm.gender}
                   onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
                 >
-                  <option value="muž">Muž</option>
-                  <option value="žena">Žena</option>
-                  <option value="iné">Iné</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium">Hľadám</label>
+                <label className="text-sm font-medium">Looking For</label>
                 <select 
                   className="w-full p-2 border rounded bg-background text-foreground"
                   value={editForm.looking_for}
                   onChange={(e) => setEditForm({ ...editForm, looking_for: e.target.value })}
                 >
-                  <option value="muž">Muža</option>
-                  <option value="žena">Ženu</option>
-                  <option value="iné">Iné</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium">O mne</label>
+                <label className="text-sm font-medium">About Me</label>
                 <Textarea
                   value={editForm.bio}
                   onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                  placeholder="Napíšte niečo o sebe..."
+                  placeholder="Write something about yourself..."
                   className="min-h-24"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Lokalita</label>
+                <label className="text-sm font-medium">Location</label>
                 <Input
                   value={editForm.location}
                   onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                  placeholder="Mesto"
+                  placeholder="City"
                 />
               </div>
               <Button onClick={handleUpdateProfile} className="w-full">
-                Uložiť zmeny
+                Save Changes
               </Button>
             </div>
           </DialogContent>
@@ -1472,7 +1460,7 @@ const Dating = () => {
             <div className="relative">
               <img
                 src={lightboxImage || ""}
-                alt="Náhľad"
+                alt="Preview"
                 className="w-full h-auto max-h-[90vh] object-contain rounded-lg"
               />
               <Button
@@ -1491,7 +1479,7 @@ const Dating = () => {
         <Dialog open={showGiftDialog} onOpenChange={setShowGiftDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Pošlite darček 🎁</DialogTitle>
+              <DialogTitle>Send a Gift 🎁</DialogTitle>
             </DialogHeader>
             <div className="grid grid-cols-2 gap-4">
               {availableGifts.map((gift) => (
