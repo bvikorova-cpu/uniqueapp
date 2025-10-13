@@ -751,6 +751,902 @@ Create quarterly plan:
     }
   ],
 
+  "Financial Planning Essentials": [
+    {
+      title: "Topic 1: Introduction to Financial Planning",
+      content: `**What is Financial Planning?**
+
+Financial planning is a systematic approach to managing your finances to achieve life goals through proper management of your financial resources.
+
+**Key Components:**
+- Income management
+- Expense tracking
+- Savings strategies
+- Investment planning
+- Risk management
+- Retirement planning
+- Estate planning
+
+**The Financial Planning Process:**
+
+**1. Assess Current Situation:**
+- Calculate net worth
+- Review income sources
+- Analyze spending patterns
+- Identify financial obligations
+
+**2. Set Financial Goals:**
+- Short-term (1-3 years)
+- Medium-term (3-10 years)
+- Long-term (10+ years)
+
+**3. Develop Action Plan:**
+- Create budget
+- Establish emergency fund
+- Pay down debt
+- Build savings
+
+**4. Implement Plan:**
+- Automate savings
+- Open investment accounts
+- Purchase insurance
+- Execute strategies
+
+**5. Monitor and Adjust:**
+- Review quarterly
+- Adjust for life changes
+- Rebalance investments
+- Update goals
+
+**Benefits of Financial Planning:**
+- Reduced financial stress
+- Better prepared for emergencies
+- Achieving life goals
+- Comfortable retirement
+- Generational wealth
+
+**Common Mistakes to Avoid:**
+- Not having emergency fund
+- Living beyond means
+- Ignoring retirement savings
+- Not reviewing insurance needs
+- Failing to plan for taxes`
+    },
+    {
+      title: "Topic 2: Creating and Managing a Budget",
+      content: `**The Foundation of Financial Success**
+
+A budget is a financial plan that helps you track income and expenses, ensuring you live within your means.
+
+**Steps to Create a Budget:**
+
+**1. Calculate Monthly Income:**
+- Salary (after taxes)
+- Side hustles
+- Investment income
+- Other sources
+
+**2. Track All Expenses:**
+- Fixed (rent, insurance)
+- Variable (groceries, utilities)
+- Discretionary (entertainment)
+
+**3. Categorize Spending:**
+- Housing (25-30%)
+- Transportation (15-20%)
+- Food (10-15%)
+- Utilities (5-10%)
+- Insurance (10-15%)
+- Savings (10-20%)
+- Debt repayment (10-15%)
+- Entertainment (5-10%)
+
+**Popular Budgeting Methods:**
+
+**50/30/20 Rule:**
+- 50% Needs
+- 30% Wants
+- 20% Savings/Debt
+
+**Zero-Based Budget:**
+Every dollar assigned a purpose
+Income - Expenses = $0
+
+**Envelope System:**
+Cash allocated to categories
+
+**Pay Yourself First:**
+Save before spending
+
+**Budgeting Tools:**
+- Spreadsheets
+- Apps (Mint, YNAB, PocketGuard)
+- Bank budgeting features
+- Pen and paper
+
+**Tips for Success:**
+- Be realistic
+- Review monthly
+- Adjust as needed
+- Track daily
+- Celebrate wins`
+    },
+    {
+      title: "Topic 3: Building an Emergency Fund",
+      content: `**Your Financial Safety Net**
+
+An emergency fund is money set aside for unexpected expenses or income loss.
+
+**Why You Need It:**
+- Job loss protection
+- Medical emergencies
+- Car/home repairs
+- Unexpected travel
+- Peace of mind
+
+**How Much to Save:**
+
+**Beginner:**
+$1,000 starter fund
+
+**Standard:**
+3-6 months of expenses
+
+**Extended:**
+6-12 months if:
+- Self-employed
+- Single income household
+- Unstable industry
+- Health concerns
+
+**Calculating Your Target:**
+
+**Example:**
+Monthly expenses: $3,000
+Target (6 months): $18,000
+
+**Include:**
+- Rent/mortgage
+- Utilities
+- Food
+- Transportation
+- Insurance
+- Minimum debt payments
+
+**Building Strategy:**
+
+**1. Start Small:**
+- Set initial goal ($500-1,000)
+- Build momentum
+- Increase target
+
+**2. Automate Savings:**
+- Direct deposit split
+- Automatic transfers
+- Round-up programs
+
+**3. Find Extra Money:**
+- Tax refunds
+- Bonuses
+- Side income
+- Reduce expenses
+
+**4. Protect Your Fund:**
+- Separate account
+- High-yield savings
+- Avoid temptation
+- Replace when used
+
+**Where to Keep It:**
+- High-yield savings account
+- Money market account
+- Short-term CD ladder
+- Easily accessible
+
+**Don't Use For:**
+- Vacations
+- Shopping
+- Regular bills
+- Wants vs needs`
+    },
+    {
+      title: "Topic 4: Debt Management Strategies",
+      content: `**Taking Control of Debt**
+
+Effective debt management is crucial for financial health and achieving your financial goals.
+
+**Types of Debt:**
+
+**Good Debt:**
+- Mortgage
+- Student loans
+- Business loans
+- Low-interest loans
+
+**Bad Debt:**
+- Credit cards
+- Payday loans
+- High-interest personal loans
+- Unnecessary purchases
+
+**Debt Repayment Methods:**
+
+**Debt Snowball:**
+1. List debts smallest to largest
+2. Pay minimums on all
+3. Extra to smallest balance
+4. When paid, roll to next
+5. Build momentum
+
+**Pros:**
+- Quick wins
+- Psychological boost
+- Motivation
+
+**Debt Avalanche:**
+1. List by interest rate
+2. Pay minimums on all
+3. Extra to highest rate
+4. When paid, move to next
+5. Save most money
+
+**Pros:**
+- Mathematically optimal
+- Save on interest
+- Faster payoff
+
+**Debt Consolidation:**
+- Combine multiple debts
+- Single payment
+- Often lower rate
+- Simplified management
+
+**Balance Transfer:**
+- 0% intro APR cards
+- Transfer high-rate debt
+- Pay off during promo
+- Watch for fees
+
+**Credit Score Impact:**
+
+**Factors:**
+- Payment history (35%)
+- Credit utilization (30%)
+- Length of history (15%)
+- New credit (10%)
+- Credit mix (10%)
+
+**Improving Score:**
+- Pay on time
+- Keep utilization <30%
+- Don't close old accounts
+- Limit new applications
+- Check report regularly
+
+**Preventing New Debt:**
+- Use cash/debit
+- Budget strictly
+- Emergency fund
+- Delay gratification
+- Financial discipline`
+    },
+    {
+      title: "Topic 5: Saving and Investment Basics",
+      content: `**Growing Your Wealth**
+
+Understanding the difference between saving and investing is key to building long-term wealth.
+
+**Saving vs Investing:**
+
+**Savings:**
+- Short-term goals
+- Low risk
+- Easy access
+- Lower returns
+- FDIC insured
+
+**Investing:**
+- Long-term goals
+- Higher risk
+- Less liquid
+- Higher potential returns
+- Not insured
+
+**Investment Basics:**
+
+**Asset Classes:**
+
+**Stocks:**
+- Ownership in companies
+- Higher risk/reward
+- Long-term growth
+- Dividends possible
+
+**Bonds:**
+- Lending to entities
+- Lower risk
+- Fixed income
+- Stability
+
+**Real Estate:**
+- Property investment
+- Rental income
+- Appreciation
+- Tangible asset
+
+**Mutual Funds:**
+- Professionally managed
+- Diversified
+- Higher fees
+- Active management
+
+**Index Funds:**
+- Passive tracking
+- Low fees
+- Diversified
+- Market returns
+
+**ETFs:**
+- Trade like stocks
+- Low fees
+- Flexible
+- Tax efficient
+
+**Key Principles:**
+
+**1. Diversification:**
+Spread risk across:
+- Asset classes
+- Industries
+- Geographic regions
+
+**2. Time Horizon:**
+- Short (<3 years): Conservative
+- Medium (3-10): Balanced
+- Long (10+): Aggressive
+
+**3. Risk Tolerance:**
+- Conservative: Bonds heavy
+- Moderate: Balanced
+- Aggressive: Stock heavy
+
+**4. Dollar-Cost Averaging:**
+- Invest regularly
+- Reduce timing risk
+- Build discipline
+
+**Getting Started:**
+- Start early
+- Be consistent
+- Stay invested
+- Rebalance annually
+- Don't panic sell`
+    },
+    {
+      title: "Topic 6: Retirement Planning",
+      content: `**Planning for Your Future**
+
+Retirement planning ensures you have enough money to maintain your lifestyle when you stop working.
+
+**Retirement Accounts:**
+
+**401(k)/403(b):**
+- Employer-sponsored
+- Tax-deferred growth
+- Employer match
+- 2024 limit: $23,000
+- Catch-up (50+): $7,500
+
+**Traditional IRA:**
+- Tax-deductible contributions
+- Tax-deferred growth
+- Taxed on withdrawal
+- 2024 limit: $7,000
+- Catch-up (50+): $1,000
+
+**Roth IRA:**
+- After-tax contributions
+- Tax-free growth
+- Tax-free withdrawal
+- Income limits apply
+- More flexibility
+
+**Roth 401(k):**
+- After-tax contributions
+- Tax-free growth
+- No income limits
+- Employer match still pre-tax
+
+**How Much to Save:**
+
+**Rule of 25:**
+Annual expenses × 25 = Target
+
+**Example:**
+$40,000/year × 25 = $1,000,000
+
+**4% Rule:**
+Withdraw 4% annually
+
+**Age-Based Guidelines:**
+
+**By 30:**
+1× annual salary saved
+
+**By 40:**
+3× annual salary
+
+**By 50:**
+6× annual salary
+
+**By 60:**
+8× annual salary
+
+**By Retirement:**
+10× annual salary
+
+**Maximizing Retirement Savings:**
+
+**1. Get Employer Match:**
+- Free money
+- Immediate 100% return
+- Always contribute enough
+
+**2. Increase Contributions:**
+- Annual raises
+- Bonuses
+- Pay increases
+
+**3. Reduce Fees:**
+- Choose low-cost funds
+- Avoid high-fee managers
+- Compare expense ratios
+
+**4. Asset Allocation:**
+- Age-appropriate mix
+- Rebalance annually
+- Adjust over time
+
+**Social Security:**
+- Supplement, not replacement
+- Claiming age matters
+- Delaying increases benefits
+- Plan strategically`
+    },
+    {
+      title: "Topic 7: Tax Planning Strategies",
+      content: `**Minimizing Tax Burden Legally**
+
+Smart tax planning can save thousands of dollars annually through legal strategies.
+
+**Tax-Advantaged Accounts:**
+
+**Retirement Accounts:**
+- Traditional IRA/401(k)
+- Roth IRA/401(k)
+- SEP IRA
+- Solo 401(k)
+
+**Health Savings Account (HSA):**
+- Triple tax advantage
+- Tax-deductible contributions
+- Tax-free growth
+- Tax-free medical withdrawals
+- 2024 limit: $4,150/$8,300
+
+**529 Education Plans:**
+- Tax-free growth
+- Tax-free for education
+- State tax deductions
+- Gift tax benefits
+
+**Tax Deductions:**
+
+**Standard vs Itemized:**
+- Standard (2024): $14,600/$29,200
+- Itemize if exceeds standard
+
+**Common Deductions:**
+- Mortgage interest
+- State/local taxes ($10k cap)
+- Charitable contributions
+- Medical expenses (>7.5% AGI)
+- Business expenses
+
+**Tax Credits:**
+
+**Refundable:**
+- Earned Income Tax Credit
+- Child Tax Credit
+- American Opportunity Credit
+
+**Non-Refundable:**
+- Lifetime Learning Credit
+- Child Care Credit
+- Saver's Credit
+
+**Investment Tax Strategies:**
+
+**Tax-Loss Harvesting:**
+- Sell losing investments
+- Offset capital gains
+- Up to $3,000 income offset
+- Carry forward losses
+
+**Long-Term Capital Gains:**
+- Hold >1 year
+- Lower tax rates
+- 0%, 15%, or 20%
+
+**Dividend Strategy:**
+- Qualified dividends
+- Preferential rates
+- Tax-efficient placement
+
+**Year-End Planning:**
+
+**December Actions:**
+- Max out contributions
+- Harvest tax losses
+- Charitable donations
+- Prepay deductibles
+- Defer income
+- Accelerate expenses
+
+**Tax-Efficient Investing:**
+- Asset location strategy
+- Tax-loss harvesting
+- Index funds in taxable
+- Bonds in tax-deferred`
+    },
+    {
+      title: "Topic 8: Insurance and Risk Management",
+      content: `**Protecting Your Financial Future**
+
+Insurance protects against financial catastrophe from unexpected events.
+
+**Essential Insurance Types:**
+
+**Health Insurance:**
+- Medical expenses
+- Preventive care
+- Emergency coverage
+- Prescription drugs
+
+**Key Terms:**
+- Premium: Monthly payment
+- Deductible: Pay before coverage
+- Copay: Fixed fee per visit
+- Out-of-pocket max: Annual limit
+
+**Life Insurance:**
+
+**Term Life:**
+- Coverage for set period
+- Lower premiums
+- No cash value
+- Best for most
+
+**Permanent Life:**
+- Lifetime coverage
+- Cash value component
+- Higher premiums
+- Investment aspect
+
+**How Much:**
+- 10-12× annual income
+- Cover debts + expenses
+- Consider dependents
+- Future obligations
+
+**Disability Insurance:**
+- Replaces income if unable to work
+- Short-term (3-6 months)
+- Long-term (until retirement)
+- Typically 60-70% of income
+
+**Homeowners/Renters:**
+
+**Homeowners:**
+- Dwelling coverage
+- Personal property
+- Liability protection
+- Additional living expenses
+
+**Renters:**
+- Personal property
+- Liability coverage
+- Very affordable
+- Often required
+
+**Auto Insurance:**
+
+**Required:**
+- Liability coverage
+
+**Recommended:**
+- Collision
+- Comprehensive
+- Uninsured motorist
+- Medical payments
+
+**Umbrella Insurance:**
+- Extra liability protection
+- After other policies max
+- $1-5 million coverage
+- Affordable ($150-500/year)
+
+**Long-Term Care:**
+- Nursing home costs
+- Assisted living
+- In-home care
+- Buy in 50s-60s
+
+**Insurance Best Practices:**
+
+**Do:**
+- Shop and compare
+- Review annually
+- Increase deductibles
+- Bundle policies
+- Maintain good credit
+- Ask about discounts
+
+**Don't:**
+- Under-insure
+- Over-insure
+- Let policies lapse
+- Ignore policy details
+- Skip reading coverage`
+    },
+    {
+      title: "Topic 9: Estate Planning Fundamentals",
+      content: `**Ensuring Your Legacy**
+
+Estate planning ensures your assets are distributed according to your wishes and your loved ones are protected.
+
+**Essential Documents:**
+
+**Last Will and Testament:**
+
+**Includes:**
+- Asset distribution
+- Executor appointment
+- Guardian for minors
+- Specific bequests
+
+**Without Will:**
+- State decides distribution
+- May not match wishes
+- Longer process
+- Higher costs
+
+**Living Trust:**
+
+**Benefits:**
+- Avoid probate
+- Privacy maintained
+- Control while alive
+- Reduce estate taxes
+
+**Types:**
+- Revocable (changeable)
+- Irrevocable (permanent)
+
+**Power of Attorney:**
+
+**Financial POA:**
+- Manage finances
+- Pay bills
+- Manage investments
+- File taxes
+
+**Healthcare POA:**
+- Medical decisions
+- Healthcare proxy
+- Treatment choices
+
+**Living Will:**
+
+**Covers:**
+- End-of-life wishes
+- Life support decisions
+- Resuscitation
+- Organ donation
+
+**Beneficiary Designations:**
+
+**Accounts:**
+- Retirement accounts
+- Life insurance
+- Bank accounts (TOD/POD)
+- Investment accounts
+
+**Important:**
+- Review regularly
+- Update after life changes
+- Supersede will
+- Avoid naming minors directly
+
+**Estate Tax Planning:**
+
+**Federal Estate Tax:**
+- 2024 exemption: $13.61M
+- 40% over exemption
+- Married couple doubles
+
+**Strategies:**
+- Annual gift exclusion ($18k)
+- Charitable donations
+- Trusts
+- Life insurance trusts
+
+**Special Situations:**
+
+**For Parents:**
+- Guardian nomination
+- Children's trusts
+- Life insurance
+- 529 plans
+
+**For Business Owners:**
+- Succession planning
+- Buy-sell agreements
+- Business valuation
+- Key person insurance
+
+**Digital Assets:**
+- Social media accounts
+- Digital photos
+- Cryptocurrency
+- Online banking
+- Create inventory
+- Emergency access plan
+
+**When to Update:**
+- Marriage/divorce
+- Birth/adoption
+- Death of beneficiary
+- Major asset changes
+- State move
+- Every 3-5 years`
+    },
+    {
+      title: "Topic 10: Long-Term Financial Planning and Wealth Building",
+      content: `**Building Lasting Wealth**
+
+Long-term financial planning focuses on building wealth through disciplined strategies and smart decisions.
+
+**Wealth Building Principles:**
+
+**1. Pay Yourself First:**
+- Automate savings
+- Treat savings as bill
+- Invest before spending
+- Build consistency
+
+**2. Live Below Means:**
+- Spend less than earn
+- Avoid lifestyle inflation
+- Budget consciously
+- Delayed gratification
+
+**3. Invest for Growth:**
+- Stock market exposure
+- Real estate
+- Business ventures
+- Alternative investments
+
+**4. Minimize Fees:**
+- Low-cost index funds
+- Avoid transaction fees
+- Negotiate rates
+- DIY when possible
+
+**5. Tax Efficiency:**
+- Use tax-advantaged accounts
+- Tax-loss harvesting
+- Strategic withdrawals
+- Charitable giving
+
+**Multiple Income Streams:**
+
+**Active Income:**
+- Primary job
+- Side hustle
+- Freelancing
+- Consulting
+
+**Passive Income:**
+- Dividend stocks
+- Rental properties
+- Royalties
+- Business ownership
+
+**Portfolio Income:**
+- Capital gains
+- Interest
+- Dividends
+- Bond income
+
+**Asset Allocation by Age:**
+
+**20s-30s:**
+- 80-90% stocks
+- 10-20% bonds
+- Aggressive growth
+- Long time horizon
+
+**40s-50s:**
+- 60-70% stocks
+- 30-40% bonds
+- Balanced approach
+- Moderate risk
+
+**60s+:**
+- 40-50% stocks
+- 50-60% bonds
+- Capital preservation
+- Income generation
+
+**Wealth Building Milestones:**
+
+**Net Worth Goals:**
+- Age 30: $50k-100k
+- Age 40: $200k-400k
+- Age 50: $500k-1M
+- Age 60: $1M-2M+
+
+**Financial Independence:**
+
+**Calculate FI Number:**
+Annual expenses × 25
+
+**Example:**
+$50,000 × 25 = $1,250,000
+
+**Strategies:**
+- Increase income
+- Reduce expenses
+- Invest difference
+- Monitor progress
+
+**Avoiding Wealth Destroyers:**
+
+**1. Bad Debt:**
+- High-interest credit cards
+- Payday loans
+- Unnecessary loans
+
+**2. Lifestyle Inflation:**
+- Upgrading with raises
+- Keeping up appearances
+- Unnecessary luxuries
+
+**3. Poor Investments:**
+- Get-rich-quick schemes
+- High-fee products
+- Speculative bets
+- Lack of diversification
+
+**4. Lack of Planning:**
+- No emergency fund
+- Insufficient insurance
+- No retirement savings
+- Poor tax planning
+
+**Continuous Improvement:**
+- Read financial books
+- Follow market news
+- Consult professionals
+- Review quarterly
+- Adjust strategies
+- Stay disciplined
+- Think long-term
+- Maintain perspective`
+    }
+  ],
+
   "default": [
     {
       title: "Introduction to the Course",
