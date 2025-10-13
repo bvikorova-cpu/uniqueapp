@@ -23,7 +23,7 @@ const Home = () => {
     { name: "Dating", path: "/dating", keywords: ["dating", "zoznamka", "láska", "priateľstvá"] },
     { name: "Prvá pomoc", path: "/first-aid", keywords: ["prvá pomoc", "zdravie", "pomoc"] },
     { name: "Fit & Slim", path: "/fit-slim", keywords: ["fit", "slim", "cvičenie", "zdravé recepty"] },
-    { name: "Ja urobím", path: "/marketplace", keywords: ["služby", "marketplace", "ja urobím"] },
+    { name: "Marketplace zručností", path: "/marketplace", keywords: ["služby", "marketplace", "ja urobím", "marketplace zručností"] },
     { name: "Bazár", path: "/bazaar", keywords: ["bazár", "bazar", "predaj", "nákup"] },
     { name: "Referenčný program", path: "/referral", keywords: ["referral", "odmeny", "priateľ"] },
     { name: "Hry", path: "/games", keywords: ["hry", "games", "zábava"] },
@@ -273,7 +273,7 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <HomeIcon className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>Ja urobím</CardTitle>
+                  <CardTitle>Marketplace zručností</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
