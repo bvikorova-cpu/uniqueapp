@@ -100,7 +100,7 @@ const Psychology = () => {
         const welcomeMsg: Message = {
           id: uuidv4(),
           role: 'assistant',
-          content: 'Ahoj 👋 Som tu pre teba. Tento priestor je anonymný a bezpečný. Môžeš mi napísať čokoľvek, čo ťa trápi. Ako sa dnes cítiš?',
+          content: 'Hello 👋 I am here for you. This space is anonymous and safe. You can write anything that troubles you. How are you feeling today?',
           created_at: new Date().toISOString()
         };
         setMessages([welcomeMsg]);
@@ -114,8 +114,8 @@ const Psychology = () => {
     } catch (error) {
       console.error('Error initializing session:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa inicializovať reláciu.",
+        title: "Error",
+        description: "Failed to initialize session.",
         variant: "destructive"
       });
     }
@@ -158,7 +158,7 @@ const Psychology = () => {
 
     if (!resp.ok) {
       const errorData = await resp.json().catch(() => ({}));
-      throw new Error(errorData.error || "Nepodarilo sa získať odpoveď");
+      throw new Error(errorData.error || "Failed to get response");
     }
 
     if (!resp.body) throw new Error("No response body");
@@ -257,8 +257,8 @@ const Psychology = () => {
     } catch (error) {
       console.error('Error sending message:', error);
       toast({
-        title: "Chyba",
-        description: error instanceof Error ? error.message : "Nepodarilo sa odoslať správu",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send message",
         variant: "destructive"
       });
     } finally {
@@ -280,13 +280,13 @@ const Psychology = () => {
         <div className="text-center space-y-4 mb-8">
           <Badge className="bg-gradient-secondary text-white">
             <Lock className="h-4 w-4 mr-1" />
-            100% Anonymné & Bezpečné
+            100% Anonymous & Safe
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            Online Psychológ
+            Online Psychologist
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Zdieľaj svoje starosti v anonymnom a bezpečnom prostredí. Som tu, aby som ťa vypočul.
+            Share your concerns in an anonymous and safe environment. I am here to listen to you.
           </p>
         </div>
 
@@ -297,7 +297,7 @@ const Psychology = () => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Brain className="h-5 w-5" />
-                  O službe
+                  About the Service
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -305,27 +305,27 @@ const Psychology = () => {
                   <div className="flex items-start gap-2">
                     <Lock className="h-5 w-5 text-primary mt-1" />
                     <div>
-                      <p className="font-semibold text-sm">Anonymita</p>
+                      <p className="font-semibold text-sm">Anonymity</p>
                       <p className="text-xs text-muted-foreground">
-                        Žiadna registrácia ani osobné údaje
+                        No registration or personal data required
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
                     <Heart className="h-5 w-5 text-primary mt-1" />
                     <div>
-                      <p className="font-semibold text-sm">Empatia</p>
+                      <p className="font-semibold text-sm">Empathy</p>
                       <p className="text-xs text-muted-foreground">
-                        Neodsúdivý a podporný priestor
+                        Non-judgmental and supportive space
                       </p>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
                     <Brain className="h-5 w-5 text-primary mt-1" />
                     <div>
-                      <p className="font-semibold text-sm">AI asistent</p>
+                      <p className="font-semibold text-sm">AI Assistant</p>
                       <p className="text-xs text-muted-foreground">
-                        24/7 k dispozícii pre počúvanie
+                        Available 24/7 for listening
                       </p>
                     </div>
                   </div>
@@ -333,7 +333,7 @@ const Psychology = () => {
                 
                 <div className="pt-4 border-t">
                   <p className="text-xs text-muted-foreground">
-                    ⚠️ Dôležité: Som AI asistent. Pri vážnych problémoch odporúčam konzultáciu s profesionálnym psychológom.
+                    ⚠️ Important: I am an AI assistant. For serious problems, I recommend consulting with a professional psychologist.
                   </p>
                 </div>
               </CardContent>
@@ -394,7 +394,7 @@ const Psychology = () => {
                 <div className="p-4 border-t">
                   <div className="flex gap-2">
                     <Textarea
-                      placeholder="Napíš čo ťa trápi..."
+                      placeholder="Write what troubles you..."
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
                       onKeyPress={handleKeyPress}
