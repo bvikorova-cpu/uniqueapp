@@ -395,7 +395,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 space-y-2">
+          <div className="lg:hidden py-4 space-y-2 max-h-[calc(100vh-5rem)] overflow-y-auto">
             {[...mainNavItems, ...otherServices].map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
