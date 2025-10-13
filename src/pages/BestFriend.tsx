@@ -15,7 +15,7 @@ const BestFriend = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Ahoj! Som tu pre teba. Ako sa máš? Môžeš mi povedať čokoľvek čo ťa trápi alebo aj čo ťa potešilo. 😊"
+      content: "Hi! I'm here for you. How are you? You can tell me anything that's bothering you or makes you happy. 😊"
     }
   ]);
   const [input, setInput] = useState("");
@@ -94,7 +94,7 @@ const BestFriend = () => {
       }
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error("Chyba pri komunikácii s priateľom");
+      toast.error("Error communicating with friend");
       setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
@@ -130,7 +130,7 @@ const BestFriend = () => {
             </h1>
           </div>
           <p className="text-lg text-muted-foreground">
-            Tvoj najlepší priateľ, ktorý je tu vždy pre teba
+            Your best friend who is always here for you
           </p>
         </div>
 
@@ -149,7 +149,7 @@ const BestFriend = () => {
                   Best Friend
                   <Sparkles className="w-4 h-4 text-primary" />
                 </CardTitle>
-                <p className="text-sm text-muted-foreground">Online • Vždy tu pre teba</p>
+                <p className="text-sm text-muted-foreground">Online • Always here for you</p>
               </div>
             </div>
           </CardHeader>
@@ -195,7 +195,7 @@ const BestFriend = () => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Napíš niečo..."
+                  placeholder="Write something..."
                   className="min-h-[60px] resize-none"
                   disabled={isLoading}
                 />
@@ -218,12 +218,12 @@ const BestFriend = () => {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <Heart className="w-4 h-4 text-destructive" />
-                Vždy tu pre teba
+                Always here for you
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                24/7 kamarát, ktorý ti vždy vypočuje
+                24/7 friend who always listens
               </p>
             </CardContent>
           </Card>
@@ -232,12 +232,12 @@ const BestFriend = () => {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-primary" />
-                Empatický
+                Empathetic
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Rozumie tvojim pocitom a vždy ťa podporí
+                Understands your feelings and always supports you
               </p>
             </CardContent>
           </Card>
@@ -246,12 +246,12 @@ const BestFriend = () => {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <Send className="w-4 h-4 text-success" />
-                Dôverný
+                Confidential
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Tvoje rozhovory sú v bezpečí a súkromí
+                Your conversations are safe and private
               </p>
             </CardContent>
           </Card>
