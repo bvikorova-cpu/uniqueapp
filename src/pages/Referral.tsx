@@ -37,24 +37,40 @@ const Referral = () => {
     });
   };
 
-  const shareReferral = () => {
+  const shareReferral = async () => {
     if (!stats?.code) return;
     const shareText = `Pripoj sa k Megatalent a súťaž o 100.000€! Použi môj kód: ${stats.code}`;
     const shareUrl = `${window.location.origin}/auth?ref=${stats.code}`;
     
     if (navigator.share) {
-      navigator.share({
-        title: 'Megatalent - Súťaž o 100.000€',
-        text: shareText,
-        url: shareUrl,
-      });
+      try {
+        await navigator.share({
+          title: 'Megatalent - Súťaž o 100.000€',
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch (error) {
+        if ((error as Error).name !== 'AbortError') {
+          console.error('Error sharing:', error);
+        }
+      }
     } else {
-      navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
       toast({
         title: "Skopírované!",
-        description: "Odkaz na zdieľanie bol skopírovaný",
+        description: "Odkaz bol skopírovaný do schránky",
       });
     }
+  };
+
+  const inviteByEmail = () => {
+    if (!stats?.code) return;
+    const subject = encodeURIComponent('Pozvánka do Megatalent - Súťaž o 100.000€');
+    const body = encodeURIComponent(
+      `Ahoj!\n\nChcel by som ťa pozvať do Megatalent, kde môžeš súťažiť o 100.000€!\n\nPouži môj referenčný kód pri registrácii: ${stats.code}\n\nRegistruj sa tu: ${window.location.origin}/auth?ref=${stats.code}\n\nTešíme sa na teba!`
+    );
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   if (loading || !user) {
@@ -121,7 +137,11 @@ const Referral = () => {
                     <Share2 className="h-4 w-4 mr-2" />
                     Zdieľať odkaz
                   </Button>
-                  <Button variant="secondary" className="w-full">
+                  <Button 
+                    variant="secondary" 
+                    className="w-full"
+                    onClick={inviteByEmail}
+                  >
                     <Users className="h-4 w-4 mr-2" />
                     Pozvať emailom
                   </Button>
