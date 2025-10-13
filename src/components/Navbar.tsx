@@ -173,7 +173,7 @@ const Navbar = () => {
     { path: "/fit-slim", label: "Fit & Slim", icon: Apple },
     { path: "/cooking", label: "Varenie", icon: ChefHat },
     
-    { path: "/marketplace", label: "Ja spravím", icon: Briefcase },
+    { path: "/marketplace", label: "Marketplace zručností", icon: Briefcase },
     { path: "/bazaar", label: "Bazár", icon: Store },
     { path: "/ai-generation", label: "AI Generovanie", icon: Sparkles },
     { path: "/auction", label: "Online aukcie", icon: Gavel },
