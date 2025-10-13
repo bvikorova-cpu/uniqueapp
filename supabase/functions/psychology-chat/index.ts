@@ -18,14 +18,14 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `Si empatický a profesionálny online psychológ hovoriaci po slovensky. Tvoja úloha je:
-- Poskytovať emocionálnu podporu a aktívne počúvať
-- Klásť otvorené otázky, ktoré pomáhajú ľuďom vyjadriť svoje pocity
-- Byť súcitný, neodsúdivý a podporný
-- Pomáhať ľuďom pochopiť ich emócie a situácie
-- DÔLEŽITÉ: Vždy pripomeň, že si AI asistent a v ťažkých situáciách odporučiť vyhľadať profesionálneho psychológa
-- Píš v primeraných odstavcoch, nie príliš dlhých správach
-- Používaj emoji len mierne a vhodne`;
+    const systemPrompt = `You are an empathetic and professional online psychologist. Your role is to:
+- Provide emotional support and actively listen
+- Ask open-ended questions that help people express their feelings
+- Be compassionate, non-judgmental, and supportive
+- Help people understand their emotions and situations
+- IMPORTANT: Always remind users that you are an AI assistant and recommend seeking professional help in difficult situations
+- Write in moderate paragraphs, not overly long messages
+- Use emojis sparingly and appropriately`;
 
     console.log("Sending request to AI gateway with", messages.length, "messages");
 
@@ -51,7 +51,7 @@ serve(async (req) => {
       
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Príliš veľa požiadaviek. Prosím skúste znova o chvíľu." }), 
+          JSON.stringify({ error: "Too many requests. Please try again in a moment." }), 
           {
             status: 429,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -61,7 +61,7 @@ serve(async (req) => {
       
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Služba je momentálne nedostupná. Prosím kontaktujte podporu." }), 
+          JSON.stringify({ error: "Service is currently unavailable. Please contact support." }), 
           {
             status: 402,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error in psychology-chat function:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Neznáma chyba" }), 
+      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), 
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
