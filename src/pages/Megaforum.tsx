@@ -37,21 +37,21 @@ const Megaforum = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Všeobecné");
+  const [selectedCategory, setSelectedCategory] = useState("General");
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [newComment, setNewComment] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   const categories = [
-    "Všeobecné",
-    "Technológie",
-    "Šport",
-    "Kultúra",
-    "Hudba",
+    "General",
+    "Technology",
+    "Sports",
+    "Culture",
+    "Music",
     "Film & TV",
-    "Hry",
-    "Zdravie",
-    "Iné"
+    "Games",
+    "Health",
+    "Other"
   ];
 
   useEffect(() => {
