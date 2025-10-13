@@ -350,15 +350,15 @@ const AIGeneration = () => {
 
   const handleEffectClick = async (effect: AIEffect) => {
     if (!uploadedFile || !previewUrl) {
-      toast.error("Najprv nahrajte obrázok!");
+      toast.error("Please upload an image first!");
       return;
     }
 
     // Check if user has credits
     if (credits.credits_remaining <= 0) {
-      toast.error("Nemáte dostatok AI kreditov!", {
+      toast.error("You don't have enough AI credits!", {
         action: {
-          label: "Kúpiť kredity",
+          label: "Buy credits",
           onClick: () => navigate('/ai-credits-store')
         }
       });
@@ -374,7 +374,7 @@ const AIGeneration = () => {
       const creditUsed = await useCredit('effect', `Applied ${effect.name} effect`);
       
       if (!creditUsed) {
-        toast.error("Nepodarilo sa použiť AI kredit");
+        toast.error("Failed to use AI credit");
         return;
       }
 
@@ -391,7 +391,7 @@ const AIGeneration = () => {
 
       const base64Image = await base64Promise;
 
-      toast.info(`Aplikujem ${effect.name}...`, { duration: 2000 });
+      toast.info(`Applying ${effect.name}...`, { duration: 2000 });
 
       const { data, error } = await supabase.functions.invoke('apply-ai-effect', {
         body: {
@@ -403,14 +403,14 @@ const AIGeneration = () => {
 
       if (error) {
         console.error('Supabase function error:', error);
-        throw new Error(error.message || 'Chyba pri volaní funkcie');
+        throw new Error(error.message || 'Error calling function');
       }
 
       if (data?.error) {
         if (data.error.includes('Rate limit')) {
-          toast.error("Prekročený limit požiadaviek. Skúste neskôr.");
+          toast.error("Rate limit exceeded. Try again later.");
         } else if (data.error.includes('Payment required')) {
-          toast.error("Nedostatok kreditov v Lovable AI workspace.");
+          toast.error("Insufficient credits in Lovable AI workspace.");
         } else {
           toast.error(data.error);
         }
@@ -419,14 +419,14 @@ const AIGeneration = () => {
 
       if (data?.imageUrl) {
         setResultImage(data.imageUrl);
-        toast.success(`${effect.name} efekt úspešne aplikovaný!`);
+        toast.success(`${effect.name} effect successfully applied!`);
         await refreshCredits();
       } else {
-        throw new Error('Nepodarilo sa aplikovať efekt - žiadny výsledok');
+        throw new Error('Failed to apply effect - no result');
       }
     } catch (error: any) {
       console.error('Error applying effect:', error);
-      const errorMessage = error.message || 'Chyba pri aplikovaní efektu';
+      const errorMessage = error.message || 'Error applying effect';
       toast.error(errorMessage);
     } finally {
       setIsProcessing(false);
@@ -441,12 +441,12 @@ const AIGeneration = () => {
     const validImageTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
     
     if (!validImageTypes.includes(file.type)) {
-      toast.error("Nepodporovaný formát. Použite JPG, PNG alebo WEBP.");
+      toast.error("Unsupported format. Use JPG, PNG or WEBP.");
       return;
     }
 
     if (file.size > 10 * 1024 * 1024) { // 10MB limit
-      toast.error("Obrázok je príliš veľký. Maximálna veľkosť je 10MB.");
+      toast.error("Image is too large. Maximum size is 10MB.");
       return;
     }
 
@@ -455,19 +455,19 @@ const AIGeneration = () => {
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
     
-    toast.success("Obrázok úspešne nahratý!");
+    toast.success("Image successfully uploaded!");
   };
 
   const handleGenerateCustomImage = async () => {
     if (!customPrompt.trim()) {
-      toast.error("Zadajte popis obrázka!");
+      toast.error("Enter image description!");
       return;
     }
 
     if (credits.credits_remaining <= 0) {
-      toast.error("Nemáte dostatok AI kreditov!", {
+      toast.error("You don't have enough AI credits!", {
         action: {
-          label: "Kúpiť kredity",
+          label: "Buy credits",
           onClick: () => navigate('/ai-credits-store')
         }
       });
@@ -481,7 +481,7 @@ const AIGeneration = () => {
       const creditUsed = await useCredit('custom_generation', `Generated custom image: ${customPrompt.substring(0, 50)}`);
       
       if (!creditUsed) {
-        toast.error("Nepodarilo sa použiť AI kredit");
+        toast.error("Failed to use AI credit");
         return;
       }
 
@@ -497,12 +497,12 @@ const AIGeneration = () => {
       }
 
       setCustomGeneratedImage(data.imageUrl);
-      toast.success("Obrázok úspešne vygenerovaný!");
+      toast.success("Image successfully generated!");
       await refreshCredits();
 
     } catch (error) {
       console.error('Error generating custom image:', error);
-      toast.error("Nepodarilo sa vygenerovať obrázok. Skúste to znova.");
+      toast.error("Failed to generate image. Try again.");
     } finally {
       setIsGeneratingCustom(false);
     }
@@ -516,23 +516,23 @@ const AIGeneration = () => {
           <div className="inline-flex items-center gap-2 mb-4">
             <Sparkles className="w-8 h-8 text-primary" />
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              AI Efekty na Obrázky
+              AI Effects on Images
             </h1>
           </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Transformujte svoje fotky pomocou pokročilých AI efektov
+            Transform your photos using advanced AI effects
           </p>
           <div className="mt-4 flex items-center justify-center gap-4">
             <div className="flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-lg">
               <CreditCard className="w-4 h-4 text-primary" />
-              <span className="font-semibold">{credits.credits_remaining} kreditov</span>
+              <span className="font-semibold">{credits.credits_remaining} credits</span>
             </div>
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => navigate('/ai-credits-store')}
             >
-              Kúpiť kredity
+              Buy credits
             </Button>
           </div>
         </div>
@@ -540,15 +540,15 @@ const AIGeneration = () => {
         {/* Category Filters */}
         <div className="flex flex-wrap gap-2 justify-center mb-8">
           {[
-            { id: "all", label: "Všetky" },
-            { id: "interactions", label: "Interakcie" },
-            { id: "pets", label: "Zvieratá" },
-            { id: "appearance", label: "Vzhľad" },
-            { id: "entertainment", label: "Zábava" },
-            { id: "heroes", label: "Hrdinovia" },
-            { id: "fanciful", label: "Fantazijné" },
-            { id: "dance", label: "Tanec" },
-            { id: "emotions", label: "Emócie" },
+            { id: "all", label: "All" },
+            { id: "interactions", label: "Interactions" },
+            { id: "pets", label: "Pets" },
+            { id: "appearance", label: "Appearance" },
+            { id: "entertainment", label: "Entertainment" },
+            { id: "heroes", label: "Heroes" },
+            { id: "fanciful", label: "Fanciful" },
+            { id: "dance", label: "Dance" },
+            { id: "emotions", label: "Emotions" },
           ].map((category) => (
             <Button
               key={category.id}
@@ -565,8 +565,8 @@ const AIGeneration = () => {
         {isProcessing && (
           <div className="text-center py-8">
             <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
-            <p className="text-muted-foreground">Aplikujem AI efekt... Toto môže trvať 10-30 sekúnd.</p>
-            <p className="text-sm text-muted-foreground/70 mt-2">Prosím čakajte, AI spracováva váš obrázok</p>
+            <p className="text-muted-foreground">Applying AI effect... This may take 10-30 seconds.</p>
+            <p className="text-sm text-muted-foreground/70 mt-2">Please wait, AI is processing your image</p>
           </div>
         )}
 
@@ -607,8 +607,8 @@ const AIGeneration = () => {
           <div className="mt-8 max-w-4xl mx-auto">
             <Card>
               <CardHeader>
-                <CardTitle>Výsledok</CardTitle>
-                <CardDescription>Váš obrázok s aplikovaným AI efektom</CardDescription>
+                <CardTitle>Result</CardTitle>
+                <CardDescription>Your image with applied AI effect</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="relative group">
@@ -630,7 +630,7 @@ const AIGeneration = () => {
                     size="sm"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    Stiahnuť
+                    Download
                   </Button>
                 </div>
               </CardContent>
@@ -644,10 +644,10 @@ const AIGeneration = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Upload className="w-5 h-5" />
-                Nahrať súbor
+                Upload File
               </CardTitle>
               <CardDescription>
-                Nahrajte svoj obrázok pre aplikáciu AI efektov
+                Upload your image to apply AI effects
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -655,10 +655,10 @@ const AIGeneration = () => {
                 <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
                   <Wand2 className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground mb-2">
-                    Kliknite pre nahratie obrázka
+                    Click to upload image
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Podporované formáty: JPG, PNG, WEBP (max 10MB)
+                    Supported formats: JPG, PNG, WEBP (max 10MB)
                   </p>
                 </div>
                 <input
@@ -693,7 +693,7 @@ const AIGeneration = () => {
                         setPreviewUrl(null);
                       }}
                     >
-                      Odstrániť
+                      Remove
                     </Button>
                   </div>
                 </div>
@@ -708,22 +708,22 @@ const AIGeneration = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-primary" />
-                Vlastné AI generovanie
+                Custom AI Generation
               </CardTitle>
               <CardDescription>
-                Vytvorte úplne nový obrázok pomocou AI podľa vášho popisu
+                Create a completely new image using AI based on your description
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="custom-prompt" className="text-sm font-medium">
-                  Popíšte obrázok, ktorý chcete vytvoriť
+                  Describe the image you want to create
                 </label>
                 <textarea
                   id="custom-prompt"
                   value={customPrompt}
                   onChange={(e) => setCustomPrompt(e.target.value)}
-                  placeholder="Napríklad: Krásny západ slnka nad horami, realistický štýl, vysoká kvalita..."
+                  placeholder="For example: Beautiful sunset over mountains, realistic style, high quality..."
                   className="w-full min-h-[120px] p-3 rounded-lg border bg-background resize-none focus:outline-none focus:ring-2 focus:ring-primary"
                   disabled={isGeneratingCustom}
                 />
@@ -738,12 +738,12 @@ const AIGeneration = () => {
                 {isGeneratingCustom ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Generujem obrázok...
+                    Generating image...
                   </>
                 ) : (
                   <>
                     <Wand2 className="w-4 h-4 mr-2" />
-                    Vygenerovať obrázok (1 kredit)
+                    Generate Image (1 credit)
                   </>
                 )}
               </Button>
@@ -753,7 +753,7 @@ const AIGeneration = () => {
                   <div className="relative group">
                     <img
                       src={customGeneratedImage}
-                      alt="Vygenerovaný obrázok"
+                      alt="Generated image"
                       className="w-full rounded-lg"
                     />
                     <Button
@@ -764,13 +764,13 @@ const AIGeneration = () => {
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                        toast.success("Obrázok sa sťahuje!");
+                        toast.success("Image is downloading!");
                       }}
                       className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
                       size="sm"
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      Stiahnuť
+                      Download
                     </Button>
                   </div>
                 </div>
@@ -783,34 +783,34 @@ const AIGeneration = () => {
         <div className="mt-12 max-w-4xl mx-auto">
           <Card>
             <CardHeader>
-              <CardTitle>Ako to funguje?</CardTitle>
+              <CardTitle>How does it work?</CardTitle>
             </CardHeader>
             <CardContent className="grid md:grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Upload className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">1. Vygenerujte alebo nahrajte</h3>
+                <h3 className="font-semibold mb-2">1. Generate or Upload</h3>
                 <p className="text-sm text-muted-foreground">
-                  Vytvorte vlastný obrázok AI alebo nahrajte svoj
+                  Create custom AI image or upload your own
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Sparkles className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">2. Vyberte efekt</h3>
+                <h3 className="font-semibold mb-2">2. Choose Effect</h3>
                 <p className="text-sm text-muted-foreground">
-                  Zvoľte AI efekt z našej knižnice
+                  Select AI effect from our library
                 </p>
               </div>
               <div className="text-center">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                   <Wand2 className="w-6 h-6 text-primary" />
                 </div>
-                <h3 className="font-semibold mb-2">3. Stiahnite</h3>
+                <h3 className="font-semibold mb-2">3. Download</h3>
                 <p className="text-sm text-muted-foreground">
-                  Získajte váš transformovaný obsah
+                  Get your transformed content
                 </p>
               </div>
             </CardContent>
