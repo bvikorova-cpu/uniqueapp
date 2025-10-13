@@ -59,10 +59,7 @@ const Home = () => {
         style={{ backgroundImage: `url(${heroBg})` }}
       >
         <div className="absolute inset-0 bg-black/60"></div>
-        <div className="relative z-10 text-center space-y-8 px-4">
-          <Badge className="bg-gold text-gold-foreground animate-glow text-lg px-4 py-2">
-            💰 Vyhraj 10.000 € každý mesiac v každej kategórii!
-          </Badge>
+        <div className="relative z-10 text-center space-y-6 px-4">
           <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
             Vitaj v{" "}
             <span className="bg-gradient-gold bg-clip-text text-transparent">
@@ -74,8 +71,21 @@ const Home = () => {
             nakupuj a zarábaj s priateľmi!
           </p>
           
+          <Badge className="bg-gold text-gold-foreground animate-glow text-lg px-4 py-2">
+            💰 Vyhraj 10.000 € každý mesiac v každej kategórii!
+          </Badge>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/megatalent">
+              <Button variant="hero" size="lg" className="text-xl px-8 py-4">
+                <Crown className="h-6 w-6 mr-2" />
+                Vstúp do súťaže
+              </Button>
+            </Link>
+          </div>
+
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto pt-4">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input
@@ -87,15 +97,6 @@ const Home = () => {
               />
             </div>
           </form>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/megatalent">
-              <Button variant="hero" size="lg" className="text-xl px-8 py-4">
-                <Crown className="h-6 w-6 mr-2" />
-                Vstúp do súťaže
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
 
