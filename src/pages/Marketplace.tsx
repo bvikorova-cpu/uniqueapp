@@ -31,14 +31,14 @@ interface SkillOffering {
 }
 
 const CATEGORIES = {
-  construction: "Stavebníctvo",
-  repairs: "Opravy",
-  cleaning: "Upratovanie",
-  gardening: "Záhradníctvo",
-  technology: "Technológie",
-  teaching: "Vzdelávanie",
-  creative: "Kreatíva",
-  other: "Iné"
+  construction: "Construction",
+  repairs: "Repairs",
+  cleaning: "Cleaning",
+  gardening: "Gardening",
+  technology: "Technology",
+  teaching: "Education",
+  creative: "Creative",
+  other: "Other"
 };
 
 const Marketplace = () => {
@@ -120,8 +120,8 @@ const Marketplace = () => {
   const handleSubscribe = async () => {
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre predplatné sa musíte prihlásiť",
+        title: "Login Required",
+        description: "You must log in to subscribe",
         variant: "destructive"
       });
       return;
@@ -136,8 +136,8 @@ const Marketplace = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa vytvoriť predplatné",
+        title: "Error",
+        description: "Failed to create subscription",
         variant: "destructive"
       });
       return;
@@ -145,8 +145,8 @@ const Marketplace = () => {
 
     setIsSubscribed(true);
     toast({
-      title: "Úspech!",
-      description: "Predplatné bolo aktivované"
+      title: "Success!",
+      description: "Subscription activated"
     });
   };
 
@@ -155,8 +155,8 @@ const Marketplace = () => {
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         toast({
-          title: "Príliš veľký súbor",
-          description: "Maximálna veľkosť obrázka je 5 MB",
+          title: "File too large",
+          description: "Maximum image size is 5 MB",
           variant: "destructive"
         });
         return;
@@ -192,8 +192,8 @@ const Marketplace = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať správu",
+        title: "Error",
+        description: "Failed to send message",
         variant: "destructive"
       });
       setIsSendingResponse(false);
@@ -201,8 +201,8 @@ const Marketplace = () => {
     }
 
     toast({
-      title: "Správa odoslaná",
-      description: "Váš záujem bol odoslaný poskytovateľovi služby"
+      title: "Message sent",
+      description: "Your interest has been sent to the service provider"
     });
 
     setResponseMessage("");
@@ -220,16 +220,16 @@ const Marketplace = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odstrániť ponuku",
+        title: "Error",
+        description: "Failed to delete offer",
         variant: "destructive"
       });
       return;
     }
 
     toast({
-      title: "Úspech!",
-      description: "Ponuka bola odstránená"
+      title: "Success!",
+      description: "Offer deleted"
     });
 
     setOfferingToDelete(null);
@@ -258,8 +258,8 @@ const Marketplace = () => {
     } catch (error) {
       console.error('Error uploading image:', error);
       toast({
-        title: "Chyba pri nahrávaní",
-        description: "Nepodarilo sa nahrať obrázok",
+        title: "Upload error",
+        description: "Failed to upload image",
         variant: "destructive"
       });
       return null;
@@ -271,8 +271,8 @@ const Marketplace = () => {
 
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre vytvorenie ponuky sa musíte prihlásiť",
+        title: "Login Required",
+        description: "You must log in to create an offer",
         variant: "destructive"
       });
       return;
@@ -301,7 +301,7 @@ const Marketplace = () => {
 
     if (error) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive"
       });
@@ -309,8 +309,8 @@ const Marketplace = () => {
     }
 
     toast({
-      title: "Úspech!",
-      description: "Vaša ponuka bola vytvorená"
+      title: "Success!",
+      description: "Your offer has been created"
     });
 
     setFormData({
@@ -335,30 +335,30 @@ const Marketplace = () => {
               <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                 <Briefcase className="w-8 h-8 text-primary" />
               </div>
-              <CardTitle className="text-4xl font-bold">Marketplace Zručností</CardTitle>
+              <CardTitle className="text-4xl font-bold">Skills Marketplace</CardTitle>
               <CardDescription className="text-lg">
-                Ponúkni svoje zručnosti celému svetu
+                Offer your skills to the world
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="bg-primary/5 rounded-lg p-6 space-y-4">
-                <h3 className="text-xl font-semibold">Čo získaš za 2 EUR/mesiac:</h3>
+                <h3 className="text-xl font-semibold">What you get for 2 EUR/month:</h3>
                 <ul className="space-y-2">
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">✓</span>
-                    <span>Vytvor neomedzený počet ponúk svojich služieb</span>
+                    <span>Create unlimited service offers</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">✓</span>
-                    <span>Oslovíš tisíce potenciálnych zákazníkov</span>
+                    <span>Reach thousands of potential customers</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">✓</span>
-                    <span>Plná kontrola nad cenami a dostupnosťou</span>
+                    <span>Full control over prices and availability</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-1">✓</span>
-                    <span>Prezentuj sa profesionálne</span>
+                    <span>Present yourself professionally</span>
                   </li>
                 </ul>
               </div>
@@ -370,10 +370,10 @@ const Marketplace = () => {
                   size="lg" 
                   className="w-full max-w-md"
                 >
-                  Aktivovať predplatné
+                  Activate subscription
                 </Button>
                 <p className="text-sm text-muted-foreground">
-                  Platobná brána bude pripojená neskôr
+                  Payment gateway will be connected later
                 </p>
               </div>
             </CardContent>
@@ -388,24 +388,24 @@ const Marketplace = () => {
       <div className="container mx-auto px-4">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Marketplace Zručností</h1>
-            <p className="text-muted-foreground">Nájdi alebo ponúkni služby</p>
+            <h1 className="text-4xl font-bold mb-2">Skills Marketplace</h1>
+            <p className="text-muted-foreground">Find or offer services</p>
           </div>
           <Button onClick={() => setShowCreateForm(!showCreateForm)}>
-            {showCreateForm ? "Zrušiť" : "Pridať ponuku"}
+            {showCreateForm ? "Cancel" : "Add Offering"}
           </Button>
         </div>
 
         {showCreateForm && (
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle>Vytvor novú ponuku</CardTitle>
+              <CardTitle>Create New Offering</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCreateOffering} className="space-y-4">
                 <div>
                   <Input
-                    placeholder="Názov služby"
+                    placeholder="Service Name"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     required
@@ -413,7 +413,7 @@ const Marketplace = () => {
                 </div>
                 <div>
                   <Textarea
-                    placeholder="Popis služby"
+                    placeholder="Service Description"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     required
@@ -423,7 +423,7 @@ const Marketplace = () => {
                 
                 {/* Image upload section */}
                 <div className="space-y-2">
-                  <Label>Obrázok ponuky (voliteľné)</Label>
+                  <Label>Offer Image (optional)</Label>
                   {imagePreview ? (
                     <div className="relative">
                       <img 
@@ -453,10 +453,10 @@ const Marketplace = () => {
                       <label htmlFor="image-upload" className="cursor-pointer">
                         <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
                         <p className="text-sm text-muted-foreground">
-                          Kliknutím vyberte obrázok
+                          Click to select image
                         </p>
                         <p className="text-xs text-muted-foreground mt-1">
-                          Maximálna veľkosť: 5 MB
+                          Maximum size: 5 MB
                         </p>
                       </label>
                     </div>
@@ -470,7 +470,7 @@ const Marketplace = () => {
                     required
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Kategória" />
+                      <SelectValue placeholder="Category" />
                     </SelectTrigger>
                     <SelectContent>
                       {Object.entries(CATEGORIES).map(([key, label]) => (
@@ -481,18 +481,18 @@ const Marketplace = () => {
                   <Input
                     type="number"
                     step="0.01"
-                    placeholder="Cena za hodinu (€)"
+                    placeholder="Price per hour (€)"
                     value={formData.price_per_hour}
                     onChange={(e) => setFormData({ ...formData, price_per_hour: e.target.value })}
                   />
                   <Input
-                    placeholder="Lokalita"
+                    placeholder="Location"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isUploading}>
-                  {isUploading ? "Vytváranie..." : "Vytvoriť ponuku"}
+                  {isUploading ? "Creating..." : "Create Offering"}
                 </Button>
               </form>
             </CardContent>
@@ -539,7 +539,7 @@ const Marketplace = () => {
                   </div>
                 </div>
                 <CardDescription className="flex items-center gap-1 text-sm">
-                  {offering.profiles?.full_name || "Anonymný užívateľ"}
+                  {offering.profiles?.full_name || "Anonymous user"}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -550,7 +550,7 @@ const Marketplace = () => {
                   {offering.price_per_hour && (
                     <div className="flex items-center gap-2 text-primary">
                       <Euro className="w-4 h-4" />
-                      <span className="font-semibold">{offering.price_per_hour}€/hod</span>
+                      <span className="font-semibold">{offering.price_per_hour}€/hr</span>
                     </div>
                   )}
                   {offering.location && (
@@ -561,7 +561,7 @@ const Marketplace = () => {
                   )}
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock className="w-4 h-4" />
-                    <span>{new Date(offering.created_at).toLocaleDateString('sk-SK')}</span>
+                    <span>{new Date(offering.created_at).toLocaleDateString('en-US')}</span>
                   </div>
                 </div>
                 <Button 
@@ -569,7 +569,7 @@ const Marketplace = () => {
                   onClick={() => setSelectedOffering(offering)}
                 >
                   <Send className="w-4 h-4 mr-2" />
-                  Reagovať na ponuku
+                  Respond to Offer
                 </Button>
               </CardContent>
             </Card>
@@ -579,8 +579,8 @@ const Marketplace = () => {
         {offerings.length === 0 && (
           <div className="text-center py-12">
             <Briefcase className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Zatiaľ žiadne ponuky</h3>
-            <p className="text-muted-foreground">Buď prvý, kto ponúkne svoje služby!</p>
+            <h3 className="text-xl font-semibold mb-2">No offers yet</h3>
+            <p className="text-muted-foreground">Be the first to offer your services!</p>
           </div>
         )}
       </div>
@@ -607,7 +607,7 @@ const Marketplace = () => {
                       onClick={() => setOfferingToDelete(selectedOffering.id)}
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
-                      Odstrániť
+                      Delete
                     </Button>
                   )}
                 </div>
@@ -625,7 +625,7 @@ const Marketplace = () => {
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Popis</h3>
+                  <h3 className="font-semibold mb-2">Description</h3>
                   <p className="text-muted-foreground whitespace-pre-wrap">{selectedOffering.description}</p>
                 </div>
 
@@ -633,7 +633,7 @@ const Marketplace = () => {
                   {selectedOffering.price_per_hour && (
                     <div className="flex items-center gap-2 text-primary">
                       <Euro className="w-5 h-5" />
-                      <span className="font-semibold text-lg">{selectedOffering.price_per_hour}€/hod</span>
+                      <span className="font-semibold text-lg">{selectedOffering.price_per_hour}€/hr</span>
                     </div>
                   )}
                   {selectedOffering.location && (
@@ -644,15 +644,15 @@ const Marketplace = () => {
                   )}
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <Clock className="w-5 h-5" />
-                    <span>{new Date(selectedOffering.created_at).toLocaleDateString('sk-SK')}</span>
+                    <span>{new Date(selectedOffering.created_at).toLocaleDateString('en-US')}</span>
                   </div>
                 </div>
 
                 <div className="border-t pt-4">
-                  <h3 className="font-semibold mb-2">Reagovať na ponuku</h3>
+                  <h3 className="font-semibold mb-2">Respond to Offer</h3>
                   <div className="space-y-3">
                     <Textarea
-                      placeholder="Napíšte správu poskytovateľovi služby..."
+                      placeholder="Write a message to the service provider..."
                       value={responseMessage}
                       onChange={(e) => setResponseMessage(e.target.value)}
                       rows={4}
@@ -663,7 +663,7 @@ const Marketplace = () => {
                       className="w-full"
                     >
                       <Send className="w-4 h-4 mr-2" />
-                      {isSendingResponse ? "Odeosielam..." : "Odoslať správu"}
+                      {isSendingResponse ? "Sending..." : "Send Message"}
                     </Button>
                   </div>
                 </div>
@@ -677,15 +677,15 @@ const Marketplace = () => {
       <AlertDialog open={!!offeringToDelete} onOpenChange={(open) => !open && setOfferingToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Naozaj chcete odstrániť túto ponuku?</AlertDialogTitle>
+            <AlertDialogTitle>Do you really want to delete this offer?</AlertDialogTitle>
             <AlertDialogDescription>
-              Táto akcia je nevratná. Ponuka bude natrvalo odstránená.
+              This action is irreversible. The offer will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteOffering} className="bg-destructive hover:bg-destructive/90">
-              Odstrániť
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
