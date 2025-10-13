@@ -15,7 +15,7 @@ export default function DailyRewardButton() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Gift className="h-5 w-5" />
-          Denná odmena
+          Daily Reward
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -25,7 +25,7 @@ export default function DailyRewardButton() {
             <span className="text-sm font-medium">Streak</span>
           </div>
           <Badge variant={streak > 0 ? "default" : "secondary"}>
-            {streak} {streak === 1 ? "deň" : streak < 5 ? "dni" : "dní"}
+            {streak} {streak === 1 ? "day" : "days"}
           </Badge>
         </div>
 
@@ -36,21 +36,21 @@ export default function DailyRewardButton() {
           size="lg"
         >
           {claimReward.isPending ? (
-            "Získavam..."
+            "Claiming..."
           ) : canClaim ? (
             <>
               <Gift className="h-4 w-4 mr-2" />
-              Získať dennú odmenu
+              Claim Daily Reward
             </>
           ) : (
-            "Už si dnes získal odmenu"
+            "Already claimed today"
           )}
         </Button>
 
         <p className="text-xs text-muted-foreground text-center">
           {canClaim
-            ? "Získaj body za prihlásenie každý deň!"
-            : "Príď zajtra po ďalšiu odmenu"}
+            ? "Earn points for logging in every day!"
+            : "Come back tomorrow for another reward"}
         </p>
       </CardContent>
     </Card>

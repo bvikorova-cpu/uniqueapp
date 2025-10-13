@@ -23,7 +23,7 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          🏅 Odznaky
+          🏅 Badges
           <Badge variant="secondary">{userBadges.length}/{allBadges.length}</Badge>
         </CardTitle>
       </CardHeader>
@@ -62,11 +62,11 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
                       <p className="font-semibold">{badge.icon} {badge.name}</p>
                       <p className="text-sm">{badge.description}</p>
                       <p className="text-xs text-muted-foreground">
-                        +{badge.points_reward} bodov
+                        +{badge.points_reward} points
                       </p>
                       {earned && userBadge && (
                         <p className="text-xs text-green-500">
-                          ✓ Získané: {new Date(userBadge.earned_at).toLocaleDateString("sk-SK")}
+                          ✓ Earned: {new Date(userBadge.earned_at).toLocaleDateString("en-US")}
                         </p>
                       )}
                     </div>

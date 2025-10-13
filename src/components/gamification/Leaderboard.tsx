@@ -12,15 +12,15 @@ export default function Leaderboard() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-yellow-500" />
-          Žebríček TOP 10
+          TOP 10 Leaderboard
         </CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
-          <p className="text-sm text-muted-foreground text-center py-4">Načítavam...</p>
+          <p className="text-sm text-muted-foreground text-center py-4">Loading...</p>
         ) : leaders.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
-            Zatiaľ žiadni hráči
+            No players yet
           </p>
         ) : (
           <div className="space-y-2">
@@ -46,7 +46,7 @@ export default function Leaderboard() {
 
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold truncate">
-                      {leader.profile?.full_name || "Používateľ"}
+                      {leader.profile?.full_name || "User"}
                     </p>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <span>Level {leader.level}</span>
