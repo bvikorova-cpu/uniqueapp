@@ -234,6 +234,11 @@ const OnlinePsychologist = () => {
     }
   };
 
+  const handleNewSession = () => {
+    localStorage.removeItem("psychology_session_token");
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-4xl">
@@ -285,9 +290,14 @@ const OnlinePsychologist = () => {
         {/* Chat Interface */}
         <Card className="shadow-lg">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageCircle className="h-5 w-5" />
-              Conversation with Psychologist
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5" />
+                Conversation with Psychologist
+              </div>
+              <Button variant="outline" size="sm" onClick={handleNewSession}>
+                New Session
+              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
