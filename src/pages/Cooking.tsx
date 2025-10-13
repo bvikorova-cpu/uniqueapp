@@ -101,13 +101,13 @@ const Cooking = () => {
     switch (difficulty) {
       case "Easy":
       case "Ľahké":
-        return "bg-green-500/10 text-green-700 dark:text-green-400";
+        return "bg-purple-500/10 text-purple-700 dark:text-purple-400";
       case "Medium":
       case "Stredné":
-        return "bg-yellow-500/10 text-yellow-700 dark:text-yellow-400";
+        return "bg-purple-500/10 text-purple-700 dark:text-purple-400";
       case "Hard":
       case "Náročné":
-        return "bg-red-500/10 text-red-700 dark:text-red-400";
+        return "bg-purple-500/10 text-purple-700 dark:text-purple-400";
       default:
         return "";
     }
