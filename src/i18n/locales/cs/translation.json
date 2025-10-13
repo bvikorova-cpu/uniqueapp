@@ -1,0 +1,95 @@
+{
+  "home": {
+    "contest_badge": "💰 Vyhrajte 10 000 € každý měsíc v každé kategorii!",
+    "hero_title": "Vítejte v",
+    "hero_title_highlight": "Megatalent",
+    "hero_subtitle": "Sociální síť, kde váš talent může změnit váš život. Soutěžte, hlasujte, nakupujte a vydělávejte s přáteli!",
+    "search_placeholder": "Hledat služby... (např. hry, vzdělávání, dating)",
+    "enter_contest": "Vstoupit do soutěže",
+    "services_title": "Naše",
+    "services_title_highlight": "služby",
+    "services_subtitle": "Kompletní platforma pro všechny vaše potřeby"
+  },
+  "services": {
+    "feed": {
+      "title": "Feed",
+      "description": "Sdílejte momenty a komunikujte s přáteli"
+    },
+    "videos": {
+      "title": "Videa",
+      "description": "Sledujte a vytvářejte krátká videa"
+    },
+    "messenger": {
+      "title": "Messenger",
+      "description": "Chatujte se známými v reálném čase"
+    },
+    "megatalent": {
+      "title": "Megatalent",
+      "description": "Soutěžte o 100 000 € každý měsíc"
+    },
+    "megaforum": {
+      "title": "Megaforum",
+      "description": "Diskutujte a sdílejte názory s komunitou"
+    },
+    "psychologist": {
+      "title": "Online psycholog",
+      "description": "AI asistent pro duševní zdraví 24/7"
+    },
+    "education": {
+      "title": "Vzdělávání",
+      "description": "Online doučování, kvízy a kurzy"
+    },
+    "vacationer": {
+      "title": "Dovolené",
+      "description": "Rezervujte dovolené a zájezdy online"
+    },
+    "dating": {
+      "title": "Dating",
+      "description": "Najděte si partnera a nová přátelství"
+    },
+    "first_aid": {
+      "title": "První pomoc",
+      "description": "Návody na poskytnutí první pomoci"
+    },
+    "fit_slim": {
+      "title": "Fit & Slim",
+      "description": "Cvičební plány a zdravé recepty"
+    },
+    "marketplace": {
+      "title": "Tržiště dovedností",
+      "description": "Poskytování, prodej a nákup služeb z celého světa"
+    },
+    "bazaar": {
+      "title": "Bazár",
+      "description": "Prodávejte a kupujte od ostatních uživatelů"
+    },
+    "referral": {
+      "title": "Referenční program",
+      "description": "Získejte 5 € za každého přítele"
+    },
+    "games": {
+      "title": "Hry",
+      "description": "Hrajte oblíbené online hry zdarma"
+    },
+    "jobs": {
+      "title": "Práce",
+      "description": "Najděte si práci nebo zaměstnance"
+    },
+    "influ_king": {
+      "title": "InfluKing",
+      "description": "Staňte se influencerem a vydělávejte"
+    },
+    "auction": {
+      "title": "Online aukce",
+      "description": "Nabízejte a vydražte produkty z celého světa"
+    },
+    "ai_generation": {
+      "title": "AI generování",
+      "description": "Vytvářejte obrázky pomocí umělé inteligence"
+    },
+    "best_friend": {
+      "title": "Best Friend",
+      "description": "Váš AI přítel, který vás nikdy neopustí"
+    }
+  }
+}

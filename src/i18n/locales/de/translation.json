@@ -1,0 +1,95 @@
+{
+  "home": {
+    "contest_badge": "💰 Gewinne jeden Monat 10.000 € in jeder Kategorie!",
+    "hero_title": "Willkommen bei",
+    "hero_title_highlight": "Megatalent",
+    "hero_subtitle": "Ein soziales Netzwerk, in dem Ihr Talent Ihr Leben verändern kann. Konkurrieren, abstimmen, einkaufen und mit Freunden verdienen!",
+    "search_placeholder": "Dienste suchen... (z.B. Spiele, Bildung, Dating)",
+    "enter_contest": "Am Wettbewerb teilnehmen",
+    "services_title": "Unsere",
+    "services_title_highlight": "Dienstleistungen",
+    "services_subtitle": "Komplette Plattform für alle Ihre Bedürfnisse"
+  },
+  "services": {
+    "feed": {
+      "title": "Feed",
+      "description": "Teilen Sie Momente und kommunizieren Sie mit Freunden"
+    },
+    "videos": {
+      "title": "Videos",
+      "description": "Schauen und erstellen Sie Kurzvideos"
+    },
+    "messenger": {
+      "title": "Messenger",
+      "description": "Chatten Sie in Echtzeit mit Freunden"
+    },
+    "megatalent": {
+      "title": "Megatalent",
+      "description": "Konkurrieren Sie jeden Monat um 100.000 €"
+    },
+    "megaforum": {
+      "title": "Megaforum",
+      "description": "Diskutieren und teilen Sie Meinungen mit der Community"
+    },
+    "psychologist": {
+      "title": "Online-Psychologe",
+      "description": "KI-Assistent für psychische Gesundheit 24/7"
+    },
+    "education": {
+      "title": "Bildung",
+      "description": "Online-Nachhilfe, Quiz und Kurse"
+    },
+    "vacationer": {
+      "title": "Urlaube",
+      "description": "Buchen Sie Urlaube und Reisen online"
+    },
+    "dating": {
+      "title": "Dating",
+      "description": "Finden Sie einen Partner und neue Freundschaften"
+    },
+    "first_aid": {
+      "title": "Erste Hilfe",
+      "description": "Anleitungen zur Erste-Hilfe-Leistung"
+    },
+    "fit_slim": {
+      "title": "Fit & Slim",
+      "description": "Trainingspläne und gesunde Rezepte"
+    },
+    "marketplace": {
+      "title": "Fähigkeiten-Marktplatz",
+      "description": "Bieten, verkaufen und kaufen Sie Dienstleistungen aus der ganzen Welt"
+    },
+    "bazaar": {
+      "title": "Basar",
+      "description": "Verkaufen und kaufen Sie von anderen Benutzern"
+    },
+    "referral": {
+      "title": "Empfehlungsprogramm",
+      "description": "Erhalten Sie 5 € für jeden Freund"
+    },
+    "games": {
+      "title": "Spiele",
+      "description": "Spielen Sie beliebte Online-Spiele kostenlos"
+    },
+    "jobs": {
+      "title": "Jobs",
+      "description": "Finden Sie einen Job oder einen Mitarbeiter"
+    },
+    "influ_king": {
+      "title": "InfluKing",
+      "description": "Werden Sie Influencer und verdienen Sie"
+    },
+    "auction": {
+      "title": "Online-Auktionen",
+      "description": "Bieten und versteigern Sie Produkte aus der ganzen Welt"
+    },
+    "ai_generation": {
+      "title": "KI-Generierung",
+      "description": "Erstellen Sie Bilder mit künstlicher Intelligenz"
+    },
+    "best_friend": {
+      "title": "Best Friend",
+      "description": "Ihr KI-Freund, der Sie nie verlassen wird"
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "home": {
+    "contest_badge": "💰 Gagnez 10 000 € chaque mois dans chaque catégorie!",
+    "hero_title": "Bienvenue à",
+    "hero_title_highlight": "Megatalent",
+    "hero_subtitle": "Un réseau social où votre talent peut changer votre vie. Concourez, votez, achetez et gagnez avec des amis!",
+    "search_placeholder": "Rechercher des services... (ex. jeux, éducation, rencontres)",
+    "enter_contest": "Entrer dans le concours",
+    "services_title": "Nos",
+    "services_title_highlight": "services",
+    "services_subtitle": "Plateforme complète pour tous vos besoins"
+  },
+  "services": {
+    "feed": {
+      "title": "Feed",
+      "description": "Partagez des moments et communiquez avec des amis"
+    },
+    "videos": {
+      "title": "Vidéos",
+      "description": "Regardez et créez de courtes vidéos"
+    },
+    "messenger": {
+      "title": "Messenger",
+      "description": "Discutez avec des amis en temps réel"
+    },
+    "megatalent": {
+      "title": "Megatalent",
+      "description": "Concourez pour 100 000 € chaque mois"
+    },
+    "megaforum": {
+      "title": "Megaforum",
+      "description": "Discutez et partagez des opinions avec la communauté"
+    },
+    "psychologist": {
+      "title": "Psychologue en ligne",
+      "description": "Assistant IA pour la santé mentale 24/7"
+    },
+    "education": {
+      "title": "Éducation",
+      "description": "Tutorat en ligne, quiz et cours"
+    },
+    "vacationer": {
+      "title": "Vacances",
+      "description": "Réservez des vacances et des voyages en ligne"
+    },
+    "dating": {
+      "title": "Rencontres",
+      "description": "Trouvez un partenaire et de nouvelles amitiés"
+    },
+    "first_aid": {
+      "title": "Premiers secours",
+      "description": "Instructions pour fournir les premiers secours"
+    },
+    "fit_slim": {
+      "title": "Fit & Slim",
+      "description": "Plans d'entraînement et recettes saines"
+    },
+    "marketplace": {
+      "title": "Marché des compétences",
+      "description": "Fournissez, vendez et achetez des services du monde entier"
+    },
+    "bazaar": {
+      "title": "Bazar",
+      "description": "Vendez et achetez auprès d'autres utilisateurs"
+    },
+    "referral": {
+      "title": "Programme de parrainage",
+      "description": "Obtenez 5 € pour chaque ami"
+    },
+    "games": {
+      "title": "Jeux",
+      "description": "Jouez à des jeux en ligne populaires gratuitement"
+    },
+    "jobs": {
+      "title": "Emplois",
+      "description": "Trouvez un emploi ou un employé"
+    },
+    "influ_king": {
+      "title": "InfluKing",
+      "description": "Devenez influenceur et gagnez"
+    },
+    "auction": {
+      "title": "Enchères en ligne",
+      "description": "Enchérissez et vendez des produits du monde entier"
+    },
+    "ai_generation": {
+      "title": "Génération IA",
+      "description": "Créez des images en utilisant l'intelligence artificielle"
+    },
+    "best_friend": {
+      "title": "Best Friend",
+      "description": "Votre ami IA qui ne vous quittera jamais"
+    }
+  }
+}

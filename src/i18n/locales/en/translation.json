@@ -1,0 +1,95 @@
+{
+  "home": {
+    "contest_badge": "💰 Win €10,000 every month in each category!",
+    "hero_title": "Welcome to",
+    "hero_title_highlight": "Megatalent",
+    "hero_subtitle": "A social network where your talent can change your life. Compete, vote, shop and earn with friends!",
+    "search_placeholder": "Search services... (e.g. games, education, dating)",
+    "enter_contest": "Enter Contest",
+    "services_title": "Our",
+    "services_title_highlight": "services",
+    "services_subtitle": "Complete platform for all your needs"
+  },
+  "services": {
+    "feed": {
+      "title": "Feed",
+      "description": "Share moments and communicate with friends"
+    },
+    "videos": {
+      "title": "Videos",
+      "description": "Watch and create short videos"
+    },
+    "messenger": {
+      "title": "Messenger",
+      "description": "Chat with friends in real time"
+    },
+    "megatalent": {
+      "title": "Megatalent",
+      "description": "Compete for €100,000 every month"
+    },
+    "megaforum": {
+      "title": "Megaforum",
+      "description": "Discuss and share opinions with the community"
+    },
+    "psychologist": {
+      "title": "Online Psychologist",
+      "description": "AI assistant for mental health 24/7"
+    },
+    "education": {
+      "title": "Education",
+      "description": "Online tutoring, quizzes and courses"
+    },
+    "vacationer": {
+      "title": "Vacations",
+      "description": "Book holidays and trips online"
+    },
+    "dating": {
+      "title": "Dating",
+      "description": "Find a partner and new friendships"
+    },
+    "first_aid": {
+      "title": "First Aid",
+      "description": "Instructions for providing first aid"
+    },
+    "fit_slim": {
+      "title": "Fit & Slim",
+      "description": "Workout plans and healthy recipes"
+    },
+    "marketplace": {
+      "title": "Skills Marketplace",
+      "description": "Provide, sell and buy services from around the world"
+    },
+    "bazaar": {
+      "title": "Bazaar",
+      "description": "Sell and buy from other users"
+    },
+    "referral": {
+      "title": "Referral Program",
+      "description": "Get €5 for each friend"
+    },
+    "games": {
+      "title": "Games",
+      "description": "Play popular online games for free"
+    },
+    "jobs": {
+      "title": "Jobs",
+      "description": "Find a job or an employee"
+    },
+    "influ_king": {
+      "title": "InfluKing",
+      "description": "Become an influencer and earn"
+    },
+    "auction": {
+      "title": "Online Auctions",
+      "description": "Bid and auction products from around the world"
+    },
+    "ai_generation": {
+      "title": "AI Generation",
+      "description": "Create images using artificial intelligence"
+    },
+    "best_friend": {
+      "title": "Best Friend",
+      "description": "Your AI friend who will never leave you"
+    }
+  }
+}

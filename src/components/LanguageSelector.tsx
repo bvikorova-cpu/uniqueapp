@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -64,8 +65,10 @@ export const languages = [
 ];
 
 export const LanguageSelector = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
+  const { i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
+  
+  const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
   const filteredLanguages = languages.filter(lang =>
     lang.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -73,7 +76,7 @@ export const LanguageSelector = () => {
   );
 
   const handleLanguageChange = (language: typeof languages[0]) => {
-    setSelectedLanguage(language);
+    i18n.changeLanguage(language.code);
     setSearchTerm("");
     console.log("Language changed to:", language.code);
   };
@@ -83,8 +86,8 @@ export const LanguageSelector = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">{selectedLanguage.flag} {selectedLanguage.name}</span>
-          <span className="sm:hidden">{selectedLanguage.flag}</span>
+          <span className="hidden sm:inline">{currentLanguage.flag} {currentLanguage.name}</span>
+          <span className="sm:hidden">{currentLanguage.flag}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64 max-h-96 overflow-y-auto bg-background z-50">
@@ -103,7 +106,7 @@ export const LanguageSelector = () => {
               key={language.code}
               onClick={() => handleLanguageChange(language)}
               className={`cursor-pointer ${
-                selectedLanguage.code === language.code ? 'bg-accent' : ''
+                currentLanguage.code === language.code ? 'bg-accent' : ''
               }`}
             >
               <span className="mr-2">{language.flag}</span>
