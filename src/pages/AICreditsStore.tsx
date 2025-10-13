@@ -20,7 +20,7 @@ const AICreditsStore = () => {
       price: 5,
       icon: Sparkles,
       popular: false,
-      description: "Skúste AI funkcie",
+      description: "Try AI features",
       perCredit: 0.50,
     },
     {
@@ -29,9 +29,9 @@ const AICreditsStore = () => {
       price: 10,
       icon: Star,
       popular: true,
-      description: "Najobľúbenejší balíček",
+      description: "Most popular package",
       perCredit: 0.40,
-      savings: "20% úspora",
+      savings: "20% savings",
     },
     {
       name: "Pro",
@@ -39,9 +39,9 @@ const AICreditsStore = () => {
       price: 20,
       icon: Zap,
       popular: false,
-      description: "Pre náročných užívateľov",
+      description: "For demanding users",
       perCredit: 0.33,
-      savings: "34% úspora",
+      savings: "34% savings",
     },
     {
       name: "Ultimate",
@@ -49,9 +49,9 @@ const AICreditsStore = () => {
       price: 40,
       icon: Package,
       popular: false,
-      description: "Najlepšia hodnota",
+      description: "Best value",
       perCredit: 0.27,
-      savings: "46% úspora",
+      savings: "46% savings",
     },
   ];
 
@@ -62,8 +62,8 @@ const AICreditsStore = () => {
 
       if (success) {
         toast({
-          title: "Platba pripravená",
-          description: "Otvorilo sa okno s platbou cez Stripe",
+          title: "Payment Ready",
+          description: "Stripe payment window has opened",
         });
       } else {
         throw new Error("Failed to open payment");
@@ -71,8 +71,8 @@ const AICreditsStore = () => {
     } catch (error) {
       console.error('Purchase error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa otvoriť platobnú bránu",
+        title: "Error",
+        description: "Failed to open payment gateway",
         variant: "destructive",
       });
     } finally {
@@ -86,18 +86,18 @@ const AICreditsStore = () => {
         <div className="text-center mb-12">
           <Badge className="mb-4" variant="default">
             <Sparkles className="h-3 w-3 mr-1" />
-            AI Kredity
+            AI Credits
           </Badge>
           
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Nakúpte{" "}
+            Buy{" "}
             <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              AI Kredity
+              AI Credits
             </span>
           </h1>
           
           <p className="text-xl text-muted-foreground mb-6">
-            Používajte AI funkcie kedykoľvek potrebujete
+            Use AI features whenever you need them
           </p>
 
           <Card className="max-w-md mx-auto">
@@ -106,7 +106,7 @@ const AICreditsStore = () => {
                 <Sparkles className="h-5 w-5 text-primary" />
                 <div>
                   <span className="text-3xl font-bold">{credits.credits_remaining}</span>
-                  <span className="text-muted-foreground ml-2">dostupných kreditov</span>
+                  <span className="text-muted-foreground ml-2">available credits</span>
                 </div>
               </div>
             </CardContent>
@@ -158,15 +158,15 @@ const AICreditsStore = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span>{pkg.credits} AI generácií</span>
+                      <span>{pkg.credits} AI generations</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span>Platnosť 12 mesiacov</span>
+                      <span>Valid for 12 months</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                      <span>Použiteľné na všetky AI funkcie</span>
+                      <span>Usable for all AI features</span>
                     </div>
                   </div>
 
@@ -176,7 +176,7 @@ const AICreditsStore = () => {
                     disabled={loading}
                     onClick={() => handlePurchase(pkg)}
                   >
-                    Kúpiť teraz
+                    Buy Now
                   </Button>
                 </CardContent>
               </Card>

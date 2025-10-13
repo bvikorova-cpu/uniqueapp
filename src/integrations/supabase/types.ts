@@ -2116,6 +2116,141 @@ export type Database = {
         }
         Relationships: []
       }
+      premium_avatars: {
+        Row: {
+          avatar_url: string
+          created_at: string | null
+          credit_cost: number
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_animated: boolean | null
+          name: string
+          rarity: string | null
+        }
+        Insert: {
+          avatar_url: string
+          created_at?: string | null
+          credit_cost?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_animated?: boolean | null
+          name: string
+          rarity?: string | null
+        }
+        Update: {
+          avatar_url?: string
+          created_at?: string | null
+          credit_cost?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_animated?: boolean | null
+          name?: string
+          rarity?: string | null
+        }
+        Relationships: []
+      }
+      premium_badges: {
+        Row: {
+          created_at: string | null
+          credit_cost: number
+          description: string | null
+          icon: string
+          id: string
+          is_active: boolean | null
+          name: string
+          rarity: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credit_cost?: number
+          description?: string | null
+          icon: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          rarity?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credit_cost?: number
+          description?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          rarity?: string | null
+        }
+        Relationships: []
+      }
+      premium_features: {
+        Row: {
+          created_at: string | null
+          credit_cost: number
+          description: string | null
+          feature_name: string
+          feature_type: string
+          icon: string | null
+          id: string
+          is_active: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          credit_cost?: number
+          description?: string | null
+          feature_name: string
+          feature_type: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          credit_cost?: number
+          description?: string | null
+          feature_name?: string
+          feature_type?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
+      premium_themes: {
+        Row: {
+          created_at: string | null
+          credit_cost: number
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          preview_image: string | null
+          theme_data: Json
+        }
+        Insert: {
+          created_at?: string | null
+          credit_cost?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          preview_image?: string | null
+          theme_data: Json
+        }
+        Update: {
+          created_at?: string | null
+          credit_cost?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          preview_image?: string | null
+          theme_data?: Json
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -2977,6 +3112,137 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_premium_avatars: {
+        Row: {
+          acquired_at: string | null
+          avatar_id: string | null
+          id: string
+          is_equipped: boolean | null
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string | null
+          avatar_id?: string | null
+          id?: string
+          is_equipped?: boolean | null
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string | null
+          avatar_id?: string | null
+          id?: string
+          is_equipped?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_premium_avatars_avatar_id_fkey"
+            columns: ["avatar_id"]
+            isOneToOne: false
+            referencedRelation: "premium_avatars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_premium_badges: {
+        Row: {
+          acquired_at: string | null
+          badge_id: string | null
+          id: string
+          is_equipped: boolean | null
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string | null
+          badge_id?: string | null
+          id?: string
+          is_equipped?: boolean | null
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string | null
+          badge_id?: string | null
+          id?: string
+          is_equipped?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_premium_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "premium_badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_premium_purchases: {
+        Row: {
+          credits_spent: number
+          feature_id: string | null
+          feature_name: string
+          id: string
+          purchased_at: string | null
+          user_id: string
+        }
+        Insert: {
+          credits_spent: number
+          feature_id?: string | null
+          feature_name: string
+          id?: string
+          purchased_at?: string | null
+          user_id: string
+        }
+        Update: {
+          credits_spent?: number
+          feature_id?: string | null
+          feature_name?: string
+          id?: string
+          purchased_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_premium_purchases_feature_id_fkey"
+            columns: ["feature_id"]
+            isOneToOne: false
+            referencedRelation: "premium_features"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_premium_themes: {
+        Row: {
+          acquired_at: string | null
+          id: string
+          is_active: boolean | null
+          theme_id: string | null
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          theme_id?: string | null
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          theme_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_premium_themes_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "premium_themes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
