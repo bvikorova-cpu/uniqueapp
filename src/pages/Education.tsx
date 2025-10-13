@@ -63,63 +63,7 @@ const quizCategories = [
   { id: "flags", name: "Flags & Countries", icon: "🏁" },
 ];
 
-const courseCategories = [
-  {
-    name: "Obchodné kurzy",
-    icon: "💼",
-    courses: [
-      "Základy účtovníctva", "Finančné plánovanie", "Investovanie pre začiatočníkov",
-      "Marketing a reklama", "Podnikanie od A po Z", "E-commerce", 
-      "Projektový manažment", "Obchodný plán", "Analýza trhu", "Osobné financie",
-      "Kryptomeny", "Logistika a dodávateľský reťazec"
-    ]
-  },
-  {
-    name: "Krása a zdravie",
-    icon: "💄",
-    courses: [
-      "Makeup pre začiatočníkov", "Starostlivosť o pleť", "Manikúra",
-      "Pedikúra", "Styling a móda", "Dizajn nechtov", "Úprava vlasov",
-      "Masáže", "Aromaterapia", "Jóga", "Pilates", "Fitness tréning"
-    ]
-  },
-  {
-    name: "Osobný rozvoj",
-    icon: "🌟",
-    courses: [
-      "Time management", "Produktivita", "Všímavosť", "Meditácia",
-      "Zvládanie stresu", "Emocionálna inteligencia", "Komunikácia", "Asertivita",
-      "Verejné vystupovanie", "Prezentačné zručnosti", "Vedenie", "Tímová práca"
-    ]
-  },
-  {
-    name: "IT a počítače",
-    icon: "💻",
-    courses: [
-      "HTML/CSS", "JavaScript", "React", "Python",
-      "Java", "C++", "PHP", "SQL",
-      "Node.js", "TypeScript", "Angular", "Vue.js"
-    ]
-  },
-  {
-    name: "Vzdelávanie",
-    icon: "🎓",
-    courses: [
-      "Pedagogika", "Didaktika", "Metodika výučby", "Detská psychológia",
-      "Špeciálna pedagogika", "Inkluzívne vzdelávanie", "Montessori metóda", "Waldorfská pedagogika",
-      "Projektové učenie", "Digitálne vzdelávanie", "Tvorba e-learningu", "Gamifikácia"
-    ]
-  },
-  {
-    name: "Sociálne služby",
-    icon: "🤝",
-    courses: [
-      "Sociálna práca", "Terénna sociálna práca", "Komunitná práca", "Prípadové manažovanie",
-      "Rodinná práca", "Práca so seniormi", "Práca s mládežou", "Práca so závislosťami",
-      "Sociálna práca s bezdomovcami", "Krízová intervencia", "Domáce násilie", "Supervízia a prevencia vyhorenia"
-    ]
-  }
-];
+const courseCategories: Array<{name: string; icon: string; courses: string[]}> = [];
 
 export default function Education() {
   const navigate = useNavigate();
