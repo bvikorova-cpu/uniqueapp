@@ -234,10 +234,10 @@ const TikTok = () => {
       const newSet = new Set(prev);
       if (newSet.has(videoId)) {
         newSet.delete(videoId);
-        toast({ title: "Odstránené zo záložiek" });
+        toast({ title: "Removed from bookmarks" });
       } else {
         newSet.add(videoId);
-        toast({ title: "Pridané do záložiek" });
+        toast({ title: "Added to bookmarks" });
       }
       return newSet;
     });
@@ -251,7 +251,7 @@ const TikTok = () => {
         .eq("video_id", videoId)
         .eq("user_id", user.id);
 
-      toast({ title: "Odstránené z uložených" });
+      toast({ title: "Removed from saved" });
     } else {
       await supabase
         .from("saved_videos")
@@ -260,7 +260,7 @@ const TikTok = () => {
           user_id: user.id,
         });
 
-      toast({ title: "Uložené do obľúbených" });
+      toast({ title: "Saved to favorites" });
     }
 
     fetchSavedVideos();
@@ -268,8 +268,8 @@ const TikTok = () => {
 
   const handleReport = (videoId: string) => {
     toast({
-      title: "Video nahlásené",
-      description: "Ďakujeme za nahlásenie. Skontrolujeme obsah.",
+      title: "Video reported",
+      description: "Thank you for reporting. We will review the content.",
     });
   };
 
@@ -285,11 +285,11 @@ const TikTok = () => {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      toast({ title: "Video sťahuje sa..." });
+      toast({ title: "Video downloading..." });
     } catch (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa stiahnuť video",
+        title: "Error",
+        description: "Failed to download video",
         variant: "destructive",
       });
     }
@@ -404,8 +404,8 @@ const TikTok = () => {
     if (fileToUpload.size > maxSizeInBytes) {
       const fileSizeInMB = (fileToUpload.size / (1024 * 1024)).toFixed(2);
       toast({
-        title: "Video je príliš veľké",
-        description: `Súbor má ${fileSizeInMB}MB. Max. 50MB. Prosím zvýšte limit v Supabase Storage Settings.`,
+        title: "Video is too large",
+        description: `File is ${fileSizeInMB}MB. Max 50MB. Please increase limit in Supabase Storage Settings.`,
         variant: "destructive",
       });
       return;
@@ -425,8 +425,8 @@ const TikTok = () => {
       if (uploadError) {
         console.error("Storage upload error:", uploadError);
         toast({
-          title: "Chyba pri nahrávaní",
-          description: uploadError.message || "Nepodarilo sa nahrať video do storage",
+          title: "Upload error",
+          description: uploadError.message || "Failed to upload video to storage",
           variant: "destructive",
         });
         return;
@@ -442,7 +442,7 @@ const TikTok = () => {
 
       const videoData = {
         user_id: user.id,
-        title: uploadTitle || "Bez názvu",
+        title: uploadTitle || "Untitled",
         description: uploadDescription || null,
         video_url: publicUrl,
       };
@@ -459,8 +459,8 @@ const TikTok = () => {
       if (dbError) {
         console.error("Database insert error:", dbError);
         toast({
-          title: "Chyba pri ukladaní",
-          description: dbError.message || "Nepodarilo sa uložiť video do databázy",
+          title: "Save error",
+          description: dbError.message || "Failed to save video to database",
           variant: "destructive",
         });
         return;
@@ -469,8 +469,8 @@ const TikTok = () => {
       console.log("Video saved to database successfully");
 
       toast({
-        title: "Úspech",
-        description: "Video bolo úspešne nahrané",
+        title: "Success",
+        description: "Video uploaded successfully",
       });
 
       setUploadDialogOpen(false);
@@ -482,8 +482,8 @@ const TikTok = () => {
     } catch (error) {
       console.error("Unexpected error:", error);
       toast({
-        title: "Chyba",
-        description: error instanceof Error ? error.message : "Neočakávaná chyba pri nahrávaní",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Unexpected error during upload",
         variant: "destructive",
       });
     }
@@ -528,7 +528,7 @@ const TikTok = () => {
       fetchComments(videoId);
       fetchVideos();
       toast({
-        title: "Komentár pridaný",
+        title: "Comment added",
       });
     }
   };
@@ -540,13 +540,13 @@ const TikTok = () => {
 
   const shareToTwitter = (video: Video) => {
     const shareUrl = `${window.location.origin}/tiktok?video=${video.id}`;
-    const text = video.title || "Pozri si toto video!";
+    const text = video.title || "Check out this video!";
     window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const shareToEmail = (video: Video) => {
     const shareUrl = `${window.location.origin}/tiktok?video=${video.id}`;
-    const subject = video.title || "Pozri si toto video!";
+    const subject = video.title || "Check out this video!";
     const body = `${video.description || ""}\n\n${shareUrl}`;
     window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
@@ -634,8 +634,8 @@ const TikTok = () => {
     } catch (error) {
       console.error("Error deleting video:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa zmazať video",
+        title: "Error",
+        description: "Failed to delete video",
         variant: "destructive",
       });
     }
@@ -643,7 +643,7 @@ const TikTok = () => {
 
   return (
     <div className="min-h-screen bg-background pt-16">
-      {/* Kruhové tlačidlo pre nahratie videa - dolná časť v strede */}
+      {/* Round button for video upload - bottom center */}
       <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50">
         <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
           <DialogTrigger asChild>
@@ -656,18 +656,18 @@ const TikTok = () => {
           </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader>
-              <DialogTitle>Nahrať nové video</DialogTitle>
+              <DialogTitle>Upload New Video</DialogTitle>
             </DialogHeader>
             
             <Tabs defaultValue="upload" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="upload">
                   <Upload className="h-4 w-4 mr-2" />
-                  Nahrať súbor
+                  Upload File
                 </TabsTrigger>
                 <TabsTrigger value="record">
                   <Camera className="h-4 w-4 mr-2" />
-                  Nahrávať online
+                  Record Online
                 </TabsTrigger>
               </TabsList>
               
@@ -681,21 +681,21 @@ const TikTok = () => {
                 </div>
                 <div>
                   <Input
-                    placeholder="Názov videa"
+                        placeholder="Video title"
                     value={uploadTitle}
                     onChange={(e) => setUploadTitle(e.target.value)}
                   />
                 </div>
                 <div>
                   <Textarea
-                    placeholder="Popis videa"
+                        placeholder="Video description"
                     value={uploadDescription}
                     onChange={(e) => setUploadDescription(e.target.value)}
                     rows={3}
                   />
                 </div>
                 <Button onClick={handleUpload} className="w-full" disabled={!uploadFile}>
-                  Nahrať
+                  Upload
                 </Button>
               </TabsContent>
               
@@ -713,14 +713,14 @@ const TikTok = () => {
                   {!isRecording && !recordedBlob && (
                     <Button onClick={startRecording} className="flex-1">
                       <Video className="h-4 w-4 mr-2" />
-                      Spustiť nahrávanie
+                      Start Recording
                     </Button>
                   )}
                   
                   {isRecording && (
                     <Button onClick={stopRecording} variant="destructive" className="flex-1">
                       <StopCircle className="h-4 w-4 mr-2" />
-                      Zastaviť nahrávanie
+                      Stop Recording
                     </Button>
                   )}
                   
@@ -734,7 +734,7 @@ const TikTok = () => {
                       }} 
                       variant="outline"
                     >
-                      Nahrať znova
+                      Record Again
                     </Button>
                   )}
                 </div>
@@ -743,21 +743,21 @@ const TikTok = () => {
                   <>
                     <div>
                       <Input
-                        placeholder="Názov videa"
+                        placeholder="Video title"
                         value={uploadTitle}
                         onChange={(e) => setUploadTitle(e.target.value)}
                       />
                     </div>
                     <div>
                       <Textarea
-                        placeholder="Popis videa"
+                        placeholder="Video description"
                         value={uploadDescription}
                         onChange={(e) => setUploadDescription(e.target.value)}
                         rows={3}
                       />
                     </div>
                     <Button onClick={handleUpload} className="w-full">
-                      Nahrať video
+                      Upload Video
                     </Button>
                   </>
                 )}
@@ -772,7 +772,7 @@ const TikTok = () => {
           <div className="h-full flex items-center justify-center text-muted-foreground">
             <div className="text-center">
               <Upload className="h-16 w-16 mx-auto mb-4 opacity-50" />
-              <p>Zatiaľ nie sú žiadne videá. Buď prvý kto niečo nahrá!</p>
+              <p>No videos yet. Be the first to upload something!</p>
             </div>
           </div>
         ) : (
@@ -805,7 +805,7 @@ const TikTok = () => {
                       <AvatarFallback>{profile?.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <p className="font-semibold">{profile?.full_name || "Používateľ"}</p>
+                      <p className="font-semibold">{profile?.full_name || "User"}</p>
                       {video.description && (
                         <p className="text-sm opacity-90 mt-1">{video.description}</p>
                       )}
@@ -857,7 +857,7 @@ const TikTok = () => {
                     </SheetTrigger>
                     <SheetContent side="bottom" className="h-[70vh]">
                       <SheetHeader>
-                        <SheetTitle>Komentáre ({video.comments_count})</SheetTitle>
+                        <SheetTitle>Comments ({video.comments_count})</SheetTitle>
                       </SheetHeader>
                       <ScrollArea className="h-[calc(70vh-140px)] mt-4">
                         <div className="space-y-4 pr-4">
@@ -898,12 +898,12 @@ const TikTok = () => {
                         <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
                           <Share2 className="h-7 w-7" />
                         </div>
-                        <span className="text-xs font-semibold">Zdieľať</span>
+                        <span className="text-xs font-semibold">Share</span>
                       </button>
                     </SheetTrigger>
                     <SheetContent side="bottom" className="h-auto">
                       <SheetHeader>
-                        <SheetTitle>Zdieľať video</SheetTitle>
+                        <SheetTitle>Share Video</SheetTitle>
                       </SheetHeader>
                       <div className="grid grid-cols-2 gap-4 mt-6 pb-6">
                         <Button
@@ -963,7 +963,7 @@ const TikTok = () => {
                         className={`h-7 w-7 transition-all ${savedVideos.has(video.id) ? 'fill-pink-500 text-pink-500' : ''}`}
                       />
                     </div>
-                    <span className="text-xs font-semibold">Uložiť</span>
+                    <span className="text-xs font-semibold">Save</span>
                   </button>
 
                   <button
@@ -973,7 +973,7 @@ const TikTok = () => {
                     <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
                       <Download className="h-7 w-7" />
                     </div>
-                    <span className="text-xs font-semibold">Stiahnuť</span>
+                    <span className="text-xs font-semibold">Download</span>
                   </button>
 
                   <Popover>
@@ -1023,7 +1023,7 @@ const TikTok = () => {
                     <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
                       <Flag className="h-6 w-6" />
                     </div>
-                    <span className="text-xs font-semibold">Nahlásiť</span>
+                    <span className="text-xs font-semibold">Report</span>
                   </button>
 
                   {video.user_id === user?.id && (
@@ -1037,7 +1037,7 @@ const TikTok = () => {
                       <div className="p-3 rounded-full bg-black/30 backdrop-blur-sm">
                         <Trash2 className="h-6 w-6 text-red-500" />
                       </div>
-                      <span className="text-xs font-semibold">Zmazať</span>
+                      <span className="text-xs font-semibold">Delete</span>
                     </button>
                   )}
                 </div>
@@ -1050,17 +1050,17 @@ const TikTok = () => {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Zmazať video?</AlertDialogTitle>
+            <AlertDialogTitle>Delete Video?</AlertDialogTitle>
             <AlertDialogDescription>
-              Táto akcia je nevratná. Video bude natrvalo odstránené.
+              This action is irreversible. The video will be permanently removed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setVideoToDelete(null)}>
-              Zrušiť
+              Cancel
             </AlertDialogCancel>
             <AlertDialogAction onClick={handleDeleteVideo} className="bg-red-600 hover:bg-red-700">
-              Zmazať
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
