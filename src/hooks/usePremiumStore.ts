@@ -257,6 +257,38 @@ export const usePremiumStore = () => {
     }
   };
 
+  const activateTheme = async (themeId: string): Promise<boolean> => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return false;
+
+      // Call the database function to activate theme
+      const { error } = await supabase.rpc('activate_user_theme', {
+        p_user_id: user.id,
+        p_theme_id: themeId,
+      });
+
+      if (error) throw error;
+
+      // Reload user themes to get updated is_active status
+      await loadData();
+
+      // Apply theme colors to document
+      const theme = themes.find(t => t.id === themeId);
+      if (theme?.theme_data) {
+        const root = document.documentElement;
+        if (theme.theme_data.primary) root.style.setProperty('--primary', theme.theme_data.primary);
+        if (theme.theme_data.background) root.style.setProperty('--background', theme.theme_data.background);
+        if (theme.theme_data.foreground) root.style.setProperty('--foreground', theme.theme_data.foreground);
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Activate theme error:', error);
+      return false;
+    }
+  };
+
   return {
     features,
     badges,
@@ -270,6 +302,7 @@ export const usePremiumStore = () => {
     purchaseBadge,
     purchaseTheme,
     purchaseAvatar,
+    activateTheme,
     refresh: loadData,
   };
 };

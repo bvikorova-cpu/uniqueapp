@@ -3435,6 +3435,10 @@ export type Database = {
       }
     }
     Functions: {
+      activate_user_theme: {
+        Args: { p_theme_id: string; p_user_id: string }
+        Returns: undefined
+      }
       add_user_points: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined

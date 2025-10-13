@@ -28,6 +28,7 @@ const PremiumStore = () => {
     purchaseBadge,
     purchaseTheme,
     purchaseAvatar,
+    activateTheme,
     loading
   } = usePremiumStore();
 
@@ -259,7 +260,10 @@ const PremiumStore = () => {
           <TabsContent value="themes" className="mt-6">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {themes.map((theme, index) => {
-                const owned = userThemes.some(ut => ut.theme_id === theme.id);
+                const userTheme = userThemes.find(ut => ut.theme_id === theme.id);
+                const owned = !!userTheme;
+                const isActive = userTheme?.is_active;
+                
                 const themeGradients = [
                   'from-purple-500 via-pink-500 to-red-500',
                   'from-blue-500 via-cyan-500 to-teal-500',
@@ -271,7 +275,7 @@ const PremiumStore = () => {
                 const gradient = themeGradients[index % themeGradients.length];
                 
                 return (
-                  <Card key={theme.id} className={owned ? 'ring-2 ring-primary' : ''}>
+                  <Card key={theme.id} className={isActive ? 'ring-2 ring-primary' : owned ? 'ring-1 ring-muted' : ''}>
                     <CardHeader>
                       <div className="mb-3">
                         <div className={`h-32 rounded-lg bg-gradient-to-br ${gradient} relative overflow-hidden`}>
@@ -281,6 +285,11 @@ const PremiumStore = () => {
                               Theme Preview
                             </div>
                           </div>
+                          {isActive && (
+                            <div className="absolute top-2 right-2">
+                              <Badge className="bg-primary">Active</Badge>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <CardTitle className="text-lg">{theme.name}</CardTitle>
@@ -293,7 +302,18 @@ const PremiumStore = () => {
                           <span className="font-bold">{theme.credit_cost}</span>
                         </div>
                         {owned ? (
-                          <Badge variant="secondary">Owned</Badge>
+                          isActive ? (
+                            <Badge variant="secondary">Active</Badge>
+                          ) : (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => activateTheme(theme.id)}
+                              disabled={purchasing === theme.id}
+                            >
+                              Activate
+                            </Button>
+                          )
                         ) : (
                           <Button
                             size="sm"
