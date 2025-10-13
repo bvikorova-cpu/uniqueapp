@@ -309,7 +309,6 @@ const PremiumStore = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => activateTheme(theme.id)}
-                              disabled={purchasing === theme.id}
                             >
                               Activate
                             </Button>
