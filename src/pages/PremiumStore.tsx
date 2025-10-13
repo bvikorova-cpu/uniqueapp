@@ -263,7 +263,14 @@ const PremiumStore = () => {
                 return (
                   <Card key={theme.id} className={owned ? 'ring-2 ring-primary' : ''}>
                     <CardHeader>
-                      <CardTitle>{theme.name}</CardTitle>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center">
+                          <Palette className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">{theme.name}</CardTitle>
+                        </div>
+                      </div>
                       <CardDescription>{theme.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -304,18 +311,25 @@ const PremiumStore = () => {
                   <Card key={avatar.id} className={owned ? 'ring-2 ring-primary' : ''}>
                     <CardHeader className="text-center">
                       <div className="flex justify-center mb-2">
-                        <div className="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
-                          <ImageIcon className="h-8 w-8" />
+                        <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${
+                          avatar.rarity === 'legendary' ? 'from-yellow-400 to-orange-500' :
+                          avatar.rarity === 'epic' ? 'from-purple-400 to-pink-500' :
+                          avatar.rarity === 'rare' ? 'from-blue-400 to-cyan-500' :
+                          'from-gray-400 to-gray-500'
+                        } flex items-center justify-center ${avatar.is_animated ? 'animate-pulse' : ''}`}>
+                          <Crown className="h-10 w-10 text-white" />
                         </div>
                       </div>
                       <CardTitle className="text-lg">{avatar.name}</CardTitle>
                       <CardDescription className="text-sm">{avatar.description}</CardDescription>
-                      <div className="flex gap-2 justify-center">
+                      <div className="flex gap-2 justify-center flex-wrap">
                         <Badge variant="outline" className={getRarityBadge(avatar.rarity)}>
                           {avatar.rarity}
                         </Badge>
                         {avatar.is_animated && (
-                          <Badge variant="outline">Animated</Badge>
+                          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                            Animated
+                          </Badge>
                         )}
                       </div>
                     </CardHeader>
