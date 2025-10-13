@@ -197,14 +197,14 @@ const Megaforum = () => {
       setNewPostTitle("");
       setNewPostContent("");
       toast({
-        title: "Príspevok vytvorený!",
-        description: "Váš príspevok bol úspešne pridaný do fóra.",
+        title: "Post Created!",
+        description: "Your post has been successfully added to the forum.",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť príspevok",
+        title: "Error",
+        description: error.message || "Failed to create post",
         variant: "destructive",
       });
     },
@@ -228,14 +228,14 @@ const Megaforum = () => {
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
       setNewComment("");
       toast({
-        title: "Komentár pridaný",
-        description: "Váš komentár bol úspešne pridaný",
+        title: "Comment Added",
+        description: "Your comment has been successfully added",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa pridať komentár",
+        title: "Error",
+        description: error.message || "Failed to add comment",
         variant: "destructive",
       });
     },
@@ -311,14 +311,14 @@ const Megaforum = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["forumPosts"] });
       toast({
-        title: "Príspevok vymazaný",
-        description: "Váš príspevok bol úspešne vymazaný",
+        title: "Post Deleted",
+        description: "Your post has been successfully deleted",
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vymazať príspevok",
+        title: "Error",
+        description: error.message || "Failed to delete post",
         variant: "destructive",
       });
     },
@@ -327,8 +327,8 @@ const Megaforum = () => {
   const handleCreatePost = () => {
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre vytvorenie príspevku sa musíte prihlásiť",
+        title: "Login Required",
+        description: "You must be logged in to create a post",
         variant: "destructive",
       });
       return;
@@ -349,8 +349,8 @@ const Megaforum = () => {
   const handleLike = (postId: string) => {
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre like sa musíte prihlásiť",
+        title: "Login Required",
+        description: "You must be logged in to like",
         variant: "destructive",
       });
       return;
@@ -362,8 +362,8 @@ const Megaforum = () => {
   const handleCommentLike = (commentId: string) => {
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre like sa musíte prihlásiť",
+        title: "Login Required",
+        description: "You must be logged in to like",
         variant: "destructive",
       });
       return;
@@ -458,12 +458,12 @@ const Megaforum = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageSquare className="h-5 w-5" />
-                  Vytvoriť nový príspevok
+                  Create New Post
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Kategória</label>
+                  <label className="text-sm font-medium">Category</label>
                   <div className="flex flex-wrap gap-2">
                     {categories.map((cat) => (
                       <Badge
@@ -495,7 +495,7 @@ const Megaforum = () => {
                   disabled={createPostMutation.isPending}
                 >
                   <Send className="h-4 w-4 mr-2" />
-                  {createPostMutation.isPending ? "Zverejňujem..." : "Zverejniť príspevok"}
+                  {createPostMutation.isPending ? "Publishing..." : "Publish Post"}
                 </Button>
               </CardContent>
             </Card>
@@ -508,7 +508,7 @@ const Megaforum = () => {
                   <div className="relative flex-1 sm:flex-initial sm:w-64">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder="Hľadať príspevky..."
+                      placeholder="Search posts..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-9"
@@ -523,13 +523,13 @@ const Megaforum = () => {
               {isLoading ? (
                 <Card>
                   <CardContent className="pt-6 text-center text-muted-foreground">
-                    Načítavam príspevky...
+                    Loading posts...
                   </CardContent>
                 </Card>
               ) : filteredPosts.length === 0 ? (
                 <Card>
                   <CardContent className="pt-6 text-center text-muted-foreground">
-                    {searchQuery ? "Nenašli sa žiadne príspevky." : "Zatiaľ nie sú žiadne príspevky. Buďte prvý kto niečo pridá!"}
+                    {searchQuery ? "No posts found." : "No posts yet. Be the first to add something!"}
                   </CardContent>
                 </Card>
               ) : (
@@ -569,9 +569,9 @@ const Megaforum = () => {
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Vymazať príspevok?</AlertDialogTitle>
+                                      <AlertDialogTitle>Delete Post?</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        Táto akcia sa nedá vrátiť späť. Príspevok a všetky jeho komentáre budú natrvalo vymazané.
+                                        This action cannot be undone. The post and all its comments will be permanently deleted.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
@@ -580,7 +580,7 @@ const Megaforum = () => {
                                         onClick={() => handleDeletePost(post.id)}
                                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                       >
-                                        Vymazať
+                                        Delete
                                       </AlertDialogAction>
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
@@ -615,7 +615,7 @@ const Megaforum = () => {
                                 </SheetTrigger>
                                 <SheetContent side="bottom" className="h-[70vh]">
                                   <SheetHeader>
-                                    <SheetTitle>Komentáre ({post.replies_count})</SheetTitle>
+                                    <SheetTitle>Comments ({post.replies_count})</SheetTitle>
                                   </SheetHeader>
                                   <ScrollArea className="h-[calc(70vh-140px)] mt-4">
                                     <div className="space-y-4 pr-4">
@@ -654,7 +654,7 @@ const Megaforum = () => {
                                   </ScrollArea>
                                   <div className="absolute bottom-4 left-4 right-4 flex gap-2">
                                     <Input
-                                      placeholder="Napíšte komentár..."
+                                      placeholder="Write a comment..."
                                       value={newComment}
                                       onChange={(e) => setNewComment(e.target.value)}
                                       onKeyPress={(e) => {
