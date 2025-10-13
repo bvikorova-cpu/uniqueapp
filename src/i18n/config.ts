@@ -21,7 +21,6 @@ i18n
       es: { translation: es },
       fr: { translation: fr },
     },
-    lng: 'en', // Predvolený jazyk
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
