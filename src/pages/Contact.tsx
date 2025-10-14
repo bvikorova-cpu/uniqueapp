@@ -70,8 +70,8 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <div className="container max-w-2xl mx-auto px-4 py-12">
-        <Card>
+      <div className="container max-w-2xl mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)]">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle className="text-3xl">Contact Us</CardTitle>
             <CardDescription>
