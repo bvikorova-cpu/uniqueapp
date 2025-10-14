@@ -415,6 +415,10 @@
     "home_designer": {
       "title": "Home Designer",
       "description": "AI-powered room redesign"
+    },
+    "beauty_studio": {
+      "title": "Beauty Studio",
+      "description": "Virtual makeup, hair styling and beauty advice"
     }
   },
   "navbar": {

@@ -108,6 +108,10 @@
     "home_designer": {
       "title": "Home Designer",
       "description": "Redizajn miestnosti s pomocou AI"
+    },
+    "beauty_studio": {
+      "title": "Beauty Studio",
+      "description": "Virtuálne vyskúšanie make-upu, účesov a beauty rád"
     }
   },
   "navbar": {

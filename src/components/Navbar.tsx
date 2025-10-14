@@ -176,6 +176,7 @@ const Navbar = () => {
     { path: "/career-hub", label: "Career Hub", icon: Briefcase },
     { path: "/brand-builder", label: t('services.brand_builder.title'), icon: Sparkles },
     { path: "/home-designer", label: t('services.home_designer.title'), icon: Home },
+    { path: "/beauty-studio", label: t('services.beauty_studio.title'), icon: Sparkles },
     { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
     { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },
     { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },

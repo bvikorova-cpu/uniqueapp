@@ -549,6 +549,108 @@ export type Database = {
           },
         ]
       }
+      beauty_product_recommendations: {
+        Row: {
+          concerns: string[] | null
+          created_at: string | null
+          credits_used: number | null
+          hair_type: string | null
+          id: string
+          recommendations: Json | null
+          skin_type: string | null
+          user_id: string
+        }
+        Insert: {
+          concerns?: string[] | null
+          created_at?: string | null
+          credits_used?: number | null
+          hair_type?: string | null
+          id?: string
+          recommendations?: Json | null
+          skin_type?: string | null
+          user_id: string
+        }
+        Update: {
+          concerns?: string[] | null
+          created_at?: string | null
+          credits_used?: number | null
+          hair_type?: string | null
+          id?: string
+          recommendations?: Json | null
+          skin_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      beauty_transformations: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          description: string | null
+          id: string
+          original_image_url: string
+          style_applied: string
+          transformation_type: string
+          transformed_image_url: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          id?: string
+          original_image_url: string
+          style_applied: string
+          transformation_type: string
+          transformed_image_url: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          id?: string
+          original_image_url?: string
+          style_applied?: string
+          transformation_type?: string
+          transformed_image_url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      beauty_tutorials: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          difficulty_level: string | null
+          id: string
+          look_description: string
+          products_needed: Json | null
+          tutorial_steps: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          difficulty_level?: string | null
+          id?: string
+          look_description: string
+          products_needed?: Json | null
+          tutorial_steps?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          difficulty_level?: string | null
+          id?: string
+          look_description?: string
+          products_needed?: Json | null
+          tutorial_steps?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       birth_charts: {
         Row: {
           birth_date: string
