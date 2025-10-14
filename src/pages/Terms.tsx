@@ -433,9 +433,8 @@ const Terms = () => {
               For questions regarding these terms and conditions, please contact us:
             </p>
             <ul className="list-none space-y-2 ml-4">
-              <li><strong>Email:</strong> legal@megatalent.platform</li>
-              <li><strong>Support:</strong> Contact form on our website</li>
-              <li><strong>Mail:</strong> [Your Company Address]</li>
+              <li><strong>Online Contact Form:</strong> Available in the Contact section of our platform</li>
+              <li><strong>Email Support:</strong> support@megatalent.platform</li>
             </ul>
             <Separator className="my-6" />
             <p className="text-sm text-center">
