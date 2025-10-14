@@ -16,7 +16,7 @@ const FirstAid = () => {
   const firstAidCategories = [
     {
       id: "cpr",
-      title: "Kardiopulmonálna resuscitácia (KPR)",
+      title: "Cardiopulmonary Resuscitation (CPR)",
       icon: Heart,
       color: "text-red-500",
       steps: [
