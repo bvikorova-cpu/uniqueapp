@@ -224,7 +224,7 @@ const PremiumStore = () => {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {badges.map((badge) => {
                 const owned = userBadges.some(ub => ub.badge_id === badge.id);
-                const isSoldOut = badge.is_limited_edition && badge.total_supply && (badge.minted_count || 0) >= badge.total_supply;
+                const isSoldOut = false; // Temporarily disabled until types update
                 
                 return (
                   <Card key={badge.id} className={`overflow-hidden ${owned ? 'ring-2 ring-primary' : ''}`}>
@@ -236,36 +236,12 @@ const PremiumStore = () => {
                           <Badge className={getRarityBadge(badge.rarity)}>
                             {badge.rarity.toUpperCase()}
                           </Badge>
-                          {badge.is_limited_edition && (
-                            <Badge variant="outline" className="text-xs">
-                              LIMITED
-                            </Badge>
-                          )}
                         </div>
                       </div>
                       <CardTitle className="text-xl">{badge.name}</CardTitle>
                       <CardDescription>{badge.description}</CardDescription>
-                      {badge.season && (
-                        <p className="text-xs text-primary mt-2">📅 {badge.season}</p>
-                      )}
                     </CardHeader>
                     <CardContent>
-                      {badge.is_limited_edition && badge.total_supply && (
-                        <div className="mb-4 p-3 bg-muted rounded-lg">
-                          <div className="flex items-center justify-between text-sm mb-2">
-                            <span className="text-muted-foreground">Supply:</span>
-                            <span className="font-semibold">
-                              {badge.minted_count || 0} / {badge.total_supply}
-                            </span>
-                          </div>
-                          <div className="w-full bg-background rounded-full h-2">
-                            <div 
-                              className={`h-2 rounded-full ${getRarityGradient(badge.rarity)}`}
-                              style={{ width: `${((badge.minted_count || 0) / badge.total_supply) * 100}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Sparkles className="h-5 w-5 text-primary" />
@@ -380,7 +356,7 @@ const PremiumStore = () => {
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {avatars.map((avatar) => {
                 const owned = userAvatars.some(ua => ua.avatar_id === avatar.id);
-                const isSoldOut = avatar.is_limited_edition && avatar.total_supply && (avatar.minted_count || 0) >= avatar.total_supply;
+                const isSoldOut = false; // Temporarily disabled until types update
                 
                 return (
                   <Card key={avatar.id} className={`overflow-hidden ${owned ? 'ring-2 ring-primary' : ''}`}>
@@ -394,11 +370,6 @@ const PremiumStore = () => {
                           <Badge className={getRarityBadge(avatar.rarity)}>
                             {avatar.rarity.toUpperCase()}
                           </Badge>
-                          {avatar.is_limited_edition && (
-                            <Badge variant="outline" className="text-xs">
-                              LIMITED
-                            </Badge>
-                          )}
                           {avatar.is_animated && (
                             <Badge variant="outline" className="text-xs">
                               ANIMATED
@@ -408,27 +379,8 @@ const PremiumStore = () => {
                       </div>
                       <CardTitle className="text-xl">{avatar.name}</CardTitle>
                       <CardDescription>{avatar.description}</CardDescription>
-                      {avatar.season && (
-                        <p className="text-xs text-primary mt-2">📅 {avatar.season}</p>
-                      )}
                     </CardHeader>
                     <CardContent>
-                      {avatar.is_limited_edition && avatar.total_supply && (
-                        <div className="mb-4 p-3 bg-muted rounded-lg">
-                          <div className="flex items-center justify-between text-sm mb-2">
-                            <span className="text-muted-foreground">Supply:</span>
-                            <span className="font-semibold">
-                              {avatar.minted_count || 0} / {avatar.total_supply}
-                            </span>
-                          </div>
-                          <div className="w-full bg-background rounded-full h-2">
-                            <div 
-                              className={`h-2 rounded-full ${getRarityGradient(avatar.rarity)}`}
-                              style={{ width: `${((avatar.minted_count || 0) / avatar.total_supply) * 100}%` }}
-                            />
-                          </div>
-                        </div>
-                      )}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Sparkles className="h-5 w-5 text-primary" />

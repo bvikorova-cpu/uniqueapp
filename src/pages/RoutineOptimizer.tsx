@@ -114,16 +114,16 @@ const RoutineOptimizer = () => {
       if (error) throw error;
 
       toast({
-        title: "Uložené",
-        description: "Dnešná rutina bola uložená.",
+        title: "Saved",
+        description: "Today's routine has been saved.",
       });
 
       await loadData();
     } catch (error) {
       console.error('Error saving entry:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa uložiť záznam.",
+        title: "Error",
+        description: "Failed to save entry.",
         variant: "destructive",
       });
     } finally {
@@ -140,8 +140,8 @@ const RoutineOptimizer = () => {
 
       if (currentCredits < creditsNeeded) {
         toast({
-          title: "Nedostatok kreditov",
-          description: `Potrebujete ${creditsNeeded} kreditov. Presmerujeme vás na nákup.`,
+          title: "Insufficient Credits",
+          description: `You need ${creditsNeeded} credits. Redirecting to store.`,
           variant: "destructive",
         });
         setTimeout(() => navigate("/ai-credits-store"), 2000);
@@ -177,15 +177,15 @@ const RoutineOptimizer = () => {
         await refreshCredits();
         
         toast({
-          title: "✨ Optimalizácia hotová!",
-          description: "Skontrolujte vaše personalizované odporúčania nižšie.",
+          title: "✨ Optimization Complete!",
+          description: "Check your personalized recommendations below.",
         });
       }
     } catch (error) {
       console.error('Error optimizing:', error);
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa optimalizovať rutinu.",
+        title: "Error",
+        description: error.message || "Failed to optimize routine.",
         variant: "destructive",
       });
     } finally {
@@ -214,7 +214,7 @@ const RoutineOptimizer = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Analyzuje tvoj deň a optimalizuje rutinu pre maximálnu produktivitu a wellbeing
+            Analyze your day and optimize your routine for maximum productivity and wellbeing
           </p>
         </div>
 
@@ -223,15 +223,15 @@ const RoutineOptimizer = () => {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Calendar className="h-5 w-5 text-primary" />
-              <CardTitle>Dnešná rutina</CardTitle>
+              <CardTitle>Today's Routine</CardTitle>
             </div>
-            <CardDescription>Zaznamenaj svoj deň pre AI analýzu</CardDescription>
+            <CardDescription>Record your day for personalized analysis</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="sleep" className="flex items-center gap-2">
-                  <Moon className="h-4 w-4" /> Spánok (hodiny)
+                  <Moon className="h-4 w-4" /> Sleep (hours)
                 </Label>
                 <Input
                   id="sleep"
@@ -261,7 +261,7 @@ const RoutineOptimizer = () => {
               
               <div className="space-y-2">
                 <Label htmlFor="work" className="flex items-center gap-2">
-                  <Briefcase className="h-4 w-4" /> Práca (hodiny)
+                  <Briefcase className="h-4 w-4" /> Work (hours)
                 </Label>
                 <Input
                   id="work"
@@ -319,21 +319,21 @@ const RoutineOptimizer = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="notes">Poznámky</Label>
+              <Label htmlFor="notes">Notes</Label>
               <Textarea
                 id="notes"
                 value={todayEntry.notes || ''}
                 onChange={(e) => setTodayEntry({...todayEntry, notes: e.target.value})}
-                placeholder="Ako sa dnes cítim, čo som dosiahol..."
+                placeholder="How I'm feeling today, what I achieved..."
                 rows={3}
               />
             </div>
             
             <Button onClick={handleSaveEntry} disabled={saving} className="w-full">
               {saving ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Ukladám...</>
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
               ) : (
-                'Uložiť dnešnú rutinu'
+                "Save Today's Routine"
               )}
             </Button>
           </CardContent>
@@ -344,12 +344,12 @@ const RoutineOptimizer = () => {
           <CardHeader>
             <div className="flex items-center gap-2">
               <Brain className="h-5 w-5 text-primary" />
-              <CardTitle>Optimalizácia</CardTitle>
+              <CardTitle>Optimization</CardTitle>
             </div>
             <CardDescription>
               {entries.length >= 3 
-                ? `Máte ${entries.length} dní záznamu. Spustite analýzu!`
-                : `Potrebujete aspoň 3 dni záznamu pre optimalizáciu (momentálne: ${entries.length})`
+                ? `You have ${entries.length} days of data. Run the analysis!`
+                : `You need at least 3 days of data for optimization (currently: ${entries.length})`
               }
             </CardDescription>
           </CardHeader>
@@ -361,9 +361,9 @@ const RoutineOptimizer = () => {
                 variant="outline"
                 className="h-auto flex-col items-start p-4"
               >
-                <div className="font-bold mb-1">Basic Optimalizácia</div>
-                <div className="text-sm text-muted-foreground">2 kredity</div>
-                <div className="text-xs mt-2">Základné odporúčania a insights</div>
+                <div className="font-bold mb-1">Basic Optimization</div>
+                <div className="text-sm text-muted-foreground">2 credits</div>
+                <div className="text-xs mt-2">Basic recommendations and insights</div>
               </Button>
               
               <Button
@@ -372,17 +372,17 @@ const RoutineOptimizer = () => {
                 className="h-auto flex-col items-start p-4 bg-gradient-to-r from-primary to-purple-600"
               >
                 <div className="font-bold mb-1 flex items-center gap-2">
-                  Premium Optimalizácia <Zap className="h-4 w-4" />
+                  Premium Optimization <Zap className="h-4 w-4" />
                 </div>
-                <div className="text-sm">5 kreditov</div>
-                <div className="text-xs mt-2">Detailná analýza, pokročilé insights</div>
+                <div className="text-sm">5 credits</div>
+                <div className="text-xs mt-2">Detailed analysis, advanced insights</div>
               </Button>
             </div>
             
             {optimizing && (
               <div className="flex items-center justify-center gap-2 text-primary">
                 <Loader2 className="h-5 w-5 animate-spin" />
-                <span>Analyzuje vašu rutinu...</span>
+                <span>Analyzing your routine...</span>
               </div>
             )}
           </CardContent>
@@ -393,7 +393,7 @@ const RoutineOptimizer = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-bold">Vaše Optimalizácie</h2>
+              <h2 className="text-2xl font-bold">Your Optimization Results</h2>
               {latestOptimization.is_premium && (
                 <Badge className="bg-gradient-to-r from-primary to-purple-600">Premium</Badge>
               )}
@@ -414,7 +414,7 @@ const RoutineOptimizer = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Moon className="h-5 w-5" /> Spánok
+                    <Moon className="h-5 w-5" /> Sleep
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -436,7 +436,7 @@ const RoutineOptimizer = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Briefcase className="h-5 w-5" /> Práca
+                    <Briefcase className="h-5 w-5" /> Work
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
