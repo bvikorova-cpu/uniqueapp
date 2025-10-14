@@ -27,8 +27,6 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import Terms from "./pages/Terms";
-import Education from "./pages/Education";
-import CourseDetail from "./pages/CourseDetail";
 import Quiz from "./pages/Quiz";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
@@ -45,7 +43,7 @@ import Earnings from "./pages/Earnings";
 import LiveStream from "./pages/LiveStream";
 import Stories from "./pages/Stories";
 import Rewards from "./pages/Rewards";
-import GenerateCourses from "./pages/GenerateCourses";
+
 import PremiumStore from "./pages/PremiumStore";
 
 const queryClient = new QueryClient();
@@ -87,8 +85,6 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/terms" element={<Terms />} />
-              <Route path="/education" element={<Education />} />
-              <Route path="/course/:courseName" element={<CourseDetail />} />
               <Route path="/quiz" element={<Quiz />} />
               
               <Route path="/profile/:userId" element={<Profile />} />
@@ -101,7 +97,7 @@ const App = () => (
               <Route path="/live/:streamId" element={<LiveStream />} />
               <Route path="/stories/:userId" element={<Stories />} />
               <Route path="/rewards" element={<Rewards />} />
-              <Route path="/generate-courses" element={<GenerateCourses />} />
+              
               <Route path="/premium-store" element={<PremiumStore />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
