@@ -68,6 +68,51 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_generated_content: {
+        Row: {
+          content_type: Database["public"]["Enums"]["content_type"]
+          created_at: string | null
+          credits_used: number | null
+          generated_image_url: string | null
+          generated_text: string | null
+          id: string
+          metadata: Json | null
+          prompt: string
+          status: Database["public"]["Enums"]["content_status"] | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content_type: Database["public"]["Enums"]["content_type"]
+          created_at?: string | null
+          credits_used?: number | null
+          generated_image_url?: string | null
+          generated_text?: string | null
+          id?: string
+          metadata?: Json | null
+          prompt: string
+          status?: Database["public"]["Enums"]["content_status"] | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content_type?: Database["public"]["Enums"]["content_type"]
+          created_at?: string | null
+          credits_used?: number | null
+          generated_image_url?: string | null
+          generated_text?: string | null
+          id?: string
+          metadata?: Json | null
+          prompt?: string
+          status?: Database["public"]["Enums"]["content_status"] | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_usage_history: {
         Row: {
           created_at: string
@@ -3637,6 +3682,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user" | "employer"
+      content_status: "draft" | "generated" | "edited" | "published"
+      content_type:
+        | "social_post"
+        | "blog_article"
+        | "video_script"
+        | "cv"
+        | "cover_letter"
+        | "business_document"
       job_category:
         | "it_software"
         | "marketing_sales"
@@ -3798,6 +3851,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user", "employer"],
+      content_status: ["draft", "generated", "edited", "published"],
+      content_type: [
+        "social_post",
+        "blog_article",
+        "video_script",
+        "cv",
+        "cover_letter",
+        "business_document",
+      ],
       job_category: [
         "it_software",
         "marketing_sales",
