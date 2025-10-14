@@ -42,6 +42,7 @@ import ContentStudio from "./pages/ContentStudio";
 import AICompanions from "./pages/AICompanions";
 import CompanionChat from "./pages/CompanionChat";
 import CareerHub from "./pages/CareerHub";
+import DreamJournal from "./pages/DreamJournal";
 
 import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
@@ -115,6 +116,7 @@ const App = () => (
           <Route path="/companions" element={<AICompanions />} />
           <Route path="/companions/:conversationId" element={<CompanionChat />} />
           <Route path="/career-hub" element={<CareerHub />} />
+          <Route path="/dream-journal" element={<DreamJournal />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -1199,6 +1199,48 @@ export type Database = {
         }
         Relationships: []
       }
+      dream_entries: {
+        Row: {
+          ai_analysis: string | null
+          content: string
+          created_at: string
+          dream_date: string
+          emotions: Json | null
+          id: string
+          symbols: Json | null
+          themes: Json | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          content: string
+          created_at?: string
+          dream_date?: string
+          emotions?: Json | null
+          id?: string
+          symbols?: Json | null
+          themes?: Json | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          content?: string
+          created_at?: string
+          dream_date?: string
+          emotions?: Json | null
+          id?: string
+          symbols?: Json | null
+          themes?: Json | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       featured_listings: {
         Row: {
           created_at: string
@@ -1813,6 +1855,45 @@ export type Database = {
         }
         Relationships: []
       }
+      journal_entries: {
+        Row: {
+          ai_insights: string | null
+          content: string
+          created_at: string
+          emotions_detected: Json | null
+          entry_date: string
+          id: string
+          mood: Database["public"]["Enums"]["mood_type"]
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_insights?: string | null
+          content: string
+          created_at?: string
+          emotions_detected?: Json | null
+          entry_date?: string
+          id?: string
+          mood: Database["public"]["Enums"]["mood_type"]
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_insights?: string | null
+          content?: string
+          created_at?: string
+          emotions_detected?: Json | null
+          entry_date?: string
+          id?: string
+          mood?: Database["public"]["Enums"]["mood_type"]
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       linkedin_enhancements: {
         Row: {
           created_at: string
@@ -2368,6 +2449,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      mood_logs: {
+        Row: {
+          created_at: string
+          energy_level: number | null
+          id: string
+          log_date: string
+          mood: Database["public"]["Enums"]["mood_type"]
+          notes: string | null
+          stress_level: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          energy_level?: number | null
+          id?: string
+          log_date?: string
+          mood: Database["public"]["Enums"]["mood_type"]
+          notes?: string | null
+          stress_level?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          energy_level?: number | null
+          id?: string
+          log_date?: string
+          mood?: Database["public"]["Enums"]["mood_type"]
+          notes?: string | null
+          stress_level?: number | null
+          user_id?: string
+        }
+        Relationships: []
       }
       negotiation_sessions: {
         Row: {
@@ -4027,6 +4141,7 @@ export type Database = {
       job_type: "full_time" | "part_time" | "contract" | "internship" | "remote"
       megatalent_tier: "premium" | "top_premium"
       mentor_area: "career" | "fitness" | "mindset" | "relationships"
+      mood_type: "very_bad" | "bad" | "neutral" | "good" | "very_good"
       skill_category:
         | "construction"
         | "repairs"
@@ -4198,6 +4313,7 @@ export const Constants = {
       job_type: ["full_time", "part_time", "contract", "internship", "remote"],
       megatalent_tier: ["premium", "top_premium"],
       mentor_area: ["career", "fitness", "mindset", "relationships"],
+      mood_type: ["very_bad", "bad", "neutral", "good", "very_good"],
       skill_category: [
         "construction",
         "repairs",
