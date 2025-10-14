@@ -121,7 +121,7 @@ export const HairStyleGenerator = () => {
           Hair Style Generator
         </h2>
         <p className="text-muted-foreground mb-6">
-          Vyskúšaj rôzne účesy a farby vlasov. Cena: 5 kreditov
+          Try different hairstyles and hair colors. Cost: 5 credits
         </p>
 
         <div className="space-y-4">

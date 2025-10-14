@@ -93,7 +93,7 @@ export const LanguageSelector = () => {
       <DropdownMenuContent align="end" className="w-64 max-h-96 overflow-y-auto bg-background z-50">
         <div className="p-2 sticky top-0 bg-background z-10">
           <Input
-            placeholder="Hľadať jazyk..."
+            placeholder="Search language..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="h-8"
@@ -115,7 +115,7 @@ export const LanguageSelector = () => {
           ))}
           {filteredLanguages.length === 0 && (
             <div className="p-2 text-center text-sm text-muted-foreground">
-              Žiadny jazyk sa nenašiel
+              No language found
             </div>
           )}
         </div>

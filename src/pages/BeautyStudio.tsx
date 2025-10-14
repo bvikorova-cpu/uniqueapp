@@ -23,7 +23,7 @@ const BeautyStudio = () => {
             ✨ Virtual Beauty Studio
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Vyskúšaj rôzne make-up looky, účesy a nechaj si odporučiť beauty produkty pomocou AI
+            Try different makeup looks, hairstyles and get AI-powered beauty product recommendations
           </p>
         </div>
 

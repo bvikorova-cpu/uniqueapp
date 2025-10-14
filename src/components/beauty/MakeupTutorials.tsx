@@ -53,7 +53,7 @@ export const MakeupTutorials = () => {
           Makeup Tutorial Generator
         </h2>
         <p className="text-muted-foreground mb-6">
-          AI vytvorí step-by-step tutorial pre tvoj look. Cena: 2 kredity
+          AI creates a step-by-step tutorial for your look. Cost: 2 credits
         </p>
 
         <div className="space-y-4">

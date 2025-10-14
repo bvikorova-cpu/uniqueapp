@@ -122,7 +122,7 @@ export const VirtualMakeup = () => {
           Virtual Makeup Try-On
         </h2>
         <p className="text-muted-foreground mb-6">
-          Nahraj selfie a AI aplikuje rôzne make-up looky. Cena: 5 kreditov
+          Upload a selfie and AI will apply different makeup looks. Cost: 5 credits
         </p>
 
         <div className="space-y-4">

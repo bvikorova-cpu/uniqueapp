@@ -13,7 +13,7 @@ export const NailArtDesigner = () => {
         Nail Art Designer
       </h2>
       <p className="text-muted-foreground mb-6">
-        Dizajnuj nechty s rôznymi farbami, vzormi a decoráciami
+        Design nails with different colors, patterns and decorations
       </p>
 
       <div className="text-center py-8">

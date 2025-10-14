@@ -61,7 +61,7 @@ export const ProductRecommender = () => {
           Beauty Product Recommender
         </h2>
         <p className="text-muted-foreground mb-6">
-          Získaj personalizované odporúčania produktov. Cena: 3 kredity
+          Get personalized product recommendations. Cost: 3 credits
         </p>
 
         <div className="space-y-4">
