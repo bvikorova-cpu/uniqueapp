@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Music, Sparkles, Heart, Activity, Mic, Users, Star, Play, Pause } from "lucide-react";
+import { Music, Sparkles, Heart, Activity, Mic, Users, Star, Play, Pause, Leaf } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
@@ -425,18 +425,19 @@ const AIMusic = () => {
               </p>
               <p className="text-xs text-purple-500 mt-2 font-semibold">Click to start creating →</p>
             </div>
+            <div className="p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-2 border-green-500/30 rounded-lg text-center cursor-pointer hover:shadow-xl hover:scale-105 hover:border-green-500 transition-all duration-300" onClick={() => navigate('/plant-care')}>
+              <Leaf className="h-8 w-8 text-green-500 mx-auto mb-2 transition-transform" />
+              <h4 className="font-bold text-green-600 dark:text-green-400">🌱 Plant Care Assistant</h4>
+              <p className="text-sm text-muted-foreground mt-1">
+                Identify plants from photos, get care schedules, and diagnose plant diseases with AI
+              </p>
+              <p className="text-xs text-green-500 mt-2 font-semibold">Click to explore →</p>
+            </div>
             <div className="p-4 bg-background rounded-lg text-center">
               <Star className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
               <h4 className="font-bold">Premium Playlists</h4>
               <p className="text-sm text-muted-foreground mt-1">
                 Exclusive generated playlists with advanced features
-              </p>
-            </div>
-            <div className="p-4 bg-background rounded-lg text-center">
-              <Sparkles className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-              <h4 className="font-bold">Unlimited Sessions</h4>
-              <p className="text-sm text-muted-foreground mt-1">
-                Unlimited access to therapy sessions and vocal coaching
               </p>
             </div>
           </div>
