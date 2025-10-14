@@ -212,7 +212,7 @@ const ContentStudio = () => {
             </span>
           </h1>
           <p className="text-xl text-muted-foreground mb-4">
-            Professional AI-powered content generation
+            Professional content generation
           </p>
           <div className="flex items-center justify-center gap-4">
             <Badge variant="outline" className="text-lg px-4 py-2">
