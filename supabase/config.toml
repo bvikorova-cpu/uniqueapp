@@ -6,6 +6,9 @@ verify_jwt = true
 [functions.virtual-tryon]
 verify_jwt = true
 
+[functions.ai-music-curator]
+verify_jwt = true
+
 [functions.capsule-wardrobe]
 verify_jwt = true
 

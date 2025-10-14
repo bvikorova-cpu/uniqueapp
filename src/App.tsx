@@ -46,6 +46,7 @@ import DreamJournal from "./pages/DreamJournal";
 import FashionStylist from "./pages/FashionStylist";
 import VirtualPet from "./pages/VirtualPet";
 import Astrology from "./pages/Astrology";
+import AIMusic from "./pages/AIMusic";
 
 import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
@@ -123,6 +124,7 @@ const App = () => (
           <Route path="/fashion-stylist" element={<FashionStylist />} />
           <Route path="/virtual-pet" element={<VirtualPet />} />
           <Route path="/astrology" element={<Astrology />} />
+          <Route path="/ai-music" element={<AIMusic />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

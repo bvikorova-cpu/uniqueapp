@@ -177,6 +177,7 @@ const Navbar = () => {
     { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },
     { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
     { path: "/astrology", label: "Astrology", icon: Star },
+    { path: "/ai-music", label: "AI Music", icon: Music },
     { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
     { path: "/dating", label: t('navbar.dating'), icon: Heart },
     { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
