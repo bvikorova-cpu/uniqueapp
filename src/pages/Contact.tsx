@@ -13,10 +13,10 @@ import Navbar from "@/components/Navbar";
 import { Mail, MessageSquare, User } from "lucide-react";
 
 const contactSchema = z.object({
-  name: z.string().trim().min(1, "Meno je povinné").max(100, "Meno je príliš dlhé"),
-  email: z.string().trim().email("Neplatná emailová adresa").max(255, "Email je príliš dlhý"),
-  subject: z.string().trim().min(1, "Predmet je povinný").max(200, "Predmet je príliš dlhý"),
-  message: z.string().trim().min(10, "Správa musí mať aspoň 10 znakov").max(2000, "Správa je príliš dlhá"),
+  name: z.string().trim().min(1, "Name is required").max(100, "Name is too long"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email is too long"),
+  subject: z.string().trim().min(1, "Subject is required").max(200, "Subject is too long"),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(2000, "Message is too long"),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
@@ -50,16 +50,16 @@ const Contact = () => {
       if (error) throw error;
 
       toast({
-        title: "Správa odoslaná!",
-        description: "Ďakujeme za vašu správu. Čoskoro vás budeme kontaktovať.",
+        title: "Message sent!",
+        description: "Thank you for your message. We will contact you soon.",
       });
 
       form.reset();
     } catch (error) {
       console.error("Error sending message:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať správu. Skúste to prosím znova.",
+        title: "Error",
+        description: "Failed to send message. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -73,9 +73,9 @@ const Contact = () => {
       <div className="container max-w-2xl mx-auto px-4 py-12">
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl">Kontaktujte nás</CardTitle>
+            <CardTitle className="text-3xl">Contact Us</CardTitle>
             <CardDescription>
-              Máte otázku alebo pripomienku? Napíšte nám správu a my sa vám ozveme čo najskôr.
+              Have a question or feedback? Send us a message and we'll get back to you as soon as possible.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -86,11 +86,11 @@ const Contact = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Meno</FormLabel>
+                      <FormLabel>Name</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                          <Input placeholder="Vaše meno" className="pl-10" {...field} />
+                          <Input placeholder="Your name" className="pl-10" {...field} />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -107,7 +107,7 @@ const Contact = () => {
                       <FormControl>
                         <div className="relative">
                           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                          <Input type="email" placeholder="vas@email.com" className="pl-10" {...field} />
+                          <Input type="email" placeholder="your@email.com" className="pl-10" {...field} />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -120,11 +120,11 @@ const Contact = () => {
                   name="subject"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Predmet</FormLabel>
+                      <FormLabel>Subject</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                          <Input placeholder="O čom je vaša správa?" className="pl-10" {...field} />
+                          <Input placeholder="What is your message about?" className="pl-10" {...field} />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -137,10 +137,10 @@ const Contact = () => {
                   name="message"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Správa</FormLabel>
+                      <FormLabel>Message</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Napíšte nám vašu správu..."
+                          placeholder="Write your message..."
                           className="min-h-[150px] resize-none"
                           {...field}
                         />
@@ -151,7 +151,7 @@ const Contact = () => {
                 />
 
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "Odeosielam..." : "Odoslať správu"}
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </Form>
