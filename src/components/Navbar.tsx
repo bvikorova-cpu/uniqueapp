@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Shirt, PawPrint, Gift, Zap, Home, Leaf } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { useTranslation } from "react-i18next";
 
@@ -184,6 +184,7 @@ const Navbar = () => {
     { path: "/ai-music", label: "Music Curator", icon: Music },
     { path: "/ai-music-producer", label: "AI Music Producer", icon: Music },
     { path: "/plant-care", label: "Plant Care Assistant", icon: Leaf },
+    { path: "/ai-tattoo", label: "AI Tattoo Designer", icon: ImageIcon },
     { path: "/mystery-box", label: "Mystery Box", icon: Gift },
     { path: "/routine-optimizer", label: "Routine Optimizer", icon: Zap },
     { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },

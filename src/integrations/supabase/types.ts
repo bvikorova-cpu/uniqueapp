@@ -290,6 +290,57 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_tattoo_designs: {
+        Row: {
+          color_scheme: string | null
+          created_at: string | null
+          credits_used: number | null
+          design_url: string | null
+          id: string
+          is_favorite: boolean | null
+          metadata: Json | null
+          placement: string | null
+          preview_url: string | null
+          prompt: string
+          size: string | null
+          style: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          color_scheme?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          design_url?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          metadata?: Json | null
+          placement?: string | null
+          preview_url?: string | null
+          prompt: string
+          size?: string | null
+          style: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          color_scheme?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          design_url?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          metadata?: Json | null
+          placement?: string | null
+          preview_url?: string | null
+          prompt?: string
+          size?: string | null
+          style?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_usage_history: {
         Row: {
           created_at: string
