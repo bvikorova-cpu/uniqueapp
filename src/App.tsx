@@ -39,6 +39,8 @@ import EditProfile from "./pages/EditProfile";
 import AIMentor from "./pages/AIMentor";
 import AIMentorChat from "./pages/AIMentorChat";
 import ContentStudio from "./pages/ContentStudio";
+import AICompanions from "./pages/AICompanions";
+import CompanionChat from "./pages/CompanionChat";
 
 import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
@@ -109,6 +111,8 @@ const App = () => (
               <Route path="/ai-mentor" element={<AIMentor />} />
           <Route path="/ai-mentor/:area" element={<AIMentorChat />} />
           <Route path="/content-studio" element={<ContentStudio />} />
+          <Route path="/companions" element={<AICompanions />} />
+          <Route path="/companions/:conversationId" element={<CompanionChat />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

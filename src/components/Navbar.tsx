@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { useTranslation } from "react-i18next";
 
@@ -171,6 +171,7 @@ const Navbar = () => {
     { path: "/psychologist", label: t('navbar.psychologist'), icon: Brain },
     { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
     { path: "/content-studio", label: "Content Studio", icon: Sparkles },
+    { path: "/companions", label: "AI Companions", icon: MessageCircle },
     { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
     { path: "/dating", label: t('navbar.dating'), icon: Heart },
     { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
