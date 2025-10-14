@@ -176,6 +176,42 @@ export type Database = {
         }
         Relationships: []
       }
+      astro_subscriptions: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          price: number
+          started_at: string | null
+          status: string | null
+          tier: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          price: number
+          started_at?: string | null
+          status?: string | null
+          tier: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          price?: number
+          started_at?: string | null
+          status?: string | null
+          tier?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       auction_bids: {
         Row: {
           auction_id: string
@@ -432,6 +468,57 @@ export type Database = {
           },
         ]
       }
+      birth_charts: {
+        Row: {
+          birth_date: string
+          birth_place: string
+          birth_time: string | null
+          chart_data: Json | null
+          created_at: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          moon_sign: Database["public"]["Enums"]["zodiac_sign"] | null
+          name: string
+          rising_sign: Database["public"]["Enums"]["zodiac_sign"] | null
+          sun_sign: Database["public"]["Enums"]["zodiac_sign"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          birth_date: string
+          birth_place: string
+          birth_time?: string | null
+          chart_data?: Json | null
+          created_at?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          moon_sign?: Database["public"]["Enums"]["zodiac_sign"] | null
+          name: string
+          rising_sign?: Database["public"]["Enums"]["zodiac_sign"] | null
+          sun_sign: Database["public"]["Enums"]["zodiac_sign"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string
+          birth_place?: string
+          birth_time?: string | null
+          chart_data?: Json | null
+          created_at?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          moon_sign?: Database["public"]["Enums"]["zodiac_sign"] | null
+          name?: string
+          rising_sign?: Database["public"]["Enums"]["zodiac_sign"] | null
+          sun_sign?: Database["public"]["Enums"]["zodiac_sign"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       certificate_purchases: {
         Row: {
           amount: number
@@ -540,6 +627,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      compatibility_readings: {
+        Row: {
+          advice: string | null
+          analysis: string
+          challenges: string[] | null
+          compatibility_score: number | null
+          created_at: string | null
+          id: string
+          is_premium: boolean | null
+          sign1: Database["public"]["Enums"]["zodiac_sign"]
+          sign2: Database["public"]["Enums"]["zodiac_sign"]
+          strengths: string[] | null
+          user_id: string
+        }
+        Insert: {
+          advice?: string | null
+          analysis: string
+          challenges?: string[] | null
+          compatibility_score?: number | null
+          created_at?: string | null
+          id?: string
+          is_premium?: boolean | null
+          sign1: Database["public"]["Enums"]["zodiac_sign"]
+          sign2: Database["public"]["Enums"]["zodiac_sign"]
+          strengths?: string[] | null
+          user_id: string
+        }
+        Update: {
+          advice?: string | null
+          analysis?: string
+          challenges?: string[] | null
+          compatibility_score?: number | null
+          created_at?: string | null
+          id?: string
+          is_premium?: boolean | null
+          sign1?: Database["public"]["Enums"]["zodiac_sign"]
+          sign2?: Database["public"]["Enums"]["zodiac_sign"]
+          strengths?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
       }
       completed_courses: {
         Row: {
@@ -774,6 +903,63 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      daily_horoscopes: {
+        Row: {
+          career_score: number | null
+          compatibility_signs:
+            | Database["public"]["Enums"]["zodiac_sign"][]
+            | null
+          content: string
+          created_at: string | null
+          date: string
+          health_score: number | null
+          id: string
+          is_premium: boolean | null
+          love_score: number | null
+          lucky_colors: string[] | null
+          lucky_numbers: number[] | null
+          mood_score: number | null
+          user_id: string
+          zodiac_sign: Database["public"]["Enums"]["zodiac_sign"]
+        }
+        Insert: {
+          career_score?: number | null
+          compatibility_signs?:
+            | Database["public"]["Enums"]["zodiac_sign"][]
+            | null
+          content: string
+          created_at?: string | null
+          date: string
+          health_score?: number | null
+          id?: string
+          is_premium?: boolean | null
+          love_score?: number | null
+          lucky_colors?: string[] | null
+          lucky_numbers?: number[] | null
+          mood_score?: number | null
+          user_id: string
+          zodiac_sign: Database["public"]["Enums"]["zodiac_sign"]
+        }
+        Update: {
+          career_score?: number | null
+          compatibility_signs?:
+            | Database["public"]["Enums"]["zodiac_sign"][]
+            | null
+          content?: string
+          created_at?: string | null
+          date?: string
+          health_score?: number | null
+          id?: string
+          is_premium?: boolean | null
+          love_score?: number | null
+          lucky_colors?: string[] | null
+          lucky_numbers?: number[] | null
+          mood_score?: number | null
+          user_id?: string
+          zodiac_sign?: Database["public"]["Enums"]["zodiac_sign"]
         }
         Relationships: []
       }
@@ -2555,6 +2741,51 @@ export type Database = {
         }
         Relationships: []
       }
+      numerology_readings: {
+        Row: {
+          birth_date: string
+          created_at: string | null
+          destiny_number: number | null
+          full_name: string
+          id: string
+          interpretation: string
+          is_premium: boolean | null
+          life_path_number: number | null
+          lucky_numbers: number[] | null
+          personality_number: number | null
+          soul_urge_number: number | null
+          user_id: string
+        }
+        Insert: {
+          birth_date: string
+          created_at?: string | null
+          destiny_number?: number | null
+          full_name: string
+          id?: string
+          interpretation: string
+          is_premium?: boolean | null
+          life_path_number?: number | null
+          lucky_numbers?: number[] | null
+          personality_number?: number | null
+          soul_urge_number?: number | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string
+          created_at?: string | null
+          destiny_number?: number | null
+          full_name?: string
+          id?: string
+          interpretation?: string
+          is_premium?: boolean | null
+          life_path_number?: number | null
+          lucky_numbers?: number[] | null
+          personality_number?: number | null
+          soul_urge_number?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       outfit_recommendations: {
         Row: {
           ai_description: string
@@ -4008,6 +4239,39 @@ export type Database = {
           },
         ]
       }
+      tarot_readings: {
+        Row: {
+          cards: Json
+          created_at: string | null
+          id: string
+          interpretation: string
+          is_premium: boolean | null
+          question: string | null
+          reading_type: Database["public"]["Enums"]["reading_type"] | null
+          user_id: string
+        }
+        Insert: {
+          cards: Json
+          created_at?: string | null
+          id?: string
+          interpretation: string
+          is_premium?: boolean | null
+          question?: string | null
+          reading_type?: Database["public"]["Enums"]["reading_type"] | null
+          user_id: string
+        }
+        Update: {
+          cards?: Json
+          created_at?: string | null
+          id?: string
+          interpretation?: string
+          is_premium?: boolean | null
+          question?: string | null
+          reading_type?: Database["public"]["Enums"]["reading_type"] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       tracks: {
         Row: {
           artist: string
@@ -4764,6 +5028,14 @@ export type Database = {
         | "dragon"
         | "unicorn"
         | "phoenix"
+      reading_type:
+        | "daily"
+        | "weekly"
+        | "monthly"
+        | "yearly"
+        | "love"
+        | "career"
+        | "general"
       season_type: "spring" | "summer" | "fall" | "winter" | "all_season"
       skill_category:
         | "construction"
@@ -4782,6 +5054,20 @@ export type Database = {
         | "tattoo"
         | "training"
         | "best_selfie"
+      tarot_card_position: "past" | "present" | "future" | "outcome"
+      zodiac_sign:
+        | "aries"
+        | "taurus"
+        | "gemini"
+        | "cancer"
+        | "leo"
+        | "virgo"
+        | "libra"
+        | "scorpio"
+        | "sagittarius"
+        | "capricorn"
+        | "aquarius"
+        | "pisces"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4975,6 +5261,15 @@ export const Constants = {
         "unicorn",
         "phoenix",
       ],
+      reading_type: [
+        "daily",
+        "weekly",
+        "monthly",
+        "yearly",
+        "love",
+        "career",
+        "general",
+      ],
       season_type: ["spring", "summer", "fall", "winter", "all_season"],
       skill_category: [
         "construction",
@@ -4994,6 +5289,21 @@ export const Constants = {
         "tattoo",
         "training",
         "best_selfie",
+      ],
+      tarot_card_position: ["past", "present", "future", "outcome"],
+      zodiac_sign: [
+        "aries",
+        "taurus",
+        "gemini",
+        "cancer",
+        "leo",
+        "virgo",
+        "libra",
+        "scorpio",
+        "sagittarius",
+        "capricorn",
+        "aquarius",
+        "pisces",
       ],
     },
   },
