@@ -6,19 +6,82 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Sparkles, Upload } from "lucide-react";
+import { Sparkles, Upload, Image as ImageIcon } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 
 export const VirtualMakeup = () => {
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [makeupStyle, setMakeupStyle] = useState("glam");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const { credits, refresh } = useAICredits();
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        toast.error("Please select an image file");
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      setImageUrl(""); // Clear URL if file is selected
+    }
+  };
+
+  const uploadImage = async (): Promise<string | null> => {
+    if (!imageFile) return null;
+
+    setUploading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please sign in to upload images");
+        return null;
+      }
+
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${session.user.id}/${Date.now()}.${fileExt}`;
+
+      const { data, error } = await supabase.storage
+        .from('beauty-photos')
+        .upload(fileName, imageFile);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('beauty-photos')
+        .getPublicUrl(fileName);
+
+      return publicUrl;
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      toast.error("Failed to upload image");
+      return null;
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleTransform = async () => {
-    if (!imageUrl) {
-      toast.error("Please upload an image");
+    let finalImageUrl = imageUrl;
+
+    // If file is selected, upload it first
+    if (imageFile) {
+      const uploadedUrl = await uploadImage();
+      if (!uploadedUrl) return;
+      finalImageUrl = uploadedUrl;
+    }
+
+    if (!finalImageUrl) {
+      toast.error("Please upload an image or enter URL");
       return;
     }
 
@@ -32,7 +95,7 @@ export const VirtualMakeup = () => {
 
       const { data, error } = await supabase.functions.invoke('beauty-transformation', {
         body: {
-          imageUrl,
+          imageUrl: finalImageUrl,
           transformationType: 'makeup',
           styleApplied: makeupStyle
         }
@@ -64,12 +127,39 @@ export const VirtualMakeup = () => {
 
         <div className="space-y-4">
           <div>
+            <Label htmlFor="image-file">Upload Photo</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="image-file"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="flex-1"
+              />
+              <ImageIcon className="h-5 w-5 text-muted-foreground" />
+            </div>
+            {imagePreview && (
+              <img src={imagePreview} alt="Preview" className="mt-2 w-full max-w-xs rounded-lg" />
+            )}
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">Or</span>
+            </div>
+          </div>
+
+          <div>
             <Label htmlFor="image-url">Image URL</Label>
             <Input
               id="image-url"
               placeholder="Enter image URL"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
+              disabled={!!imageFile}
             />
           </div>
 
@@ -89,10 +179,10 @@ export const VirtualMakeup = () => {
 
           <Button 
             onClick={handleTransform} 
-            disabled={loading || (credits?.credits_remaining ?? 0) < 5}
+            disabled={loading || uploading || (credits?.credits_remaining ?? 0) < 5}
             className="w-full"
           >
-            {loading ? "Applying makeup..." : "Apply Makeup (5 credits)"}
+            {uploading ? "Uploading..." : loading ? "Applying makeup..." : "Apply Makeup (5 credits)"}
           </Button>
 
           {credits && (
