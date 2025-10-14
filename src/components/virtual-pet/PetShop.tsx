@@ -6,10 +6,12 @@ import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Star } from "lucide-react";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
+import { useNavigate } from "react-router-dom";
 
 export const PetShop = () => {
   const queryClient = useQueryClient();
   const { credits } = useAICredits();
+  const navigate = useNavigate();
 
   const { data: accessories } = useQuery({
     queryKey: ['accessories-shop'],
@@ -33,15 +35,24 @@ export const PetShop = () => {
     }
   };
 
+  const handlePurchase = (accessory: any) => {
+    const creditsNeeded = accessory.price;
+    if (credits.credits_remaining < creditsNeeded) {
+      toast.error('Nemáte dostatok kreditov. Presmerovanie na nákup kreditov...');
+      setTimeout(() => {
+        navigate('/ai-credits');
+      }, 1500);
+      return;
+    }
+    purchaseMutation.mutate(accessory);
+  };
+
   const purchaseMutation = useMutation({
     mutationFn: async (accessory: any) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
       const creditsNeeded = accessory.price;
-      if (credits.credits_remaining < creditsNeeded) {
-        throw new Error('Not enough credits');
-      }
 
       // Deduct credits
       const { error: creditError } = await supabase
@@ -78,6 +89,7 @@ export const PetShop = () => {
     },
     onSuccess: (_, accessory) => {
       queryClient.invalidateQueries({ queryKey: ['owned-accessories'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success(`Purchased ${accessory.name}!`);
     },
     onError: (error: any) => {
@@ -111,11 +123,13 @@ export const PetShop = () => {
 
             <Button 
               className="w-full gap-2" 
-              onClick={() => purchaseMutation.mutate(item)}
-              disabled={purchaseMutation.isPending || credits.credits_remaining < item.price}
+              onClick={() => handlePurchase(item)}
+              disabled={purchaseMutation.isPending}
             >
               <ShoppingCart className="h-4 w-4" />
-              Purchase ({item.price} credits)
+              {credits.credits_remaining < item.price 
+                ? `Kúpiť kredity (${item.price} credits)` 
+                : `Purchase (${item.price} credits)`}
             </Button>
           </Card>
         ))}
