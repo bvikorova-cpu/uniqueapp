@@ -44,6 +44,7 @@ import CompanionChat from "./pages/CompanionChat";
 import CareerHub from "./pages/CareerHub";
 import DreamJournal from "./pages/DreamJournal";
 import FashionStylist from "./pages/FashionStylist";
+import VirtualPet from "./pages/VirtualPet";
 
 import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
@@ -119,6 +120,7 @@ const App = () => (
           <Route path="/career-hub" element={<CareerHub />} />
           <Route path="/dream-journal" element={<DreamJournal />} />
           <Route path="/fashion-stylist" element={<FashionStylist />} />
+          <Route path="/virtual-pet" element={<VirtualPet />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

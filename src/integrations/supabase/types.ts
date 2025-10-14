@@ -2591,6 +2591,376 @@ export type Database = {
         }
         Relationships: []
       }
+      pet_accessories: {
+        Row: {
+          accessory_type: Database["public"]["Enums"]["accessory_type"]
+          created_at: string
+          description: string | null
+          effect: Json | null
+          id: string
+          image_url: string | null
+          is_premium: boolean | null
+          name: string
+          price: number | null
+          rarity: Database["public"]["Enums"]["pet_rarity"] | null
+        }
+        Insert: {
+          accessory_type: Database["public"]["Enums"]["accessory_type"]
+          created_at?: string
+          description?: string | null
+          effect?: Json | null
+          id?: string
+          image_url?: string | null
+          is_premium?: boolean | null
+          name: string
+          price?: number | null
+          rarity?: Database["public"]["Enums"]["pet_rarity"] | null
+        }
+        Update: {
+          accessory_type?: Database["public"]["Enums"]["accessory_type"]
+          created_at?: string
+          description?: string | null
+          effect?: Json | null
+          id?: string
+          image_url?: string | null
+          is_premium?: boolean | null
+          name?: string
+          price?: number | null
+          rarity?: Database["public"]["Enums"]["pet_rarity"] | null
+        }
+        Relationships: []
+      }
+      pet_activities: {
+        Row: {
+          activity_type: string
+          created_at: string
+          details: Json | null
+          energy_change: number | null
+          experience_gained: number | null
+          happiness_change: number | null
+          hunger_change: number | null
+          id: string
+          pet_id: string
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          details?: Json | null
+          energy_change?: number | null
+          experience_gained?: number | null
+          happiness_change?: number | null
+          hunger_change?: number | null
+          id?: string
+          pet_id: string
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          details?: Json | null
+          energy_change?: number | null
+          experience_gained?: number | null
+          happiness_change?: number | null
+          hunger_change?: number | null
+          id?: string
+          pet_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_activities_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_breeding: {
+        Row: {
+          breeding_completed_at: string | null
+          breeding_started_at: string
+          created_at: string
+          id: string
+          is_premium_breeding: boolean | null
+          offspring_id: string | null
+          parent1_id: string
+          parent2_id: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          breeding_completed_at?: string | null
+          breeding_started_at?: string
+          created_at?: string
+          id?: string
+          is_premium_breeding?: boolean | null
+          offspring_id?: string | null
+          parent1_id: string
+          parent2_id: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          breeding_completed_at?: string | null
+          breeding_started_at?: string
+          created_at?: string
+          id?: string
+          is_premium_breeding?: boolean | null
+          offspring_id?: string | null
+          parent1_id?: string
+          parent2_id?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_breeding_offspring_id_fkey"
+            columns: ["offspring_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pet_breeding_parent1_id_fkey"
+            columns: ["parent1_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pet_breeding_parent2_id_fkey"
+            columns: ["parent2_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_game_scores: {
+        Row: {
+          game_type: string
+          id: string
+          pet_id: string
+          played_at: string
+          rewards: Json | null
+          score: number
+          user_id: string
+        }
+        Insert: {
+          game_type: string
+          id?: string
+          pet_id: string
+          played_at?: string
+          rewards?: Json | null
+          score: number
+          user_id: string
+        }
+        Update: {
+          game_type?: string
+          id?: string
+          pet_id?: string
+          played_at?: string
+          rewards?: Json | null
+          score?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_game_scores_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_trades: {
+        Row: {
+          accepted_at: string | null
+          completed_at: string | null
+          created_at: string
+          from_user_id: string
+          id: string
+          message: string | null
+          offered_credits: number | null
+          offered_pet_id: string
+          requested_credits: number | null
+          requested_pet_id: string | null
+          status: string | null
+          to_user_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          from_user_id: string
+          id?: string
+          message?: string | null
+          offered_credits?: number | null
+          offered_pet_id: string
+          requested_credits?: number | null
+          requested_pet_id?: string | null
+          status?: string | null
+          to_user_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          message?: string | null
+          offered_credits?: number | null
+          offered_pet_id?: string
+          requested_credits?: number | null
+          requested_pet_id?: string | null
+          status?: string | null
+          to_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pet_trades_offered_pet_id_fkey"
+            columns: ["offered_pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pet_trades_requested_pet_id_fkey"
+            columns: ["requested_pet_id"]
+            isOneToOne: false
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_types: {
+        Row: {
+          base_energy: number | null
+          base_happiness: number | null
+          base_hunger: number | null
+          created_at: string
+          description: string | null
+          evolution_levels: Json | null
+          id: string
+          image_url: string | null
+          is_premium: boolean | null
+          name: string
+          price: number | null
+          species: Database["public"]["Enums"]["pet_species"]
+        }
+        Insert: {
+          base_energy?: number | null
+          base_happiness?: number | null
+          base_hunger?: number | null
+          created_at?: string
+          description?: string | null
+          evolution_levels?: Json | null
+          id?: string
+          image_url?: string | null
+          is_premium?: boolean | null
+          name: string
+          price?: number | null
+          species: Database["public"]["Enums"]["pet_species"]
+        }
+        Update: {
+          base_energy?: number | null
+          base_happiness?: number | null
+          base_hunger?: number | null
+          created_at?: string
+          description?: string | null
+          evolution_levels?: Json | null
+          id?: string
+          image_url?: string | null
+          is_premium?: boolean | null
+          name?: string
+          price?: number | null
+          species?: Database["public"]["Enums"]["pet_species"]
+        }
+        Relationships: []
+      }
+      pets: {
+        Row: {
+          birthday: string
+          created_at: string
+          customization: Json | null
+          energy: number | null
+          evolution_stage: number | null
+          experience: number | null
+          happiness: number | null
+          hunger: number | null
+          id: string
+          is_favorite: boolean | null
+          last_activity_at: string | null
+          last_fed_at: string | null
+          last_played_at: string | null
+          level: number | null
+          mood: Database["public"]["Enums"]["pet_mood"] | null
+          name: string
+          pet_type_id: string
+          total_activities: number | null
+          total_games_played: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          birthday?: string
+          created_at?: string
+          customization?: Json | null
+          energy?: number | null
+          evolution_stage?: number | null
+          experience?: number | null
+          happiness?: number | null
+          hunger?: number | null
+          id?: string
+          is_favorite?: boolean | null
+          last_activity_at?: string | null
+          last_fed_at?: string | null
+          last_played_at?: string | null
+          level?: number | null
+          mood?: Database["public"]["Enums"]["pet_mood"] | null
+          name: string
+          pet_type_id: string
+          total_activities?: number | null
+          total_games_played?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          birthday?: string
+          created_at?: string
+          customization?: Json | null
+          energy?: number | null
+          evolution_stage?: number | null
+          experience?: number | null
+          happiness?: number | null
+          hunger?: number | null
+          id?: string
+          is_favorite?: boolean | null
+          last_activity_at?: string | null
+          last_fed_at?: string | null
+          last_played_at?: string | null
+          level?: number | null
+          mood?: Database["public"]["Enums"]["pet_mood"] | null
+          name?: string
+          pet_type_id?: string
+          total_activities?: number | null
+          total_games_played?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pets_pet_type_id_fkey"
+            columns: ["pet_type_id"]
+            isOneToOne: false
+            referencedRelation: "pet_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_gifts: {
         Row: {
           category: string
@@ -3842,6 +4212,38 @@ export type Database = {
         }
         Relationships: []
       }
+      user_pet_accessories: {
+        Row: {
+          accessory_id: string
+          acquired_at: string
+          id: string
+          quantity: number | null
+          user_id: string
+        }
+        Insert: {
+          accessory_id: string
+          acquired_at?: string
+          id?: string
+          quantity?: number | null
+          user_id: string
+        }
+        Update: {
+          accessory_id?: string
+          acquired_at?: string
+          id?: string
+          quantity?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_pet_accessories_accessory_id_fkey"
+            columns: ["accessory_id"]
+            isOneToOne: false
+            referencedRelation: "pet_accessories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_points: {
         Row: {
           created_at: string | null
@@ -4302,6 +4704,13 @@ export type Database = {
       }
     }
     Enums: {
+      accessory_type:
+        | "hat"
+        | "clothing"
+        | "collar"
+        | "toy"
+        | "background"
+        | "effect"
       app_role: "admin" | "moderator" | "user" | "employer"
       clothing_category:
         | "tops"
@@ -4344,6 +4753,17 @@ export type Database = {
         | "sports"
         | "date"
         | "travel"
+      pet_mood: "happy" | "neutral" | "sad" | "excited" | "sleepy" | "hungry"
+      pet_rarity: "common" | "uncommon" | "rare" | "epic" | "legendary"
+      pet_species:
+        | "cat"
+        | "dog"
+        | "rabbit"
+        | "hamster"
+        | "bird"
+        | "dragon"
+        | "unicorn"
+        | "phoenix"
       season_type: "spring" | "summer" | "fall" | "winter" | "all_season"
       skill_category:
         | "construction"
@@ -4489,6 +4909,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      accessory_type: [
+        "hat",
+        "clothing",
+        "collar",
+        "toy",
+        "background",
+        "effect",
+      ],
       app_role: ["admin", "moderator", "user", "employer"],
       clothing_category: [
         "tops",
@@ -4534,6 +4962,18 @@ export const Constants = {
         "sports",
         "date",
         "travel",
+      ],
+      pet_mood: ["happy", "neutral", "sad", "excited", "sleepy", "hungry"],
+      pet_rarity: ["common", "uncommon", "rare", "epic", "legendary"],
+      pet_species: [
+        "cat",
+        "dog",
+        "rabbit",
+        "hamster",
+        "bird",
+        "dragon",
+        "unicorn",
+        "phoenix",
       ],
       season_type: ["spring", "summer", "fall", "winter", "all_season"],
       skill_category: [
