@@ -125,7 +125,7 @@ const AICreditsStore = () => {
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <Badge className="bg-primary text-primary-foreground">
-                      Najpopulárnejšie
+                      Most Popular
                     </Badge>
                   </div>
                 )}
@@ -150,7 +150,7 @@ const AICreditsStore = () => {
                     <span className="text-4xl font-bold">{pkg.price}€</span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">
-                    {pkg.credits} kreditov ({pkg.perCredit}€ / kredit)
+                    {pkg.credits} credits ({pkg.perCredit}€ / credit)
                   </p>
                 </CardHeader>
 
@@ -187,32 +187,32 @@ const AICreditsStore = () => {
         <div className="max-w-3xl mx-auto">
           <Card>
             <CardHeader>
-              <CardTitle>Ako fungujú AI kredity?</CardTitle>
+              <CardTitle>How do AI credits work?</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
-                  <h4 className="font-semibold mb-2">🎨 Generovanie obrázkov</h4>
+                  <h4 className="font-semibold mb-2">🎨 Image Generation</h4>
                   <p className="text-sm text-muted-foreground">
-                    1 kredit = 1 AI generovaný obrázok (AI Generation, Avatar)
+                    1 credit = 1 AI generated image (AI Generation, Avatar)
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">✨ AI efekty</h4>
+                  <h4 className="font-semibold mb-2">✨ AI Effects</h4>
                   <p className="text-sm text-muted-foreground">
-                    1 kredit = 1 aplikovaný AI efekt na fotku
+                    1 credit = 1 AI effect applied to photo
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">📚 AI kurzy</h4>
+                  <h4 className="font-semibold mb-2">📚 AI Courses</h4>
                   <p className="text-sm text-muted-foreground">
-                    5 kreditov = 1 personalizovaný AI kurz
+                    5 credits = 1 personalized AI course
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">⏰ Platnosť</h4>
+                  <h4 className="font-semibold mb-2">⏰ Validity</h4>
                   <p className="text-sm text-muted-foreground">
-                    Kredity neexpirujú 12 mesiacov od nákupu
+                    Credits do not expire for 12 months from purchase
                   </p>
                 </div>
               </div>
@@ -221,14 +221,14 @@ const AICreditsStore = () => {
         </div>
 
         <div className="mt-8 text-center text-sm text-muted-foreground">
-          <p>Všetky ceny sú uvedené v EUR. Kredity môžu byť použité na akékoľvek AI funkcie na platforme.</p>
+          <p>All prices are in EUR. Credits can be used for any AI features on the platform.</p>
           <p className="mt-2">
-            Premium a Business predplatné už zahŕňajú kredity zadarmo.{" "}
+            Premium and Business subscriptions already include free credits.{" "}
             <button 
               onClick={() => navigate('/subscription')}
               className="text-primary hover:underline"
             >
-              Pozrite si predplatné
+              View subscriptions
             </button>
           </p>
         </div>

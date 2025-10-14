@@ -84,8 +84,8 @@ const Earnings = () => {
     } catch (error) {
       console.error('Error loading transactions:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa načítať transakcie",
+        title: "Error",
+        description: "Failed to load transactions",
         variant: "destructive",
       });
     } finally {
@@ -123,9 +123,9 @@ const Earnings = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="outline" className="bg-yellow-50"><Clock className="w-3 h-3 mr-1" />Čaká sa</Badge>;
+        return <Badge variant="outline" className="bg-yellow-50"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
       case 'completed':
-        return <Badge variant="outline" className="bg-green-50"><CheckCircle className="w-3 h-3 mr-1" />Vyplatené</Badge>;
+        return <Badge variant="outline" className="bg-green-50"><CheckCircle className="w-3 h-3 mr-1" />Paid Out</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
     }
@@ -134,9 +134,9 @@ const Earnings = () => {
   const getItemTypeName = (type: string) => {
     switch (type) {
       case 'bazaar':
-        return 'Bazár';
+        return 'Bazaar';
       case 'auction':
-        return 'Aukcia';
+        return 'Auction';
       default:
         return type;
     }
@@ -145,7 +145,7 @@ const Earnings = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">Načítavam...</div>
+        <div className="text-center">Loading...</div>
       </div>
     );
   }
@@ -154,12 +154,12 @@ const Earnings = () => {
     <div className="container mx-auto py-8 px-4">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Moje zárobky</h1>
-          <p className="text-muted-foreground">Prehľad vašich predajov a výplat</p>
+          <h1 className="text-3xl font-bold">My Earnings</h1>
+          <p className="text-muted-foreground">Overview of your sales and payouts</p>
         </div>
         {!hasIban && (
           <Button onClick={() => navigate('/edit-profile')}>
-            Pridať IBAN
+            Add IBAN
           </Button>
         )}
       </div>
@@ -168,7 +168,7 @@ const Earnings = () => {
         <Alert className="mb-6">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Pre prijímanie platieb musíte pridať svoj IBAN v nastaveniach profilu.
+            To receive payments, you need to add your IBAN in profile settings.
           </AlertDescription>
         </Alert>
       )}
@@ -177,52 +177,52 @@ const Earnings = () => {
       <div className="grid gap-4 md:grid-cols-4 mb-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Celkové zárobky</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
             <Euro className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">€{stats.totalEarnings.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">
-              Zo {stats.totalSales} predajov
+              From {stats.totalSales} sales
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Čakajúce výplaty</CardTitle>
+            <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-yellow-600">€{stats.pendingPayouts.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">
-              Spracováva sa
+              Processing
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Vyplatené</CardTitle>
+            <CardTitle className="text-sm font-medium">Paid Out</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">€{stats.completedPayouts.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">
-              Už na účte
+              Already in account
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Počet predajov</CardTitle>
+            <CardTitle className="text-sm font-medium">Sales Count</CardTitle>
             <ShoppingBag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalSales}</div>
             <p className="text-xs text-muted-foreground">
-              Úspešných transakcií
+              Successful transactions
             </p>
           </CardContent>
         </Card>
@@ -231,14 +231,14 @@ const Earnings = () => {
       {/* Transactions Table */}
       <Card>
         <CardHeader>
-          <CardTitle>História transakcií</CardTitle>
+          <CardTitle>Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="all">
             <TabsList>
-              <TabsTrigger value="all">Všetky</TabsTrigger>
-              <TabsTrigger value="pending">Čakajúce</TabsTrigger>
-              <TabsTrigger value="completed">Vyplatené</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+              <TabsTrigger value="completed">Paid Out</TabsTrigger>
             </TabsList>
 
             <TabsContent value="all" className="mt-4">
@@ -280,7 +280,7 @@ const TransactionsTable = ({ transactions, formatDate, getStatusBadge, getItemTy
   if (transactions.length === 0) {
     return (
       <div className="text-center py-8 text-muted-foreground">
-        Žiadne transakcie
+        No transactions
       </div>
     );
   }
@@ -290,13 +290,13 @@ const TransactionsTable = ({ transactions, formatDate, getStatusBadge, getItemTy
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Dátum</TableHead>
-            <TableHead>Typ</TableHead>
-            <TableHead>Kupujúci</TableHead>
-            <TableHead>Suma celkom</TableHead>
-            <TableHead>Provízia</TableHead>
-            <TableHead>Váš zisk</TableHead>
-            <TableHead>Stav</TableHead>
+            <TableHead>Date</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Buyer</TableHead>
+            <TableHead>Total Amount</TableHead>
+            <TableHead>Commission</TableHead>
+            <TableHead>Your Profit</TableHead>
+            <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
