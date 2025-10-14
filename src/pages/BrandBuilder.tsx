@@ -124,7 +124,7 @@ const BrandBuilder = () => {
           <div className="flex items-center justify-center gap-3 mb-4">
             <Sparkles className="h-12 w-12 text-primary animate-pulse" />
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              AI Brand Builder
+              Brand Builder
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
