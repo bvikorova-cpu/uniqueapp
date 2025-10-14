@@ -169,6 +169,7 @@ const Navbar = () => {
     { path: "/influ-king", label: t('navbar.influ_king'), icon: Star },
     { path: "/megaforum", label: t('navbar.megaforum'), icon: Users },
     { path: "/psychologist", label: t('navbar.psychologist'), icon: Brain },
+    { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
     { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
     { path: "/dating", label: t('navbar.dating'), icon: Heart },
     { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
