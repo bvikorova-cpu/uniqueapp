@@ -1,5 +1,14 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.outfit-recommender]
+verify_jwt = true
+
+[functions.virtual-tryon]
+verify_jwt = true
+
+[functions.capsule-wardrobe]
+verify_jwt = true
+
 [functions.psychology-chat]
 verify_jwt = false
 

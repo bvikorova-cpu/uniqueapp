@@ -2555,6 +2555,42 @@ export type Database = {
         }
         Relationships: []
       }
+      outfit_recommendations: {
+        Row: {
+          ai_description: string
+          created_at: string
+          id: string
+          is_favorite: boolean | null
+          item_ids: string[]
+          occasion: Database["public"]["Enums"]["occasion_type"]
+          season: Database["public"]["Enums"]["season_type"]
+          styling_tips: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_description: string
+          created_at?: string
+          id?: string
+          is_favorite?: boolean | null
+          item_ids: string[]
+          occasion: Database["public"]["Enums"]["occasion_type"]
+          season: Database["public"]["Enums"]["season_type"]
+          styling_tips?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_description?: string
+          created_at?: string
+          id?: string
+          is_favorite?: boolean | null
+          item_ids?: string[]
+          occasion?: Database["public"]["Enums"]["occasion_type"]
+          season?: Database["public"]["Enums"]["season_type"]
+          styling_tips?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       platform_gifts: {
         Row: {
           category: string
@@ -3083,6 +3119,42 @@ export type Database = {
           },
         ]
       }
+      shopping_wishlist: {
+        Row: {
+          affiliate_link: string | null
+          category: Database["public"]["Enums"]["clothing_category"] | null
+          created_at: string
+          id: string
+          is_purchased: boolean | null
+          item_name: string
+          preferred_brands: string[] | null
+          price_range: string | null
+          user_id: string
+        }
+        Insert: {
+          affiliate_link?: string | null
+          category?: Database["public"]["Enums"]["clothing_category"] | null
+          created_at?: string
+          id?: string
+          is_purchased?: boolean | null
+          item_name: string
+          preferred_brands?: string[] | null
+          price_range?: string | null
+          user_id: string
+        }
+        Update: {
+          affiliate_link?: string | null
+          category?: Database["public"]["Enums"]["clothing_category"] | null
+          created_at?: string
+          id?: string
+          is_purchased?: boolean | null
+          item_name?: string
+          preferred_brands?: string[] | null
+          price_range?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       skill_offerings: {
         Row: {
           category: Database["public"]["Enums"]["skill_category"]
@@ -3412,6 +3484,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      styling_sessions: {
+        Row: {
+          ai_recommendations: Json | null
+          completed_at: string | null
+          created_at: string
+          credits_used: number | null
+          id: string
+          occasion: string | null
+          preferences: Json | null
+          session_type: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_recommendations?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          occasion?: string | null
+          preferences?: Json | null
+          session_type: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_recommendations?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          credits_used?: number | null
+          id?: string
+          occasion?: string | null
+          preferences?: Json | null
+          session_type?: string
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       subscriptions: {
         Row: {
@@ -4057,6 +4168,81 @@ export type Database = {
         }
         Relationships: []
       }
+      virtual_tryon_history: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string | null
+          original_photo_url: string
+          tryon_result_url: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          original_photo_url: string
+          tryon_result_url?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          original_photo_url?: string
+          tryon_result_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wardrobe_items: {
+        Row: {
+          brand: string | null
+          category: Database["public"]["Enums"]["clothing_category"]
+          color: string
+          created_at: string
+          id: string
+          image_url: string | null
+          name: string
+          notes: string | null
+          price: number | null
+          purchase_date: string | null
+          season: Database["public"]["Enums"]["season_type"] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand?: string | null
+          category: Database["public"]["Enums"]["clothing_category"]
+          color: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          notes?: string | null
+          price?: number | null
+          purchase_date?: string | null
+          season?: Database["public"]["Enums"]["season_type"] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand?: string | null
+          category?: Database["public"]["Enums"]["clothing_category"]
+          color?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          notes?: string | null
+          price?: number | null
+          purchase_date?: string | null
+          season?: Database["public"]["Enums"]["season_type"] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       megatalent_leaderboard: {
@@ -4117,6 +4303,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "moderator" | "user" | "employer"
+      clothing_category:
+        | "tops"
+        | "bottoms"
+        | "dresses"
+        | "outerwear"
+        | "shoes"
+        | "accessories"
+        | "bags"
       content_status: "draft" | "generated" | "edited" | "published"
       content_type:
         | "social_post"
@@ -4142,6 +4336,15 @@ export type Database = {
       megatalent_tier: "premium" | "top_premium"
       mentor_area: "career" | "fitness" | "mindset" | "relationships"
       mood_type: "very_bad" | "bad" | "neutral" | "good" | "very_good"
+      occasion_type:
+        | "casual"
+        | "work"
+        | "formal"
+        | "party"
+        | "sports"
+        | "date"
+        | "travel"
+      season_type: "spring" | "summer" | "fall" | "winter" | "all_season"
       skill_category:
         | "construction"
         | "repairs"
@@ -4287,6 +4490,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "moderator", "user", "employer"],
+      clothing_category: [
+        "tops",
+        "bottoms",
+        "dresses",
+        "outerwear",
+        "shoes",
+        "accessories",
+        "bags",
+      ],
       content_status: ["draft", "generated", "edited", "published"],
       content_type: [
         "social_post",
@@ -4314,6 +4526,16 @@ export const Constants = {
       megatalent_tier: ["premium", "top_premium"],
       mentor_area: ["career", "fitness", "mindset", "relationships"],
       mood_type: ["very_bad", "bad", "neutral", "good", "very_good"],
+      occasion_type: [
+        "casual",
+        "work",
+        "formal",
+        "party",
+        "sports",
+        "date",
+        "travel",
+      ],
+      season_type: ["spring", "summer", "fall", "winter", "all_season"],
       skill_category: [
         "construction",
         "repairs",
