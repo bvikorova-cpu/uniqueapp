@@ -350,7 +350,7 @@
     },
     "psychologist": {
       "title": "Online Psychologist",
-      "description": "AI assistant for mental health 24/7"
+      "description": "Assistant for mental health 24/7"
     },
     "education": {
       "title": "Education",
@@ -401,12 +401,12 @@
       "description": "Bid and auction products from around the world"
     },
     "ai_generation": {
-      "title": "AI Generation",
+      "title": "Generation",
       "description": "Create images using artificial intelligence"
     },
     "best_friend": {
       "title": "Best Friend",
-      "description": "Your AI friend who will never leave you"
+      "description": "Your friend who will never leave you"
     }
   },
   "navbar": {
@@ -422,7 +422,7 @@
     "view_profile": "View profile",
     "edit_profile": "Edit profile",
     "subscription": "Subscription",
-    "ai_credits": "AI Credits",
+    "ai_credits": "Credits",
     "earnings": "My earnings",
     "contact": "Contact",
     "admin_panel": "Admin Panel",
@@ -439,7 +439,7 @@
     "cooking": "Cooking",
     "marketplace_skills": "Skills Marketplace",
     "bazaar": "Bazaar",
-    "ai_generation": "AI Generation",
+    "ai_generation": "Generation",
     "auction": "Online Auctions",
     "best_friend": "Best Friend",
     "invite_friend": "Invite friend",
