@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Globe, History, Clock, Sparkles, MapPin, User } from "lucide-react";
+import { Loader2, Globe, History, Clock, Sparkles, MapPin, User, ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAICredits } from "@/hooks/useAICredits";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const AIExperiences = () => {
   const navigate = useNavigate();
@@ -23,6 +24,9 @@ const AIExperiences = () => {
   const [ageYears, setAgeYears] = useState(20);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [progressions, setProgressions] = useState<any[]>([]);
+  const [selectedTour, setSelectedTour] = useState<any | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const destinations = [
     { name: "Paris", icon: "🗼", credits: 3 },
@@ -45,6 +49,18 @@ const AIExperiences = () => {
     loadTours();
     loadProgressions();
   }, []);
+
+  useEffect(() => {
+    if (!isPlaying || !selectedTour?.image_urls) return;
+    
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => 
+        (prev + 1) % selectedTour.image_urls.length
+      );
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, selectedTour]);
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -306,14 +322,36 @@ const AIExperiences = () => {
                     <h3 className="font-bold text-lg mb-4">Your Recent Tours</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {tours.map((tour) => (
-                        <Card key={tour.id}>
+                        <Card 
+                          key={tour.id} 
+                          className="hover:shadow-lg transition-all cursor-pointer group"
+                          onClick={() => {
+                            setSelectedTour(tour);
+                            setCurrentImageIndex(0);
+                            setIsPlaying(false);
+                          }}
+                        >
                           <CardHeader>
-                            <CardTitle className="text-base">{tour.destination}</CardTitle>
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-primary" />
+                              {tour.destination}
+                            </CardTitle>
                           </CardHeader>
                           <CardContent>
+                            {tour.image_urls?.[0] && (
+                              <img 
+                                src={tour.image_urls[0]} 
+                                alt={tour.destination}
+                                className="w-full h-48 object-cover rounded-lg mb-3 group-hover:scale-105 transition-transform"
+                              />
+                            )}
                             <p className="text-sm text-muted-foreground line-clamp-3">
                               {tour.description}
                             </p>
+                            <Button variant="outline" className="w-full mt-3">
+                              <Play className="h-4 w-4 mr-2" />
+                              Start Virtual Tour
+                            </Button>
                           </CardContent>
                         </Card>
                       ))}
@@ -446,6 +484,94 @@ const AIExperiences = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Virtual Tour Dialog with Carousel */}
+        <Dialog open={!!selectedTour} onOpenChange={() => setSelectedTour(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-2xl">
+                <Globe className="h-6 w-6 text-primary" />
+                {selectedTour?.destination}
+              </DialogTitle>
+            </DialogHeader>
+            
+            {selectedTour?.image_urls && selectedTour.image_urls.length > 0 && (
+              <div className="space-y-4">
+                {/* Image Carousel */}
+                <div className="relative w-full h-96 bg-muted rounded-lg overflow-hidden group">
+                  <img 
+                    src={selectedTour.image_urls[currentImageIndex]} 
+                    alt={`${selectedTour.destination} - Scene ${currentImageIndex + 1}`}
+                    className="w-full h-full object-cover animate-fade-in"
+                    key={currentImageIndex}
+                  />
+                  
+                  {/* Navigation Buttons */}
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => setCurrentImageIndex((prev) => 
+                      prev === 0 ? selectedTour.image_urls.length - 1 : prev - 1
+                    )}
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </Button>
+                  
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => setCurrentImageIndex((prev) => 
+                      (prev + 1) % selectedTour.image_urls.length
+                    )}
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </Button>
+
+                  {/* Play/Pause Button */}
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => setIsPlaying(!isPlaying)}
+                  >
+                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                  </Button>
+
+                  {/* Progress Indicators */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                    {selectedTour.image_urls.map((_: any, idx: number) => (
+                      <button
+                        key={idx}
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          idx === currentImageIndex 
+                            ? 'bg-white w-8' 
+                            : 'bg-white/50 hover:bg-white/75'
+                        }`}
+                        onClick={() => setCurrentImageIndex(idx)}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tour Description */}
+                <Card>
+                  <CardContent className="pt-6">
+                    <p className="text-sm whitespace-pre-line leading-relaxed">
+                      {selectedTour.description}
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Scene Counter */}
+                <div className="text-center text-sm text-muted-foreground">
+                  Scene {currentImageIndex + 1} of {selectedTour.image_urls.length}
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
 
       <Footer />
