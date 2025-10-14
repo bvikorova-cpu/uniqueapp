@@ -278,7 +278,7 @@ const EditProfile = () => {
         </Button>
 
         <h1 className="text-4xl font-bold mb-8 bg-gradient-primary bg-clip-text text-transparent">
-          Upraviť profil
+          Edit Profile
         </h1>
 
         <Card className="p-6 space-y-6">

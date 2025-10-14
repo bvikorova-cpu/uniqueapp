@@ -395,7 +395,7 @@ const Profile = () => {
                   {currentUserId === userId ? (
                     <Button variant="outline" size="sm" onClick={() => navigate("/edit-profile")}>
                       <Edit className="h-4 w-4 mr-2" />
-                      Upraviť profil
+                      Edit Profile
                     </Button>
                   ) : (
                     <>
