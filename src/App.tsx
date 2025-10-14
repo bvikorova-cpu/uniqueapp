@@ -60,6 +60,7 @@ import Stories from "./pages/Stories";
 import Rewards from "./pages/Rewards";
 import GenerateCourses from "./pages/GenerateCourses";
 import PremiumStore from "./pages/PremiumStore";
+import AIExperiences from "./pages/AIExperiences";
 
 const queryClient = new QueryClient();
 
@@ -128,7 +129,8 @@ const App = () => (
           <Route path="/astrology" element={<Astrology />} />
           <Route path="/ai-music" element={<AIMusic />} />
           <Route path="/mystery-box" element={<MysteryBox />} />
-          <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
+              <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
+              <Route path="/ai-experiences" element={<AIExperiences />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

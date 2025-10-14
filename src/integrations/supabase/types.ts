@@ -38,6 +38,39 @@ export type Database = {
         }
         Relationships: []
       }
+      age_progressions: {
+        Row: {
+          aged_image_url: string | null
+          created_at: string | null
+          credits_used: number | null
+          description: string | null
+          id: string
+          original_image_url: string
+          user_id: string
+          years_forward: number
+        }
+        Insert: {
+          aged_image_url?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          id?: string
+          original_image_url: string
+          user_id: string
+          years_forward: number
+        }
+        Update: {
+          aged_image_url?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          id?: string
+          original_image_url?: string
+          user_id?: string
+          years_forward?: number
+        }
+        Relationships: []
+      }
       ai_characters: {
         Row: {
           avatar_url: string | null
@@ -5217,6 +5250,39 @@ export type Database = {
           user_id?: string
           video_url?: string
           views_count?: number | null
+        }
+        Relationships: []
+      }
+      virtual_tours: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          description: string | null
+          destination: string
+          id: string
+          image_urls: string[] | null
+          tour_data: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          destination: string
+          id?: string
+          image_urls?: string[] | null
+          tour_data?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          destination?: string
+          id?: string
+          image_urls?: string[] | null
+          tour_data?: Json | null
+          user_id?: string
         }
         Relationships: []
       }
