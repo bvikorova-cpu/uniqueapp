@@ -101,7 +101,7 @@ const EditProfile = () => {
       });
     } catch (error: any) {
       toast({
-        title: "Chyba pri načítaní profilu",
+        title: "Error loading profile",
         description: error.message,
         variant: "destructive",
       });
@@ -134,14 +134,14 @@ const EditProfile = () => {
       if (error) throw error;
 
       toast({
-        title: "Profil uložený",
-        description: "Váš profil bol úspešne aktualizovaný",
+        title: "Profile saved",
+        description: "Your profile has been successfully updated",
       });
 
       navigate("/feed");
     } catch (error: any) {
       toast({
-        title: "Chyba pri ukladaní profilu",
+        title: "Error saving profile",
         description: error.message,
         variant: "destructive",
       });
@@ -173,12 +173,12 @@ const EditProfile = () => {
       setProfile({ ...profile, avatar_url: publicUrl });
 
       toast({
-        title: "Fotka nahraná",
-        description: "Vaša profilová fotka bola úspešne nahraná",
+        title: "Photo uploaded",
+        description: "Your profile photo has been successfully uploaded",
       });
     } catch (error: any) {
       toast({
-        title: "Chyba pri nahrávaní fotky",
+        title: "Error uploading photo",
         description: error.message,
         variant: "destructive",
       });
@@ -190,8 +190,8 @@ const EditProfile = () => {
   const handleGenerateAvatar = async () => {
     if (!avatarDescription.trim()) {
       toast({
-        title: "Chýba popis",
-        description: "Prosím zadajte popis pre AI avatar",
+        title: "Missing description",
+        description: "Please enter a description for the AI avatar",
         variant: "destructive",
       });
       return;
@@ -225,13 +225,13 @@ const EditProfile = () => {
         setAvatarDescription("");
 
         toast({
-          title: "AI avatar vytvorený",
-          description: "Váš AI avatar bol úspešne vygenerovaný",
+          title: "AI avatar created",
+          description: "Your AI avatar has been successfully generated",
         });
       }
     } catch (error: any) {
       toast({
-        title: "Chyba pri generovaní avatara",
+        title: "Error generating avatar",
         description: error.message,
         variant: "destructive",
       });
@@ -274,7 +274,7 @@ const EditProfile = () => {
           className="mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Späť
+          Back
         </Button>
 
         <h1 className="text-4xl font-bold mb-8 bg-gradient-primary bg-clip-text text-transparent">
@@ -300,7 +300,7 @@ const EditProfile = () => {
                     ) : (
                       <Upload className="h-4 w-4 mr-2" />
                     )}
-                    Nahrať fotku
+                    Upload Photo
                   </span>
                 </Button>
               </Label>
@@ -315,10 +315,10 @@ const EditProfile = () => {
 
             {/* AI Avatar Generation */}
             <div className="w-full space-y-2">
-              <Label>Alebo vygenerujte AI avatar</Label>
+              <Label>Or generate AI avatar</Label>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Opíšte ako má avatar vyzerať..."
+                  placeholder="Describe how the avatar should look..."
                   value={avatarDescription}
                   onChange={(e) => setAvatarDescription(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && handleGenerateAvatar()}
@@ -340,7 +340,7 @@ const EditProfile = () => {
           {/* Basic Info */}
           <div className="space-y-4">
             <div>
-              <Label htmlFor="full_name">Celé meno</Label>
+              <Label htmlFor="full_name">Full Name</Label>
               <Input
                 id="full_name"
                 value={profile.full_name || ""}
@@ -362,21 +362,21 @@ const EditProfile = () => {
             </div>
 
             <div>
-              <Label htmlFor="bio">O mne</Label>
+              <Label htmlFor="bio">About Me</Label>
               <Textarea
                 id="bio"
                 rows={4}
-                placeholder="Napíšte niečo o sebe..."
+                placeholder="Write something about yourself..."
                 value={profile.bio || ""}
                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
               />
             </div>
 
             <div>
-              <Label htmlFor="occupation">Povolanie</Label>
+              <Label htmlFor="occupation">Occupation</Label>
               <Input
                 id="occupation"
-                placeholder="Napr. Vývojár softvéru"
+                placeholder="e.g. Software Developer"
                 value={profile.occupation || ""}
                 onChange={(e) =>
                   setProfile({ ...profile, occupation: e.target.value })
@@ -385,10 +385,10 @@ const EditProfile = () => {
             </div>
 
             <div>
-              <Label htmlFor="company">Spoločnosť</Label>
+              <Label htmlFor="company">Company</Label>
               <Input
                 id="company"
-                placeholder="Napr. Google"
+                placeholder="e.g. Google"
                 value={profile.company || ""}
                 onChange={(e) =>
                   setProfile({ ...profile, company: e.target.value })
@@ -397,10 +397,10 @@ const EditProfile = () => {
             </div>
 
             <div>
-              <Label htmlFor="location">Lokalita</Label>
+              <Label htmlFor="location">Location</Label>
               <Input
                 id="location"
-                placeholder="Napr. Bratislava, Slovensko"
+                placeholder="e.g. Bratislava, Slovakia"
                 value={profile.location || ""}
                 onChange={(e) =>
                   setProfile({ ...profile, location: e.target.value })
@@ -409,7 +409,7 @@ const EditProfile = () => {
             </div>
 
             <div>
-              <Label htmlFor="birth_date">Dátum narodenia</Label>
+              <Label htmlFor="birth_date">Birth Date</Label>
               <Input
                 id="birth_date"
                 type="date"
@@ -421,7 +421,7 @@ const EditProfile = () => {
             </div>
 
             <div>
-              <Label htmlFor="phone">Telefón</Label>
+              <Label htmlFor="phone">Phone</Label>
               <Input
                 id="phone"
                 type="tel"
@@ -434,7 +434,7 @@ const EditProfile = () => {
             </div>
 
             <div>
-              <Label htmlFor="website">Webová stránka</Label>
+              <Label htmlFor="website">Website</Label>
               <Input
                 id="website"
                 type="url"
@@ -448,17 +448,17 @@ const EditProfile = () => {
 
             {/* Interests */}
             <div>
-              <Label htmlFor="interests">Záujmy</Label>
+              <Label htmlFor="interests">Interests</Label>
               <div className="flex gap-2 mb-2">
                 <Input
                   id="interests"
-                  placeholder="Pridať záujem..."
+                  placeholder="Add interest..."
                   value={newInterest}
                   onChange={(e) => setNewInterest(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && addInterest()}
                 />
                 <Button onClick={addInterest} variant="outline">
-                  Pridať
+                  Add
                 </Button>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -486,13 +486,13 @@ const EditProfile = () => {
               {saving ? (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               ) : null}
-              Uložiť zmeny
+              Save Changes
             </Button>
             <Button
               variant="outline"
               onClick={() => navigate("/feed")}
             >
-              Zrušiť
+              Cancel
             </Button>
           </div>
         </Card>

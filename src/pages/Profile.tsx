@@ -200,7 +200,7 @@ const Profile = () => {
 
       } catch (error: any) {
         toast({
-          title: "Chyba pri načítaní profilu",
+          title: "Error loading profile",
           description: error.message,
           variant: "destructive",
         });
@@ -228,11 +228,11 @@ const Profile = () => {
 
       setFriendshipStatus('pending_sent');
       toast({
-        title: "Žiadosť o priateľstvo odoslaná",
+        title: "Friend request sent",
       });
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -279,11 +279,11 @@ const Profile = () => {
       }));
 
       toast({
-        title: "Priateľstvo prijaté",
+        title: "Friend request accepted",
       });
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -309,11 +309,11 @@ const Profile = () => {
       }));
 
       toast({
-        title: "Priateľstvo zrušené",
+        title: "Friendship removed",
       });
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -356,9 +356,9 @@ const Profile = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="p-8 text-center">
-          <p className="text-muted-foreground mb-4">Profil nenájdený</p>
+          <p className="text-muted-foreground mb-4">Profile not found</p>
           <Button onClick={() => navigate("/feed")}>
-            Späť na Feed
+            Back to Feed
           </Button>
         </Card>
       </div>
@@ -374,7 +374,7 @@ const Profile = () => {
           className="mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Späť
+          Back
         </Button>
 
         <Card className="p-6 mb-8">
@@ -389,7 +389,7 @@ const Profile = () => {
             <div className="flex-1">
               <div className="flex items-center justify-between mb-2">
                 <h1 className="text-3xl font-bold">
-                  {profile.full_name || "Bez mena"}
+                  {profile.full_name || "No name"}
                 </h1>
                 <div className="flex gap-2">
                   {currentUserId === userId ? (
@@ -402,25 +402,25 @@ const Profile = () => {
                       {friendshipStatus === 'none' && (
                         <Button variant="outline" size="sm" onClick={handleAddFriend}>
                           <UserPlus className="h-4 w-4 mr-2" />
-                          Pridať priateľa
+                          Add Friend
                         </Button>
                       )}
                       {friendshipStatus === 'pending_sent' && (
                         <Button variant="outline" size="sm" disabled>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Žiadosť odoslaná
+                          Request Sent
                         </Button>
                       )}
                       {friendshipStatus === 'pending_received' && (
                         <Button variant="outline" size="sm" onClick={handleAcceptFriend}>
                           <UserCheck className="h-4 w-4 mr-2" />
-                          Prijať žiadosť
+                          Accept Request
                         </Button>
                       )}
                       {friendshipStatus === 'accepted' && (
                         <Button variant="outline" size="sm" onClick={handleRemoveFriend}>
                           <Users className="h-4 w-4 mr-2" />
-                          Priatelia
+                          Friends
                         </Button>
                       )}
                     </>
@@ -486,7 +486,7 @@ const Profile = () => {
             <>
               <Separator className="my-4" />
               <div>
-                <h3 className="text-sm font-semibold mb-2">Záujmy</h3>
+                <h3 className="text-sm font-semibold mb-2">Interests</h3>
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.map((interest) => (
                     <Badge key={interest} variant="secondary">
@@ -503,58 +503,58 @@ const Profile = () => {
         <Card className="p-6 mb-8">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-5 w-5 text-primary" />
-            <h2 className="text-xl font-semibold">Štatistiky aktivity</h2>
+            <h2 className="text-xl font-semibold">Activity Statistics</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.postsCount}</div>
-              <div className="text-sm text-muted-foreground">Príspevkov</div>
+              <div className="text-sm text-muted-foreground">Posts</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.friendsCount}</div>
-              <div className="text-sm text-muted-foreground">Priateľov</div>
+              <div className="text-sm text-muted-foreground">Friends</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.videosCount}</div>
-              <div className="text-sm text-muted-foreground">Videí</div>
+              <div className="text-sm text-muted-foreground">Videos</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.savedVideosCount}</div>
-              <div className="text-sm text-muted-foreground">Uložených</div>
+              <div className="text-sm text-muted-foreground">Saved</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.submissionsCount}</div>
-              <div className="text-sm text-muted-foreground">Súťaží</div>
+              <div className="text-sm text-muted-foreground">Contests</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.completedCoursesCount}</div>
-              <div className="text-sm text-muted-foreground">Kurzov</div>
+              <div className="text-sm text-muted-foreground">Courses</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.likesGiven}</div>
-              <div className="text-sm text-muted-foreground">Lajkov</div>
+              <div className="text-sm text-muted-foreground">Likes</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.commentsGiven}</div>
-              <div className="text-sm text-muted-foreground">Komentárov</div>
+              <div className="text-sm text-muted-foreground">Comments</div>
             </div>
           </div>
         </Card>
 
         <Tabs defaultValue="posts" className="w-full">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="posts">Príspevky</TabsTrigger>
-            <TabsTrigger value="videos">Videá</TabsTrigger>
-            <TabsTrigger value="saved">Uložené</TabsTrigger>
-            <TabsTrigger value="contests">Súťaže</TabsTrigger>
-            <TabsTrigger value="education">Kurzy</TabsTrigger>
-            <TabsTrigger value="friends">Priatelia</TabsTrigger>
+            <TabsTrigger value="posts">Posts</TabsTrigger>
+            <TabsTrigger value="videos">Videos</TabsTrigger>
+            <TabsTrigger value="saved">Saved</TabsTrigger>
+            <TabsTrigger value="contests">Contests</TabsTrigger>
+            <TabsTrigger value="education">Courses</TabsTrigger>
+            <TabsTrigger value="friends">Friends</TabsTrigger>
           </TabsList>
           
           <TabsContent value="posts" className="space-y-4 mt-4">
             {posts.length === 0 ? (
               <Card className="p-8 text-center text-muted-foreground">
-                Tento používateľ zatiaľ nemá žiadne príspevky
+                This user doesn't have any posts yet
               </Card>
             ) : (
               posts.map((post) => (
@@ -586,7 +586,7 @@ const Profile = () => {
           <TabsContent value="friends" className="mt-4">
             {friends.length === 0 ? (
               <Card className="p-8 text-center text-muted-foreground">
-                Zatiaľ žiadni priatelia
+                No friends yet
               </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -604,7 +604,7 @@ const Profile = () => {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <div className="font-semibold">{friend.full_name || "Bez mena"}</div>
+                        <div className="font-semibold">{friend.full_name || "No name"}</div>
                       </div>
                     </div>
                   </Card>
