@@ -47,6 +47,7 @@ import FashionStylist from "./pages/FashionStylist";
 import VirtualPet from "./pages/VirtualPet";
 import Astrology from "./pages/Astrology";
 import AIMusic from "./pages/AIMusic";
+import MysteryBox from "./pages/MysteryBox";
 
 import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
@@ -125,6 +126,7 @@ const App = () => (
           <Route path="/virtual-pet" element={<VirtualPet />} />
           <Route path="/astrology" element={<Astrology />} />
           <Route path="/ai-music" element={<AIMusic />} />
+          <Route path="/mystery-box" element={<MysteryBox />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

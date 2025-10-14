@@ -2669,6 +2669,122 @@ export type Database = {
         }
         Relationships: []
       }
+      mystery_box_items: {
+        Row: {
+          box_id: string | null
+          created_at: string | null
+          drop_chance: number
+          duration_days: number | null
+          id: string
+          item_data: Json | null
+          item_name: string
+          item_type: string
+          rarity: Database["public"]["Enums"]["item_rarity"]
+        }
+        Insert: {
+          box_id?: string | null
+          created_at?: string | null
+          drop_chance?: number
+          duration_days?: number | null
+          id?: string
+          item_data?: Json | null
+          item_name: string
+          item_type: string
+          rarity?: Database["public"]["Enums"]["item_rarity"]
+        }
+        Update: {
+          box_id?: string | null
+          created_at?: string | null
+          drop_chance?: number
+          duration_days?: number | null
+          id?: string
+          item_data?: Json | null
+          item_name?: string
+          item_type?: string
+          rarity?: Database["public"]["Enums"]["item_rarity"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mystery_box_items_box_id_fkey"
+            columns: ["box_id"]
+            isOneToOne: false
+            referencedRelation: "mystery_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mystery_box_rewards: {
+        Row: {
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          item_id: string | null
+          received_at: string | null
+          user_box_id: string | null
+          user_id: string
+        }
+        Insert: {
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          item_id?: string | null
+          received_at?: string | null
+          user_box_id?: string | null
+          user_id: string
+        }
+        Update: {
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          item_id?: string | null
+          received_at?: string | null
+          user_box_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mystery_box_rewards_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "mystery_box_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mystery_box_rewards_user_box_id_fkey"
+            columns: ["user_box_id"]
+            isOneToOne: false
+            referencedRelation: "user_mystery_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mystery_boxes: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       negotiation_sessions: {
         Row: {
           ai_advice: string | null
@@ -4476,6 +4592,41 @@ export type Database = {
         }
         Relationships: []
       }
+      user_mystery_boxes: {
+        Row: {
+          box_id: string | null
+          id: string
+          is_opened: boolean | null
+          opened_at: string | null
+          purchased_at: string | null
+          user_id: string
+        }
+        Insert: {
+          box_id?: string | null
+          id?: string
+          is_opened?: boolean | null
+          opened_at?: string | null
+          purchased_at?: string | null
+          user_id: string
+        }
+        Update: {
+          box_id?: string | null
+          id?: string
+          is_opened?: boolean | null
+          opened_at?: string | null
+          purchased_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_mystery_boxes_box_id_fkey"
+            columns: ["box_id"]
+            isOneToOne: false
+            referencedRelation: "mystery_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_pet_accessories: {
         Row: {
           accessory_id: string
@@ -4992,6 +5143,7 @@ export type Database = {
         | "cv"
         | "cover_letter"
         | "business_document"
+      item_rarity: "common" | "rare" | "epic" | "legendary"
       job_category:
         | "it_software"
         | "marketing_sales"
@@ -5222,6 +5374,7 @@ export const Constants = {
         "cover_letter",
         "business_document",
       ],
+      item_rarity: ["common", "rare", "epic", "legendary"],
       job_category: [
         "it_software",
         "marketing_sales",
