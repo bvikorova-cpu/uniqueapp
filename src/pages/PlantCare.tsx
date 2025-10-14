@@ -19,7 +19,7 @@ const PlantCare = () => {
             🌱 AI Garden & Plant Care
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Identify plants from photos, get personalized care schedules, diagnose plant diseases with AI
+            Identify plants from photos, get personalized care schedules, and diagnose plant diseases with AI
           </p>
         </div>
 

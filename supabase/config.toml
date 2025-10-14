@@ -101,3 +101,12 @@ verify_jwt = true
 
 [functions.mood-trends]
 verify_jwt = true
+
+[functions.identify-plant]
+verify_jwt = true
+
+[functions.diagnose-plant]
+verify_jwt = true
+
+[functions.generate-music]
+verify_jwt = true
