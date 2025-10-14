@@ -224,7 +224,7 @@ const Subscription = () => {
             </span>
           </h1>
           <p className="text-xl text-muted-foreground">
-            Get more from the Megatalent platform
+            Get more from the Unique platform
           </p>
           {currentTier !== 'free' && (
             <Badge className="mt-4" variant="default">
