@@ -25,11 +25,10 @@ serve(async (req) => {
     switch (type) {
       case 'daily_horoscope':
         systemPrompt = "You are a professional astrologer with deep knowledge of astrology. Provide insightful, personalized daily horoscopes.";
-        userPrompt = `Generate a detailed daily horoscope for ${data.zodiacSign} for ${data.date}. Include:
-- General forecast for the day
-- Love and relationships
-- Career and finances
-- Health and wellness
+        userPrompt = `Generate a detailed daily horoscope for ${data.zodiacSign} for ${data.date}. 
+
+Write a comprehensive daily forecast covering love, relationships, career, finances, health and wellness.
+Also provide:
 - Lucky numbers (5 numbers)
 - Lucky colors (3 colors)
 - Compatible signs for the day
