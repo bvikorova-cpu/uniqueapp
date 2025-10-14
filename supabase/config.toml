@@ -37,19 +37,19 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.create-featured-payment]
-verify_jwt = true
+verify_jwt = false
 
 [functions.create-certificate-payment]
-verify_jwt = true
+verify_jwt = false
 
 [functions.create-job-listing-payment]
-verify_jwt = true
+verify_jwt = false
 
 [functions.create-influencer-tip-payment]
-verify_jwt = true
+verify_jwt = false
 
 [functions.send-platform-gift]
-verify_jwt = true
+verify_jwt = false
 
 [functions.create-subscription-checkout]
 verify_jwt = false
@@ -63,17 +63,14 @@ verify_jwt = true
 [functions.create-credits-payment]
 verify_jwt = false
 
-[functions.create-featured-payment]
-verify_jwt = false
+[functions.career-interview]
+verify_jwt = true
 
-[functions.create-certificate-payment]
-verify_jwt = false
+[functions.career-cv-optimizer]
+verify_jwt = true
 
-[functions.create-job-listing-payment]
-verify_jwt = false
+[functions.career-linkedin]
+verify_jwt = true
 
-[functions.create-influencer-tip-payment]
-verify_jwt = false
-
-[functions.send-platform-gift]
-verify_jwt = false
+[functions.career-negotiation]
+verify_jwt = true

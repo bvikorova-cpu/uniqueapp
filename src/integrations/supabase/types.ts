@@ -738,6 +738,45 @@ export type Database = {
           },
         ]
       }
+      cv_documents: {
+        Row: {
+          ai_suggestions: Json | null
+          created_at: string
+          format: string | null
+          id: string
+          optimized_content: string | null
+          original_content: string
+          target_role: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_suggestions?: Json | null
+          created_at?: string
+          format?: string | null
+          id?: string
+          optimized_content?: string | null
+          original_content: string
+          target_role?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_suggestions?: Json | null
+          created_at?: string
+          format?: string | null
+          id?: string
+          optimized_content?: string | null
+          original_content?: string
+          target_role?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_rewards: {
         Row: {
           claimed_at: string | null
@@ -1575,6 +1614,51 @@ export type Database = {
           },
         ]
       }
+      interview_sessions: {
+        Row: {
+          ai_feedback: string | null
+          answers_given: Json | null
+          created_at: string
+          difficulty_level: string
+          duration_minutes: number | null
+          id: string
+          job_description: string | null
+          job_title: string
+          overall_score: number | null
+          questions_asked: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: string | null
+          answers_given?: Json | null
+          created_at?: string
+          difficulty_level?: string
+          duration_minutes?: number | null
+          id?: string
+          job_description?: string | null
+          job_title: string
+          overall_score?: number | null
+          questions_asked?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: string | null
+          answers_given?: Json | null
+          created_at?: string
+          difficulty_level?: string
+          duration_minutes?: number | null
+          id?: string
+          job_description?: string | null
+          job_title?: string
+          overall_score?: number | null
+          questions_asked?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       job_applications: {
         Row: {
           applicant_id: string
@@ -1726,6 +1810,39 @@ export type Database = {
           title?: string
           updated_at?: string | null
           views_count?: number | null
+        }
+        Relationships: []
+      }
+      linkedin_enhancements: {
+        Row: {
+          created_at: string
+          current_profile: string
+          enhanced_profile: string | null
+          id: string
+          suggestions: Json | null
+          target_industry: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_profile: string
+          enhanced_profile?: string | null
+          id?: string
+          suggestions?: Json | null
+          target_industry?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_profile?: string
+          enhanced_profile?: string | null
+          id?: string
+          suggestions?: Json | null
+          target_industry?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -2251,6 +2368,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      negotiation_sessions: {
+        Row: {
+          ai_advice: string | null
+          conversation_history: Json | null
+          created_at: string
+          current_salary: number | null
+          id: string
+          job_title: string
+          negotiation_strategy: string | null
+          target_salary: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_advice?: string | null
+          conversation_history?: Json | null
+          created_at?: string
+          current_salary?: number | null
+          id?: string
+          job_title: string
+          negotiation_strategy?: string | null
+          target_salary?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_advice?: string | null
+          conversation_history?: Json | null
+          created_at?: string
+          current_salary?: number | null
+          id?: string
+          job_title?: string
+          negotiation_strategy?: string | null
+          target_salary?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
