@@ -162,11 +162,11 @@ const AIMusic = () => {
           <div className="flex items-center justify-center gap-3 mb-4">
             <Music className="h-12 w-12 text-primary animate-pulse" />
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              AI Music & Playlist Curator
+              Music & Playlist Curator
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Vaša osobná AI hudobná asistenka pre dokonalú hudobnú skúsenosť
+            Vaša osobná hudobná asistenka pre dokonalú hudobnú skúsenosť
           </p>
           <div className="mt-4 inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
             <Sparkles className="h-4 w-4 text-primary" />
@@ -275,7 +275,7 @@ const AIMusic = () => {
               
               <div className="space-y-4">
                 <p className="text-muted-foreground">
-                  AI vytvorí personalizovanú hudobnú terapiu pre váš aktuálny emocionálny stav
+                  Vytvorte personalizovanú hudobnú terapiu pre váš aktuálny emocionálny stav
                 </p>
 
                 <Button 
@@ -315,7 +315,7 @@ const AIMusic = () => {
               
               <div className="space-y-4">
                 <p className="text-muted-foreground">
-                  AI nájde nových umelcov podobných vašim preferenciám
+                  Objavte nových umelcov podobných vašim preferenciám
                 </p>
 
                 <Button 
@@ -355,7 +355,7 @@ const AIMusic = () => {
             <Card className="p-6 max-w-2xl mx-auto">
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <Mic className="h-6 w-6 text-primary" />
-                Karaoke Mode s AI Vocal Coach
+                Karaoke Mode s Vocal Coach
               </h2>
               
               <div className="space-y-4">
@@ -380,7 +380,7 @@ const AIMusic = () => {
 
                 {vocalCoachTips && (
                   <div className="mt-6 p-4 bg-primary/5 rounded-lg space-y-4">
-                    <h3 className="font-bold text-lg">AI Vocal Coach Tips</h3>
+                    <h3 className="font-bold text-lg">Vocal Coach Tips</h3>
                     
                     <div className="space-y-3">
                       <div className="p-3 bg-background rounded">
@@ -421,14 +421,14 @@ const AIMusic = () => {
               <Star className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
               <h4 className="font-bold">Premium Playlists</h4>
               <p className="text-sm text-muted-foreground mt-1">
-                Exkluzívne AI generované playlists s rozšírenými funkciami
+                Exkluzívne generované playlists s rozšírenými funkciami
               </p>
             </div>
             <div className="p-4 bg-background rounded-lg text-center">
               <Music className="h-8 w-8 text-primary mx-auto mb-2" />
-              <h4 className="font-bold">AI Music Generation</h4>
+              <h4 className="font-bold">Music Generation</h4>
               <p className="text-sm text-muted-foreground mt-1">
-                Vytvorte si vlastnú originálnu hudbu pomocou AI
+                Vytvorte si vlastnú originálnu hudbu
               </p>
             </div>
             <div className="p-4 bg-background rounded-lg text-center">
