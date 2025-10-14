@@ -182,6 +182,66 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_generated_songs: {
+        Row: {
+          cover_art_url: string | null
+          created_at: string | null
+          credits_used: number | null
+          duration: number | null
+          genre: string
+          id: string
+          is_remix: boolean | null
+          lyrics: string | null
+          metadata: Json | null
+          mood: string | null
+          original_song_reference: string | null
+          song_url: string | null
+          status: string | null
+          tempo: number | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cover_art_url?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          duration?: number | null
+          genre: string
+          id?: string
+          is_remix?: boolean | null
+          lyrics?: string | null
+          metadata?: Json | null
+          mood?: string | null
+          original_song_reference?: string | null
+          song_url?: string | null
+          status?: string | null
+          tempo?: number | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cover_art_url?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          duration?: number | null
+          genre?: string
+          id?: string
+          is_remix?: boolean | null
+          lyrics?: string | null
+          metadata?: Json | null
+          mood?: string | null
+          original_song_reference?: string | null
+          song_url?: string | null
+          status?: string | null
+          tempo?: number | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_routine_optimizations: {
         Row: {
           analysis_date: string
