@@ -172,7 +172,7 @@ const Navbar = () => {
     { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
     { path: "/content-studio", label: "Content Studio", icon: Sparkles },
     { path: "/companions", label: "Character Companions", icon: MessageCircle },
-    { path: "/ai-experiences", label: "AI Experiences", icon: Sparkles },
+    { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },
     { path: "/career-hub", label: "Career Hub", icon: Briefcase },
     { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
     { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },
