@@ -3,64 +3,66 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import Home from "./pages/Home";
+import Index from "./pages/Index";
+import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
+import Profile from "./pages/Profile";
+import EditProfile from "./pages/EditProfile";
 import Feed from "./pages/Feed";
-import TikTok from "./pages/TikTok";
 import Messenger from "./pages/Messenger";
 import Megatalent from "./pages/Megatalent";
-import Megaforum from "./pages/Megaforum";
-import Psychology from "./pages/Psychology";
+import Subscription from "./pages/Subscription";
+import Stories from "./pages/Stories";
 import Vacationer from "./pages/Vacationer";
 import Dating from "./pages/Dating";
 import FirstAid from "./pages/FirstAid";
 import FitSlim from "./pages/FitSlim";
-import Marketplace from "./pages/Marketplace";
-import Bazaar from "./pages/Bazaar";
-import Referral from "./pages/Referral";
-import Games from "./pages/Games";
-import Jobs from "./pages/Jobs";
-import InfluKing from "./pages/InfluKing";
-import Admin from "./pages/Admin";
+import Cooking from "./pages/Cooking";
 import Contact from "./pages/Contact";
-import Auth from "./pages/Auth";
-import ResetPassword from "./pages/ResetPassword";
+import Marketplace from "./pages/Marketplace";
 import Terms from "./pages/Terms";
 import Education from "./pages/Education";
-import CourseDetail from "./pages/CourseDetail";
-import Quiz from "./pages/Quiz";
+import TikTok from "./pages/TikTok";
+import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
+import AdminTransactions from "./pages/AdminTransactions";
+import Bazaar from "./pages/Bazaar";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
 import BestFriend from "./pages/BestFriend";
-import Cooking from "./pages/Cooking";
-import Profile from "./pages/Profile";
-import EditProfile from "./pages/EditProfile";
+import Referral from "./pages/Referral";
+import InfluKing from "./pages/InfluKing";
+import Megaforum from "./pages/Megaforum";
+import OnlinePsychologist from "./pages/OnlinePsychologist";
+import LiveStream from "./pages/LiveStream";
+import Games from "./pages/Games";
+import Rewards from "./pages/Rewards";
+import Jobs from "./pages/Jobs";
 import AIMentor from "./pages/AIMentor";
 import AIMentorChat from "./pages/AIMentorChat";
 import ContentStudio from "./pages/ContentStudio";
 import AICompanions from "./pages/AICompanions";
 import CompanionChat from "./pages/CompanionChat";
+import CourseDetail from "./pages/CourseDetail";
+import GenerateCourses from "./pages/GenerateCourses";
+import Earnings from "./pages/Earnings";
 import CareerHub from "./pages/CareerHub";
 import DreamJournal from "./pages/DreamJournal";
 import FashionStylist from "./pages/FashionStylist";
 import VirtualPet from "./pages/VirtualPet";
 import Astrology from "./pages/Astrology";
+import PremiumStore from "./pages/PremiumStore";
+import AICreditsStore from "./pages/AICreditsStore";
 import AIMusic from "./pages/AIMusic";
 import MysteryBox from "./pages/MysteryBox";
 import RoutineOptimizer from "./pages/RoutineOptimizer";
-
-import Subscription from "./pages/Subscription";
-import AICreditsStore from "./pages/AICreditsStore";
-import NotFound from "./pages/NotFound";
-import AdminTransactions from "./pages/AdminTransactions";
-import Earnings from "./pages/Earnings";
-import LiveStream from "./pages/LiveStream";
-import Stories from "./pages/Stories";
-import Rewards from "./pages/Rewards";
-import GenerateCourses from "./pages/GenerateCourses";
-import PremiumStore from "./pages/PremiumStore";
+import Psychology from "./pages/Psychology";
+import Quiz from "./pages/Quiz";
+import Home from "./pages/Home";
 import AIExperiences from "./pages/AIExperiences";
+import BrandBuilder from "./pages/BrandBuilder";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
@@ -130,7 +132,8 @@ const App = () => (
           <Route path="/ai-music" element={<AIMusic />} />
           <Route path="/mystery-box" element={<MysteryBox />} />
               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
-              <Route path="/ai-experiences" element={<AIExperiences />} />
+            <Route path="/ai-experiences" element={<AIExperiences />} />
+            <Route path="/brand-builder" element={<BrandBuilder />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

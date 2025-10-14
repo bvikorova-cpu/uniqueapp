@@ -173,6 +173,7 @@ const Navbar = () => {
     { path: "/content-studio", label: "Content Studio", icon: Sparkles },
     { path: "/companions", label: "Character Companions", icon: MessageCircle },
     { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },
+    { path: "/brand-builder", label: "Brand Builder", icon: Sparkles },
     { path: "/career-hub", label: "Career Hub", icon: Briefcase },
     { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
     { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },

@@ -600,6 +600,63 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_kits: {
+        Row: {
+          brand_values: string | null
+          business_name: string
+          business_type: string
+          color_palette: Json | null
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          is_premium: boolean | null
+          logo_url: string | null
+          slogan: string | null
+          social_media_strategy: Json | null
+          tagline: string | null
+          target_audience: string | null
+          updated_at: string | null
+          user_id: string
+          visual_identity: Json | null
+        }
+        Insert: {
+          brand_values?: string | null
+          business_name: string
+          business_type: string
+          color_palette?: Json | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          is_premium?: boolean | null
+          logo_url?: string | null
+          slogan?: string | null
+          social_media_strategy?: Json | null
+          tagline?: string | null
+          target_audience?: string | null
+          updated_at?: string | null
+          user_id: string
+          visual_identity?: Json | null
+        }
+        Update: {
+          brand_values?: string | null
+          business_name?: string
+          business_type?: string
+          color_palette?: Json | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          is_premium?: boolean | null
+          logo_url?: string | null
+          slogan?: string | null
+          social_media_strategy?: Json | null
+          tagline?: string | null
+          target_audience?: string | null
+          updated_at?: string | null
+          user_id?: string
+          visual_identity?: Json | null
+        }
+        Relationships: []
+      }
       certificate_purchases: {
         Row: {
           amount: number
