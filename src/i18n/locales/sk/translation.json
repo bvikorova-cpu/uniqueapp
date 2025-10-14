@@ -104,6 +104,10 @@
     "brand_builder": {
       "title": "Brand Builder",
       "description": "Vytvor profesionálnu identitu značky"
+    },
+    "home_designer": {
+      "title": "Home Designer",
+      "description": "Redizajn miestnosti s pomocou AI"
     }
   },
   "navbar": {

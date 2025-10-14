@@ -61,6 +61,7 @@ import Quiz from "./pages/Quiz";
 import Home from "./pages/Home";
 import AIExperiences from "./pages/AIExperiences";
 import BrandBuilder from "./pages/BrandBuilder";
+import HomeDesigner from "./pages/HomeDesigner";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -133,7 +134,8 @@ const App = () => (
           <Route path="/mystery-box" element={<MysteryBox />} />
               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
-            <Route path="/brand-builder" element={<BrandBuilder />} />
+          <Route path="/brand-builder" element={<BrandBuilder />} />
+          <Route path="/home-designer" element={<HomeDesigner />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

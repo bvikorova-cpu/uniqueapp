@@ -1874,6 +1874,48 @@ export type Database = {
         }
         Relationships: []
       }
+      home_designs: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          design_prompt: string | null
+          id: string
+          original_image_url: string
+          product_suggestions: Json | null
+          redesigned_image_url: string | null
+          room_type: string
+          style_preference: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          design_prompt?: string | null
+          id?: string
+          original_image_url: string
+          product_suggestions?: Json | null
+          redesigned_image_url?: string | null
+          room_type: string
+          style_preference: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          design_prompt?: string | null
+          id?: string
+          original_image_url?: string
+          product_suggestions?: Json | null
+          redesigned_image_url?: string | null
+          room_type?: string
+          style_preference?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       influencer_followers: {
         Row: {
           created_at: string | null

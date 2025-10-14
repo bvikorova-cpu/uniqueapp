@@ -411,6 +411,10 @@
     "brand_builder": {
       "title": "Brand Builder",
       "description": "Create professional brand identity"
+    },
+    "home_designer": {
+      "title": "Home Designer",
+      "description": "AI-powered room redesign"
     }
   },
   "navbar": {
