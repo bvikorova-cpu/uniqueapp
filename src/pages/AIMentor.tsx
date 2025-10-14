@@ -139,7 +139,7 @@ const AIMentor = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Your AI{" "}
+            Your{" "}
             <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
               Personal Mentor
             </span>
@@ -239,7 +239,7 @@ const AIMentor = () => {
                 </div>
                 <h3 className="font-semibold mb-2">Get Guidance</h3>
                 <p className="text-sm text-muted-foreground">
-                  Receive personalized AI coaching
+                  Receive personalized coaching
                 </p>
               </div>
             </CardContent>
