@@ -174,7 +174,7 @@ const Navbar = () => {
     { path: "/companions", label: "Character Companions", icon: MessageCircle },
     { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },
     { path: "/career-hub", label: "Career Hub", icon: Briefcase },
-    { path: "/brand-builder", label: "Brand Builder", icon: Sparkles },
+    { path: "/brand-builder", label: t('services.brand_builder.title'), icon: Sparkles },
     { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
     { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },
     { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
