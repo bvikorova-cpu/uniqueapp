@@ -20,7 +20,7 @@ const CareerHub = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
+      <main className="flex-1 container mx-auto px-4 pt-24 pb-8 max-w-7xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
@@ -28,7 +28,7 @@ const CareerHub = () => {
             </span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            AI-powered tools to accelerate your career growth
+            Powered tools to accelerate your career growth
           </p>
         </div>
 

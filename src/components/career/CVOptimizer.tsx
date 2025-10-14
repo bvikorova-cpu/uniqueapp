@@ -90,8 +90,8 @@ const CVOptimizer = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>AI CV Builder & Optimizer</CardTitle>
-        <CardDescription>Get AI-powered suggestions to improve your CV</CardDescription>
+        <CardTitle>CV Builder & Optimizer</CardTitle>
+        <CardDescription>Get powered suggestions to improve your CV</CardDescription>
         <p className="text-sm text-muted-foreground">Credits: {credits?.credits_remaining || 0}</p>
       </CardHeader>
       <CardContent className="space-y-4">

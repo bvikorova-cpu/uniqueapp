@@ -136,7 +136,7 @@ const InterviewSimulator = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>AI Interview Simulator</CardTitle>
+        <CardTitle>Interview Simulator</CardTitle>
         <CardDescription>Practice with realistic interview questions and get instant feedback</CardDescription>
         <p className="text-sm text-muted-foreground">Credits: {credits?.credits_remaining || 0}</p>
       </CardHeader>
