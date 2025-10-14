@@ -64,6 +64,7 @@ import BrandBuilder from "./pages/BrandBuilder";
 import HomeDesigner from "./pages/HomeDesigner";
 import BeautyStudio from "./pages/BeautyStudio";
 import AIMusicProducer from "./pages/AIMusicProducer";
+import PlantCare from "./pages/PlantCare";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -140,6 +141,7 @@ const App = () => (
           <Route path="/home-designer" element={<HomeDesigner />} />
           <Route path="/beauty-studio" element={<BeautyStudio />} />
           <Route path="/ai-music-producer" element={<AIMusicProducer />} />
+          <Route path="/plant-care" element={<PlantCare />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

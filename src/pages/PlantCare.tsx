@@ -1,0 +1,69 @@
+import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Leaf, Camera, Calendar, Stethoscope } from "lucide-react";
+import { PlantIdentifier } from "@/components/plant-care/PlantIdentifier";
+import { CareCalendar } from "@/components/plant-care/CareCalendar";
+import { PlantDiagnosis } from "@/components/plant-care/PlantDiagnosis";
+import { MyPlants } from "@/components/plant-care/MyPlants";
+
+const PlantCare = () => {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <Navbar />
+      
+      <div className="container mx-auto px-4 pt-24 pb-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-500 via-emerald-500 to-green-500 bg-clip-text text-transparent mb-4">
+            🌱 AI Garden & Plant Care
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Identify plants from photos, get personalized care schedules, diagnose plant diseases with AI
+          </p>
+        </div>
+
+        <Tabs defaultValue="identify" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsTrigger value="identify" className="flex items-center gap-2">
+              <Camera className="h-4 w-4" />
+              <span className="hidden sm:inline">Identify</span>
+            </TabsTrigger>
+            <TabsTrigger value="calendar" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              <span className="hidden sm:inline">Calendar</span>
+            </TabsTrigger>
+            <TabsTrigger value="diagnose" className="flex items-center gap-2">
+              <Stethoscope className="h-4 w-4" />
+              <span className="hidden sm:inline">Diagnose</span>
+            </TabsTrigger>
+            <TabsTrigger value="my-plants" className="flex items-center gap-2">
+              <Leaf className="h-4 w-4" />
+              <span className="hidden sm:inline">My Plants</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="identify">
+            <PlantIdentifier />
+          </TabsContent>
+
+          <TabsContent value="calendar">
+            <CareCalendar />
+          </TabsContent>
+
+          <TabsContent value="diagnose">
+            <PlantDiagnosis />
+          </TabsContent>
+
+          <TabsContent value="my-plants">
+            <MyPlants />
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default PlantCare;

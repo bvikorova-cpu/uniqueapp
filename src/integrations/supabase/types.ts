@@ -3747,6 +3747,196 @@ export type Database = {
           },
         ]
       }
+      plant_care_schedules: {
+        Row: {
+          care_type: string
+          created_at: string | null
+          frequency_days: number
+          id: string
+          last_done_date: string | null
+          next_due_date: string
+          notes: string | null
+          plant_id: string | null
+          reminder_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          care_type: string
+          created_at?: string | null
+          frequency_days: number
+          id?: string
+          last_done_date?: string | null
+          next_due_date: string
+          notes?: string | null
+          plant_id?: string | null
+          reminder_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          care_type?: string
+          created_at?: string | null
+          frequency_days?: number
+          id?: string
+          last_done_date?: string | null
+          next_due_date?: string
+          notes?: string | null
+          plant_id?: string | null
+          reminder_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plant_care_schedules_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plant_diagnoses: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          diagnosis: string | null
+          id: string
+          image_url: string
+          plant_id: string | null
+          possible_diseases: Json | null
+          severity_level: string | null
+          symptoms_description: string | null
+          treatment_recommendations: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          diagnosis?: string | null
+          id?: string
+          image_url: string
+          plant_id?: string | null
+          possible_diseases?: Json | null
+          severity_level?: string | null
+          symptoms_description?: string | null
+          treatment_recommendations?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          diagnosis?: string | null
+          id?: string
+          image_url?: string
+          plant_id?: string | null
+          possible_diseases?: Json | null
+          severity_level?: string | null
+          symptoms_description?: string | null
+          treatment_recommendations?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plant_diagnoses_plant_id_fkey"
+            columns: ["plant_id"]
+            isOneToOne: false
+            referencedRelation: "plants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plant_identifications: {
+        Row: {
+          additional_info: string | null
+          care_tips: Json | null
+          confidence_score: number | null
+          created_at: string | null
+          credits_used: number | null
+          id: string
+          identified_name: string | null
+          image_url: string
+          scientific_name: string | null
+          user_id: string
+        }
+        Insert: {
+          additional_info?: string | null
+          care_tips?: Json | null
+          confidence_score?: number | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          identified_name?: string | null
+          image_url: string
+          scientific_name?: string | null
+          user_id: string
+        }
+        Update: {
+          additional_info?: string | null
+          care_tips?: Json | null
+          confidence_score?: number | null
+          created_at?: string | null
+          credits_used?: number | null
+          id?: string
+          identified_name?: string | null
+          image_url?: string
+          scientific_name?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      plants: {
+        Row: {
+          added_date: string | null
+          care_instructions: Json | null
+          common_name: string | null
+          created_at: string | null
+          id: string
+          identified_from_photo: boolean | null
+          image_url: string | null
+          location: string | null
+          name: string
+          notes: string | null
+          plant_type: string | null
+          scientific_name: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          added_date?: string | null
+          care_instructions?: Json | null
+          common_name?: string | null
+          created_at?: string | null
+          id?: string
+          identified_from_photo?: boolean | null
+          image_url?: string | null
+          location?: string | null
+          name: string
+          notes?: string | null
+          plant_type?: string | null
+          scientific_name?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          added_date?: string | null
+          care_instructions?: Json | null
+          common_name?: string | null
+          created_at?: string | null
+          id?: string
+          identified_from_photo?: boolean | null
+          image_url?: string | null
+          location?: string | null
+          name?: string
+          notes?: string | null
+          plant_type?: string | null
+          scientific_name?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       platform_gifts: {
         Row: {
           category: string
