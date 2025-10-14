@@ -57,7 +57,7 @@ const Subscription = () => {
       if (tier === 'free') {
         toast({
           title: "Free tier",
-          description: "Už používate free tier",
+          description: "You are already using the free tier",
         });
         return;
       }
@@ -75,8 +75,8 @@ const Subscription = () => {
     } catch (error) {
       console.error('Subscription error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa vytvoriť platbu",
+        title: "Error",
+        description: "Failed to create payment",
         variant: "destructive",
       });
     }
@@ -94,16 +94,16 @@ const Subscription = () => {
       if (error) throw error;
 
       toast({
-        title: "Predplatné zrušené",
-        description: data.message || "Predplatné bude zrušené na konci aktuálneho obdobia",
+        title: "Subscription cancelled",
+        description: data.message || "Subscription will be cancelled at the end of the current period",
       });
 
       await checkAuth();
     } catch (error) {
       console.error('Cancellation error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa zrušiť predplatné",
+        title: "Error",
+        description: "Failed to cancel subscription",
         variant: "destructive",
       });
     } finally {
@@ -119,8 +119,8 @@ const Subscription = () => {
 
       if (success === 'true' && tier) {
         toast({
-          title: "Platba prebieha",
-          description: "Overujem stav predplatného...",
+          title: "Payment processing",
+          description: "Verifying subscription status...",
         });
 
         // Check subscription status
@@ -129,8 +129,8 @@ const Subscription = () => {
         if (!error && data?.tier) {
           setCurrentTier(data.tier);
           toast({
-            title: "Úspech!",
-            description: `Predplatné ${tier.toUpperCase()} bolo aktivované`,
+            title: "Success!",
+            description: `${tier.toUpperCase()} subscription has been activated`,
           });
         }
 
@@ -145,7 +145,7 @@ const Subscription = () => {
   }, [user]);
 
   if (loading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center">Načítavam...</div>;
+    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>;
   }
 
   const plans = [
@@ -155,11 +155,11 @@ const Subscription = () => {
       price: 0,
       icon: Sparkles,
       features: [
-        '1 inzerát v Bazári/mesiac',
-        '1 aukcia/mesiac',
-        'Základné funkcie',
-        '5% provízia z predaja',
-        'Obmedzené AI funkcie'
+        '1 Bazaar listing/month',
+        '1 auction/month',
+        'Basic features',
+        '5% sales commission',
+        'Limited AI features'
       ],
       limitations: true,
     },
@@ -170,12 +170,12 @@ const Subscription = () => {
       icon: Check,
       popular: false,
       features: [
-        '5 inzerátov v Bazári/mesiac',
-        '5 aukcií/mesiac',
-        'Všetky základné funkcie',
-        '3% provízia z predaja',
-        '20 AI generácií/mesiac',
-        'Podpora emailom'
+        '5 Bazaar listings/month',
+        '5 auctions/month',
+        'All basic features',
+        '3% sales commission',
+        '20 AI generations/month',
+        'Email support'
       ],
     },
     {
@@ -185,13 +185,13 @@ const Subscription = () => {
       icon: Crown,
       popular: true,
       features: [
-        'Neobmedzené inzeráty',
-        'Neobmedzené aukcie',
-        '0% provízia z predaja',
-        '50 AI generácií/mesiac',
-        'Featured listings (3/mesiac)',
-        'Prioritná podpora',
-        'Analytics a štatistiky'
+        'Unlimited listings',
+        'Unlimited auctions',
+        '0% sales commission',
+        '50 AI generations/month',
+        'Featured listings (3/month)',
+        'Priority support',
+        'Analytics & statistics'
       ],
     },
     {
@@ -201,14 +201,14 @@ const Subscription = () => {
       icon: Zap,
       popular: false,
       features: [
-        'Všetko z Premium',
-        '0% provízie navždy',
-        'Neobmedzené AI funkcie',
-        'Neobmedzené featured listings',
-        'Vlastný branding',
-        'API prístup',
-        'Dedikovaná podpora',
-        'Vlastný account manager'
+        'Everything from Premium',
+        '0% commission forever',
+        'Unlimited AI features',
+        'Unlimited featured listings',
+        'Custom branding',
+        'API access',
+        'Dedicated support',
+        'Personal account manager'
       ],
     },
   ];
@@ -218,17 +218,17 @@ const Subscription = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Vyberte si{" "}
+            Choose Your{" "}
             <span className="bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
-              Predplatné
+              Subscription
             </span>
           </h1>
           <p className="text-xl text-muted-foreground">
-            Získajte viac z Megatalent platformy
+            Get more from the Megatalent platform
           </p>
           {currentTier !== 'free' && (
             <Badge className="mt-4" variant="default">
-              Aktuálne: {currentTier.toUpperCase()}
+              Current: {currentTier.toUpperCase()}
             </Badge>
           )}
         </div>
@@ -246,7 +246,7 @@ const Subscription = () => {
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <Badge className="bg-primary text-primary-foreground">
-                      Najpopulárnejšie
+                      Most Popular
                     </Badge>
                   </div>
                 )}
@@ -254,7 +254,7 @@ const Subscription = () => {
                 {isCurrent && (
                   <div className="absolute -top-4 right-4">
                     <Badge className="bg-green-500 text-white">
-                      Aktuálne
+                      Current
                     </Badge>
                   </div>
                 )}
@@ -268,7 +268,7 @@ const Subscription = () => {
                   <CardTitle className="text-2xl">{plan.name}</CardTitle>
                   <div className="mt-4">
                     <span className="text-4xl font-bold">{plan.price}€</span>
-                    {plan.price > 0 && <span className="text-muted-foreground">/mesiac</span>}
+                    {plan.price > 0 && <span className="text-muted-foreground">/month</span>}
                   </div>
                 </CardHeader>
 
@@ -288,7 +288,7 @@ const Subscription = () => {
                     disabled={isCurrent}
                     onClick={() => handleSubscribe(plan.tier, plan.price)}
                   >
-                    {isCurrent ? 'Aktuálny plán' : plan.tier === 'free' ? 'Zostať Free' : 'Vybrať plán'}
+                    {isCurrent ? 'Current Plan' : plan.tier === 'free' ? 'Stay Free' : 'Select Plan'}
                   </Button>
                 </CardContent>
               </Card>
@@ -304,15 +304,15 @@ const Subscription = () => {
               disabled={canceling}
               className="text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
             >
-              {canceling ? 'Ruším...' : 'Zrušiť predplatné'}
+              {canceling ? 'Cancelling...' : 'Cancel Subscription'}
             </Button>
           </div>
         )}
 
         <div className="mt-12 text-center text-sm text-muted-foreground">
-          <p>Všetky ceny sú uvedené v EUR. Predplatné je mesačné a môže byť kedykoľvek zrušené.</p>
-          <p className="mt-2">Provízie sa účtujú len pri úspešnom predaji v Aukciách a Bazári.</p>
-          <p className="mt-2">Pri zrušení predplatného zostáva aktívne do konca zaplateného obdobia. Vyplatená suma sa nevracia.</p>
+          <p>All prices are in EUR. Subscription is monthly and can be cancelled anytime.</p>
+          <p className="mt-2">Commissions are charged only on successful sales in Auctions and Bazaar.</p>
+          <p className="mt-2">When cancelling subscription, it remains active until the end of the paid period. Paid amount is non-refundable.</p>
         </div>
       </div>
     </div>
