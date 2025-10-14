@@ -222,15 +222,6 @@ const AICreditsStore = () => {
 
         <div className="mt-8 text-center text-sm text-muted-foreground">
           <p>All prices are in EUR. Credits can be used for any AI features on the platform.</p>
-          <p className="mt-2">
-            Premium and Business subscriptions already include free credits.{" "}
-            <button 
-              onClick={() => navigate('/subscription')}
-              className="text-primary hover:underline"
-            >
-              View subscriptions
-            </button>
-          </p>
         </div>
       </div>
     </div>
