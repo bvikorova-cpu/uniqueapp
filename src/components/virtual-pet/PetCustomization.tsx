@@ -1,14 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Palette } from "lucide-react";
+import { toast } from "sonner";
 
 interface PetCustomizationProps {
   selectedPetId: string | null;
 }
 
 export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
+  const queryClient = useQueryClient();
+
   const { data: ownedAccessories } = useQuery({
     queryKey: ['owned-accessories'],
     queryFn: async () => {
@@ -34,6 +37,40 @@ export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
       return data;
     },
     enabled: !!selectedPetId
+  });
+
+  const equipMutation = useMutation({
+    mutationFn: async (accessoryId: string) => {
+      if (!selectedPetId) return;
+
+      const currentCustomization = (selectedPet?.customization as any) || {};
+      const currentEquipped = currentCustomization.equipped_accessories || [];
+      const newEquipped = currentEquipped.includes(accessoryId)
+        ? currentEquipped.filter((id: string) => id !== accessoryId)
+        : [...currentEquipped, accessoryId];
+
+      const { data, error } = await supabase
+        .from('pets')
+        .update({ 
+          customization: { 
+            ...currentCustomization, 
+            equipped_accessories: newEquipped 
+          } 
+        })
+        .eq('id', selectedPetId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['selected-pet', selectedPetId] });
+      toast.success('Accessory equipped!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to equip accessory');
+    }
   });
 
   if (!selectedPetId) {
@@ -63,8 +100,14 @@ export const PetCustomization = ({ selectedPetId }: PetCustomizationProps) => {
               <Card key={item.id} className="p-3 space-y-2">
                 <div className="text-sm font-medium">{item.pet_accessories?.name}</div>
                 <div className="text-xs text-muted-foreground capitalize">{item.pet_accessories?.accessory_type}</div>
-                <Button size="sm" variant="outline" className="w-full">
-                  Equip
+                <Button 
+                  size="sm" 
+                  variant={((selectedPet?.customization as any)?.equipped_accessories || []).includes(item.accessory_id) ? "default" : "outline"}
+                  className="w-full"
+                  onClick={() => equipMutation.mutate(item.accessory_id)}
+                  disabled={equipMutation.isPending}
+                >
+                  {((selectedPet?.customization as any)?.equipped_accessories || []).includes(item.accessory_id) ? 'Unequip' : 'Equip'}
                 </Button>
               </Card>
             ))}

@@ -1,13 +1,19 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dna, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
-export const PetBreeding = () => {
-  const [parent1Id, setParent1Id] = useState("");
+interface PetBreedingProps {
+  selectedPetId: string | null;
+}
+
+export const PetBreeding = ({ selectedPetId }: PetBreedingProps) => {
+  const queryClient = useQueryClient();
+  const [parent1Id, setParent1Id] = useState(selectedPetId || "");
   const [parent2Id, setParent2Id] = useState("");
 
   const { data: pets } = useQuery({
@@ -37,6 +43,36 @@ export const PetBreeding = () => {
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data;
+    }
+  });
+
+  const breedMutation = useMutation({
+    mutationFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('pet_breeding')
+        .insert([{
+          user_id: user.id,
+          parent1_id: parent1Id,
+          parent2_id: parent2Id,
+          status: 'in_progress'
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['breeding-pairs'] });
+      toast.success('Breeding started! Check back in 24 hours.');
+      setParent1Id("");
+      setParent2Id("");
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to start breeding');
     }
   });
 
@@ -88,8 +124,16 @@ export const PetBreeding = () => {
           </div>
         </div>
 
-        <Button className="w-full gap-2" disabled={!parent1Id || !parent2Id}>
-          <Dna className="h-4 w-4" />
+        <Button 
+          className="w-full gap-2" 
+          disabled={!parent1Id || !parent2Id || breedMutation.isPending}
+          onClick={() => breedMutation.mutate()}
+        >
+          {breedMutation.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Dna className="h-4 w-4" />
+          )}
           Start Breeding
         </Button>
 

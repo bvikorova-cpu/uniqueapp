@@ -69,7 +69,7 @@ const VirtualPet = () => {
             </TabsContent>
 
             <TabsContent value="breeding" className="space-y-4">
-              <PetBreeding />
+              <PetBreeding selectedPetId={selectedPetId} />
             </TabsContent>
 
             <TabsContent value="trading" className="space-y-4">
