@@ -43,7 +43,7 @@
     },
     "psychologist": {
       "title": "Online psychológ",
-      "description": "Asistent pre duševné zdravie 24/7"
+      "description": "AI asistent pre duševné zdravie 24/7"
     },
     "education": {
       "title": "Vzdelávanie",
@@ -94,12 +94,12 @@
       "description": "Ponúkaj a vydražuj produkty z celého sveta"
     },
     "ai_generation": {
-      "title": "Generovanie",
+      "title": "AI Generovanie",
       "description": "Vytváraj obrázky pomocou umelej inteligencie"
     },
     "best_friend": {
       "title": "Best Friend",
-      "description": "Tvoj priateľ, ktorý ťa nikdy neopustí"
+      "description": "Tvoj AI priateľ, ktorý ťa nikdy neopustí"
     }
   },
   "navbar": {
@@ -115,7 +115,7 @@
     "view_profile": "Zobraziť profil",
     "edit_profile": "Upraviť profil",
     "subscription": "Predplatné",
-    "ai_credits": "Kredity",
+    "ai_credits": "AI Kredity",
     "earnings": "Moje zárobky",
     "contact": "Kontakt",
     "admin_panel": "Admin Panel",
@@ -132,7 +132,7 @@
     "cooking": "Varenie",
     "marketplace_skills": "Marketplace zručností",
     "bazaar": "Bazár",
-    "ai_generation": "Generovanie",
+    "ai_generation": "AI Generovanie",
     "auction": "Online aukcie",
     "best_friend": "Best Friend",
     "invite_friend": "Pozvi priateľa",
