@@ -168,7 +168,7 @@ const Navbar = () => {
     { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
     { path: "/influ-king", label: t('navbar.influ_king'), icon: Star },
     { path: "/megaforum", label: t('navbar.megaforum'), icon: Users },
-    { path: "/psychologist", label: "Online Tutoring", icon: Brain },
+    { path: "/psychologist", label: t('navbar.psychologist'), icon: Brain },
     { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
     { path: "/dating", label: t('navbar.dating'), icon: Heart },
     { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
@@ -180,8 +180,8 @@ const Navbar = () => {
     { path: "/ai-generation", label: t('navbar.ai_generation'), icon: Sparkles },
     { path: "/auction", label: t('navbar.auction'), icon: Gavel },
     { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
-    { path: "/quiz", label: "Learning", icon: GraduationCap },
     { path: "/referral", label: t('navbar.invite_friend'), icon: User },
+    { path: "/education", label: t('navbar.education'), icon: GraduationCap },
     { path: "/terms", label: t('navbar.terms'), icon: FileText },
   ];
 
