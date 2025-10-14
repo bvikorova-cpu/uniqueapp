@@ -214,7 +214,7 @@ const RoutineOptimizer = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            AI analyzuje tvoj deň a optimalizuje rutinu pre maximálnu produktivitu a wellbeing
+            Analyzuje tvoj deň a optimalizuje rutinu pre maximálnu produktivitu a wellbeing
           </p>
         </div>
 
@@ -339,16 +339,16 @@ const RoutineOptimizer = () => {
           </CardContent>
         </Card>
 
-        {/* AI Optimization */}
+        {/* Optimization */}
         <Card className="mb-8">
           <CardHeader>
             <div className="flex items-center gap-2">
               <Brain className="h-5 w-5 text-primary" />
-              <CardTitle>AI Optimalizácia</CardTitle>
+              <CardTitle>Optimalizácia</CardTitle>
             </div>
             <CardDescription>
               {entries.length >= 3 
-                ? `Máte ${entries.length} dní záznamu. Spustite AI analýzu!`
+                ? `Máte ${entries.length} dní záznamu. Spustite analýzu!`
                 : `Potrebujete aspoň 3 dni záznamu pre optimalizáciu (momentálne: ${entries.length})`
               }
             </CardDescription>
@@ -382,7 +382,7 @@ const RoutineOptimizer = () => {
             {optimizing && (
               <div className="flex items-center justify-center gap-2 text-primary">
                 <Loader2 className="h-5 w-5 animate-spin" />
-                <span>AI analyzuje vašu rutinu...</span>
+                <span>Analyzuje vašu rutinu...</span>
               </div>
             )}
           </CardContent>
