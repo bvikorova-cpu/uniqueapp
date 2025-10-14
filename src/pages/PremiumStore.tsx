@@ -90,10 +90,19 @@ const PremiumStore = () => {
 
   const getRarityBadge = (rarity: string) => {
     switch (rarity) {
-      case 'legendary': return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
-      case 'epic': return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
-      case 'rare': return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      default: return 'bg-gray-500/10 text-gray-500 border-gray-500/20';
+      case 'legendary': return 'bg-yellow-500 text-white';
+      case 'rare': return 'bg-purple-500 text-white';
+      case 'common': return 'bg-blue-500 text-white';
+      default: return 'bg-gray-500 text-white';
+    }
+  };
+
+  const getRarityGradient = (rarity: string) => {
+    switch (rarity) {
+      case 'legendary': return 'bg-gradient-to-r from-yellow-500 to-orange-500';
+      case 'rare': return 'bg-gradient-to-r from-purple-500 to-pink-500';
+      case 'common': return 'bg-gradient-to-r from-blue-500 to-cyan-500';
+      default: return 'bg-gradient-to-r from-gray-500 to-slate-500';
     }
   };
 
@@ -210,31 +219,63 @@ const PremiumStore = () => {
             </div>
           </TabsContent>
 
-          {/* Premium Badges */}
+          {/* Digital Collectibles - Badges */}
           <TabsContent value="badges" className="mt-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {badges.map((badge) => {
                 const owned = userBadges.some(ub => ub.badge_id === badge.id);
+                const isSoldOut = badge.is_limited_edition && badge.total_supply && (badge.minted_count || 0) >= badge.total_supply;
+                
                 return (
-                  <Card key={badge.id} className={owned ? 'ring-2 ring-primary' : ''}>
-                    <CardHeader className="text-center">
-                      <div className="flex justify-center mb-2">
-                        <span className="text-4xl">{badge.icon}</span>
+                  <Card key={badge.id} className={`overflow-hidden ${owned ? 'ring-2 ring-primary' : ''}`}>
+                    <div className={`h-2 ${getRarityGradient(badge.rarity)}`} />
+                    <CardHeader>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="text-5xl">{badge.icon}</div>
+                        <div className="flex flex-col gap-2">
+                          <Badge className={getRarityBadge(badge.rarity)}>
+                            {badge.rarity.toUpperCase()}
+                          </Badge>
+                          {badge.is_limited_edition && (
+                            <Badge variant="outline" className="text-xs">
+                              LIMITED
+                            </Badge>
+                          )}
+                        </div>
                       </div>
-                      <CardTitle className="text-lg">{badge.name}</CardTitle>
-                      <CardDescription className="text-sm">{badge.description}</CardDescription>
-                      <Badge variant="outline" className={getRarityBadge(badge.rarity)}>
-                        {badge.rarity}
-                      </Badge>
+                      <CardTitle className="text-xl">{badge.name}</CardTitle>
+                      <CardDescription>{badge.description}</CardDescription>
+                      {badge.season && (
+                        <p className="text-xs text-primary mt-2">📅 {badge.season}</p>
+                      )}
                     </CardHeader>
                     <CardContent>
+                      {badge.is_limited_edition && badge.total_supply && (
+                        <div className="mb-4 p-3 bg-muted rounded-lg">
+                          <div className="flex items-center justify-between text-sm mb-2">
+                            <span className="text-muted-foreground">Supply:</span>
+                            <span className="font-semibold">
+                              {badge.minted_count || 0} / {badge.total_supply}
+                            </span>
+                          </div>
+                          <div className="w-full bg-background rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full ${getRarityGradient(badge.rarity)}`}
+                              style={{ width: `${((badge.minted_count || 0) / badge.total_supply) * 100}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                          <Sparkles className="h-4 w-4 text-primary" />
-                          <span className="font-bold">{badge.credit_cost}</span>
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="h-5 w-5 text-primary" />
+                          <span className="text-lg font-bold">{badge.credit_cost}</span>
+                          <span className="text-sm text-muted-foreground">credits</span>
                         </div>
                         {owned ? (
-                          <Badge variant="secondary">Owned</Badge>
+                          <Badge className="bg-primary">Vlastníš</Badge>
+                        ) : isSoldOut ? (
+                          <Badge variant="destructive">Vypredané</Badge>
                         ) : (
                           <Button
                             size="sm"
@@ -244,7 +285,7 @@ const PremiumStore = () => {
                             {purchasing === badge.id ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
-                              'Unlock'
+                              'Kúpiť'
                             )}
                           </Button>
                         )}
@@ -334,45 +375,70 @@ const PremiumStore = () => {
             </div>
           </TabsContent>
 
-          {/* Premium Avatars */}
+          {/* Digital Collectibles - Avatars */}
           <TabsContent value="avatars" className="mt-6">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {avatars.map((avatar) => {
                 const owned = userAvatars.some(ua => ua.avatar_id === avatar.id);
+                const isSoldOut = avatar.is_limited_edition && avatar.total_supply && (avatar.minted_count || 0) >= avatar.total_supply;
+                
                 return (
-                  <Card key={avatar.id} className={owned ? 'ring-2 ring-primary' : ''}>
-                    <CardHeader className="text-center">
-                      <div className="flex justify-center mb-2">
-                        <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${
-                          avatar.rarity === 'legendary' ? 'from-yellow-400 to-orange-500' :
-                          avatar.rarity === 'epic' ? 'from-purple-400 to-pink-500' :
-                          avatar.rarity === 'rare' ? 'from-blue-400 to-cyan-500' :
-                          'from-gray-400 to-gray-500'
-                        } flex items-center justify-center ${avatar.is_animated ? 'animate-pulse' : ''}`}>
-                          <Crown className="h-10 w-10 text-white" />
+                  <Card key={avatar.id} className={`overflow-hidden ${owned ? 'ring-2 ring-primary' : ''}`}>
+                    <div className={`h-2 ${getRarityGradient(avatar.rarity)}`} />
+                    <CardHeader>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className={`w-20 h-20 rounded-full ${getRarityGradient(avatar.rarity)} flex items-center justify-center ${avatar.is_animated ? 'animate-pulse' : ''}`}>
+                          <Sparkles className="h-10 w-10 text-white" />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Badge className={getRarityBadge(avatar.rarity)}>
+                            {avatar.rarity.toUpperCase()}
+                          </Badge>
+                          {avatar.is_limited_edition && (
+                            <Badge variant="outline" className="text-xs">
+                              LIMITED
+                            </Badge>
+                          )}
+                          {avatar.is_animated && (
+                            <Badge variant="outline" className="text-xs">
+                              ANIMATED
+                            </Badge>
+                          )}
                         </div>
                       </div>
-                      <CardTitle className="text-lg">{avatar.name}</CardTitle>
-                      <CardDescription className="text-sm">{avatar.description}</CardDescription>
-                      <div className="flex gap-2 justify-center flex-wrap">
-                        <Badge variant="outline" className={getRarityBadge(avatar.rarity)}>
-                          {avatar.rarity}
-                        </Badge>
-                        {avatar.is_animated && (
-                          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                            Animated
-                          </Badge>
-                        )}
-                      </div>
+                      <CardTitle className="text-xl">{avatar.name}</CardTitle>
+                      <CardDescription>{avatar.description}</CardDescription>
+                      {avatar.season && (
+                        <p className="text-xs text-primary mt-2">📅 {avatar.season}</p>
+                      )}
                     </CardHeader>
                     <CardContent>
+                      {avatar.is_limited_edition && avatar.total_supply && (
+                        <div className="mb-4 p-3 bg-muted rounded-lg">
+                          <div className="flex items-center justify-between text-sm mb-2">
+                            <span className="text-muted-foreground">Supply:</span>
+                            <span className="font-semibold">
+                              {avatar.minted_count || 0} / {avatar.total_supply}
+                            </span>
+                          </div>
+                          <div className="w-full bg-background rounded-full h-2">
+                            <div 
+                              className={`h-2 rounded-full ${getRarityGradient(avatar.rarity)}`}
+                              style={{ width: `${((avatar.minted_count || 0) / avatar.total_supply) * 100}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                          <Sparkles className="h-4 w-4 text-primary" />
-                          <span className="font-bold">{avatar.credit_cost}</span>
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="h-5 w-5 text-primary" />
+                          <span className="text-lg font-bold">{avatar.credit_cost}</span>
+                          <span className="text-sm text-muted-foreground">credits</span>
                         </div>
                         {owned ? (
-                          <Badge variant="secondary">Owned</Badge>
+                          <Badge className="bg-primary">Vlastníš</Badge>
+                        ) : isSoldOut ? (
+                          <Badge variant="destructive">Vypredané</Badge>
                         ) : (
                           <Button
                             size="sm"
@@ -382,7 +448,7 @@ const PremiumStore = () => {
                             {purchasing === avatar.id ? (
                               <Loader2 className="h-4 w-4 animate-spin" />
                             ) : (
-                              'Unlock'
+                              'Kúpiť'
                             )}
                           </Button>
                         )}

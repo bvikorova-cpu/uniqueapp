@@ -676,6 +676,103 @@ export type Database = {
           },
         ]
       }
+      collectible_trades: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string | null
+          offered_avatar_id: string | null
+          offered_badge_id: string | null
+          offered_credits: number | null
+          offered_theme_id: string | null
+          receiver_id: string
+          requested_avatar_id: string | null
+          requested_badge_id: string | null
+          requested_credits: number | null
+          requested_theme_id: string | null
+          sender_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          offered_avatar_id?: string | null
+          offered_badge_id?: string | null
+          offered_credits?: number | null
+          offered_theme_id?: string | null
+          receiver_id: string
+          requested_avatar_id?: string | null
+          requested_badge_id?: string | null
+          requested_credits?: number | null
+          requested_theme_id?: string | null
+          sender_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          offered_avatar_id?: string | null
+          offered_badge_id?: string | null
+          offered_credits?: number | null
+          offered_theme_id?: string | null
+          receiver_id?: string
+          requested_avatar_id?: string | null
+          requested_badge_id?: string | null
+          requested_credits?: number | null
+          requested_theme_id?: string | null
+          sender_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collectible_trades_offered_avatar_id_fkey"
+            columns: ["offered_avatar_id"]
+            isOneToOne: false
+            referencedRelation: "premium_avatars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collectible_trades_offered_badge_id_fkey"
+            columns: ["offered_badge_id"]
+            isOneToOne: false
+            referencedRelation: "premium_badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collectible_trades_offered_theme_id_fkey"
+            columns: ["offered_theme_id"]
+            isOneToOne: false
+            referencedRelation: "premium_themes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collectible_trades_requested_avatar_id_fkey"
+            columns: ["requested_avatar_id"]
+            isOneToOne: false
+            referencedRelation: "premium_avatars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collectible_trades_requested_badge_id_fkey"
+            columns: ["requested_badge_id"]
+            isOneToOne: false
+            referencedRelation: "premium_badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collectible_trades_requested_theme_id_fkey"
+            columns: ["requested_theme_id"]
+            isOneToOne: false
+            referencedRelation: "premium_themes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       compatibility_readings: {
         Row: {
           advice: string | null
@@ -3514,6 +3611,7 @@ export type Database = {
       }
       premium_avatars: {
         Row: {
+          available_until: string | null
           avatar_url: string
           created_at: string | null
           credit_cost: number
@@ -3521,10 +3619,15 @@ export type Database = {
           id: string
           is_active: boolean | null
           is_animated: boolean | null
+          is_limited_edition: boolean | null
+          minted_count: number | null
           name: string
           rarity: string | null
+          season: string | null
+          total_supply: number | null
         }
         Insert: {
+          available_until?: string | null
           avatar_url: string
           created_at?: string | null
           credit_cost?: number
@@ -3532,10 +3635,15 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           is_animated?: boolean | null
+          is_limited_edition?: boolean | null
+          minted_count?: number | null
           name: string
           rarity?: string | null
+          season?: string | null
+          total_supply?: number | null
         }
         Update: {
+          available_until?: string | null
           avatar_url?: string
           created_at?: string | null
           credit_cost?: number
@@ -3543,41 +3651,60 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           is_animated?: boolean | null
+          is_limited_edition?: boolean | null
+          minted_count?: number | null
           name?: string
           rarity?: string | null
+          season?: string | null
+          total_supply?: number | null
         }
         Relationships: []
       }
       premium_badges: {
         Row: {
+          available_until: string | null
           created_at: string | null
           credit_cost: number
           description: string | null
           icon: string
           id: string
           is_active: boolean | null
+          is_limited_edition: boolean | null
+          minted_count: number | null
           name: string
           rarity: string | null
+          season: string | null
+          total_supply: number | null
         }
         Insert: {
+          available_until?: string | null
           created_at?: string | null
           credit_cost?: number
           description?: string | null
           icon: string
           id?: string
           is_active?: boolean | null
+          is_limited_edition?: boolean | null
+          minted_count?: number | null
           name: string
           rarity?: string | null
+          season?: string | null
+          total_supply?: number | null
         }
         Update: {
+          available_until?: string | null
           created_at?: string | null
           credit_cost?: number
           description?: string | null
           icon?: string
           id?: string
           is_active?: boolean | null
+          is_limited_edition?: boolean | null
+          minted_count?: number | null
           name?: string
           rarity?: string | null
+          season?: string | null
+          total_supply?: number | null
         }
         Relationships: []
       }
@@ -3616,34 +3743,49 @@ export type Database = {
       }
       premium_themes: {
         Row: {
+          available_until: string | null
           created_at: string | null
           credit_cost: number
           description: string | null
           id: string
           is_active: boolean | null
+          is_limited_edition: boolean | null
+          minted_count: number | null
           name: string
           preview_image: string | null
+          season: string | null
           theme_data: Json
+          total_supply: number | null
         }
         Insert: {
+          available_until?: string | null
           created_at?: string | null
           credit_cost?: number
           description?: string | null
           id?: string
           is_active?: boolean | null
+          is_limited_edition?: boolean | null
+          minted_count?: number | null
           name: string
           preview_image?: string | null
+          season?: string | null
           theme_data: Json
+          total_supply?: number | null
         }
         Update: {
+          available_until?: string | null
           created_at?: string | null
           credit_cost?: number
           description?: string | null
           id?: string
           is_active?: boolean | null
+          is_limited_edition?: boolean | null
+          minted_count?: number | null
           name?: string
           preview_image?: string | null
+          season?: string | null
           theme_data?: Json
+          total_supply?: number | null
         }
         Relationships: []
       }
