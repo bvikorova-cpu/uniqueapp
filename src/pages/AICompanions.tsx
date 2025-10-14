@@ -121,7 +121,7 @@ const AICompanions = () => {
             </span>
           </h1>
           <p className="text-xl text-muted-foreground mb-4">
-            Your personal AI companions with unique personalities
+            Your personal companions with unique personalities
           </p>
         </div>
 
@@ -158,8 +158,7 @@ const AICompanions = () => {
                     {character.description}
                   </p>
                   <Button
-                    onClick={() => startConversation(character.id, character.is_premium)}
-                    disabled={!hasAccess}
+                    onClick={() => hasAccess ? startConversation(character.id, character.is_premium) : navigate("/subscription")}
                     className="w-full"
                     variant={hasAccess ? "default" : "outline"}
                   >
