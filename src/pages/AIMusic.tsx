@@ -415,27 +415,27 @@ const AIMusic = () => {
         </Tabs>
 
         <Card className="mt-12 p-6 bg-gradient-to-r from-primary/10 to-purple-500/10">
-          <h3 className="text-xl font-bold mb-4 text-center">Premium Features</h3>
+          <h3 className="text-xl font-bold mb-4 text-center">Other Services</h3>
           <div className="grid md:grid-cols-3 gap-4">
+            <div className="p-4 bg-background rounded-lg text-center cursor-pointer hover:shadow-lg transition-all" onClick={() => navigate('/ai-music-producer')}>
+              <Music className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+              <h4 className="font-bold">AI Music Producer</h4>
+              <p className="text-sm text-muted-foreground mt-1">
+                Create original songs from text/mood with AI-generated melodies, beats & lyrics
+              </p>
+            </div>
             <div className="p-4 bg-background rounded-lg text-center">
               <Star className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
               <h4 className="font-bold">Premium Playlists</h4>
               <p className="text-sm text-muted-foreground mt-1">
-                Exkluzívne generované playlists s rozšírenými funkciami
-              </p>
-            </div>
-            <div className="p-4 bg-background rounded-lg text-center">
-              <Music className="h-8 w-8 text-primary mx-auto mb-2" />
-              <h4 className="font-bold">Music Generation</h4>
-              <p className="text-sm text-muted-foreground mt-1">
-                Vytvorte si vlastnú originálnu hudbu
+                Exclusive generated playlists with advanced features
               </p>
             </div>
             <div className="p-4 bg-background rounded-lg text-center">
               <Sparkles className="h-8 w-8 text-purple-500 mx-auto mb-2" />
               <h4 className="font-bold">Unlimited Sessions</h4>
               <p className="text-sm text-muted-foreground mt-1">
-                Neobmedzený prístup k therapy sessions a vocal coaching
+                Unlimited access to therapy sessions and vocal coaching
               </p>
             </div>
           </div>

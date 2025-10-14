@@ -34,6 +34,7 @@ const Home = () => {
     { name: "Online Aukcie", path: "/auction", keywords: ["aukcie", "auction", "dražba"] },
     { name: "AI Generovanie", path: "/ai-generation", keywords: ["ai", "generovanie", "obrázky"] },
     { name: "Best Friend", path: "/best-friend", keywords: ["best friend", "priateľ", "chatbot"] },
+    { name: "AI Music Producer", path: "/ai-music-producer", keywords: ["music", "hudba", "songs", "skladby", "producer"] },
     
   ];
 
