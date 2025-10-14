@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Music, Sparkles, Heart, Activity, Mic, Users, Star, Play, Pause, Leaf } from "lucide-react";
+import { Music, Sparkles, Heart, Activity, Mic, Users, Star, Play, Pause } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
@@ -26,26 +26,26 @@ const AIMusic = () => {
   const [vocalCoachTips, setVocalCoachTips] = useState<any>(null);
 
   const moods = [
-    { value: "happy", label: "Šťastný", icon: "😊" },
-    { value: "sad", label: "Smutný", icon: "😢" },
-    { value: "energetic", label: "Energický", icon: "⚡" },
-    { value: "relaxed", label: "Relaxovaný", icon: "😌" },
-    { value: "focused", label: "Sústredený", icon: "🎯" },
-    { value: "romantic", label: "Romantický", icon: "💕" },
+    { value: "happy", label: "Happy", icon: "😊" },
+    { value: "sad", label: "Sad", icon: "😢" },
+    { value: "energetic", label: "Energetic", icon: "⚡" },
+    { value: "relaxed", label: "Relaxed", icon: "😌" },
+    { value: "focused", label: "Focused", icon: "🎯" },
+    { value: "romantic", label: "Romantic", icon: "💕" },
   ];
 
   const activities = [
-    { value: "workout", label: "Cvičenie", icon: "💪" },
-    { value: "study", label: "Štúdium", icon: "📚" },
-    { value: "party", label: "Párty", icon: "🎉" },
-    { value: "sleep", label: "Spánok", icon: "😴" },
-    { value: "work", label: "Práca", icon: "💼" },
-    { value: "meditation", label: "Meditácia", icon: "🧘" },
+    { value: "workout", label: "Workout", icon: "💪" },
+    { value: "study", label: "Study", icon: "📚" },
+    { value: "party", label: "Party", icon: "🎉" },
+    { value: "sleep", label: "Sleep", icon: "😴" },
+    { value: "work", label: "Work", icon: "💼" },
+    { value: "meditation", label: "Meditation", icon: "🧘" },
   ];
 
   const checkCredits = (required: number) => {
     if (credits.credits_remaining < required) {
-      toast.error(`Potrebujete ${required} kreditov. Presmerovanie...`);
+      toast.error(`You need ${required} credits. Redirecting...`);
       setTimeout(() => navigate('/ai-credits'), 1500);
       return false;
     }
@@ -54,7 +54,7 @@ const AIMusic = () => {
 
   const generatePlaylist = async () => {
     if (!mood && !activity) {
-      toast.error("Vyberte náladu alebo aktivitu");
+      toast.error("Select a mood or activity");
       return;
     }
     if (!checkCredits(5)) return;
@@ -72,9 +72,9 @@ const AIMusic = () => {
       if (error) throw error;
       setPlaylist(data.playlist);
       await refresh();
-      toast.success("Playlist vytvorený!");
+      toast.success("Playlist created!");
     } catch (error: any) {
-      toast.error(error.message || "Chyba pri generovaní playlistu");
+      toast.error(error.message || "Error generating playlist");
     } finally {
       setLoading(false);
     }
@@ -95,9 +95,9 @@ const AIMusic = () => {
       if (error) throw error;
       setTherapySession(data.session);
       await refresh();
-      toast.success("Terapeutická session vytvorená!");
+      toast.success("Therapy session created!");
     } catch (error: any) {
-      toast.error(error.message || "Chyba pri generovaní session");
+      toast.error(error.message || "Error generating session");
     } finally {
       setLoading(false);
     }
@@ -118,9 +118,9 @@ const AIMusic = () => {
       if (error) throw error;
       setDiscoveries(data.artists);
       await refresh();
-      toast.success("Noví umelci objavení!");
+      toast.success("New artists discovered!");
     } catch (error: any) {
-      toast.error(error.message || "Chyba pri hľadaní umelcov");
+      toast.error(error.message || "Error discovering artists");
     } finally {
       setLoading(false);
     }
@@ -128,7 +128,7 @@ const AIMusic = () => {
 
   const getVocalCoaching = async () => {
     if (!karaokeSong) {
-      toast.error("Zadajte názov skladby");
+      toast.error("Enter a song name");
       return;
     }
     if (!checkCredits(8)) return;
@@ -145,9 +145,9 @@ const AIMusic = () => {
       if (error) throw error;
       setVocalCoachTips(data.tips);
       await refresh();
-      toast.success("AI Vocal Coach pripravený!");
+      toast.success("AI Vocal Coach ready!");
     } catch (error: any) {
-      toast.error(error.message || "Chyba pri generovaní tipov");
+      toast.error(error.message || "Error generating tips");
     } finally {
       setLoading(false);
     }
@@ -166,11 +166,11 @@ const AIMusic = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Vaša osobná hudobná asistenka pre dokonalú hudobnú skúsenosť
+            Your personal music assistant for the perfect music experience
           </p>
           <div className="mt-4 inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Kredit: {credits.credits_remaining}</span>
+            <span className="text-sm font-medium">Credits: {credits.credits_remaining}</span>
           </div>
         </div>
 
@@ -198,12 +198,12 @@ const AIMusic = () => {
             <Card className="p-6 max-w-2xl mx-auto">
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <Music className="h-6 w-6 text-primary" />
-                Vytvor Playlist podľa Nálady
+                Create Playlist by Mood
               </h2>
               
               <div className="space-y-4">
                 <div>
-                  <Label>Vyber svoju náladu</Label>
+                  <Label>Choose your mood</Label>
                   <div className="grid grid-cols-3 gap-2 mt-2">
                     {moods.map((m) => (
                       <Button
@@ -220,7 +220,7 @@ const AIMusic = () => {
                 </div>
 
                 <div>
-                  <Label>Alebo aktivitu</Label>
+                  <Label>Or activity</Label>
                   <div className="grid grid-cols-3 gap-2 mt-2">
                     {activities.map((a) => (
                       <Button
@@ -242,7 +242,7 @@ const AIMusic = () => {
                   className="w-full gap-2"
                 >
                   <Sparkles className="h-4 w-4" />
-                  Generuj Playlist (5 kreditov)
+                  Generate Playlist (5 credits)
                 </Button>
 
                 {playlist && (
@@ -275,7 +275,7 @@ const AIMusic = () => {
               
               <div className="space-y-4">
                 <p className="text-muted-foreground">
-                  Vytvorte personalizovanú hudobnú terapiu pre váš aktuálny emocionálny stav
+                  Create a personalized music therapy for your current emotional state
                 </p>
 
                 <Button 
@@ -284,7 +284,7 @@ const AIMusic = () => {
                   className="w-full gap-2"
                 >
                   <Heart className="h-4 w-4" />
-                  Začni Therapy Session (10 kreditov)
+                  Start Therapy Session (10 credits)
                 </Button>
 
                 {therapySession && (
@@ -294,9 +294,9 @@ const AIMusic = () => {
                     <div className="space-y-2">
                       {therapySession.exercises?.map((exercise: any, idx: number) => (
                         <div key={idx} className="p-3 bg-background rounded">
-                          <p className="font-medium">{exercise.name}</p>
-                          <p className="text-sm text-muted-foreground">{exercise.instruction}</p>
-                          <p className="text-xs text-primary mt-1">Trvanie: {exercise.duration}</p>
+                           <p className="font-medium">{exercise.name}</p>
+                           <p className="text-sm text-muted-foreground">{exercise.instruction}</p>
+                           <p className="text-xs text-primary mt-1">Duration: {exercise.duration}</p>
                         </div>
                       ))}
                     </div>
@@ -310,12 +310,12 @@ const AIMusic = () => {
             <Card className="p-6 max-w-2xl mx-auto">
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <Users className="h-6 w-6 text-primary" />
-                Discover Nových Umelcov
+                Discover New Artists
               </h2>
               
               <div className="space-y-4">
                 <p className="text-muted-foreground">
-                  Objavte nových umelcov podobných vašim preferenciám
+                  Discover new artists similar to your preferences
                 </p>
 
                 <Button 
@@ -324,7 +324,7 @@ const AIMusic = () => {
                   className="w-full gap-2"
                 >
                   <Star className="h-4 w-4" />
-                  Objav Umelcov (5 kreditov)
+                  Discover Artists (5 credits)
                 </Button>
 
                 {discoveries && (
@@ -339,10 +339,10 @@ const AIMusic = () => {
                           </div>
                           <Star className="h-5 w-5 text-yellow-500" />
                         </div>
-                        <div className="mt-3">
-                          <p className="text-xs text-muted-foreground">Top skladba:</p>
-                          <p className="text-sm font-medium">{artist.topSong}</p>
-                        </div>
+                         <div className="mt-3">
+                           <p className="text-xs text-muted-foreground">Top track:</p>
+                           <p className="text-sm font-medium">{artist.topSong}</p>
+                         </div>
                       </div>
                     ))}
                   </div>
@@ -355,15 +355,15 @@ const AIMusic = () => {
             <Card className="p-6 max-w-2xl mx-auto">
               <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
                 <Mic className="h-6 w-6 text-primary" />
-                Karaoke Mode s Vocal Coach
+                Karaoke Mode with Vocal Coach
               </h2>
               
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="song">Názov skladby</Label>
+                  <Label htmlFor="song">Song name</Label>
                   <Input
                     id="song"
-                    placeholder="Napr. Bohemian Rhapsody"
+                    placeholder="e.g. Bohemian Rhapsody"
                     value={karaokeSong}
                     onChange={(e) => setKaraokeSong(e.target.value)}
                   />
@@ -375,7 +375,7 @@ const AIMusic = () => {
                   className="w-full gap-2"
                 >
                   <Mic className="h-4 w-4" />
-                  Získaj Vocal Coaching (8 kreditov)
+                  Get Vocal Coaching (8 credits)
                 </Button>
 
                 {vocalCoachTips && (
@@ -384,17 +384,17 @@ const AIMusic = () => {
                     
                     <div className="space-y-3">
                       <div className="p-3 bg-background rounded">
-                        <p className="font-medium text-sm text-primary">Rozsah skladby</p>
+                        <p className="font-medium text-sm text-primary">Vocal Range</p>
                         <p className="text-sm">{vocalCoachTips.vocalRange}</p>
                       </div>
 
                       <div className="p-3 bg-background rounded">
-                        <p className="font-medium text-sm text-primary">Dychové techniky</p>
+                        <p className="font-medium text-sm text-primary">Breathing Techniques</p>
                         <p className="text-sm">{vocalCoachTips.breathingTips}</p>
                       </div>
 
                       <div className="p-3 bg-background rounded">
-                        <p className="font-medium text-sm text-primary">Ťažké časti</p>
+                        <p className="font-medium text-sm text-primary">Challenging Parts</p>
                         <ul className="text-sm mt-2 space-y-1">
                           {vocalCoachTips.challenges?.map((tip: string, idx: number) => (
                             <li key={idx}>• {tip}</li>
@@ -403,7 +403,7 @@ const AIMusic = () => {
                       </div>
 
                       <div className="p-3 bg-background rounded">
-                        <p className="font-medium text-sm text-primary">Odporúčané cvičenia</p>
+                        <p className="font-medium text-sm text-primary">Recommended Exercises</p>
                         <p className="text-sm">{vocalCoachTips.warmUpExercises}</p>
                       </div>
                     </div>
@@ -416,7 +416,7 @@ const AIMusic = () => {
 
         <Card className="mt-12 p-6 bg-gradient-to-r from-primary/10 to-purple-500/10">
           <h3 className="text-xl font-bold mb-4 text-center">Other Services</h3>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
             <div className="p-4 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-2 border-purple-500/30 rounded-lg text-center cursor-pointer hover:shadow-xl hover:scale-105 hover:border-purple-500 transition-all duration-300" onClick={() => navigate('/ai-music-producer')}>
               <Music className="h-8 w-8 text-purple-500 mx-auto mb-2 transition-transform" />
               <h4 className="font-bold text-purple-600 dark:text-purple-400">✨ AI Music Producer</h4>
@@ -424,14 +424,6 @@ const AIMusic = () => {
                 Create original songs from text/mood with AI-generated melodies, beats & lyrics
               </p>
               <p className="text-xs text-purple-500 mt-2 font-semibold">Click to start creating →</p>
-            </div>
-            <div className="p-4 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-2 border-green-500/30 rounded-lg text-center cursor-pointer hover:shadow-xl hover:scale-105 hover:border-green-500 transition-all duration-300" onClick={() => navigate('/plant-care')}>
-              <Leaf className="h-8 w-8 text-green-500 mx-auto mb-2 transition-transform" />
-              <h4 className="font-bold text-green-600 dark:text-green-400">🌱 Plant Care Assistant</h4>
-              <p className="text-sm text-muted-foreground mt-1">
-                Identify plants from photos, get care schedules, and diagnose plant diseases with AI
-              </p>
-              <p className="text-xs text-green-500 mt-2 font-semibold">Click to explore →</p>
             </div>
             <div className="p-4 bg-background rounded-lg text-center">
               <Star className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
