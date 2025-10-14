@@ -430,12 +430,8 @@ const Terms = () => {
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
             <p>
-              For questions regarding these terms and conditions, please contact us:
+              For questions regarding these terms and conditions, please contact us via our online contact form available in the Contact section of the platform.
             </p>
-            <ul className="list-none space-y-2 ml-4">
-              <li><strong>Online Contact Form:</strong> Available in the Contact section of our platform</li>
-              <li><strong>Email Support:</strong> support@megatalent.platform</li>
-            </ul>
             <Separator className="my-6" />
             <p className="text-sm text-center">
               <strong>Effective Date:</strong> {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
