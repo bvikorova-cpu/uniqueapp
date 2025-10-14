@@ -10,6 +10,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import puppyImg from "@/assets/pets/cute-puppy.png";
+import kittenImg from "@/assets/pets/cute-kitten.png";
+import bunnyImg from "@/assets/pets/cute-bunny.png";
+import hamsterImg from "@/assets/pets/cute-hamster.png";
 
 interface MyPetsProps {
   onSelectPet: (petId: string) => void;
@@ -137,6 +141,15 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
 
   const getXPToNextLevel = (level: number) => level * 10;
 
+  const getPetImage = (petTypeName: string) => {
+    const name = petTypeName?.toLowerCase() || '';
+    if (name.includes('puppy') || name.includes('dog')) return puppyImg;
+    if (name.includes('kitten') || name.includes('cat')) return kittenImg;
+    if (name.includes('bunny') || name.includes('rabbit')) return bunnyImg;
+    if (name.includes('hamster')) return hamsterImg;
+    return puppyImg; // default
+  };
+
   if (isLoading) {
     return <div>Loading pets...</div>;
   }
@@ -199,17 +212,26 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
           const xpProgress = (pet.experience % xpToNext) / xpToNext * 100;
 
           return (
-            <Card key={pet.id} className="p-6 space-y-4 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => onSelectPet(pet.id)}>
-              <div className="flex justify-between items-start">
-                <div>
+            <Card key={pet.id} className="p-6 space-y-4 hover:shadow-lg transition-all duration-300 cursor-pointer group" onClick={() => onSelectPet(pet.id)}>
+              <div className="flex flex-col items-center mb-4">
+                <div className="relative w-32 h-32 mb-4">
+                  <img 
+                    src={getPetImage(pet.pet_types?.name)} 
+                    alt={pet.name}
+                    className="w-full h-full object-contain animate-[bounce_3s_ease-in-out_infinite] group-hover:animate-[bounce_1s_ease-in-out_infinite]"
+                  />
+                  <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full p-2 animate-pulse">
+                    <Star className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="text-center">
                   <h3 className="text-xl font-bold">{pet.name}</h3>
                   <p className="text-sm text-muted-foreground capitalize">{evolutionStage.name}</p>
-                  <div className="flex items-center gap-1 mt-1">
+                  <div className="flex items-center justify-center gap-1 mt-1">
                     <Star className="h-4 w-4 text-yellow-500" />
                     <span className="text-sm font-medium">Level {pet.level}</span>
                   </div>
                 </div>
-                <div className="text-3xl">{pet.mood === 'happy' ? '😊' : pet.mood === 'sad' ? '😢' : pet.mood === 'excited' ? '🤩' : pet.mood === 'sleepy' ? '😴' : pet.mood === 'hungry' ? '🍖' : '😐'}</div>
               </div>
 
               <div className="space-y-2">
