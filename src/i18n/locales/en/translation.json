@@ -407,6 +407,10 @@
     "best_friend": {
       "title": "Best Friend",
       "description": "Your AI friend who will never leave you"
+    },
+    "brand_builder": {
+      "title": "Brand Builder",
+      "description": "Create professional brand identity"
     }
   },
   "navbar": {
