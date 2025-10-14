@@ -149,6 +149,54 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_routine_optimizations: {
+        Row: {
+          analysis_date: string
+          balance_score: number | null
+          created_at: string | null
+          energy_insights: string | null
+          habit_stacking_suggestions: Json | null
+          id: string
+          is_premium: boolean | null
+          optimization_data: Json
+          sleep_recommendation: string | null
+          social_recommendation: string | null
+          user_id: string
+          work_recommendation: string | null
+          workout_recommendation: string | null
+        }
+        Insert: {
+          analysis_date?: string
+          balance_score?: number | null
+          created_at?: string | null
+          energy_insights?: string | null
+          habit_stacking_suggestions?: Json | null
+          id?: string
+          is_premium?: boolean | null
+          optimization_data?: Json
+          sleep_recommendation?: string | null
+          social_recommendation?: string | null
+          user_id: string
+          work_recommendation?: string | null
+          workout_recommendation?: string | null
+        }
+        Update: {
+          analysis_date?: string
+          balance_score?: number | null
+          created_at?: string | null
+          energy_insights?: string | null
+          habit_stacking_suggestions?: Json | null
+          id?: string
+          is_premium?: boolean | null
+          optimization_data?: Json
+          sleep_recommendation?: string | null
+          social_recommendation?: string | null
+          user_id?: string
+          work_recommendation?: string | null
+          workout_recommendation?: string | null
+        }
+        Relationships: []
+      }
       ai_usage_history: {
         Row: {
           created_at: string
@@ -3763,6 +3811,51 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      routine_entries: {
+        Row: {
+          created_at: string | null
+          energy_level: number | null
+          entry_date: string
+          id: string
+          mood_score: number | null
+          notes: string | null
+          sleep_hours: number | null
+          social_hours: number | null
+          updated_at: string | null
+          user_id: string
+          work_hours: number | null
+          workout_minutes: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          energy_level?: number | null
+          entry_date?: string
+          id?: string
+          mood_score?: number | null
+          notes?: string | null
+          sleep_hours?: number | null
+          social_hours?: number | null
+          updated_at?: string | null
+          user_id: string
+          work_hours?: number | null
+          workout_minutes?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          energy_level?: number | null
+          entry_date?: string
+          id?: string
+          mood_score?: number | null
+          notes?: string | null
+          sleep_hours?: number | null
+          social_hours?: number | null
+          updated_at?: string | null
+          user_id?: string
+          work_hours?: number | null
+          workout_minutes?: number | null
         }
         Relationships: []
       }

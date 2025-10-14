@@ -48,6 +48,7 @@ import VirtualPet from "./pages/VirtualPet";
 import Astrology from "./pages/Astrology";
 import AIMusic from "./pages/AIMusic";
 import MysteryBox from "./pages/MysteryBox";
+import RoutineOptimizer from "./pages/RoutineOptimizer";
 
 import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
@@ -127,6 +128,7 @@ const App = () => (
           <Route path="/astrology" element={<Astrology />} />
           <Route path="/ai-music" element={<AIMusic />} />
           <Route path="/mystery-box" element={<MysteryBox />} />
+          <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -12,6 +12,9 @@ verify_jwt = true
 [functions.open-mystery-box]
 verify_jwt = true
 
+[functions.optimize-routine]
+verify_jwt = true
+
 [functions.capsule-wardrobe]
 verify_jwt = true
 
