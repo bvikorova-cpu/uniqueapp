@@ -18,10 +18,10 @@ const Astrology = () => {
         <div className="max-w-6xl mx-auto space-y-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-600 bg-clip-text text-transparent">
-              AI Astrology Suite ⭐
+              Astrology Suite ⭐
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Discover your cosmic path with AI-powered astrology readings, personalized horoscopes, and mystical insights
+              Discover your cosmic path with personalized astrology readings, horoscopes, and mystical insights
             </p>
           </div>
 
