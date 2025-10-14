@@ -36,6 +36,8 @@ import BestFriend from "./pages/BestFriend";
 import Cooking from "./pages/Cooking";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import AIMentor from "./pages/AIMentor";
+import AIMentorChat from "./pages/AIMentorChat";
 
 import Subscription from "./pages/Subscription";
 import AICreditsStore from "./pages/AICreditsStore";
@@ -103,6 +105,8 @@ const App = () => (
               <Route path="/rewards" element={<Rewards />} />
               <Route path="/generate-courses" element={<GenerateCourses />} />
               <Route path="/premium-store" element={<PremiumStore />} />
+              <Route path="/ai-mentor" element={<AIMentor />} />
+              <Route path="/ai-mentor/:area" element={<AIMentorChat />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

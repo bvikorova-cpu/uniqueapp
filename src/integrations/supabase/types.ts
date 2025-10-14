@@ -1889,6 +1889,174 @@ export type Database = {
           },
         ]
       }
+      mentor_checkins: {
+        Row: {
+          achievements: string[] | null
+          challenges: string[] | null
+          created_at: string
+          energy_level: number | null
+          id: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          mood_score: number | null
+          notes: string | null
+          user_id: string
+        }
+        Insert: {
+          achievements?: string[] | null
+          challenges?: string[] | null
+          created_at?: string
+          energy_level?: number | null
+          id?: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          mood_score?: number | null
+          notes?: string | null
+          user_id: string
+        }
+        Update: {
+          achievements?: string[] | null
+          challenges?: string[] | null
+          created_at?: string
+          energy_level?: number | null
+          id?: string
+          mentor_area?: Database["public"]["Enums"]["mentor_area"]
+          mood_score?: number | null
+          notes?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_goals: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          progress: number | null
+          status: string
+          target_date: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          progress?: number | null
+          status?: string
+          target_date?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          mentor_area?: Database["public"]["Enums"]["mentor_area"]
+          progress?: number | null
+          status?: string
+          target_date?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_progress: {
+        Row: {
+          created_at: string
+          id: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          metric_name: string
+          metric_value: number
+          notes: string | null
+          recorded_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          metric_name: string
+          metric_value: number
+          notes?: string | null
+          recorded_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mentor_area?: Database["public"]["Enums"]["mentor_area"]
+          metric_name?: string
+          metric_value?: number
+          notes?: string | null
+          recorded_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          messages: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          messages?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mentor_area?: Database["public"]["Enums"]["mentor_area"]
+          messages?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentor_subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          started_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          mentor_area: Database["public"]["Enums"]["mentor_area"]
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          mentor_area?: Database["public"]["Enums"]["mentor_area"]
+          started_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
@@ -3484,6 +3652,7 @@ export type Database = {
         | "other"
       job_type: "full_time" | "part_time" | "contract" | "internship" | "remote"
       megatalent_tier: "premium" | "top_premium"
+      mentor_area: "career" | "fitness" | "mindset" | "relationships"
       skill_category:
         | "construction"
         | "repairs"
@@ -3645,6 +3814,7 @@ export const Constants = {
       ],
       job_type: ["full_time", "part_time", "contract", "internship", "remote"],
       megatalent_tier: ["premium", "top_premium"],
+      mentor_area: ["career", "fitness", "mindset", "relationships"],
       skill_category: [
         "construction",
         "repairs",
