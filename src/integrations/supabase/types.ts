@@ -38,6 +38,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_characters: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          description: string
+          id: string
+          is_premium: boolean | null
+          name: string
+          personality_type: string
+          system_prompt: string
+          voice_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          description: string
+          id?: string
+          is_premium?: boolean | null
+          name: string
+          personality_type: string
+          system_prompt: string
+          voice_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          is_premium?: boolean | null
+          name?: string
+          personality_type?: string
+          system_prompt?: string
+          voice_id?: string | null
+        }
+        Relationships: []
+      }
       ai_credits: {
         Row: {
           created_at: string
@@ -428,6 +464,82 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      character_conversations: {
+        Row: {
+          character_id: string
+          created_at: string | null
+          id: string
+          memory_context: Json | null
+          summary: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          character_id: string
+          created_at?: string | null
+          id?: string
+          memory_context?: Json | null
+          summary?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          character_id?: string
+          created_at?: string | null
+          id?: string
+          memory_context?: Json | null
+          summary?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_conversations_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "ai_characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      character_messages: {
+        Row: {
+          audio_url: string | null
+          content: string
+          conversation_id: string
+          created_at: string | null
+          id: string
+          role: string
+        }
+        Insert: {
+          audio_url?: string | null
+          content: string
+          conversation_id: string
+          created_at?: string | null
+          id?: string
+          role: string
+        }
+        Update: {
+          audio_url?: string | null
+          content?: string
+          conversation_id?: string
+          created_at?: string | null
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "character_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       completed_courses: {
         Row: {
@@ -3275,6 +3387,35 @@ export type Database = {
           },
         ]
       }
+      user_character_access: {
+        Row: {
+          character_id: string
+          id: string
+          unlocked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          character_id: string
+          id?: string
+          unlocked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          character_id?: string
+          id?: string
+          unlocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_character_access_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "ai_characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_follows: {
         Row: {
           created_at: string
@@ -3293,6 +3434,30 @@ export type Database = {
           follower_id?: string
           following_id?: string
           id?: string
+        }
+        Relationships: []
+      }
+      user_message_limits: {
+        Row: {
+          id: string
+          is_premium: boolean | null
+          last_reset_date: string | null
+          messages_used_today: number | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          is_premium?: boolean | null
+          last_reset_date?: string | null
+          messages_used_today?: number | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          is_premium?: boolean | null
+          last_reset_date?: string | null
+          messages_used_today?: number | null
+          user_id?: string
         }
         Relationships: []
       }
