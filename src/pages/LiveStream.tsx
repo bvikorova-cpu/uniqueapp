@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Video, Send, Users, Gift, ArrowLeft, Link as LinkIcon } from "lucide-react";
+import { Video, Send, Users, Gift, ArrowLeft, VideoOff } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,8 +18,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import Hls from "hls.js";
 
 interface Message {
   id: string;
@@ -52,12 +50,14 @@ export default function LiveStream() {
   const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
   const [giftMessage, setGiftMessage] = useState("");
-  const [streamUrl, setStreamUrl] = useState("");
-  const [showStreamUrlDialog, setShowStreamUrlDialog] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const channelRef = useRef<any>(null);
 
   // Fetch available gifts
   const { data: gifts = [] } = useQuery({
@@ -206,94 +206,252 @@ export default function LiveStream() {
     },
   });
 
-  // Update stream URL mutation
-  const updateStreamUrlMutation = useMutation({
-    mutationFn: async (url: string) => {
-      if (!user || !streamId) throw new Error("Missing required data");
+  // WebRTC Configuration
+  const rtcConfig = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+    ],
+  };
+
+  // Start broadcasting (influencer)
+  const startBroadcast = async () => {
+    try {
+      setIsConnecting(true);
       
-      const { error } = await supabase
-        .from("live_streams")
-        .update({ stream_url: url })
-        .eq("id", streamId)
-        .eq("influencer_id", stream?.influencer_id);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      setShowStreamUrlDialog(false);
-      queryClient.invalidateQueries({ queryKey: ["stream", streamId] });
-      toast.success("Stream URL nastavená!");
-    },
-    onError: (error) => {
-      toast.error("Chyba pri nastavení stream URL");
-      console.error(error);
-    },
-  });
-
-  // Setup HLS player
-  useEffect(() => {
-    if (!stream?.stream_url || !videoRef.current) return;
-
-    const video = videoRef.current;
-
-    if (Hls.isSupported()) {
-      const hls = new Hls({
-        enableWorker: true,
-        lowLatencyMode: true,
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          facingMode: "user"
+        },
+        audio: true
       });
 
-      hlsRef.current = hls;
-      hls.loadSource(stream.stream_url);
-      hls.attachMedia(video);
+      localStreamRef.current = mediaStream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+      }
 
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch((error) => {
-          console.error("Error playing video:", error);
-        });
+      // Setup Supabase Realtime channel for signaling
+      const channel = supabase.channel(`stream:${streamId}`, {
+        config: {
+          broadcast: { self: true },
+        },
       });
 
-      hls.on(Hls.Events.ERROR, (event, data) => {
-        if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              console.error("Network error encountered, trying to recover");
-              hls.startLoad();
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              console.error("Media error encountered, trying to recover");
-              hls.recoverMediaError();
-              break;
-            default:
-              console.error("Fatal error, cannot recover");
-              hls.destroy();
-              break;
-          }
+      channelRef.current = channel;
+
+      // Listen for viewer join requests
+      channel.on('broadcast', { event: 'viewer-join' }, async ({ payload }) => {
+        console.log('Viewer joined:', payload);
+        await createOfferForViewer(payload.viewerId);
+      });
+
+      // Listen for answers from viewers
+      channel.on('broadcast', { event: 'answer' }, async ({ payload }) => {
+        console.log('Received answer:', payload);
+        if (peerConnectionRef.current && payload.answer) {
+          await peerConnectionRef.current.setRemoteDescription(
+            new RTCSessionDescription(payload.answer)
+          );
         }
       });
 
-      return () => {
-        if (hlsRef.current) {
-          hlsRef.current.destroy();
-          hlsRef.current = null;
+      // Listen for ICE candidates
+      channel.on('broadcast', { event: 'ice-candidate' }, async ({ payload }) => {
+        console.log('Received ICE candidate:', payload);
+        if (peerConnectionRef.current && payload.candidate) {
+          await peerConnectionRef.current.addIceCandidate(
+            new RTCIceCandidate(payload.candidate)
+          );
         }
-      };
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      // For Safari native HLS support
-      video.src = stream.stream_url;
-      video.addEventListener("loadedmetadata", () => {
-        video.play().catch((error) => {
-          console.error("Error playing video:", error);
+      });
+
+      await channel.subscribe();
+      setIsStreaming(true);
+      setIsConnecting(false);
+      toast.success("Stream spustený!");
+    } catch (error) {
+      console.error("Error starting broadcast:", error);
+      toast.error("Chyba pri spustení streamu");
+      setIsConnecting(false);
+    }
+  };
+
+  // Create offer for viewer (influencer side)
+  const createOfferForViewer = async (viewerId: string) => {
+    if (!localStreamRef.current) return;
+
+    const peerConnection = new RTCPeerConnection(rtcConfig);
+    peerConnectionRef.current = peerConnection;
+
+    // Add local stream tracks
+    localStreamRef.current.getTracks().forEach(track => {
+      peerConnection.addTrack(track, localStreamRef.current!);
+    });
+
+    // Handle ICE candidates
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate && channelRef.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'ice-candidate',
+          payload: {
+            candidate: event.candidate,
+            targetId: viewerId,
+          },
         });
+      }
+    };
+
+    // Create and send offer
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'offer',
+        payload: {
+          offer: offer,
+          targetId: viewerId,
+        },
       });
     }
-  }, [stream?.stream_url]);
+  };
+
+  // Join as viewer
+  const joinAsViewer = async () => {
+    try {
+      setIsConnecting(true);
+
+      // Setup Supabase Realtime channel
+      const channel = supabase.channel(`stream:${streamId}`, {
+        config: {
+          broadcast: { self: true },
+        },
+      });
+
+      channelRef.current = channel;
+
+      // Listen for offers from broadcaster
+      channel.on('broadcast', { event: 'offer' }, async ({ payload }) => {
+        console.log('Received offer:', payload);
+        if (payload.targetId === user?.id || !payload.targetId) {
+          await handleOffer(payload.offer);
+        }
+      });
+
+      // Listen for ICE candidates
+      channel.on('broadcast', { event: 'ice-candidate' }, async ({ payload }) => {
+        console.log('Received ICE candidate:', payload);
+        if ((payload.targetId === user?.id || !payload.targetId) && peerConnectionRef.current && payload.candidate) {
+          await peerConnectionRef.current.addIceCandidate(
+            new RTCIceCandidate(payload.candidate)
+          );
+        }
+      });
+
+      await channel.subscribe();
+
+      // Notify broadcaster that viewer joined
+      channel.send({
+        type: 'broadcast',
+        event: 'viewer-join',
+        payload: {
+          viewerId: user?.id,
+        },
+      });
+
+      setIsConnecting(false);
+    } catch (error) {
+      console.error("Error joining as viewer:", error);
+      toast.error("Chyba pri pripájaní k streamu");
+      setIsConnecting(false);
+    }
+  };
+
+  // Handle offer (viewer side)
+  const handleOffer = async (offer: RTCSessionDescriptionInit) => {
+    const peerConnection = new RTCPeerConnection(rtcConfig);
+    peerConnectionRef.current = peerConnection;
+
+    // Handle incoming stream
+    peerConnection.ontrack = (event) => {
+      console.log('Received remote track');
+      if (videoRef.current && event.streams[0]) {
+        videoRef.current.srcObject = event.streams[0];
+        setIsStreaming(true);
+      }
+    };
+
+    // Handle ICE candidates
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate && channelRef.current) {
+        channelRef.current.send({
+          type: 'broadcast',
+          event: 'ice-candidate',
+          payload: {
+            candidate: event.candidate,
+          },
+        });
+      }
+    };
+
+    // Set remote description and create answer
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+
+    // Send answer back
+    if (channelRef.current) {
+      channelRef.current.send({
+        type: 'broadcast',
+        event: 'answer',
+        payload: {
+          answer: answer,
+        },
+      });
+    }
+  };
+
+  // Stop streaming
+  const stopStreaming = () => {
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach(track => track.stop());
+      localStreamRef.current = null;
+    }
+
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.close();
+      peerConnectionRef.current = null;
+    }
+
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+
+    setIsStreaming(false);
+    toast.info("Stream ukončený");
+  };
+
+  // Auto-join as viewer if not influencer
+  useEffect(() => {
+    if (stream && user && stream.influencer_id !== user.id && stream.is_live && !isStreaming && !isConnecting) {
+      joinAsViewer();
+    }
+  }, [stream, user]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (hlsRef.current) {
-        hlsRef.current.destroy();
-      }
+      stopStreaming();
     };
   }, []);
 
@@ -332,56 +490,53 @@ export default function LiveStream() {
                     className="w-full h-full object-cover"
                     autoPlay
                     playsInline
-                    controls={stream?.stream_url ? true : false}
+                    muted={user?.id === stream.influencer_id}
                   />
                   
-                  {!stream?.stream_url && (
+                  {!isStreaming && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                       <div className="text-center text-white space-y-4">
                         <Video className="h-24 w-24 mx-auto opacity-50" />
-                        {user?.id === stream?.influencer_id ? (
+                        {user?.id === stream.influencer_id ? (
                           <>
-                            <p className="text-lg">Stream nie je nastavený</p>
-                            <p className="text-sm text-gray-300 max-w-md mx-auto px-4">
-                              Použite OBS alebo inú streaming aplikáciu a nastavte RTMP/HLS URL
-                            </p>
-                            <Button onClick={() => setShowStreamUrlDialog(true)} variant="secondary">
-                              <LinkIcon className="h-4 w-4 mr-2" />
-                              Nastaviť Stream URL
+                            <p className="text-lg">Stream nie je spustený</p>
+                            <Button 
+                              onClick={startBroadcast} 
+                              variant="secondary"
+                              disabled={isConnecting}
+                            >
+                              {isConnecting ? "Pripájam..." : "Spustiť Stream"}
                             </Button>
                           </>
                         ) : (
                           <>
-                            <p className="text-lg">Stream sa pripravuje...</p>
-                            <p className="text-sm text-gray-300">Influencer ešte nenastavil stream</p>
+                            <p className="text-lg">
+                              {isConnecting ? "Pripájam sa k streamu..." : "Stream sa pripravuje..."}
+                            </p>
                           </>
                         )}
                       </div>
                     </div>
                   )}
 
+                  {user?.id === stream.influencer_id && isStreaming && (
+                    <div className="absolute bottom-4 right-4">
+                      <Button onClick={stopStreaming} variant="destructive" size="sm">
+                        <VideoOff className="h-4 w-4 mr-2" />
+                        Zastaviť Stream
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="absolute top-4 left-4 flex gap-2">
-                    <Badge variant="destructive" className="animate-pulse">
-                      🔴 LIVE
+                    <Badge variant="destructive" className={isStreaming ? "animate-pulse" : ""}>
+                      🔴 {isStreaming ? "LIVE" : "OFFLINE"}
                     </Badge>
                     <Badge variant="secondary">
                       <Users className="h-3 w-3 mr-1" />
                       {stream.viewer_count}
                     </Badge>
                   </div>
-
-                  {user?.id === stream.influencer_id && stream?.stream_url && (
-                    <div className="absolute bottom-4 right-4">
-                      <Button 
-                        onClick={() => setShowStreamUrlDialog(true)} 
-                        variant="secondary" 
-                        size="sm"
-                      >
-                        <LinkIcon className="h-4 w-4 mr-2" />
-                        Zmeniť URL
-                      </Button>
-                    </div>
-                  )}
                 </div>
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-4">
@@ -501,48 +656,6 @@ export default function LiveStream() {
             </Card>
           </div>
         </div>
-
-        {/* Stream URL Dialog */}
-        <Dialog open={showStreamUrlDialog} onOpenChange={setShowStreamUrlDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Nastaviť Stream URL</DialogTitle>
-              <DialogDescription>
-                Zadajte HLS stream URL z vašej streamovacej aplikácie (OBS, Streamlabs, atď.)
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="streamUrl">Stream URL (HLS)</Label>
-                <Input
-                  id="streamUrl"
-                  placeholder="https://your-stream.m3u8"
-                  value={streamUrl}
-                  onChange={(e) => setStreamUrl(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Musí byť HLS stream URL končiaca na .m3u8
-                </p>
-              </div>
-              <div className="bg-muted p-4 rounded-lg space-y-2">
-                <p className="text-sm font-medium">Inštrukcie:</p>
-                <ol className="text-xs text-muted-foreground list-decimal list-inside space-y-1">
-                  <li>Nastavte streaming v OBS alebo podobnej aplikácii</li>
-                  <li>Získajte HLS stream URL od vášho streaming providera</li>
-                  <li>Vložte URL sem a kliknite "Nastaviť"</li>
-                  <li>Diváci uvidia váš stream v reálnom čase</li>
-                </ol>
-              </div>
-              <Button 
-                onClick={() => updateStreamUrlMutation.mutate(streamUrl)}
-                disabled={!streamUrl.trim() || updateStreamUrlMutation.isPending}
-                className="w-full"
-              >
-                {updateStreamUrlMutation.isPending ? "Nastavujem..." : "Nastaviť Stream URL"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
       </div>
     </div>
   );
