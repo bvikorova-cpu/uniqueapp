@@ -166,7 +166,6 @@ const Navbar = () => {
   const learningServices = [
     { path: "/education", label: t('navbar.education'), icon: GraduationCap },
     { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
-    { path: "/quiz", label: "Quiz", icon: Brain },
     { path: "/kids-homework", label: "AI Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "AI Story Creator (6-12y)", icon: BookOpen },
     { path: "/kids-math-games", label: "AI Math Games (6-12y)", icon: Calculator },
