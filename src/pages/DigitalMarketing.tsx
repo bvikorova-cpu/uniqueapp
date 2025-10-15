@@ -94,11 +94,8 @@ const DigitalMarketing = () => {
     setEnrolling(courseId);
     
     try {
-      const sessionUrl = await purchaseContent(courseId, "marketing-course", title, price);
-      
-      if (sessionUrl) {
-        window.location.href = sessionUrl;
-      }
+      await purchaseContent(courseId, "marketing-course", title, price);
+      setEnrolling(null);
     } catch (error) {
       toast({
         title: "Enrollment Failed",

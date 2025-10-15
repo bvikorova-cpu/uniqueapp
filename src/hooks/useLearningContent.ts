@@ -133,6 +133,7 @@ export const useLearningContent = () => {
       if (error) throw error;
 
       if (data.url) {
+        window.open(data.url, '_blank');
         return data.url;
       }
 
