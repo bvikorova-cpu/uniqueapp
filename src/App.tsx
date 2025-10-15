@@ -94,6 +94,7 @@ import GraphicDesign from "./pages/GraphicDesign";
 import PublicSpeaking from "./pages/PublicSpeaking";
 import FinancialInvestment from "./pages/FinancialInvestment";
 import CreativeWriting from "./pages/CreativeWriting";
+import GenericLearning from "./pages/GenericLearning";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -191,15 +192,25 @@ const App = () => (
           <Route path="/certification-programs" element={<CertificationPrograms />} />
           <Route path="/course/:certificationId" element={<CourseLearning />} />
           <Route path="/language-learning" element={<LanguageLearning />} />
+          <Route path="/language/:contentId" element={<GenericLearning />} />
           <Route path="/fitness-wellness" element={<FitnessWellness />} />
+          <Route path="/fitness/:contentId" element={<GenericLearning />} />
           <Route path="/digital-marketing" element={<DigitalMarketing />} />
+          <Route path="/marketing/:contentId" element={<GenericLearning />} />
           <Route path="/photography" element={<Photography />} />
+          <Route path="/photography/:contentId" element={<GenericLearning />} />
           <Route path="/culinary-arts" element={<CulinaryArts />} />
+          <Route path="/culinary/:contentId" element={<GenericLearning />} />
           <Route path="/music-production" element={<MusicProduction />} />
+          <Route path="/music/:contentId" element={<GenericLearning />} />
           <Route path="/graphic-design" element={<GraphicDesign />} />
+          <Route path="/design/:contentId" element={<GenericLearning />} />
           <Route path="/public-speaking" element={<PublicSpeaking />} />
+          <Route path="/speaking/:contentId" element={<GenericLearning />} />
           <Route path="/financial-investment" element={<FinancialInvestment />} />
+          <Route path="/investment/:contentId" element={<GenericLearning />} />
           <Route path="/creative-writing" element={<CreativeWriting />} />
+          <Route path="/writing/:contentId" element={<GenericLearning />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
