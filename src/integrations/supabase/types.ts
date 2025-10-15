@@ -5398,6 +5398,45 @@ export type Database = {
         }
         Relationships: []
       }
+      talent_comments: {
+        Row: {
+          comment_text: string
+          created_at: string
+          id: string
+          submission_id: string
+          user_id: string
+        }
+        Insert: {
+          comment_text: string
+          created_at?: string
+          id?: string
+          submission_id: string
+          user_id: string
+        }
+        Update: {
+          comment_text?: string
+          created_at?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "talent_comments_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "megatalent_leaderboard"
+            referencedColumns: ["submission_id"]
+          },
+          {
+            foreignKeyName: "talent_comments_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "talent_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       talent_submissions: {
         Row: {
           category: Database["public"]["Enums"]["talent_category"]
