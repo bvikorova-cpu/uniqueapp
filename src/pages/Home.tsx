@@ -399,6 +399,20 @@ const Home = () => {
               </Card>
             </Link>
 
+            <Link to="/ai-music-producer">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Music className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+                  <CardTitle>AI Music Producer</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Create custom songs with AI - any genre, mood, and style
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
             <Link to="/plant-care">
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
