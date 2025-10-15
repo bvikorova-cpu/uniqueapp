@@ -176,8 +176,6 @@ const Navbar = () => {
     { path: "/teen-career-counselor", label: "Career Counselor (13-18y)", icon: Briefcase },
     { path: "/teen-debate-partner", label: "Debate Partner (13-18y)", icon: MessageSquare },
     { path: "/teen-college-prep", label: "College Prep (13-18y)", icon: GraduationCap },
-    { path: "/teen-side-hustle", label: "Side Hustle Ideas (13-18y)", icon: DollarSign },
-    { path: "/teen-social-skills", label: "Social Skills Trainer (13-18y)", icon: Users },
   ];
 
   const exclusiveLearning = [
