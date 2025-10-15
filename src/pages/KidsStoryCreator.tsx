@@ -40,6 +40,22 @@ const KidsStoryCreator = () => {
     }
   };
 
+  const handleSaveStory = () => {
+    if (!story) return;
+    
+    const storyText = `${story.title}\n\n${story.story}`;
+    const blob = new Blob([storyText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${story.title.replace(/\s+/g, '_')}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success("Story saved! 💾");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <Navbar />
@@ -134,7 +150,7 @@ const KidsStoryCreator = () => {
                   </p>
                 </div>
 
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={handleSaveStory}>
                   <Download className="w-4 h-4 mr-2" />
                   Save Story
                 </Button>
