@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon } from "lucide-react";
+import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -37,7 +37,16 @@ const Home = () => {
     { name: "AI Music Producer", path: "/ai-music-producer", keywords: ["music", "hudba", "songs", "skladby", "producer"] },
     { name: "Plant Care", path: "/plant-care", keywords: ["plant", "rastlina", "garden", "zahrada", "care", "starostlivosť"] },
     { name: "AI Tattoo Designer", path: "/ai-tattoo", keywords: ["tattoo", "tetovanie", "design", "dizajn", "ai"] },
-    
+    { name: "Routine Optimizer", path: "/routine-optimizer", keywords: ["routine", "rutina", "optimalizácia", "produktivita"] },
+    { name: "Mystery Box", path: "/mystery-box", keywords: ["mystery", "box", "prekvapenie", "odmeny"] },
+    { name: "Astrology", path: "/astrology", keywords: ["astrology", "astrologický", "horoskop", "znamenia"] },
+    { name: "AI Music", path: "/ai-music", keywords: ["music", "hudba", "curator", "playlist"] },
+    { name: "Dream Journal", path: "/dream-journal", keywords: ["dream", "sen", "journal", "denník"] },
+    { name: "Fashion Stylist", path: "/fashion-stylist", keywords: ["fashion", "móda", "stylist", "oblečenie"] },
+    { name: "Virtual Pet", path: "/virtual-pet", keywords: ["pet", "zviera", "virtual", "virtuálny"] },
+    { name: "Brand Builder", path: "/brand-builder", keywords: ["brand", "značka", "builder", "tvorba"] },
+    { name: "Home Designer", path: "/home-designer", keywords: ["home", "dom", "designer", "dizajn", "interiér"] },
+    { name: "Beauty Studio", path: "/beauty-studio", keywords: ["beauty", "krása", "makeup", "líčenie"] },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -450,6 +459,146 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Zdravé recepty a jedálnické lístky
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/routine-optimizer">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Zap className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Routine Optimizer</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Optimalizuj svoju dennú rutinu pre maximálnu produktivitu
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/mystery-box">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Gift className="h-12 w-12 text-gold mx-auto mb-4" />
+                  <CardTitle>Mystery Box</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Otváraj prekvapenia a získaj úžasné odmeny
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/astrology">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Star className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+                  <CardTitle>Astrology</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Horoskopy, tarot čítanie a astrologické predpovede
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/ai-music">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Disc3 className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>AI Music Curator</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Personalizované playlisty na základe tvojej nálady
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/dream-journal">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <FileText className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Dream Journal</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Zaznamenávaj a analyzuj svoje sny s AI
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/fashion-stylist">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Shirt className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Fashion Stylist</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    AI štylista pre dokonalé outfity
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/virtual-pet">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <PawPrint className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Virtual Pet</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Tvoj vlastný virtuálny domáci miláčik
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/brand-builder">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Wand2 className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Brand Builder</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Vytvor svoju značku s pomocou AI
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/home-designer">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Sofa className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Home Designer</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    AI dizajn interiéru tvojho domova
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/beauty-studio">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Palette className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Beauty Studio</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Virtuálne líčenie a beauty tipy
                   </p>
                 </CardContent>
               </Card>
