@@ -84,6 +84,16 @@ import MasterclassLearning from "./pages/MasterclassLearning";
 import InteractiveWorkshops from "./pages/InteractiveWorkshops";
 import CertificationPrograms from "./pages/CertificationPrograms";
 import CourseLearning from "./pages/CourseLearning";
+import LanguageLearning from "./pages/LanguageLearning";
+import FitnessWellness from "./pages/FitnessWellness";
+import DigitalMarketing from "./pages/DigitalMarketing";
+import Photography from "./pages/Photography";
+import CulinaryArts from "./pages/CulinaryArts";
+import MusicProduction from "./pages/MusicProduction";
+import GraphicDesign from "./pages/GraphicDesign";
+import PublicSpeaking from "./pages/PublicSpeaking";
+import FinancialInvestment from "./pages/FinancialInvestment";
+import CreativeWriting from "./pages/CreativeWriting";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -180,6 +190,16 @@ const App = () => (
           <Route path="/interactive-workshops" element={<InteractiveWorkshops />} />
           <Route path="/certification-programs" element={<CertificationPrograms />} />
           <Route path="/course/:certificationId" element={<CourseLearning />} />
+          <Route path="/language-learning" element={<LanguageLearning />} />
+          <Route path="/fitness-wellness" element={<FitnessWellness />} />
+          <Route path="/digital-marketing" element={<DigitalMarketing />} />
+          <Route path="/photography" element={<Photography />} />
+          <Route path="/culinary-arts" element={<CulinaryArts />} />
+          <Route path="/music-production" element={<MusicProduction />} />
+          <Route path="/graphic-design" element={<GraphicDesign />} />
+          <Route path="/public-speaking" element={<PublicSpeaking />} />
+          <Route path="/financial-investment" element={<FinancialInvestment />} />
+          <Route path="/creative-writing" element={<CreativeWriting />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

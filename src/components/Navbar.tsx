@@ -185,6 +185,16 @@ const Navbar = () => {
     { path: "/masterclasses", label: "Expert Masterclasses", icon: Video },
     { path: "/interactive-workshops", label: "Interactive Workshops", icon: Zap },
     { path: "/certification-programs", label: "Certification Programs", icon: BookOpen },
+    { path: "/language-learning", label: "Language Learning", icon: GraduationCap },
+    { path: "/fitness-wellness", label: "Fitness & Wellness", icon: Activity },
+    { path: "/digital-marketing", label: "Digital Marketing", icon: Sparkles },
+    { path: "/photography", label: "Photography", icon: ImageIcon },
+    { path: "/culinary-arts", label: "Culinary Arts", icon: ChefHat },
+    { path: "/music-production", label: "Music Production", icon: Music },
+    { path: "/graphic-design", label: "Graphic Design", icon: Palette },
+    { path: "/public-speaking", label: "Public Speaking", icon: MessageSquare },
+    { path: "/financial-investment", label: "Financial Investment", icon: DollarSign },
+    { path: "/creative-writing", label: "Creative Writing", icon: BookOpen },
   ];
 
   const otherServices = [
