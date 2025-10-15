@@ -1,13 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useLearningContent } from "@/hooks/useLearningContent";
 import { Video, Calendar, Users, Star, Clock } from "lucide-react";
 
 const Masterclasses = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [registering, setRegistering] = useState<string | null>(null);
+  const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    
+    if (sessionId) {
+      verifyPurchase(sessionId).then((success) => {
+        if (success) {
+          toast({
+            title: "Registration Confirmed! 🎉",
+            description: "You now have access to your masterclass.",
+          });
+          window.history.replaceState({}, '', '/masterclasses');
+        }
+      });
+    }
+  }, [verifyPurchase, toast]);
 
   const masterclasses = [
     {
@@ -17,15 +38,15 @@ const Masterclasses = () => {
       expertise: "Leadership & Organizational Strategy",
       description: "Learn the principles of inspirational leadership from one of the world's top thought leaders",
       price: 299,
-      date: "March 15, 2024",
-      time: "2:00 PM - 5:00 PM EST",
+      date: "Available Now",
+      time: "On-Demand Access",
       duration: "3 hours",
-      attendees: 156,
-      maxAttendees: 200,
+      attendees: 0,
+      maxAttendees: 999,
       rating: 5.0,
       image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400",
       topics: ["Inspirational Leadership", "Team Building", "Company Culture", "Vision & Mission"],
-      format: "Live Interactive Session"
+      format: "Video Masterclass + Materials"
     },
     {
       id: "ai-innovation",
@@ -34,15 +55,15 @@ const Masterclasses = () => {
       expertise: "Artificial Intelligence & Machine Learning",
       description: "Explore cutting-edge AI applications and future trends with a pioneer in machine learning",
       price: 399,
-      date: "March 20, 2024",
-      time: "10:00 AM - 1:00 PM PST",
+      date: "Available Now",
+      time: "On-Demand Access",
       duration: "3 hours",
-      attendees: 178,
-      maxAttendees: 150,
+      attendees: 0,
+      maxAttendees: 999,
       rating: 5.0,
       image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400",
       topics: ["Machine Learning", "Deep Learning", "AI Ethics", "Future of AI"],
-      format: "Live Workshop + Q&A"
+      format: "Video Workshop + Q&A Resources"
     },
     {
       id: "business-strategy",
@@ -51,15 +72,15 @@ const Masterclasses = () => {
       expertise: "Entrepreneurship & Digital Marketing",
       description: "Master modern business strategy and digital marketing from a serial entrepreneur",
       price: 249,
-      date: "March 25, 2024",
-      time: "1:00 PM - 4:00 PM EST",
+      date: "Available Now",
+      time: "On-Demand Access",
       duration: "3 hours",
-      attendees: 143,
-      maxAttendees: 200,
+      attendees: 0,
+      maxAttendees: 999,
       rating: 4.9,
       image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400",
       topics: ["Business Strategy", "Social Media Marketing", "Brand Building", "Hustle Culture"],
-      format: "Interactive Masterclass"
+      format: "Video Masterclass + Workbook"
     },
     {
       id: "design-thinking",
@@ -68,39 +89,45 @@ const Masterclasses = () => {
       expertise: "Design Thinking & Innovation",
       description: "Learn how to apply design thinking to solve complex business challenges",
       price: 279,
-      date: "April 1, 2024",
-      time: "11:00 AM - 2:00 PM GMT",
+      date: "Available Now",
+      time: "On-Demand Access",
       duration: "3 hours",
-      attendees: 89,
-      maxAttendees: 150,
+      attendees: 0,
+      maxAttendees: 999,
       rating: 4.9,
       image: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=400",
       topics: ["Design Thinking", "Innovation Strategy", "User-Centered Design", "Prototyping"],
-      format: "Hands-on Workshop"
+      format: "Video Workshop + Templates"
     }
   ];
 
-  const handleRegister = (classId: string, price: number, title: string) => {
-    setRegistering(classId);
-    toast({
-      title: "Processing Registration",
-      description: `Securing your spot for $${price}...`,
-    });
-    
-    setTimeout(() => {
-      toast({
-        title: "Registration Confirmed!",
-        description: `You're registered for: ${title}`,
-      });
-      setRegistering(null);
-    }, 2000);
-  };
+  const handleRegister = async (classId: string, price: number, title: string) => {
+    if (isPurchased(classId, "masterclass")) {
+      navigate(`/masterclass/${classId}`);
+      return;
+    }
 
-  const getAvailabilityColor = (attendees: number, max: number) => {
-    const percentage = (attendees / max) * 100;
-    if (percentage >= 90) return "text-red-500";
-    if (percentage >= 70) return "text-yellow-500";
-    return "text-green-500";
+    setRegistering(classId);
+    
+    try {
+      const sessionUrl = await purchaseContent(classId, "masterclass", title, price);
+      
+      if (sessionUrl) {
+        window.open(sessionUrl, '_blank');
+        toast({
+          title: "Redirecting to Payment",
+          description: "Complete your payment to access the masterclass.",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Registration Failed",
+        description: "Please try again or contact support.",
+        variant: "destructive",
+      });
+    } finally {
+      setRegistering(null);
+    }
   };
 
   return (
@@ -125,10 +152,16 @@ const Masterclasses = () => {
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-4 right-4">
-                  <Badge className="bg-red-500 text-white">
-                    <Video className="w-3 h-3 mr-1" />
-                    LIVE
-                  </Badge>
+                  {isPurchased(masterclass.id, "masterclass") ? (
+                    <Badge className="bg-success">
+                      Purchased
+                    </Badge>
+                  ) : (
+                    <Badge className="bg-primary">
+                      <Video className="w-3 h-3 mr-1" />
+                      On-Demand
+                    </Badge>
+                  )}
                 </div>
               </div>
               
@@ -157,13 +190,7 @@ const Masterclasses = () => {
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <Clock className="w-4 h-4 text-primary" />
-                    <span>{masterclass.duration} live session</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Users className={`w-4 h-4 ${getAvailabilityColor(masterclass.attendees, masterclass.maxAttendees)}`} />
-                    <span className={getAvailabilityColor(masterclass.attendees, masterclass.maxAttendees)}>
-                      {masterclass.attendees}/{masterclass.maxAttendees} spots filled
-                    </span>
+                    <span>{masterclass.duration} of content</span>
                   </div>
                 </div>
 
@@ -185,13 +212,14 @@ const Masterclasses = () => {
                   </div>
                   <Button
                     onClick={() => handleRegister(masterclass.id, masterclass.price, masterclass.title)}
-                    disabled={registering === masterclass.id || masterclass.attendees >= masterclass.maxAttendees}
+                    disabled={registering === masterclass.id || loading}
                     size="lg"
+                    variant={isPurchased(masterclass.id, "masterclass") ? "secondary" : "default"}
                   >
-                    {masterclass.attendees >= masterclass.maxAttendees 
-                      ? "Sold Out" 
-                      : registering === masterclass.id 
+                    {registering === masterclass.id 
                       ? "Processing..." 
+                      : isPurchased(masterclass.id, "masterclass")
+                      ? "Access Masterclass"
                       : "Register Now"}
                   </Button>
                 </div>

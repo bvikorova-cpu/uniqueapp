@@ -80,6 +80,7 @@ import TeenSideHustle from "./pages/TeenSideHustle";
 import TeenSocialSkills from "./pages/TeenSocialSkills";
 import PremiumCourses from "./pages/PremiumCourses";
 import Masterclasses from "./pages/Masterclasses";
+import MasterclassLearning from "./pages/MasterclassLearning";
 import InteractiveWorkshops from "./pages/InteractiveWorkshops";
 import CertificationPrograms from "./pages/CertificationPrograms";
 import CourseLearning from "./pages/CourseLearning";
@@ -175,6 +176,7 @@ const App = () => (
           <Route path="/teen-social-skills" element={<TeenSocialSkills />} />
           <Route path="/premium-courses" element={<PremiumCourses />} />
           <Route path="/masterclasses" element={<Masterclasses />} />
+          <Route path="/masterclass/:masterclassId" element={<MasterclassLearning />} />
           <Route path="/interactive-workshops" element={<InteractiveWorkshops />} />
           <Route path="/certification-programs" element={<CertificationPrograms />} />
           <Route path="/course/:certificationId" element={<CourseLearning />} />
