@@ -82,6 +82,10 @@ serve(async (req) => {
 
     const baseRoute = routeMap[contentType] || contentType;
 
+    // Get origin with fallback
+    const origin = req.headers.get("origin") || "https://3ea492b4-277a-4b1d-a6dd-ca2a3efd9225.lovableproject.com";
+    console.log("Creating payment session:", { contentType, baseRoute, origin, title, price });
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -99,8 +103,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/${baseRoute}?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/${baseRoute}`,
+      success_url: `${origin}/${baseRoute}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/${baseRoute}`,
       metadata: {
         user_id: user.id,
         content_id: contentId,
