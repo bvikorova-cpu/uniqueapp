@@ -1,6 +1,7 @@
 export interface Topic {
   title: string;
   content: string;
+  videoUrl?: string;
 }
 
 export const courseContent: Record<string, Topic[]> = {

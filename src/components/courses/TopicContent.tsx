@@ -6,6 +6,7 @@ import { CheckCircle, Clock } from "lucide-react";
 interface Topic {
   title: string;
   content: string;
+  videoUrl?: string;
 }
 
 interface TopicContentProps {
@@ -48,7 +49,21 @@ export const TopicContent = ({
           </CardDescription>
           <Progress value={progress} className="h-2 mt-2" />
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
+          {/* Video Lesson */}
+          {topic.videoUrl && (
+            <div className="relative rounded-lg overflow-hidden bg-black aspect-video">
+              <iframe
+                src={topic.videoUrl}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={topic.title}
+              />
+            </div>
+          )}
+
+          {/* Text Content */}
           <div className="prose prose-sm max-w-none dark:prose-invert">
             <div className="space-y-4 leading-relaxed text-muted-foreground whitespace-pre-line">
               {topic.content}
