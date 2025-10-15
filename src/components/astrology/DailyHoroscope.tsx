@@ -73,7 +73,7 @@ export const DailyHoroscope = () => {
         content: data.content,
         lucky_numbers: data.luckyNumbers,
         lucky_colors: data.luckyColors,
-        compatibility_signs: data.compatibilitySigns,
+        compatibility_signs: data.compatibilitySigns?.map((sign: string) => sign.toLowerCase()),
         mood_score: data.moodScore,
         love_score: data.loveScore,
         career_score: data.careerScore,
