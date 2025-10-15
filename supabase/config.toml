@@ -1,5 +1,8 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.teen-debate-partner]
+verify_jwt = false
+
 [functions.teen-career-counselor]
 verify_jwt = false
 
