@@ -76,8 +76,6 @@ import TeenStudyPlanner from "./pages/TeenStudyPlanner";
 import TeenCareerCounselor from "./pages/TeenCareerCounselor";
 import TeenDebatePartner from "./pages/TeenDebatePartner";
 import TeenCollegePrep from "./pages/TeenCollegePrep";
-import TeenSideHustle from "./pages/TeenSideHustle";
-import TeenSocialSkills from "./pages/TeenSocialSkills";
 import PremiumCourses from "./pages/PremiumCourses";
 import Masterclasses from "./pages/Masterclasses";
 import MasterclassLearning from "./pages/MasterclassLearning";
@@ -183,8 +181,6 @@ const App = () => (
           <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />
           <Route path="/teen-debate-partner" element={<TeenDebatePartner />} />
           <Route path="/teen-college-prep" element={<TeenCollegePrep />} />
-          <Route path="/teen-side-hustle" element={<TeenSideHustle />} />
-          <Route path="/teen-social-skills" element={<TeenSocialSkills />} />
           <Route path="/premium-courses" element={<PremiumCourses />} />
           <Route path="/masterclasses" element={<Masterclasses />} />
           <Route path="/masterclass/:masterclassId" element={<MasterclassLearning />} />
