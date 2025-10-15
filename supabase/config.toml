@@ -125,3 +125,6 @@ verify_jwt = false
 
 [functions.kids-homework-helper]
 verify_jwt = false
+
+[functions.kids-story-creator]
+verify_jwt = false
