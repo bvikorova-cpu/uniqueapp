@@ -256,22 +256,22 @@ export default function Quiz() {
         <div className="container mx-auto px-4 max-w-2xl">
           <Card>
             <CardHeader>
-              <CardTitle className="text-3xl text-center">Výsledky kvízu</CardTitle>
+              <CardTitle className="text-3xl text-center">Quiz Results</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6 text-center">
               <div className="text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                 {percentage}%
               </div>
               <p className="text-xl">
-                Správne odpovede: {score} z {questions.length}
+                Correct answers: {score} of {questions.length}
               </p>
               <div className="space-y-2">
                 <Button onClick={handleRestart} className="w-full" size="lg">
-                  Skúsiť znova
+                  Try Again
                 </Button>
                 <Button onClick={() => navigate("/education")} variant="outline" className="w-full" size="lg">
                   <ArrowLeft className="h-4 w-4 mr-2" />
-                  Späť na vzdelávanie
+                  Back to Education
                 </Button>
               </div>
             </CardContent>
@@ -290,14 +290,14 @@ export default function Quiz() {
           className="mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Späť
+          Back
         </Button>
 
         <Card>
           <CardHeader>
             <div className="space-y-2">
               <CardDescription>
-                Otázka {currentQuestion + 1} z {questions.length}
+                Question {currentQuestion + 1} of {questions.length}
               </CardDescription>
               <Progress value={progress} />
             </div>
@@ -351,7 +351,7 @@ export default function Quiz() {
                   className="w-full"
                   size="lg"
                 >
-                  Potvrdiť odpoveď
+                  Confirm Answer
                 </Button>
               ) : (
                 <Button 
@@ -359,13 +359,13 @@ export default function Quiz() {
                   className="w-full"
                   size="lg"
                 >
-                  {currentQuestion < questions.length - 1 ? "Ďalšia otázka" : "Zobraziť výsledky"}
+                  {currentQuestion < questions.length - 1 ? "Next Question" : "Show Results"}
                 </Button>
               )}
             </div>
 
             <div className="text-center text-sm text-muted-foreground">
-              Skóre: {score} / {currentQuestion + (answered ? 1 : 0)}
+              Score: {score} / {currentQuestion + (answered ? 1 : 0)}
             </div>
           </CardContent>
         </Card>
