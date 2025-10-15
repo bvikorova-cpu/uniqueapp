@@ -138,7 +138,7 @@ const KidsMathGames = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-center text-3xl">
+                  <CardTitle className="text-center text-4xl md:text-5xl font-bold text-foreground mb-4">
                     {loading ? "Loading..." : problem?.question}
                   </CardTitle>
                 </CardHeader>
@@ -148,7 +148,7 @@ const KidsMathGames = () => {
                     value={answer}
                     onChange={(e) => setAnswer(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && checkAnswer()}
-                    className="w-full text-center text-2xl p-4 border rounded-lg"
+                    className="w-full text-center text-2xl p-4 border rounded-lg bg-background text-foreground"
                     placeholder="Your answer"
                     disabled={loading}
                   />
