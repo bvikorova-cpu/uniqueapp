@@ -131,3 +131,6 @@ verify_jwt = false
 
 [functions.kids-science-lab]
 verify_jwt = false
+
+[functions.kids-drawing-tutorial]
+verify_jwt = false
