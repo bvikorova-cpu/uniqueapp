@@ -554,5 +554,20 @@
     "sign_up": "Sign up",
     "welcome": "Welcome!",
     "please_login": "Please log in to continue"
+  },
+  "kidsReading": {
+    "title": "AI Reading Companion 📚",
+    "subtitle": "Read with AI explanations and fun quizzes!",
+    "pasteTitle": "Paste Your Reading",
+    "pasteDescription": "Copy and paste text from your book or story",
+    "placeholder": "Paste your reading text here...",
+    "getExplanations": "Get Explanations",
+    "takeQuiz": "Take Quiz",
+    "understandingTitle": "Understanding the Text",
+    "summary": "Summary:",
+    "newWords": "New Words to Learn:",
+    "quizTitle": "Comprehension Quiz",
+    "checkAnswer": "Check Answer",
+    "backToReading": "Back to Reading"
   }
 }

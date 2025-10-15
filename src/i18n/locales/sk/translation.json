@@ -150,5 +150,20 @@
     "invite_friend": "Pozvi priateľa",
     "education": "Vzdelávanie",
     "terms": "Podmienky"
+  },
+  "kidsReading": {
+    "title": "AI Reading Companion 📚",
+    "subtitle": "Čítaj s AI vysvetleniami a zábavnými kvízmi!",
+    "pasteTitle": "Vlož svoj text na čítanie",
+    "pasteDescription": "Skopíruj a vlož text z knihy alebo príbehu",
+    "placeholder": "Vlož sem text na čítanie...",
+    "getExplanations": "Získaj vysvetlenia",
+    "takeQuiz": "Spustiť kvíz",
+    "understandingTitle": "Pochopenie textu",
+    "summary": "Zhrnutie:",
+    "newWords": "Nové slová na naučenie:",
+    "quizTitle": "Kvíz na porozumenie",
+    "checkAnswer": "Skontrolovať odpoveď",
+    "backToReading": "Späť na čítanie"
   }
 }

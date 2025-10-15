@@ -5,10 +5,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { BookOpen, HelpCircle, Award } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const KidsReadingCompanion = () => {
+  const { t } = useTranslation();
   const [bookText, setBookText] = useState("");
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<any>(null);
@@ -78,10 +80,10 @@ const KidsReadingCompanion = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              AI Reading Companion 📚
+              {t('kidsReading.title')}
             </h1>
             <p className="text-muted-foreground">
-              Read with AI explanations and fun quizzes!
+              {t('kidsReading.subtitle')}
             </p>
           </div>
 
@@ -89,28 +91,28 @@ const KidsReadingCompanion = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BookOpen className="w-5 h-5" />
-                Paste Your Reading
+                {t('kidsReading.pasteTitle')}
               </CardTitle>
               <CardDescription>
-                Copy and paste text from your book or story
+                {t('kidsReading.pasteDescription')}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Textarea
                 value={bookText}
                 onChange={(e) => setBookText(e.target.value)}
-                placeholder="Paste your reading text here..."
+                placeholder={t('kidsReading.placeholder')}
                 className="min-h-[200px]"
               />
 
               <div className="grid grid-cols-2 gap-2">
                 <Button onClick={analyzeText} disabled={loading || !bookText.trim()}>
                   <HelpCircle className="w-4 h-4 mr-2" />
-                  Get Explanations
+                  {t('kidsReading.getExplanations')}
                 </Button>
                 <Button onClick={generateQuiz} disabled={loading || !bookText.trim()} variant="outline">
                   <Award className="w-4 h-4 mr-2" />
-                  Take Quiz
+                  {t('kidsReading.takeQuiz')}
                 </Button>
               </div>
             </CardContent>
@@ -119,17 +121,17 @@ const KidsReadingCompanion = () => {
           {analysis && !showQuiz && (
             <Card className="bg-gradient-to-br from-primary/5 to-secondary/10">
               <CardHeader>
-                <CardTitle>Understanding the Text</CardTitle>
+                <CardTitle>{t('kidsReading.understandingTitle')}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Summary:</h3>
+                  <h3 className="font-semibold mb-2">{t('kidsReading.summary')}</h3>
                   <p className="text-muted-foreground">{analysis.summary}</p>
                 </div>
 
                 {analysis.vocabulary && analysis.vocabulary.length > 0 && (
                   <div>
-                    <h3 className="font-semibold mb-2">New Words to Learn:</h3>
+                    <h3 className="font-semibold mb-2">{t('kidsReading.newWords')}</h3>
                     <div className="space-y-2">
                       {analysis.vocabulary.map((word: any, index: number) => (
                         <div key={index} className="bg-background/50 p-3 rounded-lg">
@@ -149,7 +151,7 @@ const KidsReadingCompanion = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Award className="w-5 h-5 text-primary" />
-                  Comprehension Quiz
+                  {t('kidsReading.quizTitle')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -174,10 +176,10 @@ const KidsReadingCompanion = () => {
 
                 <div className="grid grid-cols-2 gap-2">
                   <Button onClick={checkAnswer} disabled={!selectedAnswer}>
-                    Check Answer
+                    {t('kidsReading.checkAnswer')}
                   </Button>
                   <Button variant="outline" onClick={() => setShowQuiz(false)}>
-                    Back to Reading
+                    {t('kidsReading.backToReading')}
                   </Button>
                 </div>
               </CardContent>
