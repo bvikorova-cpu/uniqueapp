@@ -62,13 +62,33 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
+    // Map content types to their proper routes
+    const routeMap: Record<string, string> = {
+      'writing-workshop': 'creative-writing',
+      'language-program': 'language-learning',
+      'fitness-program': 'fitness-wellness',
+      'marketing-course': 'digital-marketing',
+      'photography-masterclass': 'photography',
+      'culinary-program': 'culinary-arts',
+      'music-course': 'music-production',
+      'design-training': 'graphic-design',
+      'speaking-academy': 'public-speaking',
+      'investment-education': 'financial-investment',
+      'certification': 'certification-programs',
+      'masterclass': 'masterclasses',
+      'workshop': 'interactive-workshops',
+      'course': 'premium-courses'
+    };
+
+    const baseRoute = routeMap[contentType] || contentType;
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
           price_data: {
-            currency: "usd",
+            currency: "eur",
             product_data: {
               name: title,
               description: `${contentType} - ${title}`,
@@ -79,8 +99,8 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/${contentType}s?session_id={CHECKOUT_SESSION_ID}&success=true`,
-      cancel_url: `${req.headers.get("origin")}/${contentType}s?canceled=true`,
+      success_url: `${req.headers.get("origin")}/${baseRoute}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/${baseRoute}`,
       metadata: {
         user_id: user.id,
         content_id: contentId,
