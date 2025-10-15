@@ -229,8 +229,15 @@ export default function LiveStream() {
           <div className="lg:col-span-2">
             <Card>
               <CardContent className="p-0">
-                <div className="relative bg-black aspect-video rounded-t-lg flex items-center justify-center">
-                  <Video className="h-24 w-24 text-white/20" />
+                <div className="relative bg-black aspect-video rounded-t-lg overflow-hidden">
+                  <video 
+                    className="w-full h-full object-cover"
+                    poster="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1920&q=80"
+                    controls
+                  >
+                    <source src="" type="video/mp4" />
+                    Váš prehliadač nepodporuje video element.
+                  </video>
                   <div className="absolute top-4 left-4 flex gap-2">
                     <Badge variant="destructive" className="animate-pulse">
                       🔴 LIVE
