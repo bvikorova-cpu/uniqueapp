@@ -137,3 +137,6 @@ verify_jwt = false
 
 [functions.kids-reading-companion]
 verify_jwt = false
+
+[functions.teen-study-planner]
+verify_jwt = false
