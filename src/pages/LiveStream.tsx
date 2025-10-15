@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Video, Send, Users, Gift, ArrowLeft } from "lucide-react";
+import { Video, Send, Users, Gift, ArrowLeft, Link as LinkIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import Hls from "hls.js";
 
 interface Message {
   id: string;
@@ -50,12 +52,12 @@ export default function LiveStream() {
   const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
   const [giftMessage, setGiftMessage] = useState("");
+  const [streamUrl, setStreamUrl] = useState("");
+  const [showStreamUrlDialog, setShowStreamUrlDialog] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [cameraError, setCameraError] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
+  const hlsRef = useRef<Hls | null>(null);
 
   // Fetch available gifts
   const { data: gifts = [] } = useQuery({
@@ -204,58 +206,96 @@ export default function LiveStream() {
     },
   });
 
-  // Start camera for influencer
-  const startCamera = async () => {
-    try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-          facingMode: "user"
-        },
-        audio: true
+  // Update stream URL mutation
+  const updateStreamUrlMutation = useMutation({
+    mutationFn: async (url: string) => {
+      if (!user || !streamId) throw new Error("Missing required data");
+      
+      const { error } = await supabase
+        .from("live_streams")
+        .update({ stream_url: url })
+        .eq("id", streamId)
+        .eq("influencer_id", stream?.influencer_id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setShowStreamUrlDialog(false);
+      queryClient.invalidateQueries({ queryKey: ["stream", streamId] });
+      toast.success("Stream URL nastavená!");
+    },
+    onError: (error) => {
+      toast.error("Chyba pri nastavení stream URL");
+      console.error(error);
+    },
+  });
+
+  // Setup HLS player
+  useEffect(() => {
+    if (!stream?.stream_url || !videoRef.current) return;
+
+    const video = videoRef.current;
+
+    if (Hls.isSupported()) {
+      const hls = new Hls({
+        enableWorker: true,
+        lowLatencyMode: true,
       });
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        streamRef.current = mediaStream;
-        setIsStreaming(true);
-        setCameraError("");
-        toast.success("Kamera zapnutá!");
-      }
-    } catch (error) {
-      console.error("Error accessing camera:", error);
-      setCameraError("Nepodarilo sa získať prístup ku kamere. Skontrolujte povolenia.");
-      toast.error("Chyba pri zapínaní kamery");
-    }
-  };
+      hlsRef.current = hls;
+      hls.loadSource(stream.stream_url);
+      hls.attachMedia(video);
 
-  // Stop camera
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-      if (videoRef.current) {
-        videoRef.current.srcObject = null;
-      }
-      streamRef.current = null;
-      setIsStreaming(false);
-      toast.info("Kamera vypnutá");
-    }
-  };
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch((error) => {
+          console.error("Error playing video:", error);
+        });
+      });
 
-  // Cleanup camera on unmount
+      hls.on(Hls.Events.ERROR, (event, data) => {
+        if (data.fatal) {
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              console.error("Network error encountered, trying to recover");
+              hls.startLoad();
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              console.error("Media error encountered, trying to recover");
+              hls.recoverMediaError();
+              break;
+            default:
+              console.error("Fatal error, cannot recover");
+              hls.destroy();
+              break;
+          }
+        }
+      });
+
+      return () => {
+        if (hlsRef.current) {
+          hlsRef.current.destroy();
+          hlsRef.current = null;
+        }
+      };
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      // For Safari native HLS support
+      video.src = stream.stream_url;
+      video.addEventListener("loadedmetadata", () => {
+        video.play().catch((error) => {
+          console.error("Error playing video:", error);
+        });
+      });
+    }
+  }, [stream?.stream_url]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      stopCamera();
+      if (hlsRef.current) {
+        hlsRef.current.destroy();
+      }
     };
   }, []);
-
-  // Auto-start camera if user is the influencer
-  useEffect(() => {
-    if (stream && user && stream.influencer_id === user.id && !isStreaming) {
-      startCamera();
-    }
-  }, [stream, user]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -292,37 +332,31 @@ export default function LiveStream() {
                     className="w-full h-full object-cover"
                     autoPlay
                     playsInline
-                    muted={user?.id === stream.influencer_id}
-                  >
-                    Váš prehliadač nepodporuje video element.
-                  </video>
+                    controls={stream?.stream_url ? true : false}
+                  />
                   
-                  {!isStreaming && (
+                  {!stream?.stream_url && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                      <div className="text-center text-white">
-                        <Video className="h-24 w-24 mx-auto mb-4 opacity-50" />
-                        {user?.id === stream.influencer_id ? (
-                          <div className="space-y-2">
-                            <p className="text-lg">Kamera nie je zapnutá</p>
-                            <Button onClick={startCamera} variant="secondary">
-                              Zapnúť kameru
+                      <div className="text-center text-white space-y-4">
+                        <Video className="h-24 w-24 mx-auto opacity-50" />
+                        {user?.id === stream?.influencer_id ? (
+                          <>
+                            <p className="text-lg">Stream nie je nastavený</p>
+                            <p className="text-sm text-gray-300 max-w-md mx-auto px-4">
+                              Použite OBS alebo inú streaming aplikáciu a nastavte RTMP/HLS URL
+                            </p>
+                            <Button onClick={() => setShowStreamUrlDialog(true)} variant="secondary">
+                              <LinkIcon className="h-4 w-4 mr-2" />
+                              Nastaviť Stream URL
                             </Button>
-                            {cameraError && (
-                              <p className="text-sm text-red-400 mt-2">{cameraError}</p>
-                            )}
-                          </div>
+                          </>
                         ) : (
-                          <p className="text-lg">Stream sa pripravuje...</p>
+                          <>
+                            <p className="text-lg">Stream sa pripravuje...</p>
+                            <p className="text-sm text-gray-300">Influencer ešte nenastavil stream</p>
+                          </>
                         )}
                       </div>
-                    </div>
-                  )}
-
-                  {user?.id === stream.influencer_id && isStreaming && (
-                    <div className="absolute bottom-4 right-4">
-                      <Button onClick={stopCamera} variant="destructive" size="sm">
-                        Vypnúť kameru
-                      </Button>
                     </div>
                   )}
 
@@ -335,6 +369,19 @@ export default function LiveStream() {
                       {stream.viewer_count}
                     </Badge>
                   </div>
+
+                  {user?.id === stream.influencer_id && stream?.stream_url && (
+                    <div className="absolute bottom-4 right-4">
+                      <Button 
+                        onClick={() => setShowStreamUrlDialog(true)} 
+                        variant="secondary" 
+                        size="sm"
+                      >
+                        <LinkIcon className="h-4 w-4 mr-2" />
+                        Zmeniť URL
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-4">
@@ -454,6 +501,48 @@ export default function LiveStream() {
             </Card>
           </div>
         </div>
+
+        {/* Stream URL Dialog */}
+        <Dialog open={showStreamUrlDialog} onOpenChange={setShowStreamUrlDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Nastaviť Stream URL</DialogTitle>
+              <DialogDescription>
+                Zadajte HLS stream URL z vašej streamovacej aplikácie (OBS, Streamlabs, atď.)
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="streamUrl">Stream URL (HLS)</Label>
+                <Input
+                  id="streamUrl"
+                  placeholder="https://your-stream.m3u8"
+                  value={streamUrl}
+                  onChange={(e) => setStreamUrl(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Musí byť HLS stream URL končiaca na .m3u8
+                </p>
+              </div>
+              <div className="bg-muted p-4 rounded-lg space-y-2">
+                <p className="text-sm font-medium">Inštrukcie:</p>
+                <ol className="text-xs text-muted-foreground list-decimal list-inside space-y-1">
+                  <li>Nastavte streaming v OBS alebo podobnej aplikácii</li>
+                  <li>Získajte HLS stream URL od vášho streaming providera</li>
+                  <li>Vložte URL sem a kliknite "Nastaviť"</li>
+                  <li>Diváci uvidia váš stream v reálnom čase</li>
+                </ol>
+              </div>
+              <Button 
+                onClick={() => updateStreamUrlMutation.mutate(streamUrl)}
+                disabled={!streamUrl.trim() || updateStreamUrlMutation.isPending}
+                className="w-full"
+              >
+                {updateStreamUrlMutation.isPending ? "Nastavujem..." : "Nastaviť Stream URL"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

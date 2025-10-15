@@ -2922,6 +2922,7 @@ export type Database = {
           is_live: boolean | null
           started_at: string | null
           stream_key: string
+          stream_url: string | null
           thumbnail_url: string | null
           title: string
           updated_at: string | null
@@ -2936,6 +2937,7 @@ export type Database = {
           is_live?: boolean | null
           started_at?: string | null
           stream_key: string
+          stream_url?: string | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string | null
@@ -2950,6 +2952,7 @@ export type Database = {
           is_live?: boolean | null
           started_at?: string | null
           stream_key?: string
+          stream_url?: string | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string | null
