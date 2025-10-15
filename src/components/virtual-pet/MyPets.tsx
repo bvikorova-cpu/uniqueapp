@@ -49,6 +49,18 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
     }
   });
 
+  const handleAdoptPet = () => {
+    if (!newPetName.trim()) {
+      toast.error('Please enter a pet name');
+      return;
+    }
+    if (!selectedTypeId) {
+      toast.error('Please select a pet type');
+      return;
+    }
+    createPetMutation.mutate();
+  };
+
   const createPetMutation = useMutation({
     mutationFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -169,7 +181,7 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
             <DialogHeader>
               <DialogTitle>Adopt a New Pet</DialogTitle>
             </DialogHeader>
-            <form onSubmit={(e) => { e.preventDefault(); createPetMutation.mutate(); }} className="space-y-4">
+            <form onSubmit={(e) => { e.preventDefault(); handleAdoptPet(); }} className="space-y-4">
               <div>
                 <Label htmlFor="petName">Pet Name</Label>
                 <Input
@@ -183,7 +195,7 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
 
               <div>
                 <Label htmlFor="petType">Pet Type</Label>
-                <Select value={selectedTypeId} onValueChange={setSelectedTypeId} required>
+                <Select value={selectedTypeId} onValueChange={setSelectedTypeId}>
                   <SelectTrigger>
                     <SelectValue placeholder="Choose a pet type..." />
                   </SelectTrigger>
