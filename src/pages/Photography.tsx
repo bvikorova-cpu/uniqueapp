@@ -87,7 +87,10 @@ const Photography = () => {
 
   const handleEnroll = async (masterclassId: string, price: number, title: string) => {
     if (isPurchased(masterclassId, "photography-masterclass")) {
-      navigate(`/photography/${masterclassId}`);
+      toast({
+        title: "Already Enrolled",
+        description: "You already have access to this masterclass.",
+      });
       return;
     }
 
