@@ -87,6 +87,7 @@ export default function LiveStream() {
         .select(`
           *,
           influencer_profiles(
+            user_id,
             display_name,
             profile_photo_url
           )
@@ -490,22 +491,24 @@ export default function LiveStream() {
                     className="w-full h-full object-cover"
                     autoPlay
                     playsInline
-                    muted={user?.id === stream.influencer_id}
+                    muted={user?.id === stream.influencer_profiles?.user_id}
                   />
                   
                   {!isStreaming && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                       <div className="text-center text-white space-y-4">
                         <Video className="h-24 w-24 mx-auto opacity-50" />
-                        {user?.id === stream.influencer_id ? (
+                        {user?.id === stream.influencer_profiles?.user_id ? (
                           <>
-                            <p className="text-lg">Stream nie je spustený</p>
+                            <p className="text-lg">Klikni na tlačidlo pre spustenie kamery</p>
                             <Button 
                               onClick={startBroadcast} 
-                              variant="secondary"
+                              variant="default"
+                              size="lg"
                               disabled={isConnecting}
+                              className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700"
                             >
-                              {isConnecting ? "Pripájam..." : "Spustiť Stream"}
+                              {isConnecting ? "Pripájam kameru..." : "📹 Spustiť kameru"}
                             </Button>
                           </>
                         ) : (
@@ -519,7 +522,7 @@ export default function LiveStream() {
                     </div>
                   )}
 
-                  {user?.id === stream.influencer_id && isStreaming && (
+                  {user?.id === stream.influencer_profiles?.user_id && isStreaming && (
                     <div className="absolute bottom-4 right-4">
                       <Button onClick={stopStreaming} variant="destructive" size="sm">
                         <VideoOff className="h-4 w-4 mr-2" />
