@@ -1,5 +1,8 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.teen-career-counselor]
+verify_jwt = false
+
 [functions.outfit-recommender]
 verify_jwt = true
 
