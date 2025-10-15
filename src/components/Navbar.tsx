@@ -180,6 +180,13 @@ const Navbar = () => {
     { path: "/teen-social-skills", label: "Social Skills Trainer (13-18y)", icon: Users },
   ];
 
+  const exclusiveLearning = [
+    { path: "/premium-courses", label: "Premium Courses", icon: Award },
+    { path: "/masterclasses", label: "Expert Masterclasses", icon: Video },
+    { path: "/interactive-workshops", label: "Interactive Workshops", icon: Zap },
+    { path: "/certification-programs", label: "Certification Programs", icon: BookOpen },
+  ];
+
   const otherServices = [
     { path: "/tiktok", label: t('navbar.videos'), icon: Video },
     { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
@@ -269,6 +276,22 @@ const Navbar = () => {
                 {learningServices.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
+                  
+                  return (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full cursor-pointer">
+                        <Icon className="h-4 w-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+                <div className="border-t my-1" />
+                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                  Exclusive Content
+                </div>
+                {exclusiveLearning.map((item) => {
+                  const Icon = item.icon;
                   
                   return (
                     <DropdownMenuItem key={item.path} asChild>

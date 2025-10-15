@@ -78,6 +78,10 @@ import TeenDebatePartner from "./pages/TeenDebatePartner";
 import TeenCollegePrep from "./pages/TeenCollegePrep";
 import TeenSideHustle from "./pages/TeenSideHustle";
 import TeenSocialSkills from "./pages/TeenSocialSkills";
+import PremiumCourses from "./pages/PremiumCourses";
+import Masterclasses from "./pages/Masterclasses";
+import InteractiveWorkshops from "./pages/InteractiveWorkshops";
+import CertificationPrograms from "./pages/CertificationPrograms";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -168,6 +172,10 @@ const App = () => (
           <Route path="/teen-college-prep" element={<TeenCollegePrep />} />
           <Route path="/teen-side-hustle" element={<TeenSideHustle />} />
           <Route path="/teen-social-skills" element={<TeenSocialSkills />} />
+          <Route path="/premium-courses" element={<PremiumCourses />} />
+          <Route path="/masterclasses" element={<Masterclasses />} />
+          <Route path="/interactive-workshops" element={<InteractiveWorkshops />} />
+          <Route path="/certification-programs" element={<CertificationPrograms />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
