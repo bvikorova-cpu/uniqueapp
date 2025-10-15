@@ -16,7 +16,7 @@ const PremiumCourses = () => {
       id: "web-dev-mastery",
       title: "Complete Web Development Mastery",
       description: "Master modern web development with React, TypeScript, and Node.js",
-      price: 99.99,
+      price: 99,
       duration: "40 hours",
       students: 2847,
       rating: 4.9,
@@ -29,7 +29,7 @@ const PremiumCourses = () => {
       id: "data-science-pro",
       title: "Data Science Professional Certificate",
       description: "Learn Python, machine learning, and data visualization",
-      price: 149.99,
+      price: 149,
       duration: "60 hours",
       students: 1923,
       rating: 4.8,
@@ -42,7 +42,7 @@ const PremiumCourses = () => {
       id: "ui-ux-design",
       title: "UI/UX Design Fundamentals",
       description: "Create stunning user interfaces and experiences",
-      price: 79.99,
+      price: 79,
       duration: "30 hours",
       students: 3421,
       rating: 4.9,
@@ -55,7 +55,7 @@ const PremiumCourses = () => {
       id: "digital-marketing",
       title: "Digital Marketing Master Class",
       description: "Master SEO, social media, and content marketing strategies",
-      price: 89.99,
+      price: 89,
       duration: "35 hours",
       students: 2156,
       rating: 4.7,
@@ -85,10 +85,10 @@ const PremiumCourses = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Premium Courses
-          </h1>
+      <div className="text-center mb-12 mt-16">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          Premium Courses
+        </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Invest in your future with our comprehensive courses. One-time purchase, lifetime access.
           </p>
@@ -151,7 +151,7 @@ const PremiumCourses = () => {
 
                 <div className="flex items-center justify-between pt-4 border-t">
                   <div>
-                    <p className="text-3xl font-bold text-primary">${course.price}</p>
+                    <p className="text-3xl font-bold text-primary">€{course.price}</p>
                     <p className="text-xs text-muted-foreground">One-time payment</p>
                   </div>
                   <Button

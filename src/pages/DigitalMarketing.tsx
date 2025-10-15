@@ -33,7 +33,7 @@ const DigitalMarketing = () => {
   const courses = [
     {
       id: "seo-mastery",
-      title: "SEO Mastery 2024",
+      title: "SEO Mastery 2025",
       description: "Master search engine optimization and rank higher on Google",
       price: 199,
       duration: "8 weeks",
@@ -109,7 +109,7 @@ const DigitalMarketing = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 mt-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Digital Marketing Courses
           </h1>

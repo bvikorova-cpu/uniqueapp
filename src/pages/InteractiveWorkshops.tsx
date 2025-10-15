@@ -134,7 +134,7 @@ const InteractiveWorkshops = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 mt-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Interactive Workshops
           </h1>
@@ -211,7 +211,7 @@ const InteractiveWorkshops = () => {
 
                   <div className="flex items-center justify-between pt-4 border-t mt-auto">
                     <div>
-                      <p className="text-2xl font-bold text-primary">${workshop.price}</p>
+                      <p className="text-2xl font-bold text-primary">€{workshop.price}</p>
                       <p className="text-xs text-muted-foreground">Full workshop</p>
                     </div>
                     <Button
