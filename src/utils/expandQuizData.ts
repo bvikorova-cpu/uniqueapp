@@ -6,10 +6,10 @@ export const expandQuizQuestions = (questions: QuizQuestion[]): QuizQuestion[] =
   
   const expanded = [...questions];
   const variations = [
-    { prefix: "Otázka: ", suffix: "" },
-    { prefix: "", suffix: " (pokračovanie)" },
+    { prefix: "Question: ", suffix: "" },
+    { prefix: "", suffix: " (continued)" },
     { prefix: "Test: ", suffix: "" },
-    { prefix: "", suffix: " - verzia 2" },
+    { prefix: "", suffix: " - version 2" },
   ];
   
   let variationIndex = 0;
