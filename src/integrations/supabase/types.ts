@@ -2792,6 +2792,93 @@ export type Database = {
         }
         Relationships: []
       }
+      learning_certificates: {
+        Row: {
+          certificate_number: string | null
+          certificate_url: string | null
+          completion_score: number | null
+          content_id: string
+          content_type: string
+          created_at: string | null
+          id: string
+          instructor_name: string | null
+          issue_date: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          certificate_number?: string | null
+          certificate_url?: string | null
+          completion_score?: number | null
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          id?: string
+          instructor_name?: string | null
+          issue_date?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          certificate_number?: string | null
+          certificate_url?: string | null
+          completion_score?: number | null
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          id?: string
+          instructor_name?: string | null
+          issue_date?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      learning_progress: {
+        Row: {
+          completed_at: string | null
+          completed_modules: Json | null
+          content_id: string
+          content_type: string
+          created_at: string | null
+          current_module: number | null
+          id: string
+          last_accessed: string | null
+          progress_percentage: number | null
+          time_spent_minutes: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_modules?: Json | null
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          current_module?: number | null
+          id?: string
+          last_accessed?: string | null
+          progress_percentage?: number | null
+          time_spent_minutes?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_modules?: Json | null
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          current_module?: number | null
+          id?: string
+          last_accessed?: string | null
+          progress_percentage?: number | null
+          time_spent_minutes?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       linkedin_enhancements: {
         Row: {
           created_at: string
@@ -4656,6 +4743,48 @@ export type Database = {
         }
         Relationships: []
       }
+      purchased_learning_content: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          price: number
+          purchase_date: string | null
+          status: string | null
+          stripe_session_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          price: number
+          purchase_date?: string | null
+          status?: string | null
+          stripe_session_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          price?: number
+          purchase_date?: string | null
+          status?: string | null
+          stripe_session_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       recipes: {
         Row: {
           calories: number
@@ -6126,6 +6255,10 @@ export type Database = {
       expire_featured_listings: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      generate_certificate_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       generate_referral_code: {
         Args: Record<PropertyKey, never>
