@@ -134,3 +134,6 @@ verify_jwt = false
 
 [functions.kids-drawing-tutorial]
 verify_jwt = false
+
+[functions.kids-reading-companion]
+verify_jwt = false
