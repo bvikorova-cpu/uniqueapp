@@ -110,3 +110,12 @@ verify_jwt = true
 
 [functions.generate-music]
 verify_jwt = true
+
+[functions.create-learning-payment]
+verify_jwt = true
+
+[functions.verify-learning-payment]
+verify_jwt = false
+
+[functions.generate-certificate]
+verify_jwt = true
