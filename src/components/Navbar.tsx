@@ -163,13 +163,24 @@ const Navbar = () => {
     { path: "/megatalent", label: t('services.megatalent.title'), icon: Crown, premium: true },
   ];
 
+  const learningServices = [
+    { path: "/education", label: t('navbar.education'), icon: GraduationCap },
+    { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
+    { path: "/quiz", label: "Quiz", icon: Brain },
+    { path: "/kids-homework", label: "AI Homework Helper (6-12y)", icon: BookOpen },
+    { path: "/kids-story-creator", label: "AI Story Creator (6-12y)", icon: BookOpen },
+    { path: "/kids-math-games", label: "AI Math Games (6-12y)", icon: Calculator },
+    { path: "/kids-science-lab", label: "AI Science Lab (6-12y)", icon: FlaskConical },
+    { path: "/kids-drawing-buddy", label: "AI Drawing Buddy (6-12y)", icon: Palette },
+    { path: "/kids-reading-companion", label: "AI Reading Companion (6-12y)", icon: BookOpen },
+  ];
+
   const otherServices = [
     { path: "/tiktok", label: t('navbar.videos'), icon: Video },
     { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
     { path: "/influ-king", label: t('navbar.influ_king'), icon: Star },
     { path: "/megaforum", label: t('navbar.megaforum'), icon: Users },
     { path: "/psychologist", label: t('navbar.psychologist'), icon: Brain },
-    { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
     { path: "/content-studio", label: "Content Studio", icon: Sparkles },
     { path: "/companions", label: "Character Companions", icon: MessageCircle },
     { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },
@@ -187,27 +198,21 @@ const Navbar = () => {
     { path: "/ai-tattoo", label: "AI Tattoo Designer", icon: ImageIcon },
     { path: "/mystery-box", label: "Mystery Box", icon: Gift },
     { path: "/routine-optimizer", label: "Routine Optimizer", icon: Zap },
-    { path: "/kids-homework", label: "AI Homework Helper", icon: BookOpen },
-    { path: "/kids-story-creator", label: "AI Story Creator", icon: BookOpen },
-    { path: "/kids-math-games", label: "AI Math Games", icon: Calculator },
-    { path: "/kids-science-lab", label: "AI Science Lab", icon: FlaskConical },
-    { path: "/kids-drawing-buddy", label: "AI Drawing Buddy", icon: Palette },
-    { path: "/kids-reading-companion", label: "AI Reading Companion", icon: BookOpen },
     { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
     { path: "/dating", label: t('navbar.dating'), icon: Heart },
     { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
     { path: "/fit-slim", label: t('services.fit_slim.title'), icon: Apple },
     { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
-    
     { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
     { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
     { path: "/ai-generation", label: t('navbar.ai_generation'), icon: Sparkles },
     { path: "/auction", label: t('navbar.auction'), icon: Gavel },
     { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
     { path: "/referral", label: t('navbar.invite_friend'), icon: User },
-    { path: "/education", label: t('navbar.education'), icon: GraduationCap },
     { path: "/terms", label: t('navbar.terms'), icon: FileText },
   ];
+
+  const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
 
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
@@ -250,12 +255,36 @@ const Navbar = () => {
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
+                <Button variant={isLearningServiceActive ? "premium" : "ghost"}>
+                  <GraduationCap className="h-4 w-4" />
+                  Learning
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto">
+                {learningServices.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path;
+                  
+                  return (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full cursor-pointer">
+                        <Icon className="h-4 w-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <Button variant={isOtherServiceActive ? "premium" : "ghost"}>
                   <MoreHorizontal className="h-4 w-4" />
                   {t('navbar.other_services')}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto">
                 {otherServices.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
@@ -428,7 +457,8 @@ const Navbar = () => {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="lg:hidden py-4 space-y-2 max-h-[calc(100vh-5rem)] overflow-y-auto">
-            {[...mainNavItems, ...otherServices].map((item) => {
+            {/* Main Navigation Items */}
+            {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
               const isPremium = 'premium' in item && item.premium;
@@ -450,6 +480,52 @@ const Navbar = () => {
                 </Link>
               );
             })}
+            
+            {/* Learning Section */}
+            <div className="pt-2 pb-2">
+              <div className="px-4 py-2 text-sm font-semibold text-muted-foreground">
+                Learning
+              </div>
+              {learningServices.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                    <Button
+                      variant={isActive ? "premium" : "ghost"}
+                      className="w-full justify-start"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
+            
+            {/* Other Services Section */}
+            <div className="pt-2 pb-2">
+              <div className="px-4 py-2 text-sm font-semibold text-muted-foreground">
+                {t('navbar.other_services')}
+              </div>
+              {otherServices.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                    <Button
+                      variant={isActive ? "premium" : "ghost"}
+                      className="w-full justify-start"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
             <div className="pt-4 space-y-2">
               {user ? (
                 <>
