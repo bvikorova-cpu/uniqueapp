@@ -6364,6 +6364,36 @@ export type Database = {
         | "tattoo"
         | "training"
         | "best_selfie"
+        | "painting"
+        | "digital_art"
+        | "sculpture"
+        | "photography"
+        | "handmade"
+        | "makeup_art"
+        | "singing"
+        | "instrument"
+        | "music_production"
+        | "beatbox"
+        | "rap"
+        | "dance"
+        | "breakdance"
+        | "gymnastics"
+        | "parkour"
+        | "yoga"
+        | "martial_arts"
+        | "extreme_sport"
+        | "sport_trick"
+        | "standup"
+        | "impressions"
+        | "magic"
+        | "pranks"
+        | "tutorial"
+        | "cooking"
+        | "diy"
+        | "science"
+        | "transformation"
+        | "pet_talent"
+        | "other"
       tarot_card_position: "past" | "present" | "future" | "outcome"
       zodiac_sign:
         | "aries"
@@ -6600,6 +6630,36 @@ export const Constants = {
         "tattoo",
         "training",
         "best_selfie",
+        "painting",
+        "digital_art",
+        "sculpture",
+        "photography",
+        "handmade",
+        "makeup_art",
+        "singing",
+        "instrument",
+        "music_production",
+        "beatbox",
+        "rap",
+        "dance",
+        "breakdance",
+        "gymnastics",
+        "parkour",
+        "yoga",
+        "martial_arts",
+        "extreme_sport",
+        "sport_trick",
+        "standup",
+        "impressions",
+        "magic",
+        "pranks",
+        "tutorial",
+        "cooking",
+        "diy",
+        "science",
+        "transformation",
+        "pet_talent",
+        "other",
       ],
       tarot_card_position: ["past", "present", "future", "outcome"],
       zodiac_sign: [
