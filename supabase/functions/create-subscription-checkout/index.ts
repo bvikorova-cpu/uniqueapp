@@ -31,6 +31,8 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
 
     const { tier } = await req.json();
+    console.log("Processing subscription for tier:", tier);
+    console.log("Available price IDs:", PRICE_IDS);
     
     if (!tier || !PRICE_IDS[tier as keyof typeof PRICE_IDS]) {
       throw new Error("Invalid subscription tier");
