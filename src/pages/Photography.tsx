@@ -97,11 +97,7 @@ const Photography = () => {
       const sessionUrl = await purchaseContent(masterclassId, "photography-masterclass", title, price);
       
       if (sessionUrl) {
-        window.open(sessionUrl, '_blank');
-        toast({
-          title: "Redirecting to Payment",
-          description: "Complete your payment to access the masterclass.",
-        });
+        window.location.href = sessionUrl;
       }
     } catch (error) {
       toast({
@@ -109,7 +105,6 @@ const Photography = () => {
         description: "Please try again or contact support.",
         variant: "destructive",
       });
-    } finally {
       setEnrolling(null);
     }
   };

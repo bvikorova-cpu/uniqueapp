@@ -97,11 +97,7 @@ const CulinaryArts = () => {
       const sessionUrl = await purchaseContent(programId, "culinary-program", title, price);
       
       if (sessionUrl) {
-        window.open(sessionUrl, '_blank');
-        toast({
-          title: "Redirecting to Payment",
-          description: "Complete your payment to access the program.",
-        });
+        window.location.href = sessionUrl;
       }
     } catch (error) {
       toast({
@@ -109,7 +105,6 @@ const CulinaryArts = () => {
         description: "Please try again or contact support.",
         variant: "destructive",
       });
-    } finally {
       setEnrolling(null);
     }
   };

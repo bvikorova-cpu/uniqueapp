@@ -97,11 +97,7 @@ const DigitalMarketing = () => {
       const sessionUrl = await purchaseContent(courseId, "marketing-course", title, price);
       
       if (sessionUrl) {
-        window.open(sessionUrl, '_blank');
-        toast({
-          title: "Redirecting to Payment",
-          description: "Complete your payment to access the course.",
-        });
+        window.location.href = sessionUrl;
       }
     } catch (error) {
       toast({
@@ -109,7 +105,6 @@ const DigitalMarketing = () => {
         description: "Please try again or contact support.",
         variant: "destructive",
       });
-    } finally {
       setEnrolling(null);
     }
   };

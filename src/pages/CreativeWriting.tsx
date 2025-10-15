@@ -97,11 +97,8 @@ const CreativeWriting = () => {
       const sessionUrl = await purchaseContent(workshopId, "writing-workshop", title, price);
       
       if (sessionUrl) {
-        window.open(sessionUrl, '_blank');
-        toast({
-          title: "Redirecting to Payment",
-          description: "Complete your payment to access the workshop.",
-        });
+        // Direct redirect to Stripe instead of opening new window
+        window.location.href = sessionUrl;
       }
     } catch (error) {
       toast({
@@ -109,7 +106,6 @@ const CreativeWriting = () => {
         description: "Please try again or contact support.",
         variant: "destructive",
       });
-    } finally {
       setEnrolling(null);
     }
   };
