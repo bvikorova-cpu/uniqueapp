@@ -5,13 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
 import { useTranslation } from "react-i18next";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const categoryGroups = [
   {
@@ -105,10 +106,15 @@ const Megatalent = () => {
   const { toast } = useToast();
   const [referralCode, setReferralCode] = useState("");
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
+  const [likedSubmissions, setLikedSubmissions] = useState<Set<string>>(new Set());
+  const [commentDialogOpen, setCommentDialogOpen] = useState<string | null>(null);
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState<Record<string, any[]>>({});
 
   useEffect(() => {
     checkSubscription();
     fetchSubmissions();
+    fetchUserVotes();
   }, [selectedCategory]);
 
   useEffect(() => {
@@ -331,11 +337,176 @@ const Megatalent = () => {
     }
   };
 
-  const handleVote = (type: 'like' | 'dislike') => {
-    toast({
-      title: t('megatalent.voting'),
-      description: `${type === 'like' ? t('megatalent.like') : t('megatalent.dislike')} ${t('megatalent.voting_desc')}`,
-    });
+  const fetchUserVotes = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('talent_votes')
+        .select('submission_id')
+        .eq('user_id', user.id);
+
+      if (data) {
+        setLikedSubmissions(new Set(data.map(v => v.submission_id)));
+      }
+    } catch (error) {
+      console.error('Error fetching user votes:', error);
+    }
+  };
+
+  const handleVote = async (submissionId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: t('megatalent.login_required'),
+          description: t('megatalent.login_required_desc'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const isLiked = likedSubmissions.has(submissionId);
+
+      if (isLiked) {
+        // Remove vote
+        const { error } = await supabase
+          .from('talent_votes')
+          .delete()
+          .eq('submission_id', submissionId)
+          .eq('user_id', user.id);
+
+        if (error) throw error;
+
+        setLikedSubmissions(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(submissionId);
+          return newSet;
+        });
+
+        // Update local submission votes count
+        setSubmissions(prev => prev.map(s => 
+          s.id === submissionId 
+            ? { ...s, votes_count: (s.votes_count || 0) - 1 }
+            : s
+        ));
+      } else {
+        // Add vote
+        const { error } = await supabase
+          .from('talent_votes')
+          .insert({
+            submission_id: submissionId,
+            user_id: user.id,
+          });
+
+        if (error) throw error;
+
+        setLikedSubmissions(prev => new Set(prev).add(submissionId));
+
+        // Update local submission votes count
+        setSubmissions(prev => prev.map(s => 
+          s.id === submissionId 
+            ? { ...s, votes_count: (s.votes_count || 0) + 1 }
+            : s
+        ));
+      }
+    } catch (error) {
+      console.error('Error voting:', error);
+      toast({
+        title: t('megatalent.error'),
+        description: 'Failed to vote',
+        variant: "destructive",
+      });
+    }
+  };
+
+  const fetchComments = async (submissionId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('talent_comments')
+        .select('*, profiles:user_id(full_name, avatar_url)')
+        .eq('submission_id', submissionId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setComments(prev => ({ ...prev, [submissionId]: data || [] }));
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };
+
+  const handleComment = async (submissionId: string) => {
+    if (!commentText.trim()) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: t('megatalent.login_required'),
+          description: t('megatalent.login_required_desc'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('talent_comments')
+        .insert({
+          submission_id: submissionId,
+          user_id: user.id,
+          comment_text: commentText.trim(),
+        });
+
+      if (error) throw error;
+
+      setCommentText("");
+      await fetchComments(submissionId);
+      
+      toast({
+        title: 'Comment added',
+        description: 'Your comment has been posted',
+      });
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      toast({
+        title: t('megatalent.error'),
+        description: 'Failed to add comment',
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleShare = async (submission: any) => {
+    const shareUrl = window.location.origin + '/megatalent';
+    const shareText = `Check out "${submission.title}" on Megatalent!`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: submission.title,
+          text: shareText,
+          url: shareUrl,
+        });
+      } catch (error) {
+        console.log('Error sharing:', error);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast({
+          title: 'Link copied',
+          description: 'Share link copied to clipboard',
+        });
+      } catch (error) {
+        toast({
+          title: t('megatalent.error'),
+          description: 'Failed to copy link',
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'video') => {
@@ -790,18 +961,66 @@ const Megatalent = () => {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleVote('like')}
-                          className="text-green-500 hover:text-green-600"
+                          onClick={() => handleVote(submission.id)}
+                          className={likedSubmissions.has(submission.id) ? "text-red-500" : ""}
                         >
-                          <Heart className="h-4 w-4 mr-1" />
+                          <Heart className={`h-4 w-4 mr-1 ${likedSubmissions.has(submission.id) ? 'fill-current' : ''}`} />
                           {submission.votes_count || 0}
                         </Button>
-                        <Button variant="ghost" size="sm">
-                          <MessageCircle className="h-4 w-4 mr-1" />
-                          0
-                        </Button>
+                        
+                        <Dialog open={commentDialogOpen === submission.id} onOpenChange={(open) => {
+                          setCommentDialogOpen(open ? submission.id : null);
+                          if (open) fetchComments(submission.id);
+                        }}>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <MessageCircle className="h-4 w-4 mr-1" />
+                              {comments[submission.id]?.length || 0}
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-lg max-h-[80vh]">
+                            <DialogHeader>
+                              <DialogTitle>Comments</DialogTitle>
+                            </DialogHeader>
+                            <ScrollArea className="h-[400px] pr-4">
+                              {comments[submission.id]?.length > 0 ? (
+                                <div className="space-y-4">
+                                  {comments[submission.id].map((comment: any) => (
+                                    <div key={comment.id} className="flex gap-3">
+                                      <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
+                                        {comment.profiles?.full_name?.[0] || 'U'}
+                                      </div>
+                                      <div className="flex-1">
+                                        <p className="font-semibold text-sm">{comment.profiles?.full_name || 'User'}</p>
+                                        <p className="text-sm text-muted-foreground mt-1">{comment.comment_text}</p>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-center text-muted-foreground py-8">No comments yet</p>
+                              )}
+                            </ScrollArea>
+                            <div className="flex gap-2 mt-4">
+                              <Input
+                                placeholder="Add a comment..."
+                                value={commentText}
+                                onChange={(e) => setCommentText(e.target.value)}
+                                onKeyPress={(e) => {
+                                  if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleComment(submission.id);
+                                  }
+                                }}
+                              />
+                              <Button size="sm" onClick={() => handleComment(submission.id)}>
+                                <Send className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </div>
-                      <Button variant="ghost" size="sm">
+                      <Button variant="ghost" size="sm" onClick={() => handleShare(submission)}>
                         <Share2 className="h-4 w-4" />
                       </Button>
                     </div>
