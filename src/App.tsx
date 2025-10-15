@@ -82,6 +82,7 @@ import PremiumCourses from "./pages/PremiumCourses";
 import Masterclasses from "./pages/Masterclasses";
 import InteractiveWorkshops from "./pages/InteractiveWorkshops";
 import CertificationPrograms from "./pages/CertificationPrograms";
+import CourseLearning from "./pages/CourseLearning";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -176,6 +177,7 @@ const App = () => (
           <Route path="/masterclasses" element={<Masterclasses />} />
           <Route path="/interactive-workshops" element={<InteractiveWorkshops />} />
           <Route path="/certification-programs" element={<CertificationPrograms />} />
+          <Route path="/course/:certificationId" element={<CourseLearning />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

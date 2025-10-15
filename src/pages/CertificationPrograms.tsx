@@ -1,13 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useLearningContent } from "@/hooks/useLearningContent";
 import { Award, Clock, BookOpen, CheckCircle, TrendingUp, Users } from "lucide-react";
 
 const CertificationPrograms = () => {
-  const { toast } = useToast();
   const [enrolling, setEnrolling] = useState<string | null>(null);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const { purchaseContent, isPurchased, verifyPurchase, loading } = useLearningContent();
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    
+    if (sessionId) {
+      verifyPurchase(sessionId).then((success) => {
+        if (success) {
+          toast({
+            title: "Payment Successful! 🎉",
+            description: "You now have access to your certification program.",
+          });
+          window.history.replaceState({}, '', '/certification-programs');
+        }
+      });
+    }
+  }, [verifyPurchase, toast]);
 
   const certifications = [
     {
@@ -150,20 +171,33 @@ const CertificationPrograms = () => {
     }
   ];
 
-  const handleEnroll = (certId: string, price: number, title: string) => {
+  const handleEnroll = async (certId: string, price: number, title: string) => {
+    if (isPurchased(certId, "certification")) {
+      navigate(`/course/${certId}`);
+      return;
+    }
+
     setEnrolling(certId);
-    toast({
-      title: "Processing Enrollment",
-      description: `Enrolling in program for $${price}...`,
-    });
     
-    setTimeout(() => {
+    try {
+      const sessionUrl = await purchaseContent(certId, "certification", title, price);
+      
+      if (sessionUrl) {
+        window.open(sessionUrl, '_blank');
+        toast({
+          title: "Redirecting to Payment",
+          description: "Complete your payment to access the certification program.",
+        });
+      }
+    } catch (error) {
       toast({
-        title: "Enrollment Successful!",
-        description: `Welcome to: ${title}`,
+        title: "Enrollment Failed",
+        description: "Please try again or contact support.",
+        variant: "destructive",
       });
+    } finally {
       setEnrolling(null);
-    }, 2000);
+    }
   };
 
   return (
@@ -264,10 +298,16 @@ const CertificationPrograms = () => {
                   </div>
                   <Button
                     onClick={() => handleEnroll(cert.id, cert.price, cert.title)}
-                    disabled={enrolling === cert.id}
+                    disabled={enrolling === cert.id || loading}
                     size="lg"
+                    variant={isPurchased(cert.id, "certification") ? "secondary" : "default"}
                   >
-                    {enrolling === cert.id ? "Enrolling..." : "Enroll Now"}
+                    {enrolling === cert.id 
+                      ? "Processing..." 
+                      : isPurchased(cert.id, "certification")
+                      ? "Continue Learning"
+                      : "Enroll Now"
+                    }
                   </Button>
                 </div>
               </div>
