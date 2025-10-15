@@ -58,10 +58,10 @@ export default function TeenStudyPlanner() {
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            AI Study Planner (13-18y)
+            Study Planner (13-18y)
           </h1>
           <p className="text-lg text-muted-foreground">
-            Optimize your learning with AI-powered study plans tailored to your exams
+            Optimize your learning with personalized study plans tailored to your exams
           </p>
         </div>
 

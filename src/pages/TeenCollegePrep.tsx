@@ -101,10 +101,10 @@ export default function TeenCollegePrep() {
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            AI College Prep (13-18y)
+            College Prep (13-18y)
           </h1>
           <p className="text-lg text-muted-foreground">
-            Get ready for college admissions with AI-powered preparation tools
+            Get ready for college admissions with professional preparation tools
           </p>
         </div>
 

@@ -95,10 +95,10 @@ export default function TeenDebatePartner() {
       <main className="flex-1 container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            AI Debate Partner (13-18y)
+            Debate Partner (13-18y)
           </h1>
           <p className="text-lg text-muted-foreground">
-            Practice argumentation and critical thinking with AI-powered debates
+            Practice argumentation and critical thinking with interactive debates
           </p>
         </div>
 
@@ -176,7 +176,7 @@ export default function TeenDebatePartner() {
                         }`}
                       >
                         <p className="text-sm font-semibold mb-1">
-                          {msg.role === 'user' ? 'You' : 'AI Opponent'}
+                          {msg.role === 'user' ? 'You' : 'Opponent'}
                         </p>
                         <p className="whitespace-pre-wrap">{msg.content}</p>
                       </div>
