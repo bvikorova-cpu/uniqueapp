@@ -454,11 +454,11 @@ const Home = () => {
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Package className="h-12 w-12 text-success mx-auto mb-4" />
-                  <CardTitle>Varenie</CardTitle>
+                  <CardTitle>Cooking</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Zdravé recepty a jedálnické lístky
+                    Healthy recipes and meal plans
                   </p>
                 </CardContent>
               </Card>
@@ -472,7 +472,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Optimalizuj svoju dennú rutinu pre maximálnu produktivitu
+                    Optimize your daily routine for maximum productivity
                   </p>
                 </CardContent>
               </Card>
@@ -486,7 +486,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Otváraj prekvapenia a získaj úžasné odmeny
+                    Open surprises and get amazing rewards
                   </p>
                 </CardContent>
               </Card>
@@ -500,7 +500,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Horoskopy, tarot čítanie a astrologické predpovede
+                    Horoscopes, tarot readings and astrological predictions
                   </p>
                 </CardContent>
               </Card>
@@ -514,7 +514,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Personalizované playlisty na základe tvojej nálady
+                    Personalized playlists based on your mood
                   </p>
                 </CardContent>
               </Card>
@@ -528,7 +528,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Zaznamenávaj a analyzuj svoje sny s AI
+                    Record and analyze your dreams with AI
                   </p>
                 </CardContent>
               </Card>
@@ -542,7 +542,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    AI štylista pre dokonalé outfity
+                    AI stylist for perfect outfits
                   </p>
                 </CardContent>
               </Card>
@@ -556,7 +556,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Tvoj vlastný virtuálny domáci miláčik
+                    Your own virtual pet companion
                   </p>
                 </CardContent>
               </Card>
@@ -570,7 +570,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Vytvor svoju značku s pomocou AI
+                    Create your brand with AI assistance
                   </p>
                 </CardContent>
               </Card>
@@ -584,7 +584,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    AI dizajn interiéru tvojho domova
+                    AI interior design for your home
                   </p>
                 </CardContent>
               </Card>
@@ -598,7 +598,7 @@ const Home = () => {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    Virtuálne líčenie a beauty tipy
+                    Virtual makeup and beauty tips
                   </p>
                 </CardContent>
               </Card>
