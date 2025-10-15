@@ -167,22 +167,34 @@ const Megatalent = () => {
 
   const fetchSubmissions = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: submissionsData, error: submissionsError } = await supabase
         .from('talent_submissions')
-        .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            avatar_url
-          )
-        `)
+        .select('*')
         .eq('category', selectedCategory as any)
         .eq('is_active', true)
         .order('created_at', { ascending: false })
         .limit(10);
 
-      if (error) throw error;
-      setSubmissions(data || []);
+      if (submissionsError) throw submissionsError;
+
+      // Fetch profiles separately
+      if (submissionsData && submissionsData.length > 0) {
+        const userIds = [...new Set(submissionsData.map(s => s.user_id))];
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url')
+          .in('id', userIds);
+
+        // Merge profiles with submissions
+        const enrichedSubmissions = submissionsData.map(submission => ({
+          ...submission,
+          profiles: profilesData?.find(p => p.id === submission.user_id)
+        }));
+
+        setSubmissions(enrichedSubmissions);
+      } else {
+        setSubmissions([]);
+      }
     } catch (error) {
       console.error('Error fetching submissions:', error);
     }
