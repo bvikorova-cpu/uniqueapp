@@ -1,0 +1,166 @@
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BookOpen, Sparkles, Lightbulb } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+const KidsHomework = () => {
+  const [subject, setSubject] = useState("");
+  const [question, setQuestion] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<any>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!question.trim() || !subject || !difficulty) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('kids-homework-helper', {
+        body: { subject, question, difficulty }
+      });
+
+      if (error) throw error;
+      
+      setResult(data);
+      toast.success("Homework help ready! 🎉");
+    } catch (error: any) {
+      console.error('Error:', error);
+      toast.error(error.message || "Failed to get homework help");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      <Navbar />
+      <main className="container mx-auto px-4 py-8 mt-16">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              AI Homework Helper 📚
+            </h1>
+            <p className="text-muted-foreground">
+              Get fun and easy help with your homework!
+            </p>
+          </div>
+
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5" />
+                Ask Your Question
+              </CardTitle>
+              <CardDescription>
+                Tell me about your homework and I'll help you understand it better!
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Subject</label>
+                  <Select value={subject} onValueChange={setSubject}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose your subject" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="math">Math</SelectItem>
+                      <SelectItem value="science">Science</SelectItem>
+                      <SelectItem value="english">English</SelectItem>
+                      <SelectItem value="history">History</SelectItem>
+                      <SelectItem value="geography">Geography</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Difficulty</label>
+                  <Select value={difficulty} onValueChange={setDifficulty}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="How hard is it?" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="easy">Easy 😊</SelectItem>
+                      <SelectItem value="medium">Medium 🤔</SelectItem>
+                      <SelectItem value="hard">Hard 🧠</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Your Question</label>
+                  <Textarea
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="Type your homework question here..."
+                    className="min-h-[100px]"
+                  />
+                </div>
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+                      AI is thinking...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Get Help!
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+
+          {result && (
+            <Card className="bg-gradient-to-br from-primary/5 to-secondary/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-primary" />
+                  Your Answer
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="font-semibold mb-2">Explanation:</h3>
+                  <p className="text-muted-foreground whitespace-pre-wrap">{result.explanation}</p>
+                </div>
+
+                {result.funFacts && result.funFacts.length > 0 && (
+                  <div className="bg-background/50 p-4 rounded-lg">
+                    <h3 className="font-semibold mb-2 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-primary" />
+                      Fun Facts!
+                    </h3>
+                    <ul className="list-disc list-inside space-y-1">
+                      {result.funFacts.map((fact: string, index: number) => (
+                        <li key={index} className="text-sm">{fact}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default KidsHomework;

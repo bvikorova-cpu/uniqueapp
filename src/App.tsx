@@ -66,6 +66,12 @@ import BeautyStudio from "./pages/BeautyStudio";
 import AIMusicProducer from "./pages/AIMusicProducer";
 import PlantCare from "./pages/PlantCare";
 import AITattoo from "./pages/AITattoo";
+import KidsHomework from "./pages/KidsHomework";
+import KidsStoryCreator from "./pages/KidsStoryCreator";
+import KidsMathGames from "./pages/KidsMathGames";
+import KidsScienceLab from "./pages/KidsScienceLab";
+import KidsDrawingBuddy from "./pages/KidsDrawingBuddy";
+import KidsReadingCompanion from "./pages/KidsReadingCompanion";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -144,6 +150,12 @@ const App = () => (
           <Route path="/ai-music-producer" element={<AIMusicProducer />} />
           <Route path="/plant-care" element={<PlantCare />} />
           <Route path="/ai-tattoo" element={<AITattoo />} />
+          <Route path="/kids-homework" element={<KidsHomework />} />
+          <Route path="/kids-story-creator" element={<KidsStoryCreator />} />
+          <Route path="/kids-math-games" element={<KidsMathGames />} />
+          <Route path="/kids-science-lab" element={<KidsScienceLab />} />
+          <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
+          <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

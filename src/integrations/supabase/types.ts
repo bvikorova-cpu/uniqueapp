@@ -2570,6 +2570,228 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_drawings: {
+        Row: {
+          created_at: string | null
+          difficulty: string | null
+          drawing_url: string | null
+          id: string
+          steps_completed: number | null
+          title: string
+          total_steps: number | null
+          tutorial_topic: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          difficulty?: string | null
+          drawing_url?: string | null
+          id?: string
+          steps_completed?: number | null
+          title: string
+          total_steps?: number | null
+          tutorial_topic: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          difficulty?: string | null
+          drawing_url?: string | null
+          id?: string
+          steps_completed?: number | null
+          title?: string
+          total_steps?: number | null
+          tutorial_topic?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      kids_homework: {
+        Row: {
+          ai_explanation: string | null
+          created_at: string | null
+          difficulty_level: string | null
+          fun_facts: Json | null
+          id: string
+          question: string
+          subject: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_explanation?: string | null
+          created_at?: string | null
+          difficulty_level?: string | null
+          fun_facts?: Json | null
+          id?: string
+          question: string
+          subject: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_explanation?: string | null
+          created_at?: string | null
+          difficulty_level?: string | null
+          fun_facts?: Json | null
+          id?: string
+          question?: string
+          subject?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      kids_math_progress: {
+        Row: {
+          accuracy_percentage: number | null
+          created_at: string | null
+          game_type: string
+          id: string
+          last_played_at: string | null
+          level: number | null
+          problems_solved: number | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          accuracy_percentage?: number | null
+          created_at?: string | null
+          game_type: string
+          id?: string
+          last_played_at?: string | null
+          level?: number | null
+          problems_solved?: number | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          accuracy_percentage?: number | null
+          created_at?: string | null
+          game_type?: string
+          id?: string
+          last_played_at?: string | null
+          level?: number | null
+          problems_solved?: number | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      kids_reading_sessions: {
+        Row: {
+          book_title: string
+          completed: boolean | null
+          comprehension_score: number | null
+          content: string
+          created_at: string | null
+          current_page: number | null
+          id: string
+          quiz_results: Json | null
+          updated_at: string | null
+          user_id: string
+          vocabulary_learned: Json | null
+        }
+        Insert: {
+          book_title: string
+          completed?: boolean | null
+          comprehension_score?: number | null
+          content: string
+          created_at?: string | null
+          current_page?: number | null
+          id?: string
+          quiz_results?: Json | null
+          updated_at?: string | null
+          user_id: string
+          vocabulary_learned?: Json | null
+        }
+        Update: {
+          book_title?: string
+          completed?: boolean | null
+          comprehension_score?: number | null
+          content?: string
+          created_at?: string | null
+          current_page?: number | null
+          id?: string
+          quiz_results?: Json | null
+          updated_at?: string | null
+          user_id?: string
+          vocabulary_learned?: Json | null
+        }
+        Relationships: []
+      }
+      kids_science_experiments: {
+        Row: {
+          ai_insights: Json | null
+          category: string
+          completed: boolean | null
+          conclusion: string | null
+          created_at: string | null
+          experiment_name: string
+          hypothesis: string | null
+          id: string
+          observations: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_insights?: Json | null
+          category: string
+          completed?: boolean | null
+          conclusion?: string | null
+          created_at?: string | null
+          experiment_name: string
+          hypothesis?: string | null
+          id?: string
+          observations?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_insights?: Json | null
+          category?: string
+          completed?: boolean | null
+          conclusion?: string | null
+          created_at?: string | null
+          experiment_name?: string
+          hypothesis?: string | null
+          id?: string
+          observations?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      kids_stories: {
+        Row: {
+          characters: Json | null
+          created_at: string | null
+          id: string
+          illustration_url: string | null
+          story_text: string
+          theme: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          characters?: Json | null
+          created_at?: string | null
+          id?: string
+          illustration_url?: string | null
+          story_text: string
+          theme?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          characters?: Json | null
+          created_at?: string | null
+          id?: string
+          illustration_url?: string | null
+          story_text?: string
+          theme?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       linkedin_enhancements: {
         Row: {
           created_at: string
