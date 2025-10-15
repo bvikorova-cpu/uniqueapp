@@ -69,6 +69,7 @@ const InfluKing = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+  const [followStatusMap, setFollowStatusMap] = useState<Record<string, boolean>>({});
 
   const [newProfile, setNewProfile] = useState({
     display_name: "",
@@ -134,6 +135,27 @@ const InfluKing = () => {
       return data as InfluencerProfile[];
     },
   });
+
+  // Fetch follow status for all influencers
+  useEffect(() => {
+    if (!user || topInfluencers.length === 0) return;
+
+    const fetchFollowStatus = async () => {
+      const { data } = await supabase
+        .from("influencer_followers")
+        .select("influencer_id")
+        .eq("follower_id", user.id)
+        .in("influencer_id", topInfluencers.map(i => i.id));
+
+      const statusMap: Record<string, boolean> = {};
+      data?.forEach(item => {
+        statusMap[item.influencer_id] = true;
+      });
+      setFollowStatusMap(statusMap);
+    };
+
+    fetchFollowStatus();
+  }, [user, topInfluencers]);
 
   // Fetch influencer posts
   const { data: influencerPosts = [] } = useQuery({
@@ -353,12 +375,12 @@ const InfluKing = () => {
 
   // Follow/unfollow mutation
   const followMutation = useMutation({
-    mutationFn: async (follow: boolean) => {
-      if (!user || !selectedInfluencer) throw new Error("Must be logged in");
+    mutationFn: async ({ influencerId, follow }: { influencerId: string; follow: boolean }) => {
+      if (!user) throw new Error("Must be logged in");
 
       if (follow) {
         const { error } = await supabase.from("influencer_followers").insert([{
-          influencer_id: selectedInfluencer.id,
+          influencer_id: influencerId,
           follower_id: user.id,
         }]);
         if (error) throw error;
@@ -366,17 +388,22 @@ const InfluKing = () => {
         const { error } = await supabase
           .from("influencer_followers")
           .delete()
-          .eq("influencer_id", selectedInfluencer.id)
+          .eq("influencer_id", influencerId)
           .eq("follower_id", user.id);
         if (error) throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      // Update local state
+      setFollowStatusMap(prev => ({
+        ...prev,
+        [variables.influencerId]: variables.follow
+      }));
       queryClient.invalidateQueries({ queryKey: ["isFollowing"] });
       queryClient.invalidateQueries({ queryKey: ["topInfluencers"] });
       toast({
-        title: isFollowing ? "❌ Unfollowed" : "✅ Following",
-        description: isFollowing ? "You stopped following this influencer" : "You are now following this influencer",
+        title: variables.follow ? "✅ Sledujete" : "❌ Prestali ste sledovať",
+        description: variables.follow ? "Teraz sledujete tohto influencera" : "Prestali ste sledovať tohto influencera",
       });
     },
   });
@@ -761,11 +788,14 @@ const InfluKing = () => {
 
                     {selectedInfluencer.user_id !== user?.id && (
                       <Button
-                        onClick={() => followMutation.mutate(!isFollowing)}
+                        onClick={() => followMutation.mutate({ 
+                          influencerId: selectedInfluencer.id, 
+                          follow: !isFollowing 
+                        })}
                         disabled={followMutation.isPending}
                         variant={isFollowing ? "outline" : "default"}
                       >
-                        {isFollowing ? "Following" : "Follow"}
+                        {isFollowing ? "Sledovaný" : "Sledovať"}
                       </Button>
                     )}
 
@@ -889,19 +919,38 @@ const InfluKing = () => {
                           {influencer.category}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-6 text-sm">
-                        <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-bold">{influencer.followers_count.toLocaleString()}</span>
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-6 text-sm mr-4">
+                          <div className="flex items-center gap-1">
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                            <span className="font-bold">{influencer.followers_count.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Heart className="h-4 w-4 text-muted-foreground" />
+                            <span className="font-bold">{influencer.total_likes.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Eye className="h-4 w-4 text-muted-foreground" />
+                            <span className="font-bold">{influencer.total_views.toLocaleString()}</span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Heart className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-bold">{influencer.total_likes.toLocaleString()}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-bold">{influencer.total_views.toLocaleString()}</span>
-                        </div>
+                        {user && influencer.user_id !== user.id && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const isCurrentlyFollowing = followStatusMap[influencer.id] || false;
+                              followMutation.mutate({ 
+                                influencerId: influencer.id, 
+                                follow: !isCurrentlyFollowing 
+                              });
+                            }}
+                            disabled={followMutation.isPending}
+                          >
+                            {followStatusMap[influencer.id] ? "Sledovaný" : "Sledovať"}
+                          </Button>
+                        )}
                       </div>
                     </div>
                   ))}
