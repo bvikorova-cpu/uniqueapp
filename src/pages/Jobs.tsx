@@ -164,8 +164,8 @@ const Jobs = () => {
     },
   });
 
-  // Get unique countries from jobs
-  const countries = Array.from(new Set(jobs.map((job) => job.country))).sort();
+  // Get unique countries from jobs (filter out empty values)
+  const countries = Array.from(new Set(jobs.map((job) => job.country).filter(country => country && country.trim() !== ""))).sort();
 
   // Create job mutation
   const createJobMutation = useMutation({
