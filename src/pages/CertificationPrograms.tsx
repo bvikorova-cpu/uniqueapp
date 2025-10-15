@@ -36,7 +36,7 @@ const CertificationPrograms = () => {
       title: "Certified Full-Stack Developer",
       provider: "Tech Academy International",
       description: "Industry-recognized certification in modern web development",
-      price: 499,
+      price: 449,
       duration: "12 weeks",
       effort: "15-20 hrs/week",
       modules: 8,
@@ -59,7 +59,7 @@ const CertificationPrograms = () => {
       title: "Professional Data Scientist Certificate",
       provider: "Data Science Institute",
       description: "Comprehensive certification in data science and machine learning",
-      price: 599,
+      price: 539,
       duration: "16 weeks",
       effort: "20-25 hrs/week",
       modules: 10,
@@ -82,7 +82,7 @@ const CertificationPrograms = () => {
       title: "Cloud Solutions Architect",
       provider: "Cloud Computing Council",
       description: "Expert-level certification for cloud architecture and deployment",
-      price: 699,
+      price: 629,
       duration: "14 weeks",
       effort: "18-22 hrs/week",
       modules: 9,
@@ -105,7 +105,7 @@ const CertificationPrograms = () => {
       title: "Digital Marketing Specialist",
       provider: "Marketing Excellence Board",
       description: "Complete certification in modern digital marketing strategies",
-      price: 449,
+      price: 404,
       duration: "10 weeks",
       effort: "12-15 hrs/week",
       modules: 7,
@@ -128,7 +128,7 @@ const CertificationPrograms = () => {
       title: "Cybersecurity Professional",
       provider: "Security Standards Institute",
       description: "Advanced certification in cybersecurity and ethical hacking",
-      price: 799,
+      price: 719,
       duration: "18 weeks",
       effort: "25-30 hrs/week",
       modules: 12,
@@ -151,7 +151,7 @@ const CertificationPrograms = () => {
       title: "Agile Project Manager Certification",
       provider: "Project Management Alliance",
       description: "Professional certification in agile project management",
-      price: 549,
+      price: 494,
       duration: "8 weeks",
       effort: "10-15 hrs/week",
       modules: 6,
@@ -293,7 +293,7 @@ const CertificationPrograms = () => {
 
                 <div className="flex items-center justify-between pt-4 border-t">
                   <div>
-                    <p className="text-3xl font-bold text-primary">${cert.price}</p>
+                    <p className="text-3xl font-bold text-primary">€{cert.price}</p>
                     <p className="text-xs text-muted-foreground">Complete program</p>
                   </div>
                   <Button

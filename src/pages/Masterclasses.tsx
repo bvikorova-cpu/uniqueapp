@@ -37,7 +37,7 @@ const Masterclasses = () => {
       expert: "Simon Sinek",
       expertise: "Leadership & Organizational Strategy",
       description: "Learn the principles of inspirational leadership from one of the world's top thought leaders",
-      price: 299,
+      price: 269,
       date: "Available Now",
       time: "On-Demand Access",
       duration: "3 hours",
@@ -54,7 +54,7 @@ const Masterclasses = () => {
       expert: "Dr. Andrew Ng",
       expertise: "Artificial Intelligence & Machine Learning",
       description: "Explore cutting-edge AI applications and future trends with a pioneer in machine learning",
-      price: 399,
+      price: 359,
       date: "Available Now",
       time: "On-Demand Access",
       duration: "3 hours",
@@ -71,7 +71,7 @@ const Masterclasses = () => {
       expert: "Gary Vaynerchuk",
       expertise: "Entrepreneurship & Digital Marketing",
       description: "Master modern business strategy and digital marketing from a serial entrepreneur",
-      price: 249,
+      price: 224,
       date: "Available Now",
       time: "On-Demand Access",
       duration: "3 hours",
@@ -88,7 +88,7 @@ const Masterclasses = () => {
       expert: "Tim Brown",
       expertise: "Design Thinking & Innovation",
       description: "Learn how to apply design thinking to solve complex business challenges",
-      price: 279,
+      price: 251,
       date: "Available Now",
       time: "On-Demand Access",
       duration: "3 hours",
@@ -207,7 +207,7 @@ const Masterclasses = () => {
 
                 <div className="flex items-center justify-between pt-4 border-t">
                   <div>
-                    <p className="text-3xl font-bold text-primary">${masterclass.price}</p>
+                    <p className="text-3xl font-bold text-primary">€{masterclass.price}</p>
                     <p className="text-xs text-muted-foreground">Per seat</p>
                   </div>
                   <Button
