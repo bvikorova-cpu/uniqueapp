@@ -122,3 +122,6 @@ verify_jwt = true
 
 [functions.kids-math-game]
 verify_jwt = false
+
+[functions.kids-homework-helper]
+verify_jwt = false
