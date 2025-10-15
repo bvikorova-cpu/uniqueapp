@@ -51,7 +51,11 @@ export default function LiveStream() {
   const [message, setMessage] = useState("");
   const [giftMessage, setGiftMessage] = useState("");
   const [user, setUser] = useState<any>(null);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [cameraError, setCameraError] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   // Fetch available gifts
   const { data: gifts = [] } = useQuery({
@@ -200,6 +204,59 @@ export default function LiveStream() {
     },
   });
 
+  // Start camera for influencer
+  const startCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
+          facingMode: "user"
+        },
+        audio: true
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+        streamRef.current = mediaStream;
+        setIsStreaming(true);
+        setCameraError("");
+        toast.success("Kamera zapnutá!");
+      }
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+      setCameraError("Nepodarilo sa získať prístup ku kamere. Skontrolujte povolenia.");
+      toast.error("Chyba pri zapínaní kamery");
+    }
+  };
+
+  // Stop camera
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+      streamRef.current = null;
+      setIsStreaming(false);
+      toast.info("Kamera vypnutá");
+    }
+  };
+
+  // Cleanup camera on unmount
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
+  // Auto-start camera if user is the influencer
+  useEffect(() => {
+    if (stream && user && stream.influencer_id === user.id && !isStreaming) {
+      startCamera();
+    }
+  }, [stream, user]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -231,13 +288,44 @@ export default function LiveStream() {
               <CardContent className="p-0">
                 <div className="relative bg-black aspect-video rounded-t-lg overflow-hidden">
                   <video 
+                    ref={videoRef}
                     className="w-full h-full object-cover"
-                    poster="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1920&q=80"
-                    controls
+                    autoPlay
+                    playsInline
+                    muted={user?.id === stream.influencer_id}
                   >
-                    <source src="" type="video/mp4" />
                     Váš prehliadač nepodporuje video element.
                   </video>
+                  
+                  {!isStreaming && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                      <div className="text-center text-white">
+                        <Video className="h-24 w-24 mx-auto mb-4 opacity-50" />
+                        {user?.id === stream.influencer_id ? (
+                          <div className="space-y-2">
+                            <p className="text-lg">Kamera nie je zapnutá</p>
+                            <Button onClick={startCamera} variant="secondary">
+                              Zapnúť kameru
+                            </Button>
+                            {cameraError && (
+                              <p className="text-sm text-red-400 mt-2">{cameraError}</p>
+                            )}
+                          </div>
+                        ) : (
+                          <p className="text-lg">Stream sa pripravuje...</p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {user?.id === stream.influencer_id && isStreaming && (
+                    <div className="absolute bottom-4 right-4">
+                      <Button onClick={stopCamera} variant="destructive" size="sm">
+                        Vypnúť kameru
+                      </Button>
+                    </div>
+                  )}
+
                   <div className="absolute top-4 left-4 flex gap-2">
                     <Badge variant="destructive" className="animate-pulse">
                       🔴 LIVE
