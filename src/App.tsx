@@ -72,6 +72,12 @@ import KidsMathGames from "./pages/KidsMathGames";
 import KidsScienceLab from "./pages/KidsScienceLab";
 import KidsDrawingBuddy from "./pages/KidsDrawingBuddy";
 import KidsReadingCompanion from "./pages/KidsReadingCompanion";
+import TeenStudyPlanner from "./pages/TeenStudyPlanner";
+import TeenCareerCounselor from "./pages/TeenCareerCounselor";
+import TeenDebatePartner from "./pages/TeenDebatePartner";
+import TeenCollegePrep from "./pages/TeenCollegePrep";
+import TeenSideHustle from "./pages/TeenSideHustle";
+import TeenSocialSkills from "./pages/TeenSocialSkills";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -156,6 +162,12 @@ const App = () => (
           <Route path="/kids-science-lab" element={<KidsScienceLab />} />
           <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
           <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
+          <Route path="/teen-study-planner" element={<TeenStudyPlanner />} />
+          <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />
+          <Route path="/teen-debate-partner" element={<TeenDebatePartner />} />
+          <Route path="/teen-college-prep" element={<TeenCollegePrep />} />
+          <Route path="/teen-side-hustle" element={<TeenSideHustle />} />
+          <Route path="/teen-social-skills" element={<TeenSocialSkills />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { useTranslation } from "react-i18next";
 
@@ -172,6 +172,12 @@ const Navbar = () => {
     { path: "/kids-science-lab", label: "AI Science Lab (6-12y)", icon: FlaskConical },
     { path: "/kids-drawing-buddy", label: "AI Drawing Buddy (6-12y)", icon: Palette },
     { path: "/kids-reading-companion", label: "AI Reading Companion (6-12y)", icon: BookOpen },
+    { path: "/teen-study-planner", label: "AI Study Planner (13-18y)", icon: Calendar },
+    { path: "/teen-career-counselor", label: "AI Career Counselor (13-18y)", icon: Briefcase },
+    { path: "/teen-debate-partner", label: "AI Debate Partner (13-18y)", icon: MessageSquare },
+    { path: "/teen-college-prep", label: "AI College Prep (13-18y)", icon: GraduationCap },
+    { path: "/teen-side-hustle", label: "AI Side Hustle Ideas (13-18y)", icon: DollarSign },
+    { path: "/teen-social-skills", label: "AI Social Skills Trainer (13-18y)", icon: Users },
   ];
 
   const otherServices = [
