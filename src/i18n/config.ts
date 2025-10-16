@@ -21,8 +21,11 @@ i18n
       es: { translation: es },
       fr: { translation: fr },
     },
-    lng: 'en',
     fallbackLng: 'en',
+    detection: {
+      order: ['navigator', 'htmlTag', 'path', 'subdomain'],
+      caches: ['localStorage'],
+    },
     interpolation: {
       escapeValue: false,
     },
