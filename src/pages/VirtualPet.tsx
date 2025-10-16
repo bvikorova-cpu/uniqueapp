@@ -5,10 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MyPets } from "@/components/virtual-pet/MyPets";
 import { PetShop } from "@/components/virtual-pet/PetShop";
 import { PetCustomization } from "@/components/virtual-pet/PetCustomization";
-import { PetBreeding } from "@/components/virtual-pet/PetBreeding";
 import { PetTrading } from "@/components/virtual-pet/PetTrading";
 import { MiniGames } from "@/components/virtual-pet/MiniGames";
-import { Heart, Store, Palette, Dna, ArrowLeftRight, Gamepad2 } from "lucide-react";
+import { Heart, Store, Palette, ArrowLeftRight, Gamepad2 } from "lucide-react";
 
 const VirtualPet = () => {
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
@@ -29,7 +28,7 @@ const VirtualPet = () => {
           </div>
 
           <Tabs defaultValue="pets" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 mb-8">
+            <TabsList className="grid w-full grid-cols-5 mb-8">
               <TabsTrigger value="pets" className="gap-2">
                 <Heart className="h-4 w-4" />
                 <span className="hidden sm:inline">My Pets</span>
@@ -41,10 +40,6 @@ const VirtualPet = () => {
               <TabsTrigger value="customize" className="gap-2">
                 <Palette className="h-4 w-4" />
                 <span className="hidden sm:inline">Customize</span>
-              </TabsTrigger>
-              <TabsTrigger value="breeding" className="gap-2">
-                <Dna className="h-4 w-4" />
-                <span className="hidden sm:inline">Breeding</span>
               </TabsTrigger>
               <TabsTrigger value="trading" className="gap-2">
                 <ArrowLeftRight className="h-4 w-4" />
@@ -66,10 +61,6 @@ const VirtualPet = () => {
 
             <TabsContent value="customize" className="space-y-4">
               <PetCustomization selectedPetId={selectedPetId} />
-            </TabsContent>
-
-            <TabsContent value="breeding" className="space-y-4">
-              <PetBreeding selectedPetId={selectedPetId} />
             </TabsContent>
 
             <TabsContent value="trading" className="space-y-4">
