@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
+import { useTranslation } from "react-i18next";
 
 interface NotificationData {
   id: string;
@@ -31,6 +32,7 @@ interface NotificationData {
 }
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -154,15 +156,15 @@ const Navbar = () => {
   };
 
   const mainNavItems = [
-    { path: "/feed", label: "Feed", icon: MessageSquare },
-    { path: "/jobs", label: "Work", icon: Briefcase },
-    { path: "/games", label: "Games", icon: Gamepad2 },
-    { path: "/rewards", label: "Rewards", icon: Trophy },
-    { path: "/megatalent", label: "Megatalent", icon: Crown, premium: true },
+    { path: "/feed", label: t('services.feed.title'), icon: MessageSquare },
+    { path: "/jobs", label: t('navbar.work'), icon: Briefcase },
+    { path: "/games", label: t('navbar.games'), icon: Gamepad2 },
+    { path: "/rewards", label: t('navbar.rewards'), icon: Trophy },
+    { path: "/megatalent", label: t('services.megatalent.title'), icon: Crown, premium: true },
   ];
 
   const learningServices = [
-    { path: "/education", label: "Education", icon: GraduationCap },
+    { path: "/education", label: t('navbar.education'), icon: GraduationCap },
     { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "Story Creator (6-12y)", icon: BookOpen },
@@ -194,18 +196,18 @@ const Navbar = () => {
   ];
 
   const otherServices = [
-    { path: "/tiktok", label: "Videos", icon: Video },
-    { path: "/messenger", label: "Messenger", icon: Mail },
-    { path: "/influ-king", label: "Influ-King", icon: Star },
-    { path: "/megaforum", label: "Megaforum", icon: Users },
-    { path: "/psychologist", label: "Psychologist", icon: Brain },
+    { path: "/tiktok", label: t('navbar.videos'), icon: Video },
+    { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
+    { path: "/influ-king", label: t('navbar.influ_king'), icon: Star },
+    { path: "/megaforum", label: t('navbar.megaforum'), icon: Users },
+    { path: "/psychologist", label: t('navbar.psychologist'), icon: Brain },
     { path: "/content-studio", label: "Content Studio", icon: Sparkles },
     { path: "/companions", label: "Character Companions", icon: MessageCircle },
     { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },
     { path: "/career-hub", label: "Career Hub", icon: Briefcase },
-    { path: "/brand-builder", label: "Brand Builder", icon: Sparkles },
-    { path: "/home-designer", label: "Home Designer", icon: Home },
-    { path: "/beauty-studio", label: "Beauty Studio", icon: Sparkles },
+    { path: "/brand-builder", label: t('services.brand_builder.title'), icon: Sparkles },
+    { path: "/home-designer", label: t('services.home_designer.title'), icon: Home },
+    { path: "/beauty-studio", label: t('services.beauty_studio.title'), icon: Sparkles },
     { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
     { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },
     { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
@@ -216,18 +218,18 @@ const Navbar = () => {
     { path: "/ai-tattoo", label: "AI Tattoo Designer", icon: ImageIcon },
     { path: "/mystery-box", label: "Mystery Box", icon: Gift },
     { path: "/routine-optimizer", label: "Routine Optimizer", icon: Zap },
-    { path: "/vacationer", label: "Vacationer", icon: Plane },
-    { path: "/dating", label: "Dating", icon: Heart },
-    { path: "/first-aid", label: "First Aid", icon: Activity },
-    { path: "/fit-slim", label: "Fit & Slim", icon: Apple },
-    { path: "/cooking", label: "Cooking", icon: ChefHat },
-    { path: "/marketplace", label: "Marketplace", icon: Briefcase },
-    { path: "/bazaar", label: "Bazaar", icon: Store },
-    { path: "/ai-generation", label: "AI Generation", icon: Sparkles },
-    { path: "/auction", label: "Auction", icon: Gavel },
-    { path: "/best-friend", label: "Best Friend", icon: UserPlus },
-    { path: "/referral", label: "Invite Friend", icon: User },
-    { path: "/terms", label: "Terms", icon: FileText },
+    { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
+    { path: "/dating", label: t('navbar.dating'), icon: Heart },
+    { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
+    { path: "/fit-slim", label: t('services.fit_slim.title'), icon: Apple },
+    { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
+    { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
+    { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
+    { path: "/ai-generation", label: t('navbar.ai_generation'), icon: Sparkles },
+    { path: "/auction", label: t('navbar.auction'), icon: Gavel },
+    { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
+    { path: "/referral", label: t('navbar.invite_friend'), icon: User },
+    { path: "/terms", label: t('navbar.terms'), icon: FileText },
   ];
 
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
@@ -315,7 +317,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant={isOtherServiceActive ? "premium" : "ghost"}>
                   <MoreHorizontal className="h-4 w-4" />
-                  Other Services
+                  {t('navbar.other_services')}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto">
@@ -356,7 +358,7 @@ const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-80">
                     <div className="flex items-center justify-between p-2 border-b">
-                      <span className="font-semibold">Notifications</span>
+                      <span className="font-semibold">{t('navbar.notifications')}</span>
                       {unreadCount > 0 && (
                         <Button 
                           variant="ghost" 
@@ -364,13 +366,13 @@ const Navbar = () => {
                           onClick={markAllAsRead}
                           className="text-xs h-auto p-1"
                         >
-                          Mark all as read
+                          {t('navbar.mark_read')}
                         </Button>
                       )}
                     </div>
                     {notifications.length === 0 ? (
                       <div className="p-4 text-center text-sm text-muted-foreground">
-                        No notifications
+                        {t('navbar.no_notifications')}
                       </div>
                     ) : (
                       <div className="max-h-96 overflow-y-auto">
@@ -385,8 +387,8 @@ const Navbar = () => {
                           >
                             <div className="font-medium text-sm">
                               {notification.type === 'marketplace' 
-                                ? `New interest: ${notification.skill_offerings?.title}`
-                                : `New message: ${notification.bazaar_items?.title}`
+                                ? `${t('navbar.new_interest')}: ${notification.skill_offerings?.title}`
+                                : `${t('navbar.new_message')}: ${notification.bazaar_items?.title}`
                               }
                             </div>
                             <div className="text-xs text-muted-foreground mt-1 line-clamp-2">
@@ -412,19 +414,19 @@ const Navbar = () => {
                     <DropdownMenuItem asChild>
                       <Link to={`/profile/${user.id}`} className="w-full cursor-pointer">
                         <UserCircle className="h-4 w-4 mr-2" />
-                        View Profile
+                        {t('navbar.view_profile')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/edit-profile" className="w-full cursor-pointer">
                         <Settings className="h-4 w-4 mr-2" />
-                        Edit Profile
+                        {t('navbar.edit_profile')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/subscription" className="w-full cursor-pointer">
                         <Crown className="h-4 w-4 mr-2" />
-                        Subscription
+                        {t('navbar.subscription')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -436,42 +438,42 @@ const Navbar = () => {
                     <DropdownMenuItem asChild>
                       <Link to="/ai-credits" className="w-full cursor-pointer">
                         <Sparkles className="h-4 w-4 mr-2" />
-                        AI Credits
+                        {t('navbar.ai_credits')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/earnings" className="w-full cursor-pointer">
                         <Euro className="h-4 w-4 mr-2" />
-                        Earnings
+                        {t('navbar.earnings')}
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/contact" className="w-full cursor-pointer">
                         <Mail className="h-4 w-4 mr-2" />
-                        Contact
+                        {t('navbar.contact')}
                       </Link>
                     </DropdownMenuItem>
                     {isAdmin && (
                       <DropdownMenuItem asChild>
                         <Link to="/admin" className="w-full cursor-pointer">
                           <Settings className="h-4 w-4 mr-2" />
-                          Admin Panel
+                          {t('navbar.admin_panel')}
                         </Link>
                       </DropdownMenuItem>
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button onClick={handleLogout} variant="outline">
-                  Logout
+                  {t('navbar.logout')}
                 </Button>
               </>
             ) : (
               <>
                 <Link to="/auth">
-                  <Button variant="outline">Login</Button>
+                  <Button variant="outline">{t('navbar.login')}</Button>
                 </Link>
                 <Link to="/auth">
-                  <Button variant="hero">Register</Button>
+                  <Button variant="hero">{t('navbar.register')}</Button>
                 </Link>
               </>
             )}
@@ -541,7 +543,7 @@ const Navbar = () => {
             {/* Other Services Section */}
             <div className="pt-2 pb-2">
               <div className="px-4 py-2 text-sm font-semibold text-muted-foreground">
-                Other Services
+                {t('navbar.other_services')}
               </div>
               {otherServices.map((item) => {
                 const Icon = item.icon;
@@ -566,58 +568,58 @@ const Navbar = () => {
                   <Link to={`/profile/${user.id}`} onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <UserCircle className="h-4 w-4 mr-2" />
-                      View Profile
+                      {t('navbar.view_profile')}
                     </Button>
                   </Link>
                   <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Settings className="h-4 w-4 mr-2" />
-                      Edit Profile
+                      {t('navbar.edit_profile')}
                     </Button>
                   </Link>
                   <Link to="/subscription" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Crown className="h-4 w-4 mr-2" />
-                      Subscription
+                      {t('navbar.subscription')}
                     </Button>
                   </Link>
                   <Link to="/ai-credits" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Sparkles className="h-4 w-4 mr-2" />
-                      AI Credits
+                      {t('navbar.ai_credits')}
                     </Button>
                   </Link>
                   <Link to="/earnings" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Euro className="h-4 w-4 mr-2" />
-                      Earnings
+                      {t('navbar.earnings')}
                     </Button>
                   </Link>
                   <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
                       <Mail className="h-4 w-4 mr-2" />
-                      Contact
+                      {t('navbar.contact')}
                     </Button>
                   </Link>
                   {isAdmin && (
                     <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start">
                         <Settings className="h-4 w-4 mr-2" />
-                        Admin Panel
+                        {t('navbar.admin_panel')}
                       </Button>
                     </Link>
                   )}
                   <Button onClick={handleLogout} variant="outline" className="w-full">
-                    Logout
+                    {t('navbar.logout')}
                   </Button>
                 </>
               ) : (
               <>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">Login</Button>
+                  <Button variant="outline" className="w-full">{t('navbar.login')}</Button>
                 </Link>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="hero" className="w-full">Register</Button>
+                  <Button variant="hero" className="w-full">{t('navbar.register')}</Button>
                 </Link>
                 </>
               )}
