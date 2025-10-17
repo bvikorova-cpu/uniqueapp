@@ -1,8 +1,6 @@
 import { Copyright } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 const Footer = () => {
-  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -11,7 +9,7 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Copyright className="h-4 w-4" />
-            <span>{currentYear} Unique. {t('footer.rights')}</span>
+            <span>{currentYear} Unique. All rights reserved.</span>
           </div>
           
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
@@ -19,19 +17,19 @@ const Footer = () => {
               href="/terms" 
               className="hover:text-foreground transition-colors"
             >
-              {t('footer.terms')}
+              Terms of Service
             </a>
             <a 
               href="/terms#privacy" 
               className="hover:text-foreground transition-colors"
             >
-              {t('footer.privacy')}
+              Privacy Policy
             </a>
             <a 
               href="/contact" 
               className="hover:text-foreground transition-colors"
             >
-              {t('footer.contact')}
+              Contact
             </a>
           </div>
         </div>
