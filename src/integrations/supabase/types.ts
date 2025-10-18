@@ -1076,6 +1076,78 @@ export type Database = {
           },
         ]
       }
+      coloring_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          expires_at: string | null
+          id: string
+          tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          expires_at?: string | null
+          id?: string
+          tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          expires_at?: string | null
+          id?: string
+          tier?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coloring_pages: {
+        Row: {
+          created_at: string
+          credits_used: number | null
+          difficulty: string
+          id: string
+          is_public: boolean | null
+          metadata: Json | null
+          original_image_url: string
+          processed_image_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number | null
+          difficulty?: string
+          id?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          original_image_url: string
+          processed_image_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number | null
+          difficulty?: string
+          id?: string
+          is_public?: boolean | null
+          metadata?: Json | null
+          original_image_url?: string
+          processed_image_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       compatibility_readings: {
         Row: {
           advice: string | null

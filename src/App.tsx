@@ -72,6 +72,7 @@ import KidsMathGames from "./pages/KidsMathGames";
 import KidsScienceLab from "./pages/KidsScienceLab";
 import KidsDrawingBuddy from "./pages/KidsDrawingBuddy";
 import KidsReadingCompanion from "./pages/KidsReadingCompanion";
+import ColoringPages from "./pages/ColoringPages";
 import TeenStudyPlanner from "./pages/TeenStudyPlanner";
 import TeenCareerCounselor from "./pages/TeenCareerCounselor";
 import TeenDebatePartner from "./pages/TeenDebatePartner";
@@ -207,6 +208,7 @@ const App = () => (
           <Route path="/investment/:contentId" element={<GenericLearning />} />
           <Route path="/creative-writing" element={<CreativeWriting />} />
           <Route path="/writing/:contentId" element={<GenericLearning />} />
+          <Route path="/coloring-pages" element={<ColoringPages />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

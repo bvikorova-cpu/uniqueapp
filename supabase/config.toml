@@ -146,3 +146,15 @@ verify_jwt = false
 
 [functions.teen-study-planner]
 verify_jwt = false
+
+[functions.generate-coloring-page]
+verify_jwt = true
+
+[functions.create-coloring-subscription]
+verify_jwt = true
+
+[functions.create-coloring-payment]
+verify_jwt = true
+
+[functions.check-coloring-subscription]
+verify_jwt = true
