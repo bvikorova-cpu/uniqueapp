@@ -113,10 +113,10 @@ export default function ColoringPages() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">AI Coloring Page Generator</h1>
-          <p className="text-muted-foreground">
+      <main className="container mx-auto px-4 py-16 max-w-7xl">
+        <div className="mb-12 text-center">
+          <h1 className="text-5xl font-bold mb-4">AI Coloring Page Generator</h1>
+          <p className="text-lg text-muted-foreground">
             Transform any image into a beautiful coloring page
           </p>
         </div>
