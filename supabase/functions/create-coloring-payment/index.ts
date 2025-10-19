@@ -1,14 +1,11 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import Stripe from "https://esm.sh/stripe@14.21.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
-
-// Pay-per-use: 2€ for 1 HD coloring page
-const SINGLE_COLORING_PRICE = "price_single_coloring"; // Replace with actual Stripe price ID
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -30,35 +27,40 @@ serve(async (req) => {
       throw new Error("User not authenticated");
     }
 
-    console.log("Creating one-time payment for user:", user.id);
+    console.log("Creating pay-per-use payment for user:", user.id);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
+      apiVersion: "2023-10-16",
     });
 
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-    }
-
     const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+      payment_method_types: ["card"],
       line_items: [
         {
-          price: SINGLE_COLORING_PRICE,
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: "1 Coloring Page Credit",
+              description: "Single use HD coloring page generation",
+            },
+            unit_amount: 200, // 2€
+          },
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/coloring-pages?payment=success`,
-      cancel_url: `${req.headers.get("origin")}/coloring-pages?payment=canceled`,
+      success_url: `${req.headers.get("origin")}/coloring-pages?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/coloring-pages?canceled=true`,
+      client_reference_id: user.id,
+      customer_email: user.email,
       metadata: {
         user_id: user.id,
-        type: "single_coloring",
+        credits: "1",
+        type: "coloring_pay_per_use"
       },
     });
+
+    console.log("Stripe session created:", session.id);
 
     return new Response(
       JSON.stringify({ url: session.url }),
@@ -66,7 +68,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Error creating payment:", error);
+    console.error("Error in create-coloring-payment:", error);
     const errorMessage = error instanceof Error ? error.message : "Failed to create payment";
     return new Response(
       JSON.stringify({ error: errorMessage }),

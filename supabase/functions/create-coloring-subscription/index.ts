@@ -1,15 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import Stripe from "https://esm.sh/stripe@14.21.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-const PRICE_IDS = {
-  basic: "price_basic_coloring", // Replace with actual Stripe price ID
-  premium: "price_premium_coloring", // Replace with actual Stripe price ID
 };
 
 serve(async (req) => {
@@ -33,39 +28,64 @@ serve(async (req) => {
     }
 
     const { tier } = await req.json();
-    console.log("Creating subscription for tier:", tier);
-
-    if (!tier || !PRICE_IDS[tier as keyof typeof PRICE_IDS]) {
-      throw new Error("Invalid subscription tier");
-    }
+    console.log("Creating coloring subscription for user:", user.id, "tier:", tier);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
+      apiVersion: "2023-10-16",
     });
 
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
+    const prices = {
+      basic: { 
+        amount: 500, 
+        credits: 20, 
+        name: "Coloring Pages Basic",
+        description: "20 HD coloring pages per month"
+      },
+      premium: { 
+        amount: 1200, 
+        credits: 999999, 
+        name: "Coloring Pages Premium",
+        description: "Unlimited Ultra HD coloring pages"
+      },
+    };
+
+    const selectedPrice = prices[tier as keyof typeof prices];
+    if (!selectedPrice) {
+      throw new Error("Invalid tier selected");
     }
 
     const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+      payment_method_types: ["card"],
       line_items: [
         {
-          price: PRICE_IDS[tier as keyof typeof PRICE_IDS],
+          price_data: {
+            currency: "eur",
+            product_data: {
+              name: selectedPrice.name,
+              description: selectedPrice.description,
+            },
+            unit_amount: selectedPrice.amount,
+            recurring: {
+              interval: "month",
+            },
+          },
           quantity: 1,
         },
       ],
       mode: "subscription",
-      success_url: `${req.headers.get("origin")}/coloring-pages?success=true&tier=${tier}`,
+      success_url: `${req.headers.get("origin")}/coloring-pages?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/coloring-pages?canceled=true`,
+      client_reference_id: user.id,
+      customer_email: user.email,
       metadata: {
         user_id: user.id,
         tier: tier,
+        credits: selectedPrice.credits.toString(),
+        type: "coloring_subscription"
       },
     });
+
+    console.log("Stripe session created:", session.id);
 
     return new Response(
       JSON.stringify({ url: session.url }),
@@ -73,7 +93,7 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Error creating subscription:", error);
+    console.error("Error in create-coloring-subscription:", error);
     const errorMessage = error instanceof Error ? error.message : "Failed to create subscription";
     return new Response(
       JSON.stringify({ error: errorMessage }),
