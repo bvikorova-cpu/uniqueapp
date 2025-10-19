@@ -47,6 +47,7 @@ const Auth = () => {
         data: {
           full_name: fullName,
         },
+        captchaToken: 'skip-captcha',
       },
     });
 
@@ -77,6 +78,9 @@ const Auth = () => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
+      options: {
+        captchaToken: 'skip-captcha',
+      },
     });
 
     setLoading(false);
