@@ -1,6 +1,22 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
+
+const GiftRequestSchema = z.object({
+  receiverId: z.string().uuid("Invalid receiver ID"),
+  giftId: z.string().uuid("Invalid gift ID"),
+  contextType: z.enum(["stream", "post", "profile"], {
+    errorMap: () => ({ message: "Invalid context type" }),
+  }),
+  contextId: z.string().uuid("Invalid context ID").optional(),
+  message: z
+    .string()
+    .max(500, "Message too long")
+    .trim()
+    .optional()
+    .transform((val) => val || ""),
+});
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -24,11 +40,20 @@ serve(async (req) => {
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
-    const { receiverId, giftId, contextType, contextId, message } = await req.json();
+    const body = await req.json();
+    const validationResult = GiftRequestSchema.safeParse(body);
 
-    if (!receiverId || !giftId || !contextType) {
-      throw new Error("Missing required fields");
+    if (!validationResult.success) {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid input",
+          details: validationResult.error.issues,
+        }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
+
+    const { receiverId, giftId, contextType, contextId, message } = validationResult.data;
 
     // Get gift details
     const { data: gift, error: giftError } = await supabaseClient

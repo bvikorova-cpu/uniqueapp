@@ -61,22 +61,25 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.create-featured-payment]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-certificate-payment]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-job-listing-payment]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-influencer-tip-payment]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-platform-gift]
-verify_jwt = false
+verify_jwt = true
 
 [functions.create-subscription-checkout]
-verify_jwt = false
+verify_jwt = true
+
+[functions.process-sale-transaction]
+verify_jwt = true
 
 [functions.check-subscription]
 verify_jwt = false
@@ -85,7 +88,7 @@ verify_jwt = false
 verify_jwt = true
 
 [functions.create-credits-payment]
-verify_jwt = false
+verify_jwt = true
 
 [functions.career-interview]
 verify_jwt = true
@@ -154,6 +157,9 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.create-coloring-payment]
+verify_jwt = true
+
+[functions.create-learning-payment]
 verify_jwt = true
 
 [functions.check-coloring-subscription]
