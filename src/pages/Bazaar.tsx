@@ -391,16 +391,13 @@ const Bazaar = () => {
     if (!selectedItem || !currentUserId) return;
 
     try {
-      const commissionAmount = calculateCommission(selectedItem.price);
-      
-      // Create transaction with commission
+      // Create transaction via secure edge function
       const { error: transError } = await createSaleTransaction({
         itemId: selectedItem.id,
         itemType: 'bazaar_sale',
         sellerId: selectedItem.user_id,
         buyerId: currentUserId,
         totalAmount: selectedItem.price,
-        commissionRate: limits.commissionRate,
       });
 
       if (transError) throw transError;
@@ -415,7 +412,7 @@ const Bazaar = () => {
 
       toast({
         title: "Purchase successful!",
-        description: `You paid €${selectedItem.price.toFixed(2)}. Commission: €${commissionAmount.toFixed(2)}`,
+        description: `You paid €${selectedItem.price.toFixed(2)}`,
       });
 
       setIsDetailOpen(false);
