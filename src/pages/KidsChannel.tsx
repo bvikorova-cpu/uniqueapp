@@ -273,19 +273,6 @@ const KidsChannel = () => {
                   alt={show.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                
-                {/* Premium Badge */}
-                {show.is_premium && (
-                  <Badge className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0">
-                    <Crown className="w-3 h-3 mr-1" />
-                    Premium
-                  </Badge>
-                )}
-
-                {/* Age Rating */}
-                <Badge className="absolute top-2 left-2 bg-blue-500/90 text-white border-0">
-                  {show.age_rating}
-                </Badge>
 
                 {/* Play Overlay */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
