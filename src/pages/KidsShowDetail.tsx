@@ -57,6 +57,12 @@ const KidsShowDetail = () => {
     "Masha and the Bear": showImages.masha,
     "Dora the Explorer": showImages.dora,
     "Cocomelon": showImages.cocomelon,
+    "SpongeBob SquarePants": showImages.spongebob,
+    "PJ Masks": showImages.pjmasks,
+    "Mickey Mouse Clubhouse": showImages.mickey,
+    "Daniel Tiger's Neighborhood": showImages.danielTiger,
+    "Super Wings": showImages.superwings,
+    "Blippi": showImages.blippi,
   };
 
   const episodeImageMap: Record<string, string> = {

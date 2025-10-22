@@ -9,6 +9,12 @@ import blueyShow from "@/assets/kids/bluey-show.jpg";
 import mashaShow from "@/assets/kids/masha-show.jpg";
 import doraShow from "@/assets/kids/dora-show.jpg";
 import cocomelonShow from "@/assets/kids/cocomelon-show.jpg";
+import spongebobShow from "@/assets/kids/spongebob-show.jpg";
+import pjmasksShow from "@/assets/kids/pjmasks-show.jpg";
+import mickeyShow from "@/assets/kids/mickey-show.jpg";
+import danielTigerShow from "@/assets/kids/daniel-tiger-show.jpg";
+import superwingsShow from "@/assets/kids/superwings-show.jpg";
+import blippiShow from "@/assets/kids/blippi-show.jpg";
 
 // Episode thumbnails
 import peppaEp1 from "@/assets/kids/peppa-ep1.jpg";
@@ -26,6 +32,12 @@ export const showImages = {
   masha: mashaShow,
   dora: doraShow,
   cocomelon: cocomelonShow,
+  spongebob: spongebobShow,
+  pjmasks: pjmasksShow,
+  mickey: mickeyShow,
+  danielTiger: danielTigerShow,
+  superwings: superwingsShow,
+  blippi: blippiShow,
 };
 
 export const episodeImages = {
