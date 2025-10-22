@@ -53,11 +53,11 @@ export const usePhotoCredits = () => {
     },
     onError: (error: Error) => {
       if (error.message.includes('credits')) {
-        toast.error("Nedostatok kreditov. Prosím zakúpte si viac kreditov.");
+        toast.error("Insufficient credits. Please purchase more credits.");
       } else if (error.message.includes('Rate limit')) {
-        toast.error("Príliš veľa požiadaviek. Prosím skúste neskôr.");
+        toast.error("Too many requests. Please try again later.");
       } else {
-        toast.error("Chyba pri reštaurovaní fotky: " + error.message);
+        toast.error("Error restoring photo: " + error.message);
       }
     },
   });
@@ -65,9 +65,9 @@ export const usePhotoCredits = () => {
   const purchaseCredits = async (amount: number) => {
     try {
       // This will be implemented with Stripe later
-      toast.info("Platobný systém bude dostupný čoskoro!");
+      toast.info("Payment system coming soon!");
     } catch (error) {
-      toast.error("Chyba pri nákupe kreditov");
+      toast.error("Error purchasing credits");
     }
   };
 

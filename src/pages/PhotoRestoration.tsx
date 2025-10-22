@@ -25,7 +25,7 @@ const PhotoRestoration = () => {
 
   const handleRestore = async () => {
     if (!selectedFile) {
-      toast.error("Prosím vyberte fotku");
+      toast.error("Please select a photo");
       return;
     }
 
@@ -51,7 +51,7 @@ const PhotoRestoration = () => {
       restorePhoto({ imageUrl: publicUrl, restorationType }, {
         onSuccess: (data) => {
           setRestoredUrl(data.restoredImageUrl);
-          toast.success("Fotka úspešne reštaurovaná!");
+          toast.success("Photo successfully restored!");
           
           // Save to database
           supabase.from('old_photos').insert({
@@ -66,21 +66,21 @@ const PhotoRestoration = () => {
 
     } catch (error) {
       console.error('Error:', error);
-      toast.error("Chyba pri nahrávaní fotky");
+      toast.error("Error uploading photo");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-20 px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">AI Reštaurovanie Starých Fotiek</h1>
+        <div className="text-center mb-12 mt-12">
+          <h1 className="text-4xl font-bold mb-4">AI Photo Restoration</h1>
           <p className="text-muted-foreground text-lg">
-            Oživte svoje staré spomienky pomocou umelej inteligencie
+            Bring your old memories back to life with artificial intelligence
           </p>
           <div className="mt-4 inline-block px-6 py-2 bg-primary/10 rounded-full">
             <p className="text-sm">
-              Dostupné kredity: <span className="font-bold text-primary">{credits?.credits_remaining || 0}</span>
+              Available credits: <span className="font-bold text-primary">{credits?.credits_remaining || 0}</span>
             </p>
           </div>
         </div>
@@ -92,13 +92,13 @@ const PhotoRestoration = () => {
           >
             <CardHeader>
               <Sparkles className="w-8 h-8 mb-2 text-primary" />
-              <CardTitle>Kolorovanie</CardTitle>
+              <CardTitle>Colorization</CardTitle>
               <CardDescription>
-                Pridajte farby do čiernobielych fotiek
+                Add colors to black and white photos
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">1 kredit</p>
+              <p className="text-sm text-muted-foreground">1 credit</p>
             </CardContent>
           </Card>
 
@@ -108,13 +108,13 @@ const PhotoRestoration = () => {
           >
             <CardHeader>
               <Wand2 className="w-8 h-8 mb-2 text-primary" />
-              <CardTitle>Oprava</CardTitle>
+              <CardTitle>Repair</CardTitle>
               <CardDescription>
-                Odstráňte škrabance a poškodenia
+                Remove scratches and damage
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">1 kredit</p>
+              <p className="text-sm text-muted-foreground">1 credit</p>
             </CardContent>
           </Card>
 
@@ -124,13 +124,13 @@ const PhotoRestoration = () => {
           >
             <CardHeader>
               <ImageIcon className="w-8 h-8 mb-2 text-primary" />
-              <CardTitle>Vylepšenie</CardTitle>
+              <CardTitle>Enhancement</CardTitle>
               <CardDescription>
-                Zvýšte kvalitu a ostrosť fotky
+                Improve quality and sharpness
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">1 kredit</p>
+              <p className="text-sm text-muted-foreground">1 credit</p>
             </CardContent>
           </Card>
         </div>
@@ -138,7 +138,7 @@ const PhotoRestoration = () => {
         <div className="grid md:grid-cols-2 gap-8">
           <Card>
             <CardHeader>
-              <CardTitle>Originálna fotka</CardTitle>
+              <CardTitle>Original Photo</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
@@ -147,10 +147,10 @@ const PhotoRestoration = () => {
                 ) : (
                   <div className="text-center p-8">
                     <Upload className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground mb-4">Nahrajte starú fotku</p>
+                    <p className="text-muted-foreground mb-4">Upload an old photo</p>
                     <label htmlFor="file-upload">
                       <Button variant="outline" asChild>
-                        <span>Vybrať fotku</span>
+                        <span>Select Photo</span>
                       </Button>
                     </label>
                     <input
@@ -169,7 +169,7 @@ const PhotoRestoration = () => {
                   onClick={handleRestore}
                   disabled={isRestoring || !credits || credits.credits_remaining < 1}
                 >
-                  {isRestoring ? "Reštauruje sa..." : "Reštaurovať fotku"}
+                  {isRestoring ? "Restoring..." : "Restore Photo"}
                 </Button>
               )}
             </CardContent>
@@ -177,7 +177,7 @@ const PhotoRestoration = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle>Reštaurovaná fotka</CardTitle>
+              <CardTitle>Restored Photo</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="aspect-square bg-muted rounded-lg flex items-center justify-center overflow-hidden">
@@ -187,7 +187,7 @@ const PhotoRestoration = () => {
                   <div className="text-center p-8">
                     <Sparkles className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
                     <p className="text-muted-foreground">
-                      Reštaurovaná fotka sa zobrazí tu
+                      Restored photo will appear here
                     </p>
                   </div>
                 )}
@@ -195,7 +195,7 @@ const PhotoRestoration = () => {
               {restoredUrl && (
                 <a href={restoredUrl} download>
                   <Button variant="outline" className="w-full mt-4">
-                    Stiahnuť reštaurovanú fotku
+                    Download Restored Photo
                   </Button>
                 </a>
               )}
@@ -205,28 +205,28 @@ const PhotoRestoration = () => {
 
         <Card className="mt-8">
           <CardHeader>
-            <CardTitle>Potrebujete viac kreditov?</CardTitle>
-            <CardDescription>Vyberte si vhodný balíček</CardDescription>
+            <CardTitle>Need More Credits?</CardTitle>
+            <CardDescription>Choose the right package for you</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="border rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold mb-2">5 kreditov</p>
-                <p className="text-3xl font-bold text-primary mb-4">10€</p>
-                <Button variant="outline" className="w-full">Kúpiť</Button>
+                <p className="text-2xl font-bold mb-2">5 credits</p>
+                <p className="text-3xl font-bold text-primary mb-4">$10</p>
+                <Button variant="outline" className="w-full">Buy Now</Button>
               </div>
               <div className="border-2 border-primary rounded-lg p-4 text-center">
                 <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
-                  NAJOBĽÚBENEJŠIE
+                  MOST POPULAR
                 </div>
-                <p className="text-2xl font-bold mb-2">20 kreditov</p>
-                <p className="text-3xl font-bold text-primary mb-4">30€</p>
-                <Button className="w-full">Kúpiť</Button>
+                <p className="text-2xl font-bold mb-2">20 credits</p>
+                <p className="text-3xl font-bold text-primary mb-4">$30</p>
+                <Button className="w-full">Buy Now</Button>
               </div>
               <div className="border rounded-lg p-4 text-center">
-                <p className="text-2xl font-bold mb-2">50 kreditov</p>
-                <p className="text-3xl font-bold text-primary mb-4">60€</p>
-                <Button variant="outline" className="w-full">Kúpiť</Button>
+                <p className="text-2xl font-bold mb-2">50 credits</p>
+                <p className="text-3xl font-bold text-primary mb-4">$60</p>
+                <Button variant="outline" className="w-full">Buy Now</Button>
               </div>
             </div>
           </CardContent>
