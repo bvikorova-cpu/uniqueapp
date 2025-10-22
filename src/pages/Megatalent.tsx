@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send, Copy, Facebook } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send, Copy, Facebook, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -111,11 +111,15 @@ const Megatalent = () => {
   const [commentDialogOpen, setCommentDialogOpen] = useState<string | null>(null);
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Record<string, any[]>>({});
+  const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [deletingSubmission, setDeletingSubmission] = useState<string | null>(null);
 
   useEffect(() => {
     checkSubscription();
     fetchSubmissions();
     fetchUserVotes();
+    getCurrentUser();
   }, [selectedCategory]);
 
   useEffect(() => {
@@ -172,6 +176,15 @@ const Megatalent = () => {
     }
   };
 
+  const getCurrentUser = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUserId(user?.id || null);
+    } catch (error) {
+      console.error('Error getting current user:', error);
+    }
+  };
+
   const fetchSubmissions = async () => {
     try {
       const { data: submissionsData, error: submissionsError } = await supabase
@@ -191,6 +204,20 @@ const Megatalent = () => {
           .from('profiles')
           .select('id, full_name, avatar_url')
           .in('id', userIds);
+
+        // Fetch comment counts for all submissions
+        const submissionIds = submissionsData.map(s => s.id);
+        const { data: commentsData } = await supabase
+          .from('talent_comments')
+          .select('submission_id')
+          .in('submission_id', submissionIds);
+
+        // Count comments per submission
+        const counts: Record<string, number> = {};
+        commentsData?.forEach(comment => {
+          counts[comment.submission_id] = (counts[comment.submission_id] || 0) + 1;
+        });
+        setCommentCounts(counts);
 
         // Merge profiles with submissions
         const enrichedSubmissions = submissionsData.map(submission => ({
@@ -482,6 +509,12 @@ const Megatalent = () => {
       setCommentText("");
       await fetchComments(submissionId);
       
+      // Update comment count
+      setCommentCounts(prev => ({
+        ...prev,
+        [submissionId]: (prev[submissionId] || 0) + 1
+      }));
+      
       toast({
         title: 'Komentár pridaný',
         description: 'Váš komentár bol úspešne pridaný',
@@ -493,6 +526,64 @@ const Megatalent = () => {
         description: 'Nepodarilo sa pridať komentár',
         variant: "destructive",
       });
+    }
+  };
+
+  const handleDeleteSubmission = async (submissionId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: t('megatalent.login_required'),
+          description: t('megatalent.login_required_desc'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Get submission to check ownership
+      const submission = submissions.find(s => s.id === submissionId);
+      if (!submission || submission.user_id !== user.id) {
+        toast({
+          title: 'Chyba',
+          description: 'Nemôžete odstrániť tento príspevok',
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Confirm deletion
+      if (!window.confirm('Naozaj chcete odstrániť tento príspevok?')) {
+        return;
+      }
+
+      setDeletingSubmission(submissionId);
+
+      // Soft delete by setting is_active to false
+      const { error } = await supabase
+        .from('talent_submissions')
+        .update({ is_active: false })
+        .eq('id', submissionId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Príspevok odstránený',
+        description: 'Váš príspevok bol úspešne odstránený',
+      });
+
+      // Remove from local state
+      setSubmissions(prev => prev.filter(s => s.id !== submissionId));
+    } catch (error) {
+      console.error('Error deleting submission:', error);
+      toast({
+        title: t('megatalent.error'),
+        description: 'Nepodarilo sa odstrániť príspevok',
+        variant: "destructive",
+      });
+    } finally {
+      setDeletingSubmission(null);
     }
   };
 
@@ -952,9 +1043,22 @@ const Megatalent = () => {
                           </p>
                         </div>
                       </div>
-                      <Badge variant="secondary">
-                        {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">
+                          {categoryGroups.flatMap(g => g.categories).find(c => c.value === selectedCategory)?.label}
+                        </Badge>
+                        {currentUserId === submission.user_id && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteSubmission(submission.id)}
+                            disabled={deletingSubmission === submission.id}
+                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -994,7 +1098,7 @@ const Megatalent = () => {
                           <DialogTrigger asChild>
                             <Button variant="ghost" size="sm">
                               <MessageCircle className="h-4 w-4 mr-1" />
-                              {comments[submission.id]?.length || 0}
+                              {commentCounts[submission.id] || 0}
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="max-w-lg max-h-[80vh]">
