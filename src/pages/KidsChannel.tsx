@@ -47,6 +47,16 @@ const KidsChannel = () => {
     "Daniel Tiger's Neighborhood": showImages.danielTiger,
     "Super Wings": showImages.superwings,
     "Blippi": showImages.blippi,
+    "Scooby-Doo": showImages.scooby,
+    "Mr. Bean": showImages.mrbean,
+    "Snow White": showImages.snowwhite,
+    "Pinocchio": showImages.pinocchio,
+    "Dumbo": showImages.dumbo,
+    "Bambi": showImages.bambi,
+    "Cinderella": showImages.cinderella,
+    "Alice in Wonderland": showImages.alice,
+    "Beauty and the Beast": showImages.beautyBeast,
+    "Aladdin": showImages.aladdin,
   };
 
   useEffect(() => {
