@@ -55,10 +55,10 @@ serve(async (req) => {
       throw new Error("Invalid character ID format");
     }
 
-    // Verify conversation ownership
+    // Verify conversation ownership and character match
     const { data: conversationOwnership, error: convError } = await supabaseClient
       .from('character_conversations')
-      .select('user_id')
+      .select('user_id, character_id')
       .eq('id', conversationId)
       .single();
 
@@ -68,6 +68,10 @@ serve(async (req) => {
 
     if (conversationOwnership.user_id !== user.id) {
       throw new Error("Unauthorized: This conversation does not belong to you");
+    }
+
+    if (conversationOwnership.character_id !== characterId) {
+      throw new Error("Character ID does not match conversation");
     }
 
     // Check message limits for free users
