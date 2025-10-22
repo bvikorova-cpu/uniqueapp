@@ -57,6 +57,34 @@ const KidsChannel = () => {
     "Alice in Wonderland": showImages.alice,
     "Beauty and the Beast": showImages.beautyBeast,
     "Aladdin": showImages.aladdin,
+    "Moana": showImages.moana,
+    "Tangled": showImages.tangled,
+    "The Little Mermaid": showImages.thelittlemermaid,
+    "Toy Story": showImages.toystory,
+    "Toy Story 2": showImages.toystory,
+    "Toy Story 3": showImages.toystory,
+    "Toy Story 4": showImages.toystory,
+    "Finding Nemo": showImages.findingnemo,
+    "Finding Dory": showImages.findingnemo,
+    "The Incredibles": showImages.theincredibles,
+    "Incredibles 2": showImages.theincredibles,
+    "Cars": showImages.cars,
+    "Cars 2": showImages.cars,
+    "Cars 3": showImages.cars,
+    "Encanto": showImages.encanto,
+    "Coco": showImages.coco,
+    "Inside Out": showImages.insideout,
+    "Inside Out 2": showImages.insideout,
+    "Mulan": showImages.mulan,
+    "Zootopia": showImages.zootopia,
+    "Lilo & Stitch": showImages['lilo&stitch'],
+    "WALL-E": showImages['wall-e'],
+    "Up": showImages.up,
+    "Ratatouille": showImages.ratatouille,
+    "Winnie the Pooh": showImages.winniethepooh,
+    "Hercules": showImages.hercules,
+    "Monsters Inc": showImages.monstersinc,
+    "Monsters University": showImages.monstersinc,
   };
 
   useEffect(() => {
@@ -220,7 +248,7 @@ const KidsChannel = () => {
                 onClick={() => navigate(`/kids-channel/${show.id}`)}
               >
                 <img 
-                  src={showImageMap[show.title] || show.thumbnail_url} 
+                  src={showImageMap[show.title] || show.thumbnail_url || showImages.default} 
                   alt={show.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />

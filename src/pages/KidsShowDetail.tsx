@@ -73,6 +73,34 @@ const KidsShowDetail = () => {
     "Alice in Wonderland": showImages.alice,
     "Beauty and the Beast": showImages.beautyBeast,
     "Aladdin": showImages.aladdin,
+    "Moana": showImages.moana,
+    "Tangled": showImages.tangled,
+    "The Little Mermaid": showImages.thelittlemermaid,
+    "Toy Story": showImages.toystory,
+    "Toy Story 2": showImages.toystory,
+    "Toy Story 3": showImages.toystory,
+    "Toy Story 4": showImages.toystory,
+    "Finding Nemo": showImages.findingnemo,
+    "Finding Dory": showImages.findingnemo,
+    "The Incredibles": showImages.theincredibles,
+    "Incredibles 2": showImages.theincredibles,
+    "Cars": showImages.cars,
+    "Cars 2": showImages.cars,
+    "Cars 3": showImages.cars,
+    "Encanto": showImages.encanto,
+    "Coco": showImages.coco,
+    "Inside Out": showImages.insideout,
+    "Inside Out 2": showImages.insideout,
+    "Mulan": showImages.mulan,
+    "Zootopia": showImages.zootopia,
+    "Lilo & Stitch": showImages['lilo&stitch'],
+    "WALL-E": showImages['wall-e'],
+    "Up": showImages.up,
+    "Ratatouille": showImages.ratatouille,
+    "Winnie the Pooh": showImages.winniethepooh,
+    "Hercules": showImages.hercules,
+    "Monsters Inc": showImages.monstersinc,
+    "Monsters University": showImages.monstersinc,
   };
 
   const episodeImageMap: Record<string, string> = {
@@ -235,7 +263,7 @@ const KidsShowDetail = () => {
         {/* Hero Section */}
         <div 
           className="relative h-[60vh] bg-cover bg-center"
-          style={{ backgroundImage: `url(${showImageMap[show.title] || show.cover_image_url})` }}
+          style={{ backgroundImage: `url(${showImageMap[show.title] || show.cover_image_url || showImages.default})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
           
@@ -331,7 +359,7 @@ const KidsShowDetail = () => {
               >
                 <div className="relative aspect-video overflow-hidden">
                   <img 
-                    src={episodeImageMap[episode.title] || episode.thumbnail_url} 
+                    src={episodeImageMap[episode.title] || episode.thumbnail_url || showImages.default} 
                     alt={episode.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />

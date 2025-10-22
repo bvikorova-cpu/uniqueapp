@@ -25,6 +25,28 @@ import cinderellaShow from "@/assets/kids/cinderella-show.jpg";
 import aliceShow from "@/assets/kids/alice-show.jpg";
 import beautyBeastShow from "@/assets/kids/beauty-beast-show.jpg";
 import aladdinShow from "@/assets/kids/aladdin-show.jpg";
+import moanaCover from "@/assets/kids-shows/moana-cover.jpg";
+import tangledCover from "@/assets/kids-shows/tangled-cover.jpg";
+import beautyBeastCover from "@/assets/kids-shows/beauty-beast-cover.jpg";
+import aladdinCover from "@/assets/kids-shows/aladdin-cover.jpg";
+import littleMermaidCover from "@/assets/kids-shows/little-mermaid-cover.jpg";
+import toyStoryCover from "@/assets/kids-shows/toy-story-cover.jpg";
+import findingNemoCover from "@/assets/kids-shows/finding-nemo-cover.jpg";
+import incrediblesCover from "@/assets/kids-shows/incredibles-cover.jpg";
+import carsCover from "@/assets/kids-shows/cars-cover.jpg";
+import encantoCover from "@/assets/kids-shows/encanto-cover.jpg";
+import cocoCover from "@/assets/kids-shows/coco-cover.jpg";
+import insideOutCover from "@/assets/kids-shows/inside-out-cover.jpg";
+import mulanCover from "@/assets/kids-shows/mulan-cover.jpg";
+import zootopiaCover from "@/assets/kids-shows/zootopia-cover.jpg";
+import liloStitchCover from "@/assets/kids-shows/lilo-stitch-cover.jpg";
+import walleCover from "@/assets/kids-shows/wall-e-cover.jpg";
+import upCover from "@/assets/kids-shows/up-cover.jpg";
+import ratatouilleCover from "@/assets/kids-shows/ratatouille-cover.jpg";
+import poohCover from "@/assets/kids-shows/pooh-cover.jpg";
+import herculesCover from "@/assets/kids-shows/hercules-cover.jpg";
+import monstersIncCover from "@/assets/kids-shows/monsters-inc-cover.jpg";
+import defaultCover from "@/assets/kids-shows/default-cover.jpg";
 
 // Episode thumbnails
 import peppaEp1 from "@/assets/kids/peppa-ep1.jpg";
@@ -58,6 +80,27 @@ export const showImages = {
   alice: aliceShow,
   beautyBeast: beautyBeastShow,
   aladdin: aladdinShow,
+  moana: moanaCover,
+  tangled: tangledCover,
+  beautyandthebeast: beautyBeastCover,
+  thelittlemermaid: littleMermaidCover,
+  toystory: toyStoryCover,
+  findingnemo: findingNemoCover,
+  theincredibles: incrediblesCover,
+  cars: carsCover,
+  encanto: encantoCover,
+  coco: cocoCover,
+  insideout: insideOutCover,
+  mulan: mulanCover,
+  zootopia: zootopiaCover,
+  'lilo&stitch': liloStitchCover,
+  'wall-e': walleCover,
+  up: upCover,
+  ratatouille: ratatouilleCover,
+  winniethepooh: poohCover,
+  hercules: herculesCover,
+  monstersinc: monstersIncCover,
+  default: defaultCover,
 };
 
 export const episodeImages = {
