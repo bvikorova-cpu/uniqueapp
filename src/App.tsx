@@ -75,6 +75,8 @@ import KidsReadingCompanion from "./pages/KidsReadingCompanion";
 import ColoringPages from "./pages/ColoringPages";
 import TeenStudyPlanner from "./pages/TeenStudyPlanner";
 import TeenCareerCounselor from "./pages/TeenCareerCounselor";
+import KidsChannel from "./pages/KidsChannel";
+import KidsShowDetail from "./pages/KidsShowDetail";
 import TeenDebatePartner from "./pages/TeenDebatePartner";
 import TeenCollegePrep from "./pages/TeenCollegePrep";
 import PremiumCourses from "./pages/PremiumCourses";
@@ -209,6 +211,8 @@ const App = () => (
           <Route path="/creative-writing" element={<CreativeWriting />} />
           <Route path="/writing/:contentId" element={<GenericLearning />} />
           <Route path="/coloring-pages" element={<ColoringPages />} />
+          <Route path="/kids-channel" element={<KidsChannel />} />
+          <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

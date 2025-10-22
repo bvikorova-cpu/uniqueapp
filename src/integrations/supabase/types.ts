@@ -2678,6 +2678,91 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_episodes: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          episode_number: number
+          id: string
+          is_premium: boolean | null
+          season_number: number | null
+          show_id: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          video_url: string
+          views: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          episode_number: number
+          id?: string
+          is_premium?: boolean | null
+          season_number?: number | null
+          show_id: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          video_url: string
+          views?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          episode_number?: number
+          id?: string
+          is_premium?: boolean | null
+          season_number?: number | null
+          show_id?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          video_url?: string
+          views?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_episodes_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "kids_shows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          show_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          show_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          show_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_favorites_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "kids_shows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kids_homework: {
         Row: {
           ai_explanation: string | null
@@ -2831,6 +2916,45 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_shows: {
+        Row: {
+          age_rating: string | null
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_premium: boolean | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          age_rating?: string | null
+          category: string
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_premium?: boolean | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          age_rating?: string | null
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_premium?: boolean | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       kids_stories: {
         Row: {
           characters: Json | null
@@ -2863,6 +2987,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      kids_watch_history: {
+        Row: {
+          completed: boolean | null
+          episode_id: string
+          id: string
+          last_watched_at: string
+          user_id: string
+          watch_progress: number | null
+        }
+        Insert: {
+          completed?: boolean | null
+          episode_id: string
+          id?: string
+          last_watched_at?: string
+          user_id: string
+          watch_progress?: number | null
+        }
+        Update: {
+          completed?: boolean | null
+          episode_id?: string
+          id?: string
+          last_watched_at?: string
+          user_id?: string
+          watch_progress?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_watch_history_episode_id_fkey"
+            columns: ["episode_id"]
+            isOneToOne: false
+            referencedRelation: "kids_episodes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       learning_certificates: {
         Row: {
@@ -6368,22 +6527,10 @@ export type Database = {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
       }
-      calculate_level: {
-        Args: { points: number }
-        Returns: number
-      }
-      expire_featured_listings: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      generate_certificate_number: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      generate_referral_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      calculate_level: { Args: { points: number }; Returns: number }
+      expire_featured_listings: { Args: never; Returns: undefined }
+      generate_certificate_number: { Args: never; Returns: string }
+      generate_referral_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

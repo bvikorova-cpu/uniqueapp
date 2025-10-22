@@ -1,0 +1,310 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Heart, Play, Star, Sparkles, Crown } from "lucide-react";
+import { toast } from "sonner";
+
+interface Show {
+  id: string;
+  title: string;
+  description: string;
+  thumbnail_url: string;
+  cover_image_url: string;
+  category: string;
+  age_rating: string;
+  is_premium: boolean;
+  created_at: string;
+}
+
+const KidsChannel = () => {
+  const navigate = useNavigate();
+  const [shows, setShows] = useState<Show[]>([]);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  useEffect(() => {
+    fetchShows();
+    checkUser();
+  }, []);
+
+  const checkUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+    if (user) {
+      fetchFavorites(user.id);
+    }
+  };
+
+  const fetchShows = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("kids_shows")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      setShows(data || []);
+    } catch (error) {
+      console.error("Error fetching shows:", error);
+      toast.error("Nepodarilo sa načítať relácie");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchFavorites = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("kids_favorites")
+        .select("show_id")
+        .eq("user_id", userId);
+
+      if (error) throw error;
+      setFavorites(new Set(data?.map(f => f.show_id) || []));
+    } catch (error) {
+      console.error("Error fetching favorites:", error);
+    }
+  };
+
+  const toggleFavorite = async (showId: string) => {
+    if (!user) {
+      toast.error("Prihláste sa pre pridanie do obľúbených");
+      navigate("/auth");
+      return;
+    }
+
+    try {
+      if (favorites.has(showId)) {
+        await supabase
+          .from("kids_favorites")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("show_id", showId);
+        setFavorites(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(showId);
+          return newSet;
+        });
+        toast.success("Odstránené z obľúbených");
+      } else {
+        await supabase
+          .from("kids_favorites")
+          .insert({ user_id: user.id, show_id: showId });
+        setFavorites(prev => new Set(prev).add(showId));
+        toast.success("Pridané do obľúbených");
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+      toast.error("Niečo sa pokazilo");
+    }
+  };
+
+  const categories = ["All", ...Array.from(new Set(shows.map(s => s.category)))];
+
+  const filteredShows = selectedCategory === "All" 
+    ? shows 
+    : shows.filter(s => s.category === selectedCategory);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-blue-400">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Disney-like Background */}
+      <div className="fixed inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-blue-400 animate-gradient-shift">
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 animate-float">
+          <Sparkles className="text-yellow-300 w-12 h-12 opacity-70" />
+        </div>
+        <div className="absolute top-40 right-20 animate-float-delayed">
+          <Star className="text-yellow-200 w-16 h-16 opacity-60" />
+        </div>
+        <div className="absolute bottom-40 left-1/4 animate-float">
+          <Sparkles className="text-pink-300 w-10 h-10 opacity-70" />
+        </div>
+        <div className="absolute bottom-20 right-1/3 animate-float-delayed">
+          <Star className="text-purple-300 w-14 h-14 opacity-60" />
+        </div>
+        
+        {/* Clouds */}
+        <div className="absolute top-10 left-0 w-64 h-32 bg-white/20 rounded-full blur-3xl animate-cloud"></div>
+        <div className="absolute top-40 right-0 w-96 h-40 bg-white/15 rounded-full blur-3xl animate-cloud-slow"></div>
+        <div className="absolute bottom-20 left-1/3 w-80 h-36 bg-white/10 rounded-full blur-3xl animate-cloud"></div>
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-12 animate-fade-in">
+          <h1 className="text-6xl font-bold text-white mb-4 font-signature drop-shadow-lg">
+            Detský Kanál ✨
+          </h1>
+          <p className="text-xl text-white/90 mb-2">
+            Magické príbehy pre malých snívačov
+          </p>
+          <div className="flex items-center justify-center gap-2 text-white/80">
+            <Crown className="w-5 h-5 text-yellow-300" />
+            <span>Premium obsah dostupný pre predplatiteľov</span>
+          </div>
+        </div>
+
+        {/* Category Tabs */}
+        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
+          <TabsList className="bg-white/20 backdrop-blur-md border border-white/30 flex-wrap justify-center">
+            {categories.map(cat => (
+              <TabsTrigger 
+                key={cat} 
+                value={cat}
+                className="data-[state=active]:bg-white/90 data-[state=active]:text-purple-600"
+              >
+                {cat}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+
+        {/* Shows Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {filteredShows.map((show, index) => (
+            <Card 
+              key={show.id}
+              className="group relative overflow-hidden bg-white/90 backdrop-blur-sm hover:bg-white transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer border-2 border-white/50"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <div 
+                className="relative aspect-[3/4] overflow-hidden"
+                onClick={() => navigate(`/kids-channel/${show.id}`)}
+              >
+                <img 
+                  src={show.thumbnail_url} 
+                  alt={show.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                
+                {/* Premium Badge */}
+                {show.is_premium && (
+                  <Badge className="absolute top-2 right-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white border-0">
+                    <Crown className="w-3 h-3 mr-1" />
+                    Premium
+                  </Badge>
+                )}
+
+                {/* Age Rating */}
+                <Badge className="absolute top-2 left-2 bg-blue-500/90 text-white border-0">
+                  {show.age_rating}
+                </Badge>
+
+                {/* Play Overlay */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <div className="bg-white rounded-full p-4 transform scale-0 group-hover:scale-100 transition-transform duration-300">
+                    <Play className="w-8 h-8 text-purple-600" fill="currentColor" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4">
+                <h3 className="font-bold text-lg text-gray-900 mb-1 line-clamp-1">
+                  {show.title}
+                </h3>
+                <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                  {show.description}
+                </p>
+                
+                <div className="flex items-center justify-between">
+                  <Badge variant="secondary" className="text-xs">
+                    {show.category}
+                  </Badge>
+                  
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(show.id);
+                    }}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Heart 
+                      className={`w-5 h-5 transition-colors ${
+                        favorites.has(show.id) 
+                          ? "fill-red-500 text-red-500" 
+                          : "text-gray-400"
+                      }`}
+                    />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {filteredShows.length === 0 && (
+          <div className="text-center py-20">
+            <p className="text-white text-xl">Žiadne relácie v tejto kategórii</p>
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes gradient-shift {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        @keyframes float-delayed {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-30px) rotate(-10deg); }
+        }
+        
+        @keyframes cloud {
+          0% { transform: translateX(-100px); }
+          100% { transform: translateX(100vw); }
+        }
+        
+        @keyframes cloud-slow {
+          0% { transform: translateX(-200px); }
+          100% { transform: translateX(100vw); }
+        }
+        
+        .animate-gradient-shift {
+          background-size: 200% 200%;
+          animation: gradient-shift 15s ease infinite;
+        }
+        
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        
+        .animate-float-delayed {
+          animation: float-delayed 8s ease-in-out infinite;
+        }
+        
+        .animate-cloud {
+          animation: cloud 60s linear infinite;
+        }
+        
+        .animate-cloud-slow {
+          animation: cloud-slow 90s linear infinite;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default KidsChannel;
