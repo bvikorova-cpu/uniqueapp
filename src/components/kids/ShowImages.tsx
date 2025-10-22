@@ -1,10 +1,14 @@
 // Animated show cover images
-import peppaShow from "@/assets/kids/peppa-show.jpg";
-import pawPatrolShow from "@/assets/kids/paw-patrol-show.jpg";
-import frozenShow from "@/assets/kids/frozen-show.jpg";
-import lionKingShow from "@/assets/kids/lion-king-show.jpg";
+import peppaShow from "@/assets/kids/peppa-show-new.jpg";
+import pawPatrolShow from "@/assets/kids/paw-patrol-show-new.jpg";
+import frozenShow from "@/assets/kids/frozen-show-new.jpg";
+import lionKingShow from "@/assets/kids/lion-king-show-new.jpg";
 import musicShow from "@/assets/kids/music-show.jpg";
 import fairytaleShow from "@/assets/kids/fairytale-show.jpg";
+import blueyShow from "@/assets/kids/bluey-show.jpg";
+import mashaShow from "@/assets/kids/masha-show.jpg";
+import doraShow from "@/assets/kids/dora-show.jpg";
+import cocomelonShow from "@/assets/kids/cocomelon-show.jpg";
 
 // Episode thumbnails
 import peppaEp1 from "@/assets/kids/peppa-ep1.jpg";
@@ -18,6 +22,10 @@ export const showImages = {
   lionKing: lionKingShow,
   music: musicShow,
   fairytale: fairytaleShow,
+  bluey: blueyShow,
+  masha: mashaShow,
+  dora: doraShow,
+  cocomelon: cocomelonShow,
 };
 
 export const episodeImages = {

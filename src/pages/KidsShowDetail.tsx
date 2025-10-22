@@ -53,6 +53,10 @@ const KidsShowDetail = () => {
     "Lion Kingdom": showImages.lionKing,
     "Music Time": showImages.music,
     "Fairy Tale Castle": showImages.fairytale,
+    "Bluey": showImages.bluey,
+    "Masha and the Bear": showImages.masha,
+    "Dora the Explorer": showImages.dora,
+    "Cocomelon": showImages.cocomelon,
   };
 
   const episodeImageMap: Record<string, string> = {
