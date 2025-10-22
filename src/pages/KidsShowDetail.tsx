@@ -43,8 +43,6 @@ const KidsShowDetail = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [selectedSeason, setSelectedSeason] = useState<number>(1);
-  const [playingEpisode, setPlayingEpisode] = useState<Episode | null>(null);
-  const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   const showImageMap: Record<string, string> = {
     "Peppa Pig": showImages.peppa,
@@ -225,28 +223,6 @@ const KidsShowDetail = () => {
     }
   };
 
-  const convertYouTubeUrl = (url: string): string => {
-    try {
-      // Extract video ID from various YouTube URL formats
-      const videoIdMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-      
-      if (videoIdMatch && videoIdMatch[1]) {
-        return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
-      }
-      
-      // If already an embed URL, return as is
-      if (url.includes('/embed/')) {
-        return url;
-      }
-      
-      // Return original URL if no match
-      return url;
-    } catch (error) {
-      console.error("Error converting YouTube URL:", error);
-      return url;
-    }
-  };
-
   const playEpisode = async (episode: Episode) => {
     // Check premium access
     if (episode.is_premium && !user) {
@@ -254,9 +230,6 @@ const KidsShowDetail = () => {
       navigate("/auth");
       return;
     }
-
-    setPlayingEpisode(episode);
-    setIsVideoOpen(true);
 
     // Track view
     if (user) {
@@ -274,6 +247,10 @@ const KidsShowDetail = () => {
       .from("kids_episodes")
       .update({ views: episode.views + 1 })
       .eq("id", episode.id);
+
+    // Open YouTube video in new tab (many videos don't allow embedding)
+    window.open(episode.video_url, '_blank');
+    toast.success("Opening video in YouTube...");
   };
 
   const seasons = [...new Set(episodes.map(e => e.season_number))].sort();
@@ -455,33 +432,6 @@ const KidsShowDetail = () => {
         </div>
       </div>
 
-      {/* Video Player Dialog */}
-      <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
-        <DialogContent className="max-w-5xl p-0 overflow-hidden bg-black">
-          {playingEpisode && (
-            <>
-              <DialogTitle className="sr-only">{playingEpisode.title}</DialogTitle>
-              <div className="relative">
-                <iframe
-                  src={convertYouTubeUrl(playingEpisode.video_url)}
-                  className="w-full aspect-video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title={playingEpisode.title}
-                />
-                <div className="p-6 bg-gradient-to-t from-black to-transparent">
-                  <h3 className="text-white text-2xl font-bold mb-2">
-                    {playingEpisode.title}
-                  </h3>
-                  <p className="text-white/80">
-                    Season {playingEpisode.season_number}, Episode {playingEpisode.episode_number}
-                  </p>
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
 
       <style>{`
         @keyframes gradient-shift {
