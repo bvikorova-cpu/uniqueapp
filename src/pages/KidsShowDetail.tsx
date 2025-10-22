@@ -225,6 +225,28 @@ const KidsShowDetail = () => {
     }
   };
 
+  const convertYouTubeUrl = (url: string): string => {
+    try {
+      // Extract video ID from various YouTube URL formats
+      const videoIdMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+      
+      if (videoIdMatch && videoIdMatch[1]) {
+        return `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+      }
+      
+      // If already an embed URL, return as is
+      if (url.includes('/embed/')) {
+        return url;
+      }
+      
+      // Return original URL if no match
+      return url;
+    } catch (error) {
+      console.error("Error converting YouTube URL:", error);
+      return url;
+    }
+  };
+
   const playEpisode = async (episode: Episode) => {
     // Check premium access
     if (episode.is_premium && !user) {
@@ -441,7 +463,7 @@ const KidsShowDetail = () => {
               <DialogTitle className="sr-only">{playingEpisode.title}</DialogTitle>
               <div className="relative">
                 <iframe
-                  src={playingEpisode.video_url}
+                  src={convertYouTubeUrl(playingEpisode.video_url)}
                   className="w-full aspect-video"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
