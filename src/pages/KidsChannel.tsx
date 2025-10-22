@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, Play, Star, Sparkles, Crown } from "lucide-react";
 import { toast } from "sonner";
+import { showImages } from "@/components/kids/ShowImages";
 
 interface Show {
   id: string;
@@ -27,6 +28,15 @@ const KidsChannel = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  const showImageMap: Record<string, string> = {
+    "Prasiatko Peppa": showImages.peppa,
+    "Tlapková Patrola": showImages.pawPatrol,
+    "Frozen Rozprávky": showImages.frozen,
+    "Levie Kráľovstvo": showImages.lionKing,
+    "Spievankovo": showImages.music,
+    "Rozprávkový Hrad": showImages.fairytale,
+  };
 
   useEffect(() => {
     fetchShows();
@@ -187,7 +197,7 @@ const KidsChannel = () => {
                 onClick={() => navigate(`/kids-channel/${show.id}`)}
               >
                 <img 
-                  src={show.thumbnail_url} 
+                  src={showImageMap[show.title] || show.thumbnail_url} 
                   alt={show.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />

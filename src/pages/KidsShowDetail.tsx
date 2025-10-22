@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Heart, Play, Clock, Eye, Crown, Star, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { showImages, episodeImages } from "@/components/kids/ShowImages";
 
 interface Show {
   id: string;
@@ -44,6 +45,21 @@ const KidsShowDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<number>(1);
   const [playingEpisode, setPlayingEpisode] = useState<Episode | null>(null);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+
+  const showImageMap: Record<string, string> = {
+    "Prasiatko Peppa": showImages.peppa,
+    "Tlapková Patrola": showImages.pawPatrol,
+    "Frozen Rozprávky": showImages.frozen,
+    "Levie Kráľovstvo": showImages.lionKing,
+    "Spievankovo": showImages.music,
+    "Rozprávkový Hrad": showImages.fairytale,
+  };
+
+  const episodeImageMap: Record<string, string> = {
+    "Prasiatko ide do škôlky": episodeImages.peppaEp1,
+    "Narodeninová oslava": episodeImages.peppaEp2,
+    "Záchrana mačičky": episodeImages.pawEp1,
+  };
 
   useEffect(() => {
     if (showId) {
@@ -199,7 +215,7 @@ const KidsShowDetail = () => {
         {/* Hero Section */}
         <div 
           className="relative h-[60vh] bg-cover bg-center"
-          style={{ backgroundImage: `url(${show.cover_image_url})` }}
+          style={{ backgroundImage: `url(${showImageMap[show.title] || show.cover_image_url})` }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
           
@@ -295,7 +311,7 @@ const KidsShowDetail = () => {
               >
                 <div className="relative aspect-video overflow-hidden">
                   <img 
-                    src={episode.thumbnail_url} 
+                    src={episodeImageMap[episode.title] || episode.thumbnail_url} 
                     alt={episode.title}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
