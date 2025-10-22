@@ -25,6 +25,7 @@ import cinderellaShow from "@/assets/kids/cinderella-show.jpg";
 import aliceShow from "@/assets/kids/alice-show.jpg";
 import beautyBeastShow from "@/assets/kids/beauty-beast-show.jpg";
 import aladdinShow from "@/assets/kids/aladdin-show.jpg";
+// New animated Disney/Pixar covers
 import moanaCover from "@/assets/kids-shows/moana-cover.jpg";
 import tangledCover from "@/assets/kids-shows/tangled-cover.jpg";
 import beautyBeastCover from "@/assets/kids-shows/beauty-beast-cover.jpg";
@@ -46,6 +47,27 @@ import ratatouilleCover from "@/assets/kids-shows/ratatouille-cover.jpg";
 import poohCover from "@/assets/kids-shows/pooh-cover.jpg";
 import herculesCover from "@/assets/kids-shows/hercules-cover.jpg";
 import monstersIncCover from "@/assets/kids-shows/monsters-inc-cover.jpg";
+import dalmatiansCover from "@/assets/kids-shows/101-dalmatians-cover.jpg";
+import atlantisCover from "@/assets/kids-shows/atlantis-cover.jpg";
+import bigHero6Cover from "@/assets/kids-shows/big-hero-6-cover.jpg";
+import boltCover from "@/assets/kids-shows/bolt-cover.jpg";
+import brotherBearCover from "@/assets/kids-shows/brother-bear-cover.jpg";
+import ladyTrampCover from "@/assets/kids-shows/lady-tramp-cover.jpg";
+import lionKingCover from "@/assets/kids-shows/lion-king-cover.jpg";
+import lucaCover from "@/assets/kids-shows/luca-cover.jpg";
+import peterPanCover from "@/assets/kids-shows/peter-pan-cover.jpg";
+import pocahontasCover from "@/assets/kids-shows/pocahontas-cover.jpg";
+import sleepingBeautyCover from "@/assets/kids-shows/sleeping-beauty-cover.jpg";
+import snowWhiteCover from "@/assets/kids-shows/snow-white-cover.jpg";
+import jungleBookCover from "@/assets/kids-shows/jungle-book-cover.jpg";
+import princessFrogCover from "@/assets/kids-shows/princess-frog-cover.jpg";
+import tarzanCover from "@/assets/kids-shows/tarzan-cover.jpg";
+import wreckItRalphCover from "@/assets/kids-shows/wreck-it-ralph-cover.jpg";
+import frozenCover from "@/assets/kids-shows/frozen-cover.jpg";
+import bugsLifeCover from "@/assets/kids-shows/bugs-life-cover.jpg";
+import turningRedCover from "@/assets/kids-shows/turning-red-cover.jpg";
+import onwardCover from "@/assets/kids-shows/onward-cover.jpg";
+import soulCover from "@/assets/kids-shows/soul-cover.jpg";
 import defaultCover from "@/assets/kids-shows/default-cover.jpg";
 
 // Episode thumbnails
@@ -54,12 +76,9 @@ import peppaEp2 from "@/assets/kids/peppa-ep2.jpg";
 import pawEp1 from "@/assets/kids/paw-ep1.jpg";
 
 export const showImages = {
+  // Animated kids shows
   peppa: peppaShow,
   pawPatrol: pawPatrolShow,
-  frozen: frozenShow,
-  lionKing: lionKingShow,
-  music: musicShow,
-  fairytale: fairytaleShow,
   bluey: blueyShow,
   masha: mashaShow,
   dora: doraShow,
@@ -72,34 +91,65 @@ export const showImages = {
   blippi: blippiShow,
   scooby: scoobyShow,
   mrbean: mrbeanShow,
-  snowwhite: snowwhiteShow,
+  music: musicShow,
+  fairytale: fairytaleShow,
+  
+  // Disney Classics
+  snowwhite: snowWhiteCover,
   pinocchio: pinocchioShow,
   dumbo: dumboShow,
   bambi: bambiShow,
   cinderella: cinderellaShow,
   alice: aliceShow,
-  beautyBeast: beautyBeastShow,
-  aladdin: aladdinShow,
-  moana: moanaCover,
-  tangled: tangledCover,
-  beautyandthebeast: beautyBeastCover,
+  sleepingbeauty: sleepingBeautyCover,
+  '101dalmatians': dalmatiansCover,
+  junglebook: jungleBookCover,
+  peterpan: peterPanCover,
+  ladyandthetramp: ladyTrampCover,
+  
+  // Disney Renaissance & Modern
   thelittlemermaid: littleMermaidCover,
+  beautyandthebeast: beautyBeastCover,
+  aladdin: aladdinCover,
+  lionking: lionKingCover,
+  pocahontas: pocahontasCover,
+  mulan: mulanCover,
+  tarzan: tarzanCover,
+  atlantis: atlantisCover,
+  brotherbear: brotherBearCover,
+  bolt: boltCover,
+  tangled: tangledCover,
+  wreckitralph: wreckItRalphCover,
+  frozen: frozenCover,
+  bighero6: bigHero6Cover,
+  moana: moanaCover,
+  ralphbreakstheinternet: wreckItRalphCover,
+  theprincessandthefrog: princessFrogCover,
+  encanto: encantoCover,
+  
+  // Pixar
   toystory: toyStoryCover,
+  'abug\'slife': bugsLifeCover,
+  monstersinc: monstersIncCover,
   findingnemo: findingNemoCover,
   theincredibles: incrediblesCover,
   cars: carsCover,
-  encanto: encantoCover,
-  coco: cocoCover,
-  insideout: insideOutCover,
-  mulan: mulanCover,
-  zootopia: zootopiaCover,
-  'lilo&stitch': liloStitchCover,
+  ratatouille: ratatouilleCover,
   'wall-e': walleCover,
   up: upCover,
-  ratatouille: ratatouilleCover,
+  insideout: insideOutCover,
+  coco: cocoCover,
+  onward: onwardCover,
+  soul: soulCover,
+  luca: lucaCover,
+  turningred: turningRedCover,
+  
+  // Others
   winniethepooh: poohCover,
   hercules: herculesCover,
-  monstersinc: monstersIncCover,
+  'lilo&stitch': liloStitchCover,
+  zootopia: zootopiaCover,
+  
   default: defaultCover,
 };
 
