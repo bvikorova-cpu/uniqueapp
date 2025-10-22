@@ -164,3 +164,6 @@ verify_jwt = true
 
 [functions.check-coloring-subscription]
 verify_jwt = true
+
+[functions.remove-text-from-image]
+verify_jwt = false
