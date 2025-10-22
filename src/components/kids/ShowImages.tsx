@@ -68,6 +68,26 @@ import bugsLifeCover from "@/assets/kids-shows/bugs-life-cover.jpg";
 import turningRedCover from "@/assets/kids-shows/turning-red-cover.jpg";
 import onwardCover from "@/assets/kids-shows/onward-cover.jpg";
 import soulCover from "@/assets/kids-shows/soul-cover.jpg";
+import toyStory2Cover from "@/assets/kids-shows/toy-story-2-cover.jpg";
+import toyStory3Cover from "@/assets/kids-shows/toy-story-3-cover.jpg";
+import toyStory4Cover from "@/assets/kids-shows/toy-story-4-cover.jpg";
+import cars2Cover from "@/assets/kids-shows/cars-2-cover.jpg";
+import cars3Cover from "@/assets/kids-shows/cars-3-cover.jpg";
+import strangeWorldCover from "@/assets/kids-shows/strange-world-cover.jpg";
+import wishCover from "@/assets/kids-shows/wish-cover.jpg";
+import elementalCover from "@/assets/kids-shows/elemental-cover.jpg";
+import rayaCover from "@/assets/kids-shows/raya-cover.jpg";
+import treasurePlanetCover from "@/assets/kids-shows/treasure-planet-cover.jpg";
+import emperorNewGrooveCover from "@/assets/kids-shows/emperor-new-groove-cover.jpg";
+import meetRobinsonsCover from "@/assets/kids-shows/meet-robinsons-cover.jpg";
+import hunchbackCover from "@/assets/kids-shows/hunchback-cover.jpg";
+import insideOut2Cover from "@/assets/kids-shows/inside-out-2-cover.jpg";
+import oliverCompanyCover from "@/assets/kids-shows/oliver-company-cover.jpg";
+import aristocatsCover from "@/assets/kids-shows/aristocats-cover.jpg";
+import foxHoundCover from "@/assets/kids-shows/fox-hound-cover.jpg";
+import rescuersCover from "@/assets/kids-shows/rescuers-cover.jpg";
+import robinHoodCover from "@/assets/kids-shows/robin-hood-cover.jpg";
+import incredibles2Cover from "@/assets/kids-shows/incredibles-2-cover.jpg";
 import defaultCover from "@/assets/kids-shows/default-cover.jpg";
 
 // Episode thumbnails
@@ -123,32 +143,55 @@ export const showImages = {
   frozen: frozenCover,
   bighero6: bigHero6Cover,
   moana: moanaCover,
-  ralphbreakstheinternet: wreckItRalphCover,
   theprincessandthefrog: princessFrogCover,
   encanto: encantoCover,
   
   // Pixar
   toystory: toyStoryCover,
+  'toystory2': toyStory2Cover,
+  'toystory3': toyStory3Cover,
+  'toystory4': toyStory4Cover,
   'abug\'slife': bugsLifeCover,
   monstersinc: monstersIncCover,
   findingnemo: findingNemoCover,
+  findingdory: findingNemoCover,
   theincredibles: incrediblesCover,
+  'incredibles2': incredibles2Cover,
   cars: carsCover,
+  'cars2': cars2Cover,
+  'cars3': cars3Cover,
   ratatouille: ratatouilleCover,
   'wall-e': walleCover,
   up: upCover,
   insideout: insideOutCover,
+  'insideout2': insideOut2Cover,
+  thegooddinosaur: defaultCover,
   coco: cocoCover,
   onward: onwardCover,
   soul: soulCover,
   luca: lucaCover,
   turningred: turningRedCover,
+  elemental: elementalCover,
+  monstersuniversity: monstersIncCover,
   
   // Others
   winniethepooh: poohCover,
   hercules: herculesCover,
   'lilo&stitch': liloStitchCover,
   zootopia: zootopiaCover,
+  strangeworld: strangeWorldCover,
+  wish: wishCover,
+  'rayaandthelastdragon': rayaCover,
+  treasureplanet: treasurePlanetCover,
+  'theemperor\'snewgroove': emperorNewGrooveCover,
+  meettherobinsons: meetRobinsonsCover,
+  thehunchbackofnotredame: hunchbackCover,
+  'oliver&company': oliverCompanyCover,
+  thearistocats: aristocatsCover,
+  thefoxandthehound: foxHoundCover,
+  therescuers: rescuersCover,
+  robinhood: robinHoodCover,
+  ralphbreakstheinternet: wreckItRalphCover,
   
   default: defaultCover,
 };
