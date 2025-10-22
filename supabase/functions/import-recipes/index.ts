@@ -22,14 +22,46 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authentication using custom header
+    const authHeader = req.headers.get('authorization');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    
+    if (!authHeader) {
+      console.error('Missing authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
+    // Initialize Supabase client with anon key for authentication
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: { Authorization: authHeader },
+      },
+    });
+
+    // Verify user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
+    console.log(`Import request from authenticated user: ${user.id}`);
+
     const { category = 'Seafood', limit = 20 } = await req.json();
     
     console.log(`Importing recipes from category: ${category}, limit: ${limit}`);
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    // Initialize Supabase admin client for data insertion
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     // Fetch recipes from TheMealDB API
     const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`);
@@ -99,7 +131,7 @@ serve(async (req) => {
         const mappedCategory = categoryMap[fullMeal.strCategory] || 'Rôzne';
 
         // Insert recipe into database
-        const { data: insertedRecipe, error } = await supabase
+        const { data: insertedRecipe, error } = await supabaseAdmin
           .from('recipes')
           .insert({
             title: fullMeal.strMeal,

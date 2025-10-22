@@ -31,13 +31,13 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.import-recipes]
-verify_jwt = false
+verify_jwt = true
 
 [functions.import-jobs]
-verify_jwt = false
+verify_jwt = true
 
 [functions.import-jobs-sk]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-avatar]
 verify_jwt = false

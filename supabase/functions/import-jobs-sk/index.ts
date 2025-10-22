@@ -12,9 +12,47 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Verify authentication using custom header
+    const authHeader = req.headers.get('authorization');
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    
+    if (!authHeader) {
+      console.error('Missing authorization header');
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      );
+    }
+
+    // Initialize Supabase client with anon key for authentication
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: { Authorization: authHeader },
+      },
+    });
+
+    // Verify user is authenticated
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Authentication failed:', authError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        }
+      );
+    }
+
+    console.log(`Import request from authenticated user: ${user.id}`);
+
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
     const { source = 'profesie', keyword = '', limit = 20 } = await req.json();
 
@@ -58,7 +96,7 @@ Deno.serve(async (req) => {
     
     for (let i = 0; i < jobsToInsert.length; i += batchSize) {
       const batch = jobsToInsert.slice(i, i + batchSize);
-      const { error } = await supabase.from('job_listings').insert(batch);
+      const { error } = await supabaseAdmin.from('job_listings').insert(batch);
       
       if (error) {
         console.error('Error inserting batch:', error);
