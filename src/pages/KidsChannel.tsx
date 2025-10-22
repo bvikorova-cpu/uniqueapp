@@ -296,12 +296,9 @@ const KidsChannel = () => {
               </div>
 
               <div className="p-4">
-                <h3 className="font-bold text-lg text-gray-900 mb-1 line-clamp-1">
+                <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-1">
                   {show.title}
                 </h3>
-                <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                  {show.description}
-                </p>
                 
                 <div className="flex items-center justify-between">
                   <Badge variant="secondary" className="text-xs">
