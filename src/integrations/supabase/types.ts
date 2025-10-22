@@ -3935,6 +3935,51 @@ export type Database = {
         }
         Relationships: []
       }
+      old_photos: {
+        Row: {
+          created_at: string | null
+          credits_used: number | null
+          description: string | null
+          estimated_year: number | null
+          id: string
+          is_public: boolean | null
+          original_url: string
+          restoration_type: string | null
+          restored_url: string | null
+          title: string | null
+          user_id: string
+          views: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          estimated_year?: number | null
+          id?: string
+          is_public?: boolean | null
+          original_url: string
+          restoration_type?: string | null
+          restored_url?: string | null
+          title?: string | null
+          user_id: string
+          views?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          estimated_year?: number | null
+          id?: string
+          is_public?: boolean | null
+          original_url?: string
+          restoration_type?: string | null
+          restored_url?: string | null
+          title?: string | null
+          user_id?: string
+          views?: number | null
+        }
+        Relationships: []
+      }
       outfit_recommendations: {
         Row: {
           ai_description: string
@@ -4340,6 +4385,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      photo_credits: {
+        Row: {
+          created_at: string | null
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       plant_care_schedules: {
         Row: {

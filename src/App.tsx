@@ -78,6 +78,7 @@ import TeenCareerCounselor from "./pages/TeenCareerCounselor";
 import KidsChannel from "./pages/KidsChannel";
 import KidsShowDetail from "./pages/KidsShowDetail";
 import AdminImageEditor from "./pages/AdminImageEditor";
+import PhotoRestoration from "./pages/PhotoRestoration";
 import TeenDebatePartner from "./pages/TeenDebatePartner";
 import TeenCollegePrep from "./pages/TeenCollegePrep";
 import PremiumCourses from "./pages/PremiumCourses";
@@ -182,6 +183,7 @@ const App = () => (
           <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
           <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
           <Route path="/teen-study-planner" element={<TeenStudyPlanner />} />
+          <Route path="/photo-restoration" element={<PhotoRestoration />} />
           <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />
           <Route path="/teen-debate-partner" element={<TeenDebatePartner />} />
           <Route path="/teen-college-prep" element={<TeenCollegePrep />} />

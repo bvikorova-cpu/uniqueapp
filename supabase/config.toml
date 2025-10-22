@@ -167,3 +167,6 @@ verify_jwt = true
 
 [functions.remove-text-from-image]
 verify_jwt = false
+
+[functions.restore-old-photo]
+verify_jwt = true
