@@ -6174,6 +6174,8 @@ export type Database = {
       }
       videos: {
         Row: {
+          audio_track_name: string | null
+          audio_track_url: string | null
           comments_count: number | null
           created_at: string
           description: string | null
@@ -6189,6 +6191,8 @@ export type Database = {
           views_count: number | null
         }
         Insert: {
+          audio_track_name?: string | null
+          audio_track_url?: string | null
           comments_count?: number | null
           created_at?: string
           description?: string | null
@@ -6204,6 +6208,8 @@ export type Database = {
           views_count?: number | null
         }
         Update: {
+          audio_track_name?: string | null
+          audio_track_url?: string | null
           comments_count?: number | null
           created_at?: string
           description?: string | null

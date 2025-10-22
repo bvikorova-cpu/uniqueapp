@@ -21,6 +21,8 @@ interface Video {
   description: string | null;
   video_url: string;
   thumbnail_url: string | null;
+  audio_track_url: string | null;
+  audio_track_name: string | null;
   likes_count: number;
   comments_count: number;
   views_count: number;
@@ -59,6 +61,7 @@ const TikTok = () => {
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploadTitle, setUploadTitle] = useState("");
   const [uploadDescription, setUploadDescription] = useState("");
+  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [selectedVideoComments, setSelectedVideoComments] = useState<string | null>(null);
   const [comments, setComments] = useState<Map<string, Comment[]>>(new Map());
   const [newComment, setNewComment] = useState("");
@@ -440,11 +443,43 @@ const TikTok = () => {
 
       console.log("Public URL:", publicUrl);
 
+      // Upload audio file if provided
+      let audioUrl: string | null = null;
+      let audioName: string | null = null;
+      if (audioFile) {
+        const audioExt = audioFile.name.split('.').pop();
+        const audioPath = `${user.id}/audio/${Date.now()}.${audioExt}`;
+        
+        const { error: audioUploadError } = await supabase.storage
+          .from("videos")
+          .upload(audioPath, audioFile, {
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (audioUploadError) {
+          console.error("Audio upload error:", audioUploadError);
+          toast({
+            title: "Audio upload warning",
+            description: "Video uploaded but audio failed",
+            variant: "default",
+          });
+        } else {
+          const { data: { publicUrl: audioPublicUrl } } = supabase.storage
+            .from("videos")
+            .getPublicUrl(audioPath);
+          audioUrl = audioPublicUrl;
+          audioName = audioFile.name;
+        }
+      }
+
       const videoData = {
         user_id: user.id,
         title: uploadTitle || "Untitled",
         description: uploadDescription || null,
         video_url: publicUrl,
+        audio_track_url: audioUrl,
+        audio_track_name: audioName,
       };
 
       console.log("Inserting to database:", videoData);
@@ -478,6 +513,7 @@ const TikTok = () => {
       setUploadTitle("");
       setUploadDescription("");
       setRecordedBlob(null);
+      setAudioFile(null);
       fetchVideos();
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -673,11 +709,25 @@ const TikTok = () => {
               
               <TabsContent value="upload" className="space-y-4">
                 <div>
+                  <label className="text-sm font-medium mb-2 block">Video súbor</label>
                   <Input
                     type="file"
                     accept="video/*"
                     onChange={(e) => setUploadFile(e.target.files?.[0] || null)}
                   />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Hudobný podklad (voliteľné)</label>
+                  <Input
+                    type="file"
+                    accept="audio/*"
+                    onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
+                  />
+                  {audioFile && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Vybraté: {audioFile.name}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Input
@@ -742,6 +792,19 @@ const TikTok = () => {
                 {recordedBlob && (
                   <>
                     <div>
+                      <label className="text-sm font-medium mb-2 block">Hudobný podklad (voliteľné)</label>
+                      <Input
+                        type="file"
+                        accept="audio/*"
+                        onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
+                      />
+                      {audioFile && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Vybraté: {audioFile.name}
+                        </p>
+                      )}
+                    </div>
+                    <div>
                       <Input
                         placeholder="Video title"
                         value={uploadTitle}
@@ -787,7 +850,18 @@ const TikTok = () => {
                 className="h-[calc(100vh-4rem)] snap-start relative bg-black"
               >
                 <video
-                  ref={(el) => (videoRefs.current[index] = el)}
+                  ref={(el) => {
+                    videoRefs.current[index] = el;
+                    if (el && video.audio_track_url) {
+                      // Synchronize audio with video
+                      const audioEl = el.nextElementSibling as HTMLAudioElement;
+                      if (audioEl && audioEl.tagName === 'AUDIO') {
+                        el.onplay = () => audioEl.play();
+                        el.onpause = () => audioEl.pause();
+                        el.onseeked = () => { audioEl.currentTime = el.currentTime; };
+                      }
+                    }
+                  }}
                   src={video.video_url}
                   data-video-id={video.id}
                   className="w-full h-full object-contain"
@@ -795,6 +869,13 @@ const TikTok = () => {
                   playsInline
                   onClick={() => togglePlayPause(index)}
                 />
+                {video.audio_track_url && (
+                  <audio
+                    src={video.audio_track_url}
+                    loop
+                    className="hidden"
+                  />
+                )}
 
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/60 pointer-events-none" />
 
