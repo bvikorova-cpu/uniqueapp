@@ -47,12 +47,12 @@ const KidsShowDetail = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
   const showImageMap: Record<string, string> = {
-    "Prasiatko Peppa": showImages.peppa,
-    "Tlapková Patrola": showImages.pawPatrol,
-    "Frozen Rozprávky": showImages.frozen,
-    "Levie Kráľovstvo": showImages.lionKing,
-    "Spievankovo": showImages.music,
-    "Rozprávkový Hrad": showImages.fairytale,
+    "Peppa Pig": showImages.peppa,
+    "Paw Patrol": showImages.pawPatrol,
+    "Frozen Stories": showImages.frozen,
+    "Lion Kingdom": showImages.lionKing,
+    "Music Time": showImages.music,
+    "Fairy Tale Castle": showImages.fairytale,
   };
 
   const episodeImageMap: Record<string, string> = {
@@ -89,7 +89,7 @@ const KidsShowDetail = () => {
       setShow(data);
     } catch (error) {
       console.error("Error fetching show:", error);
-      toast.error("Nepodarilo sa načítať reláciu");
+      toast.error("Failed to load show");
     }
   };
 
@@ -106,7 +106,7 @@ const KidsShowDetail = () => {
       setEpisodes(data || []);
     } catch (error) {
       console.error("Error fetching episodes:", error);
-      toast.error("Nepodarilo sa načítať epizódy");
+      toast.error("Failed to load episodes");
     } finally {
       setLoading(false);
     }
@@ -129,7 +129,7 @@ const KidsShowDetail = () => {
 
   const toggleFavorite = async () => {
     if (!user) {
-      toast.error("Prihláste sa pre pridanie do obľúbených");
+      toast.error("Please sign in to add favorites");
       navigate("/auth");
       return;
     }
@@ -142,24 +142,24 @@ const KidsShowDetail = () => {
           .eq("user_id", user.id)
           .eq("show_id", showId);
         setIsFavorite(false);
-        toast.success("Odstránené z obľúbených");
+        toast.success("Removed from favorites");
       } else {
         await supabase
           .from("kids_favorites")
           .insert({ user_id: user.id, show_id: showId });
         setIsFavorite(true);
-        toast.success("Pridané do obľúbených");
+        toast.success("Added to favorites");
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
-      toast.error("Niečo sa pokazilo");
+      toast.error("Something went wrong");
     }
   };
 
   const playEpisode = async (episode: Episode) => {
     // Check premium access
     if (episode.is_premium && !user) {
-      toast.error("Pre prehrávanie premium obsahu sa musíte prihlásiť");
+      toast.error("Please sign in to watch premium content");
       navigate("/auth");
       return;
     }
@@ -226,7 +226,7 @@ const KidsShowDetail = () => {
               className="absolute top-4 left-4 text-white hover:bg-white/20"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              Späť
+              Back
             </Button>
 
             <div className="max-w-3xl">
@@ -261,7 +261,7 @@ const KidsShowDetail = () => {
                     onClick={() => playEpisode(episodes[0])}
                   >
                     <Play className="w-5 h-5 mr-2" fill="currentColor" />
-                    Prehrať
+                    Play
                   </Button>
                 )}
                 
@@ -274,7 +274,7 @@ const KidsShowDetail = () => {
                   <Heart 
                     className={`w-5 h-5 mr-2 ${isFavorite ? "fill-current" : ""}`}
                   />
-                  {isFavorite ? "V obľúbených" : "Pridať do obľúbených"}
+                  {isFavorite ? "In Favorites" : "Add to Favorites"}
                 </Button>
               </div>
             </div>
@@ -283,7 +283,7 @@ const KidsShowDetail = () => {
 
         {/* Episodes Section */}
         <div className="container mx-auto px-4 py-12">
-          <h2 className="text-3xl font-bold text-white mb-6">Epizódy</h2>
+          <h2 className="text-3xl font-bold text-white mb-6">Episodes</h2>
 
           {seasons.length > 1 && (
             <Tabs value={selectedSeason.toString()} onValueChange={(v) => setSelectedSeason(parseInt(v))} className="mb-8">
@@ -294,7 +294,7 @@ const KidsShowDetail = () => {
                     value={season.toString()}
                     className="data-[state=active]:bg-white/90 data-[state=active]:text-purple-600"
                   >
-                    Séria {season}
+                    Season {season}
                   </TabsTrigger>
                 ))}
               </TabsList>
@@ -383,7 +383,7 @@ const KidsShowDetail = () => {
                     {playingEpisode.title}
                   </h3>
                   <p className="text-white/80">
-                    Séria {playingEpisode.season_number}, Epizóda {playingEpisode.episode_number}
+                    Season {playingEpisode.season_number}, Episode {playingEpisode.episode_number}
                   </p>
                 </div>
               </div>

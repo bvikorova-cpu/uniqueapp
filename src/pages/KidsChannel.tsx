@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, Play, Star, Sparkles, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { showImages } from "@/components/kids/ShowImages";
+import castleBg from "@/assets/kids/disney-castle-bg.jpg";
 
 interface Show {
   id: string;
@@ -30,12 +31,12 @@ const KidsChannel = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
   const showImageMap: Record<string, string> = {
-    "Prasiatko Peppa": showImages.peppa,
-    "Tlapková Patrola": showImages.pawPatrol,
-    "Frozen Rozprávky": showImages.frozen,
-    "Levie Kráľovstvo": showImages.lionKing,
-    "Spievankovo": showImages.music,
-    "Rozprávkový Hrad": showImages.fairytale,
+    "Peppa Pig": showImages.peppa,
+    "Paw Patrol": showImages.pawPatrol,
+    "Frozen Stories": showImages.frozen,
+    "Lion Kingdom": showImages.lionKing,
+    "Music Time": showImages.music,
+    "Fairy Tale Castle": showImages.fairytale,
   };
 
   useEffect(() => {
@@ -62,7 +63,7 @@ const KidsChannel = () => {
       setShows(data || []);
     } catch (error) {
       console.error("Error fetching shows:", error);
-      toast.error("Nepodarilo sa načítať relácie");
+      toast.error("Failed to load shows");
     } finally {
       setLoading(false);
     }
@@ -84,7 +85,7 @@ const KidsChannel = () => {
 
   const toggleFavorite = async (showId: string) => {
     if (!user) {
-      toast.error("Prihláste sa pre pridanie do obľúbených");
+      toast.error("Please sign in to add favorites");
       navigate("/auth");
       return;
     }
@@ -101,17 +102,17 @@ const KidsChannel = () => {
           newSet.delete(showId);
           return newSet;
         });
-        toast.success("Odstránené z obľúbených");
+        toast.success("Removed from favorites");
       } else {
         await supabase
           .from("kids_favorites")
           .insert({ user_id: user.id, show_id: showId });
         setFavorites(prev => new Set(prev).add(showId));
-        toast.success("Pridané do obľúbených");
+        toast.success("Added to favorites");
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
-      toast.error("Niečo sa pokazilo");
+      toast.error("Something went wrong");
     }
   };
 
@@ -131,8 +132,15 @@ const KidsChannel = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Animated Disney-like Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-blue-400 animate-gradient-shift">
+      {/* Disney Castle Background */}
+      <div className="fixed inset-0">
+        <img 
+          src={castleBg} 
+          alt="Disney Castle" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-transparent to-purple-900/60"></div>
+        
         {/* Floating Elements */}
         <div className="absolute top-20 left-10 animate-float">
           <Sparkles className="text-yellow-300 w-12 h-12 opacity-70" />
@@ -146,26 +154,21 @@ const KidsChannel = () => {
         <div className="absolute bottom-20 right-1/3 animate-float-delayed">
           <Star className="text-purple-300 w-14 h-14 opacity-60" />
         </div>
-        
-        {/* Clouds */}
-        <div className="absolute top-10 left-0 w-64 h-32 bg-white/20 rounded-full blur-3xl animate-cloud"></div>
-        <div className="absolute top-40 right-0 w-96 h-40 bg-white/15 rounded-full blur-3xl animate-cloud-slow"></div>
-        <div className="absolute bottom-20 left-1/3 w-80 h-36 bg-white/10 rounded-full blur-3xl animate-cloud"></div>
       </div>
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-6xl font-bold text-white mb-4 font-signature drop-shadow-lg">
-            Detský Kanál ✨
+        {/* Header - Moved Lower */}
+        <div className="text-center mb-12 animate-fade-in mt-32">
+          <h1 className="text-7xl font-bold text-white mb-6 font-signature drop-shadow-2xl">
+            Kids Channel ✨
           </h1>
-          <p className="text-xl text-white/90 mb-2">
-            Magické príbehy pre malých snívačov
+          <p className="text-2xl text-white/90 mb-3 drop-shadow-lg">
+            Magical Stories for Little Dreamers
           </p>
-          <div className="flex items-center justify-center gap-2 text-white/80">
+          <div className="flex items-center justify-center gap-2 text-white/90 drop-shadow-md">
             <Crown className="w-5 h-5 text-yellow-300" />
-            <span>Premium obsah dostupný pre predplatiteľov</span>
+            <span>Premium content available for subscribers</span>
           </div>
         </div>
 
@@ -261,7 +264,7 @@ const KidsChannel = () => {
 
         {filteredShows.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-white text-xl">Žiadne relácie v tejto kategórii</p>
+            <p className="text-white text-xl">No shows in this category</p>
           </div>
         )}
       </div>
