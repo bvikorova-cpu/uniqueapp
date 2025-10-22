@@ -12,11 +12,30 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+  );
+
   try {
+    // Authenticate user first
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Missing authorization header");
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      throw new Error("Authentication failed");
+    }
+
     const { session_id } = await req.json();
     
-    if (!session_id) {
-      throw new Error("Missing session_id");
+    // Validate session_id format
+    if (!session_id || typeof session_id !== 'string' || !session_id.startsWith('cs_')) {
+      throw new Error("Invalid session_id format");
     }
 
     console.log(`[Verify Payment] Processing session: ${session_id}`);
@@ -35,10 +54,12 @@ serve(async (req) => {
       throw new Error("Payment not completed");
     }
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
+    // Verify the session belongs to the authenticated user
+    const sessionUserId = session.client_reference_id || session.customer;
+    if (sessionUserId !== user.id) {
+      console.error(`[Verify Payment] User mismatch: ${sessionUserId} vs ${user.id}`);
+      throw new Error("Session does not belong to authenticated user");
+    }
 
     // Get metadata from session
     const itemId = session.metadata?.item_id;

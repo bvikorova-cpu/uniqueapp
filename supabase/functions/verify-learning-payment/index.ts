@@ -18,10 +18,24 @@ serve(async (req) => {
   );
 
   try {
+    // Authenticate user first
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Missing authorization header");
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+    
+    if (authError || !user) {
+      throw new Error("Authentication failed");
+    }
+
     const { session_id } = await req.json();
 
-    if (!session_id) {
-      throw new Error("Missing session_id");
+    // Validate session_id format
+    if (!session_id || typeof session_id !== 'string' || !session_id.startsWith('cs_')) {
+      throw new Error("Invalid session_id format");
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -41,6 +55,11 @@ serve(async (req) => {
     }
 
     const { user_id, content_id, content_type, title } = session.metadata;
+
+    // Verify the session belongs to the authenticated user
+    if (user_id !== user.id) {
+      throw new Error("Session does not belong to authenticated user");
+    }
 
     // Check if already recorded
     const { data: existing } = await supabaseClient

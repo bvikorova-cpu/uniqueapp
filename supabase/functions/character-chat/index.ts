@@ -27,7 +27,47 @@ serve(async (req) => {
       throw new Error("Unauthorized");
     }
 
-    const { conversationId, message, characterId } = await req.json();
+    const body = await req.json();
+    const { conversationId, message, characterId } = body;
+
+    // Input validation
+    if (!message || typeof message !== 'string') {
+      throw new Error("Message is required and must be a string");
+    }
+
+    if (message.trim().length === 0) {
+      throw new Error("Message cannot be empty");
+    }
+
+    if (message.length > 2000) {
+      throw new Error("Message too long (max 2000 characters)");
+    }
+
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    
+    if (!conversationId || !uuidRegex.test(conversationId)) {
+      throw new Error("Invalid conversation ID format");
+    }
+
+    if (!characterId || !uuidRegex.test(characterId)) {
+      throw new Error("Invalid character ID format");
+    }
+
+    // Verify conversation ownership
+    const { data: conversationOwnership, error: convError } = await supabaseClient
+      .from('character_conversations')
+      .select('user_id')
+      .eq('id', conversationId)
+      .single();
+
+    if (convError || !conversationOwnership) {
+      throw new Error("Conversation not found");
+    }
+
+    if (conversationOwnership.user_id !== user.id) {
+      throw new Error("Unauthorized: This conversation does not belong to you");
+    }
 
     // Check message limits for free users
     const { data: limits } = await supabaseClient
