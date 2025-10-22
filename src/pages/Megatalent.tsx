@@ -114,6 +114,7 @@ const Megatalent = () => {
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [deletingSubmission, setDeletingSubmission] = useState<string | null>(null);
+  const [expandedMedia, setExpandedMedia] = useState<{ url: string; type: 'image' | 'video' } | null>(null);
 
   useEffect(() => {
     checkSubscription();
@@ -1067,13 +1068,20 @@ const Megatalent = () => {
                       <img 
                         src={submission.media_url} 
                         alt={submission.title}
-                        className="w-full aspect-video object-cover rounded-lg"
+                        className="w-full aspect-video object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                        onClick={() => setExpandedMedia({ url: submission.media_url, type: 'image' })}
                       />
                     ) : (
                       <video 
                         src={submission.media_url} 
                         controls
-                        className="w-full aspect-video rounded-lg"
+                        className="w-full aspect-video rounded-lg cursor-pointer"
+                        onClick={(e) => {
+                          // Only open modal if clicking on video (not controls)
+                          if (e.target === e.currentTarget) {
+                            setExpandedMedia({ url: submission.media_url, type: 'video' });
+                          }
+                        }}
                       />
                     )}
                     <p className="text-sm">
@@ -1320,6 +1328,28 @@ const Megatalent = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Expanded Media Dialog */}
+        <Dialog open={!!expandedMedia} onOpenChange={() => setExpandedMedia(null)}>
+          <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0">
+            <div className="relative flex items-center justify-center bg-black/95">
+              {expandedMedia?.type === 'image' ? (
+                <img 
+                  src={expandedMedia.url} 
+                  alt="Zväčšený obrázok"
+                  className="max-w-full max-h-[95vh] object-contain"
+                />
+              ) : expandedMedia?.type === 'video' ? (
+                <video 
+                  src={expandedMedia.url} 
+                  controls
+                  autoPlay
+                  className="max-w-full max-h-[95vh]"
+                />
+              ) : null}
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Copyright Protection Section */}
         <Card className="mt-12 border-muted">
