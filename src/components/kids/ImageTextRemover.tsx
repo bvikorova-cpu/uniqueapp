@@ -13,6 +13,33 @@ interface ImageInfo {
   newUrl?: string;
 }
 
+// Helper function to convert image URL to base64
+const imageUrlToBase64 = (url: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Failed to get canvas context'));
+        return;
+      }
+      ctx.drawImage(img, 0, 0);
+      try {
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        resolve(dataUrl);
+      } catch (error) {
+        reject(error);
+      }
+    };
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = url;
+  });
+};
+
 export const ImageTextRemover = () => {
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -53,11 +80,11 @@ export const ImageTextRemover = () => {
       try {
         console.log(`Processing ${imageInfo.name}...`);
 
-        // Convert local path to full URL for the edge function
-        const fullUrl = `${window.location.origin}${imageInfo.url}`;
+        // Convert image to base64 first
+        const base64Image = await imageUrlToBase64(imageInfo.url);
 
         const { data, error } = await supabase.functions.invoke("remove-text-from-image", {
-          body: { imageUrl: fullUrl },
+          body: { imageUrl: base64Image },
         });
 
         if (error) throw error;
@@ -73,6 +100,9 @@ export const ImageTextRemover = () => {
           title: "Success",
           description: `Processed ${imageInfo.name}`,
         });
+        
+        // Small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } catch (error) {
         console.error(`Error processing ${imageInfo.name}:`, error);
         processedImages.push({
@@ -88,6 +118,7 @@ export const ImageTextRemover = () => {
       }
 
       setProgress(((i + 1) / imageUrls.length) * 100);
+      setImages([...processedImages]);
     }
 
     setImages(processedImages);
