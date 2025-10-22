@@ -173,3 +173,9 @@ verify_jwt = true
 
 [functions.identify-antique]
 verify_jwt = true
+
+[functions.create-checkout]
+verify_jwt = true
+
+[functions.stripe-webhook]
+verify_jwt = false

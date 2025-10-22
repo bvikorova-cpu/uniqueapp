@@ -61,11 +61,20 @@ export const useAntiqueCredits = () => {
     },
   });
 
-  const purchaseCredits = async (amount: number) => {
+  const purchaseCredits = async (credits: number) => {
     try {
-      toast.info("Payment system coming soon!");
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { credits }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
     } catch (error) {
-      toast.error("Error purchasing credits");
+      console.error('Error:', error);
+      toast.error("Error creating payment session");
     }
   };
 

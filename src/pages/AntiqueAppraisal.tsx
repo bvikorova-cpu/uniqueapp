@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,7 +14,22 @@ const AntiqueAppraisal = () => {
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [analysisType, setAnalysisType] = useState<string>('basic');
   
-  const { credits, isLoading, identifyAntique, isIdentifying } = useAntiqueCredits();
+  const { credits, isLoading, identifyAntique, isIdentifying, purchaseCredits } = useAntiqueCredits();
+
+  // Check for payment success/cancel in URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const paymentStatus = params.get('payment');
+    
+    if (paymentStatus === 'success') {
+      toast.success("Payment successful! Your credits will be added shortly.");
+      // Remove payment param from URL
+      window.history.replaceState({}, '', '/antique-appraisal');
+    } else if (paymentStatus === 'canceled') {
+      toast.error("Payment was canceled.");
+      window.history.replaceState({}, '', '/antique-appraisal');
+    }
+  }, []);
 
   const analysisOptions = [
     {
@@ -270,7 +285,7 @@ const AntiqueAppraisal = () => {
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-2xl font-bold mb-2">10 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">$10</p>
-                <Button variant="outline" className="w-full">Buy Now</Button>
+                <Button variant="outline" className="w-full" onClick={() => purchaseCredits(10)}>Buy Now</Button>
               </div>
               <div className="border-2 border-primary rounded-lg p-4 text-center">
                 <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
@@ -278,12 +293,12 @@ const AntiqueAppraisal = () => {
                 </div>
                 <p className="text-2xl font-bold mb-2">30 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">$25</p>
-                <Button className="w-full">Buy Now</Button>
+                <Button className="w-full" onClick={() => purchaseCredits(30)}>Buy Now</Button>
               </div>
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-2xl font-bold mb-2">60 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">$45</p>
-                <Button variant="outline" className="w-full">Buy Now</Button>
+                <Button variant="outline" className="w-full" onClick={() => purchaseCredits(60)}>Buy Now</Button>
               </div>
               <div className="border rounded-lg p-4 text-center bg-gold/10">
                 <div className="bg-gold text-gold-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
@@ -291,7 +306,7 @@ const AntiqueAppraisal = () => {
                 </div>
                 <p className="text-2xl font-bold mb-2">150 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">$99</p>
-                <Button variant="outline" className="w-full">Buy Now</Button>
+                <Button variant="outline" className="w-full" onClick={() => purchaseCredits(150)}>Buy Now</Button>
               </div>
             </div>
           </CardContent>
