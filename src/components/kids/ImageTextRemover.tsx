@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Download } from "lucide-react";
 
@@ -22,25 +22,28 @@ export const ImageTextRemover = () => {
     setProcessing(true);
     setProgress(0);
 
+    // Import show images to get actual URLs
+    const { showImages } = await import("@/components/kids/ShowImages");
+    
     // List of all show images that need processing
     const imageUrls = [
-      { name: "Alice in Wonderland", url: "/src/assets/kids/alice-show.jpg" },
-      { name: "Aladdin", url: "/src/assets/kids-shows/aladdin-cute.jpg" },
-      { name: "Beauty and the Beast", url: "/src/assets/kids-shows/beauty-beast-cute.jpg" },
-      { name: "Moana", url: "/src/assets/kids-shows/moana-cute.jpg" },
-      { name: "Tangled", url: "/src/assets/kids-shows/tangled-cute.jpg" },
-      { name: "Little Mermaid", url: "/src/assets/kids-shows/little-mermaid-cute.jpg" },
-      { name: "Toy Story", url: "/src/assets/kids-shows/toy-story-cute.jpg" },
-      { name: "Finding Nemo", url: "/src/assets/kids-shows/finding-nemo-cute.jpg" },
-      { name: "Incredibles", url: "/src/assets/kids-shows/incredibles-cute.jpg" },
-      { name: "Cars", url: "/src/assets/kids-shows/cars-cute.jpg" },
-      { name: "Encanto", url: "/src/assets/kids-shows/encanto-cute.jpg" },
-      { name: "Coco", url: "/src/assets/kids-shows/coco-cute.jpg" },
-      { name: "Inside Out", url: "/src/assets/kids-shows/inside-out-cute.jpg" },
-      { name: "Mulan", url: "/src/assets/kids-shows/mulan-cute.jpg" },
-      { name: "Zootopia", url: "/src/assets/kids-shows/zootopia-cute.jpg" },
-      { name: "Frozen", url: "/src/assets/kids-shows/frozen-cute.jpg" },
-      { name: "Lion King", url: "/src/assets/kids-shows/lion-king-cute.jpg" },
+      { name: "Alice in Wonderland", url: showImages.alice },
+      { name: "Aladdin", url: showImages.aladdin },
+      { name: "Beauty and the Beast", url: showImages.beautyandthebeast },
+      { name: "Moana", url: showImages.moana },
+      { name: "Tangled", url: showImages.tangled },
+      { name: "Little Mermaid", url: showImages.thelittlemermaid },
+      { name: "Toy Story", url: showImages.toystory },
+      { name: "Finding Nemo", url: showImages.findingnemo },
+      { name: "Incredibles", url: showImages.theincredibles },
+      { name: "Cars", url: showImages.cars },
+      { name: "Encanto", url: showImages.encanto },
+      { name: "Coco", url: showImages.coco },
+      { name: "Inside Out", url: showImages.insideout },
+      { name: "Mulan", url: showImages.mulan },
+      { name: "Zootopia", url: showImages.zootopia },
+      { name: "Frozen", url: showImages.frozen },
+      { name: "Lion King", url: showImages.lionking },
     ];
 
     const processedImages: ImageInfo[] = [];
@@ -66,7 +69,10 @@ export const ImageTextRemover = () => {
           newUrl: data.editedImageUrl,
         });
 
-        toast.success(`Processed ${imageInfo.name}`);
+        toast({
+          title: "Success",
+          description: `Processed ${imageInfo.name}`,
+        });
       } catch (error) {
         console.error(`Error processing ${imageInfo.name}:`, error);
         processedImages.push({
@@ -74,7 +80,11 @@ export const ImageTextRemover = () => {
           url: imageInfo.url,
           processed: false,
         });
-        toast.error(`Failed to process ${imageInfo.name}`);
+        toast({
+          title: "Error",
+          description: `Failed to process ${imageInfo.name}`,
+          variant: "destructive",
+        });
       }
 
       setProgress(((i + 1) / imageUrls.length) * 100);
@@ -82,7 +92,10 @@ export const ImageTextRemover = () => {
 
     setImages(processedImages);
     setProcessing(false);
-    toast.success("All images processed!");
+    toast({
+      title: "Complete",
+      description: "All images processed!",
+    });
   };
 
   const downloadImage = (base64Data: string, fileName: string) => {
