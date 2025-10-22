@@ -296,9 +296,6 @@ const KidsChannel = () => {
               </div>
 
               <div className="p-4">
-                <h3 className="font-bold text-lg text-gray-900 mb-1 line-clamp-1">
-                  {show.title}
-                </h3>
                 <p className="text-sm text-gray-600 line-clamp-2 mb-3">
                   {show.description}
                 </p>
