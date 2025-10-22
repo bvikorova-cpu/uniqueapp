@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Heart, Play, Clock, Eye, Crown, Star, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 interface Show {
   id: string;
@@ -44,7 +44,6 @@ const KidsShowDetail = () => {
   const [selectedSeason, setSelectedSeason] = useState<number>(1);
   const [playingEpisode, setPlayingEpisode] = useState<Episode | null>(null);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (showId) {
@@ -353,23 +352,26 @@ const KidsShowDetail = () => {
       <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
         <DialogContent className="max-w-5xl p-0 overflow-hidden bg-black">
           {playingEpisode && (
-            <div className="relative">
-              <video
-                ref={videoRef}
-                src={playingEpisode.video_url}
-                controls
-                autoPlay
-                className="w-full aspect-video"
-              />
-              <div className="p-6 bg-gradient-to-t from-black to-transparent absolute bottom-0 left-0 right-0">
-                <h3 className="text-white text-2xl font-bold mb-2">
-                  {playingEpisode.title}
-                </h3>
-                <p className="text-white/80">
-                  Séria {playingEpisode.season_number}, Epizóda {playingEpisode.episode_number}
-                </p>
+            <>
+              <DialogTitle className="sr-only">{playingEpisode.title}</DialogTitle>
+              <div className="relative">
+                <iframe
+                  src={playingEpisode.video_url}
+                  className="w-full aspect-video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={playingEpisode.title}
+                />
+                <div className="p-6 bg-gradient-to-t from-black to-transparent">
+                  <h3 className="text-white text-2xl font-bold mb-2">
+                    {playingEpisode.title}
+                  </h3>
+                  <p className="text-white/80">
+                    Séria {playingEpisode.season_number}, Epizóda {playingEpisode.episode_number}
+                  </p>
+                </div>
               </div>
-            </div>
+            </>
           )}
         </DialogContent>
       </Dialog>
