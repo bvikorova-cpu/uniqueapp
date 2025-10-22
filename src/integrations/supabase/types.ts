@@ -368,6 +368,141 @@ export type Database = {
         }
         Relationships: []
       }
+      antique_collections: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_premium: boolean | null
+          is_public: boolean | null
+          item_count: number | null
+          name: string
+          total_estimated_value: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_premium?: boolean | null
+          is_public?: boolean | null
+          item_count?: number | null
+          name: string
+          total_estimated_value?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_premium?: boolean | null
+          is_public?: boolean | null
+          item_count?: number | null
+          name?: string
+          total_estimated_value?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      antique_credits: {
+        Row: {
+          created_at: string | null
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      antiques: {
+        Row: {
+          analysis_result: Json | null
+          analysis_type: string
+          authenticity_score: number | null
+          collection_id: string | null
+          condition_analysis: string | null
+          created_at: string | null
+          credits_used: number | null
+          description: string | null
+          estimated_period: string | null
+          estimated_value: number | null
+          historical_context: string | null
+          id: string
+          image_url: string
+          is_public: boolean | null
+          market_trends: Json | null
+          restoration_advice: string | null
+          style: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          analysis_result?: Json | null
+          analysis_type: string
+          authenticity_score?: number | null
+          collection_id?: string | null
+          condition_analysis?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          estimated_period?: string | null
+          estimated_value?: number | null
+          historical_context?: string | null
+          id?: string
+          image_url: string
+          is_public?: boolean | null
+          market_trends?: Json | null
+          restoration_advice?: string | null
+          style?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          analysis_result?: Json | null
+          analysis_type?: string
+          authenticity_score?: number | null
+          collection_id?: string | null
+          condition_analysis?: string | null
+          created_at?: string | null
+          credits_used?: number | null
+          description?: string | null
+          estimated_period?: string | null
+          estimated_value?: number | null
+          historical_context?: string | null
+          id?: string
+          image_url?: string
+          is_public?: boolean | null
+          market_trends?: Json | null
+          restoration_advice?: string | null
+          style?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       astro_subscriptions: {
         Row: {
           created_at: string | null

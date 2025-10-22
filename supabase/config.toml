@@ -170,3 +170,6 @@ verify_jwt = false
 
 [functions.restore-old-photo]
 verify_jwt = true
+
+[functions.identify-antique]
+verify_jwt = true
