@@ -59,7 +59,6 @@ export const useCollectibles = (userId?: string) => {
       const { data, error } = await supabase
         .from('mystery_boxes' as any)
         .select('*')
-        .eq('is_active', true)
         .order('price');
 
       if (error) throw error;

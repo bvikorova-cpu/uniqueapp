@@ -44,7 +44,7 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {mysteryBoxes?.map((box) => {
-          const boxPrice = box.price || 50;
+          const boxPrice = box.price;
           const canAfford = credits && credits.credits_remaining >= boxPrice;
           const isOpening = selectedBox?.id === box.id;
 

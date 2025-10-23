@@ -43,7 +43,7 @@ serve(async (req) => {
       .eq('user_id', user.id)
       .single();
 
-    if (!credits || credits.credits_remaining < box.cost) {
+    if (!credits || credits.credits_remaining < box.price) {
       return new Response(
         JSON.stringify({ error: 'Insufficient credits' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -92,7 +92,7 @@ serve(async (req) => {
 
     await supabaseClient.rpc('decrement_ai_credits', {
       user_id: user.id,
-      amount: box.cost
+      amount: box.price
     });
 
     return new Response(
