@@ -14,14 +14,7 @@ export const useCollectibles = (userId?: string) => {
       
       const { data, error } = await supabase
         .from('user_collectibles')
-        .select(`
-          *,
-          collectibles (
-            *,
-            collectible_categories (*),
-            collectible_rarities (*)
-          )
-        `)
+        .select('*')
         .eq('user_id', userId)
         .order('acquired_at', { ascending: false });
 
@@ -64,13 +57,13 @@ export const useCollectibles = (userId?: string) => {
     queryKey: ['mystery-boxes'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('mystery_boxes')
+        .from('mystery_boxes' as any)
         .select('*')
         .eq('is_active', true)
-        .order('cost');
+        .order('price');
 
       if (error) throw error;
-      return data;
+      return data as any[];
     }
   });
 

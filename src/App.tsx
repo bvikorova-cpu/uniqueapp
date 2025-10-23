@@ -217,6 +217,7 @@ const App = () => (
           <Route path="/creative-writing" element={<CreativeWriting />} />
           <Route path="/writing/:contentId" element={<GenericLearning />} />
           <Route path="/coloring-pages" element={<ColoringPages />} />
+          <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/kids-channel" element={<KidsChannel />} />
           <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />

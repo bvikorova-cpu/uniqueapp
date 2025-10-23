@@ -18,6 +18,9 @@ verify_jwt = true
 [functions.open-mystery-box]
 verify_jwt = true
 
+[functions.generate-collectible]
+verify_jwt = true
+
 [functions.optimize-routine]
 verify_jwt = true
 
@@ -157,9 +160,6 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.create-coloring-payment]
-verify_jwt = true
-
-[functions.create-learning-payment]
 verify_jwt = true
 
 [functions.check-coloring-subscription]

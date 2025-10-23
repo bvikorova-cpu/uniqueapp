@@ -33,11 +33,6 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
     }
   };
 
-  const getRarityRange = (min: number, max: number) => {
-    const rarityNames = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
-    return `${rarityNames[min - 1]} - ${rarityNames[max - 1]}`;
-  };
-
   return (
     <div className="space-y-6">
       <div className="bg-gradient-subtle p-6 rounded-lg">
@@ -49,20 +44,14 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {mysteryBoxes?.map((box) => {
-          const canAfford = credits && credits.credits_remaining >= box.cost;
+          const boxPrice = box.price || 50;
+          const canAfford = credits && credits.credits_remaining >= boxPrice;
           const isOpening = selectedBox?.id === box.id;
 
           return (
             <Card key={box.id} className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="aspect-square relative bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <Package className="h-24 w-24 text-primary" />
-                {box.image_url && (
-                  <img
-                    src={box.image_url}
-                    alt={box.name}
-                    className="absolute inset-0 w-full h-full object-cover opacity-50"
-                  />
-                )}
               </div>
 
               <div className="p-4 space-y-3">
@@ -73,14 +62,8 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
 
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Rarita range:</span>
-                    <Badge variant="outline">
-                      {getRarityRange(box.min_rarity_level, box.max_rarity_level)}
-                    </Badge>
-                  </div>
-                  <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Cena:</span>
-                    <span className="font-semibold">{box.cost} kreditov</span>
+                    <span className="font-semibold">{boxPrice} kreditov</span>
                   </div>
                 </div>
 
