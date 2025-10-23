@@ -6,6 +6,7 @@ import { useAnalyzerCredits } from "@/hooks/useAnalyzerCredits";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { CameraCapture } from "@/components/analyzer/CameraCapture";
 
 const CATEGORIES = [
   { 
@@ -113,25 +114,33 @@ export default function UniversalAnalyzer() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isUploading, setIsUploading] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const { credits, isLoading, analyzeImage, isAnalyzing } = useAnalyzerCredits();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error("File size must be less than 10MB");
-        return;
-      }
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      processFile(file);
     }
+  };
+
+  const handleCameraCapture = (file: File) => {
+    processFile(file);
+  };
+
+  const processFile = (file: File) => {
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   const uploadImage = async (file: File): Promise<string> => {
@@ -301,19 +310,12 @@ export default function UniversalAnalyzer() {
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => cameraInputRef.current?.click()}
+                  onClick={() => setShowCamera(true)}
                   className="h-32 flex-col"
                 >
                   <Camera className="w-8 h-8 mb-2" />
                   <span>Take Photo</span>
-                  <input
-                    ref={cameraInputRef}
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    onChange={handleFileSelect}
-                    className="hidden"
-                  />
+                  <span className="text-xs text-muted-foreground mt-1">Open camera</span>
                 </Button>
 
                 <Button
@@ -324,6 +326,7 @@ export default function UniversalAnalyzer() {
                 >
                   <Upload className="w-8 h-8 mb-2" />
                   <span>Upload Image</span>
+                  <span className="text-xs text-muted-foreground mt-1">From gallery/files</span>
                   <input
                     ref={fileInputRef}
                     type="file"
@@ -340,6 +343,14 @@ export default function UniversalAnalyzer() {
             </div>
           )}
         </Card>
+
+        {/* Camera Modal */}
+        {showCamera && (
+          <CameraCapture
+            onCapture={handleCameraCapture}
+            onClose={() => setShowCamera(false)}
+          />
+        )}
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
