@@ -96,23 +96,23 @@ export default function FashionGenerator() {
       setGeneratedDesign(data.design);
       queryClient.invalidateQueries({ queryKey: ['fashion-designs'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
-      toast.success("Dizajn úspešne vygenerovaný!");
+      toast.success("Design generated successfully!");
     },
     onError: (error: any) => {
       console.error('Generation error:', error);
-      toast.error(error.message || "Chyba pri generovaní dizajnu");
+      toast.error(error.message || "Error generating design");
     }
   });
 
   const handleGenerate = () => {
     if (!title || !categoryId || !styleId || !materialId) {
-      toast.error("Vyplňte všetky povinné polia");
+      toast.error("Please fill in all required fields");
       return;
     }
 
     const creditsNeeded = creditsMap[qualityLevel];
     if (!credits || credits.credits_remaining < creditsNeeded) {
-      toast.error(`Potrebujete ${creditsNeeded} kreditov na generovanie`);
+      toast.error(`You need ${creditsNeeded} credits to generate`);
       return;
     }
 
@@ -138,9 +138,9 @@ export default function FashionGenerator() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      toast.success("Dizajn stiahnutý!");
+      toast.success("Design downloaded!");
     } catch (error) {
-      toast.error("Chyba pri sťahovaní");
+      toast.error("Error downloading");
     }
   };
 
@@ -151,40 +151,40 @@ export default function FashionGenerator() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
-            AI Generátor Oblečenia
+            AI Clothing Generator
           </CardTitle>
           <CardDescription>
-            Vytvorte jedinečný dizajn oblečenia pomocou AI
+            Create unique clothing designs with AI
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Názov Dizajnu *</Label>
+            <Label htmlFor="title">Design Name *</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="napr. Letné svadobné šaty"
+              placeholder="e.g. Summer wedding dress"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Popis</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Podrobný popis dizajnu, detaily, štýl..."
+              placeholder="Detailed design description, details, style..."
               rows={3}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Kategória *</Label>
+              <Label>Category *</Label>
               <Select value={categoryId} onValueChange={setCategoryId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Vyberte kategóriu" />
+                  <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
                   {categories?.map((cat) => (
@@ -197,10 +197,10 @@ export default function FashionGenerator() {
             </div>
 
             <div className="space-y-2">
-              <Label>Štýl *</Label>
+              <Label>Style *</Label>
               <Select value={styleId} onValueChange={setStyleId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Vyberte štýl" />
+                  <SelectValue placeholder="Select style" />
                 </SelectTrigger>
                 <SelectContent>
                   {styles?.map((style) => (
@@ -214,10 +214,10 @@ export default function FashionGenerator() {
           </div>
 
           <div className="space-y-2">
-            <Label>Materiál *</Label>
+            <Label>Material *</Label>
             <Select value={materialId} onValueChange={setMaterialId}>
               <SelectTrigger>
-                <SelectValue placeholder="Vyberte materiál" />
+                <SelectValue placeholder="Select material" />
               </SelectTrigger>
               <SelectContent>
                 {materials?.map((material) => (
@@ -230,30 +230,30 @@ export default function FashionGenerator() {
           </div>
 
           <div className="space-y-2">
-            <Label>Kvalita ({creditsMap[qualityLevel]} kreditov)</Label>
+            <Label>Quality ({creditsMap[qualityLevel]} credits)</Label>
             <Select value={qualityLevel} onValueChange={(v: any) => setQualityLevel(v)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="basic">Základná (50 kreditov)</SelectItem>
-                <SelectItem value="detailed">Detailná (100 kreditov)</SelectItem>
-                <SelectItem value="premium">Premium (200 kreditov)</SelectItem>
-                <SelectItem value="collection">Kolekcia (400 kreditov)</SelectItem>
+                <SelectItem value="basic">Basic (50 credits)</SelectItem>
+                <SelectItem value="detailed">Detailed (100 credits)</SelectItem>
+                <SelectItem value="premium">Premium (200 credits)</SelectItem>
+                <SelectItem value="collection">Collection (400 credits)</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label>Farby</Label>
+            <Label>Colors</Label>
             <div className="flex gap-2">
               <Input
                 value={colorInput}
                 onChange={(e) => setColorInput(e.target.value)}
-                placeholder="napr. modrá, červená..."
+                placeholder="e.g. blue, red..."
               />
               <Button type="button" onClick={handleAddColor} variant="outline">
-                Pridať
+                Add
               </Button>
             </div>
             {colors.length > 0 && (
@@ -274,7 +274,7 @@ export default function FashionGenerator() {
           </div>
 
           <div className="flex items-center justify-between">
-            <Label htmlFor="public">Verejný dizajn</Label>
+            <Label htmlFor="public">Public design</Label>
             <Switch
               id="public"
               checked={isPublic}
@@ -291,12 +291,12 @@ export default function FashionGenerator() {
             {generateMutation.isPending ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                Generuje sa...
+                Generating...
               </>
             ) : (
               <>
                 <Sparkles className="h-5 w-5" />
-                Generovať Dizajn
+                Generate Design
               </>
             )}
           </Button>
@@ -306,9 +306,9 @@ export default function FashionGenerator() {
       {/* Preview */}
       <Card>
         <CardHeader>
-          <CardTitle>Náhľad Dizajnu</CardTitle>
+          <CardTitle>Design Preview</CardTitle>
           <CardDescription>
-            {generatedDesign ? "Váš vygenerovaný dizajn" : "Tu sa zobrazí váš dizajn"}
+            {generatedDesign ? "Your generated design" : "Your design will appear here"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -332,7 +332,7 @@ export default function FashionGenerator() {
                   className="w-full gap-2"
                 >
                   <Download className="h-4 w-4" />
-                  Stiahnuť
+                  Download
                 </Button>
               </div>
             </div>
@@ -340,7 +340,7 @@ export default function FashionGenerator() {
             <div className="aspect-square rounded-lg bg-muted flex items-center justify-center">
               <div className="text-center space-y-2">
                 <Sparkles className="h-12 w-12 mx-auto text-muted-foreground" />
-                <p className="text-muted-foreground">Vyplňte formulár a vygenerujte dizajn</p>
+                <p className="text-muted-foreground">Fill out the form and generate a design</p>
               </div>
             </div>
           )}
