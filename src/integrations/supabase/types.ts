@@ -1005,6 +1005,45 @@ export type Database = {
         }
         Relationships: []
       }
+      calorie_quests: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          current_value: number | null
+          expires_at: string | null
+          id: string
+          quest_type: string
+          status: string
+          target_value: number
+          user_id: string
+          xp_reward: number
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          current_value?: number | null
+          expires_at?: string | null
+          id?: string
+          quest_type: string
+          status?: string
+          target_value: number
+          user_id: string
+          xp_reward: number
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          current_value?: number | null
+          expires_at?: string | null
+          id?: string
+          quest_type?: string
+          status?: string
+          target_value?: number
+          user_id?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
       certificate_purchases: {
         Row: {
           amount: number
@@ -1037,6 +1076,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      challenge_participants: {
+        Row: {
+          challenge_id: string
+          id: string
+          joined_at: string
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          id?: string
+          joined_at?: string
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          id?: string
+          joined_at?: string
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "quest_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       character_conversations: {
         Row: {
@@ -1909,6 +1980,30 @@ export type Database = {
           day_streak?: number | null
           id?: string
           points_earned?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_scans_counter: {
+        Row: {
+          created_at: string
+          id: string
+          scan_date: string
+          scans_count: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          scan_date?: string
+          scans_count?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          scan_date?: string
+          scans_count?: number | null
           user_id?: string
         }
         Relationships: []
@@ -2863,6 +2958,51 @@ export type Database = {
           price?: number
           started_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      food_scans: {
+        Row: {
+          calories: number
+          carbs: number | null
+          created_at: string
+          fats: number | null
+          food_name: string
+          healthier_alternatives: Json | null
+          id: string
+          image_url: string
+          protein: number | null
+          scan_date: string
+          user_id: string
+          vitamins: Json | null
+        }
+        Insert: {
+          calories: number
+          carbs?: number | null
+          created_at?: string
+          fats?: number | null
+          food_name: string
+          healthier_alternatives?: Json | null
+          id?: string
+          image_url: string
+          protein?: number | null
+          scan_date?: string
+          user_id: string
+          vitamins?: Json | null
+        }
+        Update: {
+          calories?: number
+          carbs?: number | null
+          created_at?: string
+          fats?: number | null
+          food_name?: string
+          healthier_alternatives?: Json | null
+          id?: string
+          image_url?: string
+          protein?: number | null
+          scan_date?: string
+          user_id?: string
+          vitamins?: Json | null
         }
         Relationships: []
       }
@@ -4079,6 +4219,45 @@ export type Database = {
           },
         ]
       }
+      macro_tracking: {
+        Row: {
+          calories: number | null
+          carbs: number | null
+          created_at: string
+          date: string
+          fats: number | null
+          id: string
+          meals: Json | null
+          protein: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          calories?: number | null
+          carbs?: number | null
+          created_at?: string
+          date?: string
+          fats?: number | null
+          id?: string
+          meals?: Json | null
+          protein?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          calories?: number | null
+          carbs?: number | null
+          created_at?: string
+          date?: string
+          fats?: number | null
+          id?: string
+          meals?: Json | null
+          protein?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       marketplace_responses: {
         Row: {
           created_at: string | null
@@ -4143,6 +4322,63 @@ export type Database = {
           id?: string
           started_at?: string
           status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      meal_plans: {
+        Row: {
+          allergens: string[] | null
+          created_at: string
+          days: number
+          description: string | null
+          dietary_preferences: string[] | null
+          id: string
+          is_premium: boolean | null
+          plan_data: Json
+          shopping_list: Json | null
+          target_calories: number
+          target_carbs: number | null
+          target_fats: number | null
+          target_protein: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allergens?: string[] | null
+          created_at?: string
+          days?: number
+          description?: string | null
+          dietary_preferences?: string[] | null
+          id?: string
+          is_premium?: boolean | null
+          plan_data: Json
+          shopping_list?: Json | null
+          target_calories: number
+          target_carbs?: number | null
+          target_fats?: number | null
+          target_protein?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allergens?: string[] | null
+          created_at?: string
+          days?: number
+          description?: string | null
+          dietary_preferences?: string[] | null
+          id?: string
+          is_premium?: boolean | null
+          plan_data?: Json
+          shopping_list?: Json | null
+          target_calories?: number
+          target_carbs?: number | null
+          target_fats?: number | null
+          target_protein?: number | null
+          title?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -4820,6 +5056,48 @@ export type Database = {
           lucky_numbers?: number[] | null
           personality_number?: number | null
           soul_urge_number?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      nutrition_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          features: Json | null
+          food_scans_limit: number | null
+          id: string
+          meal_plans_limit: number | null
+          status: string
+          subscription_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end: string
+          current_period_start?: string
+          features?: Json | null
+          food_scans_limit?: number | null
+          id?: string
+          meal_plans_limit?: number | null
+          status?: string
+          subscription_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          features?: Json | null
+          food_scans_limit?: number | null
+          id?: string
+          meal_plans_limit?: number | null
+          status?: string
+          subscription_type?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -5980,6 +6258,48 @@ export type Database = {
         }
         Relationships: []
       }
+      quest_challenges: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_date: string
+          entry_fee: number
+          id: string
+          participants_count: number | null
+          prize_pool: number | null
+          start_date: string
+          status: string
+          title: string
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_date: string
+          entry_fee: number
+          id?: string
+          participants_count?: number | null
+          prize_pool?: number | null
+          start_date: string
+          status?: string
+          title: string
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_date?: string
+          entry_fee?: number
+          id?: string
+          participants_count?: number | null
+          prize_pool?: number | null
+          start_date?: string
+          status?: string
+          title?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
       recipes: {
         Row: {
           calories: number
@@ -6033,6 +6353,39 @@ export type Database = {
           time?: string
           title?: string
           updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      restaurant_menus: {
+        Row: {
+          analysis_data: Json
+          created_at: string
+          id: string
+          menu_image_url: string | null
+          recommendations: Json | null
+          restaurant_name: string
+          scan_count: number | null
+          user_id: string | null
+        }
+        Insert: {
+          analysis_data: Json
+          created_at?: string
+          id?: string
+          menu_image_url?: string | null
+          recommendations?: Json | null
+          restaurant_name: string
+          scan_count?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          analysis_data?: Json
+          created_at?: string
+          id?: string
+          menu_image_url?: string | null
+          recommendations?: Json | null
+          restaurant_name?: string
+          scan_count?: number | null
           user_id?: string | null
         }
         Relationships: []
@@ -7219,6 +7572,39 @@ export type Database = {
           },
         ]
       }
+      user_quest_progress: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          level: number | null
+          premium_items: Json | null
+          total_xp: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          level?: number | null
+          premium_items?: Json | null
+          total_xp?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          level?: number | null
+          premium_items?: Json | null
+          total_xp?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -7497,6 +7883,53 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      workout_plans: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_weeks: number
+          id: string
+          is_premium: boolean | null
+          matched_meal_plan_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          workout_data: Json
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_weeks: number
+          id?: string
+          is_premium?: boolean | null
+          matched_meal_plan_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          workout_data: Json
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_weeks?: number
+          id?: string
+          is_premium?: boolean | null
+          matched_meal_plan_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          workout_data?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_plans_matched_meal_plan_id_fkey"
+            columns: ["matched_meal_plan_id"]
+            isOneToOne: false
+            referencedRelation: "meal_plans"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

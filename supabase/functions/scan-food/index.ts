@@ -1,0 +1,209 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { imageBase64 } = await req.json();
+
+    console.log('Scanning food for user:', user.id);
+
+    // Check daily limit
+    const today = new Date().toISOString().split('T')[0];
+    const { data: scanCounter } = await supabaseClient
+      .from('daily_scans_counter')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('scan_date', today)
+      .single();
+
+    const { data: subscription } = await supabaseClient
+      .from('nutrition_subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    const limits: Record<string, number> = {
+      free: 5,
+      starter: 50,
+      premium: 999999
+    };
+
+    const subscriptionType = subscription?.subscription_type || 'free';
+    const currentLimit = limits[subscriptionType] || 5;
+    const currentScans = scanCounter?.scans_count || 0;
+
+    if (currentScans >= currentLimit) {
+      return new Response(JSON.stringify({ error: 'Daily scan limit reached' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Upload image to storage
+    const fileName = `${user.id}/${Date.now()}.png`;
+    const imageBuffer = Uint8Array.from(atob(imageBase64.split(',')[1]), c => c.charCodeAt(0));
+    
+    const { error: uploadError } = await supabaseClient.storage
+      .from('media')
+      .upload(fileName, imageBuffer, {
+        contentType: 'image/png',
+        upsert: false
+      });
+
+    if (uploadError) {
+      console.error('Upload error:', uploadError);
+      throw uploadError;
+    }
+
+    const { data: { publicUrl } } = supabaseClient.storage
+      .from('media')
+      .getPublicUrl(fileName);
+
+    // Analyze with Lovable AI (vision model)
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: `Analyze this food image and provide detailed nutritional information. Return ONLY valid JSON with this exact structure:
+{
+  "foodName": "name of the food/dish",
+  "calories": estimated calories (number),
+  "protein": grams of protein (number),
+  "carbs": grams of carbohydrates (number),
+  "fats": grams of fats (number),
+  "vitamins": {
+    "vitaminA": "amount or N/A",
+    "vitaminC": "amount or N/A",
+    "calcium": "amount or N/A",
+    "iron": "amount or N/A"
+  },
+  "healthierAlternatives": [
+    {"name": "alternative 1", "reason": "why it's healthier"},
+    {"name": "alternative 2", "reason": "why it's healthier"}
+  ]
+}`
+              },
+              {
+                type: 'image_url',
+                image_url: {
+                  url: imageBase64
+                }
+              }
+            ]
+          }
+        ],
+      }),
+    });
+
+    if (!aiResponse.ok) {
+      const errorText = await aiResponse.text();
+      console.error('AI API error:', aiResponse.status, errorText);
+      return new Response(JSON.stringify({ error: 'AI analysis failed' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const aiData = await aiResponse.json();
+    const analysisText = aiData.choices[0].message.content;
+    
+    // Parse JSON from AI response
+    let foodData;
+    try {
+      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+      foodData = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(analysisText);
+    } catch (e) {
+      console.error('Failed to parse AI response:', e);
+      foodData = {
+        foodName: 'Unknown Food',
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fats: 0,
+        vitamins: {},
+        healthierAlternatives: []
+      };
+    }
+
+    // Save scan
+    const { data: foodScan, error: scanError } = await supabaseClient
+      .from('food_scans')
+      .insert({
+        user_id: user.id,
+        image_url: publicUrl,
+        food_name: foodData.foodName,
+        calories: foodData.calories,
+        protein: foodData.protein,
+        carbs: foodData.carbs,
+        fats: foodData.fats,
+        vitamins: foodData.vitamins,
+        healthier_alternatives: foodData.healthierAlternatives
+      })
+      .select()
+      .single();
+
+    if (scanError) {
+      console.error('Error saving scan:', scanError);
+      throw scanError;
+    }
+
+    // Update scan counter
+    await supabaseClient
+      .from('daily_scans_counter')
+      .upsert({
+        user_id: user.id,
+        scan_date: today,
+        scans_count: currentScans + 1
+      });
+
+    console.log('Food scan completed:', foodScan.id);
+
+    return new Response(JSON.stringify({ scan: foodScan }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('Error in scan-food function:', error);
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
+});
