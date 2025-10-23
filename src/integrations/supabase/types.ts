@@ -368,6 +368,104 @@ export type Database = {
         }
         Relationships: []
       }
+      analyzer_chat_messages: {
+        Row: {
+          analysis_id: string
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          analysis_id: string
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          analysis_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analyzer_chat_messages_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "vision_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analyzer_collections: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      analyzer_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          tier: string
+          tier_expires_at: string | null
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          tier?: string
+          tier_expires_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          tier?: string
+          tier_expires_at?: string | null
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       antique_collections: {
         Row: {
           created_at: string | null
@@ -8104,6 +8202,62 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      vision_analyses: {
+        Row: {
+          analysis_type: string
+          category: string
+          collection_id: string | null
+          confidence_score: number | null
+          created_at: string
+          credits_used: number
+          detailed_info: Json | null
+          id: string
+          image_url: string
+          is_favorite: boolean | null
+          main_identification: string
+          tags: string[] | null
+          user_id: string
+        }
+        Insert: {
+          analysis_type: string
+          category: string
+          collection_id?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          credits_used?: number
+          detailed_info?: Json | null
+          id?: string
+          image_url: string
+          is_favorite?: boolean | null
+          main_identification: string
+          tags?: string[] | null
+          user_id: string
+        }
+        Update: {
+          analysis_type?: string
+          category?: string
+          collection_id?: string | null
+          confidence_score?: number | null
+          created_at?: string
+          credits_used?: number
+          detailed_info?: Json | null
+          id?: string
+          image_url?: string
+          is_favorite?: boolean | null
+          main_identification?: string
+          tags?: string[] | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_collection"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "analyzer_collections"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wardrobe_items: {
         Row: {
