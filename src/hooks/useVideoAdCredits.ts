@@ -1,0 +1,154 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+interface VideoAdCredits {
+  credits_remaining: number;
+  tier: 'free' | 'pro' | 'agency';
+  subscription_end_date?: string;
+}
+
+interface GenerateVideoAdParams {
+  productService: string;
+  targetAudience: string;
+  keyMessage: string;
+  tone: string;
+  duration: number;
+  platform: string;
+  premiumFeatures?: {
+    competitiveAnalysis?: boolean;
+    abTesting?: boolean;
+    voiceActorSuggestions?: boolean;
+    budgetOptimizer?: boolean;
+    multiLanguage?: string[];
+    storyboardExport?: boolean;
+    brandVoiceMatching?: boolean;
+    performancePredictions?: boolean;
+  };
+}
+
+export const useVideoAdCredits = () => {
+  const queryClient = useQueryClient();
+
+  const { data: credits, isLoading } = useQuery({
+    queryKey: ["video-ad-credits"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data, error } = await supabase
+        .from("video_ad_credits")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      
+      if (!data) {
+        const { data: newData, error: insertError } = await supabase
+          .from("video_ad_credits")
+          .insert({
+            user_id: user.id,
+            credits_remaining: 5,
+            tier: 'free'
+          })
+          .select()
+          .single();
+
+        if (insertError) throw insertError;
+        return newData as VideoAdCredits;
+      }
+
+      return data as VideoAdCredits;
+    },
+  });
+
+  const generateVideoAd = useMutation({
+    mutationFn: async (params: GenerateVideoAdParams) => {
+      const { data, error } = await supabase.functions.invoke('generate-video-ad', {
+        body: params
+      });
+      
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["video-ad-credits"] });
+      queryClient.invalidateQueries({ queryKey: ["video-ad-history"] });
+      toast.success("Video ad generated successfully!");
+    },
+    onError: (error: Error) => {
+      if (error.message.includes('credits')) {
+        toast.error("Insufficient credits. Please upgrade your plan.");
+      } else if (error.message.includes('Rate limit')) {
+        toast.error("Too many requests. Please try again later.");
+      } else {
+        toast.error("Error generating video ad: " + error.message);
+      }
+    },
+  });
+
+  const getTierLimits = (tier: string) => {
+    switch (tier) {
+      case 'free':
+        return {
+          dailyLimit: 1,
+          maxDuration: 30,
+          features: ['basic'],
+          creditsPerVideo: 1
+        };
+      case 'pro':
+        return {
+          dailyLimit: Infinity,
+          maxDuration: 120,
+          features: ['basic', 'advanced'],
+          creditsPerVideo: 0 // unlimited basic
+        };
+      case 'agency':
+        return {
+          dailyLimit: Infinity,
+          maxDuration: 300,
+          features: ['basic', 'advanced', 'premium'],
+          creditsPerVideo: 0 // unlimited all
+        };
+      default:
+        return {
+          dailyLimit: 1,
+          maxDuration: 30,
+          features: ['basic'],
+          creditsPerVideo: 1
+        };
+    }
+  };
+
+  const calculateCreditCost = (params: GenerateVideoAdParams) => {
+    let cost = 1; // Base cost
+    
+    const features = params.premiumFeatures || {};
+    
+    // Advanced features (2 credits each)
+    if (features.competitiveAnalysis) cost += 2;
+    if (features.abTesting) cost += 2;
+    if (features.voiceActorSuggestions) cost += 2;
+    if (features.budgetOptimizer) cost += 2;
+    
+    // Premium features (3 credits each)
+    if (features.multiLanguage && features.multiLanguage.length > 0) {
+      cost += features.multiLanguage.length * 3;
+    }
+    if (features.storyboardExport) cost += 3;
+    if (features.brandVoiceMatching) cost += 3;
+    if (features.performancePredictions) cost += 3;
+    
+    return cost;
+  };
+
+  return {
+    credits,
+    isLoading,
+    generateVideoAd: generateVideoAd.mutate,
+    isGenerating: generateVideoAd.isPending,
+    getTierLimits,
+    calculateCreditCost,
+  };
+};

@@ -5,9 +5,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { supabase } from "@/integrations/supabase/client";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Video, Download, Sparkles } from "lucide-react";
+import { Loader2, Video, Download, Sparkles, Star, Zap, Crown, Lock } from "lucide-react";
+import { useVideoAdCredits } from "@/hooks/useVideoAdCredits";
 
 interface VideoAdResult {
   title: string;
@@ -21,10 +23,16 @@ interface VideoAdResult {
   callToAction: string;
   musicSuggestion: string;
   targetEmotions: string[];
+  competitiveAnalysis?: string;
+  abTestVariants?: Array<{ title: string; tagline: string }>;
+  voiceActors?: Array<{ name: string; style: string }>;
+  budgetBreakdown?: { production: number; distribution: number; total: number };
+  translations?: Record<string, any>;
+  performancePrediction?: { reach: string; engagement: string; conversion: string };
 }
 
 const VideoAdGenerator = () => {
-  const [loading, setLoading] = useState(false);
+  const { credits, isLoading: creditsLoading, generateVideoAd, isGenerating, getTierLimits, calculateCreditCost } = useVideoAdCredits();
   const [formData, setFormData] = useState({
     product: "",
     targetAudience: "",
@@ -33,7 +41,31 @@ const VideoAdGenerator = () => {
     duration: "30",
     platform: "youtube"
   });
+  
+  const [premiumFeatures, setPremiumFeatures] = useState({
+    competitiveAnalysis: false,
+    abTesting: false,
+    voiceActorSuggestions: false,
+    budgetOptimizer: false,
+    multiLanguage: [] as string[],
+    storyboardExport: false,
+    brandVoiceMatching: false,
+    performancePredictions: false,
+  });
+  
   const [result, setResult] = useState<VideoAdResult | null>(null);
+
+  const tier = credits?.tier || 'free';
+  const tierLimits = getTierLimits(tier);
+  const estimatedCost = calculateCreditCost({ 
+    productService: formData.product,
+    targetAudience: formData.targetAudience,
+    keyMessage: formData.keyMessage,
+    tone: formData.tone,
+    duration: parseInt(formData.duration),
+    platform: formData.platform,
+    premiumFeatures 
+  });
 
   const handleGenerate = async () => {
     if (!formData.product || !formData.targetAudience || !formData.keyMessage) {
@@ -41,28 +73,35 @@ const VideoAdGenerator = () => {
       return;
     }
 
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('generate-video-ad', {
-        body: formData
-      });
-
-      if (error) throw error;
-
-      setResult(data);
-      toast.success("Video reklama vygenerovaná!");
-    } catch (error: any) {
-      console.error('Error:', error);
-      toast.error(error.message || "Chyba pri generovaní");
-    } finally {
-      setLoading(false);
+    if (!credits || credits.credits_remaining < estimatedCost) {
+      toast.error("Nedostatok kreditov. Zvýš svoj plán.");
+      return;
     }
+
+    if (parseInt(formData.duration) > tierLimits.maxDuration) {
+      toast.error(`Maximálna dĺžka pre ${tier} tier je ${tierLimits.maxDuration} sekúnd`);
+      return;
+    }
+
+    generateVideoAd({
+      productService: formData.product,
+      targetAudience: formData.targetAudience,
+      keyMessage: formData.keyMessage,
+      tone: formData.tone,
+      duration: parseInt(formData.duration),
+      platform: formData.platform,
+      premiumFeatures
+    }, {
+      onSuccess: (data) => {
+        setResult(data as VideoAdResult);
+      }
+    });
   };
 
   const downloadScript = () => {
     if (!result) return;
     
-    const content = `
+    let content = `
 ${result.title}
 ${'='.repeat(result.title.length)}
 
@@ -82,9 +121,17 @@ ${result.callToAction}
 
 HUDBA: ${result.musicSuggestion}
 EMÓCIE: ${result.targetEmotions.join(', ')}
-    `.trim();
+    `;
 
-    const blob = new Blob([content], { type: 'text/plain' });
+    if (result.competitiveAnalysis) {
+      content += `\n\nKONKURENCIA:\n${result.competitiveAnalysis}`;
+    }
+
+    if (result.budgetBreakdown) {
+      content += `\n\nROZPOČET:\nProdukcia: €${result.budgetBreakdown.production}\nDistribúcia: €${result.budgetBreakdown.distribution}\nCelkom: €${result.budgetBreakdown.total}`;
+    }
+
+    const blob = new Blob([content.trim()], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -93,25 +140,54 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
     URL.revokeObjectURL(url);
   };
 
+  const isPremiumFeature = (feature: keyof typeof premiumFeatures) => {
+    if (tier === 'agency') return false;
+    if (tier === 'pro' && ['competitiveAnalysis', 'abTesting', 'voiceActorSuggestions', 'budgetOptimizer'].includes(feature)) {
+      return false;
+    }
+    return true;
+  };
+
+  const togglePremiumFeature = (feature: keyof typeof premiumFeatures) => {
+    if (isPremiumFeature(feature)) {
+      toast.error("Táto funkcia je dostupná len v PRO/Agency pláne");
+      return;
+    }
+    setPremiumFeatures(prev => ({
+      ...prev,
+      [feature]: typeof prev[feature] === 'boolean' ? !prev[feature] : prev[feature]
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
-            Video Reklama Generator
-          </h1>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              Video Reklama Generator
+            </h1>
+            <div className="flex flex-col items-end gap-1">
+              {tier === 'free' && <Badge variant="outline">Free Plan</Badge>}
+              {tier === 'pro' && <Badge className="bg-primary"><Star className="w-3 h-3 mr-1" />Pro Plan</Badge>}
+              {tier === 'agency' && <Badge className="bg-gradient-to-r from-primary to-accent"><Crown className="w-3 h-3 mr-1" />Agency</Badge>}
+              <div className="text-sm text-muted-foreground">
+                <span className="font-bold text-foreground">{credits?.credits_remaining || 0}</span> kreditov
+              </div>
+            </div>
+          </div>
           <p className="text-muted-foreground">
-            Vytvor profesionálny video script s AI
+            Vytvor profesionálny video script s AI • Cena: {estimatedCost} {estimatedCost === 1 ? 'kredit' : 'kreditov'}
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-3 gap-6">
           {/* Input Form */}
-          <Card>
+          <Card className="lg:col-span-1">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5" />
-                Zadaj požiadavky
+                Základné nastavenia
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -172,8 +248,8 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                     <SelectContent>
                       <SelectItem value="15">15s</SelectItem>
                       <SelectItem value="30">30s</SelectItem>
-                      <SelectItem value="60">60s</SelectItem>
-                      <SelectItem value="90">90s</SelectItem>
+                      <SelectItem value="60" disabled={tier === 'free'}>60s {tier === 'free' && '🔒'}</SelectItem>
+                      <SelectItem value="90" disabled={tier !== 'agency'}>90s {tier !== 'agency' && '🔒'}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -195,12 +271,91 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                 </div>
               </div>
 
+              {/* Premium Features */}
+              <div className="pt-4 border-t">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <Zap className="w-4 h-4" />
+                  Premium Features
+                </h3>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="competitive" 
+                      checked={premiumFeatures.competitiveAnalysis}
+                      onCheckedChange={() => togglePremiumFeature('competitiveAnalysis')}
+                      disabled={isPremiumFeature('competitiveAnalysis')}
+                    />
+                    <Label htmlFor="competitive" className="text-sm flex items-center gap-1">
+                      Konkurenčná analýza
+                      {isPremiumFeature('competitiveAnalysis') && <Lock className="w-3 h-3" />}
+                      <Badge variant="outline" className="ml-1">+2</Badge>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="abtesting" 
+                      checked={premiumFeatures.abTesting}
+                      onCheckedChange={() => togglePremiumFeature('abTesting')}
+                      disabled={isPremiumFeature('abTesting')}
+                    />
+                    <Label htmlFor="abtesting" className="text-sm flex items-center gap-1">
+                      A/B Testing varianty
+                      {isPremiumFeature('abTesting') && <Lock className="w-3 h-3" />}
+                      <Badge variant="outline" className="ml-1">+2</Badge>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="voice" 
+                      checked={premiumFeatures.voiceActorSuggestions}
+                      onCheckedChange={() => togglePremiumFeature('voiceActorSuggestions')}
+                      disabled={isPremiumFeature('voiceActorSuggestions')}
+                    />
+                    <Label htmlFor="voice" className="text-sm flex items-center gap-1">
+                      Návrhy hlasov
+                      {isPremiumFeature('voiceActorSuggestions') && <Lock className="w-3 h-3" />}
+                      <Badge variant="outline" className="ml-1">+2</Badge>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="budget" 
+                      checked={premiumFeatures.budgetOptimizer}
+                      onCheckedChange={() => togglePremiumFeature('budgetOptimizer')}
+                      disabled={isPremiumFeature('budgetOptimizer')}
+                    />
+                    <Label htmlFor="budget" className="text-sm flex items-center gap-1">
+                      Rozpočet optimizer
+                      {isPremiumFeature('budgetOptimizer') && <Lock className="w-3 h-3" />}
+                      <Badge variant="outline" className="ml-1">+2</Badge>
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="performance" 
+                      checked={premiumFeatures.performancePredictions}
+                      onCheckedChange={() => togglePremiumFeature('performancePredictions')}
+                      disabled={isPremiumFeature('performancePredictions')}
+                    />
+                    <Label htmlFor="performance" className="text-sm flex items-center gap-1">
+                      Performance predikcie
+                      {isPremiumFeature('performancePredictions') && <Lock className="w-3 h-3" />}
+                      <Badge variant="outline" className="ml-1">+3</Badge>
+                    </Label>
+                  </div>
+                </div>
+              </div>
+
               <Button 
                 onClick={handleGenerate} 
-                disabled={loading}
+                disabled={isGenerating || creditsLoading}
                 className="w-full"
               >
-                {loading ? (
+                {isGenerating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Generujem...
@@ -208,7 +363,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                 ) : (
                   <>
                     <Video className="mr-2 h-4 w-4" />
-                    Vygeneruj Video Reklamu
+                    Vygeneruj ({estimatedCost} {estimatedCost === 1 ? 'kredit' : 'kreditov'})
                   </>
                 )}
               </Button>
@@ -216,7 +371,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
           </Card>
 
           {/* Results */}
-          <Card>
+          <Card className="lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center gap-2">
@@ -238,7 +393,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                   <p>Vyplň formulár a vygeneruj video reklamu</p>
                 </div>
               ) : (
-                <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
+                <div className="space-y-6 max-h-[700px] overflow-y-auto pr-2">
                   <div>
                     <h3 className="font-bold text-lg mb-2">{result.title}</h3>
                   </div>
@@ -273,6 +428,44 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                       </Card>
                     ))}
                   </div>
+
+                  {result.competitiveAnalysis && (
+                    <div>
+                      <h4 className="font-semibold mb-2">🔍 Konkurenčná analýza:</h4>
+                      <p className="text-sm text-muted-foreground">{result.competitiveAnalysis}</p>
+                    </div>
+                  )}
+
+                  {result.budgetBreakdown && (
+                    <div>
+                      <h4 className="font-semibold mb-2">💰 Rozpočet:</h4>
+                      <div className="grid grid-cols-3 gap-2 text-sm">
+                        <div className="p-2 bg-muted rounded">
+                          <div className="text-muted-foreground">Produkcia</div>
+                          <div className="font-bold">€{result.budgetBreakdown.production}</div>
+                        </div>
+                        <div className="p-2 bg-muted rounded">
+                          <div className="text-muted-foreground">Distribúcia</div>
+                          <div className="font-bold">€{result.budgetBreakdown.distribution}</div>
+                        </div>
+                        <div className="p-2 bg-primary/10 rounded">
+                          <div className="text-muted-foreground">Celkom</div>
+                          <div className="font-bold">€{result.budgetBreakdown.total}</div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {result.performancePrediction && (
+                    <div>
+                      <h4 className="font-semibold mb-2">📊 Performance predikcie:</h4>
+                      <div className="space-y-1 text-sm">
+                        <div><span className="font-medium">Reach:</span> {result.performancePrediction.reach}</div>
+                        <div><span className="font-medium">Engagement:</span> {result.performancePrediction.engagement}</div>
+                        <div><span className="font-medium">Conversion:</span> {result.performancePrediction.conversion}</div>
+                      </div>
+                    </div>
+                  )}
 
                   <div>
                     <h4 className="font-semibold mb-2">📢 Call to Action:</h4>
