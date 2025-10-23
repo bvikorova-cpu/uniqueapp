@@ -4203,6 +4203,9 @@ export type Database = {
           description: string | null
           icon: string | null
           id: string
+          is_active: boolean
+          max_rarity_level: number
+          min_rarity_level: number
           name: string
           price: number
         }
@@ -4211,6 +4214,9 @@ export type Database = {
           description?: string | null
           icon?: string | null
           id?: string
+          is_active?: boolean
+          max_rarity_level?: number
+          min_rarity_level?: number
           name: string
           price: number
         }
@@ -4219,6 +4225,9 @@ export type Database = {
           description?: string | null
           icon?: string | null
           id?: string
+          is_active?: boolean
+          max_rarity_level?: number
+          min_rarity_level?: number
           name?: string
           price?: number
         }
