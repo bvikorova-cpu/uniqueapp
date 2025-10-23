@@ -2353,6 +2353,480 @@ export type Database = {
         }
         Relationships: []
       }
+      fashion_categories: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          parent_category_id: string | null
+          slug: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          parent_category_id?: string | null
+          slug: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          parent_category_id?: string | null
+          slug?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_categories_parent_category_id_fkey"
+            columns: ["parent_category_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fashion_challenge_submissions: {
+        Row: {
+          challenge_id: string
+          design_id: string
+          id: string
+          submitted_at: string | null
+          user_id: string
+          votes_count: number | null
+        }
+        Insert: {
+          challenge_id: string
+          design_id: string
+          id?: string
+          submitted_at?: string | null
+          user_id: string
+          votes_count?: number | null
+        }
+        Update: {
+          challenge_id?: string
+          design_id?: string
+          id?: string
+          submitted_at?: string | null
+          user_id?: string
+          votes_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_challenge_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fashion_challenge_submissions_design_id_fkey"
+            columns: ["design_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_designs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fashion_challenge_votes: {
+        Row: {
+          created_at: string | null
+          id: string
+          submission_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          submission_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          submission_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_challenge_votes_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_challenge_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fashion_challenges: {
+        Row: {
+          created_at: string | null
+          description: string
+          end_date: string
+          id: string
+          is_active: boolean | null
+          prize_description: string | null
+          start_date: string
+          theme: string
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          end_date: string
+          id?: string
+          is_active?: boolean | null
+          prize_description?: string | null
+          start_date: string
+          theme: string
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          end_date?: string
+          id?: string
+          is_active?: boolean | null
+          prize_description?: string | null
+          start_date?: string
+          theme?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      fashion_designs: {
+        Row: {
+          category_id: string | null
+          colors: string[] | null
+          created_at: string | null
+          credits_used: number
+          description: string | null
+          details: Json | null
+          downloads_count: number | null
+          id: string
+          image_url: string
+          is_public: boolean | null
+          likes_count: number | null
+          material_id: string | null
+          prompt: string
+          quality_level: string | null
+          style_id: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          views_count: number | null
+        }
+        Insert: {
+          category_id?: string | null
+          colors?: string[] | null
+          created_at?: string | null
+          credits_used?: number
+          description?: string | null
+          details?: Json | null
+          downloads_count?: number | null
+          id?: string
+          image_url: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          material_id?: string | null
+          prompt: string
+          quality_level?: string | null
+          style_id?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          views_count?: number | null
+        }
+        Update: {
+          category_id?: string | null
+          colors?: string[] | null
+          created_at?: string | null
+          credits_used?: number
+          description?: string | null
+          details?: Json | null
+          downloads_count?: number | null
+          id?: string
+          image_url?: string
+          is_public?: boolean | null
+          likes_count?: number | null
+          material_id?: string | null
+          prompt?: string
+          quality_level?: string | null
+          style_id?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_designs_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fashion_designs_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fashion_designs_style_id_fkey"
+            columns: ["style_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_styles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fashion_follows: {
+        Row: {
+          created_at: string | null
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      fashion_likes: {
+        Row: {
+          created_at: string | null
+          design_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          design_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          design_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_likes_design_id_fkey"
+            columns: ["design_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_designs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fashion_marketplace: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          design_id: string
+          id: string
+          is_active: boolean | null
+          license_type: string
+          price_czk: number
+          sales_count: number | null
+          seller_id: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          design_id: string
+          id?: string
+          is_active?: boolean | null
+          license_type: string
+          price_czk: number
+          sales_count?: number | null
+          seller_id: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          design_id?: string
+          id?: string
+          is_active?: boolean | null
+          license_type?: string
+          price_czk?: number
+          sales_count?: number | null
+          seller_id?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_marketplace_design_id_fkey"
+            columns: ["design_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_designs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fashion_materials: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      fashion_purchases: {
+        Row: {
+          buyer_id: string
+          commission_czk: number
+          design_id: string
+          id: string
+          license_type: string
+          listing_id: string
+          price_paid_czk: number
+          purchased_at: string | null
+          seller_id: string
+        }
+        Insert: {
+          buyer_id: string
+          commission_czk: number
+          design_id: string
+          id?: string
+          license_type: string
+          listing_id: string
+          price_paid_czk: number
+          purchased_at?: string | null
+          seller_id: string
+        }
+        Update: {
+          buyer_id?: string
+          commission_czk?: number
+          design_id?: string
+          id?: string
+          license_type?: string
+          listing_id?: string
+          price_paid_czk?: number
+          purchased_at?: string | null
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fashion_purchases_design_id_fkey"
+            columns: ["design_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_designs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fashion_purchases_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "fashion_marketplace"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fashion_styles: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+        }
+        Relationships: []
+      }
+      fashion_subscriptions: {
+        Row: {
+          created_at: string | null
+          credits_per_month: number
+          expires_at: string | null
+          features: Json | null
+          id: string
+          price_czk: number
+          started_at: string | null
+          status: string | null
+          tier: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_per_month: number
+          expires_at?: string | null
+          features?: Json | null
+          id?: string
+          price_czk: number
+          started_at?: string | null
+          status?: string | null
+          tier: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_per_month?: number
+          expires_at?: string | null
+          features?: Json | null
+          id?: string
+          price_czk?: number
+          started_at?: string | null
+          status?: string | null
+          tier?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       featured_listings: {
         Row: {
           created_at: string
