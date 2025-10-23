@@ -215,6 +215,7 @@ const Navbar = () => {
     { path: "/collectibles", label: "Collectibles", icon: Sparkles },
     { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
     { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },
+    { path: "/fashion-studio", label: "Fashion Studio", icon: Palette },
     { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
     { path: "/astrology", label: "Astrology", icon: Star },
     { path: "/ai-music", label: "Music Curator", icon: Music },
