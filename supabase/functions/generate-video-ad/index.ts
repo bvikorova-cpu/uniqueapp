@@ -52,7 +52,7 @@ serve(async (req) => {
       throw new Error('Insufficient credits');
     }
 
-    let prompt = `Create a professional video advertisement script:
+    let prompt = `Create a professional video advertisement script IN ENGLISH:
 
 Product/Service: ${productService}
 Target Audience: ${targetAudience}
@@ -61,16 +61,18 @@ Tone: ${tone}
 Duration: ${duration} seconds
 Platform: ${platform}
 
+IMPORTANT: Generate everything in ENGLISH language.
+
 Generate: title, script, scenes (duration, description, voiceover, visuals), callToAction, musicSuggestion, targetEmotions`;
 
     if (premiumFeatures?.competitiveAnalysis) {
-      prompt += `\n\nAlso include competitive analysis.`;
+      prompt += `\n\nAlso include competitive analysis in English.`;
     }
     if (premiumFeatures?.budgetOptimizer) {
-      prompt += `\n\nInclude budget breakdown (production, distribution, total).`;
+      prompt += `\n\nInclude budget breakdown (production, distribution, total) in Euros.`;
     }
     if (premiumFeatures?.performancePredictions) {
-      prompt += `\n\nAdd performance predictions (reach, engagement, conversion).`;
+      prompt += `\n\nAdd performance predictions (reach, engagement, conversion) in English.`;
     }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -82,7 +84,7 @@ Generate: title, script, scenes (duration, description, voiceover, visuals), cal
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [
-          { role: 'system', content: 'You are a video ad expert. Return valid JSON.' },
+          { role: 'system', content: 'You are a professional video advertising expert. Create engaging video ad scripts in ENGLISH. Always respond with valid JSON format. All content must be in English language.' },
           { role: 'user', content: prompt }
         ],
       }),

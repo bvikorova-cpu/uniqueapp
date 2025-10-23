@@ -78,10 +78,12 @@ export const useVideoAdCredits = () => {
       toast.success("Video ad generated successfully!");
     },
     onError: (error: Error) => {
-      if (error.message.includes('credits')) {
+      if (error.message.includes('credits') || error.message.includes('Insufficient')) {
         toast.error("Insufficient credits. Please upgrade your plan.");
       } else if (error.message.includes('Rate limit')) {
         toast.error("Too many requests. Please try again later.");
+      } else if (error.message.includes('authenticated')) {
+        toast.error("Please log in to generate video ads.");
       } else {
         toast.error("Error generating video ad: " + error.message);
       }

@@ -69,17 +69,17 @@ const VideoAdGenerator = () => {
 
   const handleGenerate = async () => {
     if (!formData.product || !formData.targetAudience || !formData.keyMessage) {
-      toast.error("Vyplň všetky povinné polia");
+      toast.error("Please fill in all required fields");
       return;
     }
 
     if (!credits || credits.credits_remaining < estimatedCost) {
-      toast.error("Nedostatok kreditov. Zvýš svoj plán.");
+      toast.error("Insufficient credits. Please upgrade your plan.");
       return;
     }
 
     if (parseInt(formData.duration) > tierLimits.maxDuration) {
-      toast.error(`Maximálna dĺžka pre ${tier} tier je ${tierLimits.maxDuration} sekúnd`);
+      toast.error(`Maximum duration for ${tier} tier is ${tierLimits.maxDuration} seconds`);
       return;
     }
 
@@ -151,7 +151,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
 
   const togglePremiumFeature = (feature: keyof typeof premiumFeatures) => {
     if (isPremiumFeature(feature)) {
-      toast.error("Táto funkcia je dostupná len v PRO/Agency pláne");
+      toast.error("This feature is only available in PRO/Agency plan");
       return;
     }
     setPremiumFeatures(prev => ({
@@ -161,24 +161,24 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
   };
 
   return (
-    <div className="min-h-screen bg-background py-12 px-4">
+    <div className="min-h-screen bg-background pt-24 pb-12 px-4">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Video Reklama Generator
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              Video Ad Generator
             </h1>
-            <div className="flex flex-col items-end gap-1">
+            <div className="flex flex-col items-center md:items-end gap-1">
               {tier === 'free' && <Badge variant="outline">Free Plan</Badge>}
               {tier === 'pro' && <Badge className="bg-primary"><Star className="w-3 h-3 mr-1" />Pro Plan</Badge>}
               {tier === 'agency' && <Badge className="bg-gradient-to-r from-primary to-accent"><Crown className="w-3 h-3 mr-1" />Agency</Badge>}
               <div className="text-sm text-muted-foreground">
-                <span className="font-bold text-foreground">{credits?.credits_remaining || 0}</span> kreditov
+                <span className="font-bold text-foreground">{credits?.credits_remaining || 0}</span> credits
               </div>
             </div>
           </div>
           <p className="text-muted-foreground">
-            Vytvor profesionálny video script s AI • Cena: {estimatedCost} {estimatedCost === 1 ? 'kredit' : 'kreditov'}
+            Create professional video scripts with AI • Cost: {estimatedCost} {estimatedCost === 1 ? 'credit' : 'credits'}
           </p>
         </div>
 
@@ -188,35 +188,35 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5" />
-                Základné nastavenia
+                Basic Settings
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="product">Produkt/Služba *</Label>
+                <Label htmlFor="product">Product/Service *</Label>
                 <Input
                   id="product"
-                  placeholder="napr. Fitness aplikácia"
+                  placeholder="e.g. Fitness app"
                   value={formData.product}
                   onChange={(e) => setFormData({ ...formData, product: e.target.value })}
                 />
               </div>
 
               <div>
-                <Label htmlFor="targetAudience">Cieľová skupina *</Label>
+                <Label htmlFor="targetAudience">Target Audience *</Label>
                 <Input
                   id="targetAudience"
-                  placeholder="napr. Mladí ľudia 18-30 rokov"
+                  placeholder="e.g. Young adults 18-30 years old"
                   value={formData.targetAudience}
                   onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value })}
                 />
               </div>
 
               <div>
-                <Label htmlFor="keyMessage">Kľúčový odkaz *</Label>
+                <Label htmlFor="keyMessage">Key Message *</Label>
                 <Textarea
                   id="keyMessage"
-                  placeholder="Čo chceš oznámiť zákazníkom?"
+                  placeholder="What do you want to tell your customers?"
                   value={formData.keyMessage}
                   onChange={(e) => setFormData({ ...formData, keyMessage: e.target.value })}
                   rows={3}
@@ -224,24 +224,24 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
               </div>
 
               <div>
-                <Label htmlFor="tone">Tón reklamy</Label>
+                <Label htmlFor="tone">Ad Tone</Label>
                 <Select value={formData.tone} onValueChange={(val) => setFormData({ ...formData, tone: val })}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="professional">Profesionálny</SelectItem>
+                    <SelectItem value="professional">Professional</SelectItem>
                     <SelectItem value="casual">Casual</SelectItem>
-                    <SelectItem value="energetic">Energický</SelectItem>
-                    <SelectItem value="emotional">Emocionálny</SelectItem>
-                    <SelectItem value="humorous">Humorný</SelectItem>
+                    <SelectItem value="energetic">Energetic</SelectItem>
+                    <SelectItem value="emotional">Emotional</SelectItem>
+                    <SelectItem value="humorous">Humorous</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="duration">Dĺžka (sekundy)</Label>
+                  <Label htmlFor="duration">Duration (seconds)</Label>
                   <Select value={formData.duration} onValueChange={(val) => setFormData({ ...formData, duration: val })}>
                     <SelectTrigger>
                       <SelectValue />
@@ -256,7 +256,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                 </div>
 
                 <div>
-                  <Label htmlFor="platform">Platforma</Label>
+                  <Label htmlFor="platform">Platform</Label>
                   <Select value={formData.platform} onValueChange={(val) => setFormData({ ...formData, platform: val })}>
                     <SelectTrigger>
                       <SelectValue />
@@ -287,7 +287,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                       disabled={isPremiumFeature('competitiveAnalysis')}
                     />
                     <Label htmlFor="competitive" className="text-sm flex items-center gap-1">
-                      Konkurenčná analýza
+                      Competitive Analysis
                       {isPremiumFeature('competitiveAnalysis') && <Lock className="w-3 h-3" />}
                       <Badge variant="outline" className="ml-1">+2</Badge>
                     </Label>
@@ -301,7 +301,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                       disabled={isPremiumFeature('abTesting')}
                     />
                     <Label htmlFor="abtesting" className="text-sm flex items-center gap-1">
-                      A/B Testing varianty
+                      A/B Testing Variants
                       {isPremiumFeature('abTesting') && <Lock className="w-3 h-3" />}
                       <Badge variant="outline" className="ml-1">+2</Badge>
                     </Label>
@@ -315,7 +315,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                       disabled={isPremiumFeature('voiceActorSuggestions')}
                     />
                     <Label htmlFor="voice" className="text-sm flex items-center gap-1">
-                      Návrhy hlasov
+                      Voice Actor Suggestions
                       {isPremiumFeature('voiceActorSuggestions') && <Lock className="w-3 h-3" />}
                       <Badge variant="outline" className="ml-1">+2</Badge>
                     </Label>
@@ -329,7 +329,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                       disabled={isPremiumFeature('budgetOptimizer')}
                     />
                     <Label htmlFor="budget" className="text-sm flex items-center gap-1">
-                      Rozpočet optimizer
+                      Budget Optimizer
                       {isPremiumFeature('budgetOptimizer') && <Lock className="w-3 h-3" />}
                       <Badge variant="outline" className="ml-1">+2</Badge>
                     </Label>
@@ -343,7 +343,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                       disabled={isPremiumFeature('performancePredictions')}
                     />
                     <Label htmlFor="performance" className="text-sm flex items-center gap-1">
-                      Performance predikcie
+                      Performance Predictions
                       {isPremiumFeature('performancePredictions') && <Lock className="w-3 h-3" />}
                       <Badge variant="outline" className="ml-1">+3</Badge>
                     </Label>
@@ -359,12 +359,12 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                 {isGenerating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Generujem...
+                    Generating...
                   </>
                 ) : (
                   <>
                     <Video className="mr-2 h-4 w-4" />
-                    Vygeneruj ({estimatedCost} {estimatedCost === 1 ? 'kredit' : 'kreditov'})
+                    Generate ({estimatedCost} {estimatedCost === 1 ? 'credit' : 'credits'})
                   </>
                 )}
               </Button>
@@ -377,12 +377,12 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
               <CardTitle className="flex items-center justify-between">
                 <span className="flex items-center gap-2">
                   <Video className="w-5 h-5" />
-                  Výsledok
+                  Result
                 </span>
                 {result && (
                   <Button variant="outline" size="sm" onClick={downloadScript}>
                     <Download className="w-4 h-4 mr-2" />
-                    Stiahnuť
+                    Download
                   </Button>
                 )}
               </CardTitle>
@@ -391,7 +391,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
               {!result ? (
                 <div className="text-center py-12 text-muted-foreground">
                   <Video className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                  <p>Vyplň formulár a vygeneruj video reklamu</p>
+                  <p>Fill out the form and generate your video ad</p>
                 </div>
               ) : (
                 <div className="space-y-6 max-h-[700px] overflow-y-auto pr-2">
@@ -400,29 +400,29 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">📝 Kompletný Script:</h4>
+                    <h4 className="font-semibold mb-2">📝 Complete Script:</h4>
                     <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                       {result.script}
                     </p>
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-3">🎬 Scény:</h4>
+                    <h4 className="font-semibold mb-3">🎬 Scenes:</h4>
                     {result.scenes.map((scene, idx) => (
                       <Card key={idx} className="mb-3 bg-muted/30">
                         <CardContent className="pt-4">
                           <div className="font-medium mb-2">
-                            Scéna {idx + 1} ({scene.duration})
+                            Scene {idx + 1} ({scene.duration})
                           </div>
                           <div className="space-y-2 text-sm">
                             <div>
-                              <span className="font-medium">Popis:</span> {scene.description}
+                              <span className="font-medium">Description:</span> {scene.description}
                             </div>
                             <div>
                               <span className="font-medium">Voiceover:</span> "{scene.voiceover}"
                             </div>
                             <div>
-                              <span className="font-medium">Vizuály:</span> {scene.visuals}
+                              <span className="font-medium">Visuals:</span> {scene.visuals}
                             </div>
                           </div>
                         </CardContent>
@@ -432,25 +432,25 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
 
                   {result.competitiveAnalysis && (
                     <div>
-                      <h4 className="font-semibold mb-2">🔍 Konkurenčná analýza:</h4>
+                      <h4 className="font-semibold mb-2">🔍 Competitive Analysis:</h4>
                       <p className="text-sm text-muted-foreground">{result.competitiveAnalysis}</p>
                     </div>
                   )}
 
                   {result.budgetBreakdown && (
                     <div>
-                      <h4 className="font-semibold mb-2">💰 Rozpočet:</h4>
+                      <h4 className="font-semibold mb-2">💰 Budget:</h4>
                       <div className="grid grid-cols-3 gap-2 text-sm">
                         <div className="p-2 bg-muted rounded">
-                          <div className="text-muted-foreground">Produkcia</div>
+                          <div className="text-muted-foreground">Production</div>
                           <div className="font-bold">€{result.budgetBreakdown.production}</div>
                         </div>
                         <div className="p-2 bg-muted rounded">
-                          <div className="text-muted-foreground">Distribúcia</div>
+                          <div className="text-muted-foreground">Distribution</div>
                           <div className="font-bold">€{result.budgetBreakdown.distribution}</div>
                         </div>
                         <div className="p-2 bg-primary/10 rounded">
-                          <div className="text-muted-foreground">Celkom</div>
+                          <div className="text-muted-foreground">Total</div>
                           <div className="font-bold">€{result.budgetBreakdown.total}</div>
                         </div>
                       </div>
@@ -459,7 +459,7 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
 
                   {result.performancePrediction && (
                     <div>
-                      <h4 className="font-semibold mb-2">📊 Performance predikcie:</h4>
+                      <h4 className="font-semibold mb-2">📊 Performance Predictions:</h4>
                       <div className="space-y-1 text-sm">
                         <div><span className="font-medium">Reach:</span> {result.performancePrediction.reach}</div>
                         <div><span className="font-medium">Engagement:</span> {result.performancePrediction.engagement}</div>
@@ -475,11 +475,11 @@ EMÓCIE: ${result.targetEmotions.join(', ')}
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <h4 className="font-semibold mb-2">🎵 Hudba:</h4>
+                      <h4 className="font-semibold mb-2">🎵 Music:</h4>
                       <p className="text-sm text-muted-foreground">{result.musicSuggestion}</p>
                     </div>
                     <div>
-                      <h4 className="font-semibold mb-2">💭 Emócie:</h4>
+                      <h4 className="font-semibold mb-2">💭 Emotions:</h4>
                       <div className="flex flex-wrap gap-1">
                         {result.targetEmotions.map((emotion, i) => (
                           <span key={i} className="text-xs px-2 py-1 bg-primary/10 rounded-full">
