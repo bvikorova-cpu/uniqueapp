@@ -7993,6 +7993,78 @@ export type Database = {
         }
         Relationships: []
       }
+      video_ad_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          subscription_end_date: string | null
+          tier: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          subscription_end_date?: string | null
+          tier?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          subscription_end_date?: string | null
+          tier?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      video_ad_history: {
+        Row: {
+          created_at: string
+          credits_used: number
+          duration: number
+          features_used: Json
+          id: string
+          platform: string
+          product_service: string
+          result: Json | null
+          target_audience: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used: number
+          duration: number
+          features_used?: Json
+          id?: string
+          platform: string
+          product_service: string
+          result?: Json | null
+          target_audience: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          duration?: number
+          features_used?: Json
+          id?: string
+          platform?: string
+          product_service?: string
+          result?: Json | null
+          target_audience?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       video_comments: {
         Row: {
           content: string
