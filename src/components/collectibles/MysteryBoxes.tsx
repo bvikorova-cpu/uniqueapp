@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useCollectibles } from "@/hooks/useCollectibles";
 import { useAICredits } from "@/hooks/useAICredits";
-import { Loader2, Package, Sparkles } from "lucide-react";
+import { Loader2, Gift, Star, Crown, Sparkles } from "lucide-react";
 
 interface MysteryBoxesProps {
   userId: string;
@@ -52,10 +52,42 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
           const canAfford = credits && credits.credits_remaining >= boxPrice;
           const isOpening = selectedBox?.id === box.id;
 
+          // Different icon and gradient for each box tier
+          const getBoxStyle = (price: number) => {
+            switch(price) {
+              case 100:
+                return {
+                  icon: Gift,
+                  gradient: "from-blue-500/20 to-blue-600/5",
+                  iconColor: "text-blue-500"
+                };
+              case 250:
+                return {
+                  icon: Star,
+                  gradient: "from-purple-500/20 to-purple-600/5",
+                  iconColor: "text-purple-500"
+                };
+              case 500:
+                return {
+                  icon: Crown,
+                  gradient: "from-amber-500/20 to-amber-600/5",
+                  iconColor: "text-amber-500"
+                };
+              default:
+                return {
+                  icon: Gift,
+                  gradient: "from-primary/20 to-primary/5",
+                  iconColor: "text-primary"
+                };
+            }
+          };
+
+          const { icon: BoxIcon, gradient, iconColor } = getBoxStyle(boxPrice);
+
           return (
             <Card key={box.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-square relative bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                <Package className="h-24 w-24 text-primary" />
+              <div className={`aspect-square relative bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+                <BoxIcon className={`h-24 w-24 ${iconColor} animate-pulse`} />
               </div>
 
               <div className="p-4 space-y-3">
