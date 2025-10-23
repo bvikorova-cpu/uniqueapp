@@ -232,6 +232,7 @@ const Navbar = () => {
     { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
     { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
     { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
+    { path: "/minibiz", label: "Mini Business Marketplace", icon: Store },
     { path: "/ai-generation", label: t('navbar.ai_generation'), icon: Sparkles },
     { path: "/auction", label: t('navbar.auction'), icon: Gavel },
     { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
