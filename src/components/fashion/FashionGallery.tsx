@@ -65,7 +65,7 @@ export default function FashionGallery() {
   const likeMutation = useMutation({
     mutationFn: async (designId: string) => {
       if (!user) {
-        toast.error("Prihláste sa pre lajkovanie");
+        toast.error("Please log in to like");
         return;
       }
 
@@ -97,7 +97,7 @@ export default function FashionGallery() {
       queryClient.invalidateQueries({ queryKey: ['fashion-designs'] });
     },
     onError: (error) => {
-      toast.error("Chyba pri lajkovaní");
+      toast.error("Error liking");
       console.error(error);
     }
   });
@@ -114,9 +114,9 @@ export default function FashionGallery() {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-      toast.success("Dizajn stiahnutý!");
+      toast.success("Design downloaded!");
     } catch (error) {
-      toast.error("Chyba pri sťahovaní");
+      toast.error("Download error");
     }
   };
 
@@ -130,7 +130,7 @@ export default function FashionGallery() {
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Hľadať dizajny..."
+              placeholder="Search designs..."
               className="pl-10"
             />
           </div>
@@ -140,7 +140,7 @@ export default function FashionGallery() {
       {/* Gallery Grid */}
       {isLoading ? (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Načítava sa...</p>
+          <p className="text-muted-foreground">Loading...</p>
         </div>
       ) : designs && designs.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -172,7 +172,7 @@ export default function FashionGallery() {
               <CardContent className="p-4">
                 <h3 className="font-semibold mb-1">{design.title}</h3>
                 <p className="text-sm text-muted-foreground mb-2">
-                  {(design as any).profile?.full_name || 'Anonymný'}
+                  {(design as any).profile?.full_name || 'Anonymous'}
                 </p>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
@@ -194,7 +194,7 @@ export default function FashionGallery() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">Žiadne dizajny neboli nájdené</p>
+          <p className="text-muted-foreground">No designs found</p>
         </div>
       )}
     </div>

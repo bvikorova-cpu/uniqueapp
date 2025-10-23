@@ -13,7 +13,7 @@ export default function FashionChallenges() {
       <CardContent>
         <div className="text-center py-12">
           <p className="text-muted-foreground">
-            Súťaže budú dostupné čoskoro. Zúčastnite sa módnych výziev a vyhrajte ceny!
+            Challenges coming soon. Participate in fashion challenges and win prizes!
           </p>
         </div>
       </CardContent>

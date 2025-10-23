@@ -13,7 +13,7 @@ export default function FashionMarketplace() {
       <CardContent>
         <div className="text-center py-12">
           <p className="text-muted-foreground">
-            Marketplace funkcia bude dostupná čoskoro. Budete môcť predávať svoje dizajny!
+            Marketplace feature coming soon. You'll be able to sell your designs!
           </p>
         </div>
       </CardContent>
