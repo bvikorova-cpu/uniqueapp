@@ -110,6 +110,7 @@ import AnalyzerResult from "./pages/AnalyzerResult";
 import AnalyzerPricing from "./pages/AnalyzerPricing";
 import AnalyzerHistory from "./pages/AnalyzerHistory";
 import AnalyzerCollections from "./pages/AnalyzerCollections";
+import VideoAdGenerator from "./pages/VideoAdGenerator";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -238,6 +239,7 @@ const App = () => (
           <Route path="/analyzer/pricing" element={<AnalyzerPricing />} />
           <Route path="/analyzer/history" element={<AnalyzerHistory />} />
           <Route path="/analyzer/collections" element={<AnalyzerCollections />} />
+          <Route path="/video-ad-generator" element={<VideoAdGenerator />} />
           <Route path="/kids-channel" element={<KidsChannel />} />
           <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />

@@ -194,3 +194,6 @@ verify_jwt = true
 
 [functions.universal-vision-analyzer]
 verify_jwt = true
+
+[functions.generate-video-ad]
+verify_jwt = false
