@@ -100,6 +100,7 @@ import FinancialInvestment from "./pages/FinancialInvestment";
 import CreativeWriting from "./pages/CreativeWriting";
 import Collectibles from "./pages/Collectibles";
 import GenericLearning from "./pages/GenericLearning";
+import FashionStudio from "./pages/FashionStudio";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -218,6 +219,7 @@ const App = () => (
           <Route path="/writing/:contentId" element={<GenericLearning />} />
           <Route path="/coloring-pages" element={<ColoringPages />} />
           <Route path="/collectibles" element={<Collectibles />} />
+          <Route path="/fashion-studio" element={<FashionStudio />} />
           <Route path="/kids-channel" element={<KidsChannel />} />
           <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />
