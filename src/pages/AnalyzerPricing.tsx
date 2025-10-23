@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useAnalyzerCredits } from "@/hooks/useAnalyzerCredits";
+import { toast } from "sonner";
 
 const PRICING_TIERS = [
   {
@@ -166,6 +167,11 @@ export default function AnalyzerPricing() {
                       className="w-full"
                       variant={tier.popular ? 'default' : 'outline'}
                       disabled={tier.id === 'free'}
+                      onClick={() => {
+                        if (tier.id !== 'free') {
+                          toast.info(`Upgrade to ${tier.name} coming soon! Payment integration in progress.`);
+                        }
+                      }}
                     >
                       {tier.id === 'free' ? 'Current Plan' : 'Upgrade Now'}
                     </Button>
@@ -208,7 +214,10 @@ export default function AnalyzerPricing() {
                   <div className="text-sm text-muted-foreground">
                     {pack.perAnalysis} per analysis
                   </div>
-                  <Button className="w-full">
+                  <Button 
+                    className="w-full"
+                    onClick={() => toast.info("Credit purchase coming soon! Payment integration in progress.")}
+                  >
                     Buy Credits
                   </Button>
                 </div>

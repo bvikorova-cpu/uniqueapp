@@ -8,14 +8,103 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
 const CATEGORIES = [
-  { id: 'nature', name: 'Nature & Wildlife', icon: '🌿', description: 'Trees, plants, animals, insects, fungi' },
-  { id: 'objects', name: 'Objects & Products', icon: '📦', description: 'Electronics, furniture, cars, general items' },
-  { id: 'fashion', name: 'Fashion & Style', icon: '👔', description: 'Clothing, shoes, accessories, outfits' },
-  { id: 'text', name: 'Text & Language', icon: '📝', description: 'OCR, translation, handwriting, documents' },
-  { id: 'food', name: 'Food & Nutrition', icon: '🍎', description: 'Meals, ingredients, nutrition info' },
-  { id: 'art', name: 'Art & Culture', icon: '🎨', description: 'Paintings, sculptures, architecture' },
-  { id: 'safety', name: 'Safety & Warnings', icon: '⚠️', description: 'Warning signs, hazards, chemicals' },
-  { id: 'home', name: 'Home & Interior', icon: '🏠', description: 'Design, colors, materials, issues' },
+  { 
+    id: 'nature', 
+    name: 'Nature & Wildlife', 
+    icon: '🌿', 
+    description: 'Trees, plants, animals, insects, fungi',
+    details: [
+      'Trees & Plants: Species ID, age, health, diseases, care',
+      'Animals: Species, breed, age estimate, characteristics, behavior',
+      'Insects: Classification, danger level, life cycle',
+      'Fungi: Edible/poisonous, species, safety info'
+    ]
+  },
+  { 
+    id: 'objects', 
+    name: 'Objects & Products', 
+    icon: '📦', 
+    description: 'Electronics, furniture, cars, general items',
+    details: [
+      'General items: Name, brand, purpose, where to buy',
+      'Electronics: Model, specs, market price, compatibility',
+      'Furniture: Style, period, material, value estimate',
+      'Cars: Brand, model, year, value, maintenance info'
+    ]
+  },
+  { 
+    id: 'fashion', 
+    name: 'Fashion & Style', 
+    icon: '👔', 
+    description: 'Clothing, shoes, accessories, outfits',
+    details: [
+      'Clothing: Brand, material, size estimate, styling tips',
+      'Footwear: Type, brand, authenticity check, where to buy',
+      'Accessories: Watches, jewelry, bags - authenticity, value',
+      'Outfit Suggestions: Match recommendations, similar items'
+    ]
+  },
+  { 
+    id: 'text', 
+    name: 'Text & Language', 
+    icon: '📝', 
+    description: 'OCR, translation, handwriting, documents',
+    details: [
+      'OCR: Extract text from images',
+      'Translation: Auto language detection + translation (190+ languages)',
+      'Handwriting: Convert to digital text',
+      'Documents: Scan invoices, receipts, certificates',
+      'Logos & Brands: Brand identification'
+    ]
+  },
+  { 
+    id: 'food', 
+    name: 'Food & Nutrition', 
+    icon: '🍎', 
+    description: 'Meals, ingredients, nutrition info',
+    details: [
+      'Food: Dish name, ingredients, calories, macros',
+      'Fruits/Vegetables: Ripeness, freshness, nutritional values',
+      'Packaged foods: Barcode scan, allergens, health score',
+      'Recipe Suggestions: Based on ingredients in photo'
+    ]
+  },
+  { 
+    id: 'art', 
+    name: 'Art & Culture', 
+    icon: '🎨', 
+    description: 'Paintings, sculptures, architecture',
+    details: [
+      'Paintings: Style, period, artist guess, technique',
+      'Sculptures: Material, period, cultural context',
+      'Architecture: Style, period, historical context',
+      'Artifacts: Age estimate, origin, value'
+    ]
+  },
+  { 
+    id: 'safety', 
+    name: 'Safety & Warnings', 
+    icon: '⚠️', 
+    description: 'Warning signs, hazards, chemicals',
+    details: [
+      'Warning signs: Meaning, safety measures',
+      'Chemicals: Hazard level, first aid, storage',
+      'Health issues: Skin conditions, plant allergens (not diagnosis!)',
+      'Damage: Mold, harmful, dangerous'
+    ]
+  },
+  { 
+    id: 'home', 
+    name: 'Home & Interior', 
+    icon: '🏠', 
+    description: 'Design, colors, materials, issues',
+    details: [
+      'Design styles: Identification, suggestions',
+      'Colors: Color matching, palette extraction',
+      'Materials: Wood, stone, fabrics - type and quality',
+      'Issues: Cracks, moisture, damage assessment'
+    ]
+  },
 ];
 
 export default function UniversalAnalyzer() {
@@ -98,19 +187,8 @@ export default function UniversalAnalyzer() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-2">
-            <Sparkles className="w-8 h-8 text-primary" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Universal Vision Analyzer
-            </h1>
-          </div>
-          <p className="text-muted-foreground text-lg">
-            AI-powered image analysis for everything around you
-          </p>
-          
-          {/* Credits Display */}
+        {/* Credits Display */}
+        <div className="flex justify-end">
           <Card className="inline-flex items-center gap-4 p-4 bg-primary/5 border-primary/20">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">
@@ -132,6 +210,19 @@ export default function UniversalAnalyzer() {
           </Card>
         </div>
 
+        {/* Header */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-2">
+            <Sparkles className="w-8 h-8 text-primary" />
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Universal Vision Analyzer
+            </h1>
+          </div>
+          <p className="text-muted-foreground text-lg">
+            AI-powered image analysis for everything around you
+          </p>
+        </div>
+
         {/* Category Selection */}
         <div>
           <h2 className="text-2xl font-semibold mb-4">Select Analysis Category</h2>
@@ -146,9 +237,16 @@ export default function UniversalAnalyzer() {
                 }`}
                 onClick={() => setSelectedCategory(category.id)}
               >
-                <div className="text-4xl mb-2">{category.icon}</div>
-                <h3 className="font-semibold mb-1">{category.name}</h3>
-                <p className="text-sm text-muted-foreground">{category.description}</p>
+                <div className="text-4xl mb-3">{category.icon}</div>
+                <h3 className="font-semibold mb-2">{category.name}</h3>
+                <p className="text-sm text-muted-foreground mb-3">{category.description}</p>
+                {category.details && (
+                  <ul className="text-xs text-muted-foreground space-y-1">
+                    {category.details.map((detail, index) => (
+                      <li key={index} className="leading-tight">• {detail}</li>
+                    ))}
+                  </ul>
+                )}
               </Card>
             ))}
           </div>
