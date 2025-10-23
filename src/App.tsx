@@ -102,6 +102,7 @@ import Collectibles from "./pages/Collectibles";
 import GenericLearning from "./pages/GenericLearning";
 import FashionStudio from "./pages/FashionStudio";
 import NutritionHub from "./pages/NutritionHub";
+import NutritionSubscriptions from "./pages/NutritionSubscriptions";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -222,6 +223,7 @@ const App = () => (
           <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/fashion-studio" element={<FashionStudio />} />
           <Route path="/nutrition-hub" element={<NutritionHub />} />
+          <Route path="/nutrition-subscriptions" element={<NutritionSubscriptions />} />
           <Route path="/kids-channel" element={<KidsChannel />} />
           <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />
