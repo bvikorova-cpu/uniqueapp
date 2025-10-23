@@ -188,7 +188,7 @@ export default function UniversalAnalyzer() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Credits Display */}
-        <div className="flex justify-end">
+        <div className="flex justify-end mt-8">
           <Card className="inline-flex items-center gap-4 p-4 bg-primary/5 border-primary/20">
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">
