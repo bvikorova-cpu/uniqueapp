@@ -22,7 +22,7 @@ export default function MyCollection({ userId }: MyCollectionProps) {
     return (
       <Card className="p-12 text-center">
         <p className="text-muted-foreground">
-          Zatiaľ nemáš žiadne collectibles. Začni generovaním alebo otvorením mystery boxu!
+          You don't have any collectibles yet. Start by generating or opening a mystery box!
         </p>
       </Card>
     );
@@ -31,9 +31,9 @@ export default function MyCollection({ userId }: MyCollectionProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Moja Kolekcia</h2>
+        <h2 className="text-2xl font-bold">My Collection</h2>
         <p className="text-muted-foreground">
-          {myCollectibles.length} {myCollectibles.length === 1 ? 'predmet' : 'predmetov'}
+          {myCollectibles.length} {myCollectibles.length === 1 ? 'item' : 'items'}
         </p>
       </div>
 

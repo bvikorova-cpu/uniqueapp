@@ -36,9 +36,9 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
   return (
     <div className="space-y-6">
       <div className="bg-gradient-subtle p-6 rounded-lg">
-        <h2 className="text-2xl font-bold mb-2">Mystery Boxy</h2>
+        <h2 className="text-2xl font-bold mb-2">Mystery Boxes</h2>
         <p className="text-muted-foreground">
-          Otvor mystery box a získaj náhodný collectible! Vyššia cena = lepšie šance na rare predmety.
+          Open a mystery box and get a random collectible! Higher price = better chances for rare items.
         </p>
       </div>
 
@@ -62,8 +62,8 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
 
                 <div className="space-y-1">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Cena:</span>
-                    <span className="font-semibold">{boxPrice} kreditov</span>
+                    <span className="text-muted-foreground">Price:</span>
+                    <span className="font-semibold">{boxPrice} credits</span>
                   </div>
                 </div>
 
@@ -75,12 +75,12 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
                   {isOpening ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Otváram...
+                      Opening...
                     </>
                   ) : (
                     <>
                       <Sparkles className="h-4 w-4" />
-                      Otvoriť
+                      Open
                     </>
                   )}
                 </Button>
@@ -93,7 +93,7 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
       <Dialog open={showRewardDialog} onOpenChange={setShowRewardDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Gratulujem! 🎉</DialogTitle>
+            <DialogTitle>Congratulations! 🎉</DialogTitle>
           </DialogHeader>
           
           {reward && (
@@ -126,7 +126,7 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
               </div>
 
               <Button onClick={() => setShowRewardDialog(false)} className="w-full">
-                Skvelé!
+                Awesome!
               </Button>
             </div>
           )}
@@ -134,7 +134,7 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
       </Dialog>
 
       <p className="text-center text-sm text-muted-foreground">
-        Dostupné kredity: {credits?.credits_remaining || 0}
+        Available credits: {credits?.credits_remaining || 0}
       </p>
     </div>
   );

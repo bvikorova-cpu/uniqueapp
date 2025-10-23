@@ -37,16 +37,16 @@ export default function GenerateCollectible({ userId }: GenerateCollectibleProps
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-4">Vygeneruj Collectible</h2>
+        <h2 className="text-2xl font-bold mb-4">Generate Collectible</h2>
         <p className="text-muted-foreground mb-6">
-          Použi AI na vytvorenie unikátneho predmetu. Každá generácia stojí 10 kreditov.
+          Use AI to create a unique item. Each generation costs 10 credits.
         </p>
 
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">Popis predmetu</label>
+            <label className="text-sm font-medium mb-2 block">Item Description</label>
             <Input
-              placeholder="Napr. 'Kryštálový meč s modrým leskom'"
+              placeholder="E.g. 'Crystal sword with blue glow'"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               disabled={isLoading}
@@ -54,10 +54,10 @@ export default function GenerateCollectible({ userId }: GenerateCollectibleProps
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">Kategória</label>
+            <label className="text-sm font-medium mb-2 block">Category</label>
             <Select value={categoryId} onValueChange={setCategoryId} disabled={isLoading}>
               <SelectTrigger>
-                <SelectValue placeholder="Vyber kategóriu" />
+                <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
                 {categories?.map((cat) => (
@@ -70,7 +70,7 @@ export default function GenerateCollectible({ userId }: GenerateCollectibleProps
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">Požadovaná rarita (negarantovaná)</label>
+            <label className="text-sm font-medium mb-2 block">Desired Rarity (not guaranteed)</label>
             <Select value={rarityLevel} onValueChange={setRarityLevel} disabled={isLoading}>
               <SelectTrigger>
                 <SelectValue />
@@ -93,29 +93,29 @@ export default function GenerateCollectible({ userId }: GenerateCollectibleProps
             {isLoading ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Generujem...
+                Generating...
               </>
             ) : (
               <>
                 <Sparkles className="h-4 w-4" />
-                Generovať (10 kreditov)
+                Generate (10 credits)
               </>
             )}
           </Button>
 
           <p className="text-sm text-muted-foreground text-center">
-            Dostupné kredity: {credits?.credits_remaining || 0}
+            Available credits: {credits?.credits_remaining || 0}
           </p>
         </div>
       </Card>
 
       <Card className="p-6 bg-gradient-subtle">
-        <h3 className="font-semibold mb-2">Ako to funguje?</h3>
+        <h3 className="font-semibold mb-2">How it works?</h3>
         <ul className="space-y-2 text-sm text-muted-foreground">
-          <li>• AI vygeneruje úplne unikátny obrázok na základe tvojho popisu</li>
-          <li>• Každý predmet má rarita level (Common až Legendary)</li>
-          <li>• Predmety môžeš zbierať, obchodovať alebo predávať</li>
-          <li>• Čím detailnejší popis, tým lepší výsledok</li>
+          <li>• AI generates a completely unique image based on your description</li>
+          <li>• Each item has a rarity level (Common to Legendary)</li>
+          <li>• You can collect, trade or sell items</li>
+          <li>• The more detailed the description, the better the result</li>
         </ul>
       </Card>
     </div>

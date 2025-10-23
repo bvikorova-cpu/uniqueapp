@@ -38,10 +38,10 @@ export default function Collectibles() {
           <div>
             <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent flex items-center gap-2">
               <Sparkles className="h-8 w-8" />
-              Zberateľstvo
+              Collectibles
             </h1>
             <p className="text-muted-foreground mt-2">
-              Zbieraj unikátne AI-generované predmety, otváraj mystery boxy a obchoduj s ostatnými
+              Collect unique AI-generated items, open mystery boxes and trade with others
             </p>
           </div>
         </div>
@@ -50,15 +50,15 @@ export default function Collectibles() {
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="generate" className="gap-2">
               <Sparkles className="h-4 w-4" />
-              Generovať
+              Generate
             </TabsTrigger>
             <TabsTrigger value="collection" className="gap-2">
               <Box className="h-4 w-4" />
-              Moja kolekcia
+              My Collection
             </TabsTrigger>
             <TabsTrigger value="mystery" className="gap-2">
               <Store className="h-4 w-4" />
-              Mystery Boxy
+              Mystery Boxes
             </TabsTrigger>
             <TabsTrigger value="marketplace" className="gap-2">
               <Users className="h-4 w-4" />

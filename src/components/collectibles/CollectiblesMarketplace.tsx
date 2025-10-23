@@ -12,7 +12,7 @@ export default function CollectiblesMarketplace({ userId }: CollectiblesMarketpl
       <div className="bg-gradient-subtle p-6 rounded-lg">
         <h2 className="text-2xl font-bold mb-2">Marketplace</h2>
         <p className="text-muted-foreground">
-          Obchoduj s ostatnými hráčmi alebo dražte vzácne predmety
+          Trade with other players or auction rare items
         </p>
       </div>
 
@@ -20,11 +20,11 @@ export default function CollectiblesMarketplace({ userId }: CollectiblesMarketpl
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="auctions" className="gap-2">
             <Gavel className="h-4 w-4" />
-            Aukcie
+            Auctions
           </TabsTrigger>
           <TabsTrigger value="trades" className="gap-2">
             <ShoppingBag className="h-4 w-4" />
-            Výmeny
+            Trades
           </TabsTrigger>
         </TabsList>
 
@@ -32,7 +32,7 @@ export default function CollectiblesMarketplace({ userId }: CollectiblesMarketpl
           <Card className="p-12 text-center">
             <Gavel className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground">
-              Aukčný systém bude čoskoro k dispozícii!
+              Auction system coming soon!
             </p>
           </Card>
         </TabsContent>
@@ -41,7 +41,7 @@ export default function CollectiblesMarketplace({ userId }: CollectiblesMarketpl
           <Card className="p-12 text-center">
             <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground">
-              Trading systém bude čoskoro k dispozícii!
+              Trading system coming soon!
             </p>
           </Card>
         </TabsContent>

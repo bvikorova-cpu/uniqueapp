@@ -85,14 +85,14 @@ export const useCollectibles = (userId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['my-collectibles'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast({
-        title: "Collectible vygenerovaný!",
-        description: "Nový predmet bol pridaný do tvojej kolekcie"
+        title: "Collectible generated!",
+        description: "New item has been added to your collection"
       });
     },
     onError: (error: any) => {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vygenerovať collectible",
+        title: "Error",
+        description: error.message || "Failed to generate collectible",
         variant: "destructive"
       });
     }
@@ -114,8 +114,8 @@ export const useCollectibles = (userId?: string) => {
     },
     onError: (error: any) => {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa otvoriť mystery box",
+        title: "Error",
+        description: error.message || "Failed to open mystery box",
         variant: "destructive"
       });
     }
