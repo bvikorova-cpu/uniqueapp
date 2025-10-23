@@ -98,6 +98,7 @@ import GraphicDesign from "./pages/GraphicDesign";
 import PublicSpeaking from "./pages/PublicSpeaking";
 import FinancialInvestment from "./pages/FinancialInvestment";
 import CreativeWriting from "./pages/CreativeWriting";
+import Collectibles from "./pages/Collectibles";
 import GenericLearning from "./pages/GenericLearning";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";

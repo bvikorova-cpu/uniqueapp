@@ -1114,6 +1114,136 @@ export type Database = {
           },
         ]
       }
+      collectible_auctions: {
+        Row: {
+          buyout_price: number | null
+          created_at: string
+          current_price: number
+          expires_at: string
+          id: string
+          seller_id: string
+          starting_price: number
+          status: string
+          updated_at: string
+          user_collectible_id: string | null
+        }
+        Insert: {
+          buyout_price?: number | null
+          created_at?: string
+          current_price: number
+          expires_at: string
+          id?: string
+          seller_id: string
+          starting_price: number
+          status?: string
+          updated_at?: string
+          user_collectible_id?: string | null
+        }
+        Update: {
+          buyout_price?: number | null
+          created_at?: string
+          current_price?: number
+          expires_at?: string
+          id?: string
+          seller_id?: string
+          starting_price?: number
+          status?: string
+          updated_at?: string
+          user_collectible_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collectible_auctions_user_collectible_id_fkey"
+            columns: ["user_collectible_id"]
+            isOneToOne: false
+            referencedRelation: "user_collectibles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collectible_bids: {
+        Row: {
+          amount: number
+          auction_id: string | null
+          bidder_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          amount: number
+          auction_id?: string | null
+          bidder_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          amount?: number
+          auction_id?: string | null
+          bidder_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collectible_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "collectible_auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collectible_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      collectible_rarities: {
+        Row: {
+          color: string
+          created_at: string
+          drop_rate: number
+          id: string
+          level: number
+          name: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          drop_rate: number
+          id?: string
+          level: number
+          name: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          drop_rate?: number
+          id?: string
+          level?: number
+          name?: string
+        }
+        Relationships: []
+      }
       collectible_trades: {
         Row: {
           created_at: string | null
@@ -1210,6 +1340,147 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      collectible_trades_new: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          receiver_collectible_ids: string[]
+          receiver_credits: number | null
+          receiver_id: string
+          sender_collectible_ids: string[]
+          sender_credits: number | null
+          sender_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          receiver_collectible_ids: string[]
+          receiver_credits?: number | null
+          receiver_id: string
+          sender_collectible_ids: string[]
+          sender_credits?: number | null
+          sender_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          receiver_collectible_ids?: string[]
+          receiver_credits?: number | null
+          receiver_id?: string
+          sender_collectible_ids?: string[]
+          sender_credits?: number | null
+          sender_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      collectibles: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          generation_cost: number
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_seasonal: boolean | null
+          name: string
+          properties: Json | null
+          rarity_id: string | null
+          season_end: string | null
+          season_start: string | null
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          generation_cost?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_seasonal?: boolean | null
+          name: string
+          properties?: Json | null
+          rarity_id?: string | null
+          season_end?: string | null
+          season_start?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          generation_cost?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_seasonal?: boolean | null
+          name?: string
+          properties?: Json | null
+          rarity_id?: string | null
+          season_end?: string | null
+          season_start?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collectibles_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "collectible_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collectibles_rarity_id_fkey"
+            columns: ["rarity_id"]
+            isOneToOne: false
+            referencedRelation: "collectible_rarities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collector_pass_subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          last_daily_reward_at: string | null
+          started_at: string
+          status: string
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          last_daily_reward_at?: string | null
+          started_at?: string
+          status?: string
+          tier: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          last_daily_reward_at?: string | null
+          started_at?: string
+          status?: string
+          tier?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       coloring_credits: {
         Row: {
@@ -6144,6 +6415,50 @@ export type Database = {
             columns: ["character_id"]
             isOneToOne: false
             referencedRelation: "ai_characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_collectibles: {
+        Row: {
+          acquired_at: string
+          acquired_method: string
+          collectible_id: string | null
+          created_at: string
+          id: string
+          is_for_sale: boolean | null
+          is_for_trade: boolean | null
+          unique_properties: Json | null
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          acquired_method: string
+          collectible_id?: string | null
+          created_at?: string
+          id?: string
+          is_for_sale?: boolean | null
+          is_for_trade?: boolean | null
+          unique_properties?: Json | null
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          acquired_method?: string
+          collectible_id?: string | null
+          created_at?: string
+          id?: string
+          is_for_sale?: boolean | null
+          is_for_trade?: boolean | null
+          unique_properties?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_collectibles_collectible_id_fkey"
+            columns: ["collectible_id"]
+            isOneToOne: false
+            referencedRelation: "collectibles"
             referencedColumns: ["id"]
           },
         ]

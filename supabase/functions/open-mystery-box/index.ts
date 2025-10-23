@@ -11,114 +11,100 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get('SUPABASE_URL') ?? '',
-    Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-  );
-
   try {
-    const authHeader = req.headers.get('Authorization')!;
-    const token = authHeader.replace('Bearer ', '');
-    const { data } = await supabaseClient.auth.getUser(token);
-    const user = data.user;
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
 
-    if (!user) {
-      throw new Error('User not authenticated');
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+    if (authError || !user) {
+      throw new Error('Unauthorized');
     }
 
-    const { userBoxId } = await req.json();
+    const { boxId } = await req.json();
 
-    // Get the user's box
-    const { data: userBox, error: boxError } = await supabaseClient
-      .from('user_mystery_boxes')
-      .select('*, mystery_boxes(*)')
-      .eq('id', userBoxId)
-      .eq('user_id', user.id)
-      .eq('is_opened', false)
+    const { data: box } = await supabaseClient
+      .from('mystery_boxes')
+      .select('*')
+      .eq('id', boxId)
       .single();
 
-    if (boxError || !userBox) {
-      throw new Error('Box not found or already opened');
+    if (!box) throw new Error('Box not found');
+
+    const { data: credits } = await supabaseClient
+      .from('ai_credits')
+      .select('credits_remaining')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!credits || credits.credits_remaining < box.cost) {
+      return new Response(
+        JSON.stringify({ error: 'Insufficient credits' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Get all possible items for this box
-    const { data: possibleItems, error: itemsError } = await supabaseClient
-      .from('mystery_box_items')
+    const { data: rarities } = await supabaseClient
+      .from('collectible_rarities')
       .select('*')
-      .eq('box_id', userBox.box_id);
+      .gte('level', box.min_rarity_level)
+      .lte('level', box.max_rarity_level);
 
-    if (itemsError || !possibleItems || possibleItems.length === 0) {
-      throw new Error('No items available in this box');
-    }
+    if (!rarities || rarities.length === 0) throw new Error('No rarities found');
 
-    // Weighted random selection based on drop_chance
-    const totalWeight = possibleItems.reduce((sum, item) => sum + Number(item.drop_chance), 0);
-    let random = Math.random() * totalWeight;
-    
-    let selectedItem = possibleItems[0];
-    for (const item of possibleItems) {
-      random -= Number(item.drop_chance);
-      if (random <= 0) {
-        selectedItem = item;
+    const random = Math.random() * 100;
+    let cumulative = 0;
+    let selectedRarity = rarities[0];
+
+    for (const rarity of rarities) {
+      cumulative += Number(rarity.drop_rate);
+      if (random <= cumulative) {
+        selectedRarity = rarity;
         break;
       }
     }
 
-    // Calculate expiration date
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + selectedItem.duration_days);
+    const { data: collectibles } = await supabaseClient
+      .from('collectibles')
+      .select('*')
+      .eq('rarity_id', selectedRarity.id)
+      .eq('is_active', true);
 
-    // Create reward record
-    const { data: reward, error: rewardError } = await supabaseClient
-      .from('mystery_box_rewards')
+    if (!collectibles || collectibles.length === 0) throw new Error('No collectibles found');
+
+    const randomCollectible = collectibles[Math.floor(Math.random() * collectibles.length)];
+
+    const { data: userCollectible } = await supabaseClient
+      .from('user_collectibles')
       .insert({
         user_id: user.id,
-        user_box_id: userBoxId,
-        item_id: selectedItem.id,
-        expires_at: expiresAt.toISOString(),
+        collectible_id: randomCollectible.id,
+        acquired_method: 'mystery_box'
       })
       .select()
       .single();
 
-    if (rewardError) {
-      throw new Error('Failed to create reward');
-    }
-
-    // Mark box as opened
-    const { error: updateError } = await supabaseClient
-      .from('user_mystery_boxes')
-      .update({
-        is_opened: true,
-        opened_at: new Date().toISOString(),
-      })
-      .eq('id', userBoxId);
-
-    if (updateError) {
-      throw new Error('Failed to update box status');
-    }
+    await supabaseClient.rpc('decrement_ai_credits', {
+      user_id: user.id,
+      amount: box.cost
+    });
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        reward: {
-          ...selectedItem,
-          expiresAt: expiresAt.toISOString(),
-        },
-      }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200,
-      }
+      JSON.stringify({ userCollectible, rarity: selectedRarity }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error('Error opening mystery box:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ error: errorMessage }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 500,
-      }
+      JSON.stringify({ error: message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
