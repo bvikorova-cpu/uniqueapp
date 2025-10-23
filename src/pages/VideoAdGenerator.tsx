@@ -83,19 +83,20 @@ const VideoAdGenerator = () => {
       return;
     }
 
-    generateVideoAd({
-      productService: formData.product,
-      targetAudience: formData.targetAudience,
-      keyMessage: formData.keyMessage,
-      tone: formData.tone,
-      duration: parseInt(formData.duration),
-      platform: formData.platform,
-      premiumFeatures
-    }, {
-      onSuccess: (data) => {
-        setResult(data as VideoAdResult);
-      }
-    });
+    try {
+      const data = await generateVideoAd({
+        productService: formData.product,
+        targetAudience: formData.targetAudience,
+        keyMessage: formData.keyMessage,
+        tone: formData.tone,
+        duration: parseInt(formData.duration),
+        platform: formData.platform,
+        premiumFeatures
+      });
+      setResult(data as VideoAdResult);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const downloadScript = () => {

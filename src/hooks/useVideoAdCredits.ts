@@ -146,7 +146,7 @@ export const useVideoAdCredits = () => {
   return {
     credits,
     isLoading,
-    generateVideoAd: generateVideoAd.mutate,
+    generateVideoAd: generateVideoAd.mutateAsync,
     isGenerating: generateVideoAd.isPending,
     getTierLimits,
     calculateCreditCost,
