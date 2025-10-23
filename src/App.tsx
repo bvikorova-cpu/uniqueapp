@@ -107,6 +107,9 @@ import MiniBizMarketplace from "./pages/MiniBizMarketplace";
 import CreateBusiness from "./pages/CreateBusiness";
 import UniversalAnalyzer from "./pages/UniversalAnalyzer";
 import AnalyzerResult from "./pages/AnalyzerResult";
+import AnalyzerPricing from "./pages/AnalyzerPricing";
+import AnalyzerHistory from "./pages/AnalyzerHistory";
+import AnalyzerCollections from "./pages/AnalyzerCollections";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -232,6 +235,9 @@ const App = () => (
           <Route path="/minibiz/create" element={<CreateBusiness />} />
           <Route path="/analyzer" element={<UniversalAnalyzer />} />
           <Route path="/analyzer/result/:id" element={<AnalyzerResult />} />
+          <Route path="/analyzer/pricing" element={<AnalyzerPricing />} />
+          <Route path="/analyzer/history" element={<AnalyzerHistory />} />
+          <Route path="/analyzer/collections" element={<AnalyzerCollections />} />
           <Route path="/kids-channel" element={<KidsChannel />} />
           <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />
