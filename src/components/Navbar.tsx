@@ -212,6 +212,7 @@ const Navbar = () => {
     { path: "/beauty-studio", label: t('services.beauty_studio.title'), icon: Sparkles },
     { path: "/photo-restoration", label: "Photo Restoration", icon: Image },
     { path: "/antique-appraisal", label: "Antique Appraisal", icon: Gem },
+    { path: "/collectibles", label: "Collectibles", icon: Sparkles },
     { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
     { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },
     { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
