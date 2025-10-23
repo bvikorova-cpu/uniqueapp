@@ -235,6 +235,7 @@ const Navbar = () => {
     { path: "/minibiz", label: "Mini Business Marketplace", icon: Store },
     { path: "/analyzer", label: "Universal Analyzer", icon: Sparkles },
     { path: "/ai-generation", label: t('navbar.ai_generation'), icon: Sparkles },
+    { path: "/video-ad-generator", label: "Video Ad Generator", icon: Video },
     { path: "/auction", label: t('navbar.auction'), icon: Gavel },
     { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
     { path: "/referral", label: t('navbar.invite_friend'), icon: User },
