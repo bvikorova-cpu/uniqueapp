@@ -37,9 +37,13 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
     <div className="space-y-6">
       <div className="bg-gradient-subtle p-6 rounded-lg">
         <h2 className="text-2xl font-bold mb-2">Mystery Boxes</h2>
-        <p className="text-muted-foreground">
-          Open a mystery box and get a random collectible! Higher price = better chances for rare items.
+        <p className="text-muted-foreground mb-3">
+          Open a mystery box to receive a random collectible! Each box has different rarity odds - higher price means better chances for rare items.
         </p>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Sparkles className="h-4 w-4" />
+          <span>Click "Open" on any box to try your luck!</span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -71,16 +75,21 @@ export default function MysteryBoxes({ userId }: MysteryBoxesProps) {
                   onClick={() => handleOpenBox(box)}
                   disabled={!canAfford || isOpening}
                   className="w-full gap-2"
+                  size="lg"
                 >
                   {isOpening ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
                       Opening...
                     </>
+                  ) : !canAfford ? (
+                    <>
+                      Not enough credits
+                    </>
                   ) : (
                     <>
                       <Sparkles className="h-4 w-4" />
-                      Open
+                      Open Box
                     </>
                   )}
                 </Button>
