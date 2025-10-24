@@ -1,7 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Building2, GraduationCap, Heart, Megaphone, Users, TrendingUp, Award, CheckCircle2 } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Building2, GraduationCap, Heart, Megaphone, Users, TrendingUp, Award, CheckCircle2, HelpCircle, Rocket, DollarSign } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -319,8 +320,250 @@ export default function CorporatePartnerships() {
           </div>
         </div>
 
+        {/* How It Works Section */}
+        <div className="mb-16">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
+              <Rocket className="h-5 w-5 text-primary" />
+              <span className="text-sm font-semibold">How It Works</span>
+            </div>
+            <h2 className="text-3xl font-bold mb-4">Simple Partnership Process</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Get started with our partnership program in 4 easy steps
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-6">
+            {[
+              {
+                step: "1",
+                title: "Contact Us",
+                description: "Schedule a demo call to discuss your needs and goals",
+                icon: Users
+              },
+              {
+                step: "2",
+                title: "Custom Package",
+                description: "We create a tailored partnership package with pricing that fits your budget",
+                icon: Building2
+              },
+              {
+                step: "3",
+                title: "Integration",
+                description: "Quick setup with technical support and onboarding for your team",
+                icon: Rocket
+              },
+              {
+                step: "4",
+                title: "Start Earning",
+                description: "Track your revenue, users, and analytics in real-time dashboard",
+                icon: DollarSign
+              }
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <Card key={item.step} className="text-center">
+                  <CardContent className="pt-6">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                      <span className="text-2xl font-bold text-primary">{item.step}</span>
+                    </div>
+                    <Icon className="w-8 h-8 text-primary mx-auto mb-3" />
+                    <h3 className="font-semibold mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Real Examples Section */}
+        <div className="mb-16">
+          <h2 className="text-3xl font-bold mb-8 text-center">Real-World Examples</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <Card className="border-l-4 border-l-blue-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <GraduationCap className="h-5 w-5 text-blue-500" />
+                  Elementary School Example
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <p><strong>School:</strong> Basic School in Bratislava</p>
+                <p><strong>Package:</strong> School Package (€150/month)</p>
+                <p><strong>Setup:</strong> 1 teacher + 30 students get full access</p>
+                <p><strong>Usage:</strong> Students use coloring pages for art class, homework helper for math, story creator for creative writing</p>
+                <p><strong>Results:</strong> Teacher tracks progress dashboard, students get certificates with school logo, parents see improvement reports</p>
+                <div className="pt-2 border-t mt-4">
+                  <p className="font-semibold text-primary">ROI: €5 per student/month = Affordable & Effective</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-green-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="h-5 w-5 text-green-500" />
+                  Psychologist Partnership
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <p><strong>Partner:</strong> Clinical Psychologist Dr. Novák</p>
+                <p><strong>Model:</strong> €5 per patient referral</p>
+                <p><strong>How it works:</strong> Dr. Novák gives patient a promo code during therapy session</p>
+                <p><strong>Patient gets:</strong> Access to therapeutic coloring pages for anxiety & stress management</p>
+                <p><strong>Doctor gets:</strong> Dashboard to monitor patient's usage & progress between sessions</p>
+                <div className="pt-2 border-t mt-4">
+                  <p className="font-semibold text-primary">Passive Income: 50 patients × €5 = €250/month</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-purple-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Megaphone className="h-5 w-5 text-purple-500" />
+                  Influencer Example
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <p><strong>Influencer:</strong> @CreativeMom (50K followers on Instagram)</p>
+                <p><strong>Commission:</strong> 20% of first 3 months subscription</p>
+                <p><strong>Promotion:</strong> Posts coloring pages & kids activities, shares unique promo code "CREATIVEMOM20"</p>
+                <p><strong>Results:</strong> 200 people sign up for €9.99/month plan</p>
+                <p><strong>Earnings:</strong> 200 × €9.99 × 0.20 × 3 months = €1,198.80</p>
+                <div className="pt-2 border-t mt-4">
+                  <p className="font-semibold text-primary">Extra: €200/month for custom branded section</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-l-4 border-l-orange-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-orange-500" />
+                  Corporate Training
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2 text-sm">
+                <p><strong>Company:</strong> Tech startup with 50 employees</p>
+                <p><strong>Package:</strong> Corporate Training (€20/employee/month)</p>
+                <p><strong>Cost:</strong> 50 × €20 = €1,000/month</p>
+                <p><strong>What they get:</strong> Custom courses for programming, design, management skills</p>
+                <p><strong>Features:</strong> HR analytics dashboard, team competitions, compliance training modules</p>
+                <div className="pt-2 border-t mt-4">
+                  <p className="font-semibold text-primary">Value: Professional upskilling at scale</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* FAQ Section */}
+        <div className="mb-16">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
+              <HelpCircle className="h-5 w-5 text-primary" />
+              <span className="text-sm font-semibold">Frequently Asked Questions</span>
+            </div>
+            <h2 className="text-3xl font-bold">Common Questions About Partnerships</h2>
+          </div>
+
+          <Card>
+            <CardContent className="pt-6">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger className="text-left">
+                    How do I get paid as a partner?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Payments are made monthly via bank transfer or PayPal. For referral programs (psychologists, influencers), 
+                    you'll receive payment at the end of each month for all successful referrals. For subscription-based 
+                    partnerships (schools, corporates), invoicing is done at the start of each month.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-2">
+                  <AccordionTrigger className="text-left">
+                    Do I need technical knowledge to integrate?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    No! Most partnerships require zero technical knowledge. We provide ready-to-use promo codes, tracking links, 
+                    and simple dashboards. For API integrations (B2B SaaS), we provide full documentation and technical support 
+                    to help your developers integrate quickly.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-3">
+                  <AccordionTrigger className="text-left">
+                    Can I customize the branding for my school/organization?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Yes! All education and corporate packages include custom branding options. You can add your logo to certificates, 
+                    customize colors, and even get a white-label solution where the platform looks like it's entirely yours 
+                    (available in University and Enterprise tiers).
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-4">
+                  <AccordionTrigger className="text-left">
+                    What's the minimum commitment period?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Most partnerships are month-to-month with no long-term commitment required. You can cancel anytime. 
+                    However, we offer discounts for annual commitments (typically 15-20% off). For large enterprise deals, 
+                    we can negotiate custom terms.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-5">
+                  <AccordionTrigger className="text-left">
+                    How do I track my earnings and user activity?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Every partner gets access to a real-time analytics dashboard where you can see:
+                    <ul className="list-disc ml-6 mt-2 space-y-1">
+                      <li>Number of active users from your referrals</li>
+                      <li>Monthly revenue generated</li>
+                      <li>Conversion rates and engagement metrics</li>
+                      <li>Payment history and upcoming payouts</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-6">
+                  <AccordionTrigger className="text-left">
+                    What support do partners receive?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    All partners get:
+                    <ul className="list-disc ml-6 mt-2 space-y-1">
+                      <li>Dedicated account manager (for packages €500+/month)</li>
+                      <li>Priority email support (24-48h response time)</li>
+                      <li>Marketing materials (banners, promo videos, templates)</li>
+                      <li>Monthly strategy calls to optimize your partnership</li>
+                      <li>Technical integration support (for API partners)</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-7">
+                  <AccordionTrigger className="text-left">
+                    Can I refer other partners and earn commission?
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    Yes! We have a multi-tier referral system. If you refer another organization that becomes a partner, 
+                    you'll earn 10% of their monthly payments for the first 12 months. For example, if you refer a school 
+                    that pays €1,000/month, you'll earn €100/month for a year.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Data & Research */}
-        <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20">
+        <Card className="bg-gradient-to-r from-primary/10 to-primary/5 border-primary/20 mb-16">
           <CardHeader>
             <CardTitle className="text-2xl">Data & Research Monetization</CardTitle>
             <CardDescription>GDPR Compliant - Anonymized Data Services</CardDescription>
