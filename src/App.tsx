@@ -18,6 +18,13 @@ import Dating from "./pages/Dating";
 import FirstAid from "./pages/FirstAid";
 import FitSlim from "./pages/FitSlim";
 import Cooking from "./pages/Cooking";
+import CookingAI from "./pages/CookingAI";
+import RecipeGenerator from "./pages/RecipeGenerator";
+import MealPlanner from "./pages/MealPlanner";
+import FoodScanner from "./pages/FoodScanner";
+import RestaurantAnalyzer from "./pages/RestaurantAnalyzer";
+import ChefChat from "./pages/ChefChat";
+import WinePairing from "./pages/WinePairing";
 import Contact from "./pages/Contact";
 import Marketplace from "./pages/Marketplace";
 import Terms from "./pages/Terms";
@@ -162,6 +169,13 @@ const App = () => (
               <Route path="/ai-generation" element={<AIGeneration />} />
               <Route path="/best-friend" element={<BestFriend />} />
               <Route path="/cooking" element={<Cooking />} />
+              <Route path="/cooking-ai" element={<CookingAI />} />
+              <Route path="/recipe-generator" element={<RecipeGenerator />} />
+              <Route path="/meal-planner" element={<MealPlanner />} />
+              <Route path="/food-scanner" element={<FoodScanner />} />
+              <Route path="/restaurant-analyzer" element={<RestaurantAnalyzer />} />
+              <Route path="/chef-chat" element={<ChefChat />} />
+              <Route path="/wine-pairing" element={<WinePairing />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/auth" element={<Auth />} />

@@ -14,7 +14,7 @@ const CookingAI = () => {
       description: "Zadaj ingrediencie a dostaneš 3 úžasné recepty",
       credits: 1,
       color: "from-orange-500 to-red-500",
-      path: "/cooking-ai/recipe-generator"
+      path: "/recipe-generator"
     },
     {
       icon: <Calendar className="w-8 h-8" />,
@@ -22,7 +22,7 @@ const CookingAI = () => {
       description: "AI vytvorí kompletný jedálniček na celý týždeň",
       credits: 3,
       color: "from-green-500 to-emerald-500",
-      path: "/cooking-ai/meal-planner"
+      path: "/meal-planner"
     },
     {
       icon: <Camera className="w-8 h-8" />,
@@ -30,7 +30,7 @@ const CookingAI = () => {
       description: "Odfotiť jedlo a zisti kalórie a nutričné hodnoty",
       credits: 1,
       color: "from-blue-500 to-cyan-500",
-      path: "/cooking-ai/food-scanner"
+      path: "/food-scanner"
     },
     {
       icon: <MapPin className="w-8 h-8" />,
@@ -38,7 +38,7 @@ const CookingAI = () => {
       description: "Analyzuj menu reštaurácie a získaj zdravé odporúčania",
       credits: 2,
       color: "from-purple-500 to-pink-500",
-      path: "/cooking-ai/restaurant-analyzer"
+      path: "/restaurant-analyzer"
     },
     {
       icon: <MessageSquare className="w-8 h-8" />,
@@ -46,7 +46,7 @@ const CookingAI = () => {
       description: "Chatuj so skúseným šéfkuchárom a dostávaj rady",
       credits: 1,
       color: "from-yellow-500 to-orange-500",
-      path: "/cooking-ai/chef-chat"
+      path: "/chef-chat"
     },
     {
       icon: <Wine className="w-8 h-8" />,
@@ -54,7 +54,7 @@ const CookingAI = () => {
       description: "Odporúčania vína a nápojov k tvojim jedlám",
       credits: 1,
       color: "from-red-500 to-rose-500",
-      path: "/cooking-ai/wine-pairing"
+      path: "/wine-pairing"
     }
   ];
 
