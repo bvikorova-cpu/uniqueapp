@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Play, Star, Sparkles, Crown } from "lucide-react";
+import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon } from "lucide-react";
 import { toast } from "sonner";
 import { showImages } from "@/components/kids/ShowImages";
 import castleBg from "@/assets/kids/disney-castle-bg.jpg";
@@ -242,20 +242,121 @@ const KidsChannel = () => {
         </div>
 
 
-        {/* Coming Soon Message */}
-        <div className="text-center py-20 px-4">
-          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-12 max-w-2xl mx-auto border-4 border-white/50 shadow-2xl">
-            <Sparkles className="w-20 h-20 text-purple-500 mx-auto mb-6" />
-            <h2 className="text-4xl font-bold text-purple-600 mb-4">
-              Coming Soon! 🎬
-            </h2>
-            <p className="text-xl text-gray-700 mb-6">
-              We're working on something magical for your little ones!
-            </p>
-            <p className="text-gray-600">
-              Amazing stories and adventures will be available here very soon.
-            </p>
-          </div>
+        {/* Interactive Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {/* Choose Your Own Adventure */}
+          <Card 
+            className="group relative overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100 border-4 border-white/50 hover:border-pink-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            onClick={() => navigate('/kids-stories/adventure')}
+          >
+            <div className="p-8 text-center">
+              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <BookOpen className="w-12 h-12 text-pink-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-purple-700 mb-3">
+                Choose Your Adventure! 🎭
+              </h3>
+              <p className="text-gray-700 mb-4">
+                YOU decide what happens next! Make choices and create your own unique story.
+              </p>
+              <Badge className="bg-pink-500 text-white">Interactive Stories</Badge>
+            </div>
+          </Card>
+
+          {/* Create Your Character */}
+          <Card 
+            className="group relative overflow-hidden bg-gradient-to-br from-blue-100 to-cyan-100 border-4 border-white/50 hover:border-blue-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            onClick={() => navigate('/kids-stories/create-character')}
+          >
+            <div className="p-8 text-center">
+              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <Sparkles className="w-12 h-12 text-blue-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-blue-700 mb-3">
+                Create Your Hero! 🦸‍♀️
+              </h3>
+              <p className="text-gray-700 mb-4">
+                Design your own character and become the star of amazing adventures!
+              </p>
+              <Badge className="bg-blue-500 text-white">Personalization</Badge>
+            </div>
+          </Card>
+
+          {/* Voice Stories */}
+          <Card 
+            className="group relative overflow-hidden bg-gradient-to-br from-green-100 to-emerald-100 border-4 border-white/50 hover:border-green-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            onClick={() => navigate('/kids-stories/voice-chat')}
+          >
+            <div className="p-8 text-center">
+              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <Volume2 className="w-12 h-12 text-green-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-green-700 mb-3">
+                Talk to Characters! 🎤
+              </h3>
+              <p className="text-gray-700 mb-4">
+                Have real conversations with story characters using your voice!
+              </p>
+              <Badge className="bg-green-500 text-white">Voice Interactive</Badge>
+            </div>
+          </Card>
+
+          {/* Educational Stories */}
+          <Card 
+            className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 to-orange-100 border-4 border-white/50 hover:border-yellow-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            onClick={() => navigate('/kids-stories/educational')}
+          >
+            <div className="p-8 text-center">
+              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <Trophy className="w-12 h-12 text-yellow-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-orange-700 mb-3">
+                Learn & Play! 🎓
+              </h3>
+              <p className="text-gray-700 mb-4">
+                Fun stories that teach you about numbers, letters, and the world!
+              </p>
+              <Badge className="bg-yellow-500 text-white">Educational</Badge>
+            </div>
+          </Card>
+
+          {/* Mini Games */}
+          <Card 
+            className="group relative overflow-hidden bg-gradient-to-br from-red-100 to-rose-100 border-4 border-white/50 hover:border-red-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            onClick={() => navigate('/kids-stories/games')}
+          >
+            <div className="p-8 text-center">
+              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <Play className="w-12 h-12 text-red-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-red-700 mb-3">
+                Story Games! 🎮
+              </h3>
+              <p className="text-gray-700 mb-4">
+                Solve puzzles and play games to unlock the next part of your story!
+              </p>
+              <Badge className="bg-red-500 text-white">Interactive Games</Badge>
+            </div>
+          </Card>
+
+          {/* Bedtime Stories */}
+          <Card 
+            className="group relative overflow-hidden bg-gradient-to-br from-indigo-100 to-violet-100 border-4 border-white/50 hover:border-indigo-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            onClick={() => navigate('/kids-stories/bedtime')}
+          >
+            <div className="p-8 text-center">
+              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <Moon className="w-12 h-12 text-indigo-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-indigo-700 mb-3">
+                Bedtime Stories! 🌙
+              </h3>
+              <p className="text-gray-700 mb-4">
+                Calming stories with soft music to help you fall asleep peacefully.
+              </p>
+              <Badge className="bg-indigo-500 text-white">Relaxing</Badge>
+            </div>
+          </Card>
         </div>
       </div>
 

@@ -77,6 +77,11 @@ import TeenStudyPlanner from "./pages/TeenStudyPlanner";
 import TeenCareerCounselor from "./pages/TeenCareerCounselor";
 import KidsChannel from "./pages/KidsChannel";
 import KidsShowDetail from "./pages/KidsShowDetail";
+import ChooseAdventure from "./pages/ChooseAdventure";
+import CreateCharacter from "./pages/CreateCharacter";
+import EducationalStories from "./pages/EducationalStories";
+import BedtimeStories from "./pages/BedtimeStories";
+import StoryGames from "./pages/StoryGames";
 import AdminImageEditor from "./pages/AdminImageEditor";
 import PhotoRestoration from "./pages/PhotoRestoration";
 import AntiqueAppraisal from "./pages/AntiqueAppraisal";
@@ -256,6 +261,11 @@ const App = () => (
           <Route path="/video-ad-generator" element={<VideoAdGenerator />} />
           <Route path="/kids-channel" element={<KidsChannel />} />
           <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
+          <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
+          <Route path="/kids-stories/create-character" element={<CreateCharacter />} />
+          <Route path="/kids-stories/educational" element={<EducationalStories />} />
+          <Route path="/kids-stories/bedtime" element={<BedtimeStories />} />
+          <Route path="/kids-stories/games" element={<StoryGames />} />
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
