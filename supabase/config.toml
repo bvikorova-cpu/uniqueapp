@@ -200,3 +200,21 @@ verify_jwt = false
 
 [functions.generate-story-video]
 verify_jwt = false
+
+[functions.generate-recipe-from-ingredients]
+verify_jwt = true
+
+[functions.generate-weekly-meal-plan]
+verify_jwt = true
+
+[functions.scan-food-ai]
+verify_jwt = true
+
+[functions.analyze-restaurant-menu-ai]
+verify_jwt = true
+
+[functions.chat-with-chef]
+verify_jwt = true
+
+[functions.suggest-wine-pairing]
+verify_jwt = true

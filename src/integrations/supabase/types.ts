@@ -1552,6 +1552,33 @@ export type Database = {
           },
         ]
       }
+      chef_chat_sessions: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          messages: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          messages?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          messages?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       collectible_auctions: {
         Row: {
           buyout_price: number | null
@@ -2155,6 +2182,36 @@ export type Database = {
           created_at?: string
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      cooking_credits: {
+        Row: {
+          created_at: string
+          credits: number
+          id: string
+          subscription_expires_at: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          id?: string
+          subscription_expires_at?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          id?: string
+          subscription_expires_at?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -3370,6 +3427,39 @@ export type Database = {
           scan_date?: string
           user_id?: string
           vitamins?: Json | null
+        }
+        Relationships: []
+      }
+      food_scans_ai: {
+        Row: {
+          created_at: string
+          credits_used: number
+          healthier_alternatives: Json | null
+          id: string
+          image_url: string
+          nutritional_info: Json
+          recognized_items: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          healthier_alternatives?: Json | null
+          id?: string
+          image_url: string
+          nutritional_info: Json
+          recognized_items: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          healthier_alternatives?: Json | null
+          id?: string
+          image_url?: string
+          nutritional_info?: Json
+          recognized_items?: Json
+          user_id?: string
         }
         Relationships: []
       }
@@ -4746,6 +4836,45 @@ export type Database = {
           target_protein?: number | null
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      meal_plans_ai: {
+        Row: {
+          created_at: string
+          credits_used: number
+          days_count: number
+          dietary_preferences: string[] | null
+          id: string
+          meals: Json
+          plan_name: string
+          shopping_list: Json | null
+          total_calories: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          days_count: number
+          dietary_preferences?: string[] | null
+          id?: string
+          meals: Json
+          plan_name: string
+          shopping_list?: Json | null
+          total_calories?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          days_count?: number
+          dietary_preferences?: string[] | null
+          id?: string
+          meals?: Json
+          plan_name?: string
+          shopping_list?: Json | null
+          total_calories?: number | null
           user_id?: string
         }
         Relationships: []
@@ -6667,6 +6796,36 @@ export type Database = {
         }
         Relationships: []
       }
+      recipe_generations: {
+        Row: {
+          created_at: string
+          credits_used: number
+          dietary_preferences: string[] | null
+          generated_recipes: Json
+          id: string
+          ingredients: string[]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          dietary_preferences?: string[] | null
+          generated_recipes: Json
+          id?: string
+          ingredients: string[]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          dietary_preferences?: string[] | null
+          generated_recipes?: Json
+          id?: string
+          ingredients?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
       recipes: {
         Row: {
           calories: number
@@ -6721,6 +6880,39 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      restaurant_analyses: {
+        Row: {
+          analysis: Json
+          created_at: string
+          credits_used: number
+          id: string
+          menu_image_url: string | null
+          recommendations: Json
+          restaurant_name: string | null
+          user_id: string
+        }
+        Insert: {
+          analysis: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          menu_image_url?: string | null
+          recommendations: Json
+          restaurant_name?: string | null
+          user_id: string
+        }
+        Update: {
+          analysis?: Json
+          created_at?: string
+          credits_used?: number
+          id?: string
+          menu_image_url?: string | null
+          recommendations?: Json
+          restaurant_name?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -8375,6 +8567,33 @@ export type Database = {
           purchase_date?: string | null
           season?: Database["public"]["Enums"]["season_type"] | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wine_pairings: {
+        Row: {
+          created_at: string
+          credits_used: number
+          dish_name: string
+          id: string
+          pairing_suggestions: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          dish_name: string
+          id?: string
+          pairing_suggestions: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          dish_name?: string
+          id?: string
+          pairing_suggestions?: Json
           user_id?: string
         }
         Relationships: []
