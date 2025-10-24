@@ -1,0 +1,113 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { theme } = await req.json();
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
+    }
+
+    // Generate story with 4 scenes
+    const storyPrompt = `Create a very short bedtime story for children about ${theme}. 
+    Structure it as exactly 4 scenes, each scene should be 1-2 sentences.
+    Format: Scene 1: [text], Scene 2: [text], Scene 3: [text], Scene 4: [text]`;
+
+    const storyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: 'You are a children\'s story writer.' },
+          { role: 'user', content: storyPrompt }
+        ],
+      }),
+    });
+
+    if (!storyResponse.ok) {
+      const errorText = await storyResponse.text();
+      console.error('Story generation error:', storyResponse.status, errorText);
+      throw new Error(`Failed to generate story: ${storyResponse.status}`);
+    }
+
+    const storyData = await storyResponse.json();
+    const storyText = storyData.choices[0].message.content;
+
+    // Parse scenes
+    const sceneMatches = storyText.match(/Scene \d+: ([^,]+(?:,[^,]+)?)/g) || [];
+    const scenes = sceneMatches.map((s: string) => s.replace(/Scene \d+: /, '').trim());
+
+    if (scenes.length < 4) {
+      throw new Error('Failed to generate 4 scenes');
+    }
+
+    // Generate images for each scene
+    const images = [];
+    for (let i = 0; i < 4; i++) {
+      const imagePrompt = `Children's storybook illustration, vibrant colors, friendly style: ${scenes[i]}`;
+      
+      const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash-image-preview',
+          messages: [
+            { role: 'user', content: imagePrompt }
+          ],
+          modalities: ['image', 'text']
+        }),
+      });
+
+      if (!imageResponse.ok) {
+        console.error(`Image ${i} generation error:`, imageResponse.status);
+        continue;
+      }
+
+      const imageData = await imageResponse.json();
+      const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      
+      if (imageUrl) {
+        images.push(imageUrl);
+      }
+    }
+
+    return new Response(
+      JSON.stringify({ 
+        scenes: scenes.slice(0, 4),
+        images: images
+      }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200 
+      }
+    );
+
+  } catch (error) {
+    console.error('Error in generate-story-video:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    return new Response(
+      JSON.stringify({ error: errorMessage }),
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500 
+      }
+    );
+  }
+});
