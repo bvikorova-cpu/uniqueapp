@@ -24,13 +24,15 @@ serve(async (req) => {
 
     console.log('Generating story for theme:', theme);
 
-    // Generate story with 4 scenes
+    // Generate story with 4 scenes - with consistent main characters
     const storyPrompt = `Create a very short bedtime story for children about ${theme}. 
+    The story MUST feature these two main characters throughout ALL scenes: a small white rabbit and a yellow duck.
+    These two characters should appear together in every scene.
     Structure it as exactly 4 scenes, each scene should be 1-2 sentences.
-    Format: Scene 1: [text]
-    Scene 2: [text]
-    Scene 3: [text]
-    Scene 4: [text]`;
+    Format: Scene 1: [text with rabbit and duck]
+    Scene 2: [text with rabbit and duck]
+    Scene 3: [text with rabbit and duck]
+    Scene 4: [text with rabbit and duck]`;
 
     console.log('Calling AI for story generation...');
     const storyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -102,10 +104,12 @@ serve(async (req) => {
 
     console.log('Parsed scenes:', scenes);
 
-    // Generate images for each scene
+    // Generate images for each scene - with consistent character descriptions
     const images: string[] = [];
+    const characterDescription = "A small white rabbit and a yellow duck, cute children's storybook style, vibrant colors, friendly cartoon illustration";
+    
     for (let i = 0; i < 4; i++) {
-      const imagePrompt = `Children's storybook illustration, vibrant colors, friendly cartoon style: ${scenes[i]}`;
+      const imagePrompt = `${characterDescription}. Scene: ${scenes[i]}`;
       
       console.log(`Generating image ${i + 1}...`);
       const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
