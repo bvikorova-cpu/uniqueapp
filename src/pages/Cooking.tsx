@@ -5,7 +5,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Users, ChefHat, Search, Plus } from "lucide-react";
+import { Clock, Users, ChefHat, Search, Plus, Sparkles, Calendar, Camera, Store, MessageCircle, Wine } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -52,6 +53,7 @@ const categories = [
 
 const Cooking = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -59,6 +61,51 @@ const Cooking = () => {
   const [totalRecipes, setTotalRecipes] = useState(0);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const aiFeatures = [
+    {
+      icon: Sparkles,
+      title: "Generátor receptov",
+      description: "AI vygeneruje recepty z tvojich ingrediencií",
+      path: "/recipe-generator",
+      color: "from-orange-500 to-red-500"
+    },
+    {
+      icon: Calendar,
+      title: "Jedálny plán",
+      description: "Personalizovaný týždenný meal plan",
+      path: "/meal-planner",
+      color: "from-green-500 to-emerald-500"
+    },
+    {
+      icon: Camera,
+      title: "Food Scanner",
+      description: "Naskenuj jedlo a získaj nutričné info",
+      path: "/food-scanner",
+      color: "from-blue-500 to-cyan-500"
+    },
+    {
+      icon: Store,
+      title: "Menu Analyzer",
+      description: "Analyzuj reštauračné menu",
+      path: "/restaurant-analyzer",
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      icon: MessageCircle,
+      title: "AI Chef Chat",
+      description: "Chatuj s AI kuchárom",
+      path: "/chef-chat",
+      color: "from-yellow-500 to-orange-500"
+    },
+    {
+      icon: Wine,
+      title: "Wine Pairing",
+      description: "Nájdi ideálne víno k jedlu",
+      path: "/wine-pairing",
+      color: "from-red-500 to-rose-500"
+    }
+  ];
 
   useEffect(() => {
     fetchRecipes();
@@ -166,6 +213,43 @@ const Cooking = () => {
           </Dialog>
         </div>
 
+        {/* AI Features Section */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <Sparkles className="h-6 w-6 text-primary" />
+                AI Kuchárske Nástroje
+              </h2>
+              <p className="text-muted-foreground">Vyskúšaj naše AI funkcie pre varenie</p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/cooking-ai')}
+              className="gap-2"
+            >
+              Zobraziť všetky
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {aiFeatures.map((feature, idx) => (
+              <Card 
+                key={idx}
+                className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                onClick={() => navigate(feature.path)}
+              >
+                <CardContent className="p-4 text-center">
+                  <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center mx-auto mb-3`}>
+                    <feature.icon className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="font-semibold text-sm mb-1">{feature.title}</h3>
+                  <p className="text-xs text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
 
         {/* Categories */}
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
