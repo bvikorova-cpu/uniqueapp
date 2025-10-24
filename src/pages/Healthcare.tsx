@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Check, Heart, Brain, Smile, Activity, Users } from "lucide-react";
+import { Check, Heart, Brain, Smile, Activity, Users, Stethoscope, Syringe, Eye, Ear, Baby, Sparkles, TrendingUp, Award, Target, BarChart, Tablet, Download, QrCode, Building2, GraduationCap, Shield, CheckCircle2, Star, Zap, Apple } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Healthcare = () => {
   const { toast } = useToast();
@@ -35,63 +36,228 @@ const Healthcare = () => {
     }
   };
 
-  const plans = [
+  const basicPlans = [
     {
-      id: "pediatric_basic",
-      name: "Pediatric Waiting Room",
+      id: "pediatric_mini",
+      name: "Pediatric Mini",
+      price: 3,
+      icon: Baby,
+      color: "text-blue-400",
+      description: "For small practices (1-2 doctors)",
+      features: [
+        "50 downloads per month",
+        "Basic child-friendly themes",
+        "Print-ready PDF format",
+        "Email support"
+      ],
+      priceId: "price_pediatric_mini"
+    },
+    {
+      id: "pediatric_standard",
+      name: "Pediatric Standard",
       price: 5,
       icon: Smile,
       color: "text-blue-500",
-      description: "Perfect for pediatricians and dentists",
+      description: "Perfect for pediatricians",
       features: [
-        "Unlimited coloring pages download",
-        "Child-friendly themes",
+        "Unlimited downloads",
+        "All child-friendly themes",
         "Anxiety-reducing content",
         "Monthly new additions",
-        "Print-ready PDF format",
         "Basic customization"
       ],
-      priceId: "price_pediatric_basic"
+      priceId: "price_pediatric_standard"
     },
     {
-      id: "therapy_standard",
-      name: "Art Therapy Standard",
+      id: "dental_plus",
+      name: "Dental Plus",
+      price: 8,
+      icon: Smile,
+      color: "text-cyan-500",
+      description: "Specialized for dental offices",
+      features: [
+        "Unlimited downloads",
+        "Dental-specific themes",
+        "Pre/during/post procedure sets",
+        "Anxiety reduction materials",
+        "Tooth fairy adventures",
+        "Custom branding"
+      ],
+      priceId: "price_dental_plus"
+    },
+    {
+      id: "therapy_lite",
+      name: "Art Therapy Lite",
+      price: 12,
+      icon: Brain,
+      color: "text-purple-400",
+      description: "For solo therapists",
+      features: [
+        "Unlimited downloads",
+        "Therapeutic collections",
+        "Emotion expression themes",
+        "Mindfulness content",
+        "Client tracking (up to 20)",
+        "Progress reports"
+      ],
+      priceId: "price_therapy_lite"
+    },
+    {
+      id: "therapy_professional",
+      name: "Art Therapy Professional",
       price: 15,
       icon: Brain,
       color: "text-purple-500",
       popular: true,
-      description: "For psychologists and therapists",
+      description: "For psychologists with multiple clients",
       features: [
-        "Everything in Pediatric plan",
-        "Therapeutic coloring collections",
-        "Emotion expression themes",
-        "Mindfulness & relaxation content",
+        "Everything in Therapy Lite",
         "Trauma-informed designs",
-        "Session tracking integration",
+        "ADHD & autism specialized",
+        "Session tracking (unlimited)",
         "Custom clinic branding",
-        "Patient progress reports"
+        "Parent portal access",
+        "Analytics dashboard"
       ],
-      priceId: "price_therapy_standard"
+      priceId: "price_therapy_professional"
     },
     {
       id: "clinic_premium",
-      name: "Healthcare Facility Premium",
+      name: "Clinic Premium",
       price: 25,
-      icon: Activity,
+      icon: Building2,
       color: "text-red-500",
       description: "Complete solution for clinics",
       features: [
-        "Everything in Art Therapy plan",
+        "Everything in Professional",
         "Multi-location support",
         "Staff accounts (up to 10)",
-        "Custom content creation",
-        "Patient portal access",
         "API integration",
-        "Analytics dashboard",
-        "Priority support",
-        "Bulk licensing available"
+        "EHR integration ready",
+        "Custom content creation",
+        "Tablet licenses (5 devices)",
+        "Priority support"
       ],
       priceId: "price_clinic_premium"
+    },
+    {
+      id: "hospital_package",
+      name: "Hospital Package",
+      price: 50,
+      icon: Activity,
+      color: "text-red-600",
+      description: "For entire pediatric departments",
+      features: [
+        "Everything in Clinic Premium",
+        "Unlimited staff accounts",
+        "Unlimited locations",
+        "Unlimited tablet licenses",
+        "24/7 priority support",
+        "Dedicated account manager",
+        "Custom training sessions",
+        "Quarterly content reviews"
+      ],
+      priceId: "price_hospital_package"
+    }
+  ];
+
+  const specializedPackages = [
+    {
+      id: "oncology_pediatric",
+      name: "Pediatric Oncology",
+      price: 20,
+      icon: Heart,
+      color: "text-pink-500",
+      description: "For long-term hospitalization",
+      features: [
+        "Extended activity series",
+        "Superhero themes",
+        "Hope & positivity focus",
+        "Family bonding activities",
+        "Progress celebration pages",
+        "Customizable for each child"
+      ],
+      priceId: "price_oncology"
+    },
+    {
+      id: "physiotherapy",
+      name: "Physiotherapy",
+      price: 10,
+      icon: Activity,
+      color: "text-green-500",
+      description: "Movement integrated activities",
+      features: [
+        "Exercise-integrated coloring",
+        "Motor skills development",
+        "Coordination challenges",
+        "Progress tracking",
+        "Age-appropriate difficulty"
+      ],
+      priceId: "price_physio"
+    },
+    {
+      id: "speech_therapy",
+      name: "Speech Therapy",
+      price: 12,
+      icon: Ear,
+      color: "text-orange-500",
+      description: "Language development focus",
+      features: [
+        "Articulation exercises",
+        "Vocabulary building",
+        "Sound recognition",
+        "Story-based activities",
+        "Parent guidance included"
+      ],
+      priceId: "price_speech"
+    },
+    {
+      id: "occupational_therapy",
+      name: "Occupational Therapy",
+      price: 15,
+      icon: Target,
+      color: "text-indigo-500",
+      description: "Fine motor skills development",
+      features: [
+        "Fine motor challenges",
+        "Hand-eye coordination",
+        "Sensory integration",
+        "Daily living skills",
+        "Adaptive techniques"
+      ],
+      priceId: "price_occupational"
+    },
+    {
+      id: "adhd_specialist",
+      name: "ADHD Specialist",
+      price: 18,
+      icon: Zap,
+      color: "text-yellow-500",
+      description: "Focus-oriented activities",
+      features: [
+        "Timed activities",
+        "Progressive difficulty",
+        "Success markers",
+        "Attention span building",
+        "Reward system integration"
+      ],
+      priceId: "price_adhd"
+    },
+    {
+      id: "autism_center",
+      name: "Autism Center",
+      price: 18,
+      icon: Brain,
+      color: "text-blue-600",
+      description: "Sensory-friendly designs",
+      features: [
+        "Predictable patterns",
+        "Low-stimulation options",
+        "Routine-based themes",
+        "Clear instructions",
+        "Social skills scenarios"
+      ],
+      priceId: "price_autism"
     }
   ];
 
@@ -122,26 +288,221 @@ const Healthcare = () => {
     }
   ];
 
-  const specialPackages = [
+  const ageBasedCollections = [
     {
-      title: "Dental Anxiety Package",
-      description: "Specially designed for dental offices to reduce children's fear",
-      includes: ["Tooth fairy themes", "Dental hero characters", "Healthy habits", "Positive reinforcement"]
+      age: "0-3 years",
+      title: "Infant & Toddler",
+      description: "Simple shapes, high contrast designs",
+      themes: ["Large shapes", "Bold colors", "Simple animals", "Basic patterns"]
     },
     {
-      title: "Hospital Stay Comfort",
-      description: "Extended coloring books for children during hospital stays",
-      includes: ["Multi-day activities", "Brave hero themes", "Family connection", "Recovery celebration"]
+      age: "3-6 years",
+      title: "Preschool",
+      description: "Animals and fairy tales",
+      themes: ["Cute animals", "Fairy tales", "Simple stories", "Familiar objects"]
     },
     {
-      title: "ADHD Focus Collection",
-      description: "Structured activities designed for attention management",
-      includes: ["Timed activities", "Progressive complexity", "Clear boundaries", "Success markers"]
+      age: "6-12 years",
+      title: "School Age",
+      description: "Complex scenes and hobbies",
+      themes: ["Sports", "Hobbies", "Adventures", "Nature scenes"]
     },
     {
-      title: "Autism Spectrum Support",
-      description: "Sensory-friendly designs for neurodivergent children",
-      includes: ["Predictable patterns", "Low-stimulation options", "Routine-based themes", "Clear instructions"]
+      age: "13+ years",
+      title: "Teenagers",
+      description: "Abstract and modern patterns",
+      themes: ["Mandalas", "Abstract art", "Geometric patterns", "Modern designs"]
+    }
+  ];
+
+  const purposeBasedCollections = [
+    {
+      title: "Pre-Procedure",
+      icon: Shield,
+      description: "Reduce anxiety before treatment",
+      content: "Calming themes, relaxation exercises, positive affirmations"
+    },
+    {
+      title: "During Procedure",
+      icon: Target,
+      description: "Distraction during treatment",
+      content: "Engaging patterns, focus activities, quick completion designs"
+    },
+    {
+      title: "Post-Procedure",
+      icon: Award,
+      description: "Celebrate success & recovery",
+      content: "Victory themes, brave certificates, recovery progress trackers"
+    },
+    {
+      title: "Waiting Room",
+      icon: Smile,
+      description: "General entertainment",
+      content: "Fun themes, variety of difficulties, popular characters"
+    }
+  ];
+
+  const conditionBasedCollections = [
+    {
+      condition: "Oncology",
+      icon: Heart,
+      themes: ["Superhero strength", "Healing warriors", "Hope gardens", "Victory celebrations"]
+    },
+    {
+      condition: "Asthma",
+      icon: Activity,
+      themes: ["Breathing exercises", "Relaxation scenes", "Nature calm", "Mindful moments"]
+    },
+    {
+      condition: "Diabetes",
+      icon: Apple,
+      themes: ["Healthy food heroes", "Active lifestyle", "Energy balance", "Sweet success"]
+    },
+    {
+      condition: "Allergies",
+      icon: Shield,
+      themes: ["Safe food friends", "Allergy awareness", "Emergency heroes", "Protection power"]
+    }
+  ];
+
+  const advancedFeatures = [
+    {
+      title: "White Label & Branding",
+      icon: Sparkles,
+      features: [
+        "Custom clinic logo on every page",
+        "Branded color schemes",
+        "Personalized headers/footers",
+        "QR codes to clinic website",
+        "Doctor's personalized messages"
+      ]
+    },
+    {
+      title: "Therapeutic Tools",
+      icon: Brain,
+      features: [
+        "Emotion tracking integrated",
+        "Pain scale visualization",
+        "Progress markers & rewards",
+        "Parent-child worksheets",
+        "Take-home activity packs"
+      ]
+    },
+    {
+      title: "Analytics & Reporting",
+      icon: BarChart,
+      features: [
+        "Usage statistics",
+        "Popular themes tracking",
+        "Time spent analytics",
+        "Parent/patient feedback",
+        "ROI anxiety reduction metrics"
+      ]
+    },
+    {
+      title: "Technology Integration",
+      icon: Tablet,
+      features: [
+        "EHR system integration",
+        "Booking system sync",
+        "Parent portal access",
+        "Digital tablet licenses",
+        "API access available"
+      ]
+    }
+  ];
+
+  const specialtyCategories = [
+    {
+      specialty: "Dental",
+      icon: Smile,
+      packages: [
+        "Tooth fairy adventures",
+        "Healthy teeth superheroes",
+        "Pre/during/post treatment",
+        "Orthodontic themes",
+        "First visit preparation"
+      ]
+    },
+    {
+      specialty: "Ophthalmology",
+      icon: Eye,
+      packages: [
+        "Eye test friendly",
+        "Glasses positivity",
+        "Vision exercises",
+        "Eye health education",
+        "Seeing is believing"
+      ]
+    },
+    {
+      specialty: "ENT (Ear-Nose-Throat)",
+      icon: Ear,
+      packages: [
+        "Ear infection education",
+        "Tonsillectomy prep",
+        "Hearing aid heroes",
+        "Allergy awareness",
+        "Sinus adventures"
+      ]
+    },
+    {
+      specialty: "Vaccination Centers",
+      icon: Syringe,
+      packages: [
+        "Bravery certificates",
+        "Vaccine heroes",
+        "5-minute quick activities",
+        "Sticker reward integration",
+        "Courage building"
+      ]
+    }
+  ];
+
+  const b2bStrategies = [
+    {
+      title: "Pilot Programs",
+      icon: Target,
+      benefits: [
+        "2-month free trial",
+        "Before/after surveys",
+        "Case study materials",
+        "Video testimonials",
+        "Patient satisfaction metrics"
+      ]
+    },
+    {
+      title: "Volume Licensing",
+      icon: Building2,
+      benefits: [
+        "10+ clinics: 20% discount",
+        "Hospital networks: 30% discount",
+        "National associations: special pricing",
+        "Ministry contracts available",
+        "Flexible payment terms"
+      ]
+    },
+    {
+      title: "Training & Support",
+      icon: GraduationCap,
+      benefits: [
+        "Online webinars for staff",
+        "Best practices guides",
+        "Implementation support",
+        "Hotline assistance",
+        "Quarterly reviews"
+      ]
+    },
+    {
+      title: "Marketing Support",
+      icon: TrendingUp,
+      benefits: [
+        "Free demo kits",
+        "Conference presence",
+        "CPE/CME credits",
+        "Co-marketing opportunities",
+        "Success stories"
+      ]
     }
   ];
 
@@ -163,48 +524,98 @@ const Healthcare = () => {
 
       {/* Subscription Plans */}
       <section className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-center mb-12">Subscription Plans</h2>
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {plans.map((plan) => {
-            const Icon = plan.icon;
-            return (
-              <Card 
-                key={plan.id} 
-                className={`p-6 relative ${plan.popular ? 'ring-2 ring-primary shadow-xl' : ''}`}
-              >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
-                    Most Popular
-                  </div>
-                )}
-                <div className="text-center mb-6">
-                  <Icon className={`w-12 h-12 mx-auto mb-4 ${plan.color}`} />
-                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  <p className="text-muted-foreground text-sm mb-4">{plan.description}</p>
-                  <div className="text-4xl font-bold">
-                    €{plan.price}
-                    <span className="text-lg text-muted-foreground">/month</span>
-                  </div>
-                </div>
-                <ul className="space-y-3 mb-6">
-                  {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button 
-                  className="w-full"
-                  variant={plan.popular ? "default" : "outline"}
-                  onClick={() => handleSubscribe(plan.priceId, plan.name)}
-                >
-                  Subscribe Now
-                </Button>
-              </Card>
-            );
-          })}
-        </div>
+        <h2 className="text-3xl font-bold text-center mb-4">Subscription Plans</h2>
+        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+          Choose the perfect plan for your healthcare practice
+        </p>
+        
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+            <TabsTrigger value="basic">Basic Plans</TabsTrigger>
+            <TabsTrigger value="specialized">Specialized</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="basic">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+              {basicPlans.map((plan) => {
+                const Icon = plan.icon;
+                return (
+                  <Card 
+                    key={plan.id} 
+                    className={`p-6 relative ${plan.popular ? 'ring-2 ring-primary shadow-xl' : ''}`}
+                  >
+                    {plan.popular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                        Most Popular
+                      </div>
+                    )}
+                    <div className="text-center mb-4">
+                      <Icon className={`w-10 h-10 mx-auto mb-3 ${plan.color}`} />
+                      <h3 className="text-xl font-bold mb-1">{plan.name}</h3>
+                      <p className="text-muted-foreground text-xs mb-3">{plan.description}</p>
+                      <div className="text-3xl font-bold">
+                        €{plan.price}
+                        <span className="text-sm text-muted-foreground">/mo</span>
+                      </div>
+                    </div>
+                    <ul className="space-y-2 mb-4">
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                          <span className="text-xs">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      className="w-full"
+                      size="sm"
+                      variant={plan.popular ? "default" : "outline"}
+                      onClick={() => handleSubscribe(plan.priceId, plan.name)}
+                    >
+                      Subscribe
+                    </Button>
+                  </Card>
+                );
+              })}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="specialized">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {specializedPackages.map((pkg) => {
+                const Icon = pkg.icon;
+                return (
+                  <Card key={pkg.id} className="p-6">
+                    <div className="text-center mb-4">
+                      <Icon className={`w-10 h-10 mx-auto mb-3 ${pkg.color}`} />
+                      <h3 className="text-xl font-bold mb-1">{pkg.name}</h3>
+                      <p className="text-muted-foreground text-xs mb-3">{pkg.description}</p>
+                      <div className="text-3xl font-bold">
+                        €{pkg.price}
+                        <span className="text-sm text-muted-foreground">/mo</span>
+                      </div>
+                    </div>
+                    <ul className="space-y-2 mb-4">
+                      {pkg.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                          <span className="text-xs">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button 
+                      className="w-full"
+                      size="sm"
+                      onClick={() => handleSubscribe(pkg.priceId, pkg.name)}
+                    >
+                      Subscribe
+                    </Button>
+                  </Card>
+                );
+              })}
+            </div>
+          </TabsContent>
+        </Tabs>
       </section>
 
       {/* Therapeutic Categories */}
@@ -235,30 +646,163 @@ const Healthcare = () => {
         </div>
       </section>
 
-      {/* Special Packages */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-4">Specialized Packages</h2>
+      {/* Thematic Collections */}
+      <section className="container mx-auto px-4 py-16 bg-muted/30">
+        <h2 className="text-3xl font-bold text-center mb-4">Thematic Collections</h2>
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
-          Targeted solutions for specific healthcare scenarios and patient needs
+          Carefully curated content for every age, purpose, and medical condition
         </p>
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-          {specialPackages.map((pkg) => (
-            <Card key={pkg.title} className="p-6">
-              <h3 className="font-bold text-xl mb-2">{pkg.title}</h3>
-              <p className="text-muted-foreground mb-4">{pkg.description}</p>
-              <div className="space-y-2">
-                <p className="text-sm font-semibold">Includes:</p>
-                <ul className="grid grid-cols-2 gap-2">
-                  {pkg.includes.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-sm">
-                      <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+        
+        <div className="space-y-12 max-w-6xl mx-auto">
+          {/* Age-Based Collections */}
+          <div>
+            <h3 className="text-2xl font-bold mb-6 text-center">By Patient Age</h3>
+            <div className="grid md:grid-cols-4 gap-6">
+              {ageBasedCollections.map((collection) => (
+                <Card key={collection.age} className="p-6">
+                  <div className="text-center mb-4">
+                    <Baby className="w-10 h-10 mx-auto mb-3 text-primary" />
+                    <h4 className="font-bold text-lg mb-1">{collection.age}</h4>
+                    <p className="text-sm text-muted-foreground mb-3">{collection.title}</p>
+                    <p className="text-xs text-muted-foreground">{collection.description}</p>
+                  </div>
+                  <div className="space-y-1">
+                    {collection.themes.map((theme, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        {theme}
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Purpose-Based Collections */}
+          <div>
+            <h3 className="text-2xl font-bold mb-6 text-center">By Treatment Stage</h3>
+            <div className="grid md:grid-cols-4 gap-6">
+              {purposeBasedCollections.map((collection) => {
+                const Icon = collection.icon;
+                return (
+                  <Card key={collection.title} className="p-6">
+                    <Icon className="w-10 h-10 mb-3 text-primary" />
+                    <h4 className="font-bold text-lg mb-2">{collection.title}</h4>
+                    <p className="text-xs text-muted-foreground mb-3">{collection.description}</p>
+                    <p className="text-xs">{collection.content}</p>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Condition-Based Collections */}
+          <div>
+            <h3 className="text-2xl font-bold mb-6 text-center">By Medical Condition</h3>
+            <div className="grid md:grid-cols-4 gap-6">
+              {conditionBasedCollections.map((collection) => {
+                const Icon = collection.icon;
+                return (
+                  <Card key={collection.condition} className="p-6">
+                    <Icon className="w-10 h-10 mb-3 text-primary" />
+                    <h4 className="font-bold text-lg mb-3">{collection.condition}</h4>
+                    <div className="space-y-1">
+                      {collection.themes.map((theme, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-xs">
+                          <CheckCircle2 className="w-3 h-3 text-green-500" />
+                          {theme}
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Advanced Features */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-4">Advanced Features</h2>
+        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+          Professional tools to enhance your practice and patient care
+        </p>
+        <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {advancedFeatures.map((feature) => {
+            const Icon = feature.icon;
+            return (
+              <Card key={feature.title} className="p-6">
+                <Icon className="w-10 h-10 mb-4 text-primary" />
+                <h3 className="font-bold text-lg mb-4">{feature.title}</h3>
+                <ul className="space-y-2">
+                  {feature.features.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs">
+                      <Star className="w-3 h-3 text-yellow-500 flex-shrink-0 mt-0.5" />
                       {item}
                     </li>
                   ))}
                 </ul>
-              </div>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Medical Specialties */}
+      <section className="container mx-auto px-4 py-16 bg-muted/30">
+        <h2 className="text-3xl font-bold text-center mb-4">Medical Specialty Packages</h2>
+        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+          Tailored content for specific medical specialties
+        </p>
+        <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {specialtyCategories.map((specialty) => {
+            const Icon = specialty.icon;
+            return (
+              <Card key={specialty.specialty} className="p-6">
+                <div className="text-center mb-4">
+                  <Icon className="w-12 h-12 mx-auto mb-3 text-primary" />
+                  <h3 className="font-bold text-xl">{specialty.specialty}</h3>
+                </div>
+                <ul className="space-y-2">
+                  {specialty.packages.map((pkg, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-sm">
+                      <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+                      {pkg}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* B2B Strategies */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-4">Business Solutions</h2>
+        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+          Enterprise-grade solutions for healthcare organizations
+        </p>
+        <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {b2bStrategies.map((strategy) => {
+            const Icon = strategy.icon;
+            return (
+              <Card key={strategy.title} className="p-6">
+                <Icon className="w-10 h-10 mb-4 text-primary" />
+                <h3 className="font-bold text-lg mb-4">{strategy.title}</h3>
+                <ul className="space-y-2">
+                  {strategy.benefits.map((benefit, idx) => (
+                    <li key={idx} className="flex items-start gap-2 text-xs">
+                      <CheckCircle2 className="w-3 h-3 text-green-500 flex-shrink-0 mt-0.5" />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            );
+          })}
         </div>
       </section>
 
@@ -313,19 +857,71 @@ const Healthcare = () => {
         </div>
       </section>
 
+      {/* Demo & Marketing */}
+      <section className="container mx-auto px-4 py-16 bg-primary/5">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">Get Started Today</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="p-6 text-center">
+              <Download className="w-12 h-12 mx-auto mb-4 text-primary" />
+              <h3 className="text-xl font-bold mb-3">Free Demo Kit</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Download 20-page demo pack to test with your patients
+              </p>
+              <Button className="w-full">Download Demo</Button>
+            </Card>
+            
+            <Card className="p-6 text-center">
+              <QrCode className="w-12 h-12 mx-auto mb-4 text-primary" />
+              <h3 className="text-xl font-bold mb-3">Request Full Access</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                2-month free trial for healthcare providers
+              </p>
+              <Button className="w-full" variant="default">Start Free Trial</Button>
+            </Card>
+            
+            <Card className="p-6 text-center">
+              <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
+              <h3 className="text-xl font-bold mb-3">Book Consultation</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Speak with our healthcare specialist
+              </p>
+              <Button className="w-full" variant="outline">Schedule Call</Button>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Practice?</h2>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
           Join hundreds of healthcare providers using therapeutic coloring to improve patient experiences
         </p>
-        <div className="flex gap-4 justify-center">
-          <Button size="lg" onClick={() => handleSubscribe(plans[1].priceId, plans[1].name)}>
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Button size="lg" onClick={() => handleSubscribe(basicPlans[4].priceId, basicPlans[4].name)}>
             Start Free Trial
           </Button>
           <Button size="lg" variant="outline">
-            Request Demo
+            Request Demo Kit
           </Button>
+          <Button size="lg" variant="outline">
+            Schedule Consultation
+          </Button>
+        </div>
+        <div className="mt-8 flex items-center justify-center gap-8 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <span>No credit card required</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <span>Cancel anytime</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <span>24/7 support</span>
+          </div>
         </div>
       </section>
     </div>
