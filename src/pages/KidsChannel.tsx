@@ -206,174 +206,176 @@ const KidsChannel = () => {
         <img 
           src={castleBg} 
           alt="Disney Castle" 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-transparent to-purple-900/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50"></div>
         
         {/* Floating Elements */}
         <div className="absolute top-20 left-10 animate-float">
-          <Sparkles className="text-yellow-300 w-12 h-12 opacity-70" />
+          <Sparkles className="text-yellow-300 w-12 h-12 opacity-70 drop-shadow-lg" />
         </div>
         <div className="absolute top-40 right-20 animate-float-delayed">
-          <Star className="text-yellow-200 w-16 h-16 opacity-60" />
+          <Star className="text-yellow-200 w-16 h-16 opacity-60 drop-shadow-lg" />
         </div>
-        <div className="absolute bottom-40 left-1/4 animate-float">
-          <Sparkles className="text-pink-300 w-10 h-10 opacity-70" />
+        <div className="absolute top-1/2 left-20 animate-float">
+          <Sparkles className="text-pink-300 w-10 h-10 opacity-70 drop-shadow-lg" />
         </div>
-        <div className="absolute bottom-20 right-1/3 animate-float-delayed">
-          <Star className="text-purple-300 w-14 h-14 opacity-60" />
+        <div className="absolute top-1/3 right-1/4 animate-float-delayed">
+          <Star className="text-purple-300 w-14 h-14 opacity-60 drop-shadow-lg" />
         </div>
       </div>
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Header - Moved Lower */}
-        <div className="text-center mb-12 animate-fade-in mt-32">
-          <h1 className="text-7xl font-bold text-white mb-6 font-signature drop-shadow-2xl">
+        {/* Header - Positioned to show castle */}
+        <div className="text-center mb-16 animate-fade-in pt-8">
+          <h1 className="text-7xl md:text-8xl font-bold text-white mb-4 font-signature drop-shadow-2xl">
             Kids Channel ✨
           </h1>
-          <p className="text-2xl text-white/90 mb-3 drop-shadow-lg">
+          <p className="text-2xl md:text-3xl text-white/95 mb-3 drop-shadow-lg font-semibold">
             Magical Stories for Little Dreamers
           </p>
-          <div className="flex items-center justify-center gap-2 text-white/90 drop-shadow-md">
-            <Crown className="w-5 h-5 text-yellow-300" />
-            <span>Premium content available for subscribers</span>
+          <div className="flex items-center justify-center gap-2 text-white/95 drop-shadow-md text-lg">
+            <Crown className="w-6 h-6 text-yellow-300 drop-shadow-lg" />
+            <span className="font-medium">Premium content available for subscribers</span>
           </div>
         </div>
 
+        {/* Spacer to show castle better */}
+        <div className="h-32 md:h-48"></div>
 
         {/* Interactive Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 max-w-6xl mx-auto">
           {/* Choose Your Own Adventure */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100 border-4 border-white/50 hover:border-pink-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            className="group relative overflow-hidden bg-gradient-to-br from-pink-100/95 to-purple-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50"
             onClick={() => navigate('/kids-stories/adventure')}
           >
-            <div className="p-8 text-center">
-              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <BookOpen className="w-12 h-12 text-pink-500" />
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <BookOpen className="w-10 h-10 text-pink-500" />
               </div>
-              <h3 className="text-2xl font-bold text-purple-700 mb-3">
+              <h3 className="text-xl font-bold text-purple-700 mb-2">
                 Choose Your Adventure! 🎭
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 text-sm mb-3">
                 YOU decide what happens next! Make choices and create your own unique story.
               </p>
-              <Badge className="bg-pink-500 text-white">Interactive Stories</Badge>
+              <Badge className="bg-pink-500 text-white shadow-md">Interactive Stories</Badge>
             </div>
           </Card>
 
           {/* Create Your Character */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-blue-100 to-cyan-100 border-4 border-white/50 hover:border-blue-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            className="group relative overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-blue-300/50"
             onClick={() => navigate('/kids-stories/create-character')}
           >
-            <div className="p-8 text-center">
-              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <Sparkles className="w-12 h-12 text-blue-500" />
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Sparkles className="w-10 h-10 text-blue-500" />
               </div>
-              <h3 className="text-2xl font-bold text-blue-700 mb-3">
+              <h3 className="text-xl font-bold text-blue-700 mb-2">
                 Create Your Hero! 🦸‍♀️
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 text-sm mb-3">
                 Design your own character and become the star of amazing adventures!
               </p>
-              <Badge className="bg-blue-500 text-white">Personalization</Badge>
+              <Badge className="bg-blue-500 text-white shadow-md">Personalization</Badge>
             </div>
           </Card>
 
           {/* Voice Stories */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-green-100 to-emerald-100 border-4 border-white/50 hover:border-green-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            className="group relative overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-green-300/50"
             onClick={() => navigate('/kids-stories/voice-chat')}
           >
-            <div className="p-8 text-center">
-              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <Volume2 className="w-12 h-12 text-green-500" />
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Volume2 className="w-10 h-10 text-green-500" />
               </div>
-              <h3 className="text-2xl font-bold text-green-700 mb-3">
+              <h3 className="text-xl font-bold text-green-700 mb-2">
                 Talk to Characters! 🎤
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 text-sm mb-3">
                 Have real conversations with story characters using your voice!
               </p>
-              <Badge className="bg-green-500 text-white">Voice Interactive</Badge>
+              <Badge className="bg-green-500 text-white shadow-md">Voice Interactive</Badge>
             </div>
           </Card>
 
           {/* Educational Stories */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-yellow-100 to-orange-100 border-4 border-white/50 hover:border-yellow-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            className="group relative overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-yellow-300/50"
             onClick={() => navigate('/kids-stories/educational')}
           >
-            <div className="p-8 text-center">
-              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <Trophy className="w-12 h-12 text-yellow-500" />
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Trophy className="w-10 h-10 text-yellow-500" />
               </div>
-              <h3 className="text-2xl font-bold text-orange-700 mb-3">
+              <h3 className="text-xl font-bold text-orange-700 mb-2">
                 Learn & Play! 🎓
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 text-sm mb-3">
                 Fun stories that teach you about numbers, letters, and the world!
               </p>
-              <Badge className="bg-yellow-500 text-white">Educational</Badge>
+              <Badge className="bg-yellow-500 text-white shadow-md">Educational</Badge>
             </div>
           </Card>
 
           {/* Mini Games */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-red-100 to-rose-100 border-4 border-white/50 hover:border-red-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            className="group relative overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-red-300/50"
             onClick={() => navigate('/kids-stories/games')}
           >
-            <div className="p-8 text-center">
-              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <Play className="w-12 h-12 text-red-500" />
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Play className="w-10 h-10 text-red-500" />
               </div>
-              <h3 className="text-2xl font-bold text-red-700 mb-3">
+              <h3 className="text-xl font-bold text-red-700 mb-2">
                 Story Games! 🎮
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 text-sm mb-3">
                 Solve puzzles and play games to unlock the next part of your story!
               </p>
-              <Badge className="bg-red-500 text-white">Interactive Games</Badge>
+              <Badge className="bg-red-500 text-white shadow-md">Interactive Games</Badge>
             </div>
           </Card>
 
           {/* Bedtime Stories */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-indigo-100 to-violet-100 border-4 border-white/50 hover:border-indigo-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            className="group relative overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-indigo-300/50"
             onClick={() => navigate('/kids-stories/bedtime')}
           >
-            <div className="p-8 text-center">
-              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <Moon className="w-12 h-12 text-indigo-500" />
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Moon className="w-10 h-10 text-indigo-500" />
               </div>
-              <h3 className="text-2xl font-bold text-indigo-700 mb-3">
+              <h3 className="text-xl font-bold text-indigo-700 mb-2">
                 Bedtime Stories! 🌙
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 text-sm mb-3">
                 Calming stories with soft music to help you fall asleep peacefully.
               </p>
-              <Badge className="bg-indigo-500 text-white">Relaxing</Badge>
+              <Badge className="bg-indigo-500 text-white shadow-md">Relaxing</Badge>
             </div>
           </Card>
 
           {/* Pricing & Plans */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-pink-100 to-rose-100 border-4 border-white/50 hover:border-pink-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            className="group relative overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50"
             onClick={() => navigate('/kids-pricing')}
           >
-            <div className="p-8 text-center">
-              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
-                <CreditCard className="w-12 h-12 text-pink-500" />
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <CreditCard className="w-10 h-10 text-pink-500" />
               </div>
-              <h3 className="text-2xl font-bold text-pink-700 mb-3">
+              <h3 className="text-xl font-bold text-pink-700 mb-2">
                 Pricing & Plans! 💎
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="text-gray-700 text-sm mb-3">
                 Unlock unlimited stories and premium features for your family!
               </p>
-              <Badge className="bg-pink-500 text-white">Premium</Badge>
+              <Badge className="bg-pink-500 text-white shadow-md">Premium</Badge>
             </div>
           </Card>
         </div>
