@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          code: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          name: string
+          points: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          name: string
+          points?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          points?: number
+        }
+        Relationships: []
+      }
       activity_logs: {
         Row: {
           activity_type: string
@@ -6796,6 +6826,33 @@ export type Database = {
         }
         Relationships: []
       }
+      recipe_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          recipe_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          recipe_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          recipe_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       recipe_generations: {
         Row: {
           created_at: string
@@ -6822,6 +6879,54 @@ export type Database = {
           generated_recipes?: Json
           id?: string
           ingredients?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      recipe_likes: {
+        Row: {
+          created_at: string
+          id: string
+          recipe_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recipe_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recipe_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      recipe_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          rating: number
+          recipe_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rating: number
+          recipe_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rating?: number
+          recipe_id?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -7752,6 +7857,35 @@ export type Database = {
             columns: ["stream_id"]
             isOneToOne: false
             referencedRelation: "live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_id: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
             referencedColumns: ["id"]
           },
         ]

@@ -10,7 +10,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2 } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { useTranslation } from "react-i18next";
 
@@ -32,6 +34,7 @@ interface NotificationData {
 }
 
 const Navbar = () => {
+  const { theme, setTheme } = useTheme();
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
@@ -236,6 +239,7 @@ const Navbar = () => {
     { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
     { path: "/fit-slim", label: t('services.fit_slim.title'), icon: Apple },
     { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
+    { path: "/cooking-ai", label: "AI Cooking Tools", icon: Sparkles },
     { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
     { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
     { path: "/minibiz", label: "Mini Business Marketplace", icon: Store },
@@ -357,6 +361,18 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-2">
             {user ? (
               <>
+                <PointsDisplay />
+                
+                {/* Dark Mode Toggle */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                >
+                  <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                </Button>
+                
                 {/* Notifications Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
