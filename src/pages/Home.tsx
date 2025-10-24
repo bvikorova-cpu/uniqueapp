@@ -6,7 +6,6 @@ import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import heroBg from "@/assets/hero-bg.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -71,10 +70,9 @@ const Home = () => {
     <div className="min-h-screen bg-background pt-16">
       {/* Hero Section */}
       <section 
-        className="relative h-screen flex items-start justify-center bg-cover bg-center"
-        style={{ backgroundImage: `url(${heroBg})` }}
+        className="relative h-screen flex items-start justify-center bg-gradient-to-br from-primary via-accent to-secondary"
       >
-        <div className="absolute inset-0 bg-black/60"></div>
+        <div className="absolute inset-0 bg-black/40"></div>
         <div className="relative z-10 text-center space-y-8 px-4 pt-32">
           <Badge className="bg-gold text-gold-foreground animate-glow text-lg px-4 py-2">
             {t('home.contest_badge')}
