@@ -66,17 +66,37 @@ serve(async (req) => {
     const storyText = storyData.choices[0].message.content;
     console.log('Story generated:', storyText);
 
-    // Parse scenes
-    const sceneRegex = /Scene \d+:\s*([^\n]+)/g;
-    const scenes: string[] = [];
-    let match;
+    // Parse scenes - try multiple patterns
+    let scenes: string[] = [];
     
-    while ((match = sceneRegex.exec(storyText)) !== null) {
-      scenes.push(match[1].trim());
+    // Try pattern 1: "Scene 1: text"
+    const pattern1 = /Scene \d+:\s*([^\n]+)/gi;
+    let match;
+    while ((match = pattern1.exec(storyText)) !== null) {
+      if (match[1].trim()) scenes.push(match[1].trim());
+    }
+    
+    // If pattern 1 didn't work, try pattern 2: numbered list "1. text"
+    if (scenes.length < 4) {
+      scenes = [];
+      const pattern2 = /\d+\.\s*([^\n]+)/g;
+      while ((match = pattern2.exec(storyText)) !== null) {
+        if (match[1].trim()) scenes.push(match[1].trim());
+      }
+    }
+    
+    // If still not enough, split by newlines and take non-empty lines
+    if (scenes.length < 4) {
+      scenes = storyText
+        .split('\n')
+        .map((line: string) => line.trim())
+        .filter((line: string) => line.length > 10 && !line.toLowerCase().includes('scene'))
+        .slice(0, 4);
     }
 
     if (scenes.length < 4) {
       console.error('Not enough scenes parsed:', scenes);
+      console.error('Original text:', storyText);
       throw new Error('Failed to generate 4 scenes');
     }
 
