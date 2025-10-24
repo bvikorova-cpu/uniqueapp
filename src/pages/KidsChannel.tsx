@@ -241,85 +241,22 @@ const KidsChannel = () => {
           </div>
         </div>
 
-        {/* Category Tabs */}
-        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
-          <TabsList className="bg-white/20 backdrop-blur-md border border-white/30 flex-wrap justify-center">
-            {categories.map(cat => (
-              <TabsTrigger 
-                key={cat} 
-                value={cat}
-                className="data-[state=active]:bg-white/90 data-[state=active]:text-purple-600"
-              >
-                {cat}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
 
-        {/* Shows Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {filteredShows.map((show, index) => (
-            <Card 
-              key={show.id}
-              className="group relative overflow-hidden bg-white/90 backdrop-blur-sm hover:bg-white transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer border-2 border-white/50"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div 
-                className="relative aspect-[3/4] overflow-hidden"
-                onClick={() => navigate(`/kids-channel/${show.id}`)}
-              >
-                <img 
-                  src={showImageMap[show.title] || show.thumbnail_url || showImages.default} 
-                  alt={show.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-
-                {/* Play Overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <div className="bg-white rounded-full p-4 transform scale-0 group-hover:scale-100 transition-transform duration-300">
-                    <Play className="w-8 h-8 text-purple-600" fill="currentColor" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-4">
-                <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-1">
-                  {show.title}
-                </h3>
-                
-                <div className="flex items-center justify-between">
-                  <Badge variant="secondary" className="text-xs">
-                    {show.category}
-                  </Badge>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFavorite(show.id);
-                    }}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Heart 
-                      className={`w-5 h-5 transition-colors ${
-                        favorites.has(show.id) 
-                          ? "fill-red-500 text-red-500" 
-                          : "text-gray-400"
-                      }`}
-                    />
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {filteredShows.length === 0 && (
-          <div className="text-center py-20">
-            <p className="text-white text-xl">No shows in this category</p>
+        {/* Coming Soon Message */}
+        <div className="text-center py-20 px-4">
+          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-12 max-w-2xl mx-auto border-4 border-white/50 shadow-2xl">
+            <Sparkles className="w-20 h-20 text-purple-500 mx-auto mb-6" />
+            <h2 className="text-4xl font-bold text-purple-600 mb-4">
+              Coming Soon! 🎬
+            </h2>
+            <p className="text-xl text-gray-700 mb-6">
+              We're working on something magical for your little ones!
+            </p>
+            <p className="text-gray-600">
+              Amazing stories and adventures will be available here very soon.
+            </p>
           </div>
-        )}
+        </div>
       </div>
 
       <style>{`
