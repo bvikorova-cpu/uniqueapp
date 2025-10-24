@@ -117,6 +117,7 @@ import Healthcare from "./pages/Healthcare";
 import CorporateEvents from "./pages/CorporateEvents";
 import BrandBattle from "./pages/BrandBattle";
 import CorporatePartnerships from "./pages/CorporatePartnerships";
+import AIMonetization from "./pages/AIMonetization";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -240,6 +241,7 @@ const App = () => (
           <Route path="/corporate-events" element={<CorporateEvents />} />
           <Route path="/brand-battle" element={<BrandBattle />} />
           <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
+          <Route path="/ai-monetization" element={<AIMonetization />} />
           <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/fashion-studio" element={<FashionStudio />} />
           <Route path="/nutrition-hub" element={<NutritionHub />} />
