@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import PointsDisplay from "@/components/gamification/PointsDisplay";
+import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import BadgesDisplay from "@/components/gamification/BadgesDisplay";
 import DailyRewardButton from "@/components/gamification/DailyRewardButton";
 import Leaderboard from "@/components/gamification/Leaderboard";
@@ -45,9 +45,9 @@ export default function Rewards() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="md:col-span-2">
-            <PointsDisplay userId={user.id} />
-          </div>
+        <div className="md:col-span-2">
+          <PointsDisplay />
+        </div>
           <DailyRewardButton />
         </div>
 
