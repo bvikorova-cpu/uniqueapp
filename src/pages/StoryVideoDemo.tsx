@@ -44,7 +44,7 @@ const StoryVideoDemo = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 p-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 pt-8">
           <Button
             variant="ghost"
             onClick={() => navigate('/kids-channel')}

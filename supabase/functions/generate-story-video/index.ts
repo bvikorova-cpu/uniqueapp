@@ -104,12 +104,43 @@ serve(async (req) => {
 
     console.log('Parsed scenes:', scenes);
 
-    // Generate images for each scene - with consistent character descriptions
+    // First, generate a detailed character description to ensure consistency
+    console.log('Generating character descriptions...');
+    const characterPrompt = `Based on this story theme: "${theme}", create a very detailed visual description of the main characters (maximum 2 characters). 
+    Include specific details like: hair color, eye color, clothing colors and style, distinctive features.
+    Keep it under 100 words and make it suitable for children's storybook illustration.
+    Format: Character 1: [detailed description]. Character 2: [detailed description].`;
+    
+    const characterResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages: [
+          { role: 'system', content: 'You are a children\'s book illustrator who creates detailed character descriptions.' },
+          { role: 'user', content: characterPrompt }
+        ],
+      }),
+    });
+
+    if (!characterResponse.ok) {
+      console.error('Character description error:', characterResponse.status);
+      throw new Error('Failed to generate character descriptions');
+    }
+
+    const characterData = await characterResponse.json();
+    const characterDescription = characterData.choices[0].message.content;
+    console.log('Character descriptions:', characterDescription);
+
+    // Generate images for each scene - using consistent character descriptions
     const images: string[] = [];
-    const characterDescription = "A small white rabbit and a yellow duck, cute children's storybook style, vibrant colors, friendly cartoon illustration";
+    const baseStyle = "Children's storybook illustration, vibrant colors, friendly cartoon style, consistent character design";
     
     for (let i = 0; i < 4; i++) {
-      const imagePrompt = `${characterDescription}. Scene: ${scenes[i]}`;
+      const imagePrompt = `${baseStyle}. Characters: ${characterDescription}. Scene: ${scenes[i]}`;
       
       console.log(`Generating image ${i + 1}...`);
       const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
