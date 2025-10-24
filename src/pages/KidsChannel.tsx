@@ -241,10 +241,11 @@ const KidsChannel = () => {
           </div>
         </div>
 
-        {/* Interactive Features - Scattered around castle */}
-        <div className="relative min-h-[1000px] max-w-7xl mx-auto">
-          {/* Cards positioned around the center where castle is visible */}
-          {/* Choose Your Own Adventure - Top Left */}
+        {/* Interactive Features - 4 on left, 4 on right */}
+        <div className="relative min-h-[1100px] max-w-7xl mx-auto">
+          {/* LEFT SIDE - 4 cards */}
+          
+          {/* 1. Choose Your Adventure - Left Top */}
           <Card 
             className="group absolute top-0 left-0 w-72 overflow-hidden bg-gradient-to-br from-pink-100/95 to-purple-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-110 hover:rotate-2 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
             onClick={() => navigate('/kids-stories/adventure')}
@@ -263,50 +264,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Story Video - Top Right (above Create Your Character) */}
+          {/* 2. Talk to Characters - Left Second */}
           <Card 
-            className="group absolute top-0 right-0 w-72 overflow-hidden bg-gradient-to-br from-purple-100/95 to-fuchsia-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-purple-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-purple-300/50 animate-fade-in"
+            className="group absolute top-64 left-0 w-72 overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-110 hover:rotate-1 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in"
             style={{ animationDelay: "0.1s" }}
-            onClick={() => navigate('/story-video-demo')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Video className="w-10 h-10 text-purple-500" />
-              </div>
-              <h3 className="text-xl font-bold text-purple-700 mb-2">
-                Story Videos! 🎬
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Watch magical animated stories come to life with AI!
-              </p>
-              <Badge className="bg-purple-500 text-white shadow-md">AI Video</Badge>
-            </div>
-          </Card>
-
-          {/* Create Your Character - Better positioned */}
-          <Card 
-            className="group absolute top-96 right-80 w-72 overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
-            style={{ animationDelay: "0.15s" }}
-            onClick={() => navigate('/kids-stories/create-character')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Sparkles className="w-10 h-10 text-blue-500" />
-              </div>
-              <h3 className="text-xl font-bold text-blue-700 mb-2">
-                Create Your Hero! 🦸‍♀️
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Design your own character and become the star of amazing adventures!
-              </p>
-              <Badge className="bg-blue-500 text-white shadow-md">Personalization</Badge>
-            </div>
-          </Card>
-
-          {/* Voice Stories - Middle Left */}
-          <Card 
-            className="group absolute top-64 left-10 w-72 overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-110 hover:rotate-1 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in"
-            style={{ animationDelay: "0.2s" }}
             onClick={() => navigate('/kids-stories/voice-chat')}
           >
             <div className="p-6 text-center">
@@ -323,30 +284,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Educational Stories - Right Side Lower */}
+          {/* 3. Story Games - Left Third */}
           <Card 
-            className="group absolute top-96 right-10 w-72 overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-110 hover:-rotate-1 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
-            style={{ animationDelay: "0.3s" }}
-            onClick={() => navigate('/kids-stories/educational')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Trophy className="w-10 h-10 text-yellow-500" />
-              </div>
-              <h3 className="text-xl font-bold text-orange-700 mb-2">
-                Learn & Play! 🎓
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Fun stories that teach you about numbers, letters, and the world!
-              </p>
-              <Badge className="bg-yellow-500 text-white shadow-md">Educational</Badge>
-            </div>
-          </Card>
-
-          {/* Mini Games - Bottom Left */}
-          <Card 
-            className="group absolute bottom-20 left-20 w-72 overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-110 hover:rotate-2 cursor-pointer shadow-2xl hover:shadow-red-300/50 animate-fade-in"
-            style={{ animationDelay: "0.4s" }}
+            className="group absolute top-[512px] left-0 w-72 overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-110 hover:rotate-2 cursor-pointer shadow-2xl hover:shadow-red-300/50 animate-fade-in"
+            style={{ animationDelay: "0.2s" }}
             onClick={() => navigate('/kids-stories/games')}
           >
             <div className="p-6 text-center">
@@ -363,10 +304,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Bedtime Stories - Bottom Center More Visible */}
+          {/* 4. Bedtime Stories - Left Bottom */}
           <Card 
-            className="group absolute bottom-56 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
-            style={{ animationDelay: "0.5s" }}
+            className="group absolute top-[768px] left-0 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
+            style={{ animationDelay: "0.3s" }}
             onClick={() => navigate('/kids-stories/bedtime')}
           >
             <div className="p-6 text-center">
@@ -383,10 +324,72 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Pricing & Plans - Bottom Right */}
+          {/* RIGHT SIDE - 4 cards */}
+          
+          {/* 1. Story Videos - Right Top */}
           <Card 
-            className="group absolute bottom-20 right-20 w-72 overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
+            className="group absolute top-0 right-0 w-72 overflow-hidden bg-gradient-to-br from-purple-100/95 to-fuchsia-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-purple-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-purple-300/50 animate-fade-in"
+            style={{ animationDelay: "0.4s" }}
+            onClick={() => navigate('/story-video-demo')}
+          >
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Video className="w-10 h-10 text-purple-500" />
+              </div>
+              <h3 className="text-xl font-bold text-purple-700 mb-2">
+                Story Videos! 🎬
+              </h3>
+              <p className="text-gray-700 text-sm mb-3">
+                Watch magical animated stories come to life with AI!
+              </p>
+              <Badge className="bg-purple-500 text-white shadow-md">AI Video</Badge>
+            </div>
+          </Card>
+
+          {/* 2. Create Your Hero - Right Second */}
+          <Card 
+            className="group absolute top-64 right-0 w-72 overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
+            style={{ animationDelay: "0.5s" }}
+            onClick={() => navigate('/kids-stories/create-character')}
+          >
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Sparkles className="w-10 h-10 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-bold text-blue-700 mb-2">
+                Create Your Hero! 🦸‍♀️
+              </h3>
+              <p className="text-gray-700 text-sm mb-3">
+                Design your own character and become the star of amazing adventures!
+              </p>
+              <Badge className="bg-blue-500 text-white shadow-md">Personalization</Badge>
+            </div>
+          </Card>
+
+          {/* 3. Learn & Play - Right Third */}
+          <Card 
+            className="group absolute top-[512px] right-0 w-72 overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-110 hover:-rotate-1 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
             style={{ animationDelay: "0.6s" }}
+            onClick={() => navigate('/kids-stories/educational')}
+          >
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Trophy className="w-10 h-10 text-yellow-500" />
+              </div>
+              <h3 className="text-xl font-bold text-orange-700 mb-2">
+                Learn & Play! 🎓
+              </h3>
+              <p className="text-gray-700 text-sm mb-3">
+                Fun stories that teach you about numbers, letters, and the world!
+              </p>
+              <Badge className="bg-yellow-500 text-white shadow-md">Educational</Badge>
+            </div>
+          </Card>
+
+          {/* 4. Pricing & Plans - Right Bottom */}
+          <Card 
+            className="group absolute top-[768px] right-0 w-72 overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
+            style={{ animationDelay: "0.7s" }}
             onClick={() => navigate('/kids-pricing')}
           >
             <div className="p-6 text-center">
