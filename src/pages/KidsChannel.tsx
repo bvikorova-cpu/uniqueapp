@@ -206,7 +206,8 @@ const KidsChannel = () => {
         <img 
           src={castleBg} 
           alt="Disney Castle" 
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-left"
+          style={{ objectPosition: "35% center" }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50"></div>
         
@@ -228,14 +229,14 @@ const KidsChannel = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-8">
         {/* Header - Positioned to show castle */}
-        <div className="text-center mb-16 animate-fade-in pt-8">
+        <div className="text-left ml-8 mb-16 animate-fade-in pt-20">
           <h1 className="text-7xl md:text-8xl font-bold text-white mb-4 font-signature drop-shadow-2xl">
             Kids Channel ✨
           </h1>
           <p className="text-2xl md:text-3xl text-white/95 mb-3 drop-shadow-lg font-semibold">
             Magical Stories for Little Dreamers
           </p>
-          <div className="flex items-center justify-center gap-2 text-white/95 drop-shadow-md text-lg">
+          <div className="flex items-center gap-2 text-white/95 drop-shadow-md text-lg">
             <Crown className="w-6 h-6 text-yellow-300 drop-shadow-lg" />
             <span className="font-medium">Premium content available for subscribers</span>
           </div>
