@@ -242,7 +242,7 @@ const KidsChannel = () => {
         </div>
 
         {/* Interactive Features - Scattered around castle */}
-        <div className="relative min-h-[800px] max-w-7xl mx-auto">
+        <div className="relative min-h-[1000px] max-w-7xl mx-auto">
           {/* Cards positioned around the center where castle is visible */}
           {/* Choose Your Own Adventure - Top Left */}
           <Card 
@@ -323,9 +323,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Educational Stories - Middle Right */}
+          {/* Educational Stories - Right Side Lower */}
           <Card 
-            className="group absolute top-64 right-10 w-72 overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-110 hover:-rotate-1 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
+            className="group absolute top-96 right-10 w-72 overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-110 hover:-rotate-1 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
             style={{ animationDelay: "0.3s" }}
             onClick={() => navigate('/kids-stories/educational')}
           >
@@ -363,9 +363,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Bedtime Stories - Bottom Center */}
+          {/* Bedtime Stories - Bottom Center More Visible */}
           <Card 
-            className="group absolute bottom-10 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
+            className="group absolute bottom-32 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
             style={{ animationDelay: "0.5s" }}
             onClick={() => navigate('/kids-stories/bedtime')}
           >
