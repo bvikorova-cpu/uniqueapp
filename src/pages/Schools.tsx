@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -140,10 +141,16 @@ export default function Schools() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             Educational Coloring Pages
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
             Empower your students with AI-generated educational coloring pages. 
             Perfect for schools, kindergartens, and educational institutions.
           </p>
+          <Link to="/teacher-dashboard">
+            <Button variant="outline" size="lg">
+              <Users className="w-4 h-4 mr-2" />
+              Go to Teacher Dashboard
+            </Button>
+          </Link>
         </div>
 
         {/* Pricing Cards */}
