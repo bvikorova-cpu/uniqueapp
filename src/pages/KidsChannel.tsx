@@ -283,9 +283,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Create Your Character - Moved down */}
+          {/* Create Your Character - Better positioned */}
           <Card 
-            className="group absolute top-80 right-10 w-72 overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
+            className="group absolute top-96 right-80 w-72 overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
             style={{ animationDelay: "0.15s" }}
             onClick={() => navigate('/kids-stories/create-character')}
           >
