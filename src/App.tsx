@@ -111,6 +111,7 @@ import AnalyzerPricing from "./pages/AnalyzerPricing";
 import AnalyzerHistory from "./pages/AnalyzerHistory";
 import AnalyzerCollections from "./pages/AnalyzerCollections";
 import VideoAdGenerator from "./pages/VideoAdGenerator";
+import Schools from "./pages/Schools";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -228,6 +229,7 @@ const App = () => (
           <Route path="/creative-writing" element={<CreativeWriting />} />
           <Route path="/writing/:contentId" element={<GenericLearning />} />
           <Route path="/coloring-pages" element={<ColoringPages />} />
+          <Route path="/schools" element={<Schools />} />
           <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/fashion-studio" element={<FashionStudio />} />
           <Route path="/nutrition-hub" element={<NutritionHub />} />
