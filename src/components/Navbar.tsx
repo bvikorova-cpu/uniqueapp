@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2 } from "lucide-react";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { useTranslation } from "react-i18next";
 
@@ -170,6 +170,7 @@ const Navbar = () => {
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/schools", label: "Schools & Kindergartens", icon: GraduationCap },
     { path: "/healthcare", label: "Healthcare & Therapy", icon: Activity },
+    { path: "/corporate-events", label: "Corporate & Events", icon: Building2 },
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "Story Creator (6-12y)", icon: BookOpen },
     { path: "/kids-math-games", label: "Math Games (6-12y)", icon: Calculator },
