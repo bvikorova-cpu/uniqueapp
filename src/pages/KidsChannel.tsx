@@ -206,8 +206,7 @@ const KidsChannel = () => {
         <img 
           src={castleBg} 
           alt="Disney Castle" 
-          className="w-full h-full object-cover"
-          style={{ objectPosition: "30% center" }}
+          className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50"></div>
         
@@ -229,14 +228,14 @@ const KidsChannel = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-8">
         {/* Header - Positioned to show castle */}
-        <div className="text-left ml-8 mb-16 animate-fade-in pt-20">
+        <div className="text-center mb-16 animate-fade-in pt-8">
           <h1 className="text-7xl md:text-8xl font-bold text-white mb-4 font-signature drop-shadow-2xl">
             Kids Channel ✨
           </h1>
           <p className="text-2xl md:text-3xl text-white/95 mb-3 drop-shadow-lg font-semibold">
             Magical Stories for Little Dreamers
           </p>
-          <div className="flex items-center gap-2 text-white/95 drop-shadow-md text-lg">
+          <div className="flex items-center justify-center gap-2 text-white/95 drop-shadow-md text-lg">
             <Crown className="w-6 h-6 text-yellow-300 drop-shadow-lg" />
             <span className="font-medium">Premium content available for subscribers</span>
           </div>
@@ -264,30 +263,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Bedtime Stories - Top Right (above Create Your Hero) */}
+          {/* Create Your Character - Top Right */}
           <Card 
-            className="group absolute top-0 right-0 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
+            className="group absolute top-0 right-0 w-72 overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
             style={{ animationDelay: "0.1s" }}
-            onClick={() => navigate('/kids-stories/bedtime')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Moon className="w-10 h-10 text-indigo-500" />
-              </div>
-              <h3 className="text-xl font-bold text-indigo-700 mb-2">
-                Bedtime Stories! 🌙
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Calming stories with soft music to help you fall asleep peacefully.
-              </p>
-              <Badge className="bg-indigo-500 text-white shadow-md">Relaxing</Badge>
-            </div>
-          </Card>
-
-          {/* Create Your Character - Below Bedtime */}
-          <Card 
-            className="group absolute top-80 right-10 w-72 overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
-            style={{ animationDelay: "0.2s" }}
             onClick={() => navigate('/kids-stories/create-character')}
           >
             <div className="p-6 text-center">
@@ -307,7 +286,7 @@ const KidsChannel = () => {
           {/* Voice Stories - Middle Left */}
           <Card 
             className="group absolute top-64 left-10 w-72 overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-110 hover:rotate-1 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in"
-            style={{ animationDelay: "0.3s" }}
+            style={{ animationDelay: "0.2s" }}
             onClick={() => navigate('/kids-stories/voice-chat')}
           >
             <div className="p-6 text-center">
@@ -326,8 +305,8 @@ const KidsChannel = () => {
 
           {/* Educational Stories - Middle Right */}
           <Card 
-            className="group absolute top-[500px] right-10 w-72 overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-110 hover:-rotate-1 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
-            style={{ animationDelay: "0.4s" }}
+            className="group absolute top-64 right-10 w-72 overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-110 hover:-rotate-1 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
+            style={{ animationDelay: "0.3s" }}
             onClick={() => navigate('/kids-stories/educational')}
           >
             <div className="p-6 text-center">
@@ -347,7 +326,7 @@ const KidsChannel = () => {
           {/* Mini Games - Bottom Left */}
           <Card 
             className="group absolute bottom-20 left-20 w-72 overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-110 hover:rotate-2 cursor-pointer shadow-2xl hover:shadow-red-300/50 animate-fade-in"
-            style={{ animationDelay: "0.5s" }}
+            style={{ animationDelay: "0.4s" }}
             onClick={() => navigate('/kids-stories/games')}
           >
             <div className="p-6 text-center">
@@ -361,6 +340,26 @@ const KidsChannel = () => {
                 Solve puzzles and play games to unlock the next part of your story!
               </p>
               <Badge className="bg-red-500 text-white shadow-md">Interactive Games</Badge>
+            </div>
+          </Card>
+
+          {/* Bedtime Stories - Bottom Center */}
+          <Card 
+            className="group absolute bottom-10 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
+            style={{ animationDelay: "0.5s" }}
+            onClick={() => navigate('/kids-stories/bedtime')}
+          >
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Moon className="w-10 h-10 text-indigo-500" />
+              </div>
+              <h3 className="text-xl font-bold text-indigo-700 mb-2">
+                Bedtime Stories! 🌙
+              </h3>
+              <p className="text-gray-700 text-sm mb-3">
+                Calming stories with soft music to help you fall asleep peacefully.
+              </p>
+              <Badge className="bg-indigo-500 text-white shadow-md">Relaxing</Badge>
             </div>
           </Card>
 
