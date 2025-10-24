@@ -97,17 +97,6 @@ const PARTNERSHIP_TYPES = [
           "Exclusive content rights",
           "Revenue sharing options"
         ]
-      },
-      {
-        name: "Influencer Program",
-        price: "20% commission",
-        features: [
-          "20% of first 3 months subscription",
-          "Custom branded sections (€200/month)",
-          "Exclusive content for followers",
-          "Promo code tracking",
-          "Performance analytics"
-        ]
       }
     ]
   },
@@ -217,58 +206,6 @@ export default function CorporatePartnerships() {
           </p>
         </div>
 
-        {/* Money Flow Explanation */}
-        <Card className="mb-16 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-2 border-green-200 dark:border-green-800">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-green-500 flex items-center justify-center flex-shrink-0">
-                <DollarSign className="h-8 w-8 text-white" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold mb-4 text-green-700 dark:text-green-400">
-                  ✅ Dôležité: ONI platia TEBE!
-                </h2>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div className="bg-white dark:bg-gray-900 p-4 rounded-lg border border-green-200 dark:border-green-800">
-                    <div className="text-3xl font-bold text-green-600 mb-2">💰 Príjem</div>
-                    <p className="font-semibold mb-2">Partneri ti platia:</p>
-                    <ul className="text-sm space-y-1">
-                      <li>• Školy: €150-2000/mesiac</li>
-                      <li>• Firmy: €1000-5000/mesiac</li>
-                      <li>• Terapeuti: €5-10/klient</li>
-                      <li>• Influenceri: 20% provízia</li>
-                    </ul>
-                  </div>
-                  <div className="bg-white dark:bg-gray-900 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
-                    <div className="text-3xl font-bold text-orange-600 mb-2">💸 Náklady</div>
-                    <p className="font-semibold mb-2">Tvoje výdavky:</p>
-                    <ul className="text-sm space-y-1">
-                      <li>• Servery: ~10% príjmu</li>
-                      <li>• AI API: ~15% príjmu</li>
-                      <li>• Support: ~5% príjmu</li>
-                      <li>• <strong>Spolu: ~30%</strong></li>
-                    </ul>
-                  </div>
-                  <div className="bg-white dark:bg-gray-900 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">💎 Zisk</div>
-                    <p className="font-semibold mb-2">Tvoj čistý zisk:</p>
-                    <ul className="text-sm space-y-1">
-                      <li>• <strong>~70% z príjmu</strong></li>
-                      <li>• Škola €1500 → €1050 zisk</li>
-                      <li>• Firma €3000 → €2100 zisk</li>
-                      <li>• <strong>Pasívny príjem! 🚀</strong></li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
-                  <p className="font-semibold text-blue-700 dark:text-blue-400">
-                    📊 Príklad: 5 škôl × €1500/mesiac = €7500 príjem → €5250 čistý zisk/mesiac
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Main Partnership Types */}
         <div className="space-y-12 mb-16">
@@ -286,29 +223,6 @@ export default function CorporatePartnerships() {
                   </div>
                 </div>
 
-                {/* Financial Breakdown Alert */}
-                <Card className="md:col-span-3 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 border-2 border-green-300 dark:border-green-700">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center gap-3 mb-3">
-                      <DollarSign className="h-6 w-6 text-green-600" />
-                      <h3 className="text-lg font-bold">💰 Finančný tok - {type.title}</h3>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <p className="font-semibold text-green-700 dark:text-green-400 mb-1">✅ Oni ti platia:</p>
-                        <p>{type.programs[0].price} - {type.programs[type.programs.length - 1].price}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-orange-700 dark:text-orange-400 mb-1">💸 Tvoje náklady:</p>
-                        <p>~30% z príjmu (servery, AI, support)</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-blue-700 dark:text-blue-400 mb-1">💎 Tvoj zisk:</p>
-                        <p>~70% z príjmu = pasívny príjem</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
 
                 <div className="grid md:grid-cols-3 gap-6 md:col-span-3">
                   {type.programs.map((program, index) => (
@@ -328,23 +242,6 @@ export default function CorporatePartnerships() {
                             </li>
                           ))}
                         </ul>
-                        
-                        {/* Profit Calculator */}
-                        <div className="pt-3 border-t bg-green-50 dark:bg-green-950/30 p-3 rounded-lg">
-                          <p className="text-xs font-semibold text-green-700 dark:text-green-400 mb-1">
-                            💰 Tvoj zisk z tohto balíka:
-                          </p>
-                          <p className="text-sm">
-                            {program.price} × 70% = <span className="font-bold text-green-600">
-                              {program.price.includes('€') 
-                                ? `€${Math.round(parseFloat(program.price.replace(/[^0-9.]/g, '')) * 0.7)}`
-                                : program.price.includes('%')
-                                ? 'provízia z každého predaja'
-                                : 'zisk z každého volania'}
-                            </span>
-                          </p>
-                        </div>
-                        
                         <Button className="w-full">Contact Sales</Button>
                       </CardContent>
                     </Card>
@@ -488,15 +385,6 @@ export default function CorporatePartnerships() {
                 <p><strong>Setup:</strong> 1 teacher + 30 students get full access</p>
                 <p><strong>Usage:</strong> Students use coloring pages for art class, homework helper for math, story creator for creative writing</p>
                 <p><strong>Results:</strong> Teacher tracks progress dashboard, students get certificates with school logo, parents see improvement reports</p>
-                <div className="pt-2 border-t mt-4 space-y-2">
-                  <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded">
-                    <p className="font-semibold text-green-700 dark:text-green-400">💰 Finančný tok:</p>
-                    <p className="text-sm">• Škola ti platí: <strong>€150/mesiac</strong></p>
-                    <p className="text-sm">• Tvoje náklady (servery, AI): <strong>€45/mesiac</strong> (30%)</p>
-                    <p className="text-sm">• <strong>Tvoj čistý zisk: €105/mesiac</strong> 🎉</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground">= €5 per student/month pre školu, ale €105 zisk pre teba!</p>
-                </div>
               </CardContent>
             </Card>
 
@@ -513,42 +401,6 @@ export default function CorporatePartnerships() {
                 <p><strong>How it works:</strong> Dr. Novák gives patient a promo code during therapy session</p>
                 <p><strong>Patient gets:</strong> Access to therapeutic coloring pages for anxiety & stress management</p>
                 <p><strong>Doctor gets:</strong> Dashboard to monitor patient's usage & progress between sessions</p>
-                <div className="pt-2 border-t mt-4 space-y-2">
-                  <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded">
-                    <p className="font-semibold text-green-700 dark:text-green-400">💰 Finančný tok (50 pacientov):</p>
-                    <p className="text-sm">• Dr. Novák ti platí: <strong>€5 × 50 = €250/mesiac</strong></p>
-                    <p className="text-sm">• Tvoje náklady: <strong>€75/mesiac</strong> (30%)</p>
-                    <p className="text-sm">• <strong>Tvoj čistý zisk: €175/mesiac</strong> 💚</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Dr. Novák platí len €5 za pacienta, ty zarobíš €3.50 čistého zisku z každého!</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-l-4 border-l-purple-500">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Megaphone className="h-5 w-5 text-purple-500" />
-                  Influencer Example
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm">
-                <p><strong>Influencer:</strong> @CreativeMom (50K followers on Instagram)</p>
-                <p><strong>Commission:</strong> 20% of first 3 months subscription</p>
-                <p><strong>Promotion:</strong> Posts coloring pages & kids activities, shares unique promo code "CREATIVEMOM20"</p>
-                <p><strong>Results:</strong> 200 people sign up for €9.99/month plan</p>
-                <p><strong>Influencer dostáva:</strong> 200 × €9.99 × 0.20 × 3 months = €1,198.80</p>
-                <div className="pt-2 border-t mt-4 space-y-2">
-                  <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded">
-                    <p className="font-semibold text-green-700 dark:text-green-400">💰 Tvoj príjem (200 predplatiteľov):</p>
-                    <p className="text-sm">• Celkový príjem: <strong>200 × €9.99 = €1998/mesiac</strong></p>
-                    <p className="text-sm">• Provízia influencerovi: <strong>-€399.60</strong> (20%)</p>
-                    <p className="text-sm">• Tvoje náklady: <strong>-€479.40</strong> (30% z €1598.40)</p>
-                    <p className="text-sm">• <strong>Tvoj čistý zisk: €1119/mesiac</strong> 🚀</p>
-                    <p className="text-sm text-muted-foreground mt-2">+ Extra €200/mesiac za branded sekciu</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Po 3 mesiacoch už influencer nedostáva províziu, ty bereš celých €1998/mesiac!</p>
-                </div>
               </CardContent>
             </Card>
 
@@ -564,15 +416,6 @@ export default function CorporatePartnerships() {
                 <p><strong>Package:</strong> Corporate Training (€20/employee/month)</p>
                 <p><strong>Setup:</strong> 50 employees get access to upskilling courses</p>
                 <p><strong>Usage:</strong> Leadership training, technical skills, team building activities</p>
-                <div className="pt-2 border-t mt-4 space-y-2">
-                  <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded">
-                    <p className="font-semibold text-green-700 dark:text-green-400">💰 Finančný tok (50 zamestnancov):</p>
-                    <p className="text-sm">• Firma ti platí: <strong>50 × €20 = €1000/mesiac</strong></p>
-                    <p className="text-sm">• Tvoje náklady: <strong>€300/mesiac</strong> (30%)</p>
-                    <p className="text-sm">• <strong>Tvoj čistý zisk: €700/mesiac</strong> 💼</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Firma platí €20 na zamestnanca, ty zarobíš €14 čistého zisku z každého!</p>
-                </div>
                 <p><strong>Package:</strong> Corporate Training (€20/employee/month)</p>
                 <p><strong>Cost:</strong> 50 × €20 = €1,000/month</p>
                 <p><strong>What they get:</strong> Custom courses for programming, design, management skills</p>
