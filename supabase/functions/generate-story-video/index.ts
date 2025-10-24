@@ -12,17 +12,27 @@ serve(async (req) => {
 
   try {
     const { theme } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    
+    if (!theme) {
+      throw new Error('Theme is required');
+    }
 
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
+    console.log('Generating story for theme:', theme);
+
     // Generate story with 4 scenes
     const storyPrompt = `Create a very short bedtime story for children about ${theme}. 
     Structure it as exactly 4 scenes, each scene should be 1-2 sentences.
-    Format: Scene 1: [text], Scene 2: [text], Scene 3: [text], Scene 4: [text]`;
+    Format: Scene 1: [text]
+    Scene 2: [text]
+    Scene 3: [text]
+    Scene 4: [text]`;
 
+    console.log('Calling AI for story generation...');
     const storyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -41,25 +51,43 @@ serve(async (req) => {
     if (!storyResponse.ok) {
       const errorText = await storyResponse.text();
       console.error('Story generation error:', storyResponse.status, errorText);
+      
+      if (storyResponse.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again later.');
+      }
+      if (storyResponse.status === 402) {
+        throw new Error('Payment required. Please add funds to your Lovable AI workspace.');
+      }
+      
       throw new Error(`Failed to generate story: ${storyResponse.status}`);
     }
 
     const storyData = await storyResponse.json();
     const storyText = storyData.choices[0].message.content;
+    console.log('Story generated:', storyText);
 
     // Parse scenes
-    const sceneMatches = storyText.match(/Scene \d+: ([^,]+(?:,[^,]+)?)/g) || [];
-    const scenes = sceneMatches.map((s: string) => s.replace(/Scene \d+: /, '').trim());
+    const sceneRegex = /Scene \d+:\s*([^\n]+)/g;
+    const scenes: string[] = [];
+    let match;
+    
+    while ((match = sceneRegex.exec(storyText)) !== null) {
+      scenes.push(match[1].trim());
+    }
 
     if (scenes.length < 4) {
+      console.error('Not enough scenes parsed:', scenes);
       throw new Error('Failed to generate 4 scenes');
     }
 
+    console.log('Parsed scenes:', scenes);
+
     // Generate images for each scene
-    const images = [];
+    const images: string[] = [];
     for (let i = 0; i < 4; i++) {
-      const imagePrompt = `Children's storybook illustration, vibrant colors, friendly style: ${scenes[i]}`;
+      const imagePrompt = `Children's storybook illustration, vibrant colors, friendly cartoon style: ${scenes[i]}`;
       
+      console.log(`Generating image ${i + 1}...`);
       const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -85,8 +113,11 @@ serve(async (req) => {
       
       if (imageUrl) {
         images.push(imageUrl);
+        console.log(`Image ${i + 1} generated successfully`);
       }
     }
+
+    console.log(`Generated ${images.length} images`);
 
     return new Response(
       JSON.stringify({ 
