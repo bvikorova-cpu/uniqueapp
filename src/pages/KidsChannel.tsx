@@ -241,14 +241,12 @@ const KidsChannel = () => {
           </div>
         </div>
 
-        {/* Spacer to show castle better */}
-        <div className="h-32 md:h-48"></div>
-
-        {/* Interactive Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12 max-w-6xl mx-auto">
-          {/* Choose Your Own Adventure */}
+        {/* Interactive Features - Scattered around castle */}
+        <div className="relative min-h-[800px] max-w-7xl mx-auto">
+          {/* Cards positioned around the center where castle is visible */}
+          {/* Choose Your Own Adventure - Top Left */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-pink-100/95 to-purple-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50"
+            className="group absolute top-0 left-0 w-72 overflow-hidden bg-gradient-to-br from-pink-100/95 to-purple-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-110 hover:rotate-2 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
             onClick={() => navigate('/kids-stories/adventure')}
           >
             <div className="p-6 text-center">
@@ -265,9 +263,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Create Your Character */}
+          {/* Create Your Character - Top Right */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-blue-300/50"
+            className="group absolute top-0 right-0 w-72 overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
+            style={{ animationDelay: "0.1s" }}
             onClick={() => navigate('/kids-stories/create-character')}
           >
             <div className="p-6 text-center">
@@ -284,9 +283,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Voice Stories */}
+          {/* Voice Stories - Middle Left */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-green-300/50"
+            className="group absolute top-64 left-10 w-72 overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-110 hover:rotate-1 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in"
+            style={{ animationDelay: "0.2s" }}
             onClick={() => navigate('/kids-stories/voice-chat')}
           >
             <div className="p-6 text-center">
@@ -303,9 +303,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Educational Stories */}
+          {/* Educational Stories - Middle Right */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-yellow-300/50"
+            className="group absolute top-64 right-10 w-72 overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-110 hover:-rotate-1 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
+            style={{ animationDelay: "0.3s" }}
             onClick={() => navigate('/kids-stories/educational')}
           >
             <div className="p-6 text-center">
@@ -322,9 +323,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Mini Games */}
+          {/* Mini Games - Bottom Left */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-red-300/50"
+            className="group absolute bottom-20 left-20 w-72 overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-110 hover:rotate-2 cursor-pointer shadow-2xl hover:shadow-red-300/50 animate-fade-in"
+            style={{ animationDelay: "0.4s" }}
             onClick={() => navigate('/kids-stories/games')}
           >
             <div className="p-6 text-center">
@@ -341,9 +343,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Bedtime Stories */}
+          {/* Bedtime Stories - Bottom Center */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-indigo-300/50"
+            className="group absolute bottom-10 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
+            style={{ animationDelay: "0.5s" }}
             onClick={() => navigate('/kids-stories/bedtime')}
           >
             <div className="p-6 text-center">
@@ -360,9 +363,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Pricing & Plans */}
+          {/* Pricing & Plans - Bottom Right */}
           <Card 
-            className="group relative overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50"
+            className="group absolute bottom-20 right-20 w-72 overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
+            style={{ animationDelay: "0.6s" }}
             onClick={() => navigate('/kids-pricing')}
           >
             <div className="p-6 text-center">
