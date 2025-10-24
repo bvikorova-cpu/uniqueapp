@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon } from "lucide-react";
+import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import { showImages } from "@/components/kids/ShowImages";
 import castleBg from "@/assets/kids/disney-castle-bg.jpg";
@@ -355,6 +355,25 @@ const KidsChannel = () => {
                 Calming stories with soft music to help you fall asleep peacefully.
               </p>
               <Badge className="bg-indigo-500 text-white">Relaxing</Badge>
+            </div>
+          </Card>
+
+          {/* Pricing & Plans */}
+          <Card 
+            className="group relative overflow-hidden bg-gradient-to-br from-pink-100 to-rose-100 border-4 border-white/50 hover:border-pink-300 transition-all duration-300 hover:scale-105 cursor-pointer shadow-xl"
+            onClick={() => navigate('/kids-pricing')}
+          >
+            <div className="p-8 text-center">
+              <div className="bg-white rounded-full w-24 h-24 mx-auto mb-6 flex items-center justify-center shadow-lg">
+                <CreditCard className="w-12 h-12 text-pink-500" />
+              </div>
+              <h3 className="text-2xl font-bold text-pink-700 mb-3">
+                Pricing & Plans! 💎
+              </h3>
+              <p className="text-gray-700 mb-4">
+                Unlock unlimited stories and premium features for your family!
+              </p>
+              <Badge className="bg-pink-500 text-white">Premium</Badge>
             </div>
           </Card>
         </div>
