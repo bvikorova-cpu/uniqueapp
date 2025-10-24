@@ -206,8 +206,7 @@ const KidsChannel = () => {
         <img 
           src={castleBg} 
           alt="Disney Castle" 
-          className="w-full h-full object-cover"
-          style={{ objectPosition: "center 40%" }}
+          className="w-full h-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50"></div>
         
@@ -344,9 +343,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* Bedtime Stories - Bottom Center */}
+          {/* Bedtime Stories - Top Center */}
           <Card 
-            className="group absolute bottom-10 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
+            className="group absolute top-0 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
             style={{ animationDelay: "0.5s" }}
             onClick={() => navigate('/kids-stories/bedtime')}
           >
