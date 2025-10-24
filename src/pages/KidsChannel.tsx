@@ -201,11 +201,16 @@ const KidsChannel = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Gradient Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-purple-600 via-pink-500 to-blue-400"></div>
-      
-      {/* Floating Elements */}
-      <div className="fixed inset-0 z-0">
+      {/* Disney Castle Background */}
+      <div className="fixed inset-0">
+        <img 
+          src={castleBg} 
+          alt="Disney Castle" 
+          className="w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50"></div>
+        
+        {/* Floating Elements */}
         <div className="absolute top-20 left-10 animate-float">
           <Sparkles className="text-yellow-300 w-12 h-12 opacity-70 drop-shadow-lg" />
         </div>
@@ -222,30 +227,22 @@ const KidsChannel = () => {
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Header - Positioned left */}
-        <div className="text-left ml-8 mb-16 animate-fade-in pt-8">
+        {/* Header - Positioned to show castle */}
+        <div className="text-center mb-16 animate-fade-in pt-8">
           <h1 className="text-7xl md:text-8xl font-bold text-white mb-4 font-signature drop-shadow-2xl">
             Kids Channel ✨
           </h1>
           <p className="text-2xl md:text-3xl text-white/95 mb-3 drop-shadow-lg font-semibold">
             Magical Stories for Little Dreamers
           </p>
-          <div className="flex items-center gap-2 text-white/95 drop-shadow-md text-lg">
+          <div className="flex items-center justify-center gap-2 text-white/95 drop-shadow-md text-lg">
             <Crown className="w-6 h-6 text-yellow-300 drop-shadow-lg" />
             <span className="font-medium">Premium content available for subscribers</span>
           </div>
         </div>
 
-        {/* Castle in Center - Interactive Features around it */}
-        <div className="relative min-h-[900px] max-w-7xl mx-auto">
-          {/* Disney Castle - Centered */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[600px] z-0">
-            <img 
-              src={castleBg} 
-              alt="Disney Castle" 
-              className="w-full h-full object-contain drop-shadow-2xl opacity-90"
-            />
-          </div>
+        {/* Interactive Features - Scattered around castle */}
+        <div className="relative min-h-[800px] max-w-7xl mx-auto">
           {/* Cards positioned around the center where castle is visible */}
           {/* Choose Your Own Adventure - Top Left */}
           <Card 
