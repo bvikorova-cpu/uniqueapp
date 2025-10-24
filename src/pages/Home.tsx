@@ -70,9 +70,10 @@ const Home = () => {
     <div className="min-h-screen bg-background pt-16">
       {/* Hero Section */}
       <section 
-        className="relative h-screen flex items-start justify-center bg-gradient-to-br from-primary via-accent to-secondary"
+        className="relative h-screen flex items-start justify-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/hero-bg.jpg)' }}
       >
-        <div className="absolute inset-0 bg-black/40"></div>
+        <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 text-center space-y-8 px-4 pt-32">
           <Badge className="bg-gold text-gold-foreground animate-glow text-lg px-4 py-2">
             {t('home.contest_badge')}
