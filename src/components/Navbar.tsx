@@ -169,6 +169,7 @@ const Navbar = () => {
     { path: "/kids-channel", label: "Kids Channel 🎬", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/schools", label: "Schools & Kindergartens", icon: GraduationCap },
+    { path: "/healthcare", label: "Healthcare & Therapy", icon: Activity },
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "Story Creator (6-12y)", icon: BookOpen },
     { path: "/kids-math-games", label: "Math Games (6-12y)", icon: Calculator },
