@@ -13,20 +13,20 @@ const CorporateEvents = () => {
         <div className="container mx-auto max-w-6xl text-center">
           <Badge className="mb-4" variant="secondary">
             <Building2 className="w-4 h-4 mr-2" />
-            B2B Riešenia
+            B2B Solutions
           </Badge>
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Firemné a Eventové Riešenia
+            Corporate & Event Solutions
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Profesionálne coloring book riešenia pre firmy, reštaurácie, svadby a eventy. Posilnite svoju značku s kreativitou.
+            Professional coloring book solutions for companies, restaurants, weddings and events. Strengthen your brand with creativity.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" className="gap-2">
               <Calendar className="w-5 h-5" />
-              Objednať Demo
+              Book Demo
             </Button>
-            <Button size="lg" variant="outline">Cenník</Button>
+            <Button size="lg" variant="outline">Pricing</Button>
           </div>
         </div>
       </section>
@@ -36,18 +36,18 @@ const CorporateEvents = () => {
         <div className="container mx-auto max-w-7xl">
           <Tabs defaultValue="corporate" className="w-full">
             <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-8">
-              <TabsTrigger value="corporate">Firemné Eventy</TabsTrigger>
-              <TabsTrigger value="restaurants">Reštaurácie</TabsTrigger>
-              <TabsTrigger value="weddings">Svadby & Oslavy</TabsTrigger>
-              <TabsTrigger value="events">Event Organizátori</TabsTrigger>
+              <TabsTrigger value="corporate">Corporate Events</TabsTrigger>
+              <TabsTrigger value="restaurants">Restaurants</TabsTrigger>
+              <TabsTrigger value="weddings">Weddings & Celebrations</TabsTrigger>
+              <TabsTrigger value="events">Event Organizers</TabsTrigger>
             </TabsList>
 
             {/* CORPORATE EVENTS */}
             <TabsContent value="corporate" className="space-y-8">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Firemné Eventy & Brand Marketing</h2>
+                <h2 className="text-4xl font-bold mb-4">Corporate Events & Brand Marketing</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Vlastné coloring books s logom firmy, maskotmi a firemnou identitou pre detské dni, teambuildingy a klientske dary.
+                  Custom coloring books with company logo, mascots and brand identity for family days, team buildings and client gifts.
                 </p>
               </div>
 
@@ -59,29 +59,29 @@ const CorporateEvents = () => {
                       <Sparkles className="w-5 h-5 text-primary" />
                       Startup
                     </CardTitle>
-                    <CardDescription>Pre malé firmy a startupy</CardDescription>
+                    <CardDescription>For small companies and startups</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold mb-4">€15<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Logo firmy na 10 omaľovánkach</span>
+                        <span>Company logo on 10 coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Základné firemné farby</span>
+                        <span>Basic brand colors</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>PDF na stiahnutie</span>
+                        <span>PDF download</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>1 revízia</span>
+                        <span>1 revision</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Objednať</Button>
+                    <Button className="w-full mt-6">Order</Button>
                   </CardContent>
                 </Card>
 
@@ -91,74 +91,74 @@ const CorporateEvents = () => {
                       <Building2 className="w-5 h-5 text-primary" />
                       Business
                     </CardTitle>
-                    <CardDescription>Pre stredné firmy</CardDescription>
+                    <CardDescription>For medium companies</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold mb-4">€30<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Logo + maskot firmy na 25 stranách</span>
+                        <span>Logo + mascot on 25 pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Kompletná brand identita</span>
+                        <span>Complete brand identity</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>QR kód na stránku firmy</span>
+                        <span>QR code to company website</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>PDF + print-ready súbory</span>
+                        <span>PDF + print-ready files</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>3 revízie</span>
+                        <span>3 revisions</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Objednať</Button>
+                    <Button className="w-full mt-6">Order</Button>
                   </CardContent>
                 </Card>
 
                 <Card className="border-2 border-primary hover:border-primary transition-all relative">
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Najpopulárnejšie</Badge>
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <TrendingUp className="w-5 h-5 text-primary" />
                       Corporate Premium
                     </CardTitle>
-                    <CardDescription>Pre veľké korporácie</CardDescription>
+                    <CardDescription>For large corporations</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold mb-4">€60<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>50 vlastných omaľovánok</span>
+                        <span>50 custom coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Ilustrácie produktov firmy</span>
+                        <span>Company product illustrations</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Interaktívne prvky (QR, hry)</span>
+                        <span>Interactive elements (QR, games)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Tlač + doručenie</span>
+                        <span>Print + delivery</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Unlimited revízie</span>
+                        <span>Unlimited revisions</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Dedikovaný account manager</span>
+                        <span>Dedicated account manager</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Objednať</Button>
+                    <Button className="w-full mt-6">Order</Button>
                   </CardContent>
                 </Card>
 
@@ -168,26 +168,26 @@ const CorporateEvents = () => {
                       <Globe className="w-5 h-5 text-primary" />
                       Enterprise
                     </CardTitle>
-                    <CardDescription>Individuálne riešenia</CardDescription>
+                    <CardDescription>Individual solutions</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€150+<span className="text-sm text-muted-foreground">/mesiac</span></div>
+                    <div className="text-3xl font-bold mb-4">€150+<span className="text-sm text-muted-foreground">/month</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Unlimited omaľovánky</span>
+                        <span>Unlimited coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>White-label platforma</span>
+                        <span>White-label platform</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>API prístup</span>
+                        <span>API access</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Multi-jazyková podpora</span>
+                        <span>Multi-language support</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -195,10 +195,10 @@ const CorporateEvents = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>24/7 podpora</span>
+                        <span>24/7 support</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Kontaktovať</Button>
+                    <Button className="w-full mt-6">Contact</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -206,21 +206,21 @@ const CorporateEvents = () => {
               {/* Use Cases */}
               <Card className="mt-12">
                 <CardHeader>
-                  <CardTitle>Use Cases - Firemné Eventy</CardTitle>
+                  <CardTitle>Use Cases - Corporate Events</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <h4 className="font-semibold">HR & Onboarding</h4>
-                      <p className="text-sm text-muted-foreground">Welcome package pre nových zamestnancov s firemnou kultúrou a hodnotami v zábavnej forme.</p>
+                      <p className="text-sm text-muted-foreground">Welcome package for new employees with company culture and values in a fun format.</p>
                     </div>
                     <div className="space-y-2">
-                      <h4 className="font-semibold">Klientske Dary</h4>
-                      <p className="text-sm text-muted-foreground">Osobné coloring books ako dar pre deti klientov počas B2B stretnutí a konferencií.</p>
+                      <h4 className="font-semibold">Client Gifts</h4>
+                      <p className="text-sm text-muted-foreground">Personal coloring books as gifts for clients' children during B2B meetings and conferences.</p>
                     </div>
                     <div className="space-y-2">
                       <h4 className="font-semibold">Team Building</h4>
-                      <p className="text-sm text-muted-foreground">Kreatívne aktivity pre rodiny zamestnancov na firemných dňoch.</p>
+                      <p className="text-sm text-muted-foreground">Creative activities for employee families at corporate days.</p>
                     </div>
                   </div>
                 </CardContent>
@@ -230,9 +230,9 @@ const CorporateEvents = () => {
             {/* RESTAURANTS */}
             <TabsContent value="restaurants" className="space-y-8">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Reštaurácie & Detské Kútiky</h2>
+                <h2 className="text-4xl font-bold mb-4">Restaurants & Kids Corners</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Mesačné predplatné, menu ako omaľovánka, sezónne kampane a QR kódy pre reštaurácie s detským kútikom.
+                  Monthly subscriptions, menu as coloring pages, seasonal campaigns and QR codes for restaurants with kids corners.
                 </p>
               </div>
 
@@ -243,121 +243,121 @@ const CorporateEvents = () => {
                       <Utensils className="w-5 h-5 text-primary" />
                       Mini Reštaurácia
                     </CardTitle>
-                    <CardDescription>Malá reštaurácia/kaviareň</CardDescription>
+                    <CardDescription>Small restaurant/café</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€5<span className="text-sm text-muted-foreground">/mesiac</span></div>
+                    <div className="text-3xl font-bold mb-4">€5<span className="text-sm text-muted-foreground">/month</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>5 menu-omaľovánok</span>
+                        <span>5 menu coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Základná personalizácia</span>
+                        <span>Basic personalization</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
                         <span>PDF download</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Predplatiť</Button>
+                    <Button className="w-full mt-6">Subscribe</Button>
                   </CardContent>
                 </Card>
 
                 <Card className="border-2 hover:border-primary/50 transition-all">
                   <CardHeader>
-                    <CardTitle>Standard Reštaurácia</CardTitle>
-                    <CardDescription>Stredná reštaurácia</CardDescription>
+                    <CardTitle>Standard Restaurant</CardTitle>
+                    <CardDescription>Medium restaurant</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€12<span className="text-sm text-muted-foreground">/mesiac</span></div>
+                    <div className="text-3xl font-bold mb-4">€12<span className="text-sm text-muted-foreground">/month</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>15 omaľovánok + menu</span>
+                        <span>15 coloring pages + menu</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>QR kód na digital menu</span>
+                        <span>QR code to digital menu</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Sezónne aktualizácie (4x/rok)</span>
+                        <span>Seasonal updates (4x/year)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Maskot reštaurácie</span>
+                        <span>Restaurant mascot</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Predplatiť</Button>
+                    <Button className="w-full mt-6">Subscribe</Button>
                   </CardContent>
                 </Card>
 
                 <Card className="border-2 border-primary hover:border-primary transition-all relative">
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Reťazce</Badge>
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Chains</Badge>
                   <CardHeader>
-                    <CardTitle>Chain Reštaurácia</CardTitle>
-                    <CardDescription>Reštauračné reťazce</CardDescription>
+                    <CardTitle>Chain Restaurant</CardTitle>
+                    <CardDescription>Restaurant chains</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€25<span className="text-sm text-muted-foreground">/pobočka</span></div>
+                    <div className="text-3xl font-bold mb-4">€25<span className="text-sm text-muted-foreground">/location</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>30 omaľovánok + menu</span>
+                        <span>30 coloring pages + menu</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Loyalty program integrácia</span>
+                        <span>Loyalty program integration</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>POS system integrácia</span>
+                        <span>POS system integration</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Mesačné kampane</span>
+                        <span>Monthly campaigns</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
                         <span>Analytics dashboard</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Kontaktovať</Button>
+                    <Button className="w-full mt-6">Contact</Button>
                   </CardContent>
                 </Card>
 
                 <Card className="border-2 hover:border-primary/50 transition-all">
                   <CardHeader>
                     <CardTitle>Fast Food Premium</CardTitle>
-                    <CardDescription>Veľké fast food reťazce</CardDescription>
+                    <CardDescription>Large fast food chains</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€40<span className="text-sm text-muted-foreground">/pobočka</span></div>
+                    <div className="text-3xl font-bold mb-4">€40<span className="text-sm text-muted-foreground">/location</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Unlimited omaľovánky</span>
+                        <span>Unlimited coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>In-tablet coloring pre deti</span>
+                        <span>In-tablet coloring for kids</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Gamifikácia (zbieraj odznaky)</span>
+                        <span>Gamification (collect badges)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Campaigns na sociálne siete</span>
+                        <span>Social media campaigns</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>White-label riešenie</span>
+                        <span>White-label solution</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Kontaktovať</Button>
+                    <Button className="w-full mt-6">Contact</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -366,29 +366,29 @@ const CorporateEvents = () => {
               <div className="grid md:grid-cols-2 gap-6 mt-12">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Funkcie pre Reštaurácie</CardTitle>
+                    <CardTitle>Features for Restaurants</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
                         <div>
-                          <h4 className="font-semibold">Menu ako Omaľovánka</h4>
-                          <p className="text-sm text-muted-foreground">Jedlá z menu ilustrované ako omaľovánky - deti sa učia o jedle.</p>
+                          <h4 className="font-semibold">Menu as Coloring Pages</h4>
+                          <p className="text-sm text-muted-foreground">Menu items illustrated as coloring pages - kids learn about food.</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
                         <div>
-                          <h4 className="font-semibold">QR Kódy</h4>
-                          <p className="text-sm text-muted-foreground">Skenovanie QR kódu otvorí digital coloring alebo hru.</p>
+                          <h4 className="font-semibold">QR Codes</h4>
+                          <p className="text-sm text-muted-foreground">Scanning QR code opens digital coloring or game.</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
                         <div>
-                          <h4 className="font-semibold">Sezónne Kampane</h4>
-                          <p className="text-sm text-muted-foreground">Vianoce, Veľká noc, Halloween - tematické omaľovánky.</p>
+                          <h4 className="font-semibold">Seasonal Campaigns</h4>
+                          <p className="text-sm text-muted-foreground">Christmas, Easter, Halloween - themed coloring pages.</p>
                         </div>
                       </li>
                     </ul>
@@ -397,29 +397,29 @@ const CorporateEvents = () => {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>ROI Prínosy</CardTitle>
+                    <CardTitle>ROI Benefits</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <ul className="space-y-3">
                       <li className="flex items-start gap-3">
                         <TrendingUp className="w-5 h-5 text-primary mt-0.5" />
                         <div>
-                          <h4 className="font-semibold">Dlhšie Návštevy</h4>
-                          <p className="text-sm text-muted-foreground">Rodičia strávia viac času, objednajú si viac jedla/nápojov.</p>
+                          <h4 className="font-semibold">Longer Visits</h4>
+                          <p className="text-sm text-muted-foreground">Parents spend more time, order more food/drinks.</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <TrendingUp className="w-5 h-5 text-primary mt-0.5" />
                         <div>
                           <h4 className="font-semibold">Word-of-Mouth Marketing</h4>
-                          <p className="text-sm text-muted-foreground">Rodičia zdieľajú pozitívne skúsenosti, deti si pamätajú reštauráciu.</p>
+                          <p className="text-sm text-muted-foreground">Parents share positive experiences, kids remember the restaurant.</p>
                         </div>
                       </li>
                       <li className="flex items-start gap-3">
                         <TrendingUp className="w-5 h-5 text-primary mt-0.5" />
                         <div>
                           <h4 className="font-semibold">Brand Loyalty</h4>
-                          <p className="text-sm text-muted-foreground">Rodiny sa vracajú kvôli skvelej atmosfére pre deti.</p>
+                          <p className="text-sm text-muted-foreground">Families return because of great atmosphere for kids.</p>
                         </div>
                       </li>
                     </ul>
@@ -431,9 +431,9 @@ const CorporateEvents = () => {
             {/* WEDDINGS */}
             <TabsContent value="weddings" className="space-y-8">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Svadby & Súkromné Oslavy</h2>
+                <h2 className="text-4xl font-bold mb-4">Weddings & Private Celebrations</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Custom coloring pages ako darčeky pre deti hostí. Ilustrácie párov, wedding venues, love story timeline a viac.
+                  Custom coloring pages as gifts for guests' children. Illustrations of couples, wedding venues, love story timeline and more.
                 </p>
               </div>
 
@@ -444,137 +444,137 @@ const CorporateEvents = () => {
                       <Heart className="w-5 h-5 text-primary" />
                       Mini Celebration
                     </CardTitle>
-                    <CardDescription>Malá oslava (do 20 detí)</CardDescription>
+                    <CardDescription>Small celebration (up to 20 kids)</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold mb-4">€20<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>5 vlastných omaľovánok</span>
+                        <span>5 custom coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Mená páru/oslavenca</span>
+                        <span>Couple/celebrant names</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Dátum udalosti</span>
+                        <span>Event date</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
                         <span>PDF download</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Objednať</Button>
+                    <Button className="w-full mt-6">Order</Button>
                   </CardContent>
                 </Card>
 
                 <Card className="border-2 hover:border-primary/50 transition-all">
                   <CardHeader>
                     <CardTitle>Standard Wedding</CardTitle>
-                    <CardDescription>Stredná svadba (20-50 detí)</CardDescription>
+                    <CardDescription>Medium wedding (20-50 kids)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€50<span className="text-sm text-muted-foreground">/svadba</span></div>
+                    <div className="text-3xl font-bold mb-4">€50<span className="text-sm text-muted-foreground">/wedding</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>10 vlastných omaľovánok</span>
+                        <span>10 custom coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Ilustrácia páru</span>
+                        <span>Couple illustration</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Wedding venue ilustrácia</span>
+                        <span>Wedding venue illustration</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Love story timeline (3-5 momentov)</span>
+                        <span>Love story timeline (3-5 moments)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>PDF + print súbory</span>
+                        <span>PDF + print files</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Objednať</Button>
+                    <Button className="w-full mt-6">Order</Button>
                   </CardContent>
                 </Card>
 
                 <Card className="border-2 border-primary hover:border-primary transition-all relative">
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Najpopulárnejšie</Badge>
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>
                   <CardHeader>
                     <CardTitle>Premium Wedding</CardTitle>
-                    <CardDescription>Veľká svadba (50-100 detí)</CardDescription>
+                    <CardDescription>Large wedding (50-100 kids)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€100<span className="text-sm text-muted-foreground">/svadba</span></div>
+                    <div className="text-3xl font-bold mb-4">€100<span className="text-sm text-muted-foreground">/wedding</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>20 vlastných omaľovánok</span>
+                        <span>20 custom coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Activity book (hry, hádanky)</span>
+                        <span>Activity book (games, puzzles)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Ilustrácia celej rodiny/družičiek</span>
+                        <span>Full family/bridesmaids illustration</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>"Thank you" omaľovánky pre hostí</span>
+                        <span>"Thank you" coloring pages for guests</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Tlač + doručenie</span>
+                        <span>Print + delivery</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Personalizované farbičky</span>
+                        <span>Personalized crayons</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Objednať</Button>
+                    <Button className="w-full mt-6">Order</Button>
                   </CardContent>
                 </Card>
 
                 <Card className="border-2 hover:border-primary/50 transition-all">
                   <CardHeader>
                     <CardTitle>Deluxe Wedding</CardTitle>
-                    <CardDescription>Luxusná svadba (100+ detí)</CardDescription>
+                    <CardDescription>Luxury wedding (100+ kids)</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€200<span className="text-sm text-muted-foreground">/svadba</span></div>
+                    <div className="text-3xl font-bold mb-4">€200<span className="text-sm text-muted-foreground">/wedding</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Unlimited omaľovánky</span>
+                        <span>Unlimited coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Kompletná love story kniha (30+ strán)</span>
+                        <span>Complete love story book (30+ pages)</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Live coloring station na svadbe</span>
+                        <span>Live coloring station at wedding</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Custom invitations ako omaľovánky</span>
+                        <span>Custom invitations as coloring pages</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Premium tlač + luxury packaging</span>
+                        <span>Premium print + luxury packaging</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Fotografická kniha po svadbe</span>
+                        <span>Photo book after wedding</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Kontaktovať</Button>
+                    <Button className="w-full mt-6">Contact</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -582,32 +582,32 @@ const CorporateEvents = () => {
               {/* Wedding Ideas */}
               <Card className="mt-12">
                 <CardHeader>
-                  <CardTitle>Kreatívne Nápady pre Svadby</CardTitle>
+                  <CardTitle>Creative Ideas for Weddings</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-1">
-                      <AccordionTrigger>Omaľovánky ako Pozvánky</AccordionTrigger>
+                      <AccordionTrigger>Coloring Pages as Invitations</AccordionTrigger>
                       <AccordionContent>
-                        Vytvorte unikátne pozvánky, kde deti hostí môžu omaľovať ilustráciu páru alebo venue. QR kód ich zavedie na RSVP stránku.
+                        Create unique invitations where guests' children can color an illustration of the couple or venue. QR code leads them to RSVP page.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-2">
                       <AccordionTrigger>Love Story Timeline</AccordionTrigger>
                       <AccordionContent>
-                        Ilustrujte kľúčové momenty vzťahu páru (prvé stretnutie, zásnuby, atď.) ako omaľovánky. Deti sa učia o príbehu lásky.
+                        Illustrate key moments of the couple's relationship (first meeting, engagement, etc.) as coloring pages. Kids learn about the love story.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-3">
-                      <AccordionTrigger>Activity Books na Obrade</AccordionTrigger>
+                      <AccordionTrigger>Activity Books at Ceremony</AccordionTrigger>
                       <AccordionContent>
-                        Pre dlhé obrady - activity books s tichými hrami, hádankami a omaľovánkami, aby deti boli pokojné a bavili sa.
+                        For long ceremonies - activity books with quiet games, puzzles and coloring pages to keep kids calm and entertained.
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-4">
-                      <AccordionTrigger>"Thank You" Omaľovánky</AccordionTrigger>
+                      <AccordionTrigger>"Thank You" Coloring Pages</AccordionTrigger>
                       <AccordionContent>
-                        Po svadbe pošlite hosťom omaľovánku s fotografiami zo svadby - unique thank you card, ktorú si deti užijú.
+                        After the wedding, send guests coloring pages with photos from the wedding - a unique thank you card that kids will enjoy.
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -618,9 +618,9 @@ const CorporateEvents = () => {
             {/* EVENT ORGANIZERS */}
             <TabsContent value="events" className="space-y-8">
               <div className="text-center mb-12">
-                <h2 className="text-4xl font-bold mb-4">Event Organizátori & Agentúry</h2>
+                <h2 className="text-4xl font-bold mb-4">Event Organizers & Agencies</h2>
                 <p className="text-muted-foreground max-w-2xl mx-auto">
-                  B2B licencie, on-site tlač, custom booth design, live AI generovanie a sociálne médiá integrácia.
+                  B2B licenses, on-site printing, custom booth design, live AI generation and social media integration.
                 </p>
               </div>
 
@@ -631,18 +631,18 @@ const CorporateEvents = () => {
                       <Calendar className="w-5 h-5 text-primary" />
                       Event Planner
                     </CardTitle>
-                    <CardDescription>Pre event plannerov</CardDescription>
+                    <CardDescription>For event planners</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="text-3xl font-bold mb-4">€80<span className="text-sm text-muted-foreground">/event</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Custom coloring books pre každý event</span>
+                        <span>Custom coloring books for each event</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>On-site printing servis</span>
+                        <span>On-site printing service</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -654,37 +654,37 @@ const CorporateEvents = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Social media integrácia</span>
+                        <span>Social media integration</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Photo booth upload na omaľovánku</span>
+                        <span>Photo booth upload to coloring page</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Objednať</Button>
+                    <Button className="w-full mt-6">Order</Button>
                   </CardContent>
                 </Card>
 
                 <Card className="border-2 border-primary hover:border-primary transition-all relative">
-                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Pre Agentúry</Badge>
+                  <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">For Agencies</Badge>
                   <CardHeader>
                     <CardTitle>Agency Premium</CardTitle>
-                    <CardDescription>Event agentúry & production houses</CardDescription>
+                    <CardDescription>Event agencies & production houses</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="text-3xl font-bold mb-4">€200<span className="text-sm text-muted-foreground">/mesiac</span></div>
+                    <div className="text-3xl font-bold mb-4">€200<span className="text-sm text-muted-foreground">/month</span></div>
                     <ul className="space-y-2 text-sm">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Unlimited eventy</span>
+                        <span>Unlimited events</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>White-label platforma</span>
+                        <span>White-label platform</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Live AI generovanie na eventoch</span>
+                        <span>Live AI generation at events</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -692,7 +692,7 @@ const CorporateEvents = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>API prístup</span>
+                        <span>API access</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -700,10 +700,10 @@ const CorporateEvents = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Prioritná podpora</span>
+                        <span>Priority support</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Kontaktovať</Button>
+                    <Button className="w-full mt-6">Contact</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -718,15 +718,15 @@ const CorporateEvents = () => {
                     <ul className="space-y-3">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
-                        <span className="text-sm">Mobilná tlačiareň - instant print na evente</span>
+                        <span className="text-sm">Mobile printer - instant print at event</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
-                        <span className="text-sm">Coloring booth s brandingom</span>
+                        <span className="text-sm">Coloring booth with branding</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
-                        <span className="text-sm">Live AI generovanie (nahrať fotku → omaľovánka)</span>
+                        <span className="text-sm">Live AI generation (upload photo → coloring page)</span>
                       </li>
                     </ul>
                   </CardContent>
@@ -740,7 +740,7 @@ const CorporateEvents = () => {
                     <ul className="space-y-3">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
-                        <span className="text-sm">QR kódy - skenovať a stiahnuť</span>
+                        <span className="text-sm">QR codes - scan and download</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
@@ -748,7 +748,7 @@ const CorporateEvents = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
-                        <span className="text-sm">Event app integrácia</span>
+                        <span className="text-sm">Event app integration</span>
                       </li>
                     </ul>
                   </CardContent>
@@ -762,7 +762,7 @@ const CorporateEvents = () => {
                     <ul className="space-y-3">
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
-                        <span className="text-sm">Kompletný white-label branding</span>
+                        <span className="text-sm">Complete white-label branding</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
@@ -785,9 +785,9 @@ const CorporateEvents = () => {
       <section className="py-16 px-4 bg-secondary/30">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Špecializované Riešenia</h2>
+            <h2 className="text-4xl font-bold mb-4">Specialized Solutions</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Ďalšie odvetvia, kde naše riešenia prinášajú hodnotu
+              Other industries where our solutions bring value
             </p>
           </div>
 
@@ -859,7 +859,7 @@ const CorporateEvents = () => {
       <section className="py-16 px-4">
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Pokročilé B2B Funkcie</h2>
+            <h2 className="text-4xl font-bold mb-4">Advanced B2B Features</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -914,16 +914,16 @@ const CorporateEvents = () => {
       {/* CTA Section */}
       <section className="py-20 px-4 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10">
         <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-4xl font-bold mb-6">Pripravení Začať?</h2>
+          <h2 className="text-4xl font-bold mb-6">Ready to Start?</h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Kontaktujte nás pre individuálnu ponuku alebo objednajte demo prezentáciu.
+            Contact us for an individual quote or book a demo presentation.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" className="gap-2">
               <Calendar className="w-5 h-5" />
-              Objednať Demo
+              Book Demo
             </Button>
-            <Button size="lg" variant="outline">Požiadať o Ponuku</Button>
+            <Button size="lg" variant="outline">Request Quote</Button>
           </div>
         </div>
       </section>
