@@ -206,8 +206,8 @@ const KidsChannel = () => {
         <img 
           src={castleBg} 
           alt="Disney Castle" 
-          className="w-full h-full object-cover object-left"
-          style={{ objectPosition: "35% center" }}
+          className="w-full h-full object-cover"
+          style={{ objectPosition: "center 40%" }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 via-transparent to-purple-900/50"></div>
         
