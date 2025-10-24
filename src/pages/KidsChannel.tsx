@@ -365,7 +365,7 @@ const KidsChannel = () => {
 
           {/* Bedtime Stories - Bottom Center More Visible */}
           <Card 
-            className="group absolute bottom-32 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
+            className="group absolute bottom-56 left-1/2 -translate-x-1/2 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
             style={{ animationDelay: "0.5s" }}
             onClick={() => navigate('/kids-stories/bedtime')}
           >
