@@ -233,3 +233,12 @@ verify_jwt = false
 
 [functions.generate-character-image]
 verify_jwt = false
+
+[functions.create-school-subscription]
+verify_jwt = true
+
+[functions.check-school-subscription]
+verify_jwt = true
+
+[functions.generate-teacher-coloring]
+verify_jwt = true
