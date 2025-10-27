@@ -4,7 +4,7 @@ export interface Character {
   personality: string;
   emoji: string;
   color: string;
-  characterType?: string;
+  characterType: string;
 }
 
 export interface CharacterCategory {

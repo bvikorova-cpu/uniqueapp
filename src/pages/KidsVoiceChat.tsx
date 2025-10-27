@@ -8,6 +8,7 @@ import type { Character } from "@/data/kidsCharacters";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
+import { CharacterCard } from "@/components/kids/CharacterCard";
 
 export default function KidsVoiceChat() {
   const navigate = useNavigate();
@@ -136,20 +137,11 @@ export default function KidsVoiceChat() {
                   </h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {category.characters.map((character) => (
-                      <Button
+                      <CharacterCard
                         key={character.id}
+                        character={character}
                         onClick={() => startNewChat(character)}
-                        className={`h-auto py-0 flex flex-col items-center gap-0 bg-gradient-to-br ${character.color} hover:opacity-90 transition-all duration-300 hover:scale-105 shadow-lg overflow-hidden group`}
-                      >
-                        <div className="w-full aspect-square flex items-center justify-center bg-white/10 group-hover:bg-white/20 transition-colors">
-                          <span className="text-7xl transform group-hover:scale-110 transition-transform">{character.emoji}</span>
-                        </div>
-                        <div className="w-full py-3 px-2 bg-white/90">
-                          <span className="text-sm font-bold text-gray-800">
-                            {character.name}
-                          </span>
-                        </div>
-                      </Button>
+                      />
                     ))}
                   </div>
                 </Card>
