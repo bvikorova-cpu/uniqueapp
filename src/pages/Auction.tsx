@@ -168,7 +168,38 @@ const Auction = () => {
       const endsAt = new Date();
       endsAt.setHours(endsAt.getHours() + parseInt(duration));
 
-      // Create auction first
+      // Upload images first if selected
+      let firstImageUrl = null;
+      const uploadedPhotos: string[] = [];
+      
+      if (imageFiles.length > 0) {
+        for (const file of imageFiles) {
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${user.id}-${Date.now()}-${Math.random()}.${fileExt}`;
+          
+          const { error: uploadError } = await supabase.storage
+            .from('bazaar_images')
+            .upload(fileName, file);
+
+          if (uploadError) {
+            console.error('Upload error:', uploadError);
+            throw uploadError;
+          }
+          
+          const { data: { publicUrl } } = supabase.storage
+            .from('bazaar_images')
+            .getPublicUrl(fileName);
+
+          uploadedPhotos.push(publicUrl);
+          
+          // Save first image as main image
+          if (!firstImageUrl) {
+            firstImageUrl = publicUrl;
+          }
+        }
+      }
+
+      // Create auction with image_url already set
       const { data: auctionData, error: auctionError } = await supabase
         .from("auction_items")
         .insert({
@@ -181,48 +212,29 @@ const Auction = () => {
           category,
           condition,
           ends_at: endsAt.toISOString(),
-          image_url: null,
+          image_url: firstImageUrl,
         })
         .select()
         .single();
 
-      if (auctionError) throw auctionError;
+      if (auctionError) {
+        console.error('Auction create error:', auctionError);
+        throw auctionError;
+      }
 
-      // Upload images if selected
-      let firstImageUrl = null;
-      if (imageFiles.length > 0) {
-        for (let i = 0; i < imageFiles.length; i++) {
-          const file = imageFiles[i];
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${user.id}-${Date.now()}-${Math.random()}.${fileExt}`;
-          const { error: uploadError } = await supabase.storage
-            .from('bazaar_images')
-            .upload(fileName, file);
-
-          if (uploadError) throw uploadError;
+      // Save all photos to auction_photos table
+      if (uploadedPhotos.length > 0) {
+        const photoInserts = uploadedPhotos.map(photoUrl => ({
+          auction_id: auctionData.id,
+          photo_url: photoUrl,
+        }));
+        
+        const { error: photosError } = await supabase
+          .from("auction_photos")
+          .insert(photoInserts);
           
-          const { data: { publicUrl } } = supabase.storage
-            .from('bazaar_images')
-            .getPublicUrl(fileName);
-
-          // Save first image as main image
-          if (i === 0) {
-            firstImageUrl = publicUrl;
-          }
-
-          // Save photo to auction_photos table
-          await supabase.from("auction_photos").insert({
-            auction_id: auctionData.id,
-            photo_url: publicUrl,
-          });
-        }
-
-        // Update auction with first image
-        if (firstImageUrl) {
-          await supabase
-            .from("auction_items")
-            .update({ image_url: firstImageUrl })
-            .eq("id", auctionData.id);
+        if (photosError) {
+          console.error('Photos insert error:', photosError);
         }
       }
 
