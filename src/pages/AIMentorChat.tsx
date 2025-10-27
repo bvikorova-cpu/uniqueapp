@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import {
   Send,
   ArrowLeft,
@@ -20,6 +21,7 @@ const AIMentorChat = () => {
   const { area } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const [user, setUser] = useState<any>(null);
@@ -31,8 +33,10 @@ const AIMentorChat = () => {
   const [checkins, setCheckins] = useState<any[]>([]);
 
   useEffect(() => {
-    checkUser();
-  }, [area]);
+    if (!adminLoading) {
+      checkUser();
+    }
+  }, [area, isAdmin, adminLoading]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,22 +51,25 @@ const AIMentorChat = () => {
       }
       setUser(user);
 
-      // Check subscription
-      const { data: sub } = await supabase
-        .from('mentor_subscriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('mentor_area', area as any)
-        .eq('status', 'active')
-        .maybeSingle();
+      // Admin má vždy prístup
+      if (!isAdmin) {
+        // Check subscription len pre non-admin používateľov
+        const { data: sub } = await supabase
+          .from('mentor_subscriptions')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('mentor_area', area as any)
+          .eq('status', 'active')
+          .maybeSingle();
 
-      if (!sub) {
-        toast({
-          title: "Subscription required",
-          description: "You need an active subscription for this mentor area",
-        });
-        navigate('/subscription');
-        return;
+        if (!sub) {
+          toast({
+            title: "Subscription required",
+            description: "You need an active subscription for this mentor area",
+          });
+          navigate('/subscription');
+          return;
+        }
       }
 
       // Load session and data
