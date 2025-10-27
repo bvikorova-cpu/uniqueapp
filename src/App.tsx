@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
@@ -262,7 +263,11 @@ const App = () => (
           <Route path="/corporate-events" element={<CorporateEvents />} />
           <Route path="/brand-battle" element={<BrandBattle />} />
           <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
-          <Route path="/ai-monetization" element={<AIMonetization />} />
+          <Route path="/ai-monetization" element={
+            <ProtectedRoute requireAdmin={true}>
+              <AIMonetization />
+            </ProtectedRoute>
+          } />
           <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/fashion-studio" element={<FashionStudio />} />
           <Route path="/nutrition-hub" element={<NutritionHub />} />
