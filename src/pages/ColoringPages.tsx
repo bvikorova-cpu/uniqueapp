@@ -50,10 +50,14 @@ export default function ColoringPages() {
         setIsUploading(true);
         try {
           const { data: { user } } = await supabase.auth.getUser();
-          if (!user) throw new Error("Not authenticated");
+          if (!user) {
+            throw new Error("Not authenticated");
+          }
 
           const fileExt = uploadedFile.name.split('.').pop();
           const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+          console.log("Uploading file to storage:", fileName);
 
           const { data, error } = await supabase.storage
             .from('coloring-images')
@@ -62,23 +66,41 @@ export default function ColoringPages() {
               upsert: false
             });
 
-          if (error) throw error;
+          if (error) {
+            console.error("Storage upload error:", error);
+            throw new Error(`Upload failed: ${error.message}`);
+          }
 
           const { data: { publicUrl } } = supabase.storage
             .from('coloring-images')
             .getPublicUrl(fileName);
 
+          console.log("File uploaded successfully, URL:", publicUrl);
           finalImageUrl = publicUrl;
+        } catch (uploadError) {
+          console.error("Upload error:", uploadError);
+          toast.error(uploadError instanceof Error ? uploadError.message : "Failed to upload image");
+          throw uploadError;
         } finally {
           setIsUploading(false);
         }
       }
 
+      if (!finalImageUrl) {
+        throw new Error("No image provided");
+      }
+
+      console.log("Calling generate-coloring-page with URL:", finalImageUrl);
+
       const { data, error } = await supabase.functions.invoke("generate-coloring-page", {
         body: { imageUrl: finalImageUrl, difficulty },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Generate error:", error);
+        throw error;
+      }
+      
       return data;
     },
     onSuccess: (data) => {
