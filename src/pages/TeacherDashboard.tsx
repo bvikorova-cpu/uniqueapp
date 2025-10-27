@@ -25,6 +25,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import CreateCollectionDialog from "@/components/teacher/CreateCollectionDialog";
 import InviteTeacherDialog from "@/components/teacher/InviteTeacherDialog";
+import CollectionColoringPages from "@/components/teacher/CollectionColoringPages";
 
 interface Collection {
   id: string;
@@ -166,8 +167,10 @@ export default function TeacherDashboard() {
     setShowCreateDialog(true);
   };
 
-  const handleEditCollection = (id: string) => {
-    toast.info(`Edit collection feature - navigate to collection editor`);
+  const [selectedCollection, setSelectedCollection] = useState<Collection | null>(null);
+
+  const handleEditCollection = (collection: Collection) => {
+    setSelectedCollection(collection);
   };
 
   const handleDownloadCollection = async (id: string, name: string) => {
@@ -426,9 +429,9 @@ export default function TeacherDashboard() {
                         <span className="font-medium">{new Date(collection.created_at).toLocaleDateString()}</span>
                       </div>
                       <div className="flex gap-2 pt-2">
-                        <Button size="sm" variant="outline" className="flex-1" onClick={() => handleEditCollection(collection.id)}>
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => handleEditCollection(collection)}>
                           <Edit className="h-4 w-4 mr-1" />
-                          Edit
+                          View/Edit
                         </Button>
                         <Button size="sm" variant="outline" className="flex-1" onClick={() => handleDownloadCollection(collection.id, collection.name)}>
                           <Download className="h-4 w-4 mr-1" />
@@ -446,6 +449,15 @@ export default function TeacherDashboard() {
                 </Card>
               ))}
             </div>
+
+            {selectedCollection && (
+              <div className="mt-8 pt-8 border-t">
+                <CollectionColoringPages
+                  collectionId={selectedCollection.id}
+                  collectionName={selectedCollection.name}
+                />
+              </div>
+            )}
           </TabsContent>
 
           {/* Team Tab */}
