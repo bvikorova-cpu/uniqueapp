@@ -1712,6 +1712,39 @@ export type Database = {
         }
         Relationships: []
       }
+      collectible_purchases: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          product_type: string
+          status: string
+          stripe_payment_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          id?: string
+          product_type: string
+          status?: string
+          stripe_payment_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          product_type?: string
+          status?: string
+          stripe_payment_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       collectible_rarities: {
         Row: {
           color: string
@@ -8541,6 +8574,42 @@ export type Database = {
         }
         Relationships: []
       }
+      vip_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       virtual_tours: {
         Row: {
           created_at: string | null
@@ -8828,6 +8897,7 @@ export type Database = {
         Args: { conversation_id: string; user_id: string }
         Returns: boolean
       }
+      is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
     }
     Enums: {
       accessory_type:
