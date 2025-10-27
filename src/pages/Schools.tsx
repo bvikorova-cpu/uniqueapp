@@ -98,16 +98,21 @@ const SUBJECT_COLLECTIONS = [
 
 export default function Schools() {
   const [loading, setLoading] = useState<string | null>(null);
-  const { isAdmin } = useIsAdmin();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const navigate = useNavigate();
 
   const handleSubscribe = async (tierId: string) => {
+    console.log("handleSubscribe called", { tierId, isAdmin, adminLoading });
+    
     // Admin môže preskočiť platbu a ísť priamo na dashboard
     if (isAdmin) {
+      console.log("Admin detected, navigating to dashboard");
       toast.success("Admin prístup - priame presmerovanie na dashboard");
       navigate('/teacher-dashboard');
       return;
     }
+
+    console.log("Not admin, proceeding with subscription flow");
 
     try {
       setLoading(tierId);
@@ -203,9 +208,9 @@ export default function Schools() {
                     className="w-full"
                     variant={tier.popular ? "default" : "outline"}
                     onClick={() => handleSubscribe(tier.id)}
-                    disabled={loading === tier.id}
+                    disabled={loading === tier.id || adminLoading}
                   >
-                    {loading === tier.id ? "Processing..." : "Subscribe Now"}
+                    {loading === tier.id ? "Processing..." : adminLoading ? "Loading..." : "Subscribe Now"}
                   </Button>
                 </CardFooter>
               </Card>
@@ -295,8 +300,12 @@ export default function Schools() {
           </CardHeader>
           <CardContent className="text-center">
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button size="lg" onClick={() => handleSubscribe("elementary")}>
-                Start Free Trial
+              <Button 
+                size="lg" 
+                onClick={() => handleSubscribe("elementary")}
+                disabled={adminLoading}
+              >
+                {adminLoading ? "Loading..." : "Start Free Trial"}
               </Button>
               <Button size="lg" variant="outline">
                 Contact Sales
