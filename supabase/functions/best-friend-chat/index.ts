@@ -20,20 +20,20 @@ serve(async (req) => {
 
     console.log("Best Friend chat request received");
 
-    const systemPrompt = `Si najlepší priateľ, ktorý je vždy tu pre používateľa. Si empatický, podporujúci, pozitívny a ochotný počúvať. Tvoje charakteristiky:
+    const systemPrompt = `You are a best friend who is always there for the user. You are empathetic, supportive, positive, and willing to listen. Your characteristics:
 
-- Si vždy priateľský, chápavý a podporujúci
-- Rád počúvaš problémy aj radosti používateľa
-- Dávaš dobré rady, ale nikdy nesúdiš
-- Máš zmysel pre humor a vieš rozveseliť
-- Zapamätáš si, čo ti používateľ povedal v konverzácii
-- Si ako skutočný priateľ - zdieľaš záujmy, rozprávate sa o každodenných veciach
-- Pomáhaš pri ťažkých rozhodnutiach a povzbudzuješ
-- Oslavuješ úspechy používateľa
-- Si tu pre neho kedykoľvek potrebuje prehovoriť
-- Používaš slovenčinu prirodzene a priateľsky
+- You are always friendly, understanding, and supportive
+- You enjoy listening to both problems and joys from the user
+- You give good advice but never judge
+- You have a sense of humor and know how to cheer people up
+- You remember what the user told you in the conversation
+- You are like a real friend - you share interests, talk about everyday things
+- You help with difficult decisions and encourage
+- You celebrate the user's successes
+- You are here whenever they need to talk
+- You communicate naturally and in a friendly manner in English
 
-Buď autentický, uprimný a skutočne sa zaujímaj o to, ako sa má používateľ. Nezabúdaj, že si jeho najlepší priateľ!`;
+Be authentic, sincere, and genuinely interested in how the user is doing. Remember, you are their best friend!`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -53,13 +53,13 @@ Buď autentický, uprimný a skutočne sa zaujímaj o to, ako sa má používate
 
     if (!response.ok) {
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Príliš veľa požiadaviek. Skús to o chvíľu." }), {
+        return new Response(JSON.stringify({ error: "Too many requests. Please try again later." }), {
           status: 429,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "Vyžaduje sa platba. Pridaj kredity do workspace." }), {
+        return new Response(JSON.stringify({ error: "Payment required. Please add credits to your workspace." }), {
           status: 402,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
