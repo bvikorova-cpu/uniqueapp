@@ -351,59 +351,6 @@ const Jobs = () => {
             </p>
           </div>
           <div className="flex gap-2">
-            <Dialog open={showJobSeekerDialog} onOpenChange={setShowJobSeekerDialog}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Search className="h-4 w-4 mr-2" />
-                  Looking for a Job
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                  <DialogTitle>Looking for a Job</DialogTitle>
-                  <DialogDescription>
-                    Enter details about what kind of job you're looking for
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="seeker-position">Position *</Label>
-                    <Input
-                      id="seeker-position"
-                      value={jobSeekerProfile.position}
-                      onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, position: e.target.value })}
-                      placeholder="e.g. Frontend Developer"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="seeker-location">Location *</Label>
-                    <Input
-                      id="seeker-location"
-                      value={jobSeekerProfile.location}
-                      onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, location: e.target.value })}
-                      placeholder="e.g. Bratislava or Remote"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="seeker-description">Description *</Label>
-                    <Textarea
-                      id="seeker-description"
-                      value={jobSeekerProfile.description}
-                      onChange={(e) => setJobSeekerProfile({ ...jobSeekerProfile, description: e.target.value })}
-                      placeholder="Describe your experience, skills and what you're looking for..."
-                      rows={6}
-                    />
-                  </div>
-                  <Button 
-                    className="w-full" 
-                    onClick={() => createJobSeekerMutation.mutate()}
-                    disabled={createJobSeekerMutation.isPending || !jobSeekerProfile.position || !jobSeekerProfile.location || !jobSeekerProfile.description}
-                  >
-                    {createJobSeekerMutation.isPending ? "Creating..." : "Create Profile"}
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
             {isEmployer ? (
               <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogTrigger asChild>
