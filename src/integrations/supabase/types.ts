@@ -8033,6 +8033,44 @@ export type Database = {
           },
         ]
       }
+      teacher_coloring_pages: {
+        Row: {
+          collection_id: string
+          created_at: string
+          created_by: string
+          id: string
+          image_url: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          collection_id: string
+          created_at?: string
+          created_by: string
+          id?: string
+          image_url: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          collection_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          image_url?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_coloring_pages_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "teacher_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tracks: {
         Row: {
           artist: string
@@ -9144,6 +9182,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_collection_pages: {
+        Args: { p_collection_id: string }
+        Returns: undefined
       }
       is_conversation_participant: {
         Args: { conversation_id: string; user_id: string }
