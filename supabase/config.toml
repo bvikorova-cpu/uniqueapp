@@ -227,6 +227,3 @@ verify_jwt = true
 
 [functions.kids-character-chat]
 verify_jwt = false
-
-[functions.generate-character-image]
-verify_jwt = false
