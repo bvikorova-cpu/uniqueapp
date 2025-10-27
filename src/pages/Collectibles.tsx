@@ -3,17 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Box, Store, Users } from "lucide-react";
+import { Sparkles, Box, Store, Users, Coins } from "lucide-react";
 import GenerateCollectible from "@/components/collectibles/GenerateCollectible";
 import MyCollection from "@/components/collectibles/MyCollection";
 import MysteryBoxes from "@/components/collectibles/MysteryBoxes";
 import CollectiblesMarketplace from "@/components/collectibles/CollectiblesMarketplace";
 import VipSubscription from "@/components/collectibles/VipSubscription";
 import PurchaseHistory from "@/components/collectibles/PurchaseHistory";
+import BuyCreditsDialog from "@/components/collectibles/BuyCreditsDialog";
 
 export default function Collectibles() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const [showBuyDialog, setShowBuyDialog] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -36,7 +38,7 @@ export default function Collectibles() {
   return (
     <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-7xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
             <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent flex items-center gap-2">
               <Sparkles className="h-8 w-8" />
@@ -46,6 +48,10 @@ export default function Collectibles() {
               Collect unique AI-generated items, open mystery boxes and trade with others
             </p>
           </div>
+          <Button onClick={() => setShowBuyDialog(true)} size="lg" className="gap-2">
+            <Coins className="h-5 w-5" />
+            Buy Credits
+          </Button>
         </div>
 
         <Tabs defaultValue="generate" className="space-y-6">
@@ -95,6 +101,8 @@ export default function Collectibles() {
             </div>
           </TabsContent>
         </Tabs>
+
+        <BuyCreditsDialog open={showBuyDialog} onOpenChange={setShowBuyDialog} />
       </div>
     </div>
   );

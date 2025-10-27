@@ -1,7 +1,8 @@
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useCollectibles } from "@/hooks/useCollectibles";
-import { Loader2, Package } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import CollectibleCard from "./CollectibleCard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface MyCollectionProps {
   userId: string;
@@ -12,8 +13,8 @@ export default function MyCollection({ userId }: MyCollectionProps) {
 
   if (isLoadingMy) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex items-center justify-center p-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -22,46 +23,105 @@ export default function MyCollection({ userId }: MyCollectionProps) {
     return (
       <Card className="p-12 text-center">
         <p className="text-muted-foreground">
-          You don't have any collectibles yet. Start by generating or opening a mystery box!
+          No collectibles yet. Start by generating your first one!
         </p>
       </Card>
     );
   }
 
+  const filterByType = (type?: string) => {
+    if (!type) return myCollectibles;
+    return myCollectibles.filter(c => c.collectible_type === type);
+  };
+
+  const allItems = myCollectibles;
+  const pets = filterByType('pet');
+  const artifacts = filterByType('artifact');
+  const cards = filterByType('card');
+  const badges = filterByType('badge');
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">My Collection</h2>
+      <div>
+        <h2 className="text-2xl font-bold mb-2">My Collection</h2>
         <p className="text-muted-foreground">
-          {myCollectibles.length} {myCollectibles.length === 1 ? 'item' : 'items'}
+          {myCollectibles.length} unique items
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {myCollectibles.map((item: any) => (
-          <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-            <div className="aspect-square relative bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-              <Package className="h-16 w-16 text-primary" />
-            </div>
-            
-            <div className="p-4">
-              <h3 className="font-semibold mb-1">Collectible Item</h3>
-              <p className="text-sm text-muted-foreground mb-2">
-                {item.acquired_method}
-              </p>
-              
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <Badge variant="outline">
-                  {item.acquired_method}
-                </Badge>
-                <span>
-                  {new Date(item.acquired_at).toLocaleDateString('sk-SK')}
-                </span>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="all">All ({allItems.length})</TabsTrigger>
+          <TabsTrigger value="pets">Pets ({pets.length})</TabsTrigger>
+          <TabsTrigger value="artifacts">Artifacts ({artifacts.length})</TabsTrigger>
+          <TabsTrigger value="cards">Cards ({cards.length})</TabsTrigger>
+          <TabsTrigger value="badges">Badges ({badges.length})</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {allItems.map((collectible) => (
+              <CollectibleCard key={collectible.id} collectible={collectible} />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="pets" className="mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {pets.length > 0 ? (
+              pets.map((collectible) => (
+                <CollectibleCard key={collectible.id} collectible={collectible} />
+              ))
+            ) : (
+              <Card className="col-span-full p-12 text-center">
+                <p className="text-muted-foreground">No pets collected yet</p>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="artifacts" className="mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {artifacts.length > 0 ? (
+              artifacts.map((collectible) => (
+                <CollectibleCard key={collectible.id} collectible={collectible} />
+              ))
+            ) : (
+              <Card className="col-span-full p-12 text-center">
+                <p className="text-muted-foreground">No artifacts collected yet</p>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="cards" className="mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {cards.length > 0 ? (
+              cards.map((collectible) => (
+                <CollectibleCard key={collectible.id} collectible={collectible} />
+              ))
+            ) : (
+              <Card className="col-span-full p-12 text-center">
+                <p className="text-muted-foreground">No cards collected yet</p>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="badges" className="mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {badges.length > 0 ? (
+              badges.map((collectible) => (
+                <CollectibleCard key={collectible.id} collectible={collectible} />
+              ))
+            ) : (
+              <Card className="col-span-full p-12 text-center">
+                <p className="text-muted-foreground">No badges earned yet</p>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
