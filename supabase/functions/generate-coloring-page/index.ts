@@ -30,12 +30,20 @@ serve(async (req) => {
     console.log("Generating coloring page for user:", user.id);
 
     // Check if user is admin
-    const { data: adminCheck } = await supabaseClient
+    const { data: adminCheck, error: adminError } = await supabaseClient
       .from("user_roles")
       .select("role")
       .eq("user_id", user.id)
       .eq("role", "admin")
       .maybeSingle();
+
+    if (adminError) {
+      console.error("Error checking admin status:", adminError);
+      return new Response(
+        JSON.stringify({ error: `Database error: ${adminError.message}` }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      );
+    }
 
     const isAdmin = !!adminCheck;
     console.log("User is admin:", isAdmin);
@@ -49,7 +57,15 @@ serve(async (req) => {
         .eq("user_id", user.id)
         .single();
 
-      if (creditsError || !data || data.credits_remaining < 1) {
+      if (creditsError) {
+        console.error("Error fetching credits:", creditsError);
+        return new Response(
+          JSON.stringify({ error: `Credits error: ${creditsError.message}` }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+        );
+      }
+
+      if (!data || data.credits_remaining < 1) {
         return new Response(
           JSON.stringify({ error: "Insufficient credits. Please purchase a plan." }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 402 }
