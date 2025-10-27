@@ -15,11 +15,15 @@ export function CharacterCard({ character, onClick }: CharacterCardProps) {
     const cacheKey = `character-image-${character.id}`;
     
     // Check if image is cached in localStorage
-    const cachedImage = localStorage.getItem(cacheKey);
-    if (cachedImage) {
-      setImageUrl(cachedImage);
-      setIsLoading(false);
-      return;
+    try {
+      const cachedImage = localStorage.getItem(cacheKey);
+      if (cachedImage) {
+        setImageUrl(cachedImage);
+        setIsLoading(false);
+        return;
+      }
+    } catch (e) {
+      console.warn('Failed to read from localStorage:', e);
     }
 
     // Generate new image if not cached
@@ -45,13 +49,17 @@ export function CharacterCard({ character, onClick }: CharacterCardProps) {
 
         const data = await response.json();
         if (data.imageUrl) {
-          // Cache the image in localStorage
-          localStorage.setItem(cacheKey, data.imageUrl);
+          // Try to cache the image, but don't fail if localStorage is full
+          try {
+            localStorage.setItem(cacheKey, data.imageUrl);
+          } catch (e) {
+            console.warn('Failed to cache image to localStorage:', e);
+          }
+          // Always set the image URL even if caching fails
           setImageUrl(data.imageUrl);
         }
       } catch (error) {
         console.error('Error generating character image:', error);
-        // Fallback to emoji if image generation fails
         setImageUrl(null);
       } finally {
         setIsLoading(false);
