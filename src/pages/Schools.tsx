@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, School, Users, Download, Sparkles, BarChart, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 const SCHOOL_TIERS = [
   {
@@ -97,8 +98,17 @@ const SUBJECT_COLLECTIONS = [
 
 export default function Schools() {
   const [loading, setLoading] = useState<string | null>(null);
+  const { isAdmin } = useIsAdmin();
+  const navigate = useNavigate();
 
   const handleSubscribe = async (tierId: string) => {
+    // Admin môže preskočiť platbu a ísť priamo na dashboard
+    if (isAdmin) {
+      toast.success("Admin prístup - priame presmerovanie na dashboard");
+      navigate('/teacher-dashboard');
+      return;
+    }
+
     try {
       setLoading(tierId);
       

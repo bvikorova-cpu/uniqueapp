@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useIsAdmin } from "./useIsAdmin";
 
 export const usePhotoCredits = () => {
   const queryClient = useQueryClient();
+  const { isAdmin } = useIsAdmin();
 
   const { data: credits, isLoading } = useQuery({
     queryKey: ["photo-credits"],
@@ -39,6 +41,11 @@ export const usePhotoCredits = () => {
     },
   });
 
+  // Admin má vždy neobmedzené kredity
+  const effectiveCredits = isAdmin 
+    ? { ...credits, credits_remaining: 999999 } 
+    : credits;
+
   const restorePhoto = useMutation({
     mutationFn: async ({ imageUrl, restorationType }: { imageUrl: string; restorationType: 'colorize' | 'repair' | 'enhance' }) => {
       const { data, error } = await supabase.functions.invoke('restore-old-photo', {
@@ -72,7 +79,7 @@ export const usePhotoCredits = () => {
   };
 
   return {
-    credits,
+    credits: effectiveCredits,
     isLoading,
     restorePhoto: restorePhoto.mutate,
     isRestoring: restorePhoto.isPending,

@@ -29,18 +29,39 @@ serve(async (req) => {
     const { imageUrl, difficulty = 'medium' } = await req.json();
     console.log("Generating coloring page for user:", user.id);
 
-    // Check credits
-    const { data: creditsData, error: creditsError } = await supabaseClient
-      .from("coloring_credits")
-      .select("*")
+    // Check if user is admin
+    const { data: adminCheck } = await supabaseClient
+      .from("user_roles")
+      .select("role")
       .eq("user_id", user.id)
-      .single();
+      .eq("role", "admin")
+      .maybeSingle();
 
-    if (creditsError || !creditsData || creditsData.credits_remaining < 1) {
-      return new Response(
-        JSON.stringify({ error: "Insufficient credits. Please purchase a plan." }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 402 }
-      );
+    const isAdmin = !!adminCheck;
+    console.log("User is admin:", isAdmin);
+
+    // Check credits (skip for admin)
+    let creditsData;
+    if (!isAdmin) {
+      const { data, error: creditsError } = await supabaseClient
+        .from("coloring_credits")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (creditsError || !data || data.credits_remaining < 1) {
+        return new Response(
+          JSON.stringify({ error: "Insufficient credits. Please purchase a plan." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 402 }
+        );
+      }
+      creditsData = data;
+    } else {
+      // Admin má neobmedzené kredity
+      creditsData = {
+        tier: 'premium',
+        credits_remaining: 999999
+      };
     }
 
     // Check if premium tier for quality
@@ -123,8 +144,8 @@ serve(async (req) => {
       throw pageError;
     }
 
-    // Deduct credit (unless unlimited premium)
-    if (creditsData.tier !== 'premium') {
+    // Deduct credit (unless unlimited premium or admin)
+    if (creditsData.tier !== 'premium' && !isAdmin) {
       const { error: updateError } = await supabaseClient
         .from("coloring_credits")
         .update({ credits_remaining: creditsData.credits_remaining - 1 })

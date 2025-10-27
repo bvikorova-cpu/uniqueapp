@@ -1,9 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useIsAdmin } from "./useIsAdmin";
 
 export const useColoringCredits = () => {
   const queryClient = useQueryClient();
+  const { isAdmin } = useIsAdmin();
 
   const { data: credits, isLoading } = useQuery({
     queryKey: ["coloring-credits"],
@@ -39,6 +41,11 @@ export const useColoringCredits = () => {
     },
   });
 
+  // Admin má vždy neobmedzené kredity
+  const effectiveCredits = isAdmin 
+    ? { ...credits, credits_remaining: 999999, tier: 'premium' } 
+    : credits;
+
   const checkSubscription = useMutation({
     mutationFn: async () => {
       const { data, error } = await supabase.functions.invoke(
@@ -57,7 +64,7 @@ export const useColoringCredits = () => {
   });
 
   return {
-    credits,
+    credits: effectiveCredits,
     isLoading,
     checkSubscription: checkSubscription.mutate,
     isCheckingSubscription: checkSubscription.isPending,
