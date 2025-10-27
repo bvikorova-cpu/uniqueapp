@@ -71,12 +71,18 @@ serve(async (req) => {
     // Generate coloring page using Lovable AI
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY not configured");
+      console.error("LOVABLE_API_KEY not configured");
+      return new Response(
+        JSON.stringify({ error: "AI service not configured. Please contact support." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      );
     }
 
     const prompt = `Transform this image into a clean, professional coloring page with clear black outlines. 
     Create a ${difficulty} difficulty level with ${difficulty === 'easy' ? 'simple, bold lines' : difficulty === 'medium' ? 'moderate detail' : 'intricate, detailed lines'}. 
     Make it perfect for printing and coloring. Black and white only, no shading, just clean outlines.`;
+
+    console.log("Calling AI Gateway with image URL:", imageUrl);
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -99,7 +105,12 @@ serve(async (req) => {
       })
     });
 
+    console.log("AI Gateway response status:", aiResponse.status);
+
     if (!aiResponse.ok) {
+      const errorText = await aiResponse.text();
+      console.error("AI Gateway error:", aiResponse.status, errorText);
+      
       if (aiResponse.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
@@ -112,17 +123,26 @@ serve(async (req) => {
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 402 }
         );
       }
-      const errorText = await aiResponse.text();
-      console.error("AI Gateway error:", aiResponse.status, errorText);
-      throw new Error("Failed to generate coloring page");
+      return new Response(
+        JSON.stringify({ error: `AI service error: ${errorText}` }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      );
     }
 
     const aiData = await aiResponse.json();
+    console.log("AI response received, checking for image URL");
+    
     const generatedImageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!generatedImageUrl) {
-      throw new Error("No image generated");
+      console.error("No image URL in AI response:", JSON.stringify(aiData));
+      return new Response(
+        JSON.stringify({ error: "Failed to generate image. Please try again." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
+      );
     }
+
+    console.log("Generated image URL:", generatedImageUrl);
 
     // Create coloring page record
     const { data: coloringPage, error: pageError } = await supabaseClient
