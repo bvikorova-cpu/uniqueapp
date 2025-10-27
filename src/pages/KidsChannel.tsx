@@ -273,10 +273,10 @@ const KidsChannel = () => {
                 <Volume2 className="w-10 h-10 text-green-500" />
               </div>
               <h3 className="text-xl font-bold text-green-700 mb-2">
-                Talk to Characters! 🎤
+                Chat with Characters! 💬
               </h3>
               <p className="text-gray-700 text-sm mb-3">
-                Have real conversations with story characters using your voice!
+                Have real conversations with your favorite characters!
               </p>
               <Badge className="bg-green-500 text-white shadow-md">Voice Interactive</Badge>
             </div>
