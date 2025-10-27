@@ -111,8 +111,18 @@ export default function TeacherDashboard() {
       }
 
       if (profile) {
-        // Check if subscription is active
-        if (profile.subscription_status !== 'active') {
+        // Check if user is admin
+        const { data: roleData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+
+        const isAdmin = !!roleData;
+
+        // Check if subscription is active (skip for admins)
+        if (!isAdmin && profile.subscription_status !== 'active') {
           toast.error("Please subscribe to access Teacher Dashboard");
           navigate('/schools');
           return;
