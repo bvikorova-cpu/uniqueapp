@@ -47,7 +47,7 @@ export function useVipSubscription() {
       }
     } catch (error) {
       console.error('Error creating VIP checkout:', error);
-      toast.error('Chyba pri vytváraní platby');
+      toast.error('Error creating payment');
     }
   };
 

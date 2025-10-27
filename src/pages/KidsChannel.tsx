@@ -241,13 +241,11 @@ const KidsChannel = () => {
           </div>
         </div>
 
-        {/* Interactive Features - 4 on left, 4 on right */}
-        <div className="relative min-h-[1100px] max-w-7xl mx-auto">
-          {/* LEFT SIDE - 4 cards */}
-          
-          {/* 1. Choose Your Adventure - Left Top */}
+        {/* Interactive Features - Grid Layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          {/* 1. Choose Your Adventure */}
           <Card 
-            className="group absolute top-0 left-0 w-72 overflow-hidden bg-gradient-to-br from-pink-100/95 to-purple-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-110 hover:rotate-2 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
+            className="group overflow-hidden bg-gradient-to-br from-pink-100/95 to-purple-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
             onClick={() => navigate('/kids-stories/adventure')}
           >
             <div className="p-6 text-center">
@@ -264,9 +262,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 2. Talk to Characters - Left Second */}
+          {/* 2. Talk to Characters */}
           <Card 
-            className="group absolute top-64 left-0 w-72 overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-110 hover:rotate-1 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in"
+            className="group overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in"
             style={{ animationDelay: "0.1s" }}
             onClick={() => navigate('/kids-stories/voice-chat')}
           >
@@ -284,9 +282,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 3. Story Games - Left Third */}
+          {/* 3. Story Games */}
           <Card 
-            className="group absolute top-[512px] left-0 w-72 overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-110 hover:rotate-2 cursor-pointer shadow-2xl hover:shadow-red-300/50 animate-fade-in"
+            className="group overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-red-300/50 animate-fade-in"
             style={{ animationDelay: "0.2s" }}
             onClick={() => navigate('/kids-stories/games')}
           >
@@ -304,9 +302,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 4. Bedtime Stories - Left Bottom */}
+          {/* 4. Bedtime Stories */}
           <Card 
-            className="group absolute top-[768px] left-0 w-72 overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-110 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
+            className="group overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
             style={{ animationDelay: "0.3s" }}
             onClick={() => navigate('/kids-stories/bedtime')}
           >
@@ -324,11 +322,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* RIGHT SIDE - 4 cards */}
-          
-          {/* 1. Story Videos - Right Top */}
+          {/* 5. Story Videos */}
           <Card 
-            className="group absolute top-0 right-0 w-72 overflow-hidden bg-gradient-to-br from-purple-100/95 to-fuchsia-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-purple-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-purple-300/50 animate-fade-in"
+            className="group overflow-hidden bg-gradient-to-br from-purple-100/95 to-fuchsia-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-purple-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-purple-300/50 animate-fade-in"
             style={{ animationDelay: "0.4s" }}
             onClick={() => navigate('/story-video-demo')}
           >
@@ -346,9 +342,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 2. Create Your Hero - Right Second */}
+          {/* 6. Create Your Hero */}
           <Card 
-            className="group absolute top-64 right-0 w-72 overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
+            className="group overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
             style={{ animationDelay: "0.5s" }}
             onClick={() => navigate('/kids-stories/create-character')}
           >
@@ -366,9 +362,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 3. Learn & Play - Right Third */}
+          {/* 7. Learn & Play */}
           <Card 
-            className="group absolute top-[512px] right-0 w-72 overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-110 hover:-rotate-1 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
+            className="group overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
             style={{ animationDelay: "0.6s" }}
             onClick={() => navigate('/kids-stories/educational')}
           >
@@ -386,9 +382,9 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 4. Pricing & Plans - Right Bottom */}
+          {/* 8. Pricing & Plans */}
           <Card 
-            className="group absolute top-[768px] right-0 w-72 overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-110 hover:-rotate-2 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
+            className="group overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
             style={{ animationDelay: "0.7s" }}
             onClick={() => navigate('/kids-pricing')}
           >

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { format } from "date-fns";
-import { sk } from "date-fns/locale";
 import { ShoppingBag, Box } from "lucide-react";
 
 interface Purchase {
@@ -45,7 +44,7 @@ export default function PurchaseHistory({ userId }: { userId: string }) {
   if (loading) {
     return (
       <Card className="p-8">
-        <p className="text-center text-muted-foreground">Načítavam...</p>
+        <p className="text-center text-muted-foreground">Loading...</p>
       </Card>
     );
   }
@@ -55,7 +54,7 @@ export default function PurchaseHistory({ userId }: { userId: string }) {
       <Card className="p-8">
         <div className="text-center">
           <ShoppingBag className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Zatiaľ žiadne nákupy</p>
+          <p className="text-muted-foreground">No purchases yet</p>
         </div>
       </Card>
     );
@@ -63,7 +62,7 @@ export default function PurchaseHistory({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold mb-4">História nákupov</h2>
+      <h2 className="text-2xl font-bold mb-4">Purchase History</h2>
       {purchases.map((purchase) => (
         <Card key={purchase.id} className="p-4">
           <div className="flex items-center justify-between">
@@ -71,10 +70,10 @@ export default function PurchaseHistory({ userId }: { userId: string }) {
               <Box className="h-5 w-5 text-primary" />
               <div>
                 <p className="font-medium">
-                  {purchase.product_type || 'Nákup'}
+                  {purchase.product_type || 'Purchase'}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  {format(new Date(purchase.created_at), 'PPP', { locale: sk })}
+                  {format(new Date(purchase.created_at), 'PPP')}
                 </p>
               </div>
             </div>
