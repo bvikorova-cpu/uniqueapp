@@ -42,8 +42,8 @@ export const useColoringCredits = () => {
   });
 
   // Admin má vždy neobmedzené kredity
-  const effectiveCredits = isAdmin 
-    ? { ...credits, credits_remaining: 999999, tier: 'premium' } 
+  const effectiveCredits = isAdmin && credits
+    ? { ...credits, credits_remaining: 999999, tier: 'premium' as const } 
     : credits;
 
   const checkSubscription = useMutation({
