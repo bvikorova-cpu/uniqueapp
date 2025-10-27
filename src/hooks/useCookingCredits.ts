@@ -11,6 +11,18 @@ export const useCookingCredits = () => {
         return { credits: 0, subscription_tier: 'free' };
       }
 
+      // Kontrola admin statusu
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (adminRole) {
+        return { credits: 999999, subscription_tier: 'premium' };
+      }
+
       const { data, error } = await supabase
         .from('cooking_credits')
         .select('credits, subscription_tier')

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useIsAdmin } from './useIsAdmin';
 
 interface VipSubscriptionStatus {
   is_vip: boolean;
@@ -9,6 +10,7 @@ interface VipSubscriptionStatus {
 }
 
 export function useVipSubscription() {
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const [status, setStatus] = useState<VipSubscriptionStatus>({
     is_vip: false,
     loading: true,
@@ -19,6 +21,16 @@ export function useVipSubscription() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         setStatus({ is_vip: false, loading: false });
+        return;
+      }
+
+      // Admin má vždy VIP prístup
+      if (isAdmin) {
+        setStatus({
+          is_vip: true,
+          subscription_end: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+          loading: false,
+        });
         return;
       }
 
@@ -52,13 +64,18 @@ export function useVipSubscription() {
   };
 
   useEffect(() => {
-    checkVipStatus();
+    if (!adminLoading) {
+      checkVipStatus();
+    }
+  }, [isAdmin, adminLoading]);
 
+  useEffect(() => {
+    if (adminLoading) return;
+    
     // Refresh every minute
     const interval = setInterval(checkVipStatus, 60000);
-
     return () => clearInterval(interval);
-  }, []);
+  }, [adminLoading]);
 
   return {
     ...status,

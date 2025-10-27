@@ -36,6 +36,22 @@ export const useVideoAdCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Kontrola admin statusu
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (adminRole) {
+        return {
+          credits_remaining: 999999,
+          tier: 'agency' as const,
+          subscription_end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+        };
+      }
+
       const { data, error } = await supabase
         .from("video_ad_credits")
         .select("*")

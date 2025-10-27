@@ -68,6 +68,20 @@ export const useSubscription = () => {
         return;
       }
 
+      // Kontrola admin statusu
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      if (adminRole) {
+        setLimits(SUBSCRIPTION_LIMITS.business);
+        setLoading(false);
+        return;
+      }
+
       const { data: sub } = await supabase
         .from('subscriptions')
         .select('*')

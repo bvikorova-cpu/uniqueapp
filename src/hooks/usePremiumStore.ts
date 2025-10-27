@@ -122,9 +122,20 @@ export const usePremiumStore = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
 
-      // Deduct credits
-      const success = await useCredit('custom_generation', `Purchased ${featureName}`);
-      if (!success) return false;
+      // Kontrola admin statusu
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      // Admin nemusí platiť
+      if (!adminRole) {
+        // Deduct credits
+        const success = await useCredit('custom_generation', `Purchased ${featureName}`);
+        if (!success) return false;
+      }
 
       // Record purchase
       const { error } = await supabase
@@ -156,10 +167,21 @@ export const usePremiumStore = () => {
         return false;
       }
 
-      // Deduct credits (using the actual cost multiple times)
-      for (let i = 0; i < cost; i++) {
-        const success = await useCredit('custom_generation', 'Premium badge purchase');
-        if (!success) return false;
+      // Kontrola admin statusu
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      // Admin nemusí platiť
+      if (!adminRole) {
+        // Deduct credits (using the actual cost multiple times)
+        for (let i = 0; i < cost; i++) {
+          const success = await useCredit('custom_generation', 'Premium badge purchase');
+          if (!success) return false;
+        }
       }
 
       // Add badge to user
@@ -193,10 +215,21 @@ export const usePremiumStore = () => {
         return false;
       }
 
-      // Deduct credits
-      for (let i = 0; i < cost; i++) {
-        const success = await useCredit('custom_generation', 'Premium theme purchase');
-        if (!success) return false;
+      // Kontrola admin statusu
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      // Admin nemusí platiť
+      if (!adminRole) {
+        // Deduct credits
+        for (let i = 0; i < cost; i++) {
+          const success = await useCredit('custom_generation', 'Premium theme purchase');
+          if (!success) return false;
+        }
       }
 
       // Add theme to user
@@ -230,10 +263,21 @@ export const usePremiumStore = () => {
         return false;
       }
 
-      // Deduct credits
-      for (let i = 0; i < cost; i++) {
-        const success = await useCredit('custom_generation', 'Premium avatar purchase');
-        if (!success) return false;
+      // Kontrola admin statusu
+      const { data: adminRole } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+
+      // Admin nemusí platiť
+      if (!adminRole) {
+        // Deduct credits
+        for (let i = 0; i < cost; i++) {
+          const success = await useCredit('custom_generation', 'Premium avatar purchase');
+          if (!success) return false;
+        }
       }
 
       // Add avatar to user
