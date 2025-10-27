@@ -11,15 +11,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useColoringCredits } from "@/hooks/useColoringCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, Image as ImageIcon, Download, Crown, Sparkles } from "lucide-react";
+import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export default function ColoringPages() {
   const navigate = useNavigate();
   const { credits, isLoading: creditsLoading, checkSubscription } = useColoringCredits();
   const [imageUrl, setImageUrl] = useState("");
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadMode, setUploadMode] = useState<"url" | "file">("file");
   const [difficulty, setDifficulty] = useState("medium");
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const { data: myPages, refetch: refetchPages } = useQuery({
     queryKey: ["my-coloring-pages"],
@@ -40,8 +43,39 @@ export default function ColoringPages() {
 
   const generateMutation = useMutation({
     mutationFn: async () => {
+      let finalImageUrl = imageUrl;
+
+      // If user uploaded a file, upload it first
+      if (uploadMode === "file" && uploadedFile) {
+        setIsUploading(true);
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) throw new Error("Not authenticated");
+
+          const fileExt = uploadedFile.name.split('.').pop();
+          const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+          const { data, error } = await supabase.storage
+            .from('coloring-images')
+            .upload(fileName, uploadedFile, {
+              cacheControl: '3600',
+              upsert: false
+            });
+
+          if (error) throw error;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('coloring-images')
+            .getPublicUrl(fileName);
+
+          finalImageUrl = publicUrl;
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke("generate-coloring-page", {
-        body: { imageUrl, difficulty },
+        body: { imageUrl: finalImageUrl, difficulty },
       });
 
       if (error) throw error;
@@ -52,6 +86,9 @@ export default function ColoringPages() {
       toast.success("Coloring page generated!");
       refetchPages();
       checkSubscription();
+      // Clear the inputs
+      setImageUrl("");
+      setUploadedFile(null);
     },
     onError: (error: Error) => {
       if (error.message.includes("Insufficient credits")) {
@@ -162,20 +199,68 @@ export default function ColoringPages() {
               <CardHeader>
                 <CardTitle>Create Coloring Page</CardTitle>
                 <CardDescription>
-                  Upload an image URL and choose difficulty level
+                  Upload an image from your device or provide a URL
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="image-url">Image URL</Label>
-                  <Input
-                    id="image-url"
-                    type="url"
-                    placeholder="https://example.com/image.jpg"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                  />
+                <div className="flex gap-2 mb-4">
+                  <Button
+                    type="button"
+                    variant={uploadMode === "file" ? "default" : "outline"}
+                    onClick={() => setUploadMode("file")}
+                    className="flex-1"
+                  >
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Image
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={uploadMode === "url" ? "default" : "outline"}
+                    onClick={() => setUploadMode("url")}
+                    className="flex-1"
+                  >
+                    <ImageIcon className="mr-2 h-4 w-4" />
+                    Image URL
+                  </Button>
                 </div>
+
+                {uploadMode === "file" ? (
+                  <div>
+                    <Label htmlFor="image-file">Upload Image</Label>
+                    <Input
+                      id="image-file"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setUploadedFile(file);
+                          setImageUrl("");
+                        }
+                      }}
+                    />
+                    {uploadedFile && (
+                      <p className="text-sm text-muted-foreground mt-2">
+                        Selected: {uploadedFile.name}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <Label htmlFor="image-url">Image URL</Label>
+                    <Input
+                      id="image-url"
+                      type="url"
+                      placeholder="https://example.com/image.jpg"
+                      value={imageUrl}
+                      onChange={(e) => {
+                        setImageUrl(e.target.value);
+                        setUploadedFile(null);
+                      }}
+                    />
+                  </div>
+                )}
+
                 <div>
                   <Label htmlFor="difficulty">Difficulty Level</Label>
                   <Select value={difficulty} onValueChange={setDifficulty}>
@@ -189,15 +274,20 @@ export default function ColoringPages() {
                     </SelectContent>
                   </Select>
                 </div>
+
                 <Button
                   onClick={() => generateMutation.mutate()}
-                  disabled={!imageUrl || generateMutation.isPending}
+                  disabled={
+                    (!imageUrl && !uploadedFile) || 
+                    generateMutation.isPending || 
+                    isUploading
+                  }
                   className="w-full"
                 >
-                  {generateMutation.isPending ? (
+                  {generateMutation.isPending || isUploading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
+                      {isUploading ? "Uploading..." : "Generating..."}
                     </>
                   ) : (
                     <>
