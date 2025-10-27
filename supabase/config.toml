@@ -224,3 +224,6 @@ verify_jwt = true
 
 [functions.check-vip-subscription]
 verify_jwt = true
+
+[functions.kids-character-chat]
+verify_jwt = false
