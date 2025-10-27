@@ -9,9 +9,26 @@ import {
   Camera, Video, GraduationCap, Heart, Home, Briefcase,
   Music, Plane, MessageSquare, PieChart, Gift, Code
 } from "lucide-react";
+import { useAdminCheck } from "@/hooks/useAdminCheck";
 
 const AIMonetization = () => {
+  const { isAdmin, loading } = useAdminCheck();
   const [selectedCategory, setSelectedCategory] = useState("personal-assistant");
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Kontrola oprávnení...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   const categories = [
     { id: "personal-assistant", label: "AI Personal Assistant", icon: Brain, revenue: "€15-50/mo" },
