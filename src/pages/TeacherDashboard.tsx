@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { 
   BookOpen, 
   Download, 
@@ -15,18 +18,22 @@ import {
   Plus,
   Trash2,
   Edit,
-  Share2
+  Share2,
+  Upload
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import CreateCollectionDialog from "@/components/teacher/CreateCollectionDialog";
+import InviteTeacherDialog from "@/components/teacher/InviteTeacherDialog";
 
 interface Collection {
   id: string;
   name: string;
   subject: string;
-  pageCount: number;
+  description?: string;
+  page_count: number;
   downloads: number;
-  createdAt: string;
+  created_at: string;
 }
 
 interface Teacher {
@@ -36,11 +43,25 @@ interface Teacher {
   role: string;
 }
 
+interface SchoolProfile {
+  id: string;
+  school_name: string | null;
+  school_logo_url: string | null;
+  subscription_tier: string;
+  subscription_status: string;
+}
+
 export default function TeacherDashboard() {
+  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
+  const [schoolProfile, setSchoolProfile] = useState<SchoolProfile | null>(null);
+  const [schoolName, setSchoolName] = useState("");
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -63,80 +84,197 @@ export default function TeacherDashboard() {
   };
 
   const loadDashboardData = async () => {
-    // Mock data for now - in production, fetch from database
-    setCollections([
-      {
-        id: "1",
-        name: "Mathematics Basics",
-        subject: "Mathematics",
-        pageCount: 25,
-        downloads: 142,
-        createdAt: "2025-01-15"
-      },
-      {
-        id: "2",
-        name: "Nature Exploration",
-        subject: "Science",
-        pageCount: 30,
-        downloads: 98,
-        createdAt: "2025-01-20"
-      }
-    ]);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-    setTeachers([
-      {
-        id: "1",
-        email: "teacher1@school.com",
-        name: "Jane Smith",
-        role: "Primary Teacher"
+      // Load or create school profile
+      let { data: profile, error: profileError } = await supabase
+        .from("school_profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (!profile && !profileError) {
+        // Create school profile if it doesn't exist
+        const { data: newProfile, error: createError } = await supabase
+          .from("school_profiles")
+          .insert({ user_id: user.id })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error("Error creating school profile:", createError);
+          return;
+        }
+        profile = newProfile;
       }
-    ]);
+
+      if (profile) {
+        setSchoolProfile(profile);
+        setSchoolName(profile.school_name || "");
+
+        // Load collections
+        const { data: collectionsData, error: collectionsError } = await supabase
+          .from("teacher_collections")
+          .select("*")
+          .eq("school_id", profile.id)
+          .order("created_at", { ascending: false });
+
+        if (!collectionsError && collectionsData) {
+          setCollections(collectionsData);
+        }
+
+        // Load team members
+        const { data: teamData, error: teamError } = await supabase
+          .from("school_team_members")
+          .select("*")
+          .eq("school_id", profile.id)
+          .order("invited_at", { ascending: false });
+
+        if (!teamError && teamData) {
+          setTeachers(teamData);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading dashboard data:", error);
+    }
   };
 
   const handleNewCollection = () => {
-    toast.info("Create new collection feature coming soon!");
+    if (!schoolProfile) {
+      toast.error("School profile not found");
+      return;
+    }
+    setShowCreateDialog(true);
   };
 
   const handleEditCollection = (id: string) => {
-    toast.info(`Edit collection ${id} - feature coming soon!`);
+    toast.info(`Edit collection feature - navigate to collection editor`);
   };
 
-  const handleDownloadCollection = (id: string, name: string) => {
-    toast.success(`Downloading ${name}...`);
+  const handleDownloadCollection = async (id: string, name: string) => {
+    toast.info(`Download ${name} - generating PDF...`);
   };
 
-  const handleShareCollection = (id: string) => {
-    toast.success("Share link copied to clipboard!");
+  const handleShareCollection = async (id: string) => {
+    const shareUrl = `${window.location.origin}/collection/${id}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Share link copied to clipboard!");
+    } catch {
+      toast.error("Failed to copy link");
+    }
   };
 
-  const handleDeleteCollection = (id: string) => {
-    toast.success("Collection deleted successfully");
-    setCollections(collections.filter(c => c.id !== id));
+  const handleDeleteCollection = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this collection?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("teacher_collections")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast.success("Collection deleted successfully");
+      setCollections(collections.filter(c => c.id !== id));
+    } catch (error: any) {
+      console.error("Error deleting collection:", error);
+      toast.error(error.message || "Failed to delete collection");
+    }
   };
 
   const handleInviteTeacher = () => {
-    toast.info("Invite teacher feature coming soon!");
+    if (!schoolProfile) {
+      toast.error("School profile not found");
+      return;
+    }
+    setShowInviteDialog(true);
   };
 
   const handleEditTeacher = (id: string) => {
     toast.info(`Edit teacher ${id} - feature coming soon!`);
   };
 
-  const handleDeleteTeacher = (id: string) => {
-    toast.success("Teacher removed successfully");
-    setTeachers(teachers.filter(t => t.id !== id));
+  const handleDeleteTeacher = async (id: string) => {
+    if (!confirm("Are you sure you want to remove this team member?")) return;
+
+    try {
+      const { error } = await supabase
+        .from("school_team_members")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      toast.success("Teacher removed successfully");
+      setTeachers(teachers.filter(t => t.id !== id));
+    } catch (error: any) {
+      console.error("Error deleting teacher:", error);
+      toast.error(error.message || "Failed to remove teacher");
+    }
   };
 
-  const handleUploadLogo = () => {
-    toast.info("Upload logo feature coming soon!");
+  const handleUploadLogo = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !schoolProfile) return;
+
+    setUploadingLogo(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from("school_profiles")
+        .update({ school_logo_url: publicUrl })
+        .eq("id", schoolProfile.id);
+
+      if (updateError) throw updateError;
+
+      setSchoolProfile({ ...schoolProfile, school_logo_url: publicUrl });
+      toast.success("Logo uploaded successfully!");
+    } catch (error: any) {
+      console.error("Error uploading logo:", error);
+      toast.error(error.message || "Failed to upload logo");
+    } finally {
+      setUploadingLogo(false);
+    }
   };
 
-  const handleSaveSettings = () => {
-    toast.success("Settings saved successfully!");
+  const handleSaveSettings = async () => {
+    if (!schoolProfile) return;
+
+    try {
+      const { error } = await supabase
+        .from("school_profiles")
+        .update({ school_name: schoolName })
+        .eq("id", schoolProfile.id);
+
+      if (error) throw error;
+
+      setSchoolProfile({ ...schoolProfile, school_name: schoolName });
+      toast.success("Settings saved successfully!");
+    } catch (error: any) {
+      console.error("Error saving settings:", error);
+      toast.error(error.message || "Failed to save settings");
+    }
   };
 
   const handleUpgradePlan = () => {
-    toast.info("Upgrade plan feature coming soon!");
+    navigate("/schools");
   };
 
   const handleCancelSubscription = () => {
@@ -187,7 +325,7 @@ export default function TeacherDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
-                {collections.reduce((acc, c) => acc + c.pageCount, 0)}
+                {collections.reduce((acc, c) => acc + c.page_count, 0)}
               </div>
             </CardContent>
           </Card>
@@ -257,7 +395,7 @@ export default function TeacherDashboard() {
                         <CardTitle className="text-lg">{collection.name}</CardTitle>
                         <CardDescription>{collection.subject}</CardDescription>
                       </div>
-                      <Badge variant="secondary">{collection.pageCount} pages</Badge>
+                      <Badge variant="secondary">{collection.page_count} pages</Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -268,7 +406,7 @@ export default function TeacherDashboard() {
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Created</span>
-                        <span className="font-medium">{collection.createdAt}</span>
+                        <span className="font-medium">{new Date(collection.created_at).toLocaleDateString()}</span>
                       </div>
                       <div className="flex gap-2 pt-2">
                         <Button size="sm" variant="outline" className="flex-1" onClick={() => handleEditCollection(collection.id)}>
@@ -396,17 +534,28 @@ export default function TeacherDashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">School Logo</label>
-                  <Button variant="outline" onClick={handleUploadLogo}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Upload Logo
-                  </Button>
+                  <Label className="text-sm font-medium mb-2 block">School Logo</Label>
+                  {schoolProfile?.school_logo_url && (
+                    <img 
+                      src={schoolProfile.school_logo_url} 
+                      alt="School logo" 
+                      className="w-20 h-20 object-cover rounded mb-2"
+                    />
+                  )}
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleUploadLogo}
+                    disabled={uploadingLogo}
+                    className="cursor-pointer"
+                  />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">School Name</label>
-                  <input 
+                  <Label className="text-sm font-medium mb-2 block">School Name</Label>
+                  <Input 
                     type="text" 
-                    className="w-full px-3 py-2 border rounded-md"
+                    value={schoolName}
+                    onChange={(e) => setSchoolName(e.target.value)}
                     placeholder="Enter school name"
                   />
                 </div>
@@ -424,10 +573,14 @@ export default function TeacherDashboard() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">Elementary Standard</p>
-                    <p className="text-sm text-muted-foreground">$15/month</p>
+                    <p className="font-medium">{schoolProfile?.subscription_tier || 'Free'}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Status: {schoolProfile?.subscription_status || 'Inactive'}
+                    </p>
                   </div>
-                  <Badge variant="secondary">Active</Badge>
+                  <Badge variant="secondary">
+                    {schoolProfile?.subscription_status === 'active' ? 'Active' : 'Inactive'}
+                  </Badge>
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" onClick={handleUpgradePlan}>Upgrade Plan</Button>
@@ -440,6 +593,20 @@ export default function TeacherDashboard() {
       </main>
 
       <Footer />
+
+      <CreateCollectionDialog
+        open={showCreateDialog}
+        onOpenChange={setShowCreateDialog}
+        schoolId={schoolProfile?.id || ""}
+        onSuccess={loadDashboardData}
+      />
+
+      <InviteTeacherDialog
+        open={showInviteDialog}
+        onOpenChange={setShowInviteDialog}
+        schoolId={schoolProfile?.id || ""}
+        onSuccess={loadDashboardData}
+      />
     </div>
   );
 }

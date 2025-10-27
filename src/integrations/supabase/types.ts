@@ -2057,6 +2057,45 @@ export type Database = {
           },
         ]
       }
+      collection_pages: {
+        Row: {
+          collection_id: string
+          coloring_page_id: string
+          created_at: string
+          id: string
+          page_order: number
+        }
+        Insert: {
+          collection_id: string
+          coloring_page_id: string
+          created_at?: string
+          id?: string
+          page_order: number
+        }
+        Update: {
+          collection_id?: string
+          coloring_page_id?: string
+          created_at?: string
+          id?: string
+          page_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_pages_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "teacher_collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_pages_coloring_page_id_fkey"
+            columns: ["coloring_page_id"]
+            isOneToOne: false
+            referencedRelation: "coloring_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collector_pass_subscriptions: {
         Row: {
           created_at: string
@@ -7241,6 +7280,83 @@ export type Database = {
           },
         ]
       }
+      school_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          school_logo_url: string | null
+          school_name: string | null
+          subscription_expires_at: string | null
+          subscription_status: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          school_logo_url?: string | null
+          school_name?: string | null
+          subscription_expires_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          school_logo_url?: string | null
+          school_name?: string | null
+          subscription_expires_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      school_team_members: {
+        Row: {
+          email: string
+          id: string
+          invited_at: string
+          joined_at: string | null
+          name: string
+          role: string
+          school_id: string
+          user_id: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          invited_at?: string
+          joined_at?: string | null
+          name: string
+          role?: string
+          school_id: string
+          user_id: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          invited_at?: string
+          joined_at?: string | null
+          name?: string
+          role?: string
+          school_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "school_team_members_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "school_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sent_platform_gifts: {
         Row: {
           context_id: string | null
@@ -7872,6 +7988,50 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      teacher_collections: {
+        Row: {
+          created_at: string
+          description: string | null
+          downloads: number | null
+          id: string
+          name: string
+          page_count: number | null
+          school_id: string
+          subject: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          downloads?: number | null
+          id?: string
+          name: string
+          page_count?: number | null
+          school_id: string
+          subject: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          downloads?: number | null
+          id?: string
+          name?: string
+          page_count?: number | null
+          school_id?: string
+          subject?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teacher_collections_school_id_fkey"
+            columns: ["school_id"]
+            isOneToOne: false
+            referencedRelation: "school_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tracks: {
         Row: {
