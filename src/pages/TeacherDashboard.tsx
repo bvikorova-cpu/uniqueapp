@@ -111,6 +111,13 @@ export default function TeacherDashboard() {
       }
 
       if (profile) {
+        // Check if subscription is active
+        if (profile.subscription_status !== 'active') {
+          toast.error("Please subscribe to access Teacher Dashboard");
+          navigate('/schools');
+          return;
+        }
+
         setSchoolProfile(profile);
         setSchoolName(profile.school_name || "");
 
