@@ -8,6 +8,8 @@ import GenerateCollectible from "@/components/collectibles/GenerateCollectible";
 import MyCollection from "@/components/collectibles/MyCollection";
 import MysteryBoxes from "@/components/collectibles/MysteryBoxes";
 import CollectiblesMarketplace from "@/components/collectibles/CollectiblesMarketplace";
+import VipSubscription from "@/components/collectibles/VipSubscription";
+import PurchaseHistory from "@/components/collectibles/PurchaseHistory";
 
 export default function Collectibles() {
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ export default function Collectibles() {
         </div>
 
         <Tabs defaultValue="generate" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="generate" className="gap-2">
               <Sparkles className="h-4 w-4" />
               Generate
@@ -63,6 +65,10 @@ export default function Collectibles() {
             <TabsTrigger value="marketplace" className="gap-2">
               <Users className="h-4 w-4" />
               Marketplace
+            </TabsTrigger>
+            <TabsTrigger value="vip" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              VIP
             </TabsTrigger>
           </TabsList>
 
@@ -80,6 +86,13 @@ export default function Collectibles() {
 
           <TabsContent value="marketplace">
             <CollectiblesMarketplace userId={user.id} />
+          </TabsContent>
+
+          <TabsContent value="vip">
+            <div className="grid gap-6 md:grid-cols-2">
+              <VipSubscription />
+              <PurchaseHistory userId={user.id} />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

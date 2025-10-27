@@ -218,3 +218,9 @@ verify_jwt = true
 
 [functions.suggest-wine-pairing]
 verify_jwt = true
+
+[functions.create-vip-checkout]
+verify_jwt = true
+
+[functions.check-vip-subscription]
+verify_jwt = true
