@@ -54,6 +54,8 @@ const Auction = () => {
   const [detailDialogOpen, setDetailDialogOpen] = useState(false);
   const [detailAuction, setDetailAuction] = useState<AuctionItem | null>(null);
   const [auctionPhotos, setAuctionPhotos] = useState<string[]>([]);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState("");
   const { limits, calculateCommission } = useSubscription();
 
   useEffect(() => {
@@ -187,8 +189,10 @@ const Auction = () => {
       if (auctionError) throw auctionError;
 
       // Upload images if selected
+      let firstImageUrl = null;
       if (imageFiles.length > 0) {
-        for (const file of imageFiles) {
+        for (let i = 0; i < imageFiles.length; i++) {
+          const file = imageFiles[i];
           const fileExt = file.name.split('.').pop();
           const fileName = `${user.id}-${Date.now()}-${Math.random()}.${fileExt}`;
           const { error: uploadError } = await supabase.storage
@@ -201,11 +205,24 @@ const Auction = () => {
             .from('bazaar_images')
             .getPublicUrl(fileName);
 
+          // Save first image as main image
+          if (i === 0) {
+            firstImageUrl = publicUrl;
+          }
+
           // Save photo to auction_photos table
           await supabase.from("auction_photos").insert({
             auction_id: auctionData.id,
             photo_url: publicUrl,
           });
+        }
+
+        // Update auction with first image
+        if (firstImageUrl) {
+          await supabase
+            .from("auction_items")
+            .update({ image_url: firstImageUrl })
+            .eq("id", auctionData.id);
         }
       }
 
@@ -646,7 +663,11 @@ const Auction = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {auctions.map((auction) => (
-                  <Card key={auction.id} className="hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={auction.id} 
+                    className="hover:shadow-lg transition-shadow cursor-pointer"
+                    onClick={() => handleShowDetail(auction)}
+                  >
                     <CardHeader>
                       <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
                         {auction.image_url ? (
@@ -656,10 +677,7 @@ const Auction = () => {
                         )}
                       </div>
                       <div className="flex justify-between items-start">
-                        <CardTitle 
-                          className="text-xl cursor-pointer hover:text-primary transition-colors"
-                          onClick={() => handleShowDetail(auction)}
-                        >
+                        <CardTitle className="text-xl">
                           {auction.title}
                         </CardTitle>
                         <Badge variant="outline">{auction.category}</Badge>
@@ -686,7 +704,7 @@ const Auction = () => {
                         </span>
                       </div>
                     </CardContent>
-                    <CardFooter className="flex gap-2">
+                    <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                       {user?.id === auction.user_id ? (
                         <Button 
                           variant="destructive"
@@ -730,7 +748,11 @@ const Auction = () => {
                   return hours <= 24 && hours > 0;
                 })
                 .map((auction) => (
-                  <Card key={auction.id} className="hover:shadow-lg transition-shadow">
+                  <Card 
+                    key={auction.id} 
+                    className="hover:shadow-lg transition-shadow cursor-pointer"
+                    onClick={() => handleShowDetail(auction)}
+                  >
                     <CardHeader>
                       <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
                         {auction.image_url ? (
@@ -761,7 +783,7 @@ const Auction = () => {
                         </span>
                       </div>
                     </CardContent>
-                    <CardFooter className="flex gap-2">
+                    <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                       <Button 
                         className="flex-1"
                         onClick={() => handleBid(auction)}
@@ -778,7 +800,11 @@ const Auction = () => {
           <TabsContent value="new" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {auctions.slice(0, 6).map((auction) => (
-                <Card key={auction.id} className="hover:shadow-lg transition-shadow">
+                <Card 
+                  key={auction.id} 
+                  className="hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => handleShowDetail(auction)}
+                >
                   <CardHeader>
                     <div className="aspect-video bg-muted rounded-md flex items-center justify-center mb-4">
                       {auction.image_url ? (
@@ -803,7 +829,7 @@ const Auction = () => {
                        </span>
                      </div>
                    </CardContent>
-                   <CardFooter className="flex gap-2">
+                   <CardFooter className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                      <Button 
                        className="flex-1"
                        onClick={() => handleBid(auction)}
@@ -874,7 +900,11 @@ const Auction = () => {
                         <img 
                           src={auctionPhotos[0]} 
                           alt={detailAuction.title} 
-                          className="w-full h-96 object-cover rounded-lg"
+                          className="w-full h-96 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => {
+                            setLightboxImage(auctionPhotos[0]);
+                            setLightboxOpen(true);
+                          }}
                         />
                       ) : (
                         <div className="grid grid-cols-1 gap-2">
@@ -883,7 +913,11 @@ const Auction = () => {
                               key={index}
                               src={photo} 
                               alt={`${detailAuction.title} ${index + 1}`} 
-                              className="w-full h-64 object-cover rounded-lg"
+                              className="w-full h-64 object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                              onClick={() => {
+                                setLightboxImage(photo);
+                                setLightboxOpen(true);
+                              }}
                             />
                           ))}
                         </div>
@@ -964,6 +998,19 @@ const Auction = () => {
                 </div>
               </>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Lightbox Dialog */}
+        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+          <DialogContent className="max-w-5xl w-full p-0 bg-black/95 border-0">
+            <div className="relative w-full h-[90vh] flex items-center justify-center">
+              <img 
+                src={lightboxImage} 
+                alt="Enlarged view" 
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
           </DialogContent>
         </Dialog>
       </div>
