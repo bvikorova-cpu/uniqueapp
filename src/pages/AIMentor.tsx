@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import {
   Briefcase,
   Dumbbell,
@@ -76,6 +77,7 @@ const MENTOR_AREAS = [
 const AIMentor = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAdmin, loading: adminLoading } = useIsAdmin();
   const [user, setUser] = useState<any>(null);
   const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -111,6 +113,12 @@ const AIMentor = () => {
   };
 
   const handleSelectMentor = async (areaId: string) => {
+    // Admin má vždy prístup ku všetkým mentor oblastiam
+    if (isAdmin) {
+      navigate(`/ai-mentor/${areaId}`);
+      return;
+    }
+
     // Check if user has subscription for this area
     const hasSub = subscriptions.some(s => s.mentor_area === areaId);
     
@@ -126,7 +134,7 @@ const AIMentor = () => {
     navigate(`/ai-mentor/${areaId}`);
   };
 
-  if (loading) {
+  if (loading || adminLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">Loading...</div>
@@ -152,7 +160,7 @@ const AIMentor = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {MENTOR_AREAS.map((area) => {
             const Icon = area.icon;
-            const hasSubscription = subscriptions.some(s => s.mentor_area === area.id);
+            const hasSubscription = isAdmin || subscriptions.some(s => s.mentor_area === area.id);
             
             return (
               <Card
