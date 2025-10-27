@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import Stripe from "https://esm.sh/stripe@14.21.0";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,53 +31,39 @@ serve(async (req) => {
     console.log("Creating school subscription for user:", user.id, "tier:", tier);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2023-10-16",
+      apiVersion: "2025-08-27.basil",
     });
 
-    const prices = {
-      kindergarten: { 
-        amount: 500, 
-        teachers: 1,
-        pages: 100,
-        name: "Kindergarten Starter",
-        description: "100 coloring pages per month + basic features"
-      },
-      elementary: { 
-        amount: 1500,
-        teachers: 5,
-        pages: 999999,
-        name: "Elementary Standard",
-        description: "Unlimited pages + 5 teachers + bulk download"
-      },
-      premium: { 
-        amount: 2500,
-        teachers: 15,
-        pages: 999999,
-        name: "School Premium",
-        description: "Unlimited pages + 15 teachers + AI generation + analytics"
-      },
+    // Stripe price IDs for each tier
+    const priceIds = {
+      kindergarten: "price_1SMprw0QTWhd4oRpQWjUkKA2",
+      elementary: "price_1SMpsK0QTWhd4oRp7oXQpFXh",
+      premium: "price_1SMpsg0QTWhd4oRpAIDNGOvv",
     };
 
-    const selectedPrice = prices[tier as keyof typeof prices];
-    if (!selectedPrice) {
+    const tierMetadata = {
+      kindergarten: { teachers: 1, pages: 100 },
+      elementary: { teachers: 5, pages: 999999 },
+      premium: { teachers: 15, pages: 999999 },
+    };
+
+    const selectedPriceId = priceIds[tier as keyof typeof priceIds];
+    const metadata = tierMetadata[tier as keyof typeof tierMetadata];
+    
+    if (!selectedPriceId || !metadata) {
       throw new Error("Invalid tier selected");
     }
 
+    // Check if customer exists
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    let customerId = customers.data.length > 0 ? customers.data[0].id : undefined;
+
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      customer: customerId,
+      customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: selectedPrice.name,
-              description: selectedPrice.description,
-            },
-            unit_amount: selectedPrice.amount,
-            recurring: {
-              interval: "month",
-            },
-          },
+          price: selectedPriceId,
           quantity: 1,
         },
       ],
@@ -85,12 +71,11 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/schools?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/schools?canceled=true`,
       client_reference_id: user.id,
-      customer_email: user.email,
       metadata: {
         user_id: user.id,
         tier: tier,
-        teachers: selectedPrice.teachers.toString(),
-        pages: selectedPrice.pages.toString(),
+        teachers: metadata.teachers.toString(),
+        pages: metadata.pages.toString(),
         type: "school_subscription"
       },
     });
