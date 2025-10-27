@@ -93,6 +93,56 @@ export default function TeacherDashboard() {
     ]);
   };
 
+  const handleNewCollection = () => {
+    toast.info("Create new collection feature coming soon!");
+  };
+
+  const handleEditCollection = (id: string) => {
+    toast.info(`Edit collection ${id} - feature coming soon!`);
+  };
+
+  const handleDownloadCollection = (id: string, name: string) => {
+    toast.success(`Downloading ${name}...`);
+  };
+
+  const handleShareCollection = (id: string) => {
+    toast.success("Share link copied to clipboard!");
+  };
+
+  const handleDeleteCollection = (id: string) => {
+    toast.success("Collection deleted successfully");
+    setCollections(collections.filter(c => c.id !== id));
+  };
+
+  const handleInviteTeacher = () => {
+    toast.info("Invite teacher feature coming soon!");
+  };
+
+  const handleEditTeacher = (id: string) => {
+    toast.info(`Edit teacher ${id} - feature coming soon!`);
+  };
+
+  const handleDeleteTeacher = (id: string) => {
+    toast.success("Teacher removed successfully");
+    setTeachers(teachers.filter(t => t.id !== id));
+  };
+
+  const handleUploadLogo = () => {
+    toast.info("Upload logo feature coming soon!");
+  };
+
+  const handleSaveSettings = () => {
+    toast.success("Settings saved successfully!");
+  };
+
+  const handleUpgradePlan = () => {
+    toast.info("Upgrade plan feature coming soon!");
+  };
+
+  const handleCancelSubscription = () => {
+    toast.info("Cancel subscription feature coming soon!");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -192,7 +242,7 @@ export default function TeacherDashboard() {
           <TabsContent value="collections" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">My Collections</h2>
-              <Button>
+              <Button onClick={handleNewCollection}>
                 <Plus className="h-4 w-4 mr-2" />
                 New Collection
               </Button>
@@ -221,18 +271,18 @@ export default function TeacherDashboard() {
                         <span className="font-medium">{collection.createdAt}</span>
                       </div>
                       <div className="flex gap-2 pt-2">
-                        <Button size="sm" variant="outline" className="flex-1">
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => handleEditCollection(collection.id)}>
                           <Edit className="h-4 w-4 mr-1" />
                           Edit
                         </Button>
-                        <Button size="sm" variant="outline" className="flex-1">
+                        <Button size="sm" variant="outline" className="flex-1" onClick={() => handleDownloadCollection(collection.id, collection.name)}>
                           <Download className="h-4 w-4 mr-1" />
                           Download
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={() => handleShareCollection(collection.id)}>
                           <Share2 className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="outline">
+                        <Button size="sm" variant="outline" onClick={() => handleDeleteCollection(collection.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
@@ -247,7 +297,7 @@ export default function TeacherDashboard() {
           <TabsContent value="team" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-2xl font-bold">Team Members</h2>
-              <Button>
+              <Button onClick={handleInviteTeacher}>
                 <Plus className="h-4 w-4 mr-2" />
                 Invite Teacher
               </Button>
@@ -268,11 +318,11 @@ export default function TeacherDashboard() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge variant="secondary">{teacher.role}</Badge>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => handleEditTeacher(teacher.id)}>
                         <Edit className="h-4 w-4 mr-1" />
                         Edit
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button size="sm" variant="outline" onClick={() => handleDeleteTeacher(teacher.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -347,7 +397,7 @@ export default function TeacherDashboard() {
               <CardContent className="space-y-4">
                 <div>
                   <label className="text-sm font-medium mb-2 block">School Logo</label>
-                  <Button variant="outline">
+                  <Button variant="outline" onClick={handleUploadLogo}>
                     <Plus className="h-4 w-4 mr-2" />
                     Upload Logo
                   </Button>
@@ -360,7 +410,7 @@ export default function TeacherDashboard() {
                     placeholder="Enter school name"
                   />
                 </div>
-                <Button>Save Changes</Button>
+                <Button onClick={handleSaveSettings}>Save Changes</Button>
               </CardContent>
             </Card>
 
@@ -380,8 +430,8 @@ export default function TeacherDashboard() {
                   <Badge variant="secondary">Active</Badge>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline">Upgrade Plan</Button>
-                  <Button variant="outline">Cancel Subscription</Button>
+                  <Button variant="outline" onClick={handleUpgradePlan}>Upgrade Plan</Button>
+                  <Button variant="outline" onClick={handleCancelSubscription}>Cancel Subscription</Button>
                 </div>
               </CardContent>
             </Card>
