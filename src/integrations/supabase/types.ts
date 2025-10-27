@@ -1609,6 +1609,45 @@ export type Database = {
         }
         Relationships: []
       }
+      collectible_achievements: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          icon_url: string | null
+          id: string
+          is_active: boolean
+          name: string
+          points_reward: number
+          requirement_type: string
+          requirement_value: number
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          points_reward?: number
+          requirement_type: string
+          requirement_value?: number
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          points_reward?: number
+          requirement_type?: string
+          requirement_value?: number
+        }
+        Relationships: []
+      }
       collectible_auctions: {
         Row: {
           buyout_price: number | null
@@ -1711,6 +1750,47 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      collectible_evolution: {
+        Row: {
+          can_evolve_at: string | null
+          collectible_id: string
+          created_at: string
+          evolution_level: number
+          evolution_points: number
+          id: string
+          points_to_next_level: number
+          updated_at: string
+        }
+        Insert: {
+          can_evolve_at?: string | null
+          collectible_id: string
+          created_at?: string
+          evolution_level?: number
+          evolution_points?: number
+          id?: string
+          points_to_next_level?: number
+          updated_at?: string
+        }
+        Update: {
+          can_evolve_at?: string | null
+          collectible_id?: string
+          created_at?: string
+          evolution_level?: number
+          evolution_points?: number
+          id?: string
+          points_to_next_level?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collectible_evolution_collectible_id_fkey"
+            columns: ["collectible_id"]
+            isOneToOne: false
+            referencedRelation: "user_collectibles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       collectible_purchases: {
         Row: {
@@ -7986,10 +8066,14 @@ export type Database = {
           acquired_at: string
           acquired_method: string
           collectible_id: string | null
+          collectible_type: string | null
           created_at: string
           id: string
+          is_evolved: boolean | null
           is_for_sale: boolean | null
           is_for_trade: boolean | null
+          is_tradeable: boolean | null
+          properties: Json | null
           unique_properties: Json | null
           user_id: string
         }
@@ -7997,10 +8081,14 @@ export type Database = {
           acquired_at?: string
           acquired_method: string
           collectible_id?: string | null
+          collectible_type?: string | null
           created_at?: string
           id?: string
+          is_evolved?: boolean | null
           is_for_sale?: boolean | null
           is_for_trade?: boolean | null
+          is_tradeable?: boolean | null
+          properties?: Json | null
           unique_properties?: Json | null
           user_id: string
         }
@@ -8008,10 +8096,14 @@ export type Database = {
           acquired_at?: string
           acquired_method?: string
           collectible_id?: string | null
+          collectible_type?: string | null
           created_at?: string
           id?: string
+          is_evolved?: boolean | null
           is_for_sale?: boolean | null
           is_for_trade?: boolean | null
+          is_tradeable?: boolean | null
+          properties?: Json | null
           unique_properties?: Json | null
           user_id?: string
         }
