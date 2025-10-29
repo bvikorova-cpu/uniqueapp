@@ -74,15 +74,8 @@ const AICreditsStore = () => {
       if (url) {
         console.log('Got Stripe URL:', url);
         setLoading(false);
-        // Open in a new window immediately - this works even in iframes
-        const stripeWindow = window.open(url, '_blank');
-        if (!stripeWindow) {
-          toast({
-            title: "Povoľte vyskakovacie okná",
-            description: "Prosím, povoľte vyskakovacie okná pre tento web a skúste znova.",
-            variant: "destructive",
-          });
-        }
+        // Show the URL in a dialog so user can copy/click it
+        setStripeUrl(url);
       } else {
         throw new Error("Failed to get payment URL");
       }
@@ -99,11 +92,66 @@ const AICreditsStore = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
+        <AlertDialogContent className="max-w-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              Platobný link pripravený
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-4 text-left">
+              <p>Použite tento link na dokončenie platby cez Stripe:</p>
+              <div className="bg-muted p-3 rounded-md break-all text-xs font-mono">
+                {stripeUrl}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Tip: Môžete si link skopírovať a otvoriť v akomkoľvek prehliadači
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-col gap-2">
+            <Button
+              onClick={() => {
+                if (stripeUrl) {
+                  window.open(stripeUrl, '_blank');
+                }
+              }}
+              className="w-full gap-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Otvoriť Stripe Platbu
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (stripeUrl) {
+                  navigator.clipboard.writeText(stripeUrl);
+                  toast({
+                    title: "Skopírované",
+                    description: "Link bol skopírovaný do schránky",
+                  });
+                }
+              }}
+              className="w-full"
+            >
+              Skopírovať link
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => setStripeUrl(null)}
+              className="w-full"
+            >
+              Zavrieť
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {loading && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
           <Card className="p-8 text-center">
             <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
-            <h3 className="text-xl font-semibold mb-2">Presmerovanie na Stripe</h3>
+            <h3 className="text-xl font-semibold mb-2">Pripravujem platbu</h3>
             <p className="text-muted-foreground">Počkajte prosím...</p>
           </Card>
         </div>
