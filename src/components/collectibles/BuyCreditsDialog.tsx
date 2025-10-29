@@ -17,25 +17,30 @@ const creditPacks = [
     name: "Starter Pack",
     credits: 10,
     price: 5,
-    priceId: "price_1SMnZW0QTWhd4oRpTGTfGUZ4",
     description: "Perfect for trying out",
     icon: Sparkles,
     popular: false
   },
   {
-    name: "Pro Pack",
-    credits: 35,
-    price: 15,
-    priceId: "price_1SMna60QTWhd4oRpu061mgQ9",
+    name: "Basic Pack",
+    credits: 25,
+    price: 10,
     description: "Best value!",
     icon: TrendingUp,
     popular: true
   },
   {
+    name: "Pro Pack",
+    credits: 60,
+    price: 20,
+    description: "For power users",
+    icon: Crown,
+    popular: false
+  },
+  {
     name: "Ultimate Pack",
-    credits: 100,
-    price: 30,
-    priceId: "price_1SMnaN0QTWhd4oRps75hPsEq",
+    credits: 150,
+    price: 40,
     description: "For serious collectors",
     icon: Crown,
     popular: false
@@ -46,12 +51,12 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
   const [loading, setLoading] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handlePurchase = async (priceId: string, packName: string) => {
+  const handlePurchase = async (credits: number, price: number) => {
     try {
-      setLoading(priceId);
+      setLoading(credits.toString());
       
-      const { data, error } = await supabase.functions.invoke('create-collectibles-payment', {
-        body: { priceId }
+      const { data, error } = await supabase.functions.invoke('create-credits-payment', {
+        body: { credits, price }
       });
 
       if (error) throw error;
@@ -93,7 +98,7 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
             const Icon = pack.icon;
             return (
               <Card 
-                key={pack.priceId} 
+                key={pack.credits} 
                 className={`p-6 relative ${pack.popular ? 'border-primary shadow-lg' : ''}`}
               >
                 {pack.popular && (
@@ -121,12 +126,12 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
                   </div>
 
                   <Button 
-                    onClick={() => handlePurchase(pack.priceId, pack.name)}
+                    onClick={() => handlePurchase(pack.credits, pack.price)}
                     disabled={loading !== null}
                     className="w-full"
                     variant={pack.popular ? "default" : "outline"}
                   >
-                    {loading === pack.priceId ? (
+                    {loading === pack.credits.toString() ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Processing...
