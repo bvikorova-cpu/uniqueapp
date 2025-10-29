@@ -73,17 +73,16 @@ const AICreditsStore = () => {
 
       if (url) {
         console.log('Got Stripe URL:', url);
+        setLoading(false);
         
         // Show toast
         toast({
-          title: "Presmerovanie na platbu",
-          description: "Otváram Stripe platobný systém...",
+          title: "Otváram Stripe",
+          description: "Platobné okno sa otvorí v novej karte...",
         });
         
-        // Redirect to Stripe payment page after short delay
-        setTimeout(() => {
-          window.location.href = url;
-        }, 1000);
+        // Open Stripe in new tab to avoid React unmount issues
+        window.open(url, '_blank');
       } else {
         setLoading(false);
         throw new Error("Failed to get payment URL");

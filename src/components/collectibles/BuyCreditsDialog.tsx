@@ -63,13 +63,11 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
 
       if (data?.url) {
         toast({
-          title: "Presmerovanie na platbu",
-          description: `Otváram Stripe platbu...`
+          title: "Otváram Stripe",
+          description: "Platobné okno sa otvorí v novej karte..."
         });
-        // Use location.href instead of window.open to avoid popup blockers
-        setTimeout(() => {
-          window.location.href = data.url;
-        }, 500);
+        // Open in new tab to avoid React unmount issues
+        window.open(data.url, '_blank');
       }
     } catch (error: any) {
       console.error('Purchase error:', error);
