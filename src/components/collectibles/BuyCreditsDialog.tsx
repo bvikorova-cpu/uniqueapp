@@ -53,8 +53,9 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
   // Stripe Payment Links - reliable alternative to dynamic checkout sessions
   const paymentLinks: Record<number, string> = {
     10: "https://buy.stripe.com/test_6oU14neszfs82qAcv9e3e00", // Starter Pack
-    // Add other payment links in Stripe Dashboard for:
-    // 25, 60, 150 credit packs
+    25: "https://buy.stripe.com/test_28E7sLfwD0xe1mweDhe3e01", // Basic Pack
+    60: "", // Pro Pack - needs to be configured in Stripe Dashboard
+    150: "https://buy.stripe.com/test_4gMaEX98f1Bi3uEcv9e3e02" // Ultimate Pack
   };
 
   const handlePurchase = (credits: number) => {
