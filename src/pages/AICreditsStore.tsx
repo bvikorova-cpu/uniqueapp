@@ -63,21 +63,9 @@ const AICreditsStore = () => {
       const url = await purchaseCredits(pkg.credits, pkg.price);
 
       if (url) {
-        console.log('Got checkout URL, submitting form:', url);
-        // Create and submit a form - this bypasses popup blockers
-        const form = document.createElement('form');
-        form.method = 'GET';
-        form.action = url;
-        form.target = '_blank';
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
-        
-        setLoading(false);
-        toast({
-          title: "Presmerovanie na Stripe",
-          description: "Otvorila sa nová záložka s platobnou bránou.",
-        });
+        console.log('Redirecting to Stripe checkout:', url);
+        // Direct redirect in same tab - most reliable, bypasses all popup blockers
+        window.location.href = url;
       } else {
         throw new Error("Failed to get payment URL");
       }
