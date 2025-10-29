@@ -7,12 +7,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Price IDs for AI credit packages
+// Price IDs for AI credit packages - updated with working prices
 const PRICE_IDS: Record<number, string> = {
-  10: "price_1SNWmYGaXSfGtYFtgR2wXu30",  // Starter Pack - 5€
-  25: "price_1SNXEEGaXSfGtYFtKVBtcOQt",  // Basic Pack - 10€
-  60: "price_1SNWnCGaXSfGtYFtfBoQasS1",  // Pro Pack - 20€
-  150: "price_1SNWvvGaXSfGtYFtOjleqjGS", // Ultimate Pack - 40€
+  10: "price_1SNUDV0QTWhd4oRpYBYfQTW0",  // Starter Pack - 5€ (500 cents)
+  25: "price_1SNWms0QTWhd4oRpLwqxG9TR",  // Basic Pack - 10€ (1000 cents)
+  60: "price_1SNUE50QTWhd4oRpj5JI02Qa",  // Pro Pack - 20€ (2000 cents)
+  150: "price_1SNUEN0QTWhd4oRpwAx5pjFD", // Ultimate Pack - 40€ (4000 cents)
 };
 
 serve(async (req) => {
@@ -61,20 +61,19 @@ serve(async (req) => {
       console.log("No existing customer found, will create new one in checkout");
     }
 
-    // Create a payment link instead of checkout session
-    const paymentLink = await stripe.paymentLinks.create({
+    // Create a checkout session instead of payment link
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_email: customerId ? undefined : user.email,
       line_items: [
         {
           price: PRICE_IDS[credits],
           quantity: 1,
         },
       ],
-      after_completion: {
-        type: "redirect",
-        redirect: {
-          url: `${req.headers.get("origin")}/ai-credits?payment=success&user_id=${user.id}&credits=${credits}`,
-        },
-      },
+      mode: "payment",
+      success_url: `${req.headers.get("origin")}/ai-credits?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/ai-credits?payment=cancelled`,
       metadata: {
         user_id: user.id,
         credits: credits.toString(),
@@ -82,9 +81,9 @@ serve(async (req) => {
       },
     });
 
-    console.log("Payment link created:", paymentLink.id, "URL:", paymentLink.url);
+    console.log("Checkout session created:", session.id, "URL:", session.url);
 
-    return new Response(JSON.stringify({ url: paymentLink.url, payment_link_id: paymentLink.id }), {
+    return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
