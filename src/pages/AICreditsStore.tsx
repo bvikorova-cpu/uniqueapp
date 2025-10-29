@@ -73,8 +73,8 @@ const AICreditsStore = () => {
 
       if (url) {
         console.log('Got Stripe URL:', url);
-        setLoading(false);
-        setStripeUrl(url);
+        // Redirect directly in the same tab - no popup blocker issues
+        window.location.href = url;
       } else {
         throw new Error("Failed to get payment URL");
       }
@@ -91,46 +91,12 @@ const AICreditsStore = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Platba pripravená
-            </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-4">
-              <p>Kliknite na tlačidlo nižšie pre dokončenie platby cez Stripe:</p>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-col gap-2">
-            <Button
-              onClick={() => {
-                if (stripeUrl) {
-                  window.open(stripeUrl, '_blank');
-                }
-              }}
-              className="w-full gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Otvoriť Stripe Platbu
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setStripeUrl(null)}
-              className="w-full"
-            >
-              Zrušiť
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       {loading && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
           <Card className="p-8 text-center">
             <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
-            <h3 className="text-xl font-semibold mb-2">Redirecting to Stripe</h3>
-            <p className="text-muted-foreground">Please wait...</p>
+            <h3 className="text-xl font-semibold mb-2">Presmerovanie na Stripe</h3>
+            <p className="text-muted-foreground">Počkajte prosím...</p>
           </Card>
         </div>
       )}
