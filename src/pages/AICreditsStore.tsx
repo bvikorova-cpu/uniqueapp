@@ -64,31 +64,26 @@ const AICreditsStore = () => {
 
       if (url) {
         console.log('Got Stripe URL:', url);
+        setLoading(false);
         
-        // Try direct redirect
-        window.location.href = url;
-        
-        // Fallback: If redirect doesn't work after 2 seconds, show clickable link
-        setTimeout(() => {
-          setLoading(false);
-          toast({
-            title: "Otvorte platbu",
-            description: (
-              <div>
-                <p className="mb-2">Kliknite na link pre platbu:</p>
-                <a 
-                  href={url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary underline font-medium"
-                >
-                  Otvoriť Stripe platbu
-                </a>
-              </div>
-            ),
-            duration: 10000,
-          });
-        }, 2000);
+        // Show direct link that works in iframe
+        toast({
+          title: "✓ Platba pripravená",
+          description: (
+            <div className="space-y-3">
+              <p>Kliknite na tlačidlo pre dokončenie platby:</p>
+              <a 
+                href={url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Otvoriť Stripe Platbu →
+              </a>
+            </div>
+          ),
+          duration: 30000,
+        });
       } else {
         throw new Error("Failed to get payment URL");
       }
