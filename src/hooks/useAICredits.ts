@@ -138,8 +138,8 @@ export const useAICredits = () => {
       }
       
       if (data?.url) {
-        console.log('Opening Stripe checkout:', data.url);
-        window.open(data.url, '_blank');
+        console.log('Redirecting to Stripe checkout:', data.url);
+        window.location.href = data.url;
         return true;
       }
 
