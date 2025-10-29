@@ -77,15 +77,17 @@ const AICreditsStore = () => {
         
         // Show toast
         toast({
-          title: "Otváram Stripe",
-          description: "Platobné okno sa otvorí v novej karte...",
+          title: "Presmerovanie na Stripe",
+          description: "Za chvíľu budete presmerovaný na platobnú bránu...",
         });
         
-        // Open Stripe in new tab to avoid React unmount issues
-        window.open(url, '_blank');
+        // Redirect to Stripe instead of opening new window
+        setTimeout(() => {
+          window.location.href = url;
+        }, 1000);
       } else {
         setLoading(false);
-        throw new Error("Failed to get payment URL");
+        throw new Error("Nepodarilo sa získať platobný link");
       }
     } catch (error: any) {
       console.error('Purchase error:', error);
