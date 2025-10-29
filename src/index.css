@@ -26,10 +26,13 @@
   }
 
   .masonry-item {
-    break-inside: avoid;
+    break-inside: avoid-column;
+    page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
     margin-bottom: 1rem;
     display: inline-block;
     width: 100%;
+    overflow: visible;
   }
 
   @media (min-width: 640px) {
@@ -42,6 +45,12 @@
     .masonry-item {
       margin-bottom: 1.5rem;
     }
+  }
+
+  /* Prevent card content from breaking */
+  .masonry-item > * {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
 
