@@ -56,30 +56,48 @@ const AICreditsStore = () => {
   ];
 
   const handlePurchase = async (pkg: typeof creditPackages[0]) => {
-    setLoading(true);
     try {
       console.log('Handle purchase clicked:', pkg);
+      setLoading(true);
+      
       const url = await purchaseCredits(pkg.credits, pkg.price);
 
       if (url) {
-        // Redirect immediately without waiting
-        window.location.href = url;
+        // Show brief message before redirect
+        toast({
+          title: "Redirecting to Stripe...",
+          description: "Please wait",
+        });
+        
+        // Small delay to ensure toast is visible
+        setTimeout(() => {
+          window.location.href = url;
+        }, 500);
       } else {
         throw new Error("Failed to get payment URL");
       }
     } catch (error: any) {
       console.error('Purchase error:', error);
+      setLoading(false);
       toast({
         title: "Error",
         description: error?.message || "Failed to open payment gateway. Please try again.",
         variant: "destructive",
       });
-      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      {loading && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <Card className="p-8 text-center">
+            <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
+            <h3 className="text-xl font-semibold mb-2">Redirecting to Stripe</h3>
+            <p className="text-muted-foreground">Please wait...</p>
+          </Card>
+        </div>
+      )}
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <Badge className="mb-4" variant="default">
