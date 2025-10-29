@@ -18,7 +18,7 @@ import {
 const AICreditsStore = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { credits, purchaseCredits } = useAICredits();
+  const { credits } = useAICredits();
   const [loading, setLoading] = useState(false);
   const [stripeUrl, setStripeUrl] = useState<string | null>(null);
 
@@ -202,7 +202,7 @@ const AICreditsStore = () => {
               <div className="flex items-center justify-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
                 <div>
-                  <span className="text-3xl font-bold">{credits.credits_remaining}</span>
+                  <span className="text-3xl font-bold">{credits?.credits_remaining || 0}</span>
                   <span className="text-muted-foreground ml-2">available credits</span>
                 </div>
               </div>
