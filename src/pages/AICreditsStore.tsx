@@ -59,15 +59,13 @@ const AICreditsStore = () => {
     setLoading(true);
     try {
       console.log('Handle purchase clicked:', pkg);
-      const success = await purchaseCredits(pkg.credits, pkg.price);
+      const url = await purchaseCredits(pkg.credits, pkg.price);
 
-      if (success) {
-        toast({
-          title: "Payment Ready",
-          description: "Stripe checkout opened in new tab",
-        });
+      if (url) {
+        // Redirect immediately without waiting
+        window.location.href = url;
       } else {
-        throw new Error("Failed to open payment");
+        throw new Error("Failed to get payment URL");
       }
     } catch (error: any) {
       console.error('Purchase error:', error);
@@ -76,7 +74,6 @@ const AICreditsStore = () => {
         description: error?.message || "Failed to open payment gateway. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setLoading(false);
     }
   };

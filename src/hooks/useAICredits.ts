@@ -105,7 +105,7 @@ export const useAICredits = () => {
     }
   };
 
-  const purchaseCredits = async (amount: number, price: number): Promise<boolean> => {
+  const purchaseCredits = async (amount: number, price: number): Promise<string | null> => {
     try {
       console.log('Starting credit purchase:', { amount, price });
       
@@ -132,9 +132,8 @@ export const useAICredits = () => {
       }
       
       if (data?.url) {
-        console.log('Redirecting to Stripe checkout:', data.url);
-        window.location.href = data.url;
-        return true;
+        console.log('Got checkout URL:', data.url);
+        return data.url;
       }
 
       console.error('No URL in response:', data);
