@@ -8,7 +8,8 @@ import {
   Heart, 
   MessageCircle, 
   Share2, 
-  Smile 
+  Smile,
+  Maximize2
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -16,6 +17,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
@@ -54,6 +61,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [newComment, setNewComment] = useState("");
   const [loadingComments, setLoadingComments] = useState(false);
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string>("");
   const { toast } = useToast();
 
   const reactions = {
@@ -119,7 +128,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     ...reactions.special,
   ];
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (!confirm("Do you really want to delete this post?")) return;
 
     setDeleting(true);
@@ -158,7 +168,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     }
   };
 
-  const handleLike = async () => {
+  const handleLike = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -304,7 +315,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     }
   };
 
-  const toggleComments = () => {
+  const toggleComments = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setShowComments(!showComments);
     if (!showComments && comments.length === 0) {
       fetchComments();
@@ -325,39 +337,65 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       {post.media && post.media.length > 0 && (
         <div className="relative overflow-hidden">
           {post.media.length === 1 ? (
-            <div className="relative overflow-hidden">
+            <div className="relative overflow-hidden group/image cursor-pointer"
+                 onClick={(e) => {
+                   e.stopPropagation();
+                   if (post.media[0].file_type === "image") {
+                     setSelectedImage(post.media[0].file_url);
+                     setShowImageModal(true);
+                   }
+                 }}>
               {post.media[0].file_type === "image" ? (
-                <img
-                  src={post.media[0].file_url}
-                  alt="Post media"
-                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                <>
+                  <img
+                    src={post.media[0].file_url}
+                    alt="Post media"
+                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/image:opacity-100">
+                    <Maximize2 className="h-8 w-8 text-white drop-shadow-lg" />
+                  </div>
+                </>
               ) : (
                 <video
                   src={post.media[0].file_url}
                   controls
                   className="w-full h-auto"
+                  onClick={(e) => e.stopPropagation()}
                 />
               )}
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-1">
               {post.media.slice(0, 4).map((media, idx) => (
-                <div key={media.id} className="relative overflow-hidden aspect-square">
+                <div key={media.id} className="relative overflow-hidden aspect-square group/image cursor-pointer"
+                     onClick={(e) => {
+                       e.stopPropagation();
+                       if (media.file_type === "image") {
+                         setSelectedImage(media.file_url);
+                         setShowImageModal(true);
+                       }
+                     }}>
                   {media.file_type === "image" ? (
-                    <img
-                      src={media.file_url}
-                      alt={`Post media ${idx + 1}`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    <>
+                      <img
+                        src={media.file_url}
+                        alt={`Post media ${idx + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-all flex items-center justify-center opacity-0 group-hover/image:opacity-100">
+                        <Maximize2 className="h-6 w-6 text-white drop-shadow-lg" />
+                      </div>
+                    </>
                   ) : (
                     <video
                       src={media.file_url}
                       className="w-full h-full object-cover"
+                      onClick={(e) => e.stopPropagation()}
                     />
                   )}
                   {idx === 3 && post.media.length > 4 && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center pointer-events-none">
                       <span className="text-white text-2xl font-bold">+{post.media.length - 4}</span>
                     </div>
                   )}
@@ -448,7 +486,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[320px] p-3">
+            <PopoverContent className="w-[320px] p-3" onClick={(e) => e.stopPropagation()}>
               <Tabs defaultValue="all" className="w-full">
                 <TabsList className="grid w-full grid-cols-5 mb-3">
                   <TabsTrigger value="all" className="text-xs">
@@ -574,7 +612,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       </div>
 
       {showComments && (
-        <div className="p-4 pt-0 space-y-3 animate-accordion-down">
+        <div className="p-4 pt-0 space-y-3 animate-accordion-down" onClick={(e) => e.stopPropagation()}>
           <div className="flex gap-2">
             <Textarea
               placeholder="Write a comment..."
@@ -583,7 +621,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               className="min-h-[60px] text-sm"
             />
             <Button 
-              onClick={handleComment} 
+              onClick={(e) => {
+                e.stopPropagation();
+                handleComment();
+              }} 
               disabled={!newComment.trim()}
               size="sm"
               className="self-end"
@@ -624,6 +665,20 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           </div>
         </div>
       )}
+
+      {/* Image Modal */}
+      <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <DialogHeader className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/50 to-transparent p-4">
+            <DialogTitle className="text-white">Image Preview</DialogTitle>
+          </DialogHeader>
+          <img
+            src={selectedImage}
+            alt="Full size"
+            className="w-full h-auto max-h-[90vh] object-contain"
+          />
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };

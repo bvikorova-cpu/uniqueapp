@@ -33,7 +33,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
     if (!content.trim() && files.length === 0) {
       toast({
         title: "Empty post",
-        description: "Add text or files",
+        description: "Add text or media",
         variant: "destructive",
       });
       return;
@@ -97,7 +97,7 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
 
       toast({
         title: "Success!",
-        description: "Post was added",
+        description: "Post created successfully",
       });
 
       setContent("");
