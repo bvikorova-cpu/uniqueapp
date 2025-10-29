@@ -63,9 +63,15 @@ const AICreditsStore = () => {
       const url = await purchaseCredits(pkg.credits, pkg.price);
 
       if (url) {
-        console.log('Got checkout URL, redirecting:', url);
-        // Direct redirect - most reliable method
-        window.location.href = url;
+        console.log('Opening Stripe checkout in new tab:', url);
+        // Open Stripe in new tab
+        window.open(url, '_blank');
+        
+        setLoading(false);
+        toast({
+          title: "Platobná brána otvorená",
+          description: "Stripe checkout sa otvoril v novej záložke. Po dokončení platby sa kredity automaticky pripravia.",
+        });
       } else {
         throw new Error("Failed to get payment URL");
       }
