@@ -9,10 +9,10 @@ const corsHeaders = {
 
 // Price IDs for AI credit packages
 const PRICE_IDS: Record<number, string> = {
-  10: "price_1SNUDV0QTWhd4oRpYBYfQTW0",  // Starter Pack - 5€
-  25: "price_1SNUDn0QTWhd4oRpvUIGbqLH",  // Basic Pack - 10€
-  60: "price_1SNUE50QTWhd4oRpj5JI02Qa",  // Pro Pack - 20€
-  150: "price_1SNUEN0QTWhd4oRpwAx5pjFD", // Ultimate Pack - 40€
+  10: "price_1SNWmYGaXSfGtYFtgR2wXu30",  // Starter Pack - 5€
+  25: "price_1SNWms0QTWhd4oRpLwqxG9TR",  // Basic Pack - 10€
+  60: "price_1SNWnCGaXSfGtYFtfBoQasS1",  // Pro Pack - 20€
+  150: "price_1SNWnV0QTWhd4oRp1kJw3MUL", // Ultimate Pack - 40€
 };
 
 serve(async (req) => {
