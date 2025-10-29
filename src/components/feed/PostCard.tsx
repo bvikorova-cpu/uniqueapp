@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
@@ -52,6 +53,7 @@ interface PostCardProps {
 }
 
 const PostCard = ({ post, onDelete }: PostCardProps) => {
+  const navigate = useNavigate();
   const [deleting, setDeleting] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
@@ -64,6 +66,11 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const { toast } = useToast();
+
+  const handleUserClick = (e: React.MouseEvent, userId: string) => {
+    e.stopPropagation();
+    navigate(`/profile/${userId}`);
+  };
 
   const reactions = {
     positive: [
@@ -437,14 +444,22 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       <div className="p-4">
         {/* Author Info */}
         <div className="flex items-center gap-2 mb-3">
-          <Avatar className="h-8 w-8 ring-2 ring-primary/10">
+          <Avatar 
+            className="h-8 w-8 ring-2 ring-primary/10 cursor-pointer hover:ring-primary/30 transition-all" 
+            onClick={(e) => handleUserClick(e, post.user_id)}
+          >
             <AvatarImage src={post.profiles?.avatar_url || undefined} />
             <AvatarFallback className="text-xs">
               {post.profiles?.full_name?.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sm truncate">{post.profiles?.full_name || "User"}</p>
+            <p 
+              className="font-semibold text-sm truncate cursor-pointer hover:underline" 
+              onClick={(e) => handleUserClick(e, post.user_id)}
+            >
+              {post.profiles?.full_name || "User"}
+            </p>
             <p className="text-xs text-muted-foreground">
               {formatDistanceToNow(new Date(post.created_at), {
                 addSuffix: true,
@@ -514,38 +529,34 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               >
                 <Smile className="h-4 w-4" />
                 {selectedReaction && (
-                  <span className="text-sm">{allReactions.find(r => r.type === selectedReaction)?.emoji}</span>
+                  <span className="text-sm leading-none">{allReactions.find(r => r.type === selectedReaction)?.emoji}</span>
                 )}
               </Button>
             </PopoverTrigger>
             <PopoverContent 
-              className="w-[320px] p-3" 
+              className="w-[340px] p-3 bg-popover" 
               onClick={(e) => e.stopPropagation()}
-              align="end"
+              align="center"
               side="top"
-              sideOffset={8}
+              sideOffset={10}
+              collisionPadding={20}
             >
               <Tabs defaultValue="all" className="w-full">
-                <TabsList className="grid w-full grid-cols-5 mb-3">
-                  <TabsTrigger value="all" className="text-xs">
-                    <span className="hidden sm:inline">Všetky</span>
-                    <span className="sm:hidden">📱</span>
+                <TabsList className="grid w-full grid-cols-5 mb-3 h-9">
+                  <TabsTrigger value="all" className="text-xs px-2">
+                    All
                   </TabsTrigger>
-                  <TabsTrigger value="positive" className="text-xs">
-                    <span className="hidden sm:inline">😊</span>
-                    <span className="sm:hidden">😊</span>
+                  <TabsTrigger value="positive" className="text-lg px-2">
+                    😊
                   </TabsTrigger>
-                  <TabsTrigger value="funny" className="text-xs">
-                    <span className="hidden sm:inline">😂</span>
-                    <span className="sm:hidden">😂</span>
+                  <TabsTrigger value="funny" className="text-lg px-2">
+                    😂
                   </TabsTrigger>
-                  <TabsTrigger value="negative" className="text-xs">
-                    <span className="hidden sm:inline">😢</span>
-                    <span className="sm:hidden">😢</span>
+                  <TabsTrigger value="negative" className="text-lg px-2">
+                    😢
                   </TabsTrigger>
-                  <TabsTrigger value="special" className="text-xs">
-                    <span className="hidden sm:inline">⚡</span>
-                    <span className="sm:hidden">⚡</span>
+                  <TabsTrigger value="special" className="text-lg px-2">
+                    ⚡
                   </TabsTrigger>
                 </TabsList>
 
