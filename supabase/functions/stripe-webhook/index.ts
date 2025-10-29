@@ -28,58 +28,68 @@ serve(async (req) => {
 
     console.log("Webhook event:", event.type);
 
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session;
-      
-      if (session.payment_status === "paid" && session.metadata) {
-        const userId = session.metadata.user_id;
-        const credits = parseInt(session.metadata.credits || "0");
+    // Handle both checkout.session.completed and payment_intent.succeeded
+    if (event.type === "checkout.session.completed" || event.type === "payment_intent.succeeded") {
+      let userId: string | null = null;
+      let credits = 0;
+      let paymentStatus = "";
 
-        if (userId && credits > 0) {
-          const supabaseAdmin = createClient(
-            Deno.env.get("SUPABASE_URL") ?? "",
-            Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-          );
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object as Stripe.Checkout.Session;
+        paymentStatus = session.payment_status || "";
+        userId = session.metadata?.user_id || null;
+        credits = parseInt(session.metadata?.credits || "0");
+      } else if (event.type === "payment_intent.succeeded") {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        paymentStatus = "paid";
+        userId = paymentIntent.metadata?.user_id || null;
+        credits = parseInt(paymentIntent.metadata?.credits || "0");
+      }
 
-          // Get current credits
-          const { data: currentCredits } = await supabaseAdmin
-            .from("antique_credits")
-            .select("*")
-            .eq("user_id", userId)
-            .maybeSingle();
+      if (paymentStatus === "paid" && userId && credits > 0) {
+        const supabaseAdmin = createClient(
+          Deno.env.get("SUPABASE_URL") ?? "",
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+        );
 
-          if (currentCredits) {
-            // Update existing record
-            const { error } = await supabaseAdmin
-              .from("antique_credits")
-              .update({
-                credits_remaining: currentCredits.credits_remaining + credits,
-                total_credits_purchased: currentCredits.total_credits_purchased + credits,
-              })
-              .eq("user_id", userId);
+        // Get current credits
+        const { data: currentCredits } = await supabaseAdmin
+          .from("ai_credits")
+          .select("*")
+          .eq("user_id", userId)
+          .maybeSingle();
 
-            if (error) {
-              console.error("Error updating credits:", error);
-              throw error;
-            }
-          } else {
-            // Create new record
-            const { error } = await supabaseAdmin
-              .from("antique_credits")
-              .insert({
-                user_id: userId,
-                credits_remaining: credits,
-                total_credits_purchased: credits,
-              });
+        if (currentCredits) {
+          // Update existing record
+          const { error } = await supabaseAdmin
+            .from("ai_credits")
+            .update({
+              credits_remaining: currentCredits.credits_remaining + credits,
+              total_credits_purchased: currentCredits.total_credits_purchased + credits,
+            })
+            .eq("user_id", userId);
 
-            if (error) {
-              console.error("Error creating credits:", error);
-              throw error;
-            }
+          if (error) {
+            console.error("Error updating credits:", error);
+            throw error;
           }
+        } else {
+          // Create new record
+          const { error } = await supabaseAdmin
+            .from("ai_credits")
+            .insert({
+              user_id: userId,
+              credits_remaining: credits,
+              total_credits_purchased: credits,
+            });
 
-          console.log(`Added ${credits} credits to user ${userId}`);
+          if (error) {
+            console.error("Error creating credits:", error);
+            throw error;
+          }
         }
+
+        console.log(`Added ${credits} credits to user ${userId}`);
       }
     }
 

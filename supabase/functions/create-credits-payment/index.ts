@@ -61,29 +61,30 @@ serve(async (req) => {
       console.log("No existing customer found, will create new one in checkout");
     }
 
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+    // Create a payment link instead of checkout session
+    const paymentLink = await stripe.paymentLinks.create({
       line_items: [
         {
           price: PRICE_IDS[credits],
           quantity: 1,
         },
       ],
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/ai-credits?payment=success`,
-      cancel_url: `${req.headers.get("origin")}/ai-credits?payment=canceled`,
+      after_completion: {
+        type: "redirect",
+        redirect: {
+          url: `${req.headers.get("origin")}/ai-credits?payment=success&user_id=${user.id}&credits=${credits}`,
+        },
+      },
       metadata: {
         user_id: user.id,
         credits: credits.toString(),
         type: "ai_credits",
       },
-      client_reference_id: user.id,
     });
 
-    console.log("Checkout session created:", session.id, "URL:", session.url);
+    console.log("Payment link created:", paymentLink.id, "URL:", paymentLink.url);
 
-    return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
+    return new Response(JSON.stringify({ url: paymentLink.url, payment_link_id: paymentLink.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
