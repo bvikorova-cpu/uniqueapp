@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, Loader2, TrendingUp, Crown } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface BuyCreditsDialogProps {
   open: boolean;
@@ -50,39 +51,44 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
   const [loading, setLoading] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Stripe Payment Links - reliable alternative to dynamic checkout sessions
-  const paymentLinks: Record<number, string> = {
-    10: "https://buy.stripe.com/test_6oU14neszfs82qAcv9e3e00", // Starter Pack
-    25: "https://buy.stripe.com/test_28E7sLfwD0xe1mweDhe3e01", // Basic Pack
-    60: "", // Pro Pack - needs to be configured in Stripe Dashboard
-    150: "https://buy.stripe.com/test_4gMaEX98f1Bi3uEcv9e3e02" // Ultimate Pack
-  };
-
-  const handlePurchase = (credits: number) => {
+  const handlePurchase = async (credits: number, price: number) => {
     try {
       setLoading(credits.toString());
       
-      const paymentLink = paymentLinks[credits];
+      toast({
+        title: "Vytváram platobnú reláciu",
+        description: "Počkajte prosím...",
+      });
+
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!paymentLink) {
+      if (!session) {
         toast({
-          title: "Platba zatiaľ nedostupná",
-          description: "Tento balík sa práve pripravuje. Skúste Starter Pack (10 kreditov).",
+          title: "Chyba autentifikácie",
+          description: "Musíte byť prihlásený na nákup kreditov",
           variant: "destructive",
         });
         setLoading(null);
         return;
       }
 
-      toast({
-        title: "Presmerovanie na Stripe",
-        description: "Platobné okno sa otvorí v novej karte...",
+      const { data, error } = await supabase.functions.invoke('create-credits-payment', {
+        body: { credits, price }
       });
-      
-      // Direct redirect to Stripe Payment Link
-      setTimeout(() => {
-        window.location.href = paymentLink;
-      }, 500);
+
+      if (error) throw error;
+
+      if (data?.url) {
+        toast({
+          title: "Presmerovanie na Stripe",
+          description: "Platobné okno sa otvorí v novej karte...",
+        });
+        
+        setTimeout(() => {
+          window.open(data.url, '_blank');
+          setLoading(null);
+        }, 500);
+      }
       
     } catch (error: any) {
       console.error('Purchase error:', error);
@@ -138,7 +144,7 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
                   </div>
 
                   <Button 
-                    onClick={() => handlePurchase(pack.credits)}
+                    onClick={() => handlePurchase(pack.credits, pack.price)}
                     disabled={loading !== null}
                     className="w-full"
                     variant={pack.popular ? "default" : "outline"}
