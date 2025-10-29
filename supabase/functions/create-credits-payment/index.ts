@@ -7,12 +7,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Price IDs for AI credit packages - updated with working prices
+// Price IDs for AI credit packages - verified working prices
 const PRICE_IDS: Record<number, string> = {
-  10: "price_1SNUDV0QTWhd4oRpYBYfQTW0",  // Starter Pack - 5€ (500 cents)
-  25: "price_1SNWms0QTWhd4oRpLwqxG9TR",  // Basic Pack - 10€ (1000 cents)
-  60: "price_1SNUE50QTWhd4oRpj5JI02Qa",  // Pro Pack - 20€ (2000 cents)
-  150: "price_1SNUEN0QTWhd4oRpwAx5pjFD", // Ultimate Pack - 40€ (4000 cents)
+  10: "price_1SNWmYGaXSfGtYFtgR2wXu30",  // Starter Pack - 5€ (500 cents)
+  25: "price_1SNXEEGaXSfGtYFtKVBtcOQt",  // Basic Pack - 10€ (1000 cents)
+  60: "price_1SNWnCGaXSfGtYFtfBoQasS1",  // Pro Pack - 20€ (2000 cents)
+  150: "price_1SNWvvGaXSfGtYFtOjleqjGS", // Ultimate Pack - 40€ (4000 cents)
 };
 
 serve(async (req) => {
