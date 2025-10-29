@@ -302,27 +302,44 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     }
   };
 
-  const handleShare = async () => {
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "Post",
-          text: post.content || "",
-          url: window.location.href,
-        });
+      const shareData = {
+        title: "Check out this post",
+        text: post.content || "Interesting post",
+        url: window.location.href,
+      };
+
+      // Check if navigator.share is available
+      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData);
       } else {
+        // Fallback to clipboard
         await navigator.clipboard.writeText(window.location.href);
         toast({
           title: "Success",
-          description: "Link was copied",
+          description: "Link copied to clipboard",
         });
       }
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      // If user cancels share or any other error
+      if (error.name !== "AbortError") {
+        // Try clipboard as fallback
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          toast({
+            title: "Success",
+            description: "Link copied to clipboard",
+          });
+        } catch (clipboardError) {
+          toast({
+            title: "Error",
+            description: "Unable to share",
+            variant: "destructive",
+          });
+        }
+      }
     }
   };
 
@@ -478,7 +495,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleShare}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShare(e);
+            }}
             className="gap-1.5 flex-1 hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors"
           >
             <Share2 className="h-4 w-4" />
@@ -490,6 +510,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                 variant="ghost" 
                 size="sm" 
                 className="gap-1.5 flex-1 hover:bg-yellow-50 dark:hover:bg-yellow-950/20 transition-colors"
+                onClick={(e) => e.stopPropagation()}
               >
                 <Smile className="h-4 w-4" />
                 {selectedReaction && (
@@ -497,7 +518,13 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[320px] p-3" onClick={(e) => e.stopPropagation()}>
+            <PopoverContent 
+              className="w-[320px] p-3" 
+              onClick={(e) => e.stopPropagation()}
+              align="end"
+              side="top"
+              sideOffset={8}
+            >
               <Tabs defaultValue="all" className="w-full">
                 <TabsList className="grid w-full grid-cols-5 mb-3">
                   <TabsTrigger value="all" className="text-xs">
