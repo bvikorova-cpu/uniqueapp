@@ -285,7 +285,26 @@ const AntiqueAppraisal = () => {
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-2xl font-bold mb-2">10 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">$10</p>
-                <Button variant="outline" className="w-full" onClick={() => purchaseCredits(10)}>Buy Now</Button>
+                <Button variant="outline" className="w-full" onClick={async () => {
+                  const url = await purchaseCredits(10);
+                  if (url) {
+                    toast(
+                      <div className="space-y-3">
+                        <p className="font-medium">✓ Platba pripravená</p>
+                        <p className="text-sm">Kliknite na tlačidlo pre dokončenie platby:</p>
+                        <a 
+                          href={url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                        >
+                          Otvoriť Stripe Platbu →
+                        </a>
+                      </div>,
+                      { duration: 30000 }
+                    );
+                  }
+                }}>Buy Now</Button>
               </div>
               <div className="border-2 border-primary rounded-lg p-4 text-center">
                 <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
@@ -293,12 +312,50 @@ const AntiqueAppraisal = () => {
                 </div>
                 <p className="text-2xl font-bold mb-2">30 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">$25</p>
-                <Button className="w-full" onClick={() => purchaseCredits(30)}>Buy Now</Button>
+                <Button className="w-full" onClick={async () => {
+                  const url = await purchaseCredits(30);
+                  if (url) {
+                    toast(
+                      <div className="space-y-3">
+                        <p className="font-medium">✓ Platba pripravená</p>
+                        <p className="text-sm">Kliknite na tlačidlo pre dokončenie platby:</p>
+                        <a 
+                          href={url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                        >
+                          Otvoriť Stripe Platbu →
+                        </a>
+                      </div>,
+                      { duration: 30000 }
+                    );
+                  }
+                }}>Buy Now</Button>
               </div>
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-2xl font-bold mb-2">60 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">$45</p>
-                <Button variant="outline" className="w-full" onClick={() => purchaseCredits(60)}>Buy Now</Button>
+                <Button variant="outline" className="w-full" onClick={async () => {
+                  const url = await purchaseCredits(60);
+                  if (url) {
+                    toast(
+                      <div className="space-y-3">
+                        <p className="font-medium">✓ Platba pripravená</p>
+                        <p className="text-sm">Kliknite na tlačidlo pre dokončenie platby:</p>
+                        <a 
+                          href={url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                        >
+                          Otvoriť Stripe Platbu →
+                        </a>
+                      </div>,
+                      { duration: 30000 }
+                    );
+                  }
+                }}>Buy Now</Button>
               </div>
               <div className="border rounded-lg p-4 text-center bg-gold/10">
                 <div className="bg-gold text-gold-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
@@ -306,7 +363,26 @@ const AntiqueAppraisal = () => {
                 </div>
                 <p className="text-2xl font-bold mb-2">150 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">$99</p>
-                <Button variant="outline" className="w-full" onClick={() => purchaseCredits(150)}>Buy Now</Button>
+                <Button variant="outline" className="w-full" onClick={async () => {
+                  const url = await purchaseCredits(150);
+                  if (url) {
+                    toast(
+                      <div className="space-y-3">
+                        <p className="font-medium">✓ Platba pripravená</p>
+                        <p className="text-sm">Kliknite na tlačidlo pre dokončenie platby:</p>
+                        <a 
+                          href={url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                        >
+                          Otvoriť Stripe Platbu →
+                        </a>
+                      </div>,
+                      { duration: 30000 }
+                    );
+                  }
+                }}>Buy Now</Button>
               </div>
             </div>
           </CardContent>
