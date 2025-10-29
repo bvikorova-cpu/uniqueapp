@@ -73,18 +73,26 @@ const AICreditsStore = () => {
 
       if (url) {
         console.log('Got Stripe URL:', url);
+        
+        // Open Stripe immediately in new window (synchronously to avoid popup blocker)
+        const stripeWindow = window.open(url, '_blank', 'noopener,noreferrer');
+        
         setLoading(false);
         
-        // Show toast
-        toast({
-          title: "Presmerovanie na Stripe",
-          description: "Za chvíľu budete presmerovaný na platobnú bránu...",
-        });
-        
-        // Redirect to Stripe instead of opening new window
-        setTimeout(() => {
-          window.location.href = url;
-        }, 1000);
+        if (stripeWindow) {
+          toast({
+            title: "Stripe otvorený",
+            description: "Dokončite platbu v novom okne",
+          });
+        } else {
+          // Popup was blocked, show URL for manual copy
+          toast({
+            title: "Popup zablokovaný",
+            description: "Povoľte popup okná alebo skopírujte link manuálne",
+            variant: "destructive",
+          });
+          setStripeUrl(url);
+        }
       } else {
         setLoading(false);
         throw new Error("Nepodarilo sa získať platobný link");
