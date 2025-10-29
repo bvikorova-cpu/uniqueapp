@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -55,17 +56,67 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const reactions = [
-    { type: "heart", emoji: "❤️", label: "Love" },
-    { type: "fire", emoji: "🔥", label: "Fire" },
-    { type: "laugh", emoji: "😂", label: "Laugh" },
-    { type: "wow", emoji: "😮", label: "Wow" },
-    { type: "sad", emoji: "😢", label: "Sad" },
-    { type: "angry", emoji: "😡", label: "Angry" },
-    { type: "thumbsup", emoji: "👍", label: "Like" },
-    { type: "clap", emoji: "👏", label: "Clap" },
-    { type: "party", emoji: "🎉", label: "Party" },
-    { type: "sparkle", emoji: "✨", label: "Sparkle" },
+  const reactions = {
+    positive: [
+      { type: "heart", emoji: "❤️", label: "Love" },
+      { type: "fire", emoji: "🔥", label: "Fire" },
+      { type: "adore", emoji: "🥰", label: "Adore" },
+      { type: "heart-eyes", emoji: "😍", label: "Heart Eyes" },
+      { type: "hug", emoji: "🤗", label: "Hug" },
+      { type: "hundred", emoji: "💯", label: "Perfect" },
+      { type: "praise", emoji: "🙌", label: "Praise" },
+      { type: "strong", emoji: "💪", label: "Strong" },
+      { type: "pink-heart", emoji: "💖", label: "Support" },
+      { type: "star", emoji: "🌟", label: "Amazing" },
+      { type: "trophy", emoji: "🏆", label: "Winner" },
+      { type: "clap", emoji: "👏", label: "Clap" },
+      { type: "party", emoji: "🎉", label: "Party" },
+      { type: "sparkle", emoji: "✨", label: "Sparkle" },
+    ],
+    funny: [
+      { type: "laugh", emoji: "😂", label: "Laugh" },
+      { type: "rolling", emoji: "🤣", label: "Rolling" },
+      { type: "cool", emoji: "😎", label: "Cool" },
+      { type: "crazy", emoji: "🤪", label: "Crazy" },
+      { type: "upside", emoji: "🙃", label: "Sarcastic" },
+      { type: "thinking", emoji: "🤔", label: "Hmm" },
+      { type: "mind-blown", emoji: "🤯", label: "Mind Blown" },
+      { type: "dead", emoji: "💀", label: "Dead" },
+      { type: "eyes", emoji: "👀", label: "Looking" },
+      { type: "salute", emoji: "🫡", label: "Respect" },
+    ],
+    negative: [
+      { type: "sad", emoji: "😢", label: "Sad" },
+      { type: "angry", emoji: "😡", label: "Angry" },
+      { type: "awkward", emoji: "😬", label: "Awkward" },
+      { type: "raised-brow", emoji: "🤨", label: "Sus" },
+      { type: "unimpressed", emoji: "😒", label: "Unimpressed" },
+      { type: "eye-roll", emoji: "🙄", label: "Eye Roll" },
+      { type: "shocked", emoji: "😱", label: "Shocked" },
+      { type: "worried", emoji: "😰", label: "Worried" },
+      { type: "broken-heart", emoji: "💔", label: "Broken Heart" },
+      { type: "thumbsdown", emoji: "👎", label: "Dislike" },
+    ],
+    special: [
+      { type: "wow", emoji: "😮", label: "Wow" },
+      { type: "thumbsup", emoji: "👍", label: "Like" },
+      { type: "pray", emoji: "🙏", label: "Thank You" },
+      { type: "handshake", emoji: "🤝", label: "Deal" },
+      { type: "birthday", emoji: "🎂", label: "Birthday" },
+      { type: "coffee", emoji: "☕", label: "Coffee" },
+      { type: "pizza", emoji: "🍕", label: "Food" },
+      { type: "book", emoji: "📚", label: "Educational" },
+      { type: "idea", emoji: "💡", label: "Idea" },
+      { type: "rocket", emoji: "🚀", label: "Launch" },
+      { type: "target", emoji: "🎯", label: "Goal" },
+    ],
+  };
+
+  const allReactions = [
+    ...reactions.positive,
+    ...reactions.funny,
+    ...reactions.negative,
+    ...reactions.special,
   ];
 
   const handleDelete = async () => {
@@ -393,27 +444,130 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               >
                 <Smile className="h-4 w-4" />
                 {selectedReaction && (
-                  <span className="text-sm">{reactions.find(r => r.type === selectedReaction)?.emoji}</span>
+                  <span className="text-sm">{allReactions.find(r => r.type === selectedReaction)?.emoji}</span>
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-2">
-              <div className="grid grid-cols-5 gap-1">
-                {reactions.map((reaction) => (
-                  <Button
-                    key={reaction.type}
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleReaction(reaction.type)}
-                    className={`text-xl p-1.5 hover:scale-125 transition-transform ${
-                      selectedReaction === reaction.type ? "bg-accent scale-110" : ""
-                    }`}
-                    title={reaction.label}
-                  >
-                    {reaction.emoji}
-                  </Button>
-                ))}
-              </div>
+            <PopoverContent className="w-[320px] p-3">
+              <Tabs defaultValue="all" className="w-full">
+                <TabsList className="grid w-full grid-cols-5 mb-3">
+                  <TabsTrigger value="all" className="text-xs">
+                    <span className="hidden sm:inline">Všetky</span>
+                    <span className="sm:hidden">📱</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="positive" className="text-xs">
+                    <span className="hidden sm:inline">😊</span>
+                    <span className="sm:hidden">😊</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="funny" className="text-xs">
+                    <span className="hidden sm:inline">😂</span>
+                    <span className="sm:hidden">😂</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="negative" className="text-xs">
+                    <span className="hidden sm:inline">😢</span>
+                    <span className="sm:hidden">😢</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="special" className="text-xs">
+                    <span className="hidden sm:inline">⚡</span>
+                    <span className="sm:hidden">⚡</span>
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="all" className="mt-0">
+                  <div className="grid grid-cols-7 gap-1 max-h-[200px] overflow-y-auto">
+                    {allReactions.map((reaction) => (
+                      <Button
+                        key={reaction.type}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleReaction(reaction.type)}
+                        className={`text-xl p-2 hover:scale-125 transition-all ${
+                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
+                        }`}
+                        title={reaction.label}
+                      >
+                        {reaction.emoji}
+                      </Button>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="positive" className="mt-0">
+                  <div className="grid grid-cols-7 gap-1">
+                    {reactions.positive.map((reaction) => (
+                      <Button
+                        key={reaction.type}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleReaction(reaction.type)}
+                        className={`text-xl p-2 hover:scale-125 transition-all ${
+                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
+                        }`}
+                        title={reaction.label}
+                      >
+                        {reaction.emoji}
+                      </Button>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="funny" className="mt-0">
+                  <div className="grid grid-cols-7 gap-1">
+                    {reactions.funny.map((reaction) => (
+                      <Button
+                        key={reaction.type}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleReaction(reaction.type)}
+                        className={`text-xl p-2 hover:scale-125 transition-all ${
+                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
+                        }`}
+                        title={reaction.label}
+                      >
+                        {reaction.emoji}
+                      </Button>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="negative" className="mt-0">
+                  <div className="grid grid-cols-7 gap-1">
+                    {reactions.negative.map((reaction) => (
+                      <Button
+                        key={reaction.type}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleReaction(reaction.type)}
+                        className={`text-xl p-2 hover:scale-125 transition-all ${
+                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
+                        }`}
+                        title={reaction.label}
+                      >
+                        {reaction.emoji}
+                      </Button>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="special" className="mt-0">
+                  <div className="grid grid-cols-7 gap-1">
+                    {reactions.special.map((reaction) => (
+                      <Button
+                        key={reaction.type}
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleReaction(reaction.type)}
+                        className={`text-xl p-2 hover:scale-125 transition-all ${
+                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
+                        }`}
+                        title={reaction.label}
+                      >
+                        {reaction.emoji}
+                      </Button>
+                    ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </PopoverContent>
           </Popover>
         </div>
