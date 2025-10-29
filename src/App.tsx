@@ -140,10 +140,10 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <Toaster />
-    <Sonner />
     <BrowserRouter>
       <TooltipProvider delayDuration={0}>
+        <Toaster />
+        <Sonner />
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-1">
