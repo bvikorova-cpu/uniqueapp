@@ -99,14 +99,16 @@ const AICreditsStore = () => {
               <Sparkles className="h-5 w-5 text-primary" />
               Platobný link pripravený
             </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-4 text-left">
-              <p>Použite tento link na dokončenie platby cez Stripe:</p>
-              <div className="bg-muted p-3 rounded-md break-all text-xs font-mono">
-                {stripeUrl}
+            <AlertDialogDescription asChild>
+              <div className="space-y-4 text-left">
+                <p>Použite tento link na dokončenie platby cez Stripe:</p>
+                <div className="bg-muted p-3 rounded-md break-all text-xs font-mono">
+                  {stripeUrl}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Tip: Môžete si link skopírovať a otvoriť v akomkoľvek prehliadači
+                </p>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Tip: Môžete si link skopírovať a otvoriť v akomkoľvek prehliadači
-              </p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-col gap-2">
