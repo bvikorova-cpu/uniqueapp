@@ -63,14 +63,9 @@ const AICreditsStore = () => {
       const url = await purchaseCredits(pkg.credits, pkg.price);
 
       if (url) {
-        console.log('Redirecting to:', url);
-        // Use anchor tag for better browser compatibility
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = '_self';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        console.log('Got checkout URL, redirecting:', url);
+        // Direct redirect - most reliable method
+        window.location.href = url;
       } else {
         throw new Error("Failed to get payment URL");
       }
@@ -78,8 +73,8 @@ const AICreditsStore = () => {
       console.error('Purchase error:', error);
       setLoading(false);
       toast({
-        title: "Error",
-        description: error?.message || "Failed to open payment gateway. Please try again.",
+        title: "Chyba",
+        description: error?.message || "Nepodarilo sa otvoriť platobný systém. Skúste znova.",
         variant: "destructive",
       });
     }
