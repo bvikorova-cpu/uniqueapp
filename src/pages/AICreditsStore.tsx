@@ -63,16 +63,14 @@ const AICreditsStore = () => {
       const url = await purchaseCredits(pkg.credits, pkg.price);
 
       if (url) {
-        // Show brief message before redirect
-        toast({
-          title: "Redirecting to Stripe...",
-          description: "Please wait",
-        });
-        
-        // Small delay to ensure toast is visible
-        setTimeout(() => {
-          window.location.href = url;
-        }, 500);
+        console.log('Redirecting to:', url);
+        // Use anchor tag for better browser compatibility
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_self';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       } else {
         throw new Error("Failed to get payment URL");
       }
