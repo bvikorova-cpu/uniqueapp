@@ -441,11 +441,11 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         </div>
       )}
 
-      <div className="p-4">
+      <div className="p-6">
         {/* Author Info */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-3 mb-4">
           <Avatar 
-            className="h-8 w-8 ring-2 ring-primary/10 cursor-pointer hover:ring-primary/30 transition-all" 
+            className="h-10 w-10 ring-2 ring-primary/10 cursor-pointer hover:ring-primary/30 transition-all"
             onClick={(e) => handleUserClick(e, post.user_id)}
           >
             <AvatarImage src={post.profiles?.avatar_url || undefined} />
@@ -455,12 +455,12 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           </Avatar>
           <div className="flex-1 min-w-0">
             <p 
-              className="font-semibold text-sm truncate cursor-pointer hover:underline" 
+              className="font-semibold text-base truncate cursor-pointer hover:underline" 
               onClick={(e) => handleUserClick(e, post.user_id)}
             >
               {post.profiles?.full_name || "User"}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {formatDistanceToNow(new Date(post.created_at), {
                 addSuffix: true,
                 locale: enUS,
@@ -480,13 +480,13 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
         {/* Content */}
         {post.content && (
-          <p className="text-sm text-foreground mb-3 leading-relaxed whitespace-pre-wrap line-clamp-6">
+          <p className="text-base text-foreground mb-4 leading-relaxed whitespace-pre-wrap line-clamp-6">
             {post.content}
           </p>
         )}
 
         {/* Interaction Buttons */}
-        <div className="flex items-center gap-1 pt-3 border-t">
+        <div className="flex items-center gap-2 pt-4 border-t">
           <Button
             variant="ghost"
             size="sm"
