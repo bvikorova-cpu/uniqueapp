@@ -4,6 +4,47 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  /* Masonry Grid Layout */
+  .masonry-grid {
+    column-count: 1;
+    column-gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .masonry-grid {
+      column-count: 2;
+      column-gap: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .masonry-grid {
+      column-count: 3;
+      column-gap: 1.5rem;
+    }
+  }
+
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    display: inline-block;
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .masonry-item {
+      margin-bottom: 1.25rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .masonry-item {
+      margin-bottom: 1.5rem;
+    }
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

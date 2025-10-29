@@ -141,7 +141,7 @@ const Feed = () => {
 
         <CreatePost onPostCreated={fetchPosts} />
 
-        <div className="mt-8 space-y-4">
+        <div className="mt-8">
           {loading ? (
             <Card className="p-8 flex items-center justify-center">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -151,13 +151,20 @@ const Feed = () => {
               No posts yet. Be the first to add something!
             </Card>
           ) : (
-            posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                onDelete={fetchPosts}
-              />
-            ))
+            <div className="masonry-grid">
+              {posts.map((post, index) => (
+                <div 
+                  key={post.id}
+                  className="masonry-item animate-fade-in"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <PostCard
+                    post={post}
+                    onDelete={fetchPosts}
+                  />
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>

@@ -260,159 +260,204 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     }
   };
 
+  // Get accent color based on content type
+  const getAccentColor = () => {
+    if (post.media && post.media.length > 0) {
+      return post.media[0].file_type === "video" ? "border-l-blue-500" : "border-l-green-500";
+    }
+    return "border-l-purple-500";
+  };
+
   return (
-    <Card className="p-6">
-      <div className="flex items-start gap-3 mb-4">
-        <Avatar>
-          <AvatarImage src={post.profiles?.avatar_url || undefined} />
-          <AvatarFallback>
-            {post.profiles?.full_name?.charAt(0) || "U"}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-semibold">{post.profiles?.full_name || "User"}</p>
-              <p className="text-sm text-muted-foreground">
-                {formatDistanceToNow(new Date(post.created_at), {
-                  addSuffix: true,
-                  locale: enUS,
-                })}
-              </p>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleDelete}
-              disabled={deleting}
-            >
-              <Trash2 className="h-4 w-4 text-destructive" />
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {post.content && (
-        <p className="text-foreground mb-4 whitespace-pre-wrap">{post.content}</p>
-      )}
-
+    <Card className={`overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 ${getAccentColor()}`}>
+      {/* Media First - Pinterest Style */}
       {post.media && post.media.length > 0 && (
-        <div className="grid grid-cols-1 gap-2 mb-4">
-          {post.media.map((media) => (
-            <div
-              key={media.id}
-              className="rounded-lg overflow-hidden bg-secondary"
-            >
-              {media.file_type === "image" ? (
+        <div className="relative overflow-hidden">
+          {post.media.length === 1 ? (
+            <div className="relative overflow-hidden">
+              {post.media[0].file_type === "image" ? (
                 <img
-                  src={media.file_url}
+                  src={post.media[0].file_url}
                   alt="Post media"
-                  className="w-full h-auto"
+                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               ) : (
                 <video
-                  src={media.file_url}
+                  src={post.media[0].file_url}
                   controls
                   className="w-full h-auto"
                 />
               )}
             </div>
-          ))}
+          ) : (
+            <div className="grid grid-cols-2 gap-1">
+              {post.media.slice(0, 4).map((media, idx) => (
+                <div key={media.id} className="relative overflow-hidden aspect-square">
+                  {media.file_type === "image" ? (
+                    <img
+                      src={media.file_url}
+                      alt={`Post media ${idx + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <video
+                      src={media.file_url}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  {idx === 3 && post.media.length > 4 && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <span className="text-white text-2xl font-bold">+{post.media.length - 4}</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
-      <div className="flex items-center gap-6 pt-4 border-t">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleLike}
-          className="gap-2"
-        >
-          <Heart className={`h-5 w-5 ${liked ? "fill-red-500 text-red-500" : ""}`} />
-          <span>{likesCount}</span>
-        </Button>
+      <div className="p-4">
+        {/* Author Info */}
+        <div className="flex items-center gap-2 mb-3">
+          <Avatar className="h-8 w-8 ring-2 ring-primary/10">
+            <AvatarImage src={post.profiles?.avatar_url || undefined} />
+            <AvatarFallback className="text-xs">
+              {post.profiles?.full_name?.charAt(0) || "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-sm truncate">{post.profiles?.full_name || "User"}</p>
+            <p className="text-xs text-muted-foreground">
+              {formatDistanceToNow(new Date(post.created_at), {
+                addSuffix: true,
+                locale: enUS,
+              })}
+            </p>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleDelete}
+            disabled={deleting}
+            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <Trash2 className="h-3.5 w-3.5 text-destructive" />
+          </Button>
+        </div>
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleComments}
-          className="gap-2"
-        >
-          <MessageCircle className="h-5 w-5" />
-          <span>{commentsCount}</span>
-        </Button>
+        {/* Content */}
+        {post.content && (
+          <p className="text-sm text-foreground mb-3 leading-relaxed whitespace-pre-wrap line-clamp-6">
+            {post.content}
+          </p>
+        )}
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleShare}
-          className="gap-2"
-        >
-          <Share2 className="h-5 w-5" />
-        </Button>
+        {/* Interaction Buttons */}
+        <div className="flex items-center gap-1 pt-3 border-t">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLike}
+            className="gap-1.5 flex-1 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
+          >
+            <Heart className={`h-4 w-4 transition-all ${liked ? "fill-red-500 text-red-500 scale-110" : ""}`} />
+            <span className="text-xs font-medium">{likesCount}</span>
+          </Button>
 
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="sm" className="gap-2">
-              <Smile className="h-5 w-5" />
-              {selectedReaction && <span>{reactions.find(r => r.type === selectedReaction)?.emoji}</span>}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-2">
-            <div className="grid grid-cols-5 gap-2">
-              {reactions.map((reaction) => (
-                <Button
-                  key={reaction.type}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleReaction(reaction.type)}
-                  className={`text-2xl p-2 ${
-                    selectedReaction === reaction.type ? "bg-accent" : ""
-                  }`}
-                  title={reaction.label}
-                >
-                  {reaction.emoji}
-                </Button>
-              ))}
-            </div>
-          </PopoverContent>
-        </Popover>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleComments}
+            className="gap-1.5 flex-1 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors"
+          >
+            <MessageCircle className="h-4 w-4" />
+            <span className="text-xs font-medium">{commentsCount}</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleShare}
+            className="gap-1.5 flex-1 hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors"
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="gap-1.5 flex-1 hover:bg-yellow-50 dark:hover:bg-yellow-950/20 transition-colors"
+              >
+                <Smile className="h-4 w-4" />
+                {selectedReaction && (
+                  <span className="text-sm">{reactions.find(r => r.type === selectedReaction)?.emoji}</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-2">
+              <div className="grid grid-cols-5 gap-1">
+                {reactions.map((reaction) => (
+                  <Button
+                    key={reaction.type}
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleReaction(reaction.type)}
+                    className={`text-xl p-1.5 hover:scale-125 transition-transform ${
+                      selectedReaction === reaction.type ? "bg-accent scale-110" : ""
+                    }`}
+                    title={reaction.label}
+                  >
+                    {reaction.emoji}
+                  </Button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       {showComments && (
-        <div className="mt-4 pt-4 border-t space-y-4">
+        <div className="p-4 pt-0 space-y-3 animate-accordion-down">
           <div className="flex gap-2">
             <Textarea
               placeholder="Write a comment..."
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="min-h-[60px]"
+              className="min-h-[60px] text-sm"
             />
-            <Button onClick={handleComment} disabled={!newComment.trim()}>
+            <Button 
+              onClick={handleComment} 
+              disabled={!newComment.trim()}
+              size="sm"
+              className="self-end"
+            >
               Send
             </Button>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2 max-h-[300px] overflow-y-auto">
             {loadingComments ? (
-              <p className="text-sm text-muted-foreground">Loading...</p>
+              <p className="text-xs text-muted-foreground text-center py-2">Loading...</p>
             ) : comments.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No comments yet</p>
+              <p className="text-xs text-muted-foreground text-center py-2">No comments yet</p>
             ) : (
               comments.map((comment) => (
-                <div key={comment.id} className="flex gap-3">
-                  <Avatar className="h-8 w-8">
+                <div key={comment.id} className="flex gap-2 p-2 rounded-lg hover:bg-accent/5 transition-colors">
+                  <Avatar className="h-7 w-7">
                     <AvatarImage src={comment.profiles?.avatar_url || undefined} />
-                    <AvatarFallback>
+                    <AvatarFallback className="text-xs">
                       {comment.profiles?.full_name?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold">
                       {comment.profiles?.full_name || "User"}
                     </p>
-                    <p className="text-sm">{comment.content}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-foreground/90 mt-0.5">{comment.content}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">
                       {formatDistanceToNow(new Date(comment.created_at), {
                         addSuffix: true,
                         locale: enUS,
