@@ -109,32 +109,26 @@ export const useAICredits = () => {
     try {
       console.log('Starting credit purchase:', { amount, price });
       
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        console.error('No user found');
+      // Get fresh session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log('Session check:', { hasSession: !!session, error: sessionError });
+      
+      if (sessionError || !session) {
+        console.error('Session error:', sessionError);
         throw new Error('Please log in to purchase credits');
       }
-      console.log('User found:', user.id);
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        console.error('No session found');
-        throw new Error('Please log in to purchase credits');
-      }
-      console.log('Session found, calling edge function...');
+      console.log('Calling edge function with session token...');
 
       const { data, error } = await supabase.functions.invoke('create-credits-payment', {
         body: { credits: amount, price },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
       });
 
       console.log('Edge function response:', { data, error });
 
       if (error) {
         console.error('Edge function error:', error);
-        throw error;
+        throw new Error(error.message || 'Failed to create payment session');
       }
       
       if (data?.url) {
@@ -143,8 +137,8 @@ export const useAICredits = () => {
         return true;
       }
 
-      console.error('No URL in response');
-      return false;
+      console.error('No URL in response:', data);
+      throw new Error('Failed to get checkout URL');
     } catch (error) {
       console.error('Purchase credits error:', error);
       throw error;
