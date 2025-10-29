@@ -717,10 +717,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       {/* Image Modal */}
       <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
-        <DialogContent className="max-w-4xl p-0 overflow-hidden" onClick={(e) => e.stopPropagation()}>
-          <DialogHeader className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/50 to-transparent p-4">
-            <DialogTitle className="text-white">Image Preview</DialogTitle>
-          </DialogHeader>
+        <DialogContent className="max-w-4xl p-0 overflow-hidden border-0" onClick={(e) => e.stopPropagation()}>
           <img
             src={selectedImage}
             alt="Full size"
