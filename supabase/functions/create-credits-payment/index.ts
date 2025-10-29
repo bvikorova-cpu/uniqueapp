@@ -7,6 +7,14 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Price IDs for AI credit packages
+const PRICE_IDS: Record<number, string> = {
+  10: "price_1SNUDV0QTWhd4oRpYBYfQTW0",  // Starter Pack - 5€
+  25: "price_1SNUDn0QTWhd4oRpvUIGbqLH",  // Basic Pack - 10€
+  60: "price_1SNUE50QTWhd4oRpj5JI02Qa",  // Pro Pack - 20€
+  150: "price_1SNUEN0QTWhd4oRpwAx5pjFD", // Ultimate Pack - 40€
+};
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -18,17 +26,27 @@ serve(async (req) => {
   );
 
   try {
+    console.log("Starting AI credits payment creation");
+    
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
+    console.log("User authenticated:", user.id);
+
     const { credits, price } = await req.json();
 
-    if (!credits || !price) {
-      throw new Error("Credits and price are required");
+    if (!credits) {
+      throw new Error("Credits amount is required");
     }
+
+    if (!PRICE_IDS[credits]) {
+      throw new Error(`Invalid credit amount: ${credits}. Available amounts: 10, 25, 60, 150`);
+    }
+
+    console.log("Creating checkout for credits:", credits);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -38,6 +56,9 @@ serve(async (req) => {
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
+      console.log("Found existing customer:", customerId);
+    } else {
+      console.log("No existing customer found, will create new one in checkout");
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -45,20 +66,13 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: `${credits} AI kreditov`,
-              description: `Balík ${credits} AI kreditov pre Megatalent platformu`,
-            },
-            unit_amount: Math.round(price * 100),
-          },
+          price: PRICE_IDS[credits],
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/ai-credits-store?success=true&credits=${credits}`,
-      cancel_url: `${req.headers.get("origin")}/ai-credits-store?canceled=true`,
+      success_url: `${req.headers.get("origin")}/ai-credits?payment=success`,
+      cancel_url: `${req.headers.get("origin")}/ai-credits?payment=canceled`,
       metadata: {
         user_id: user.id,
         credits: credits.toString(),
@@ -67,12 +81,14 @@ serve(async (req) => {
       client_reference_id: user.id,
     });
 
+    console.log("Checkout session created:", session.id, "URL:", session.url);
+
     return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    console.error("Credits payment error:", error);
+    console.error("AI credits payment error:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

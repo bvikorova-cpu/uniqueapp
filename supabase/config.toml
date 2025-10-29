@@ -242,3 +242,6 @@ verify_jwt = true
 
 [functions.generate-teacher-coloring]
 verify_jwt = true
+
+[functions.create-credits-payment]
+verify_jwt = true
