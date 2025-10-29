@@ -73,8 +73,16 @@ const AICreditsStore = () => {
 
       if (url) {
         console.log('Got Stripe URL:', url);
-        // Redirect directly in the same tab - no popup blocker issues
-        window.location.href = url;
+        setLoading(false);
+        // Open in a new window immediately - this works even in iframes
+        const stripeWindow = window.open(url, '_blank');
+        if (!stripeWindow) {
+          toast({
+            title: "Povoľte vyskakovacie okná",
+            description: "Prosím, povoľte vyskakovacie okná pre tento web a skúste znova.",
+            variant: "destructive",
+          });
+        }
       } else {
         throw new Error("Failed to get payment URL");
       }
