@@ -5,7 +5,6 @@ import { Lock } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
@@ -34,45 +33,43 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
             const userBadge = userBadges.find((ub: any) => ub.badge_id === badge.id);
 
             return (
-              <TooltipProvider key={badge.id}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div
-                      className={`
-                        flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all
-                        ${earned 
-                          ? "border-primary bg-primary/5 hover:bg-primary/10" 
-                          : "border-muted bg-muted/50 opacity-50"
-                        }
-                      `}
-                    >
-                      <div className="text-4xl relative">
-                        {badge.icon}
-                        {!earned && (
-                          <Lock className="absolute -bottom-1 -right-1 h-4 w-4 text-muted-foreground" />
-                        )}
-                      </div>
-                      <p className="text-xs font-medium text-center line-clamp-1">
-                        {badge.name}
-                      </p>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <div className="space-y-1">
-                      <p className="font-semibold">{badge.icon} {badge.name}</p>
-                      <p className="text-sm">{badge.description}</p>
-                      <p className="text-xs text-muted-foreground">
-                        +{badge.points_reward} points
-                      </p>
-                      {earned && userBadge && (
-                        <p className="text-xs text-green-500">
-                          ✓ Earned: {new Date(userBadge.earned_at).toLocaleDateString("en-US")}
-                        </p>
+              <Tooltip key={badge.id}>
+                <TooltipTrigger asChild>
+                  <div
+                    className={`
+                      flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all
+                      ${earned 
+                        ? "border-primary bg-primary/5 hover:bg-primary/10" 
+                        : "border-muted bg-muted/50 opacity-50"
+                      }
+                    `}
+                  >
+                    <div className="text-4xl relative">
+                      {badge.icon}
+                      {!earned && (
+                        <Lock className="absolute -bottom-1 -right-1 h-4 w-4 text-muted-foreground" />
                       )}
                     </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                    <p className="text-xs font-medium text-center line-clamp-1">
+                      {badge.name}
+                    </p>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <div className="space-y-1">
+                    <p className="font-semibold">{badge.icon} {badge.name}</p>
+                    <p className="text-sm">{badge.description}</p>
+                    <p className="text-xs text-muted-foreground">
+                      +{badge.points_reward} points
+                    </p>
+                    {earned && userBadge && (
+                      <p className="text-xs text-green-500">
+                        ✓ Earned: {new Date(userBadge.earned_at).toLocaleDateString("en-US")}
+                      </p>
+                    )}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             );
           })}
         </div>
