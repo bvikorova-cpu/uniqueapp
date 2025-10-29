@@ -236,20 +236,31 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const fetchComments = async () => {
     setLoadingComments(true);
     try {
-      const { data, error } = await supabase
+      const { data: commentsData, error } = await supabase
         .from("post_comments")
-        .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            avatar_url
-          )
-        `)
+        .select("*")
         .eq("post_id", post.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setComments(data || []);
+
+      // Fetch profiles separately
+      const commentsWithProfiles = await Promise.all(
+        (commentsData || []).map(async (comment) => {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url")
+            .eq("id", comment.user_id)
+            .single();
+          
+          return {
+            ...comment,
+            profiles: profile || { id: comment.user_id, full_name: null, avatar_url: null }
+          };
+        })
+      );
+
+      setComments(commentsWithProfiles);
     } catch (error: any) {
       toast({
         title: "Error",
