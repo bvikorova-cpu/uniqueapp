@@ -70,7 +70,24 @@ const Subscription = () => {
       if (error) throw error;
 
       if (data?.url) {
-        window.open(data.url, '_blank');
+        // Show toast with clickable button
+        toast({
+          title: "✓ Predplatné pripravené",
+          description: (
+            <div className="space-y-3">
+              <p>Kliknite na tlačidlo pre dokončenie platby:</p>
+              <a 
+                href={data.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+              >
+                Otvoriť Stripe Platbu →
+              </a>
+            </div>
+          ),
+          duration: 30000,
+        });
       }
     } catch (error) {
       console.error('Subscription error:', error);
