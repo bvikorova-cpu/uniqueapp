@@ -13,6 +13,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log("Starting collectibles payment creation");
+    
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
@@ -27,11 +29,15 @@ serve(async (req) => {
       throw new Error("User not authenticated");
     }
 
+    console.log("User authenticated:", user.id);
+
     const { priceId } = await req.json();
     
     if (!priceId) {
       throw new Error("Price ID is required");
     }
+
+    console.log("Creating payment link for price:", priceId);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -42,32 +48,40 @@ serve(async (req) => {
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
+      console.log("Found existing customer:", customerId);
+    } else {
+      console.log("No existing customer found, will create new one in checkout");
     }
 
-    // Create checkout session
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
+    // Create payment link instead of checkout session
+    const paymentLink = await stripe.paymentLinks.create({
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
-      mode: "payment",
+      after_completion: {
+        type: "redirect",
+        redirect: {
+          url: `${req.headers.get("origin")}/collectibles?payment=success&user_id=${user.id}&price_id=${priceId}`,
+        },
+      },
       metadata: {
         user_id: user.id,
+        price_id: priceId,
+        type: "collectibles_credits",
       },
-      success_url: `${req.headers.get("origin")}/collectibles?payment=success`,
-      cancel_url: `${req.headers.get("origin")}/collectibles?payment=canceled`,
     });
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    console.log("Payment link created:", paymentLink.id, "URL:", paymentLink.url);
+
+    return new Response(JSON.stringify({ url: paymentLink.url, payment_link_id: paymentLink.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    console.error("Payment error:", error);
+    console.error("Collectibles payment error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Payment creation failed" }), 
       {
