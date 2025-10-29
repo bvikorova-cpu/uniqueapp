@@ -5,13 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
-import { Sparkles, Zap, Star, Package } from "lucide-react";
+import { Sparkles, Zap, Star, Package, ExternalLink } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const AICreditsStore = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { credits, purchaseCredits } = useAICredits();
   const [loading, setLoading] = useState(false);
+  const [stripeUrl, setStripeUrl] = useState<string | null>(null);
 
   const creditPackages = [
     {
@@ -65,25 +74,7 @@ const AICreditsStore = () => {
       if (url) {
         console.log('Got Stripe URL:', url);
         setLoading(false);
-        
-        // Show direct link that works in iframe
-        toast({
-          title: "✓ Platba pripravená",
-          description: (
-            <div className="space-y-3">
-              <p>Kliknite na tlačidlo pre dokončenie platby:</p>
-              <a 
-                href={url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                Otvoriť Stripe Platbu →
-              </a>
-            </div>
-          ),
-          duration: 30000,
-        });
+        setStripeUrl(url);
       } else {
         throw new Error("Failed to get payment URL");
       }
@@ -100,6 +91,40 @@ const AICreditsStore = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              Platba pripravená
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-4">
+              <p>Kliknite na tlačidlo nižšie pre dokončenie platby cez Stripe:</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-col gap-2">
+            <Button
+              onClick={() => {
+                if (stripeUrl) {
+                  window.open(stripeUrl, '_blank');
+                }
+              }}
+              className="w-full gap-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Otvoriť Stripe Platbu
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setStripeUrl(null)}
+              className="w-full"
+            >
+              Zrušiť
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {loading && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
           <Card className="p-8 text-center">

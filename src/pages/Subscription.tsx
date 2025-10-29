@@ -5,7 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Check, Crown, Sparkles, Zap } from "lucide-react";
+import { Check, Crown, Sparkles, Zap, ExternalLink } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Subscription = () => {
   const navigate = useNavigate();
@@ -14,6 +22,7 @@ const Subscription = () => {
   const [currentTier, setCurrentTier] = useState<string>('free');
   const [loading, setLoading] = useState(true);
   const [canceling, setCanceling] = useState(false);
+  const [stripeUrl, setStripeUrl] = useState<string | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -70,24 +79,7 @@ const Subscription = () => {
       if (error) throw error;
 
       if (data?.url) {
-        // Show toast with clickable button
-        toast({
-          title: "✓ Predplatné pripravené",
-          description: (
-            <div className="space-y-3">
-              <p>Kliknite na tlačidlo pre dokončenie platby:</p>
-              <a 
-                href={data.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-              >
-                Otvoriť Stripe Platbu →
-              </a>
-            </div>
-          ),
-          duration: 30000,
-        });
+        setStripeUrl(data.url);
       }
     } catch (error) {
       console.error('Subscription error:', error);
@@ -232,6 +224,40 @@ const Subscription = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
+      <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Crown className="h-5 w-5 text-primary" />
+              Predplatné pripravené
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-4">
+              <p>Kliknite na tlačidlo nižšie pre dokončenie platby cez Stripe:</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-col gap-2">
+            <Button
+              onClick={() => {
+                if (stripeUrl) {
+                  window.open(stripeUrl, '_blank');
+                }
+              }}
+              className="w-full gap-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Otvoriť Stripe Platbu
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setStripeUrl(null)}
+              className="w-full"
+            >
+              Zrušiť
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">

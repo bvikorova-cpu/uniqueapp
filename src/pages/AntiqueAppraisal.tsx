@@ -3,16 +3,25 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench } from "lucide-react";
+import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench, ExternalLink } from "lucide-react";
 import { useAntiqueCredits } from "@/hooks/useAntiqueCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const AntiqueAppraisal = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [analysisType, setAnalysisType] = useState<string>('basic');
+  const [stripeUrl, setStripeUrl] = useState<string | null>(null);
   
   const { credits, isLoading, identifyAntique, isIdentifying, purchaseCredits } = useAntiqueCredits();
 
@@ -142,6 +151,40 @@ const AntiqueAppraisal = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-20 px-4">
+      <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-primary" />
+              Platba pripravená
+            </AlertDialogTitle>
+            <AlertDialogDescription className="space-y-4">
+              <p>Kliknite na tlačidlo nižšie pre dokončenie platby cez Stripe:</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-col sm:flex-col gap-2">
+            <Button
+              onClick={() => {
+                if (stripeUrl) {
+                  window.open(stripeUrl, '_blank');
+                }
+              }}
+              className="w-full gap-2"
+            >
+              <ExternalLink className="h-4 w-4" />
+              Otvoriť Stripe Platbu
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setStripeUrl(null)}
+              className="w-full"
+            >
+              Zrušiť
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 mt-12">
           <h1 className="text-4xl font-bold mb-4">AI Antique Appraisal</h1>
@@ -288,21 +331,7 @@ const AntiqueAppraisal = () => {
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(10);
                   if (url) {
-                    toast(
-                      <div className="space-y-3">
-                        <p className="font-medium">✓ Platba pripravená</p>
-                        <p className="text-sm">Kliknite na tlačidlo pre dokončenie platby:</p>
-                        <a 
-                          href={url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                        >
-                          Otvoriť Stripe Platbu →
-                        </a>
-                      </div>,
-                      { duration: 30000 }
-                    );
+                    setStripeUrl(url);
                   }
                 }}>Buy Now</Button>
               </div>
@@ -315,21 +344,7 @@ const AntiqueAppraisal = () => {
                 <Button className="w-full" onClick={async () => {
                   const url = await purchaseCredits(30);
                   if (url) {
-                    toast(
-                      <div className="space-y-3">
-                        <p className="font-medium">✓ Platba pripravená</p>
-                        <p className="text-sm">Kliknite na tlačidlo pre dokončenie platby:</p>
-                        <a 
-                          href={url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                        >
-                          Otvoriť Stripe Platbu →
-                        </a>
-                      </div>,
-                      { duration: 30000 }
-                    );
+                    setStripeUrl(url);
                   }
                 }}>Buy Now</Button>
               </div>
@@ -339,21 +354,7 @@ const AntiqueAppraisal = () => {
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(60);
                   if (url) {
-                    toast(
-                      <div className="space-y-3">
-                        <p className="font-medium">✓ Platba pripravená</p>
-                        <p className="text-sm">Kliknite na tlačidlo pre dokončenie platby:</p>
-                        <a 
-                          href={url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                        >
-                          Otvoriť Stripe Platbu →
-                        </a>
-                      </div>,
-                      { duration: 30000 }
-                    );
+                    setStripeUrl(url);
                   }
                 }}>Buy Now</Button>
               </div>
@@ -366,21 +367,7 @@ const AntiqueAppraisal = () => {
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(150);
                   if (url) {
-                    toast(
-                      <div className="space-y-3">
-                        <p className="font-medium">✓ Platba pripravená</p>
-                        <p className="text-sm">Kliknite na tlačidlo pre dokončenie platby:</p>
-                        <a 
-                          href={url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-                        >
-                          Otvoriť Stripe Platbu →
-                        </a>
-                      </div>,
-                      { duration: 30000 }
-                    );
+                    setStripeUrl(url);
                   }
                 }}>Buy Now</Button>
               </div>
