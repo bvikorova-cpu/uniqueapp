@@ -58,21 +58,22 @@ const AICreditsStore = () => {
   const handlePurchase = async (pkg: typeof creditPackages[0]) => {
     setLoading(true);
     try {
+      console.log('Handle purchase clicked:', pkg);
       const success = await purchaseCredits(pkg.credits, pkg.price);
 
       if (success) {
         toast({
           title: "Payment Ready",
-          description: "Stripe payment window has opened",
+          description: "Stripe checkout opened in new tab",
         });
       } else {
         throw new Error("Failed to open payment");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Purchase error:', error);
       toast({
         title: "Error",
-        description: "Failed to open payment gateway",
+        description: error?.message || "Failed to open payment gateway. Please try again.",
         variant: "destructive",
       });
     } finally {

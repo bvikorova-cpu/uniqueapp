@@ -107,11 +107,21 @@ export const useAICredits = () => {
 
   const purchaseCredits = async (amount: number, price: number): Promise<boolean> => {
     try {
+      console.log('Starting credit purchase:', { amount, price });
+      
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
+      if (!user) {
+        console.error('No user found');
+        throw new Error('Please log in to purchase credits');
+      }
+      console.log('User found:', user.id);
 
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return false;
+      if (!session) {
+        console.error('No session found');
+        throw new Error('Please log in to purchase credits');
+      }
+      console.log('Session found, calling edge function...');
 
       const { data, error } = await supabase.functions.invoke('create-credits-payment', {
         body: { credits: amount, price },
@@ -120,16 +130,24 @@ export const useAICredits = () => {
         },
       });
 
-      if (error) throw error;
+      console.log('Edge function response:', { data, error });
+
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
+      
       if (data?.url) {
+        console.log('Opening Stripe checkout:', data.url);
         window.open(data.url, '_blank');
         return true;
       }
 
+      console.error('No URL in response');
       return false;
     } catch (error) {
       console.error('Purchase credits error:', error);
-      return false;
+      throw error;
     }
   };
 
