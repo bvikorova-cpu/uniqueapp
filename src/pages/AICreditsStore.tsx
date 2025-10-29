@@ -64,45 +64,48 @@ const AICreditsStore = () => {
     },
   ];
 
-  const handlePurchase = async (pkg: typeof creditPackages[0]) => {
+  // Stripe Payment Links - stable alternative to checkout sessions
+  const paymentLinks: Record<number, string> = {
+    10: "https://buy.stripe.com/test_6oU14neszfs82qAcv9e3e00", // Starter Pack
+    // Note: Create payment links for other packages in Stripe Dashboard
+    // 25: "YOUR_PAYMENT_LINK", 
+    // 60: "YOUR_PAYMENT_LINK",
+    // 150: "YOUR_PAYMENT_LINK"
+  };
+
+  const handlePurchase = (pkg: typeof creditPackages[0]) => {
     try {
-      console.log('Handle purchase clicked:', pkg);
       setLoading(true);
       
-      const url = await purchaseCredits(pkg.credits, pkg.price);
-
-      if (url) {
-        console.log('Got Stripe URL:', url);
-        
-        // Open Stripe immediately in new window (synchronously to avoid popup blocker)
-        const stripeWindow = window.open(url, '_blank', 'noopener,noreferrer');
-        
+      const paymentLink = paymentLinks[pkg.credits];
+      
+      if (!paymentLink) {
+        toast({
+          title: "Platba zatiaľ nedostupná",
+          description: "Tento balík sa práve pripravuje. Prosím skúste Starter Pack.",
+          variant: "destructive",
+        });
         setLoading(false);
-        
-        if (stripeWindow) {
-          toast({
-            title: "Stripe otvorený",
-            description: "Dokončite platbu v novom okne",
-          });
-        } else {
-          // Popup was blocked, show URL for manual copy
-          toast({
-            title: "Popup zablokovaný",
-            description: "Povoľte popup okná alebo skopírujte link manuálne",
-            variant: "destructive",
-          });
-          setStripeUrl(url);
-        }
-      } else {
-        setLoading(false);
-        throw new Error("Nepodarilo sa získať platobný link");
+        return;
       }
+
+      // Direct redirect to Stripe Payment Link - most reliable method
+      toast({
+        title: "Presmerovanie na Stripe",
+        description: "Otváram bezpečný platobný systém...",
+      });
+      
+      // Small delay to show toast
+      setTimeout(() => {
+        window.location.href = paymentLink;
+      }, 500);
+      
     } catch (error: any) {
       console.error('Purchase error:', error);
       setLoading(false);
       toast({
         title: "Chyba",
-        description: error?.message || "Nepodarilo sa otvoriť platobný systém. Skúste znova.",
+        description: error?.message || "Vyskytla sa chyba",
         variant: "destructive",
       });
     }

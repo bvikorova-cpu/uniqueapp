@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles, Loader2, TrendingUp, Crown } from "lucide-react";
 
@@ -51,32 +50,46 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
   const [loading, setLoading] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handlePurchase = async (credits: number, price: number) => {
+  // Stripe Payment Links - reliable alternative to dynamic checkout sessions
+  const paymentLinks: Record<number, string> = {
+    10: "https://buy.stripe.com/test_6oU14neszfs82qAcv9e3e00", // Starter Pack
+    // Add other payment links in Stripe Dashboard for:
+    // 25, 60, 150 credit packs
+  };
+
+  const handlePurchase = (credits: number) => {
     try {
       setLoading(credits.toString());
       
-      const { data, error } = await supabase.functions.invoke('create-credits-payment', {
-        body: { credits, price }
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
+      const paymentLink = paymentLinks[credits];
+      
+      if (!paymentLink) {
         toast({
-          title: "Otváram Stripe",
-          description: "Platobné okno sa otvorí v novej karte..."
+          title: "Platba zatiaľ nedostupná",
+          description: "Tento balík sa práve pripravuje. Skúste Starter Pack (10 kreditov).",
+          variant: "destructive",
         });
-        // Open in new tab to avoid React unmount issues
-        window.open(data.url, '_blank');
+        setLoading(null);
+        return;
       }
+
+      toast({
+        title: "Presmerovanie na Stripe",
+        description: "Platobné okno sa otvorí v novej karte...",
+      });
+      
+      // Direct redirect to Stripe Payment Link
+      setTimeout(() => {
+        window.location.href = paymentLink;
+      }, 500);
+      
     } catch (error: any) {
       console.error('Purchase error:', error);
       toast({
-        title: "Purchase failed",
-        description: error.message || "Failed to create payment session",
-        variant: "destructive"
+        title: "Chyba pri platbe",
+        description: error.message || "Vyskytla sa chyba",
+        variant: "destructive",
       });
-    } finally {
       setLoading(null);
     }
   };
@@ -124,7 +137,7 @@ export default function BuyCreditsDialog({ open, onOpenChange }: BuyCreditsDialo
                   </div>
 
                   <Button 
-                    onClick={() => handlePurchase(pack.credits, pack.price)}
+                    onClick={() => handlePurchase(pack.credits)}
                     disabled={loading !== null}
                     className="w-full"
                     variant={pack.popular ? "default" : "outline"}
