@@ -7,10 +7,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CREATE-VIP-CHECKOUT] ${step}${detailsStr}`);
-};
+// VIP subscription price ID
+const VIP_PRICE_ID = "price_1SOIMT0QTWhd4oRpQu1A3qwK"; // 20 EUR/month
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -23,54 +21,57 @@ serve(async (req) => {
   );
 
   try {
-    logStep("Function started");
-
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-    logStep("Stripe key verified");
-
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
-    logStep("Authorization header found");
-
+    console.log("Starting VIP subscription checkout creation");
+    
+    const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
-    logStep("User authenticated", { userId: user.id, email: user.email });
+    const { data } = await supabaseClient.auth.getUser(token);
+    const user = data.user;
+    if (!user?.email) throw new Error("User not authenticated");
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    console.log("User authenticated:", user.id);
+
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+      apiVersion: "2025-08-27.basil",
+    });
+
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
-      logStep("Found existing customer", { customerId });
+      console.log("Found existing customer:", customerId);
+    } else {
+      console.log("No existing customer found, will create new one in checkout");
     }
 
+    // Create a VIP subscription checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: "price_1SMlXt0QTWhd4oRpygJZyZMk",
+          price: VIP_PRICE_ID,
           quantity: 1,
         },
       ],
       mode: "subscription",
       success_url: `${req.headers.get("origin")}/collectibles?vip=success`,
-      cancel_url: `${req.headers.get("origin")}/collectibles?vip=cancel`,
+      cancel_url: `${req.headers.get("origin")}/collectibles?vip=canceled`,
+      metadata: {
+        user_id: user.id,
+        type: "vip_subscription",
+      },
     });
 
-    logStep("Checkout session created", { sessionId: session.id, url: session.url });
+    console.log("VIP checkout session created:", session.id, "URL:", session.url);
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
+    console.error("VIP subscription checkout error:", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in create-vip-checkout", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
