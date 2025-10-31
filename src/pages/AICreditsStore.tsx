@@ -5,22 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAICredits } from "@/hooks/useAICredits";
-import { Sparkles, Zap, Star, Package, ExternalLink } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Sparkles, Zap, Star, Package } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const AICreditsStore = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { credits } = useAICredits();
   const [loading, setLoading] = useState(false);
-  const [stripeUrl, setStripeUrl] = useState<string | null>(null);
 
   const creditPackages = [
     {
@@ -64,47 +56,50 @@ const AICreditsStore = () => {
     },
   ];
 
-  // Stripe Payment Links - stable alternative to checkout sessions
-  const paymentLinks: Record<number, string> = {
-    10: "https://buy.stripe.com/test_6oU14neszfs82qAcv9e3e00", // Starter Pack
-    // Note: Create payment links for other packages in Stripe Dashboard
-    // 25: "YOUR_PAYMENT_LINK", 
-    // 60: "YOUR_PAYMENT_LINK",
-    // 150: "YOUR_PAYMENT_LINK"
-  };
-
-  const handlePurchase = (pkg: typeof creditPackages[0]) => {
+  const handlePurchase = async (pkg: typeof creditPackages[0]) => {
     try {
       setLoading(true);
       
-      const paymentLink = paymentLinks[pkg.credits];
+      toast({
+        title: "Vytváram platobnú reláciu",
+        description: "Počkajte prosím...",
+      });
+
+      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!paymentLink) {
+      if (!session) {
         toast({
-          title: "Platba zatiaľ nedostupná",
-          description: "Tento balík sa práve pripravuje. Prosím skúste Starter Pack.",
+          title: "Chyba autentifikácie",
+          description: "Musíte byť prihlásený na nákup kreditov",
           variant: "destructive",
         });
         setLoading(false);
         return;
       }
 
-      // Direct redirect to Stripe Payment Link - most reliable method
-      toast({
-        title: "Presmerovanie na Stripe",
-        description: "Otváram bezpečný platobný systém...",
+      const { data, error } = await supabase.functions.invoke('create-credits-payment', {
+        body: { credits: pkg.credits, price: pkg.price }
       });
-      
-      // Small delay to show toast
-      setTimeout(() => {
-        window.location.href = paymentLink;
-      }, 500);
+
+      if (error) throw error;
+
+      if (data?.url) {
+        toast({
+          title: "Presmerovanie na Stripe",
+          description: "Platobné okno sa otvorí v novej karte...",
+        });
+        
+        setTimeout(() => {
+          window.open(data.url, '_blank');
+          setLoading(false);
+        }, 500);
+      }
       
     } catch (error: any) {
       console.error('Purchase error:', error);
       setLoading(false);
       toast({
-        title: "Chyba",
+        title: "Chyba pri platbe",
         description: error?.message || "Vyskytla sa chyba",
         variant: "destructive",
       });
@@ -113,63 +108,6 @@ const AICreditsStore = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
-        <AlertDialogContent className="max-w-2xl">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              Platobný link pripravený
-            </AlertDialogTitle>
-            <AlertDialogDescription asChild>
-              <div className="space-y-4 text-left">
-                <p>Použite tento link na dokončenie platby cez Stripe:</p>
-                <div className="bg-muted p-3 rounded-md break-all text-xs font-mono">
-                  {stripeUrl}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Tip: Môžete si link skopírovať a otvoriť v akomkoľvek prehliadači
-                </p>
-              </div>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-col gap-2">
-            <Button
-              onClick={() => {
-                if (stripeUrl) {
-                  window.open(stripeUrl, '_blank');
-                }
-              }}
-              className="w-full gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Otvoriť Stripe Platbu
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                if (stripeUrl) {
-                  navigator.clipboard.writeText(stripeUrl);
-                  toast({
-                    title: "Skopírované",
-                    description: "Link bol skopírovaný do schránky",
-                  });
-                }
-              }}
-              className="w-full"
-            >
-              Skopírovať link
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => setStripeUrl(null)}
-              className="w-full"
-            >
-              Zavrieť
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
       {loading && (
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
           <Card className="p-8 text-center">
