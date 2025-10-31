@@ -327,7 +327,7 @@ const AntiqueAppraisal = () => {
             <div className="grid md:grid-cols-4 gap-4">
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-2xl font-bold mb-2">10 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">$10</p>
+                <p className="text-3xl font-bold text-primary mb-4">€5</p>
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(10);
                   if (url) {
@@ -339,10 +339,10 @@ const AntiqueAppraisal = () => {
                 <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
                   POPULAR
                 </div>
-                <p className="text-2xl font-bold mb-2">30 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">$25</p>
+                <p className="text-2xl font-bold mb-2">25 credits</p>
+                <p className="text-3xl font-bold text-primary mb-4">€10</p>
                 <Button className="w-full" onClick={async () => {
-                  const url = await purchaseCredits(30);
+                  const url = await purchaseCredits(25);
                   if (url) {
                     setStripeUrl(url);
                   }
@@ -350,7 +350,7 @@ const AntiqueAppraisal = () => {
               </div>
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-2xl font-bold mb-2">60 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">$45</p>
+                <p className="text-3xl font-bold text-primary mb-4">€20</p>
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(60);
                   if (url) {
@@ -363,7 +363,7 @@ const AntiqueAppraisal = () => {
                   BEST VALUE
                 </div>
                 <p className="text-2xl font-bold mb-2">150 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">$99</p>
+                <p className="text-3xl font-bold text-primary mb-4">€40</p>
                 <Button variant="outline" className="w-full" onClick={async () => {
                   const url = await purchaseCredits(150);
                   if (url) {

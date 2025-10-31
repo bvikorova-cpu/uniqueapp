@@ -7,10 +7,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const PRICE_IDS = {
-  basic: "price_1SITG00QTWhd4oRpQvf4j2mr",
-  premium: "price_1SITGL0QTWhd4oRp7QukXybj", 
-  business: "price_1SITGY0QTWhd4oRpUxy22AXE",
+// Price IDs for subscription tiers
+const PRICE_IDS: Record<string, string> = {
+  basic: "price_1SOIGmGaXSfGtYFt7tBei4Di",    // 5 EUR/month
+  premium: "price_1SOIH6GaXSfGtYFtWImRsIC4",  // 15 EUR/month
+  business: "price_1SOIHRGaXSfGtYFtArYKBnHy", // 50 EUR/month
 };
 
 serve(async (req) => {
@@ -24,19 +25,23 @@ serve(async (req) => {
   );
 
   try {
+    console.log("Starting subscription checkout creation");
+    
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
+    console.log("User authenticated:", user.id);
+
     const { tier } = await req.json();
-    console.log("Processing subscription for tier:", tier);
-    console.log("Available price IDs:", PRICE_IDS);
-    
-    if (!tier || !PRICE_IDS[tier as keyof typeof PRICE_IDS]) {
-      throw new Error("Invalid subscription tier");
+
+    if (!tier || !PRICE_IDS[tier]) {
+      throw new Error(`Invalid subscription tier: ${tier}. Available tiers: basic, premium, business`);
     }
+
+    console.log("Creating checkout for tier:", tier);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -46,14 +51,18 @@ serve(async (req) => {
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
+      console.log("Found existing customer:", customerId);
+    } else {
+      console.log("No existing customer found, will create new one in checkout");
     }
 
+    // Create a subscription checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: PRICE_IDS[tier as keyof typeof PRICE_IDS],
+          price: PRICE_IDS[tier],
           quantity: 1,
         },
       ],
@@ -63,10 +72,13 @@ serve(async (req) => {
       metadata: {
         user_id: user.id,
         tier: tier,
+        type: "subscription",
       },
     });
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    console.log("Checkout session created:", session.id, "URL:", session.url);
+
+    return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });

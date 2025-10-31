@@ -7,12 +7,12 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Price IDs for each credit package
+// Price IDs for antique credit packages
 const PRICE_IDS: Record<number, string> = {
-  10: "price_1SL7vl0QTWhd4oRpD2HsUMtr",
-  30: "price_1SL7w10QTWhd4oRpJuDof9zv",
-  60: "price_1SL7wH0QTWhd4oRpTrjakbxs",
-  150: "price_1SL7wW0QTWhd4oRpBvxJ4LwT",
+  10: "price_1SOII2GaXSfGtYFtPltUZvxb",    // Starter - 5 EUR
+  25: "price_1SOIIMGaXSfGtYFtonaY4jqs",    // Basic - 10 EUR
+  60: "price_1SOIItGaXSfGtYFtvHTuEutU",    // Pro - 20 EUR
+  150: "price_1SOIJE0QTWhd4oRpow80Xeyd",   // Ultimate - 40 EUR
 };
 
 serve(async (req) => {
@@ -26,33 +26,42 @@ serve(async (req) => {
   );
 
   try {
+    console.log("Starting antique credits checkout creation");
+    
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
-    
-    if (!user?.email) {
-      throw new Error("User not authenticated or email not available");
-    }
+    if (!user?.email) throw new Error("User not authenticated");
+
+    console.log("User authenticated:", user.id);
 
     const { credits } = await req.json();
-    
-    if (!PRICE_IDS[credits]) {
-      throw new Error("Invalid credit amount");
+
+    if (!credits) {
+      throw new Error("Credits amount is required");
     }
+
+    if (!PRICE_IDS[credits]) {
+      throw new Error(`Invalid credit amount: ${credits}. Available amounts: 10, 25, 60, 150`);
+    }
+
+    console.log("Creating checkout for credits:", credits);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Check if customer exists
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
+      console.log("Found existing customer:", customerId);
+    } else {
+      console.log("No existing customer found, will create new one in checkout");
     }
 
-    // Create checkout session with metadata
+    // Create a checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -63,23 +72,25 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/antique-appraisal?payment=success`,
+      success_url: `${req.headers.get("origin")}/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/antique-appraisal?payment=canceled`,
       metadata: {
         user_id: user.id,
         credits: credits.toString(),
+        type: "antique_credits",
       },
     });
 
-    console.log("Checkout session created:", session.id);
+    console.log("Checkout session created:", session.id, "URL:", session.url);
 
-    return new Response(JSON.stringify({ url: session.url }), {
+    return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    console.error("Error creating checkout:", error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
+    console.error("Antique credits checkout error:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
