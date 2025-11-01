@@ -11,10 +11,10 @@ import { RuneReader } from "@/components/astrology/RuneReader";
 
 const Astrology = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-pink-900 p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="container mx-auto max-w-6xl pt-20">
         <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold text-white">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 bg-clip-text text-transparent">
             ✨ Astrology & Mystical Readings
           </h1>
         </div>
@@ -24,7 +24,7 @@ const Astrology = () => {
         </div>
 
         <Tabs defaultValue="horoscope" className="w-full">
-          <TabsList className="grid grid-cols-3 lg:grid-cols-9 gap-2 h-auto bg-white/10 p-2">
+          <TabsList className="grid grid-cols-3 lg:grid-cols-9 gap-2 h-auto p-2">
             <TabsTrigger value="horoscope">Horoscope ⭐</TabsTrigger>
             <TabsTrigger value="tarot">Tarot 💳</TabsTrigger>
             <TabsTrigger value="dream">Dreams 💭</TabsTrigger>
@@ -70,7 +70,7 @@ const Astrology = () => {
             </TabsContent>
 
             <TabsContent value="birthchart">
-              <div className="text-white text-center p-8">
+              <div className="text-foreground text-center p-8">
                 Birth Chart feature coming soon! 🌌
               </div>
             </TabsContent>
