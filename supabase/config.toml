@@ -1,5 +1,11 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.astrology-reading]
+verify_jwt = true
+
+[functions.create-astrology-credits-payment]
+verify_jwt = true
+
 [functions.teen-debate-partner]
 verify_jwt = false
 
