@@ -59,7 +59,7 @@ import DreamJournal from "./pages/DreamJournal";
 import FashionStylist from "./pages/FashionStylist";
 import VirtualPet from "./pages/VirtualPet";
 import Astrology from "./pages/Astrology";
-import AstrologyHub from "./pages/AstrologyHub";
+
 import PremiumStore from "./pages/PremiumStore";
 import AICreditsStore from "./pages/AICreditsStore";
 import AIMusic from "./pages/AIMusic";
@@ -209,7 +209,6 @@ const App = () => (
           <Route path="/fashion-stylist" element={<FashionStylist />} />
           <Route path="/virtual-pet" element={<VirtualPet />} />
           <Route path="/astrology" element={<Astrology />} />
-          <Route path="/astrology-hub" element={<AstrologyHub />} />
           <Route path="/ai-music" element={<AIMusic />} />
           <Route path="/mystery-box" element={<MysteryBox />} />
               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
