@@ -6,6 +6,9 @@ verify_jwt = true
 [functions.create-astrology-credits-payment]
 verify_jwt = true
 
+[functions.astrology-chat]
+verify_jwt = false
+
 [functions.teen-debate-partner]
 verify_jwt = false
 

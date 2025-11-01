@@ -8,6 +8,8 @@ import { PalmistryReader } from "@/components/astrology/PalmistryReader";
 import { CompatibilityChecker } from "@/components/astrology/CompatibilityChecker";
 import { YesNoOracle } from "@/components/astrology/YesNoOracle";
 import { RuneReader } from "@/components/astrology/RuneReader";
+import { BirthChartAnalyzer } from "@/components/astrology/BirthChartAnalyzer";
+import { LiveChatWithAI } from "@/components/astrology/LiveChatWithAI";
 
 const Astrology = () => {
   return (
@@ -24,7 +26,7 @@ const Astrology = () => {
         </div>
 
         <Tabs defaultValue="horoscope" className="w-full">
-          <TabsList className="grid grid-cols-3 lg:grid-cols-9 gap-2 h-auto p-2">
+          <TabsList className="grid grid-cols-3 lg:grid-cols-10 gap-2 h-auto p-2">
             <TabsTrigger value="horoscope">Horoscope ⭐</TabsTrigger>
             <TabsTrigger value="tarot">Tarot 💳</TabsTrigger>
             <TabsTrigger value="dream">Dreams 💭</TabsTrigger>
@@ -34,6 +36,7 @@ const Astrology = () => {
             <TabsTrigger value="yesno">Yes/No ❓</TabsTrigger>
             <TabsTrigger value="rune">Rune 🗿</TabsTrigger>
             <TabsTrigger value="birthchart">Birth Chart 🌌</TabsTrigger>
+            <TabsTrigger value="livechat">Live Chat 💬</TabsTrigger>
           </TabsList>
 
           <div className="mt-6">
@@ -70,9 +73,11 @@ const Astrology = () => {
             </TabsContent>
 
             <TabsContent value="birthchart">
-              <div className="text-foreground text-center p-8">
-                Birth Chart feature coming soon! 🌌
-              </div>
+              <BirthChartAnalyzer />
+            </TabsContent>
+
+            <TabsContent value="livechat">
+              <LiveChatWithAI />
             </TabsContent>
           </div>
         </Tabs>
