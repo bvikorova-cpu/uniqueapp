@@ -667,6 +667,63 @@ export type Database = {
         }
         Relationships: []
       }
+      astrology_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      astrology_subscriptions: {
+        Row: {
+          active: boolean
+          created_at: string
+          expires_at: string
+          id: string
+          started_at: string
+          subscription_type: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          expires_at: string
+          id?: string
+          started_at?: string
+          subscription_type?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          expires_at?: string
+          id?: string
+          started_at?: string
+          subscription_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       auction_bids: {
         Row: {
           auction_id: string
@@ -3050,6 +3107,33 @@ export type Database = {
           themes?: Json | null
           title?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dream_interpretations: {
+        Row: {
+          created_at: string
+          credits_used: number
+          dream_description: string
+          id: string
+          interpretation: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          dream_description: string
+          id?: string
+          interpretation: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          dream_description?: string
+          id?: string
+          interpretation?: string
           user_id?: string
         }
         Relationships: []
@@ -5861,6 +5945,33 @@ export type Database = {
         }
         Relationships: []
       }
+      palmistry_readings: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          image_url: string
+          reading: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          image_url: string
+          reading: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          image_url?: string
+          reading?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       pet_accessories: {
         Row: {
           accessory_type: Database["public"]["Enums"]["accessory_type"]
@@ -7251,6 +7362,36 @@ export type Database = {
         }
         Relationships: []
       }
+      rune_readings: {
+        Row: {
+          created_at: string
+          credits_used: number
+          guidance: string
+          id: string
+          rune_meaning: string
+          rune_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          guidance: string
+          id?: string
+          rune_meaning: string
+          rune_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          guidance?: string
+          id?: string
+          rune_meaning?: string
+          rune_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_videos: {
         Row: {
           created_at: string
@@ -8171,6 +8312,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      universe_questions: {
+        Row: {
+          answer: string
+          created_at: string
+          credits_used: number
+          explanation: string | null
+          id: string
+          question: string
+          user_id: string
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          credits_used?: number
+          explanation?: string | null
+          id?: string
+          question: string
+          user_id: string
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          credits_used?: number
+          explanation?: string | null
+          id?: string
+          question?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_achievements: {
         Row: {
