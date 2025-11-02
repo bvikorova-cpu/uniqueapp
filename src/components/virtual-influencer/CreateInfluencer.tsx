@@ -119,7 +119,7 @@ const CreateInfluencer = ({ open, onOpenChange }: CreateInfluencerProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("virtual_influencers").insert({
+      const { error } = await supabase.from("virtual_influencers").insert([{
         user_id: user.id,
         name: formData.name,
         description: formData.description,
@@ -127,8 +127,8 @@ const CreateInfluencer = ({ open, onOpenChange }: CreateInfluencerProps) => {
         niche: formData.niche,
         avatar_url: formData.avatarUrl || null,
         followers: Math.floor(Math.random() * 1000) + 100, // Start with random followers
-        engagement_rate: (Math.random() * 5 + 2).toFixed(2), // 2-7% engagement
-      });
+        engagement_rate: Number((Math.random() * 5 + 2).toFixed(2)), // 2-7% engagement
+      }]);
 
       if (error) throw error;
 

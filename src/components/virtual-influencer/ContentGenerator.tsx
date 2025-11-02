@@ -84,7 +84,7 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
       // Save content
       const { error: contentError } = await supabase
         .from("influencer_content")
-        .insert({
+        .insert([{
           influencer_id: influencerId,
           content_type: contentType,
           content_url: generatedContent,
@@ -92,8 +92,8 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
           likes,
           comments,
           shares,
-          earnings: netEarnings,
-        });
+          earnings: Number(netEarnings),
+        }]);
 
       if (contentError) throw contentError;
 
@@ -112,14 +112,14 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
       // Record earnings
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from("influencer_earnings").insert({
+        await supabase.from("influencer_earnings").insert([{
           influencer_id: influencerId,
           user_id: user.id,
-          amount: earnings,
-          platform_fee: platformFee,
-          net_amount: netEarnings,
+          amount: Number(earnings),
+          platform_fee: Number(platformFee),
+          net_amount: Number(netEarnings),
           source: "content_views",
-        });
+        }]);
       }
 
       return { netEarnings, likes };
