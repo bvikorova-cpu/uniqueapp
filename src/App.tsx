@@ -152,6 +152,7 @@ import StockContentLibrary from "./pages/StockContentLibrary";
 import DigitalProductStore from "./pages/DigitalProductStore";
 import AIAvatarService from "./pages/AIAvatarService";
 import TutorialPlatform from "./pages/TutorialPlatform";
+import VirtualEscapeRoom from "./pages/VirtualEscapeRoom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -314,6 +315,7 @@ const App = () => (
           <Route path="/digital-product-store" element={<DigitalProductStore />} />
           <Route path="/ai-avatar-service" element={<AIAvatarService />} />
           <Route path="/tutorial-platform" element={<TutorialPlatform />} />
+          <Route path="/virtual-escape-room" element={<VirtualEscapeRoom />} />
           <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />

@@ -1531,6 +1531,38 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_access: {
+        Row: {
+          challenge_id: string
+          expires_at: string
+          id: string
+          purchased_at: string | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          expires_at: string
+          id?: string
+          purchased_at?: string | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          expires_at?: string
+          id?: string
+          purchased_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_access_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "escape_room_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_participants: {
         Row: {
           challenge_id: string
@@ -4472,6 +4504,354 @@ export type Database = {
           total_traded?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      escape_room_challenges: {
+        Row: {
+          access_duration_hours: number
+          access_price: number
+          created_at: string | null
+          description: string | null
+          ends_at: string
+          id: string
+          is_active: boolean | null
+          prize_pool: number | null
+          room_id: string
+          starts_at: string
+          title: string
+        }
+        Insert: {
+          access_duration_hours: number
+          access_price: number
+          created_at?: string | null
+          description?: string | null
+          ends_at: string
+          id?: string
+          is_active?: boolean | null
+          prize_pool?: number | null
+          room_id: string
+          starts_at: string
+          title: string
+        }
+        Update: {
+          access_duration_hours?: number
+          access_price?: number
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string
+          id?: string
+          is_active?: boolean | null
+          prize_pool?: number | null
+          room_id?: string
+          starts_at?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escape_room_challenges_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "escape_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escape_room_earnings: {
+        Row: {
+          amount: number
+          created_at: string | null
+          creator_id: string
+          id: string
+          net_amount: number
+          paid_at: string | null
+          platform_fee: number
+          room_id: string
+          session_id: string | null
+          status: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          net_amount: number
+          paid_at?: string | null
+          platform_fee: number
+          room_id: string
+          session_id?: string | null
+          status: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          net_amount?: number
+          paid_at?: string | null
+          platform_fee?: number
+          room_id?: string
+          session_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escape_room_earnings_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "escape_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escape_room_earnings_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "escape_room_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escape_room_leaderboard: {
+        Row: {
+          completion_time_seconds: number
+          created_at: string | null
+          hints_used: number | null
+          id: string
+          room_id: string
+          score: number
+          session_id: string
+          team_name: string
+        }
+        Insert: {
+          completion_time_seconds: number
+          created_at?: string | null
+          hints_used?: number | null
+          id?: string
+          room_id: string
+          score: number
+          session_id: string
+          team_name: string
+        }
+        Update: {
+          completion_time_seconds?: number
+          created_at?: string | null
+          hints_used?: number | null
+          id?: string
+          room_id?: string
+          score?: number
+          session_id?: string
+          team_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escape_room_leaderboard_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "escape_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "escape_room_leaderboard_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "escape_room_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escape_room_puzzles: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          hint_cost: number | null
+          hint_text: string | null
+          id: string
+          puzzle_data: Json
+          puzzle_order: number
+          puzzle_type: string
+          room_id: string
+          solution: Json
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          hint_cost?: number | null
+          hint_text?: string | null
+          id?: string
+          puzzle_data: Json
+          puzzle_order: number
+          puzzle_type: string
+          room_id: string
+          solution: Json
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          hint_cost?: number | null
+          hint_text?: string | null
+          id?: string
+          puzzle_data?: Json
+          puzzle_order?: number
+          puzzle_type?: string
+          room_id?: string
+          solution?: Json
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escape_room_puzzles_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "escape_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escape_room_sessions: {
+        Row: {
+          completed_at: string | null
+          completion_time_seconds: number | null
+          created_at: string | null
+          hints_used: number | null
+          id: string
+          room_id: string
+          score: number | null
+          started_at: string | null
+          status: string
+          team_name: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completion_time_seconds?: number | null
+          created_at?: string | null
+          hints_used?: number | null
+          id?: string
+          room_id: string
+          score?: number | null
+          started_at?: string | null
+          status: string
+          team_name: string
+        }
+        Update: {
+          completed_at?: string | null
+          completion_time_seconds?: number | null
+          created_at?: string | null
+          hints_used?: number | null
+          id?: string
+          room_id?: string
+          score?: number | null
+          started_at?: string | null
+          status?: string
+          team_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escape_room_sessions_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "escape_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      escape_room_subscriptions: {
+        Row: {
+          auto_renew: boolean | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          started_at: string | null
+          status: string
+          stripe_subscription_id: string | null
+          tier: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          auto_renew?: boolean | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          started_at?: string | null
+          status: string
+          stripe_subscription_id?: string | null
+          tier: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          auto_renew?: boolean | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: string
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      escape_rooms: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          difficulty: string
+          duration_minutes: number
+          id: string
+          is_premium: boolean | null
+          is_published: boolean | null
+          max_players: number
+          price: number
+          rating: number | null
+          room_type: string
+          theme: string
+          thumbnail_url: string | null
+          title: string
+          total_plays: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          difficulty: string
+          duration_minutes?: number
+          id?: string
+          is_premium?: boolean | null
+          is_published?: boolean | null
+          max_players?: number
+          price?: number
+          rating?: number | null
+          room_type: string
+          theme: string
+          thumbnail_url?: string | null
+          title: string
+          total_plays?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          difficulty?: string
+          duration_minutes?: number
+          id?: string
+          is_premium?: boolean | null
+          is_published?: boolean | null
+          max_players?: number
+          price?: number
+          rating?: number | null
+          room_type?: string
+          theme?: string
+          thumbnail_url?: string | null
+          title?: string
+          total_plays?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -9819,6 +10199,41 @@ export type Database = {
             columns: ["gift_id"]
             isOneToOne: false
             referencedRelation: "platform_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_players: {
+        Row: {
+          id: string
+          joined_at: string | null
+          left_at: string | null
+          role: string | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          left_at?: string | null
+          role?: string | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          left_at?: string | null
+          role?: string | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_players_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "escape_room_sessions"
             referencedColumns: ["id"]
           },
         ]
