@@ -9,6 +9,15 @@ verify_jwt = true
 [functions.astrology-chat]
 verify_jwt = false
 
+[functions.create-character]
+verify_jwt = true
+
+[functions.battle-characters]
+verify_jwt = true
+
+[functions.create-character-credits-payment]
+verify_jwt = true
+
 [functions.teen-debate-partner]
 verify_jwt = false
 

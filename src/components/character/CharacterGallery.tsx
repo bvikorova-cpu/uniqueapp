@@ -1,0 +1,91 @@
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Trophy, Zap, Shield, Heart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+export const CharacterGallery = () => {
+  const { data: characters } = useQuery({
+    queryKey: ["all-characters"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("characters")
+        .select("*")
+        .order("popularity_score", { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  return (
+    <div>
+      <Card className="p-6 mb-6 bg-white/10 backdrop-blur-md border-white/20">
+        <h2 className="text-2xl font-bold text-white mb-2">Character Gallery</h2>
+        <p className="text-white/60">Discover the most powerful and popular characters</p>
+      </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {characters?.map((char, index) => (
+          <Card key={char.id} className="p-4 bg-white/10 backdrop-blur-md border-white/20 hover:border-white/40 transition-all">
+            <div className="relative">
+              {index < 3 && (
+                <Badge className="absolute top-2 right-2 bg-yellow-500">
+                  <Trophy className="h-3 w-3 mr-1" />
+                  Top {index + 1}
+                </Badge>
+              )}
+              {char.image_url && (
+                <img
+                  src={char.image_url}
+                  alt={char.name}
+                  className="w-full h-48 object-cover rounded-lg mb-3"
+                />
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h3 className="text-white font-bold text-lg">{char.name}</h3>
+                <Badge variant="outline" className="text-xs">
+                  Lvl {char.level}
+                </Badge>
+              </div>
+
+              <Badge className="bg-purple-600">{char.category}</Badge>
+
+              <p className="text-white/60 text-sm line-clamp-2">{char.description}</p>
+
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="flex items-center gap-1 text-white/80">
+                  <Heart className="h-4 w-4 text-red-400" />
+                  <span>{char.hp} HP</span>
+                </div>
+                <div className="flex items-center gap-1 text-white/80">
+                  <Zap className="h-4 w-4 text-yellow-400" />
+                  <span>{char.attack} ATK</span>
+                </div>
+                <div className="flex items-center gap-1 text-white/80">
+                  <Shield className="h-4 w-4 text-blue-400" />
+                  <span>{char.defense} DEF</span>
+                </div>
+                <div className="flex items-center gap-1 text-white/80">
+                  <Trophy className="h-4 w-4 text-green-400" />
+                  <span>{char.wins}W / {char.losses}L</span>
+                </div>
+              </div>
+
+              {char.special_power && (
+                <p className="text-white/80 text-xs bg-white/5 p-2 rounded">
+                  ⚡ {char.special_power}
+                </p>
+              )}
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};

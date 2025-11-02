@@ -71,6 +71,7 @@ import Home from "./pages/Home";
 import AIExperiences from "./pages/AIExperiences";
 import BrandBuilder from "./pages/BrandBuilder";
 import HomeDesigner from "./pages/HomeDesigner";
+import CharacterArena from "./pages/CharacterArena";
 import BeautyStudio from "./pages/BeautyStudio";
 import AIMusicProducer from "./pages/AIMusicProducer";
 import PlantCare from "./pages/PlantCare";
@@ -209,6 +210,7 @@ const App = () => (
           <Route path="/fashion-stylist" element={<FashionStylist />} />
           <Route path="/virtual-pet" element={<VirtualPet />} />
           <Route path="/astrology" element={<Astrology />} />
+          <Route path="/character-arena" element={<CharacterArena />} />
           <Route path="/ai-music" element={<AIMusic />} />
           <Route path="/mystery-box" element={<MysteryBox />} />
               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
