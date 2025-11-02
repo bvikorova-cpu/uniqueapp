@@ -34,6 +34,56 @@ import corporateEspionage from "@/assets/escape-rooms/corporate-espionage.jpg";
 import arcticStation from "@/assets/escape-rooms/arctic-station.jpg";
 import forbiddenLibrary from "@/assets/escape-rooms/forbidden-library.jpg";
 import casinoHeist from "@/assets/escape-rooms/casino-heist.jpg";
+import alienMothership from "@/assets/escape-rooms/alien-mothership.jpg";
+import androidRevolution from "@/assets/escape-rooms/android-revolution.jpg";
+import quantumLab from "@/assets/escape-rooms/quantum-lab.jpg";
+import starshipBridge from "@/assets/escape-rooms/starship-bridge.jpg";
+import cryogenicAwakening from "@/assets/escape-rooms/cryogenic-awakening.jpg";
+import neuralNetwork from "@/assets/escape-rooms/neural-network.jpg";
+import terraformingStation from "@/assets/escape-rooms/terraforming-station.jpg";
+import deepSpaceMining from "@/assets/escape-rooms/deep-space-mining.jpg";
+import vrPrison from "@/assets/escape-rooms/vr-prison.jpg";
+import robotFactory from "@/assets/escape-rooms/robot-factory.jpg";
+import cursedCarnival from "@/assets/escape-rooms/cursed-carnival.jpg";
+import abandonedLab from "@/assets/escape-rooms/abandoned-lab.jpg";
+import witchHunt from "@/assets/escape-rooms/witch-hunt.jpg";
+import demonicPossession from "@/assets/escape-rooms/demonic-possession.jpg";
+import serialKiller from "@/assets/escape-rooms/serial-killer.jpg";
+import ghostShip from "@/assets/escape-rooms/ghost-ship.jpg";
+import plagueDoctor from "@/assets/escape-rooms/plague-doctor.jpg";
+import dollFactory from "@/assets/escape-rooms/doll-factory.jpg";
+import catacombs from "@/assets/escape-rooms/catacombs.jpg";
+import slaughterhouse from "@/assets/escape-rooms/slaughterhouse.jpg";
+import artGallery from "@/assets/escape-rooms/art-gallery.jpg";
+import coldCase from "@/assets/escape-rooms/cold-case.jpg";
+import spyAcademy from "@/assets/escape-rooms/spy-academy.jpg";
+import luxuryTrain from "@/assets/escape-rooms/luxury-train.jpg";
+import secretSociety from "@/assets/escape-rooms/secret-society.jpg";
+import jewelThief from "@/assets/escape-rooms/jewel-thief.jpg";
+import fbiEvidence from "@/assets/escape-rooms/fbi-evidence.jpg";
+import politicalScandal from "@/assets/escape-rooms/political-scandal.jpg";
+import cardCounting from "@/assets/escape-rooms/card-counting.jpg";
+import insuranceFraud from "@/assets/escape-rooms/insurance-fraud.jpg";
+import unicornSanctuary from "@/assets/escape-rooms/unicorn-sanctuary.jpg";
+import darkSorcerer from "@/assets/escape-rooms/dark-sorcerer.jpg";
+import fairytaleCastle from "@/assets/escape-rooms/fairytale-castle.jpg";
+import atlantisRising from "@/assets/escape-rooms/atlantis-rising.jpg";
+import phoenixRebirth from "@/assets/escape-rooms/phoenix-rebirth.jpg";
+import goblinMarket from "@/assets/escape-rooms/goblin-market.jpg";
+import mermaidKingdom from "@/assets/escape-rooms/mermaid-kingdom.jpg";
+import centaurProphecy from "@/assets/escape-rooms/centaur-prophecy.jpg";
+import crystalCaverns from "@/assets/escape-rooms/crystal-caverns.jpg";
+import vampireCouncil from "@/assets/escape-rooms/vampire-council.jpg";
+import amazonJungle from "@/assets/escape-rooms/amazon-jungle.jpg";
+import saharaDesert from "@/assets/escape-rooms/sahara-desert.jpg";
+import mountEverest from "@/assets/escape-rooms/mount-everest.jpg";
+import barrierReef from "@/assets/escape-rooms/barrier-reef.jpg";
+import wildWest from "@/assets/escape-rooms/wild-west.jpg";
+import volcanoIsland from "@/assets/escape-rooms/volcano-island.jpg";
+import polarIce from "@/assets/escape-rooms/polar-ice.jpg";
+import africanSafari from "@/assets/escape-rooms/african-safari.jpg";
+import himalayanTemple from "@/assets/escape-rooms/himalayan-temple.jpg";
+import rainforestCanopy from "@/assets/escape-rooms/rainforest-canopy.jpg";
 
 interface Room {
   id: string;
@@ -72,33 +122,32 @@ const themeIcons = {
 };
 
 const roomImages: Record<string, string> = {
-  "The Haunted Manor": hauntedManor,
-  "Mars Colony Mystery": marsColony,
-  "Detective's Office": detectiveOffice,
-  "Dragon's Lair": dragonLair,
-  "Jungle Expedition": jungleExpedition,
-  "Math Challenge": mathChallenge,
-  "Corporate Team Builder": corporateTeam,
-  "Vampire Castle Nightmare": vampireCastle,
-  "Cyberpunk Heist 2077": cyberpunkHeist,
-  "Sherlock's Study": sherlockStudy,
-  "Wizard's Tower": wizardTower,
-  "Pirate Treasure Hunt": pirateTreasure,
-  "Space Station Crisis": spaceStation,
-  "Haunted Asylum": hauntedAsylum,
-  "Ancient Egyptian Tomb": egyptianTomb,
-  "Time Paradox Lab": timeParadox,
-  "Murder at the Manor": murderManor,
-  "Zombie Apocalypse Shelter": zombieShelter,
-  "Dragon Mountain Quest": dragonMountain,
-  "Submarine Emergency": submarineEmergency,
-  "Witch's Cottage": witchCottage,
-  "Bank Heist Masterplan": bankHeist,
-  "Science Lab Outbreak": scienceLab,
-  "Corporate Espionage": corporateEspionage,
-  "Arctic Research Station": arcticStation,
-  "Forbidden Library": forbiddenLibrary,
-  "Casino Royale Heist": casinoHeist
+  "The Haunted Manor": hauntedManor, "Mars Colony Mystery": marsColony, "Detective's Office": detectiveOffice,
+  "Dragon's Lair": dragonLair, "Jungle Expedition": jungleExpedition, "Math Challenge": mathChallenge,
+  "Corporate Team Builder": corporateTeam, "Vampire Castle Nightmare": vampireCastle, "Cyberpunk Heist 2077": cyberpunkHeist,
+  "Sherlock's Study": sherlockStudy, "Wizard's Tower": wizardTower, "Pirate Treasure Hunt": pirateTreasure,
+  "Space Station Crisis": spaceStation, "Haunted Asylum": hauntedAsylum, "Ancient Egyptian Tomb": egyptianTomb,
+  "Time Paradox Lab": timeParadox, "Murder at the Manor": murderManor, "Zombie Apocalypse Shelter": zombieShelter,
+  "Dragon Mountain Quest": dragonMountain, "Submarine Emergency": submarineEmergency, "Witch's Cottage": witchCottage,
+  "Bank Heist Masterplan": bankHeist, "Science Lab Outbreak": scienceLab, "Corporate Espionage": corporateEspionage,
+  "Arctic Research Station": arcticStation, "Forbidden Library": forbiddenLibrary, "Casino Royale Heist": casinoHeist,
+  "Alien Mothership Escape": alienMothership, "Android Revolution": androidRevolution, "Quantum Laboratory": quantumLab,
+  "Starship Bridge Crisis": starshipBridge, "Cryogenic Awakening": cryogenicAwakening, "Neural Network Hack": neuralNetwork,
+  "Terraforming Station": terraformingStation, "Deep Space Mining": deepSpaceMining, "Virtual Reality Prison": vrPrison,
+  "Robot Factory Lockdown": robotFactory, "Cursed Carnival": cursedCarnival, "Abandoned Laboratory": abandonedLab,
+  "Witch Hunt 1692": witchHunt, "Demonic Possession": demonicPossession, "Serial Killer Basement": serialKiller,
+  "Ghost Ship": ghostShip, "Plague Doctor Nightmare": plagueDoctor, "Doll Factory": dollFactory,
+  "Underground Catacombs": catacombs, "Slaughterhouse Secrets": slaughterhouse, "Art Gallery Heist": artGallery,
+  "Cold Case Files": coldCase, "Spy Academy Final Exam": spyAcademy, "Luxury Train Mystery": luxuryTrain,
+  "Secret Society Initiation": secretSociety, "Jewel Thief Challenge": jewelThief, "FBI Evidence Room": fbiEvidence,
+  "Political Scandal": politicalScandal, "Casino Card Counting": cardCounting, "Insurance Fraud Investigation": insuranceFraud,
+  "Unicorn Sanctuary": unicornSanctuary, "Dark Sorcerer Tower": darkSorcerer, "Fairy Tale Castle": fairytaleCastle,
+  "Atlantis Rising": atlantisRising, "Phoenix Rebirth": phoenixRebirth, "Goblin Market": goblinMarket,
+  "Mermaid Kingdom": mermaidKingdom, "Centaur Prophecy": centaurProphecy, "Crystal Caverns": crystalCaverns,
+  "Vampire Council": vampireCouncil, "Amazon Jungle Expedition": amazonJungle, "Sahara Desert Survival": saharaDesert,
+  "Mount Everest Climb": mountEverest, "Great Barrier Reef": barrierReef, "Wild West Shootout": wildWest,
+  "Volcano Island": volcanoIsland, "Polar Ice Expedition": polarIce, "African Safari": africanSafari,
+  "Himalayan Temple": himalayanTemple, "Rainforest Canopy": rainforestCanopy
 };
 
 const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
