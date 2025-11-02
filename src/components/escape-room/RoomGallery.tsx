@@ -6,6 +6,35 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, Users, Star, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+// Import all room images
+import hauntedManor from "@/assets/escape-rooms/haunted-manor.jpg";
+import marsColony from "@/assets/escape-rooms/mars-colony.jpg";
+import detectiveOffice from "@/assets/escape-rooms/detective-office.jpg";
+import dragonLair from "@/assets/escape-rooms/dragon-lair.jpg";
+import jungleExpedition from "@/assets/escape-rooms/jungle-expedition.jpg";
+import mathChallenge from "@/assets/escape-rooms/math-challenge.jpg";
+import corporateTeam from "@/assets/escape-rooms/corporate-team.jpg";
+import vampireCastle from "@/assets/escape-rooms/vampire-castle.jpg";
+import cyberpunkHeist from "@/assets/escape-rooms/cyberpunk-heist.jpg";
+import sherlockStudy from "@/assets/escape-rooms/sherlock-study.jpg";
+import wizardTower from "@/assets/escape-rooms/wizard-tower.jpg";
+import pirateTreasure from "@/assets/escape-rooms/pirate-treasure.jpg";
+import spaceStation from "@/assets/escape-rooms/space-station.jpg";
+import hauntedAsylum from "@/assets/escape-rooms/haunted-asylum.jpg";
+import egyptianTomb from "@/assets/escape-rooms/egyptian-tomb.jpg";
+import timeParadox from "@/assets/escape-rooms/time-paradox.jpg";
+import murderManor from "@/assets/escape-rooms/murder-manor.jpg";
+import zombieShelter from "@/assets/escape-rooms/zombie-shelter.jpg";
+import dragonMountain from "@/assets/escape-rooms/dragon-mountain.jpg";
+import submarineEmergency from "@/assets/escape-rooms/submarine-emergency.jpg";
+import witchCottage from "@/assets/escape-rooms/witch-cottage.jpg";
+import bankHeist from "@/assets/escape-rooms/bank-heist.jpg";
+import scienceLab from "@/assets/escape-rooms/science-lab.jpg";
+import corporateEspionage from "@/assets/escape-rooms/corporate-espionage.jpg";
+import arcticStation from "@/assets/escape-rooms/arctic-station.jpg";
+import forbiddenLibrary from "@/assets/escape-rooms/forbidden-library.jpg";
+import casinoHeist from "@/assets/escape-rooms/casino-heist.jpg";
+
 interface Room {
   id: string;
   title: string;
@@ -40,6 +69,36 @@ const themeIcons = {
   fantasy: "🧙‍♂️",
   educational: "📚",
   corporate: "💼"
+};
+
+const roomImages: Record<string, string> = {
+  "The Haunted Manor": hauntedManor,
+  "Mars Colony Mystery": marsColony,
+  "Detective's Office": detectiveOffice,
+  "Dragon's Lair": dragonLair,
+  "Jungle Expedition": jungleExpedition,
+  "Math Challenge": mathChallenge,
+  "Corporate Team Builder": corporateTeam,
+  "Vampire Castle Nightmare": vampireCastle,
+  "Cyberpunk Heist 2077": cyberpunkHeist,
+  "Sherlock's Study": sherlockStudy,
+  "Wizard's Tower": wizardTower,
+  "Pirate Treasure Hunt": pirateTreasure,
+  "Space Station Crisis": spaceStation,
+  "Haunted Asylum": hauntedAsylum,
+  "Ancient Egyptian Tomb": egyptianTomb,
+  "Time Paradox Lab": timeParadox,
+  "Murder at the Manor": murderManor,
+  "Zombie Apocalypse Shelter": zombieShelter,
+  "Dragon Mountain Quest": dragonMountain,
+  "Submarine Emergency": submarineEmergency,
+  "Witch's Cottage": witchCottage,
+  "Bank Heist Masterplan": bankHeist,
+  "Science Lab Outbreak": scienceLab,
+  "Corporate Espionage": corporateEspionage,
+  "Arctic Research Station": arcticStation,
+  "Forbidden Library": forbiddenLibrary,
+  "Casino Royale Heist": casinoHeist
 };
 
 const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
@@ -121,15 +180,26 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {rooms.map((room) => (
-            <Card key={room.id} className="hover:shadow-lg transition-all">
-              <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <span className="text-3xl">{themeIcons[room.theme as keyof typeof themeIcons]}</span>
-                  <Badge className={difficultyColors[room.difficulty as keyof typeof difficultyColors]}>
-                    {room.difficulty}
-                  </Badge>
+            <Card key={room.id} className="hover:shadow-lg transition-all overflow-hidden">
+              {roomImages[room.title] && (
+                <div className="relative h-48 w-full overflow-hidden">
+                  <img 
+                    src={roomImages[room.title]} 
+                    alt={room.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 right-2">
+                    <Badge className={difficultyColors[room.difficulty as keyof typeof difficultyColors]}>
+                      {room.difficulty}
+                    </Badge>
+                  </div>
                 </div>
-                <CardTitle>{room.title}</CardTitle>
+              )}
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span>{themeIcons[room.theme as keyof typeof themeIcons]}</span>
+                  {room.title}
+                </CardTitle>
                 <CardDescription>{room.description}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
