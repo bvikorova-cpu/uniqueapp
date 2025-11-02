@@ -3463,6 +3463,48 @@ export type Database = {
           },
         ]
       }
+      cross_reality_reveals: {
+        Row: {
+          id: string
+          message: string | null
+          payment_amount: number
+          revealed_at: string
+          revealer_life_id: string
+          target_life_id: string
+        }
+        Insert: {
+          id?: string
+          message?: string | null
+          payment_amount?: number
+          revealed_at?: string
+          revealer_life_id: string
+          target_life_id: string
+        }
+        Update: {
+          id?: string
+          message?: string | null
+          payment_amount?: number
+          revealed_at?: string
+          revealer_life_id?: string
+          target_life_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cross_reality_reveals_revealer_life_id_fkey"
+            columns: ["revealer_life_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_lives"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cross_reality_reveals_target_life_id_fkey"
+            columns: ["target_life_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_lives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cv_documents: {
         Row: {
           ai_suggestions: Json | null
@@ -6908,6 +6950,163 @@ export type Database = {
         }
         Relationships: []
       }
+      parallel_followers: {
+        Row: {
+          created_at: string
+          follower_id: string
+          id: string
+          life_id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          id?: string
+          life_id: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          id?: string
+          life_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parallel_followers_life_id_fkey"
+            columns: ["life_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_lives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parallel_lives: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          cover_image_url: string | null
+          created_at: string
+          follower_count: number
+          id: string
+          is_active: boolean
+          life_name: string
+          lifestyle: string | null
+          persona: string
+          post_count: number
+          profession: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          follower_count?: number
+          id?: string
+          is_active?: boolean
+          life_name: string
+          lifestyle?: string | null
+          persona: string
+          post_count?: number
+          profession?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          follower_count?: number
+          id?: string
+          is_active?: boolean
+          life_name?: string
+          lifestyle?: string | null
+          persona?: string
+          post_count?: number
+          profession?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      parallel_posts: {
+        Row: {
+          comments_count: number
+          content: string
+          created_at: string
+          id: string
+          life_id: string
+          likes_count: number
+          media_type: string | null
+          media_url: string | null
+        }
+        Insert: {
+          comments_count?: number
+          content: string
+          created_at?: string
+          id?: string
+          life_id: string
+          likes_count?: number
+          media_type?: string | null
+          media_url?: string | null
+        }
+        Update: {
+          comments_count?: number
+          content?: string
+          created_at?: string
+          id?: string
+          life_id?: string
+          likes_count?: number
+          media_type?: string | null
+          media_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parallel_posts_life_id_fkey"
+            columns: ["life_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_lives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parallel_subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          max_lives: number
+          price: number
+          started_at: string
+          status: string
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          max_lives: number
+          price: number
+          started_at?: string
+          status?: string
+          tier: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          max_lives?: number
+          price?: number
+          started_at?: string
+          status?: string
+          tier?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       personality_clones: {
         Row: {
           clone_name: string
@@ -8063,6 +8262,61 @@ export type Database = {
           winner_id?: string | null
         }
         Relationships: []
+      }
+      reality_merges: {
+        Row: {
+          id: string
+          life_1_id: string
+          life_2_id: string
+          merge_data: Json
+          merged_at: string
+          merged_life_id: string | null
+          payment_amount: number
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          life_1_id: string
+          life_2_id: string
+          merge_data?: Json
+          merged_at?: string
+          merged_life_id?: string | null
+          payment_amount?: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          life_1_id?: string
+          life_2_id?: string
+          merge_data?: Json
+          merged_at?: string
+          merged_life_id?: string | null
+          payment_amount?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reality_merges_life_1_id_fkey"
+            columns: ["life_1_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_lives"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reality_merges_life_2_id_fkey"
+            columns: ["life_2_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_lives"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reality_merges_merged_life_id_fkey"
+            columns: ["merged_life_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_lives"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       recipe_comments: {
         Row: {
