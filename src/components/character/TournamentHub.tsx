@@ -29,8 +29,8 @@ export const TournamentHub = () => {
       <Card className="p-6 mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Tournament Hub 🏆</h2>
-            <p className="text-muted-foreground font-medium">Compete in epic tournaments for glory and prizes</p>
+            <h2 className="text-2xl font-semibold mb-2">Tournament Hub 🏆</h2>
+            <p className="text-muted-foreground">Compete in epic tournaments for glory and prizes</p>
           </div>
           <Button>
             Create Tournament
@@ -40,12 +40,12 @@ export const TournamentHub = () => {
 
       <div className="space-y-4">
         {tournaments?.map((tournament) => (
-          <Card key={tournament.id} className="p-6 hover:border-yellow-500 transition-all border-2">
+          <Card key={tournament.id} className="p-6 hover:border-yellow-500 transition-all">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
                   <Trophy className="h-6 w-6 text-yellow-500" />
-                  <h3 className="text-xl font-bold text-foreground">{tournament.name}</h3>
+                  <h3 className="text-xl font-semibold">{tournament.name}</h3>
                   <Badge 
                     className={
                       tournament.status === 'registration' 
@@ -59,9 +59,9 @@ export const TournamentHub = () => {
                   </Badge>
                 </div>
 
-                <p className="text-muted-foreground font-medium mb-4">{tournament.description}</p>
+                <p className="text-muted-foreground mb-4">{tournament.description}</p>
 
-                <div className="flex items-center gap-6 text-sm text-foreground font-semibold">
+                <div className="flex items-center gap-6 text-sm">
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
                     <span>{tournament.tournament_participants?.[0]?.count || 0}/{tournament.max_participants} Participants</span>

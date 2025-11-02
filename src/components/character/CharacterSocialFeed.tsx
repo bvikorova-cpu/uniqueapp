@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, MessageCircle, Send, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -120,25 +121,31 @@ export const CharacterSocialFeed = () => {
         </div>
 
         <div className="space-y-4">
-          <select
-            value={selectedCharacter || ""}
-            onChange={(e) => setSelectedCharacter(e.target.value)}
-            className="w-full bg-background border-2 border-border rounded-md p-3 text-foreground font-medium focus:border-primary focus:outline-none"
-          >
-            <option value="" className="text-muted-foreground">Select a character to post as...</option>
-            {characters?.map((char) => (
-              <option key={char.id} value={char.id} className="text-foreground">
-                {char.name} ({char.category})
-              </option>
-            ))}
-          </select>
+          <div>
+            <label className="text-sm font-medium mb-2 block">Post as Character</label>
+            <Select value={selectedCharacter || ""} onValueChange={setSelectedCharacter}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a character to post as..." />
+              </SelectTrigger>
+              <SelectContent>
+                {characters?.map((char) => (
+                  <SelectItem key={char.id} value={char.id}>
+                    {char.name} ({char.category})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <Textarea
-            value={postContent}
-            onChange={(e) => setPostContent(e.target.value)}
-            placeholder="Share your character's journey, achievements, or challenge others..."
-            className="min-h-[100px] font-medium"
-          />
+          <div>
+            <label className="text-sm font-medium mb-2 block">Post Content</label>
+            <Textarea
+              value={postContent}
+              onChange={(e) => setPostContent(e.target.value)}
+              placeholder="Share your character's journey, achievements, or challenge others..."
+              className="min-h-[100px]"
+            />
+          </div>
 
           <Button
             onClick={handlePost}
@@ -164,13 +171,13 @@ export const CharacterSocialFeed = () => {
               )}
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-foreground font-bold">{post.characters?.name}</span>
+                  <span className="font-semibold">{post.characters?.name}</span>
                   <span className="text-muted-foreground text-sm">•</span>
-                  <span className="text-muted-foreground font-medium text-sm">
+                  <span className="text-muted-foreground text-sm">
                     {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
                   </span>
                 </div>
-                <p className="text-foreground font-medium mb-4">{post.content}</p>
+                <p className="mb-4">{post.content}</p>
                 <div className="flex items-center gap-4">
                   <Button
                     variant="ghost"
