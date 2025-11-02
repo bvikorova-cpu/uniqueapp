@@ -1563,6 +1563,102 @@ export type Database = {
           },
         ]
       }
+      character_battles: {
+        Row: {
+          battle_commentary: string | null
+          battle_type: string
+          character1_id: string
+          character1_votes: number
+          character2_id: string
+          character2_votes: number
+          created_at: string
+          expires_at: string | null
+          id: string
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          battle_commentary?: string | null
+          battle_type: string
+          character1_id: string
+          character1_votes?: number
+          character2_id: string
+          character2_votes?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          battle_commentary?: string | null
+          battle_type?: string
+          character1_id?: string
+          character1_votes?: number
+          character2_id?: string
+          character2_votes?: number
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_battles_character1_id_fkey"
+            columns: ["character1_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "character_battles_character2_id_fkey"
+            columns: ["character2_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "character_battles_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      character_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "character_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       character_conversations: {
         Row: {
           character_id: string
@@ -1604,6 +1700,62 @@ export type Database = {
           },
         ]
       }
+      character_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      character_follows: {
+        Row: {
+          character_id: string
+          created_at: string
+          follower_user_id: string
+          id: string
+        }
+        Insert: {
+          character_id: string
+          created_at?: string
+          follower_user_id: string
+          id?: string
+        }
+        Update: {
+          character_id?: string
+          created_at?: string
+          follower_user_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_follows_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       character_messages: {
         Row: {
           audio_url: string | null
@@ -1638,6 +1790,187 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      character_post_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "character_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      character_posts: {
+        Row: {
+          character_id: string
+          comments_count: number
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          likes_count: number
+          user_id: string
+        }
+        Insert: {
+          character_id: string
+          comments_count?: number
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          likes_count?: number
+          user_id: string
+        }
+        Update: {
+          character_id?: string
+          comments_count?: number
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          likes_count?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_posts_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      character_votes: {
+        Row: {
+          battle_id: string
+          character_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          battle_id: string
+          character_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          battle_id?: string
+          character_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_votes_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "character_battles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "character_votes_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      characters: {
+        Row: {
+          attack: number
+          backstory: string | null
+          category: string
+          created_at: string
+          defense: number
+          description: string | null
+          experience: number
+          hp: number
+          id: string
+          image_url: string | null
+          is_animated: boolean
+          is_premium: boolean
+          level: number
+          losses: number
+          name: string
+          popularity_score: number
+          special_power: string | null
+          speed: number
+          updated_at: string
+          user_id: string
+          wins: number
+        }
+        Insert: {
+          attack?: number
+          backstory?: string | null
+          category: string
+          created_at?: string
+          defense?: number
+          description?: string | null
+          experience?: number
+          hp?: number
+          id?: string
+          image_url?: string | null
+          is_animated?: boolean
+          is_premium?: boolean
+          level?: number
+          losses?: number
+          name: string
+          popularity_score?: number
+          special_power?: string | null
+          speed?: number
+          updated_at?: string
+          user_id: string
+          wins?: number
+        }
+        Update: {
+          attack?: number
+          backstory?: string | null
+          category?: string
+          created_at?: string
+          defense?: number
+          description?: string | null
+          experience?: number
+          hp?: number
+          id?: string
+          image_url?: string | null
+          is_animated?: boolean
+          is_premium?: boolean
+          level?: number
+          losses?: number
+          name?: string
+          popularity_score?: number
+          special_power?: string | null
+          speed?: number
+          updated_at?: string
+          user_id?: string
+          wins?: number
+        }
+        Relationships: []
       }
       chef_chat_sessions: {
         Row: {
@@ -8208,6 +8541,104 @@ export type Database = {
             columns: ["collection_id"]
             isOneToOne: false
             referencedRelation: "teacher_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournament_participants: {
+        Row: {
+          character_id: string
+          created_at: string
+          eliminated: boolean
+          id: string
+          placement: number | null
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          character_id: string
+          created_at?: string
+          eliminated?: boolean
+          id?: string
+          placement?: number | null
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          character_id?: string
+          created_at?: string
+          eliminated?: boolean
+          id?: string
+          placement?: number | null
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_participants_character_id_fkey"
+            columns: ["character_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_participants_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournaments: {
+        Row: {
+          created_at: string
+          current_round: number
+          description: string | null
+          ends_at: string | null
+          entry_fee: number
+          id: string
+          max_participants: number
+          name: string
+          prize_pool: number
+          starts_at: string
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_round?: number
+          description?: string | null
+          ends_at?: string | null
+          entry_fee?: number
+          id?: string
+          max_participants?: number
+          name: string
+          prize_pool?: number
+          starts_at: string
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_round?: number
+          description?: string | null
+          ends_at?: string | null
+          entry_fee?: number
+          id?: string
+          max_participants?: number
+          name?: string
+          prize_pool?: number
+          starts_at?: string
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournaments_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "characters"
             referencedColumns: ["id"]
           },
         ]
