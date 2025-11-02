@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Clock, Lightbulb, Users, Boxes } from "lucide-react";
+import { ArrowLeft, Clock, Lightbulb, Boxes } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Room3D from "./Room3D";
 
@@ -23,7 +23,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
   const [answer, setAnswer] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [startTime, setStartTime] = useState<number>(Date.now());
+  const [startTime] = useState<number>(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [mode3D, setMode3D] = useState(true);
@@ -106,7 +106,6 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   const handleSubmitAnswer = () => {
     if (!answer.trim()) return;
 
-    // Simple answer checking (in real app, this would be more sophisticated)
     toast({
       title: "Answer submitted",
       description: "Checking your answer..."
@@ -152,7 +151,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
     if (currentRoomIndex < rooms.length - 1) {
       setCurrentRoomIndex(currentRoomIndex + 1);
       toast({
-        title: "Room Complete!",
+        title: "Room Complete! 🎉",
         description: `Moving to room ${currentRoomIndex + 2}/${rooms.length}...`
       });
     } else {
@@ -174,7 +173,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
 
   const currentRoom = rooms[currentRoomIndex];
   const currentPuzzle = puzzles[currentPuzzleIndex];
-  const progress = ((currentPuzzleIndex + 1) / puzzles.length) * 100;
+  const progress = rooms.length > 0 ? ((currentRoomIndex + 1) / rooms.length) * 100 : 0;
 
   if (mode3D && currentRoom) {
     return (
@@ -221,12 +220,18 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
             <div className="flex items-center justify-between">
               <CardTitle>{room?.title}</CardTitle>
               <span className="text-sm text-muted-foreground">
-                Puzzle {currentPuzzleIndex + 1} of {puzzles.length}
+                Room {currentRoomIndex + 1} of {rooms.length}
               </span>
             </div>
           </CardHeader>
           <CardContent>
             <Progress value={progress} className="mb-4" />
+            {currentRoom && (
+              <div>
+                <h3 className="font-semibold mb-1">{currentRoom.room_name}</h3>
+                <p className="text-sm text-muted-foreground">{currentRoom.description}</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
