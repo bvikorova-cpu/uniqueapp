@@ -245,6 +245,7 @@ const Navbar = () => {
     { path: "/parallel-lives", label: "Parallel Lives Network", icon: Globe },
     { path: "/emotion-economy", label: "Emotion Economy", icon: Heart },
     { path: "/memory-theft", label: "Memory Theft Social", icon: Brain },
+    { path: "/quantum-social", label: "Quantum Social Network", icon: Zap },
     { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
     { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
     { path: "/minibiz", label: "Mini Business Marketplace", icon: Store },

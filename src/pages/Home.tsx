@@ -53,6 +53,7 @@ const Home = () => {
     { name: "Parallel Lives Network", path: "/parallel-lives", keywords: ["parallel", "lives", "identity", "multiple", "realities", "alternatívne", "životov"] },
     { name: "Emotion Economy Network", path: "/emotion-economy", keywords: ["emotion", "economy", "feelings", "trade", "emócie", "obchodovanie", "currency"] },
     { name: "Memory Theft Social", path: "/memory-theft", keywords: ["memory", "theft", "steal", "experiences", "memories", "spomienky", "zážitky", "simulation"] },
+    { name: "Quantum Social Network", path: "/quantum-social", keywords: ["quantum", "superposition", "versions", "reality", "kvantový", "realita", "multiverse"] },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -703,6 +704,20 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     "Steal" experiences - relive memories through AI-enhanced simulation
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/quantum-social">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Zap className="h-12 w-12 text-cyan-500 mx-auto mb-4 animate-pulse" />
+                  <CardTitle>Quantum Social Network ⚛️</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Exist in quantum superposition - followers see different versions of you
                   </p>
                 </CardContent>
               </Card>

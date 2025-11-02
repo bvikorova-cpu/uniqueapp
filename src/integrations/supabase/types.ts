@@ -8854,6 +8854,299 @@ export type Database = {
         }
         Relationships: []
       }
+      quantum_collapses: {
+        Row: {
+          collapsed_version_id: string
+          created_at: string
+          id: string
+          post_id: string
+          price_paid: number
+          user_id: string
+        }
+        Insert: {
+          collapsed_version_id: string
+          created_at?: string
+          id?: string
+          post_id: string
+          price_paid?: number
+          user_id: string
+        }
+        Update: {
+          collapsed_version_id?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+          price_paid?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantum_collapses_collapsed_version_id_fkey"
+            columns: ["collapsed_version_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_post_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quantum_collapses_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quantum_entanglements: {
+        Row: {
+          created_at: string
+          entanglement_strength: number | null
+          expires_at: string | null
+          id: string
+          price_paid: number
+          shared_reality: boolean | null
+          user_id_1: string
+          user_id_2: string
+        }
+        Insert: {
+          created_at?: string
+          entanglement_strength?: number | null
+          expires_at?: string | null
+          id?: string
+          price_paid?: number
+          shared_reality?: boolean | null
+          user_id_1: string
+          user_id_2: string
+        }
+        Update: {
+          created_at?: string
+          entanglement_strength?: number | null
+          expires_at?: string | null
+          id?: string
+          price_paid?: number
+          shared_reality?: boolean | null
+          user_id_1?: string
+          user_id_2?: string
+        }
+        Relationships: []
+      }
+      quantum_likes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+          version_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+          version_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantum_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quantum_likes_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_post_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quantum_observations: {
+        Row: {
+          id: string
+          observed_at: string
+          observer_id: string
+          post_id: string
+          version_id: string
+        }
+        Insert: {
+          id?: string
+          observed_at?: string
+          observer_id: string
+          post_id: string
+          version_id: string
+        }
+        Update: {
+          id?: string
+          observed_at?: string
+          observer_id?: string
+          post_id?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantum_observations_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quantum_observations_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_post_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quantum_post_versions: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          media_urls: string[] | null
+          personality_tone: string
+          post_id: string
+          version_number: number
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          media_urls?: string[] | null
+          personality_tone: string
+          post_id: string
+          version_number: number
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          media_urls?: string[] | null
+          personality_tone?: string
+          post_id?: string
+          version_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quantum_post_versions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "quantum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quantum_posts: {
+        Row: {
+          base_content: string
+          collapse_paid: boolean | null
+          created_at: string
+          id: string
+          is_collapsed: boolean | null
+          likes_count: number | null
+          updated_at: string
+          user_id: string
+          versions_count: number
+        }
+        Insert: {
+          base_content: string
+          collapse_paid?: boolean | null
+          created_at?: string
+          id?: string
+          is_collapsed?: boolean | null
+          likes_count?: number | null
+          updated_at?: string
+          user_id: string
+          versions_count?: number
+        }
+        Update: {
+          base_content?: string
+          collapse_paid?: boolean | null
+          created_at?: string
+          id?: string
+          is_collapsed?: boolean | null
+          likes_count?: number | null
+          updated_at?: string
+          user_id?: string
+          versions_count?: number
+        }
+        Relationships: []
+      }
+      quantum_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          is_premium: boolean | null
+          observer_mode_active: boolean | null
+          quantum_mode: string
+          reality_versions: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_premium?: boolean | null
+          observer_mode_active?: boolean | null
+          quantum_mode?: string
+          reality_versions?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_premium?: boolean | null
+          observer_mode_active?: boolean | null
+          quantum_mode?: string
+          reality_versions?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quantum_subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          price: number
+          started_at: string
+          status: string
+          subscription_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          price: number
+          started_at?: string
+          status?: string
+          subscription_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          price?: number
+          started_at?: string
+          status?: string
+          subscription_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       quest_challenges: {
         Row: {
           created_at: string
