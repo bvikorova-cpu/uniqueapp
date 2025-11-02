@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Clock, Lightbulb, Users } from "lucide-react";
+import { ArrowLeft, Clock, Lightbulb, Users, Boxes } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Room3D from "./Room3D";
 
 interface GamePlayProps {
   roomId: string;
@@ -23,6 +24,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   const [startTime, setStartTime] = useState<number>(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
   const [hintsUsed, setHintsUsed] = useState(0);
+  const [mode3D, setMode3D] = useState(true);
 
   useEffect(() => {
     loadRoom();
@@ -149,14 +151,36 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   const currentPuzzle = puzzles[currentPuzzleIndex];
   const progress = ((currentPuzzleIndex + 1) / puzzles.length) * 100;
 
+  if (mode3D) {
+    return (
+      <Room3D
+        theme={room?.theme || "mystery"}
+        onPuzzleSolved={() => {
+          if (currentPuzzleIndex < puzzles.length - 1) {
+            setCurrentPuzzleIndex(currentPuzzleIndex + 1);
+          } else {
+            completeRoom();
+          }
+        }}
+        onExit={onExit}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <Button variant="ghost" onClick={onExit}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Exit Room
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" onClick={onExit}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Exit Room
+            </Button>
+            <Button variant="outline" onClick={() => setMode3D(!mode3D)}>
+              <Boxes className="h-4 w-4 mr-2" />
+              Switch to 3D
+            </Button>
+          </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1">
               <Clock className="h-4 w-4" />
