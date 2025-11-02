@@ -55,6 +55,14 @@ const Home = () => {
     { name: "Memory Theft Social", path: "/memory-theft", keywords: ["memory", "theft", "steal", "experiences", "memories", "spomienky", "zážitky", "simulation"] },
     { name: "Quantum Social Network", path: "/quantum-social", keywords: ["quantum", "superposition", "versions", "reality", "kvantový", "realita", "multiverse"] },
     { name: "Virtual Influencer Agency", path: "/virtual-influencer-agency", keywords: ["virtual", "influencer", "ai", "content", "earning", "money", "virtuálny", "influencer", "zarábanie"] },
+    { name: "AI Content Marketplace", path: "/ai-content-marketplace", keywords: ["content", "marketplace", "sell", "ai", "predaj", "obsah"] },
+    { name: "Print on Demand", path: "/print-on-demand", keywords: ["print", "demand", "tshirt", "products", "design", "tlač", "produkty"] },
+    { name: "Brand Collaboration", path: "/brand-collaboration", keywords: ["brand", "collaboration", "sponsored", "značka", "spolupráca"] },
+    { name: "Custom Commissions", path: "/custom-commissions", keywords: ["commission", "custom", "service", "zákazka", "služba"] },
+    { name: "Stock Content Library", path: "/stock-content-library", keywords: ["stock", "content", "library", "licensing", "licencia", "knižnica"] },
+    { name: "Digital Product Store", path: "/digital-product-store", keywords: ["digital", "product", "store", "presets", "filters", "predaj"] },
+    { name: "AI Avatar Service", path: "/ai-avatar-service", keywords: ["avatar", "ai", "professional", "profile", "picture", "profilová"] },
+    { name: "Tutorial Platform", path: "/tutorial-platform", keywords: ["tutorial", "course", "teaching", "kurz", "výučba", "vzdelávanie"] },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -733,6 +741,118 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Create AI influencers that generate content and earn money for you
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/ai-content-marketplace">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Store className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>AI Content Marketplace 🏪</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Sell your AI-generated content and earn 80% commission
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/print-on-demand">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Shirt className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Print on Demand 👕</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Design products with AI and earn 60-70% profit on each sale
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/brand-collaboration">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Briefcase className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Brand Collaboration Hub 🤝</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Connect with brands for sponsored content, keep 80%
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/custom-commissions">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Palette className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>Custom Commission Service 🎨</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Offer custom AI creations to clients, earn 85%
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/stock-content-library">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <ImageIcon className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Stock Content Library 📚</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Upload AI content for licensing, earn 70% per download
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/digital-product-store">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <ShoppingBag className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Digital Product Store 💎</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Sell presets, filters, templates - earn 85% per sale
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/ai-avatar-service">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <UserPlus className="h-12 w-12 text-accent mx-auto mb-4" />
+                  <CardTitle>AI Avatar Creation Service 👤</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Create professional avatars for clients, earn 75%
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/tutorial-platform">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <GraduationCap className="h-12 w-12 text-success mx-auto mb-4" />
+                  <CardTitle>Tutorial & Course Platform 🎓</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Create courses and tutorials about AI skills, earn 70%
                   </p>
                 </CardContent>
               </Card>

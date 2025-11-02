@@ -144,6 +144,14 @@ import EmotionEconomy from "./pages/EmotionEconomy";
 import MemoryTheft from "./pages/MemoryTheft";
 import QuantumSocial from "./pages/QuantumSocial";
 import VirtualInfluencerAgency from "./pages/VirtualInfluencerAgency";
+import AIContentMarketplace from "./pages/AIContentMarketplace";
+import PrintOnDemand from "./pages/PrintOnDemand";
+import BrandCollaboration from "./pages/BrandCollaboration";
+import CustomCommissions from "./pages/CustomCommissions";
+import StockContentLibrary from "./pages/StockContentLibrary";
+import DigitalProductStore from "./pages/DigitalProductStore";
+import AIAvatarService from "./pages/AIAvatarService";
+import TutorialPlatform from "./pages/TutorialPlatform";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -298,6 +306,14 @@ const App = () => (
           <Route path="/memory-theft" element={<MemoryTheft />} />
           <Route path="/quantum-social" element={<QuantumSocial />} />
           <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
+          <Route path="/ai-content-marketplace" element={<AIContentMarketplace />} />
+          <Route path="/print-on-demand" element={<PrintOnDemand />} />
+          <Route path="/brand-collaboration" element={<BrandCollaboration />} />
+          <Route path="/custom-commissions" element={<CustomCommissions />} />
+          <Route path="/stock-content-library" element={<StockContentLibrary />} />
+          <Route path="/digital-product-store" element={<DigitalProductStore />} />
+          <Route path="/ai-avatar-service" element={<AIAvatarService />} />
+          <Route path="/tutorial-platform" element={<TutorialPlatform />} />
           <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
