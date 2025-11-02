@@ -1999,6 +1999,435 @@ export type Database = {
         }
         Relationships: []
       }
+      coffee_achievements: {
+        Row: {
+          achievement_type: string | null
+          created_at: string
+          description: string | null
+          icon_url: string | null
+          id: string
+          name: string
+          points_required: number | null
+        }
+        Insert: {
+          achievement_type?: string | null
+          created_at?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          name: string
+          points_required?: number | null
+        }
+        Update: {
+          achievement_type?: string | null
+          created_at?: string
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          name?: string
+          points_required?: number | null
+        }
+        Relationships: []
+      }
+      coffee_ads: {
+        Row: {
+          budget: number | null
+          cafe_id: string
+          clicks_count: number | null
+          created_at: string
+          description: string | null
+          expires_at: string | null
+          id: string
+          image_url: string | null
+          impressions_count: number | null
+          is_active: boolean | null
+          spent: number | null
+          target_url: string | null
+          title: string
+        }
+        Insert: {
+          budget?: number | null
+          cafe_id: string
+          clicks_count?: number | null
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          image_url?: string | null
+          impressions_count?: number | null
+          is_active?: boolean | null
+          spent?: number | null
+          target_url?: string | null
+          title: string
+        }
+        Update: {
+          budget?: number | null
+          cafe_id?: string
+          clicks_count?: number | null
+          created_at?: string
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          image_url?: string | null
+          impressions_count?: number | null
+          is_active?: boolean | null
+          spent?: number | null
+          target_url?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coffee_ads_cafe_id_fkey"
+            columns: ["cafe_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_cafes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coffee_cafes: {
+        Row: {
+          address: string
+          average_rating: number | null
+          business_subscription_expires_at: string | null
+          business_tier: string | null
+          city: string
+          country: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          latitude: number | null
+          longitude: number | null
+          name: string
+          owner_user_id: string | null
+          total_checkins: number | null
+          total_reviews: number | null
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          average_rating?: number | null
+          business_subscription_expires_at?: string | null
+          business_tier?: string | null
+          city: string
+          country: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name: string
+          owner_user_id?: string | null
+          total_checkins?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          average_rating?: number | null
+          business_subscription_expires_at?: string | null
+          business_tier?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          name?: string
+          owner_user_id?: string | null
+          total_checkins?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      coffee_checkins: {
+        Row: {
+          cafe_id: string
+          created_at: string
+          drink_type: string | null
+          id: string
+          notes: string | null
+          photo_url: string | null
+          user_id: string
+        }
+        Insert: {
+          cafe_id: string
+          created_at?: string
+          drink_type?: string | null
+          id?: string
+          notes?: string | null
+          photo_url?: string | null
+          user_id: string
+        }
+        Update: {
+          cafe_id?: string
+          created_at?: string
+          drink_type?: string | null
+          id?: string
+          notes?: string | null
+          photo_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coffee_checkins_cafe_id_fkey"
+            columns: ["cafe_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_cafes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coffee_event_participants: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          payment_status: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          payment_status?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          payment_status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coffee_event_participants_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coffee_events: {
+        Row: {
+          cafe_id: string | null
+          created_at: string
+          description: string | null
+          event_date: string
+          id: string
+          image_url: string | null
+          max_participants: number | null
+          organizer_id: string
+          status: string | null
+          ticket_price: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cafe_id?: string | null
+          created_at?: string
+          description?: string | null
+          event_date: string
+          id?: string
+          image_url?: string | null
+          max_participants?: number | null
+          organizer_id: string
+          status?: string | null
+          ticket_price?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cafe_id?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          image_url?: string | null
+          max_participants?: number | null
+          organizer_id?: string
+          status?: string | null
+          ticket_price?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coffee_events_cafe_id_fkey"
+            columns: ["cafe_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_cafes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coffee_match_messages: {
+        Row: {
+          created_at: string
+          id: string
+          match_id: string
+          message: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_id: string
+          message: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_id?: string
+          message?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coffee_match_messages_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coffee_matches: {
+        Row: {
+          chat_enabled: boolean | null
+          created_at: string
+          id: string
+          match_score: number | null
+          status: string | null
+          updated_at: string
+          user1_id: string
+          user2_id: string
+        }
+        Insert: {
+          chat_enabled?: boolean | null
+          created_at?: string
+          id?: string
+          match_score?: number | null
+          status?: string | null
+          updated_at?: string
+          user1_id: string
+          user2_id: string
+        }
+        Update: {
+          chat_enabled?: boolean | null
+          created_at?: string
+          id?: string
+          match_score?: number | null
+          status?: string | null
+          updated_at?: string
+          user1_id?: string
+          user2_id?: string
+        }
+        Relationships: []
+      }
+      coffee_profiles: {
+        Row: {
+          budget_preference: string | null
+          created_at: string
+          favorite_coffee_types: string[] | null
+          id: string
+          matches_remaining: number | null
+          preferred_atmosphere: string[] | null
+          subscription_expires_at: string | null
+          subscription_tier: string | null
+          total_checkins: number | null
+          total_points: number | null
+          total_reviews: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget_preference?: string | null
+          created_at?: string
+          favorite_coffee_types?: string[] | null
+          id?: string
+          matches_remaining?: number | null
+          preferred_atmosphere?: string[] | null
+          subscription_expires_at?: string | null
+          subscription_tier?: string | null
+          total_checkins?: number | null
+          total_points?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget_preference?: string | null
+          created_at?: string
+          favorite_coffee_types?: string[] | null
+          id?: string
+          matches_remaining?: number | null
+          preferred_atmosphere?: string[] | null
+          subscription_expires_at?: string | null
+          subscription_tier?: string | null
+          total_checkins?: number | null
+          total_points?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coffee_reviews: {
+        Row: {
+          cafe_id: string
+          created_at: string
+          id: string
+          is_featured: boolean | null
+          likes_count: number | null
+          photo_urls: string[] | null
+          rating: number
+          review_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cafe_id: string
+          created_at?: string
+          id?: string
+          is_featured?: boolean | null
+          likes_count?: number | null
+          photo_urls?: string[] | null
+          rating: number
+          review_text?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cafe_id?: string
+          created_at?: string
+          id?: string
+          is_featured?: boolean | null
+          likes_count?: number | null
+          photo_urls?: string[] | null
+          rating?: number
+          review_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coffee_reviews_cafe_id_fkey"
+            columns: ["cafe_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_cafes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collectible_achievements: {
         Row: {
           category: string
@@ -8857,6 +9286,35 @@ export type Database = {
             columns: ["character_id"]
             isOneToOne: false
             referencedRelation: "ai_characters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_coffee_achievements: {
+        Row: {
+          achievement_id: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_coffee_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "coffee_achievements"
             referencedColumns: ["id"]
           },
         ]
