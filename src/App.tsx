@@ -143,6 +143,7 @@ import ParallelLives from "./pages/ParallelLives";
 import EmotionEconomy from "./pages/EmotionEconomy";
 import MemoryTheft from "./pages/MemoryTheft";
 import QuantumSocial from "./pages/QuantumSocial";
+import VirtualInfluencerAgency from "./pages/VirtualInfluencerAgency";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -296,6 +297,7 @@ const App = () => (
           <Route path="/emotion-economy" element={<EmotionEconomy />} />
           <Route path="/memory-theft" element={<MemoryTheft />} />
           <Route path="/quantum-social" element={<QuantumSocial />} />
+          <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
           <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />

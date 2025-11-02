@@ -54,6 +54,7 @@ const Home = () => {
     { name: "Emotion Economy Network", path: "/emotion-economy", keywords: ["emotion", "economy", "feelings", "trade", "emócie", "obchodovanie", "currency"] },
     { name: "Memory Theft Social", path: "/memory-theft", keywords: ["memory", "theft", "steal", "experiences", "memories", "spomienky", "zážitky", "simulation"] },
     { name: "Quantum Social Network", path: "/quantum-social", keywords: ["quantum", "superposition", "versions", "reality", "kvantový", "realita", "multiverse"] },
+    { name: "Virtual Influencer Agency", path: "/virtual-influencer-agency", keywords: ["virtual", "influencer", "ai", "content", "earning", "money", "virtuálny", "influencer", "zarábanie"] },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -718,6 +719,20 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Exist in quantum superposition - followers see different versions of you
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/virtual-influencer-agency">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Users className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <CardTitle>Virtual Influencer Agency 🌟</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Create AI influencers that generate content and earn money for you
                   </p>
                 </CardContent>
               </Card>

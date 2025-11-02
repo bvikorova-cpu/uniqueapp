@@ -5281,6 +5281,94 @@ export type Database = {
         }
         Relationships: []
       }
+      influencer_content: {
+        Row: {
+          caption: string | null
+          comments: number | null
+          content_type: string
+          content_url: string
+          created_at: string | null
+          earnings: number | null
+          id: string
+          influencer_id: string
+          likes: number | null
+          shares: number | null
+        }
+        Insert: {
+          caption?: string | null
+          comments?: number | null
+          content_type: string
+          content_url: string
+          created_at?: string | null
+          earnings?: number | null
+          id?: string
+          influencer_id: string
+          likes?: number | null
+          shares?: number | null
+        }
+        Update: {
+          caption?: string | null
+          comments?: number | null
+          content_type?: string
+          content_url?: string
+          created_at?: string | null
+          earnings?: number | null
+          id?: string
+          influencer_id?: string
+          likes?: number | null
+          shares?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_content_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "virtual_influencers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_earnings: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          influencer_id: string
+          net_amount: number
+          platform_fee: number
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          influencer_id: string
+          net_amount: number
+          platform_fee: number
+          source: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          influencer_id?: string
+          net_amount?: number
+          platform_fee?: number
+          source?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_earnings_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "virtual_influencers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       influencer_followers: {
         Row: {
           created_at: string | null
@@ -5442,6 +5530,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      influencer_subscriptions: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          influencer_id: string
+          monthly_price: number
+          status: string | null
+          subscriber_user_id: string
+          tier: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          influencer_id: string
+          monthly_price: number
+          status?: string | null
+          subscriber_user_id: string
+          tier: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          influencer_id?: string
+          monthly_price?: number
+          status?: string | null
+          subscriber_user_id?: string
+          tier?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_subscriptions_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "virtual_influencers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       influencer_tips: {
         Row: {
@@ -11349,6 +11478,54 @@ export type Database = {
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      virtual_influencers: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          description: string | null
+          engagement_rate: number | null
+          followers: number | null
+          id: string
+          name: string
+          niche: string | null
+          personality: string | null
+          status: string | null
+          total_earnings: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          engagement_rate?: number | null
+          followers?: number | null
+          id?: string
+          name: string
+          niche?: string | null
+          personality?: string | null
+          status?: string | null
+          total_earnings?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          engagement_rate?: number | null
+          followers?: number | null
+          id?: string
+          name?: string
+          niche?: string | null
+          personality?: string | null
+          status?: string | null
+          total_earnings?: number | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
