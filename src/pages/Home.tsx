@@ -52,6 +52,7 @@ const Home = () => {
     { name: "AI Personality Clone", path: "/ai-clone", keywords: ["ai", "clone", "personality", "chatbot", "digital", "klon", "24/7"] },
     { name: "Parallel Lives Network", path: "/parallel-lives", keywords: ["parallel", "lives", "identity", "multiple", "realities", "alternatívne", "životov"] },
     { name: "Emotion Economy Network", path: "/emotion-economy", keywords: ["emotion", "economy", "feelings", "trade", "emócie", "obchodovanie", "currency"] },
+    { name: "Memory Theft Social", path: "/memory-theft", keywords: ["memory", "theft", "steal", "experiences", "memories", "spomienky", "zážitky", "simulation"] },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -688,6 +689,20 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Buy joy, sell sadness, trade motivation - emotions as currency
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/memory-theft">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Brain className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+                  <CardTitle>Memory Theft Social 🧠</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    "Steal" experiences - relive memories through AI-enhanced simulation
                   </p>
                 </CardContent>
               </Card>
