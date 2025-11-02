@@ -138,6 +138,7 @@ import CorporatePartnerships from "./pages/CorporatePartnerships";
 import Coffee from "./pages/Coffee";
 import CoffeeCheckins from "./pages/CoffeeCheckins";
 import CoffeeBuddy from "./pages/CoffeeBuddy";
+import AIClone from "./pages/AIClone";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -286,6 +287,7 @@ const App = () => (
           <Route path="/coffee" element={<Coffee />} />
           <Route path="/coffee/checkins" element={<CoffeeCheckins />} />
           <Route path="/coffee/buddy" element={<CoffeeBuddy />} />
+          <Route path="/ai-clone" element={<AIClone />} />
           <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
