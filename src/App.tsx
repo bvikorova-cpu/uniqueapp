@@ -135,6 +135,9 @@ import Healthcare from "./pages/Healthcare";
 import CorporateEvents from "./pages/CorporateEvents";
 import BrandBattle from "./pages/BrandBattle";
 import CorporatePartnerships from "./pages/CorporatePartnerships";
+import Coffee from "./pages/Coffee";
+import CoffeeCheckins from "./pages/CoffeeCheckins";
+import CoffeeBuddy from "./pages/CoffeeBuddy";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -280,6 +283,10 @@ const App = () => (
           <Route path="/video-ad-generator" element={<VideoAdGenerator />} />
           <Route path="/kids-channel" element={<KidsChannel />} />
           <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
+          <Route path="/coffee" element={<Coffee />} />
+          <Route path="/coffee/checkins" element={<CoffeeCheckins />} />
+          <Route path="/coffee/buddy" element={<CoffeeBuddy />} />
+          <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
           <Route path="/kids-stories/create-character" element={<CreateCharacter />} />
