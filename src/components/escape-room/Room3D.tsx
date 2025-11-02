@@ -6,11 +6,15 @@ import * as THREE from 'three';
 
 interface Room3DProps {
   theme: string;
-  onPuzzleSolved: () => void;
+  currentRoom: number;
+  totalRooms: number;
+  roomName: string;
+  roomDescription: string;
+  onRoomComplete: () => void;
   onExit: () => void;
 }
 
-const Room3D = ({ theme, onPuzzleSolved, onExit }: Room3DProps) => {
+const Room3D = ({ theme, currentRoom, totalRooms, roomName, roomDescription, onRoomComplete, onExit }: Room3DProps) => {
   const [collected, setCollected] = useState<string[]>([]);
   const [doorUnlocked, setDoorUnlocked] = useState(false);
 
@@ -59,8 +63,15 @@ const Room3D = ({ theme, onPuzzleSolved, onExit }: Room3DProps) => {
       setCollected([...collected, item]);
       if (collected.length + 1 >= 3) {
         setDoorUnlocked(true);
-        onPuzzleSolved();
       }
+    }
+  };
+
+  const handleDoorClick = () => {
+    if (doorUnlocked) {
+      setCollected([]);
+      setDoorUnlocked(false);
+      onRoomComplete();
     }
   };
 
@@ -283,7 +294,7 @@ const Room3D = ({ theme, onPuzzleSolved, onExit }: Room3DProps) => {
 
           {/* Exit Door */}
           <RigidBody type="fixed" colliders="cuboid">
-            <group position={[0, 2, -9.5]} onClick={() => doorUnlocked && onExit()}>
+            <group position={[0, 2, -9.5]} onClick={handleDoorClick}>
               {/* Door frame */}
               <mesh position={[0, 0, -0.1]} castShadow>
                 <boxGeometry args={[2.4, 3.4, 0.2]} />
@@ -340,7 +351,9 @@ const Room3D = ({ theme, onPuzzleSolved, onExit }: Room3DProps) => {
               outlineColor="#000000"
               fontWeight="bold"
             >
-              {doorUnlocked ? 'EXIT - Click to Escape!' : `Locked (${collected.length}/3 keys)`}
+              {doorUnlocked 
+                ? (currentRoom === totalRooms ? 'EXIT - Click to Escape!' : 'NEXT ROOM - Click to Continue!') 
+                : `Locked (${collected.length}/3 keys)`}
             </Text>
           </RigidBody>
 
@@ -426,14 +439,20 @@ const Room3D = ({ theme, onPuzzleSolved, onExit }: Room3DProps) => {
         </Physics>
       </Canvas>
 
-      <div className="absolute top-4 left-4 bg-black/70 text-white p-4 rounded-lg">
-        <h3 className="font-bold mb-2">Instructions:</h3>
-        <p className="text-sm">• Click to lock pointer</p>
-        <p className="text-sm">• WASD to move</p>
-        <p className="text-sm">• Mouse to look around</p>
-        <p className="text-sm">• Click golden cubes to collect keys</p>
-        <p className="text-sm mb-2">• Find 3 keys to unlock exit</p>
-        <p className="text-sm font-bold">Keys: {collected.length}/3</p>
+      <div className="absolute top-4 left-4 bg-black/70 text-white p-4 rounded-lg max-w-xs">
+        <h3 className="font-bold text-lg mb-2">{roomName}</h3>
+        <p className="text-xs mb-3 text-gray-300">{roomDescription}</p>
+        <div className="border-t border-gray-600 pt-2 mb-2">
+          <p className="text-sm font-bold mb-1">Room {currentRoom}/{totalRooms}</p>
+          <p className="text-sm font-bold">Keys: {collected.length}/3</p>
+        </div>
+        <div className="border-t border-gray-600 pt-2">
+          <h4 className="font-bold text-xs mb-1">Controls:</h4>
+          <p className="text-xs">• Click to lock pointer</p>
+          <p className="text-xs">• WASD to move</p>
+          <p className="text-xs">• Mouse to look around</p>
+          <p className="text-xs">• Click golden keys to collect</p>
+        </div>
       </div>
 
       <button

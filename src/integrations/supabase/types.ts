@@ -4709,6 +4709,53 @@ export type Database = {
           },
         ]
       }
+      escape_room_rooms: {
+        Row: {
+          created_at: string
+          description: string | null
+          escape_room_id: string
+          id: string
+          keys_required: number
+          puzzle_type: string
+          room_name: string
+          room_number: number
+          theme_variation: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          escape_room_id: string
+          id?: string
+          keys_required?: number
+          puzzle_type?: string
+          room_name: string
+          room_number: number
+          theme_variation?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          escape_room_id?: string
+          id?: string
+          keys_required?: number
+          puzzle_type?: string
+          room_name?: string
+          room_number?: number
+          theme_variation?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escape_room_rooms_escape_room_id_fkey"
+            columns: ["escape_room_id"]
+            isOneToOne: false
+            referencedRelation: "escape_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       escape_room_sessions: {
         Row: {
           completed_at: string | null

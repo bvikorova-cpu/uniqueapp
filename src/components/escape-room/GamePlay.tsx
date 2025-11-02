@@ -17,6 +17,8 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [room, setRoom] = useState<any>(null);
+  const [rooms, setRooms] = useState<any[]>([]);
+  const [currentRoomIndex, setCurrentRoomIndex] = useState(0);
   const [puzzles, setPuzzles] = useState<any[]>([]);
   const [currentPuzzleIndex, setCurrentPuzzleIndex] = useState(0);
   const [answer, setAnswer] = useState("");
@@ -44,6 +46,16 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
 
       if (roomError) throw roomError;
       setRoom(roomData);
+
+      // Load all 5 rooms for this escape room
+      const { data: roomsData, error: roomsError } = await supabase
+        .from("escape_room_rooms")
+        .select("*")
+        .eq("escape_room_id", roomId)
+        .order("room_number");
+
+      if (roomsError) throw roomsError;
+      setRooms(roomsData || []);
 
       const { data: puzzleData, error: puzzleError } = await supabase
         .from("escape_room_puzzles")
@@ -127,12 +139,24 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
 
       toast({
         title: "🎉 Congratulations!",
-        description: `You completed the room in ${Math.floor(elapsedTime / 60)}:${(elapsedTime % 60).toString().padStart(2, '0')}!`
+        description: `You escaped all ${rooms.length} rooms in ${Math.floor(elapsedTime / 60)}:${(elapsedTime % 60).toString().padStart(2, '0')}!`
       });
 
       setTimeout(onExit, 3000);
     } catch (error) {
       console.error("Error completing room:", error);
+    }
+  };
+
+  const handleRoomComplete = () => {
+    if (currentRoomIndex < rooms.length - 1) {
+      setCurrentRoomIndex(currentRoomIndex + 1);
+      toast({
+        title: "Room Complete!",
+        description: `Moving to room ${currentRoomIndex + 2}/${rooms.length}...`
+      });
+    } else {
+      completeRoom();
     }
   };
 
@@ -148,20 +172,19 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
+  const currentRoom = rooms[currentRoomIndex];
   const currentPuzzle = puzzles[currentPuzzleIndex];
   const progress = ((currentPuzzleIndex + 1) / puzzles.length) * 100;
 
-  if (mode3D) {
+  if (mode3D && currentRoom) {
     return (
       <Room3D
         theme={room?.theme || "mystery"}
-        onPuzzleSolved={() => {
-          if (currentPuzzleIndex < puzzles.length - 1) {
-            setCurrentPuzzleIndex(currentPuzzleIndex + 1);
-          } else {
-            completeRoom();
-          }
-        }}
+        currentRoom={currentRoomIndex + 1}
+        totalRooms={rooms.length}
+        roomName={currentRoom.room_name}
+        roomDescription={currentRoom.description || ""}
+        onRoomComplete={handleRoomComplete}
         onExit={onExit}
       />
     );
