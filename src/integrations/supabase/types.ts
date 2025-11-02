@@ -1999,6 +1999,180 @@ export type Database = {
         }
         Relationships: []
       }
+      clone_conversations: {
+        Row: {
+          clone_id: string
+          created_at: string
+          ended_at: string | null
+          id: string
+          messages: Json
+          participant_id: string | null
+          participant_type: string
+          rating: number | null
+          session_duration: number | null
+        }
+        Insert: {
+          clone_id: string
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          messages?: Json
+          participant_id?: string | null
+          participant_type?: string
+          rating?: number | null
+          session_duration?: number | null
+        }
+        Update: {
+          clone_id?: string
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          messages?: Json
+          participant_id?: string | null
+          participant_type?: string
+          rating?: number | null
+          session_duration?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clone_conversations_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clone_dating_sessions: {
+        Row: {
+          clone_1_id: string
+          clone_2_id: string
+          compatibility_score: number | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          payment_amount: number
+          session_data: Json
+          status: string
+        }
+        Insert: {
+          clone_1_id: string
+          clone_2_id: string
+          compatibility_score?: number | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          payment_amount?: number
+          session_data?: Json
+          status?: string
+        }
+        Update: {
+          clone_1_id?: string
+          clone_2_id?: string
+          compatibility_score?: number | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          payment_amount?: number
+          session_data?: Json
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clone_dating_sessions_clone_1_id_fkey"
+            columns: ["clone_1_id"]
+            isOneToOne: false
+            referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clone_dating_sessions_clone_2_id_fkey"
+            columns: ["clone_2_id"]
+            isOneToOne: false
+            referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clone_exports: {
+        Row: {
+          clone_id: string
+          created_at: string
+          export_data: Json
+          id: string
+          payment_amount: number
+          user_id: string
+        }
+        Insert: {
+          clone_id: string
+          created_at?: string
+          export_data: Json
+          id?: string
+          payment_amount?: number
+          user_id: string
+        }
+        Update: {
+          clone_id?: string
+          created_at?: string
+          export_data?: Json
+          id?: string
+          payment_amount?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clone_exports_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clone_subscriptions: {
+        Row: {
+          clone_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          price: number
+          started_at: string
+          status: string
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          clone_id: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          price: number
+          started_at?: string
+          status?: string
+          tier: string
+          user_id: string
+        }
+        Update: {
+          clone_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          price?: number
+          started_at?: string
+          status?: string
+          tier?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clone_subscriptions_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coffee_achievements: {
         Row: {
           achievement_type: string | null
@@ -6730,6 +6904,45 @@ export type Database = {
           id?: string
           image_url?: string
           reading?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      personality_clones: {
+        Row: {
+          clone_name: string
+          created_at: string
+          id: string
+          is_active: boolean
+          personality_data: Json
+          subscription_tier: string
+          total_conversations: number
+          training_status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clone_name: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          personality_data?: Json
+          subscription_tier?: string
+          total_conversations?: number
+          training_status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clone_name?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          personality_data?: Json
+          subscription_tier?: string
+          total_conversations?: number
+          training_status?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
