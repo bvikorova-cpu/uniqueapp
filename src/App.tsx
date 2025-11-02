@@ -140,6 +140,7 @@ import CoffeeCheckins from "./pages/CoffeeCheckins";
 import CoffeeBuddy from "./pages/CoffeeBuddy";
 import AIClone from "./pages/AIClone";
 import ParallelLives from "./pages/ParallelLives";
+import EmotionEconomy from "./pages/EmotionEconomy";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -290,6 +291,7 @@ const App = () => (
           <Route path="/coffee/buddy" element={<CoffeeBuddy />} />
           <Route path="/ai-clone" element={<AIClone />} />
           <Route path="/parallel-lives" element={<ParallelLives />} />
+          <Route path="/emotion-economy" element={<EmotionEconomy />} />
           <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />

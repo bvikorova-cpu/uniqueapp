@@ -243,6 +243,7 @@ const Navbar = () => {
     { path: "/coffee", label: "Coffee Community", icon: Coffee },
     { path: "/ai-clone", label: "AI Personality Clone", icon: Bot },
     { path: "/parallel-lives", label: "Parallel Lives Network", icon: Globe },
+    { path: "/emotion-economy", label: "Emotion Economy", icon: Heart },
     { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
     { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
     { path: "/minibiz", label: "Mini Business Marketplace", icon: Store },

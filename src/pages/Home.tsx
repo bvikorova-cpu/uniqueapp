@@ -51,6 +51,7 @@ const Home = () => {
     { name: "Coffee Community", path: "/coffee", keywords: ["coffee", "káva", "kaviarne", "checkin", "buddy", "kávoví milovníci"] },
     { name: "AI Personality Clone", path: "/ai-clone", keywords: ["ai", "clone", "personality", "chatbot", "digital", "klon", "24/7"] },
     { name: "Parallel Lives Network", path: "/parallel-lives", keywords: ["parallel", "lives", "identity", "multiple", "realities", "alternatívne", "životov"] },
+    { name: "Emotion Economy Network", path: "/emotion-economy", keywords: ["emotion", "economy", "feelings", "trade", "emócie", "obchodovanie", "currency"] },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -673,6 +674,20 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Live multiple parallel lives - CEO, rockstar, nomad simultaneously
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/emotion-economy">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Heart className="h-12 w-12 text-red-500 mx-auto mb-4 animate-pulse" />
+                  <CardTitle>Emotion Economy Network</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Buy joy, sell sadness, trade motivation - emotions as currency
                   </p>
                 </CardContent>
               </Card>

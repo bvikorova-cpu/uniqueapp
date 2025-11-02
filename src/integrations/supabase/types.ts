@@ -4116,6 +4116,365 @@ export type Database = {
         }
         Relationships: []
       }
+      emotion_drop_participants: {
+        Row: {
+          amount_received: number
+          drop_id: string
+          id: string
+          participated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_received: number
+          drop_id: string
+          id?: string
+          participated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_received?: number
+          drop_id?: string
+          id?: string
+          participated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emotion_drop_participants_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: false
+            referencedRelation: "emotion_drops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emotion_drops: {
+        Row: {
+          created_at: string
+          creator_id: string
+          description: string | null
+          drop_name: string
+          drop_time: string
+          emotion_type: string
+          id: string
+          max_participants: number | null
+          participants_count: number
+          price: number
+          status: string
+          total_amount: number
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          drop_name: string
+          drop_time: string
+          emotion_type: string
+          id?: string
+          max_participants?: number | null
+          participants_count?: number
+          price: number
+          status?: string
+          total_amount: number
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          drop_name?: string
+          drop_time?: string
+          emotion_type?: string
+          id?: string
+          max_participants?: number | null
+          participants_count?: number
+          price?: number
+          status?: string
+          total_amount?: number
+        }
+        Relationships: []
+      }
+      emotion_insurance: {
+        Row: {
+          claims_used: number
+          coverage_level: string
+          created_at: string
+          expires_at: string
+          id: string
+          max_claims: number
+          monthly_price: number
+          negative_emotions_blocked: number
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          claims_used?: number
+          coverage_level: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          max_claims?: number
+          monthly_price: number
+          negative_emotions_blocked?: number
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          claims_used?: number
+          coverage_level?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          max_claims?: number
+          monthly_price?: number
+          negative_emotions_blocked?: number
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      emotion_market_listings: {
+        Row: {
+          amount: number
+          created_at: string
+          emotion_type: string
+          id: string
+          price_per_unit: number
+          seller_id: string
+          status: string
+          total_price: number
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          emotion_type: string
+          id?: string
+          price_per_unit: number
+          seller_id: string
+          status?: string
+          total_price: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          emotion_type?: string
+          id?: string
+          price_per_unit?: number
+          seller_id?: string
+          status?: string
+          total_price?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      emotion_mining_activities: {
+        Row: {
+          amount_mined: number
+          commission_earned: number
+          created_at: string
+          emotion_type: string
+          id: string
+          miner_id: string
+          mining_method: string | null
+          recipient_id: string | null
+        }
+        Insert: {
+          amount_mined: number
+          commission_earned?: number
+          created_at?: string
+          emotion_type: string
+          id?: string
+          miner_id: string
+          mining_method?: string | null
+          recipient_id?: string | null
+        }
+        Update: {
+          amount_mined?: number
+          commission_earned?: number
+          created_at?: string
+          emotion_type?: string
+          id?: string
+          miner_id?: string
+          mining_method?: string | null
+          recipient_id?: string | null
+        }
+        Relationships: []
+      }
+      emotion_posts: {
+        Row: {
+          ai_detected_emotions: Json
+          comments_count: number
+          content: string
+          created_at: string
+          emotion_cost: Json
+          emotion_reward: Json
+          id: string
+          is_premium: boolean
+          likes_count: number
+          media_url: string | null
+          user_id: string
+          views_count: number
+        }
+        Insert: {
+          ai_detected_emotions?: Json
+          comments_count?: number
+          content: string
+          created_at?: string
+          emotion_cost?: Json
+          emotion_reward?: Json
+          id?: string
+          is_premium?: boolean
+          likes_count?: number
+          media_url?: string | null
+          user_id: string
+          views_count?: number
+        }
+        Update: {
+          ai_detected_emotions?: Json
+          comments_count?: number
+          content?: string
+          created_at?: string
+          emotion_cost?: Json
+          emotion_reward?: Json
+          id?: string
+          is_premium?: boolean
+          likes_count?: number
+          media_url?: string | null
+          user_id?: string
+          views_count?: number
+        }
+        Relationships: []
+      }
+      emotion_subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          price: number
+          started_at: string
+          status: string
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          price: number
+          started_at?: string
+          status?: string
+          tier: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          price?: number
+          started_at?: string
+          status?: string
+          tier?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      emotion_transactions: {
+        Row: {
+          amount: number
+          buyer_id: string
+          created_at: string
+          emotion_type: string
+          id: string
+          price: number | null
+          seller_id: string | null
+          status: string
+          transaction_type: string
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          created_at?: string
+          emotion_type: string
+          id?: string
+          price?: number | null
+          seller_id?: string | null
+          status?: string
+          transaction_type: string
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          created_at?: string
+          emotion_type?: string
+          id?: string
+          price?: number | null
+          seller_id?: string | null
+          status?: string
+          transaction_type?: string
+        }
+        Relationships: []
+      }
+      emotion_wallets: {
+        Row: {
+          anger_balance: number
+          created_at: string
+          excitement_balance: number
+          fear_balance: number
+          has_insurance: boolean
+          id: string
+          is_premium: boolean
+          joy_balance: number
+          love_balance: number
+          motivation_balance: number
+          peace_balance: number
+          sadness_balance: number
+          total_mined: number
+          total_traded: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          anger_balance?: number
+          created_at?: string
+          excitement_balance?: number
+          fear_balance?: number
+          has_insurance?: boolean
+          id?: string
+          is_premium?: boolean
+          joy_balance?: number
+          love_balance?: number
+          motivation_balance?: number
+          peace_balance?: number
+          sadness_balance?: number
+          total_mined?: number
+          total_traded?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          anger_balance?: number
+          created_at?: string
+          excitement_balance?: number
+          fear_balance?: number
+          has_insurance?: boolean
+          id?: string
+          is_premium?: boolean
+          joy_balance?: number
+          love_balance?: number
+          motivation_balance?: number
+          peace_balance?: number
+          sadness_balance?: number
+          total_mined?: number
+          total_traded?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       fashion_categories: {
         Row: {
           created_at: string | null
