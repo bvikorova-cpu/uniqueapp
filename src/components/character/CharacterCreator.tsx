@@ -90,19 +90,20 @@ export const CharacterCreator = () => {
 
       <div className="space-y-4">
         <div>
-          <label className="text-foreground text-sm mb-2 block">Character Name</label>
+          <label className="text-foreground font-medium text-sm mb-2 block">Character Name</label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter character name..."
             disabled={createCharacter.isPending}
+            className="font-medium"
           />
         </div>
 
         <div>
-          <label className="text-foreground text-sm mb-2 block">Category</label>
+          <label className="text-foreground font-medium text-sm mb-2 block">Category</label>
           <Select value={category} onValueChange={setCategory} disabled={createCharacter.isPending}>
-            <SelectTrigger>
+            <SelectTrigger className="font-medium">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
@@ -116,12 +117,12 @@ export const CharacterCreator = () => {
         </div>
 
         <div>
-          <label className="text-foreground text-sm mb-2 block">Description</label>
+          <label className="text-foreground font-medium text-sm mb-2 block">Description</label>
           <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Describe your character's appearance, powers, and personality..."
-            className="min-h-[100px]"
+            className="min-h-[100px] font-medium"
             disabled={createCharacter.isPending}
           />
         </div>

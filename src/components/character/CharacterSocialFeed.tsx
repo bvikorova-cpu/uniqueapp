@@ -123,11 +123,11 @@ export const CharacterSocialFeed = () => {
           <select
             value={selectedCharacter || ""}
             onChange={(e) => setSelectedCharacter(e.target.value)}
-            className="w-full bg-background border border-border rounded-md p-2 text-foreground"
+            className="w-full bg-background border-2 border-border rounded-md p-3 text-foreground font-medium focus:border-primary focus:outline-none"
           >
-            <option value="">Select a character to post as...</option>
+            <option value="" className="text-muted-foreground">Select a character to post as...</option>
             {characters?.map((char) => (
-              <option key={char.id} value={char.id}>
+              <option key={char.id} value={char.id} className="text-foreground">
                 {char.name} ({char.category})
               </option>
             ))}
@@ -137,7 +137,7 @@ export const CharacterSocialFeed = () => {
             value={postContent}
             onChange={(e) => setPostContent(e.target.value)}
             placeholder="Share your character's journey, achievements, or challenge others..."
-            className="min-h-[100px]"
+            className="min-h-[100px] font-medium"
           />
 
           <Button
@@ -164,13 +164,13 @@ export const CharacterSocialFeed = () => {
               )}
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-foreground font-semibold">{post.characters?.name}</span>
+                  <span className="text-foreground font-bold">{post.characters?.name}</span>
                   <span className="text-muted-foreground text-sm">•</span>
-                  <span className="text-muted-foreground text-sm">
+                  <span className="text-muted-foreground font-medium text-sm">
                     {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
                   </span>
                 </div>
-                <p className="text-foreground mb-4">{post.content}</p>
+                <p className="text-foreground font-medium mb-4">{post.content}</p>
                 <div className="flex items-center gap-4">
                   <Button
                     variant="ghost"

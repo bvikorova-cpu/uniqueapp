@@ -68,15 +68,15 @@ export const CharacterBattleArena = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <h3 className="text-foreground font-semibold mb-3">Fighter 1</h3>
+            <h3 className="text-foreground font-bold text-base mb-3">Fighter 1</h3>
             <div className="space-y-2 max-h-[300px] overflow-y-auto">
               {characters?.map((char) => (
                 <Card
                   key={char.id}
-                  className={`p-3 cursor-pointer transition-all ${
+                  className={`p-3 cursor-pointer transition-all border-2 ${
                     selectedChar1 === char.id
-                      ? "bg-blue-100 dark:bg-blue-900 border-blue-400"
-                      : "bg-muted/50 hover:bg-muted"
+                      ? "bg-blue-100 dark:bg-blue-900 border-blue-500"
+                      : "bg-muted/50 hover:bg-muted border-border"
                   }`}
                   onClick={() => setSelectedChar1(char.id)}
                 >
@@ -85,8 +85,8 @@ export const CharacterBattleArena = () => {
                       <img src={char.image_url} alt={char.name} className="w-12 h-12 rounded object-cover" />
                     )}
                     <div>
-                      <p className="text-foreground font-medium">{char.name}</p>
-                      <p className="text-muted-foreground text-xs">Lvl {char.level} • {char.wins}W/{char.losses}L</p>
+                      <p className="text-foreground font-bold">{char.name}</p>
+                      <p className="text-muted-foreground font-medium text-xs">Lvl {char.level} • {char.wins}W/{char.losses}L</p>
                     </div>
                   </div>
                 </Card>
@@ -95,15 +95,15 @@ export const CharacterBattleArena = () => {
           </div>
 
           <div>
-            <h3 className="text-foreground font-semibold mb-3">Fighter 2</h3>
+            <h3 className="text-foreground font-bold text-base mb-3">Fighter 2</h3>
             <div className="space-y-2 max-h-[300px] overflow-y-auto">
               {characters?.map((char) => (
                 <Card
                   key={char.id}
-                  className={`p-3 cursor-pointer transition-all ${
+                  className={`p-3 cursor-pointer transition-all border-2 ${
                     selectedChar2 === char.id
-                      ? "bg-red-100 dark:bg-red-900 border-red-400"
-                      : "bg-muted/50 hover:bg-muted"
+                      ? "bg-red-100 dark:bg-red-900 border-red-500"
+                      : "bg-muted/50 hover:bg-muted border-border"
                   }`}
                   onClick={() => setSelectedChar2(char.id)}
                 >
@@ -112,8 +112,8 @@ export const CharacterBattleArena = () => {
                       <img src={char.image_url} alt={char.name} className="w-12 h-12 rounded object-cover" />
                     )}
                     <div>
-                      <p className="text-foreground font-medium">{char.name}</p>
-                      <p className="text-muted-foreground text-xs">Lvl {char.level} • {char.wins}W/{char.losses}L</p>
+                      <p className="text-foreground font-bold">{char.name}</p>
+                      <p className="text-muted-foreground font-medium text-xs">Lvl {char.level} • {char.wins}W/{char.losses}L</p>
                     </div>
                   </div>
                 </Card>

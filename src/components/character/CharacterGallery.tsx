@@ -24,12 +24,12 @@ export const CharacterGallery = () => {
     <div>
       <Card className="p-6 mb-6">
         <h2 className="text-2xl font-bold text-foreground mb-2">Character Gallery</h2>
-        <p className="text-muted-foreground">Discover the most powerful and popular characters</p>
+        <p className="text-muted-foreground font-medium">Discover the most powerful and popular characters</p>
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {characters?.map((char, index) => (
-          <Card key={char.id} className="p-4 hover:border-primary transition-all">
+          <Card key={char.id} className="p-4 hover:border-primary transition-all border-2">
             <div className="relative">
               {index < 3 && (
                 <Badge className="absolute top-2 right-2 bg-yellow-500">
@@ -56,29 +56,29 @@ export const CharacterGallery = () => {
 
               <Badge className="bg-purple-600">{char.category}</Badge>
 
-              <p className="text-muted-foreground text-sm line-clamp-2">{char.description}</p>
+              <p className="text-muted-foreground font-medium text-sm line-clamp-2">{char.description}</p>
 
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="flex items-center gap-1 text-foreground">
+                <div className="flex items-center gap-1 text-foreground font-semibold">
                   <Heart className="h-4 w-4 text-red-500" />
                   <span>{char.hp} HP</span>
                 </div>
-                <div className="flex items-center gap-1 text-foreground">
+                <div className="flex items-center gap-1 text-foreground font-semibold">
                   <Zap className="h-4 w-4 text-yellow-500" />
                   <span>{char.attack} ATK</span>
                 </div>
-                <div className="flex items-center gap-1 text-foreground">
+                <div className="flex items-center gap-1 text-foreground font-semibold">
                   <Shield className="h-4 w-4 text-blue-500" />
                   <span>{char.defense} DEF</span>
                 </div>
-                <div className="flex items-center gap-1 text-foreground">
+                <div className="flex items-center gap-1 text-foreground font-semibold">
                   <Trophy className="h-4 w-4 text-green-500" />
                   <span>{char.wins}W / {char.losses}L</span>
                 </div>
               </div>
 
               {char.special_power && (
-                <p className="text-foreground text-xs bg-muted p-2 rounded">
+                <p className="text-foreground font-medium text-xs bg-muted p-2 rounded">
                   ⚡ {char.special_power}
                 </p>
               )}
