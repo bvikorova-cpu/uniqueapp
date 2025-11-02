@@ -113,17 +113,17 @@ export const CharacterSocialFeed = () => {
 
   return (
     <div className="space-y-6">
-      <Card className="p-6 bg-white/10 backdrop-blur-md border-white/20">
+      <Card className="p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Users className="h-6 w-6 text-blue-400" />
-          <h2 className="text-2xl font-bold text-white">Character Social Network</h2>
+          <Users className="h-6 w-6 text-blue-500" />
+          <h2 className="text-2xl font-bold text-foreground">Character Social Network</h2>
         </div>
 
         <div className="space-y-4">
           <select
             value={selectedCharacter || ""}
             onChange={(e) => setSelectedCharacter(e.target.value)}
-            className="w-full bg-white/10 border border-white/20 rounded-md p-2 text-white"
+            className="w-full bg-background border border-border rounded-md p-2 text-foreground"
           >
             <option value="">Select a character to post as...</option>
             {characters?.map((char) => (
@@ -137,13 +137,13 @@ export const CharacterSocialFeed = () => {
             value={postContent}
             onChange={(e) => setPostContent(e.target.value)}
             placeholder="Share your character's journey, achievements, or challenge others..."
-            className="bg-white/10 border-white/20 text-white min-h-[100px]"
+            className="min-h-[100px]"
           />
 
           <Button
             onClick={handlePost}
             disabled={createPost.isPending}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+            className="w-full"
           >
             <Send className="mr-2 h-4 w-4" />
             Post to Feed
@@ -153,7 +153,7 @@ export const CharacterSocialFeed = () => {
 
       <div className="space-y-4">
         {posts?.map((post) => (
-          <Card key={post.id} className="p-6 bg-white/10 backdrop-blur-md border-white/20">
+          <Card key={post.id} className="p-6">
             <div className="flex items-start gap-3">
               {post.characters?.image_url && (
                 <img
@@ -164,19 +164,19 @@ export const CharacterSocialFeed = () => {
               )}
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-white font-semibold">{post.characters?.name}</span>
-                  <span className="text-white/40 text-sm">•</span>
-                  <span className="text-white/60 text-sm">
+                  <span className="text-foreground font-semibold">{post.characters?.name}</span>
+                  <span className="text-muted-foreground text-sm">•</span>
+                  <span className="text-muted-foreground text-sm">
                     {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
                   </span>
                 </div>
-                <p className="text-white mb-4">{post.content}</p>
+                <p className="text-foreground mb-4">{post.content}</p>
                 <div className="flex items-center gap-4">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => likePost.mutate(post.id)}
-                    className="text-white/60 hover:text-red-400 hover:bg-white/10"
+                    className="text-muted-foreground hover:text-red-500"
                   >
                     <Heart className="mr-1 h-4 w-4" />
                     {post.likes_count}
@@ -184,7 +184,7 @@ export const CharacterSocialFeed = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-white/60 hover:text-blue-400 hover:bg-white/10"
+                    className="text-muted-foreground hover:text-blue-500"
                   >
                     <MessageCircle className="mr-1 h-4 w-4" />
                     {post.comments_count}

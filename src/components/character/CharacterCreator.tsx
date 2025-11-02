@@ -82,28 +82,27 @@ export const CharacterCreator = () => {
   };
 
   return (
-    <Card className="p-6 bg-white/10 backdrop-blur-md border-white/20">
+    <Card className="p-6">
       <div className="flex items-center gap-2 mb-6">
-        <Sparkles className="h-6 w-6 text-purple-400" />
-        <h2 className="text-2xl font-bold text-white">Create Your Character</h2>
+        <Sparkles className="h-6 w-6 text-purple-500" />
+        <h2 className="text-2xl font-bold text-foreground">Create Your Character</h2>
       </div>
 
       <div className="space-y-4">
         <div>
-          <label className="text-white text-sm mb-2 block">Character Name</label>
+          <label className="text-foreground text-sm mb-2 block">Character Name</label>
           <Input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter character name..."
-            className="bg-white/10 border-white/20 text-white"
             disabled={createCharacter.isPending}
           />
         </div>
 
         <div>
-          <label className="text-white text-sm mb-2 block">Category</label>
+          <label className="text-foreground text-sm mb-2 block">Category</label>
           <Select value={category} onValueChange={setCategory} disabled={createCharacter.isPending}>
-            <SelectTrigger className="bg-white/10 border-white/20 text-white">
+            <SelectTrigger>
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
@@ -117,12 +116,12 @@ export const CharacterCreator = () => {
         </div>
 
         <div>
-          <label className="text-white text-sm mb-2 block">Description</label>
+          <label className="text-foreground text-sm mb-2 block">Description</label>
           <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Describe your character's appearance, powers, and personality..."
-            className="bg-white/10 border-white/20 text-white min-h-[100px]"
+            className="min-h-[100px]"
             disabled={createCharacter.isPending}
           />
         </div>
@@ -131,7 +130,6 @@ export const CharacterCreator = () => {
           <Button
             onClick={() => setIsPremium(false)}
             variant={!isPremium ? "default" : "outline"}
-            className={!isPremium ? "bg-blue-600 hover:bg-blue-700" : "bg-white/10 border-white/20 text-white"}
             disabled={createCharacter.isPending}
           >
             Basic (5 credits)
@@ -139,7 +137,6 @@ export const CharacterCreator = () => {
           <Button
             onClick={() => setIsPremium(true)}
             variant={isPremium ? "default" : "outline"}
-            className={isPremium ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" : "bg-white/10 border-white/20 text-white"}
             disabled={createCharacter.isPending}
           >
             <Wand2 className="mr-2 h-4 w-4" />
@@ -150,7 +147,7 @@ export const CharacterCreator = () => {
         <Button
           onClick={handleCreate}
           disabled={createCharacter.isPending}
-          className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+          className="w-full"
           size="lg"
         >
           {createCharacter.isPending ? (

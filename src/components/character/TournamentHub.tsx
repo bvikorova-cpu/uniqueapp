@@ -26,13 +26,13 @@ export const TournamentHub = () => {
 
   return (
     <div>
-      <Card className="p-6 mb-6 bg-white/10 backdrop-blur-md border-white/20">
+      <Card className="p-6 mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-2">Tournament Hub 🏆</h2>
-            <p className="text-white/60">Compete in epic tournaments for glory and prizes</p>
+            <h2 className="text-2xl font-bold text-foreground mb-2">Tournament Hub 🏆</h2>
+            <p className="text-muted-foreground">Compete in epic tournaments for glory and prizes</p>
           </div>
-          <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+          <Button>
             Create Tournament
           </Button>
         </div>
@@ -40,12 +40,12 @@ export const TournamentHub = () => {
 
       <div className="space-y-4">
         {tournaments?.map((tournament) => (
-          <Card key={tournament.id} className="p-6 bg-white/10 backdrop-blur-md border-white/20 hover:border-yellow-400/40 transition-all">
+          <Card key={tournament.id} className="p-6 hover:border-yellow-500 transition-all">
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
-                  <Trophy className="h-6 w-6 text-yellow-400" />
-                  <h3 className="text-xl font-bold text-white">{tournament.name}</h3>
+                  <Trophy className="h-6 w-6 text-yellow-500" />
+                  <h3 className="text-xl font-bold text-foreground">{tournament.name}</h3>
                   <Badge 
                     className={
                       tournament.status === 'registration' 
@@ -59,15 +59,15 @@ export const TournamentHub = () => {
                   </Badge>
                 </div>
 
-                <p className="text-white/60 mb-4">{tournament.description}</p>
+                <p className="text-muted-foreground mb-4">{tournament.description}</p>
 
-                <div className="flex items-center gap-6 text-sm text-white/80">
+                <div className="flex items-center gap-6 text-sm text-foreground">
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
                     <span>{tournament.tournament_participants?.[0]?.count || 0}/{tournament.max_participants} Participants</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Trophy className="h-4 w-4 text-yellow-400" />
+                    <Trophy className="h-4 w-4 text-yellow-500" />
                     <span>Prize Pool: {tournament.prize_pool} credits</span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -79,17 +79,17 @@ export const TournamentHub = () => {
 
               <div>
                 {tournament.status === 'registration' && (
-                  <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+                  <Button>
                     Join ({tournament.entry_fee} credits)
                   </Button>
                 )}
                 {tournament.status === 'in_progress' && (
-                  <Button variant="outline" className="border-blue-400 text-blue-400">
+                  <Button variant="outline">
                     View Bracket
                   </Button>
                 )}
                 {tournament.status === 'completed' && (
-                  <Button variant="outline" className="border-yellow-400 text-yellow-400">
+                  <Button variant="outline">
                     View Results
                   </Button>
                 )}
@@ -100,9 +100,9 @@ export const TournamentHub = () => {
       </div>
 
       {!tournaments || tournaments.length === 0 && (
-        <Card className="p-12 text-center bg-white/5 backdrop-blur-md border-white/10">
-          <Trophy className="h-16 w-16 text-white/20 mx-auto mb-4" />
-          <p className="text-white/60">No active tournaments. Be the first to create one!</p>
+        <Card className="p-12 text-center">
+          <Trophy className="h-16 w-16 text-muted-foreground/20 mx-auto mb-4" />
+          <p className="text-muted-foreground">No active tournaments. Be the first to create one!</p>
         </Card>
       )}
     </div>
