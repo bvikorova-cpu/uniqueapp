@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2, Image, Gem } from "lucide-react";
+import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2, Image, Gem, Coffee } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -48,6 +48,7 @@ const Home = () => {
     { name: "Beauty Studio", path: "/beauty-studio", keywords: ["beauty", "krása", "makeup", "líčenie"] },
     { name: "Photo Restoration", path: "/photo-restoration", keywords: ["photo", "fotka", "restoration", "reštaurácia", "staré fotky", "kolorovanie"] },
     { name: "Antique Appraisal", path: "/antique-appraisal", keywords: ["antique", "starožitnosti", "appraisal", "ocenenie", "identifikácia", "hodnota"] },
+    { name: "Coffee Community", path: "/coffee", keywords: ["coffee", "káva", "kaviarne", "checkin", "buddy", "kávoví milovníci"] },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -628,6 +629,20 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     AI identification & valuation of antiques and collectibles
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/coffee">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Coffee className="h-12 w-12 text-amber-700 mx-auto mb-4" />
+                  <CardTitle>Coffee Community</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Discover cafes, find coffee buddies, and earn rewards
                   </p>
                 </CardContent>
               </Card>

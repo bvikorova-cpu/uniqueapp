@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2 } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee } from "lucide-react";
 import { useTheme } from "next-themes";
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import megatalentLogo from "@/assets/megatalent-logo.png";
@@ -240,6 +240,7 @@ const Navbar = () => {
     { path: "/fit-slim", label: t('services.fit_slim.title'), icon: Apple },
     { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
     { path: "/cooking-ai", label: "AI Cooking Tools", icon: Sparkles },
+    { path: "/coffee", label: "Coffee Community", icon: Coffee },
     { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
     { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
     { path: "/minibiz", label: "Mini Business Marketplace", icon: Store },
