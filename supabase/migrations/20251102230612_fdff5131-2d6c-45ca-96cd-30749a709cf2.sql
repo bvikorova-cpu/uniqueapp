@@ -1,0 +1,22 @@
+-- Insert 20 paid escape rooms with variety
+INSERT INTO escape_rooms (creator_id, title, description, difficulty, theme, price, duration_minutes, max_players, room_type, is_published) VALUES
+('00000000-0000-0000-0000-000000000000', 'Vampire Castle Nightmare', 'Escape from the vampire lord''s castle before sunrise or become one of the undead forever.', 'hard', 'horror', 12, 90, 6, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Cyberpunk Heist 2077', 'Hack into a mega-corporation''s mainframe and steal valuable data in this neon-lit cyberpunk thriller.', 'expert', 'sci-fi', 15, 75, 4, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Sherlock''s Study', 'Solve the mystery of the missing crown jewels in Victorian London.', 'medium', 'mystery', 8, 60, 6, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Wizard''s Tower', 'Climb the magical tower and retrieve the ancient spell book from the archmage.', 'hard', 'fantasy', 10, 70, 5, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Pirate Treasure Hunt', 'Find Captain Blackbeard''s legendary treasure on a mysterious Caribbean island.', 'easy', 'adventure', 7, 50, 6, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Space Station Crisis', 'Fix the failing life support system before oxygen runs out on the International Space Station.', 'expert', 'sci-fi', 18, 100, 4, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Haunted Asylum', 'Escape from the abandoned psychiatric hospital haunted by tormented souls.', 'expert', 'horror', 15, 80, 4, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Ancient Egyptian Tomb', 'Navigate the cursed pharaoh''s tomb and avoid ancient traps to claim the treasure.', 'medium', 'adventure', 9, 65, 6, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Time Paradox Lab', 'Fix the broken time machine before reality collapses in this mind-bending sci-fi adventure.', 'hard', 'sci-fi', 13, 85, 5, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Murder at the Manor', 'Solve a classic whodunit murder mystery at an English country estate.', 'medium', 'mystery', 10, 70, 6, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Zombie Apocalypse Shelter', 'Survive the night in a bunker surrounded by hordes of the undead.', 'hard', 'horror', 12, 75, 6, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Dragon Mountain Quest', 'Steal treasure from a sleeping dragon''s lair in this fantasy epic.', 'expert', 'fantasy', 16, 95, 4, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Submarine Emergency', 'Save your crew from a sinking nuclear submarine before it''s too late.', 'hard', 'adventure', 14, 80, 5, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Witch''s Cottage', 'Escape from the enchanted forest cottage before the witch returns from gathering ingredients.', 'easy', 'fantasy', 6, 45, 5, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Bank Heist Masterplan', 'Execute the perfect bank robbery and escape with the loot in this crime thriller.', 'expert', 'mystery', 20, 120, 4, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Science Lab Outbreak', 'Contain a dangerous virus outbreak in a top-secret research facility.', 'medium', 'educational', 8, 55, 6, 'educational', true),
+('00000000-0000-0000-0000-000000000000', 'Corporate Espionage', 'Infiltrate a rival company and steal their trade secrets in this business thriller.', 'hard', 'corporate', 80, 90, 8, 'corporate', true),
+('00000000-0000-0000-0000-000000000000', 'Arctic Research Station', 'Survive the frozen wasteland and uncover what happened to the missing expedition team.', 'hard', 'adventure', 11, 70, 5, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Forbidden Library', 'Find the cursed book and break the spell that trapped you in an infinite library.', 'medium', 'fantasy', 9, 60, 6, 'multiplayer', true),
+('00000000-0000-0000-0000-000000000000', 'Casino Royale Heist', 'Beat the house and escape the casino with your winnings before security catches you.', 'hard', 'mystery', 13, 75, 5, 'multiplayer', true);
