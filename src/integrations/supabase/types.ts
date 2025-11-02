@@ -6678,6 +6678,280 @@ export type Database = {
           },
         ]
       }
+      memories: {
+        Row: {
+          category: string
+          content: Json
+          created_at: string
+          description: string
+          id: string
+          is_verified: boolean | null
+          price: number
+          rating: number | null
+          times_stolen: number | null
+          title: string
+          updated_at: string
+          user_id: string
+          verification_requested: boolean | null
+        }
+        Insert: {
+          category: string
+          content: Json
+          created_at?: string
+          description: string
+          id?: string
+          is_verified?: boolean | null
+          price?: number
+          rating?: number | null
+          times_stolen?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+          verification_requested?: boolean | null
+        }
+        Update: {
+          category?: string
+          content?: Json
+          created_at?: string
+          description?: string
+          id?: string
+          is_verified?: boolean | null
+          price?: number
+          rating?: number | null
+          times_stolen?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          verification_requested?: boolean | null
+        }
+        Relationships: []
+      }
+      memory_auction_bids: {
+        Row: {
+          auction_id: string
+          bid_amount: number
+          bid_at: string
+          bidder_id: string
+          id: string
+        }
+        Insert: {
+          auction_id: string
+          bid_amount: number
+          bid_at?: string
+          bidder_id: string
+          id?: string
+        }
+        Update: {
+          auction_id?: string
+          bid_amount?: number
+          bid_at?: string
+          bidder_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_auction_bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "memory_auctions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memory_auctions: {
+        Row: {
+          created_at: string
+          current_bid: number | null
+          ends_at: string
+          highest_bidder_id: string | null
+          id: string
+          memory_id: string
+          starting_price: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_bid?: number | null
+          ends_at: string
+          highest_bidder_id?: string | null
+          id?: string
+          memory_id: string
+          starting_price: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_bid?: number | null
+          ends_at?: string
+          highest_bidder_id?: string | null
+          id?: string
+          memory_id?: string
+          starting_price?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_auctions_memory_id_fkey"
+            columns: ["memory_id"]
+            isOneToOne: false
+            referencedRelation: "memories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memory_collection_purchases: {
+        Row: {
+          buyer_id: string
+          collection_id: string
+          id: string
+          price_paid: number
+          purchased_at: string
+        }
+        Insert: {
+          buyer_id: string
+          collection_id: string
+          id?: string
+          price_paid: number
+          purchased_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          collection_id?: string
+          id?: string
+          price_paid?: number
+          purchased_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_collection_purchases_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "memory_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memory_collections: {
+        Row: {
+          cover_image_url: string | null
+          created_at: string
+          description: string
+          id: string
+          memory_ids: string[]
+          name: string
+          price: number
+          times_purchased: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_image_url?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          memory_ids: string[]
+          name: string
+          price?: number
+          times_purchased?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          memory_ids?: string[]
+          name?: string
+          price?: number
+          times_purchased?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      memory_purchases: {
+        Row: {
+          buyer_id: string
+          id: string
+          memory_id: string
+          price_paid: number
+          purchased_at: string
+          rating: number | null
+          review: string | null
+        }
+        Insert: {
+          buyer_id: string
+          id?: string
+          memory_id: string
+          price_paid: number
+          purchased_at?: string
+          rating?: number | null
+          review?: string | null
+        }
+        Update: {
+          buyer_id?: string
+          id?: string
+          memory_id?: string
+          price_paid?: number
+          purchased_at?: string
+          rating?: number | null
+          review?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_purchases_memory_id_fkey"
+            columns: ["memory_id"]
+            isOneToOne: false
+            referencedRelation: "memories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      memory_verifications: {
+        Row: {
+          created_at: string
+          id: string
+          memory_id: string
+          notes: string | null
+          requested_by: string
+          status: string
+          verification_cost: number
+          verified_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          memory_id: string
+          notes?: string | null
+          requested_by: string
+          status?: string
+          verification_cost?: number
+          verified_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          memory_id?: string
+          notes?: string | null
+          requested_by?: string
+          status?: string
+          verification_cost?: number
+          verified_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "memory_verifications_memory_id_fkey"
+            columns: ["memory_id"]
+            isOneToOne: false
+            referencedRelation: "memories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_checkins: {
         Row: {
           achievements: string[] | null
