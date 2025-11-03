@@ -156,6 +156,7 @@ import TutorialPlatform from "./pages/TutorialPlatform";
 import VirtualEscapeRoom from "./pages/VirtualEscapeRoom";
 import HorseRacing from "./pages/HorseRacing";
 import ComedyClub from "./pages/ComedyClub";
+import ComedianDashboard from "./pages/ComedianDashboard";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -320,9 +321,10 @@ const App = () => (
           <Route path="/ai-avatar-service" element={<AIAvatarService />} />
           <Route path="/tutorial-platform" element={<TutorialPlatform />} />
           <Route path="/virtual-escape-room" element={<VirtualEscapeRoom />} />
-          <Route path="/horse-racing" element={<HorseRacing />} />
-          <Route path="/comedy-club" element={<ComedyClub />} />
-          <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
+              <Route path="/horse-racing" element={<HorseRacing />} />
+              <Route path="/comedy-club" element={<ComedyClub />} />
+              <Route path="/comedian-dashboard" element={<ComedianDashboard />} />
+              <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
           <Route path="/kids-stories/create-character" element={<CreateCharacter />} />

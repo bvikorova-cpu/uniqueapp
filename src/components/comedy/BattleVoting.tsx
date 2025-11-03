@@ -1,0 +1,102 @@
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { Trophy } from "lucide-react";
+
+interface BattleVotingProps {
+  battle: any;
+  onVoteSuccess: () => void;
+}
+
+export function BattleVoting({ battle, onVoteSuccess }: BattleVotingProps) {
+  const { toast } = useToast();
+  const [isVoting, setIsVoting] = useState(false);
+
+  const handleVote = async (participantId: string) => {
+    setIsVoting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      // Check if user has enough coins
+      const { data: currency } = await supabase
+        .from("comedy_currency")
+        .select("coins")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!currency || currency.coins < 10) {
+        throw new Error("Insufficient coins. You need 10 coins to vote.");
+      }
+
+      // Cast vote
+      const { error: voteError } = await supabase
+        .from("battle_votes")
+        .insert({
+          battle_id: battle.id,
+          participant_id: participantId,
+          user_id: user.id,
+          coins_spent: 10,
+        });
+
+      if (voteError) throw voteError;
+
+      // Deduct coins
+      await supabase
+        .from("comedy_currency")
+        .update({ coins: currency.coins - 10 })
+        .eq("user_id", user.id);
+
+      toast({
+        title: "Vote Cast!",
+        description: "Your vote has been counted. Good luck to your favorite!",
+      });
+
+      onVoteSuccess();
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to cast vote",
+        variant: "destructive",
+      });
+    } finally {
+      setIsVoting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 mb-4">
+        <Trophy className="h-5 w-5 text-yellow-500" />
+        <p className="font-bold">Vote for your favorite comedian (10 coins per vote)</p>
+      </div>
+      {battle.battle_participants?.map((participant: any) => (
+        <Card key={participant.id} className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
+                {participant.comedian?.stage_name?.charAt(0) || "?"}
+              </div>
+              <div>
+                <p className="font-bold text-lg">{participant.comedian?.stage_name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {participant.vote_count || 0} votes
+                </p>
+              </div>
+            </div>
+            <Button
+              onClick={() => handleVote(participant.id)}
+              disabled={isVoting}
+              size="lg"
+            >
+              {isVoting ? "Voting..." : "Vote (10 coins)"}
+            </Button>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}

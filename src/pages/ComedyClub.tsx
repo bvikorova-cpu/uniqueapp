@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,7 +12,11 @@ import {
   useUserTickets,
   useComedianProfile,
   useCreateComedianProfile,
+  useComedyClips,
+  useBuyClip,
 } from "@/hooks/useComedy";
+import { BattleVoting } from "@/components/comedy/BattleVoting";
+import { VideoPlayer } from "@/components/comedy/VideoPlayer";
 import { Mic2, Trophy, Video, TrendingUp, Ticket, User } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -22,12 +27,15 @@ import { format } from "date-fns";
 
 export default function ComedyClub() {
   const { shows } = useComedyShows();
-  const { battles } = useComedyBattles();
+  const { battles, refetch: refetchBattles } = useComedyBattles();
   const { tickets } = useUserTickets();
+  const { clips } = useComedyClips();
   const { profile: comedianProfile } = useComedianProfile();
   const buyTicket = useBuyTicket();
   const sendTip = useSendTip();
+  const buyClip = useBuyClip();
   const createProfile = useCreateComedianProfile();
+  const navigate = useNavigate();
 
   const [showCreateProfile, setShowCreateProfile] = useState(false);
   const [stageName, setStageName] = useState("");
@@ -102,7 +110,11 @@ export default function ComedyClub() {
               </DialogContent>
             </Dialog>
           ) : (
-            <Button variant="outline" size="lg">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => navigate("/comedian-dashboard")}
+            >
               <User className="mr-2 h-5 w-5" />
               Comedian Dashboard
             </Button>
@@ -257,25 +269,10 @@ export default function ComedyClub() {
                   </div>
 
                   {battle.status === "voting" && battle.battle_participants && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-bold mb-2">Vote for your favorite:</p>
-                      {battle.battle_participants.map((participant: any) => (
-                        <div
-                          key={participant.id}
-                          className="flex items-center justify-between p-3 border rounded-lg"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="font-bold">
-                              {participant.comedian?.stage_name}
-                            </span>
-                            <span className="text-sm text-muted-foreground">
-                              {participant.vote_count} votes
-                            </span>
-                          </div>
-                          <Button size="sm">Vote (10 coins)</Button>
-                        </div>
-                      ))}
-                    </div>
+                    <BattleVoting 
+                      battle={battle} 
+                      onVoteSuccess={() => refetchBattles()}
+                    />
                   )}
                 </Card>
               ))}
@@ -283,12 +280,39 @@ export default function ComedyClub() {
           </TabsContent>
 
           <TabsContent value="clips" className="space-y-4">
-            <Card className="p-6">
-              <h2 className="text-2xl font-bold mb-4">Comedy Clip Marketplace</h2>
-              <p className="text-muted-foreground">
-                Browse and purchase comedy clips from your favorite comedians. Coming soon!
-              </p>
-            </Card>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {clips?.map((clip: any) => (
+                <Card key={clip.id} className="p-4">
+                  <div className="mb-3">
+                    <VideoPlayer videoUrl={clip.video_url} />
+                  </div>
+                  <h3 className="font-bold text-lg mb-1">{clip.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    by {clip.comedian?.stage_name}
+                    {clip.comedian?.is_verified && " ✓"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+                    {clip.description}
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-lg font-bold text-yellow-500">
+                      {clip.price_coins} coins
+                    </p>
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        buyClip.mutate({
+                          clipId: clip.id,
+                          price: clip.price_coins,
+                        })
+                      }
+                    >
+                      Buy Clip
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
           </TabsContent>
 
           <TabsContent value="tickets" className="space-y-4">
