@@ -5,6 +5,29 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useDisneyCastles, useUserVisits, useUserStamps } from "@/hooks/useDisneyCastles";
 import { Globe2, MapPin, Sparkles, Trophy, ArrowLeft } from "lucide-react";
+import cinderellaFlorida from "@/assets/disney/cinderella-castle-florida.jpg";
+import sleepingBeautyCalifornia from "@/assets/disney/sleeping-beauty-castle-california.jpg";
+import parisCastle from "@/assets/disney/paris-castle.jpg";
+import hongkongCastle from "@/assets/disney/hongkong-castle.jpg";
+import shanghaiCastle from "@/assets/disney/shanghai-castle.jpg";
+import tokyoCastle from "@/assets/disney/tokyo-castle-exterior.jpg";
+
+// Map castle names to their images
+const castleImages: Record<string, string> = {
+  "Cinderella Castle": cinderellaFlorida, // Florida and Tokyo both use this
+  "Sleeping Beauty Castle": sleepingBeautyCalifornia,
+  "Le Château de la Belle au Bois Dormant": parisCastle,
+  "Castle of Magical Dreams": hongkongCastle,
+  "Enchanted Storybook Castle": shanghaiCastle,
+};
+
+// Special handling for duplicate castle names
+const getCastleImage = (name: string, parkName: string): string => {
+  if (name === "Cinderella Castle") {
+    return parkName.includes("Tokyo") ? tokyoCastle : cinderellaFlorida;
+  }
+  return castleImages[name] || "";
+};
 
 export default function DisneyCastles() {
   const navigate = useNavigate();
@@ -106,8 +129,12 @@ export default function DisneyCastles() {
 
             return (
               <Card key={castle.id} className="overflow-hidden hover:shadow-xl transition-shadow">
-                <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                  <span className="text-8xl">🏰</span>
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={getCastleImage(castle.name, castle.park_name)} 
+                    alt={castle.name}
+                    className="w-full h-full object-cover"
+                  />
                   {hasStamp && (
                     <Badge className="absolute top-4 right-4 bg-yellow-500 text-white">
                       <Trophy className="h-4 w-4 mr-1" />
