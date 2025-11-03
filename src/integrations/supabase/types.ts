@@ -1190,6 +1190,64 @@ export type Database = {
         }
         Relationships: []
       }
+      breeding_records: {
+        Row: {
+          bred_at: string
+          cost_coins: number
+          id: string
+          offspring_id: string | null
+          parent1_id: string
+          parent2_id: string
+          ready_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          bred_at?: string
+          cost_coins: number
+          id?: string
+          offspring_id?: string | null
+          parent1_id: string
+          parent2_id: string
+          ready_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          bred_at?: string
+          cost_coins?: number
+          id?: string
+          offspring_id?: string | null
+          parent1_id?: string
+          parent2_id?: string
+          ready_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breeding_records_offspring_id_fkey"
+            columns: ["offspring_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breeding_records_parent1_id_fkey"
+            columns: ["parent1_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breeding_records_parent2_id_fkey"
+            columns: ["parent2_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_orders: {
         Row: {
           business_id: string
@@ -3419,6 +3477,39 @@ export type Database = {
           subscription_tier?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      cosmetic_items: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          item_type: string
+          name: string
+          price_gems: number
+          rarity: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          item_type: string
+          name: string
+          price_gems: number
+          rarity?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          item_type?: string
+          name?: string
+          price_gems?: number
+          rarity?: string
         }
         Relationships: []
       }
@@ -5704,6 +5795,113 @@ export type Database = {
           room_type?: string
           style_preference?: string
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      horse_training: {
+        Row: {
+          created_at: string
+          horse_id: string
+          id: string
+          last_trained_at: string
+          level: number
+          progress: number
+          training_type: string
+        }
+        Insert: {
+          created_at?: string
+          horse_id: string
+          id?: string
+          last_trained_at?: string
+          level?: number
+          progress?: number
+          training_type: string
+        }
+        Update: {
+          created_at?: string
+          horse_id?: string
+          id?: string
+          last_trained_at?: string
+          level?: number
+          progress?: number
+          training_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horse_training_horse_id_fkey"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      horses: {
+        Row: {
+          acceleration_stat: number
+          age_days: number
+          breed: string
+          breeding_count: number
+          color: string
+          created_at: string
+          experience: number
+          id: string
+          is_retired: boolean
+          level: number
+          max_breeding: number
+          name: string
+          rarity: string
+          speed_stat: number
+          stamina_stat: number
+          temperament_stat: number
+          total_races: number
+          total_wins: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          acceleration_stat?: number
+          age_days?: number
+          breed: string
+          breeding_count?: number
+          color?: string
+          created_at?: string
+          experience?: number
+          id?: string
+          is_retired?: boolean
+          level?: number
+          max_breeding?: number
+          name: string
+          rarity?: string
+          speed_stat?: number
+          stamina_stat?: number
+          temperament_stat?: number
+          total_races?: number
+          total_wins?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          acceleration_stat?: number
+          age_days?: number
+          breed?: string
+          breeding_count?: number
+          color?: string
+          created_at?: string
+          experience?: number
+          id?: string
+          is_retired?: boolean
+          level?: number
+          max_breeding?: number
+          name?: string
+          rarity?: string
+          speed_stat?: number
+          stamina_stat?: number
+          temperament_stat?: number
+          total_races?: number
+          total_wins?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -9745,6 +9943,105 @@ export type Database = {
         }
         Relationships: []
       }
+      race_participants: {
+        Row: {
+          coins_won: number | null
+          created_at: string
+          experience_gained: number | null
+          finish_time_ms: number | null
+          horse_id: string
+          id: string
+          position: number | null
+          race_id: string
+          strategy: string
+          user_id: string
+        }
+        Insert: {
+          coins_won?: number | null
+          created_at?: string
+          experience_gained?: number | null
+          finish_time_ms?: number | null
+          horse_id: string
+          id?: string
+          position?: number | null
+          race_id: string
+          strategy?: string
+          user_id: string
+        }
+        Update: {
+          coins_won?: number | null
+          created_at?: string
+          experience_gained?: number | null
+          finish_time_ms?: number | null
+          horse_id?: string
+          id?: string
+          position?: number | null
+          race_id?: string
+          strategy?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "race_participants_horse_id_fkey"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "race_participants_race_id_fkey"
+            columns: ["race_id"]
+            isOneToOne: false
+            referencedRelation: "races"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      races: {
+        Row: {
+          created_at: string
+          distance: number
+          entry_fee_coins: number
+          finished_at: string | null
+          id: string
+          max_participants: number
+          prize_pool_coins: number
+          started_at: string | null
+          status: string
+          track_condition: string
+          track_name: string
+          weather: string
+        }
+        Insert: {
+          created_at?: string
+          distance: number
+          entry_fee_coins?: number
+          finished_at?: string | null
+          id?: string
+          max_participants?: number
+          prize_pool_coins?: number
+          started_at?: string | null
+          status?: string
+          track_condition?: string
+          track_name: string
+          weather?: string
+        }
+        Update: {
+          created_at?: string
+          distance?: number
+          entry_fee_coins?: number
+          finished_at?: string | null
+          id?: string
+          max_participants?: number
+          prize_pool_coins?: number
+          started_at?: string | null
+          status?: string
+          track_condition?: string
+          track_name?: string
+          weather?: string
+        }
+        Relationships: []
+      }
       reality_merges: {
         Row: {
           id: string
@@ -11359,6 +11656,36 @@ export type Database = {
           },
         ]
       }
+      user_currencies: {
+        Row: {
+          coins: number
+          created_at: string
+          gems: number
+          id: string
+          total_gems_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coins?: number
+          created_at?: string
+          gems?: number
+          id?: string
+          total_gems_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coins?: number
+          created_at?: string
+          gems?: number
+          id?: string
+          total_gems_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_follows: {
         Row: {
           created_at: string
@@ -11379,6 +11706,48 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      user_inventory: {
+        Row: {
+          acquired_at: string
+          horse_id: string | null
+          id: string
+          is_equipped: boolean
+          item_id: string
+          user_id: string
+        }
+        Insert: {
+          acquired_at?: string
+          horse_id?: string | null
+          id?: string
+          is_equipped?: boolean
+          item_id: string
+          user_id: string
+        }
+        Update: {
+          acquired_at?: string
+          horse_id?: string | null
+          id?: string
+          is_equipped?: boolean
+          item_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_inventory_horse_id_fkey"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_inventory_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "cosmetic_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_message_limits: {
         Row: {

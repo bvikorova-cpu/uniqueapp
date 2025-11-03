@@ -230,6 +230,7 @@ const Navbar = () => {
     { path: "/astrology", label: "Astrology", icon: Star },
     { path: "/character-arena", label: "Character Arena", icon: Trophy },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
+    { path: "/horse-racing", label: "Horse Racing Arena", icon: Trophy },
     { path: "/ai-music", label: "Music Curator", icon: Music },
     { path: "/ai-music-producer", label: "AI Music Producer", icon: Music },
     { path: "/plant-care", label: "Plant Care Assistant", icon: Leaf },
