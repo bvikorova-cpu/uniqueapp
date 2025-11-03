@@ -161,6 +161,8 @@ import DisneyCastles from "./pages/DisneyCastles";
 import DisneyCastleTour from "./pages/DisneyCastleTour";
 import PaintByNumbers from "./pages/PaintByNumbers";
 import PaintByNumbersCanvas from "./pages/PaintByNumbersCanvas";
+import Shop from "./pages/Shop";
+import ProductDetail from "./pages/ProductDetail";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -342,6 +344,8 @@ const App = () => (
           <Route path="/kids-pricing" element={<KidsPricing />} />
           <Route path="/story-video-demo" element={<StoryVideoDemo />} />
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/product/:handle" element={<ProductDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
           </Routes>

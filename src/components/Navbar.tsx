@@ -262,6 +262,7 @@ const Navbar = () => {
     { path: "/virtual-escape-room", label: "Virtual Escape Room", icon: Lock },
     { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
     { path: "/bazaar", label: t('navbar.bazaar'), icon: Store },
+    { path: "/shop", label: "🧸 Hračkárstvo", icon: ShoppingBag },
     { path: "/minibiz", label: "Mini Business Marketplace", icon: Store },
     { path: "/analyzer", label: "Universal Analyzer", icon: Sparkles },
     { path: "/ai-generation", label: t('navbar.ai_generation'), icon: Sparkles },
