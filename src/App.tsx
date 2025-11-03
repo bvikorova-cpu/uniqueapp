@@ -159,6 +159,8 @@ import ComedyClub from "./pages/ComedyClub";
 import ComedianDashboard from "./pages/ComedianDashboard";
 import DisneyCastles from "./pages/DisneyCastles";
 import DisneyCastleTour from "./pages/DisneyCastleTour";
+import PaintByNumbers from "./pages/PaintByNumbers";
+import PaintByNumbersCanvas from "./pages/PaintByNumbersCanvas";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 

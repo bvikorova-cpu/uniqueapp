@@ -8968,6 +8968,42 @@ export type Database = {
         }
         Relationships: []
       }
+      paint_by_numbers: {
+        Row: {
+          category: string
+          created_at: string | null
+          difficulty: string
+          id: string
+          image_data: Json
+          price_coins: number
+          thumbnail_url: string | null
+          title: string
+          total_sections: number
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          difficulty: string
+          id?: string
+          image_data: Json
+          price_coins?: number
+          thumbnail_url?: string | null
+          title: string
+          total_sections: number
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          difficulty?: string
+          id?: string
+          image_data?: Json
+          price_coins?: number
+          thumbnail_url?: string | null
+          title?: string
+          total_sections?: number
+        }
+        Relationships: []
+      }
       palmistry_readings: {
         Row: {
           created_at: string
@@ -12529,6 +12565,73 @@ export type Database = {
             columns: ["box_id"]
             isOneToOne: false
             referencedRelation: "mystery_boxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_paint_progress: {
+        Row: {
+          completed_at: string | null
+          completed_sections: number[] | null
+          id: string
+          is_completed: boolean | null
+          paint_id: string
+          started_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_sections?: number[] | null
+          id?: string
+          is_completed?: boolean | null
+          paint_id: string
+          started_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_sections?: number[] | null
+          id?: string
+          is_completed?: boolean | null
+          paint_id?: string
+          started_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_paint_progress_paint_id_fkey"
+            columns: ["paint_id"]
+            isOneToOne: false
+            referencedRelation: "paint_by_numbers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_paint_purchases: {
+        Row: {
+          id: string
+          paint_id: string
+          purchased_at: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          paint_id: string
+          purchased_at?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          paint_id?: string
+          purchased_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_paint_purchases_paint_id_fkey"
+            columns: ["paint_id"]
+            isOneToOne: false
+            referencedRelation: "paint_by_numbers"
             referencedColumns: ["id"]
           },
         ]
