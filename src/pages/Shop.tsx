@@ -7,10 +7,24 @@ import { useCartStore } from "@/stores/cartStore";
 import { ShoppingBag, Loader2 } from "lucide-react";
 import { storefrontApiRequest, STOREFRONT_PRODUCTS_QUERY, type ShopifyProduct } from "@/config/shopify";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+
+const CATEGORIES = [
+  "All",
+  "Action Figures",
+  "Dolls & Plush",
+  "Educational",
+  "Games & Puzzles",
+  "Vehicles",
+  "Arts & Crafts",
+  "Outdoor Toys"
+];
 
 export default function Shop() {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   const addItem = useCartStore(state => state.addItem);
 
   useEffect(() => {
@@ -26,15 +40,15 @@ export default function Shop() {
           console.log(`Found ${data.data.products.edges.length} products`);
           
           if (data.data.products.edges.length === 0) {
-            toast.info("Produkty v DSers ešte nie sú publikované", {
-              description: "Počkaj chvíľu alebo skontroluj v Shopify admin, či je produkt publikovaný do 'Online Store' kanála."
+            toast.info("No products published yet", {
+              description: "Please wait a moment or check in Shopify admin if the product is published to the 'Online Store' channel."
             });
           }
         }
       } catch (error) {
         console.error('Error fetching products:', error);
-        toast.error("Chyba pri načítaní produktov", {
-          description: error instanceof Error ? error.message : "Neznáma chyba"
+        toast.error("Error loading products", {
+          description: error instanceof Error ? error.message : "Unknown error"
         });
       } finally {
         setIsLoading(false);
@@ -57,10 +71,19 @@ export default function Shop() {
       selectedOptions: variant.selectedOptions
     });
     
-    toast.success("Pridané do košíka", {
+    toast.success("Added to cart", {
       description: product.node.title
     });
   };
+
+  const filteredProducts = products.filter(product => {
+    const matchesCategory = selectedCategory === "All" || 
+      product.node.productType?.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+      product.node.tags?.some(tag => tag.toLowerCase().includes(selectedCategory.toLowerCase()));
+    const matchesSearch = product.node.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.node.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,7 +91,7 @@ export default function Shop() {
       <header className="border-b sticky top-0 bg-background z-40">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link to="/" className="text-2xl font-bold">
-            🧸 Hračkárstvo
+            🧸 Kids Toy Store
           </Link>
           <CartDrawer />
         </div>
@@ -78,16 +101,42 @@ export default function Shop() {
       <section className="bg-gradient-subtle py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            Vitajte v našom hračkárstve
+            Welcome to Our Toy Store
           </h1>
           <p className="text-xl text-muted-foreground mb-8">
-            Najlepšie hračky pre vaše deti
+            The best toys for your kids
           </p>
         </div>
       </section>
 
+      {/* Search & Filters */}
+      <section className="container mx-auto px-4 py-8">
+        <div className="max-w-2xl mx-auto mb-8">
+          <Input
+            type="search"
+            placeholder="Search for toys..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full"
+          />
+        </div>
+        
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
+          {CATEGORIES.map((category) => (
+            <Button
+              key={category}
+              variant={selectedCategory === category ? "default" : "outline"}
+              onClick={() => setSelectedCategory(category)}
+              size="sm"
+            >
+              {category}
+            </Button>
+          ))}
+        </div>
+      </section>
+
       {/* Products Grid */}
-      <section className="container mx-auto px-4 py-12">
+      <section className="container mx-auto px-4 pb-12">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin" />
@@ -95,17 +144,25 @@ export default function Shop() {
         ) : products.length === 0 ? (
           <div className="text-center py-20">
             <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-            <h2 className="text-2xl font-bold mb-2">Žiadne produkty</h2>
+            <h2 className="text-2xl font-bold mb-2">No Products</h2>
             <p className="text-muted-foreground mb-4">
-              Zatiaľ tu nemáme žiadne produkty.
+              We don't have any products yet.
             </p>
             <p className="text-sm text-muted-foreground">
-              Povedz mi, aké hračky chceš pridať a vytvorím ich pre teba!
+              Tell me what toys you'd like to add and I'll create them for you!
+            </p>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-20">
+            <ShoppingBag className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+            <h2 className="text-2xl font-bold mb-2">No matches found</h2>
+            <p className="text-muted-foreground">
+              Try adjusting your search or filter selection
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => {
+            {filteredProducts.map((product) => {
               const image = product.node.images.edges[0]?.node;
               const price = product.node.priceRange.minVariantPrice;
               
@@ -145,7 +202,7 @@ export default function Shop() {
                           handleAddToCart(product);
                         }}
                       >
-                        Do košíka
+                        Add to Cart
                       </Button>
                     </div>
                   </CardContent>
