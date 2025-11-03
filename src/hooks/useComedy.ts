@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const useComedyCurrency = () => {
-  const { data: currency, isLoading } = useQuery({
+  const { data: currency, isLoading, refetch } = useQuery({
     queryKey: ["comedy-currency"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -30,7 +30,7 @@ export const useComedyCurrency = () => {
     },
   });
 
-  return { currency, isLoading };
+  return { currency, isLoading, refetch };
 };
 
 export const useComedyShows = () => {

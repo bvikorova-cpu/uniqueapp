@@ -2,13 +2,85 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Coins } from "lucide-react";
 import { useComedyCurrency } from "@/hooks/useComedy";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useState, useEffect } from "react";
 
 export const ComedyCurrencyDisplay = () => {
-  const { currency, isLoading } = useComedyCurrency();
+  const { currency, isLoading, refetch } = useComedyCurrency();
+  const { toast } = useToast();
+  const [isBuying, setIsBuying] = useState(false);
 
-  const handleBuyCoins = async (amount: number, price: number) => {
-    // This will be implemented with Stripe integration
-    console.log(`Buy ${amount} coins for $${price}`);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const paymentStatus = params.get("payment");
+    const sessionId = params.get("session_id");
+
+    if (paymentStatus === "success" && sessionId) {
+      handlePaymentSuccess(sessionId);
+      // Clean up URL
+      window.history.replaceState({}, "", window.location.pathname);
+    } else if (paymentStatus === "canceled") {
+      toast({
+        title: "Payment Canceled",
+        description: "Your coin purchase was canceled",
+        variant: "destructive",
+      });
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
+  const handlePaymentSuccess = async (sessionId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke("verify-comedy-payment", {
+        body: { sessionId },
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Coins Purchased!",
+          description: `${data.coins} comedy coins added to your account`,
+        });
+        refetch();
+      }
+    } catch (error) {
+      console.error("Error verifying payment:", error);
+      toast({
+        title: "Payment Verification Failed",
+        description: "Please contact support if coins weren't added",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBuyCoins = async (coins: number) => {
+    setIsBuying(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-comedy-payment", {
+        body: { coins },
+      });
+
+      if (error) throw error;
+
+      // Open Stripe checkout in new tab
+      window.open(data.url, "_blank");
+      
+      toast({
+        title: "Opening Checkout",
+        description: "Complete your purchase in the new tab",
+      });
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      toast({
+        title: "Error",
+        description: "Failed to start checkout process",
+        variant: "destructive",
+      });
+    } finally {
+      setIsBuying(false);
+    }
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -27,12 +99,10 @@ export const ComedyCurrencyDisplay = () => {
         <div className="flex gap-2">
           <Button
             variant="outline"
-            onClick={() => handleBuyCoins(500, 4.99)}
+            onClick={() => handleBuyCoins(100)}
+            disabled={isBuying}
           >
-            500 Coins - $4.99
-          </Button>
-          <Button onClick={() => handleBuyCoins(1200, 9.99)}>
-            1200 Coins - $9.99
+            {isBuying ? "Processing..." : "100 Coins - $5"}
           </Button>
         </div>
       </div>
