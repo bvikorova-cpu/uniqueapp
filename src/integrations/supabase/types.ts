@@ -872,6 +872,96 @@ export type Database = {
         }
         Relationships: []
       }
+      battle_participants: {
+        Row: {
+          battle_id: string
+          comedian_id: string
+          id: string
+          joined_at: string
+          performance_url: string | null
+          placement: number | null
+          prize_won: number | null
+          vote_count: number
+        }
+        Insert: {
+          battle_id: string
+          comedian_id: string
+          id?: string
+          joined_at?: string
+          performance_url?: string | null
+          placement?: number | null
+          prize_won?: number | null
+          vote_count?: number
+        }
+        Update: {
+          battle_id?: string
+          comedian_id?: string
+          id?: string
+          joined_at?: string
+          performance_url?: string | null
+          placement?: number | null
+          prize_won?: number | null
+          vote_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_participants_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "comedy_battles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_participants_comedian_id_fkey"
+            columns: ["comedian_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      battle_votes: {
+        Row: {
+          battle_id: string
+          id: string
+          participant_id: string
+          user_id: string
+          vote_cost_coins: number
+          voted_at: string
+        }
+        Insert: {
+          battle_id: string
+          id?: string
+          participant_id: string
+          user_id: string
+          vote_cost_coins?: number
+          voted_at?: string
+        }
+        Update: {
+          battle_id?: string
+          id?: string
+          participant_id?: string
+          user_id?: string
+          vote_cost_coins?: number
+          voted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "battle_votes_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "comedy_battles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "battle_votes_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "battle_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bazaar_items: {
         Row: {
           category: string
@@ -2089,6 +2179,38 @@ export type Database = {
         }
         Relationships: []
       }
+      clip_purchases: {
+        Row: {
+          clip_id: string
+          id: string
+          price_paid: number
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          clip_id: string
+          id?: string
+          price_paid: number
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          clip_id?: string
+          id?: string
+          price_paid?: number
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clip_purchases_clip_id_fkey"
+            columns: ["clip_id"]
+            isOneToOne: false
+            referencedRelation: "comedy_clips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clone_conversations: {
         Row: {
           clone_id: string
@@ -3283,6 +3405,453 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      comedian_earnings: {
+        Row: {
+          amount_coins: number
+          comedian_id: string
+          created_at: string
+          description: string | null
+          id: string
+          source_id: string | null
+          source_type: string
+        }
+        Insert: {
+          amount_coins: number
+          comedian_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          source_id?: string | null
+          source_type: string
+        }
+        Update: {
+          amount_coins?: number
+          comedian_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          source_id?: string | null
+          source_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedian_earnings_comedian_id_fkey"
+            columns: ["comedian_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comedian_followers: {
+        Row: {
+          comedian_id: string
+          followed_at: string
+          follower_user_id: string
+          id: string
+        }
+        Insert: {
+          comedian_id: string
+          followed_at?: string
+          follower_user_id: string
+          id?: string
+        }
+        Update: {
+          comedian_id?: string
+          followed_at?: string
+          follower_user_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedian_followers_comedian_id_fkey"
+            columns: ["comedian_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comedian_profiles: {
+        Row: {
+          avatar_url: string | null
+          average_rating: number | null
+          bio: string | null
+          created_at: string
+          experience_level: string
+          follower_count: number
+          id: string
+          is_verified: boolean
+          stage_name: string
+          total_earnings: number
+          total_shows: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          average_rating?: number | null
+          bio?: string | null
+          created_at?: string
+          experience_level?: string
+          follower_count?: number
+          id?: string
+          is_verified?: boolean
+          stage_name: string
+          total_earnings?: number
+          total_shows?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          average_rating?: number | null
+          bio?: string | null
+          created_at?: string
+          experience_level?: string
+          follower_count?: number
+          id?: string
+          is_verified?: boolean
+          stage_name?: string
+          total_earnings?: number
+          total_shows?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      comedy_battles: {
+        Row: {
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          entry_fee_coins: number
+          id: string
+          max_participants: number
+          prize_pool_coins: number
+          starts_at: string
+          status: string
+          title: string
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          entry_fee_coins?: number
+          id?: string
+          max_participants?: number
+          prize_pool_coins?: number
+          starts_at: string
+          status?: string
+          title: string
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          entry_fee_coins?: number
+          id?: string
+          max_participants?: number
+          prize_pool_coins?: number
+          starts_at?: string
+          status?: string
+          title?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedy_battles_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comedy_clips: {
+        Row: {
+          comedian_id: string
+          created_at: string
+          description: string | null
+          duration_seconds: number
+          id: string
+          is_free: boolean
+          price_coins: number
+          purchase_count: number
+          tags: string[] | null
+          thumbnail_url: string | null
+          title: string
+          total_revenue: number
+          updated_at: string
+          video_url: string
+          views_count: number
+        }
+        Insert: {
+          comedian_id: string
+          created_at?: string
+          description?: string | null
+          duration_seconds: number
+          id?: string
+          is_free?: boolean
+          price_coins?: number
+          purchase_count?: number
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title: string
+          total_revenue?: number
+          updated_at?: string
+          video_url: string
+          views_count?: number
+        }
+        Update: {
+          comedian_id?: string
+          created_at?: string
+          description?: string | null
+          duration_seconds?: number
+          id?: string
+          is_free?: boolean
+          price_coins?: number
+          purchase_count?: number
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string
+          total_revenue?: number
+          updated_at?: string
+          video_url?: string
+          views_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedy_clips_comedian_id_fkey"
+            columns: ["comedian_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comedy_currency: {
+        Row: {
+          coins: number
+          created_at: string
+          id: string
+          total_coins_purchased: number
+          total_earned: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coins?: number
+          created_at?: string
+          id?: string
+          total_coins_purchased?: number
+          total_earned?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coins?: number
+          created_at?: string
+          id?: string
+          total_coins_purchased?: number
+          total_earned?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      comedy_shows: {
+        Row: {
+          comedian_id: string
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          ended_at: string | null
+          id: string
+          is_premium: boolean
+          scheduled_at: string
+          show_type: string
+          started_at: string | null
+          status: string
+          stream_url: string | null
+          thumbnail_url: string | null
+          ticket_price_coins: number
+          title: string
+          total_revenue: number
+          viewer_count: number
+        }
+        Insert: {
+          comedian_id: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          ended_at?: string | null
+          id?: string
+          is_premium?: boolean
+          scheduled_at: string
+          show_type?: string
+          started_at?: string | null
+          status?: string
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          ticket_price_coins?: number
+          title: string
+          total_revenue?: number
+          viewer_count?: number
+        }
+        Update: {
+          comedian_id?: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          ended_at?: string | null
+          id?: string
+          is_premium?: boolean
+          scheduled_at?: string
+          show_type?: string
+          started_at?: string | null
+          status?: string
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          ticket_price_coins?: number
+          title?: string
+          total_revenue?: number
+          viewer_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedy_shows_comedian_id_fkey"
+            columns: ["comedian_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comedy_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          id: string
+          status: string
+          stripe_subscription_id: string | null
+          tier: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end: string
+          current_period_start?: string
+          id?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          tier?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          id?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          tier?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      comedy_tickets: {
+        Row: {
+          attended: boolean
+          id: string
+          price_paid: number
+          purchased_at: string
+          rating: number | null
+          review: string | null
+          show_id: string
+          user_id: string
+        }
+        Insert: {
+          attended?: boolean
+          id?: string
+          price_paid: number
+          purchased_at?: string
+          rating?: number | null
+          review?: string | null
+          show_id: string
+          user_id: string
+        }
+        Update: {
+          attended?: boolean
+          id?: string
+          price_paid?: number
+          purchased_at?: string
+          rating?: number | null
+          review?: string | null
+          show_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedy_tickets_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "comedy_shows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comedy_tips: {
+        Row: {
+          amount_coins: number
+          created_at: string
+          from_user_id: string
+          id: string
+          message: string | null
+          show_id: string | null
+          tip_type: string
+          to_comedian_id: string
+        }
+        Insert: {
+          amount_coins: number
+          created_at?: string
+          from_user_id: string
+          id?: string
+          message?: string | null
+          show_id?: string | null
+          tip_type?: string
+          to_comedian_id: string
+        }
+        Update: {
+          amount_coins?: number
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          message?: string | null
+          show_id?: string | null
+          tip_type?: string
+          to_comedian_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedy_tips_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "comedy_shows"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comedy_tips_to_comedian_id_fkey"
+            columns: ["to_comedian_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       compatibility_readings: {
         Row: {

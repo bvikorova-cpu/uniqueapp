@@ -1,0 +1,276 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+export const useComedyCurrency = () => {
+  const { data: currency, isLoading } = useQuery({
+    queryKey: ["comedy-currency"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data, error } = await supabase
+        .from("comedy_currency")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!data) {
+        const { data: newData, error: insertError } = await supabase
+          .from("comedy_currency")
+          .insert({ user_id: user.id, coins: 100 })
+          .select()
+          .single();
+        if (insertError) throw insertError;
+        return newData;
+      }
+      return data;
+    },
+  });
+
+  return { currency, isLoading };
+};
+
+export const useComedyShows = () => {
+  const { data: shows, isLoading } = useQuery({
+    queryKey: ["comedy-shows"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("comedy_shows")
+        .select(`
+          *,
+          comedian:comedian_profiles(
+            stage_name,
+            avatar_url,
+            follower_count,
+            is_verified
+          )
+        `)
+        .in("status", ["scheduled", "live"])
+        .order("scheduled_at", { ascending: true });
+
+      if (error) throw error;
+      return data;
+    },
+    refetchInterval: 10000,
+  });
+
+  return { shows, isLoading };
+};
+
+export const useBuyTicket = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ showId, price }: { showId: string; price: number }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data: currency } = await supabase
+        .from("comedy_currency")
+        .select("coins")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!currency || currency.coins < price) {
+        throw new Error("Insufficient coins");
+      }
+
+      const { data, error } = await supabase
+        .from("comedy_tickets")
+        .insert({
+          show_id: showId,
+          user_id: user.id,
+          price_paid: price,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      await supabase
+        .from("comedy_currency")
+        .update({ coins: currency.coins - price })
+        .eq("user_id", user.id);
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comedy-currency"] });
+      queryClient.invalidateQueries({ queryKey: ["user-tickets"] });
+      toast.success("Ticket purchased! Enjoy the show!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+export const useComedyBattles = () => {
+  const { data: battles, isLoading } = useQuery({
+    queryKey: ["comedy-battles"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("comedy_battles")
+        .select(`
+          *,
+          battle_participants(
+            id,
+            comedian:comedian_profiles(stage_name, avatar_url),
+            vote_count,
+            placement
+          )
+        `)
+        .in("status", ["registration", "live", "voting"])
+        .order("starts_at", { ascending: true });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  return { battles, isLoading };
+};
+
+export const useSendTip = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      comedianId,
+      amount,
+      tipType,
+      showId,
+      message,
+    }: {
+      comedianId: string;
+      amount: number;
+      tipType: string;
+      showId?: string;
+      message?: string;
+    }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data: currency } = await supabase
+        .from("comedy_currency")
+        .select("coins")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!currency || currency.coins < amount) {
+        throw new Error("Insufficient coins");
+      }
+
+      const { data, error } = await supabase
+        .from("comedy_tips")
+        .insert({
+          from_user_id: user.id,
+          to_comedian_id: comedianId,
+          show_id: showId,
+          amount_coins: amount,
+          tip_type: tipType,
+          message,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      await supabase
+        .from("comedy_currency")
+        .update({ coins: currency.coins - amount })
+        .eq("user_id", user.id);
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comedy-currency"] });
+      toast.success("Tip sent! The comedian will appreciate it!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+export const useUserTickets = () => {
+  const { data: tickets, isLoading } = useQuery({
+    queryKey: ["user-tickets"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data, error } = await supabase
+        .from("comedy_tickets")
+        .select(`
+          *,
+          show:comedy_shows(
+            *,
+            comedian:comedian_profiles(stage_name, avatar_url)
+          )
+        `)
+        .eq("user_id", user.id)
+        .order("purchased_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  return { tickets, isLoading };
+};
+
+export const useComedianProfile = () => {
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ["comedian-profile"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
+
+      const { data, error } = await supabase
+        .from("comedian_profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  return { profile, isLoading };
+};
+
+export const useCreateComedianProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ stageName, bio }: { stageName: string; bio?: string }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const { data, error } = await supabase
+        .from("comedian_profiles")
+        .insert({
+          user_id: user.id,
+          stage_name: stageName,
+          bio,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comedian-profile"] });
+      toast.success("Comedian profile created!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+};
