@@ -134,6 +134,7 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 import Healthcare from "./pages/Healthcare";
 import CorporateEvents from "./pages/CorporateEvents";
 import BrandBattle from "./pages/BrandBattle";
+import BrainDuel from "./pages/BrainDuel";
 import CorporatePartnerships from "./pages/CorporatePartnerships";
 import Coffee from "./pages/Coffee";
 import CoffeeCheckins from "./pages/CoffeeCheckins";
@@ -283,6 +284,7 @@ const App = () => (
           <Route path="/healthcare" element={<Healthcare />} />
           <Route path="/corporate-events" element={<CorporateEvents />} />
           <Route path="/brand-battle" element={<BrandBattle />} />
+          <Route path="/brain-duel" element={<BrainDuel />} />
           <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
           <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/fashion-studio" element={<FashionStudio />} />

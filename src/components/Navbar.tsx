@@ -175,6 +175,7 @@ const Navbar = () => {
     { path: "/healthcare", label: "Healthcare & Therapy", icon: Activity },
     { path: "/corporate-events", label: "Corporate & Events", icon: Building2 },
     { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
+    { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
     { path: "/corporate-partnerships", label: "B2B Partnerships", icon: Building2 },
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "Story Creator (6-12y)", icon: BookOpen },
