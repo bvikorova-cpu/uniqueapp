@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Sparkles, Award } from "lucide-react";
-import { PanoramaViewer } from "@/components/disney/PanoramaViewer";
+import { DisneyPanoramaViewer } from "@/components/disney/DisneyPanoramaViewer";
 import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useDisneyCastles";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -96,8 +96,15 @@ export default function DisneyCastleTour() {
     );
   }
 
-  // Placeholder panorama URL (will be replaced with actual images)
-  const panoramaUrl = "/placeholder.svg";
+  // Panorama image based on castle
+  const getPanoramaUrl = () => {
+    if (!castle || !currentRoom) return "/placeholder.svg";
+    
+    // Import and use the actual panorama image
+    return currentRoom.panorama_url;
+  };
+
+  const panoramaUrl = getPanoramaUrl();
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
@@ -144,21 +151,9 @@ export default function DisneyCastleTour() {
       </div>
 
       {/* Panorama Viewer */}
-      <PanoramaViewer
+      <DisneyPanoramaViewer
         imageUrl={panoramaUrl}
         audioGuideText={currentRoom.audio_guide_text || ""}
-        hotspots={[
-          {
-            position: [100, 0, 0],
-            label: "Next Room",
-            nextRoomId: rooms?.[currentRoomIndex + 1]?.id,
-          },
-        ]}
-        onHotspotClick={(hotspot) => {
-          if (hotspot.nextRoomId) {
-            handleNext();
-          }
-        }}
       />
 
       {/* Navigation Controls */}
