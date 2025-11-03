@@ -31,7 +31,7 @@ export const usePaintByNumbers = (category?: string) => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as PaintByNumbers[];
+      return data as unknown as PaintByNumbers[];
     },
   });
 };
@@ -47,7 +47,7 @@ export const usePaintById = (paintId: string) => {
         .single();
 
       if (error) throw error;
-      return data as PaintByNumbers;
+      return data as unknown as PaintByNumbers;
     },
     enabled: !!paintId,
   });
@@ -115,17 +115,18 @@ export const usePurchasePaint = () => {
       // Deduct coins
       const { data: profile } = await supabase
         .from("profiles")
-        .select("coins")
+        .select("*")
         .eq("id", user.id)
         .single();
 
-      if (!profile || profile.coins < price) {
+      const currentCoins = (profile as any)?.coins || 0;
+      if (currentCoins < price) {
         throw new Error("Not enough coins");
       }
 
       await supabase
         .from("profiles")
-        .update({ coins: profile.coins - price })
+        .update({ coins: currentCoins - price } as any)
         .eq("id", user.id);
 
       // Create purchase record
@@ -216,14 +217,15 @@ export const useUpdatePaintProgress = () => {
       if (isCompleted && !progress?.is_completed) {
         const { data: profile } = await supabase
           .from("profiles")
-          .select("coins")
+          .select("*")
           .eq("id", user.id)
           .single();
 
         if (profile) {
+          const currentCoins = (profile as any)?.coins || 0;
           await supabase
             .from("profiles")
-            .update({ coins: profile.coins + 50 })
+            .update({ coins: currentCoins + 50 } as any)
             .eq("id", user.id);
         }
       }

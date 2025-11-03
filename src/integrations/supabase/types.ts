@@ -10155,6 +10155,7 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           birth_date: string | null
+          coins: number | null
           company: string | null
           created_at: string
           email: string | null
@@ -10173,6 +10174,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           birth_date?: string | null
+          coins?: number | null
           company?: string | null
           created_at?: string
           email?: string | null
@@ -10191,6 +10193,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           birth_date?: string | null
+          coins?: number | null
           company?: string | null
           created_at?: string
           email?: string | null

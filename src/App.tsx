@@ -330,6 +330,8 @@ const App = () => (
               <Route path="/comedian-dashboard" element={<ComedianDashboard />} />
               <Route path="/kids-channel/disney-castles" element={<DisneyCastles />} />
               <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
+              <Route path="/kids-channel/paint-by-numbers" element={<PaintByNumbers />} />
+              <Route path="/kids-channel/paint/:paintId" element={<PaintByNumbersCanvas />} />
               <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
