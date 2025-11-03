@@ -6,6 +6,7 @@ import { CartDrawer } from "@/components/shop/CartDrawer";
 import { useCartStore } from "@/stores/cartStore";
 import { ShoppingBag, Loader2 } from "lucide-react";
 import { storefrontApiRequest, STOREFRONT_PRODUCTS_QUERY, type ShopifyProduct } from "@/config/shopify";
+import { toast } from "sonner";
 
 export default function Shop() {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
@@ -16,10 +17,25 @@ export default function Shop() {
     const fetchProducts = async () => {
       try {
         setIsLoading(true);
+        console.log('Fetching products from Shopify...');
         const data = await storefrontApiRequest(STOREFRONT_PRODUCTS_QUERY, { first: 50 });
-        setProducts(data.data.products.edges);
+        console.log('Shopify response:', data);
+        
+        if (data.data?.products?.edges) {
+          setProducts(data.data.products.edges);
+          console.log(`Found ${data.data.products.edges.length} products`);
+          
+          if (data.data.products.edges.length === 0) {
+            toast.info("Produkty v DSers ešte nie sú publikované", {
+              description: "Počkaj chvíľu alebo skontroluj v Shopify admin, či je produkt publikovaný do 'Online Store' kanála."
+            });
+          }
+        }
       } catch (error) {
         console.error('Error fetching products:', error);
+        toast.error("Chyba pri načítaní produktov", {
+          description: error instanceof Error ? error.message : "Neznáma chyba"
+        });
       } finally {
         setIsLoading(false);
       }
@@ -39,6 +55,10 @@ export default function Shop() {
       price: variant.price,
       quantity: 1,
       selectedOptions: variant.selectedOptions
+    });
+    
+    toast.success("Pridané do košíka", {
+      description: product.node.title
     });
   };
 
