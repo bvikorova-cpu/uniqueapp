@@ -142,7 +142,7 @@ export default function ProductDetail() {
             )}
 
             {/* Variants */}
-            {product.variants.edges.length > 1 && (
+            {product.options.some((opt: any) => opt.name !== "Title") && product.variants.edges.length > 1 && (
               <div>
                 <h3 className="text-lg font-semibold mb-3">Varianty</h3>
                 <div className="flex flex-wrap gap-2">
