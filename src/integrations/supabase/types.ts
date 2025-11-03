@@ -4739,6 +4739,95 @@ export type Database = {
         }
         Relationships: []
       }
+      disney_castle_rooms: {
+        Row: {
+          audio_guide_text: string | null
+          castle_id: string | null
+          created_at: string | null
+          description: string | null
+          hotspots: Json | null
+          id: string
+          order_index: number | null
+          panorama_url: string
+          room_name: string
+        }
+        Insert: {
+          audio_guide_text?: string | null
+          castle_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          hotspots?: Json | null
+          id?: string
+          order_index?: number | null
+          panorama_url: string
+          room_name: string
+        }
+        Update: {
+          audio_guide_text?: string | null
+          castle_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          hotspots?: Json | null
+          id?: string
+          order_index?: number | null
+          panorama_url?: string
+          room_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disney_castle_rooms_castle_id_fkey"
+            columns: ["castle_id"]
+            isOneToOne: false
+            referencedRelation: "disney_castles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      disney_castles: {
+        Row: {
+          country_code: string
+          created_at: string | null
+          description: string | null
+          fun_facts: string[] | null
+          id: string
+          is_premium: boolean | null
+          location: string
+          name: string
+          park_name: string
+          price_coins: number
+          thumbnail_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          country_code: string
+          created_at?: string | null
+          description?: string | null
+          fun_facts?: string[] | null
+          id?: string
+          is_premium?: boolean | null
+          location: string
+          name: string
+          park_name: string
+          price_coins?: number
+          thumbnail_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          country_code?: string
+          created_at?: string | null
+          description?: string | null
+          fun_facts?: string[] | null
+          id?: string
+          is_premium?: boolean | null
+          location?: string
+          name?: string
+          park_name?: string
+          price_coins?: number
+          thumbnail_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       dream_entries: {
         Row: {
           ai_analysis: string | null
@@ -12107,6 +12196,73 @@ export type Database = {
             columns: ["badge_id"]
             isOneToOne: false
             referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_castle_stamps: {
+        Row: {
+          castle_id: string | null
+          earned_at: string | null
+          id: string
+          stamp_url: string | null
+          user_id: string
+        }
+        Insert: {
+          castle_id?: string | null
+          earned_at?: string | null
+          id?: string
+          stamp_url?: string | null
+          user_id: string
+        }
+        Update: {
+          castle_id?: string | null
+          earned_at?: string | null
+          id?: string
+          stamp_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_castle_stamps_castle_id_fkey"
+            columns: ["castle_id"]
+            isOneToOne: false
+            referencedRelation: "disney_castles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_castle_visits: {
+        Row: {
+          castle_id: string | null
+          completed: boolean | null
+          id: string
+          rooms_visited: string[] | null
+          user_id: string
+          visited_at: string | null
+        }
+        Insert: {
+          castle_id?: string | null
+          completed?: boolean | null
+          id?: string
+          rooms_visited?: string[] | null
+          user_id: string
+          visited_at?: string | null
+        }
+        Update: {
+          castle_id?: string | null
+          completed?: boolean | null
+          id?: string
+          rooms_visited?: string[] | null
+          user_id?: string
+          visited_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_castle_visits_castle_id_fkey"
+            columns: ["castle_id"]
+            isOneToOne: false
+            referencedRelation: "disney_castles"
             referencedColumns: ["id"]
           },
         ]

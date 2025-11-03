@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video } from "lucide-react";
+import { Heart, Play, Star, Sparkles, Crown, BookOpen, Volume2, Trophy, Moon, CreditCard, Video, Castle } from "lucide-react";
 import { toast } from "sonner";
 import { showImages } from "@/components/kids/ShowImages";
 import castleBg from "@/assets/kids/disney-castle-bg.jpg";
@@ -399,6 +399,26 @@ const KidsChannel = () => {
                 Unlock unlimited stories and premium features for your family!
               </p>
               <Badge className="bg-pink-500 text-white shadow-md">Premium</Badge>
+            </div>
+          </Card>
+
+          {/* 9. Disney Castle World Tour */}
+          <Card 
+            className="group overflow-hidden bg-gradient-to-br from-blue-100/95 to-sky-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
+            style={{ animationDelay: "0.8s" }}
+            onClick={() => navigate('/kids-channel/disney-castles')}
+          >
+            <div className="p-6 text-center">
+              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
+                <Castle className="w-10 h-10 text-blue-500" />
+              </div>
+              <h3 className="text-xl font-bold text-blue-700 mb-2">
+                Disney Castles! 🏰
+              </h3>
+              <p className="text-gray-700 text-sm mb-3">
+                Explore all 6 magical Disney castles around the world in HD 360° tours!
+              </p>
+              <Badge className="bg-blue-500 text-white shadow-md">Virtual Tour</Badge>
             </div>
           </Card>
         </div>
