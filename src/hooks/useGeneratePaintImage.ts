@@ -8,7 +8,15 @@ export const useGeneratePaintImage = () => {
         body: { title }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Generate paint image error:', error);
+        throw new Error(data?.error || error.message || 'Failed to generate image');
+      }
+      
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+      
       return data.imageUrl as string;
     },
   });
