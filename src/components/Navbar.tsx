@@ -208,6 +208,7 @@ const Navbar = () => {
   ];
 
   const otherServices = [
+    { path: "/time-capsule-subscription", label: "⏰ Time Capsule Network", icon: Clock },
     { path: "/time-reversal-subscription", label: "⏮️ Time Reversal Social", icon: Clock },
     { path: "/masterchef-subscription", label: "👨‍🍳 MasterChef Competition", icon: ChefHat },
     { path: "/f1-racing", label: "🏎️ F1 Fantasy Racing", icon: Car },
