@@ -283,6 +283,7 @@ const Navbar = () => {
     { path: "/auction", label: t('navbar.auction'), icon: Gavel },
     { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
     { path: "/referral", label: t('navbar.invite_friend'), icon: User },
+    { path: "/iq-platform", label: "🧩 IQ Platform", icon: Brain },
     { path: "/terms", label: t('navbar.terms'), icon: FileText },
   ];
 
