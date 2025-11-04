@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Palette, Lock, CheckCircle2, Coins } from "lucide-react";
 import { usePaintByNumbers, useUserPaintPurchases, useUserPaintProgress, usePurchasePaint } from "@/hooks/usePaintByNumbers";
+import { paintThumbnails } from "@/data/paintThumbnails";
 
 export default function PaintByNumbers() {
   const navigate = useNavigate();
@@ -102,9 +103,9 @@ export default function PaintByNumbers() {
             return (
               <Card key={painting.id} className="overflow-hidden hover:shadow-xl transition-all">
                 <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center overflow-hidden">
-                  {painting.thumbnail_url ? (
+                  {paintThumbnails[painting.title] || painting.thumbnail_url ? (
                     <img 
-                      src={painting.thumbnail_url} 
+                      src={paintThumbnails[painting.title] || painting.thumbnail_url} 
                       alt={painting.title}
                       className="w-full h-full object-cover"
                     />
