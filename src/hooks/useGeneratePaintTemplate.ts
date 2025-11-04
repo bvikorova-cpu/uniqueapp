@@ -6,6 +6,11 @@ interface GenerateTemplateParams {
   description?: string;
 }
 
+interface GeneratedImages {
+  coloredImageUrl: string;
+  templateImageUrl: string;
+}
+
 export const useGeneratePaintTemplate = () => {
   return useMutation({
     mutationFn: async ({ title, description }: GenerateTemplateParams) => {
@@ -14,9 +19,11 @@ export const useGeneratePaintTemplate = () => {
       });
 
       if (error) throw error;
-      if (!data?.imageUrl) throw new Error("No image URL returned");
+      if (!data?.coloredImageUrl || !data?.templateImageUrl) {
+        throw new Error("No images returned");
+      }
 
-      return data.imageUrl as string;
+      return data as GeneratedImages;
     },
   });
 };

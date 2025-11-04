@@ -18,10 +18,10 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log(`Generating paint-by-numbers image for: ${title}`);
+    console.log(`Generating paint-by-numbers images for: ${title}`);
 
-    // Generate paint-by-numbers image using Lovable AI
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Generate colored reference image
+    const coloredResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
@@ -32,40 +32,83 @@ serve(async (req) => {
         messages: [
           {
             role: "user",
-            content: `Create a paint-by-numbers coloring template for children. The image should be: ${title}${description ? ` - ${description}` : ''}.
+            content: `Create a colorful, cute illustration for children: ${title}${description ? ` - ${description}` : ''}.
 
 Requirements:
-- Simple, clear outlines suitable for children
-- 8-12 distinct color regions
-- Each region should have a number (1-8) clearly visible inside it
-- Style: Simple line art with numbers inside each section
-- Black outlines, white background
-- Numbers should be large and centered in each region
-- Child-friendly, cute illustration style
-- High contrast for easy visibility`
+- Bright, vibrant colors
+- Simple shapes and clear outlines
+- Child-friendly, cute style
+- High quality illustration
+- 800x600 pixels`
           }
         ],
         modalities: ["image", "text"]
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI Gateway error:", response.status, errorText);
-      throw new Error(`AI Gateway error: ${response.status}`);
+    if (!coloredResponse.ok) {
+      const errorText = await coloredResponse.text();
+      console.error("AI Gateway error for colored image:", coloredResponse.status, errorText);
+      throw new Error(`AI Gateway error: ${coloredResponse.status}`);
     }
 
-    const data = await response.json();
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const coloredData = await coloredResponse.json();
+    const coloredImageUrl = coloredData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
-    if (!imageUrl) {
-      throw new Error("No image generated");
+    if (!coloredImageUrl) {
+      throw new Error("No colored image generated");
     }
 
-    console.log("Successfully generated paint-by-numbers image");
+    // Generate black and white paint-by-numbers template
+    const templateResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image-preview",
+        messages: [
+          {
+            role: "user",
+            content: `Create a black and white paint-by-numbers template for children: ${title}${description ? ` - ${description}` : ''}.
+
+CRITICAL Requirements:
+- BLACK OUTLINES on WHITE background ONLY
+- NO colors, completely black and white
+- 8 distinct regions, each with a number (1-8) inside
+- Numbers should be LARGE and clearly visible in each region
+- Simple shapes suitable for children
+- Clear borders between regions
+- Each number should appear multiple times across the image
+- Line art style, coloring book template
+- 800x600 pixels`
+          }
+        ],
+        modalities: ["image", "text"]
+      }),
+    });
+
+    if (!templateResponse.ok) {
+      const errorText = await templateResponse.text();
+      console.error("AI Gateway error for template:", templateResponse.status, errorText);
+      throw new Error(`AI Gateway error: ${templateResponse.status}`);
+    }
+
+    const templateData = await templateResponse.json();
+    const templateImageUrl = templateData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+    if (!templateImageUrl) {
+      throw new Error("No template image generated");
+    }
+
+    console.log("Successfully generated both paint-by-numbers images");
 
     return new Response(
-      JSON.stringify({ imageUrl }),
+      JSON.stringify({ 
+        coloredImageUrl,
+        templateImageUrl 
+      }),
       { 
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200 
