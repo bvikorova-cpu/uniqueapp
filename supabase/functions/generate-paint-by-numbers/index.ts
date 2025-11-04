@@ -32,17 +32,14 @@ serve(async (req) => {
         messages: [
           {
             role: "user",
-            content: `Create a black and white paint-by-numbers coloring template for children: ${title}${description ? ` - ${description}` : ''}.
+            content: `Create a simple black and white paint-by-numbers template: ${title}${description ? ` - ${description}` : ''}.
 
-CRITICAL Requirements:
-- BLACK OUTLINES on WHITE background ONLY
-- NO colors at all, completely black and white
-- 8 distinct regions with numbers 1-8
-- Numbers LARGE and clearly visible inside each region
-- Simple, child-friendly shapes
-- Clear thick borders between all regions
-- Each number appears multiple times
-- Coloring book style
+Requirements:
+- BLACK OUTLINES on WHITE background
+- 8 regions labeled with numbers 1-8
+- Large, clear numbers in each region
+- Simple shapes for children
+- Thick borders between regions
 - 800x600 pixels`
           }
         ],
@@ -52,7 +49,7 @@ CRITICAL Requirements:
 
     if (!templateResponse.ok) {
       const errorText = await templateResponse.text();
-      console.error("AI Gateway error for template:", templateResponse.status, errorText);
+      console.error("AI Gateway error:", templateResponse.status, errorText);
       throw new Error(`AI Gateway error: ${templateResponse.status}`);
     }
 
@@ -63,9 +60,9 @@ CRITICAL Requirements:
       throw new Error("No template generated");
     }
 
-    console.log("Template generated, now creating colored version...");
+    console.log("Step 1 done. Now coloring the same template...");
 
-    // Step 2: Create colored version by editing the template
+    // Step 2: Color THE SAME template (keeping structure identical)
     const coloredResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -80,21 +77,21 @@ CRITICAL Requirements:
             content: [
               {
                 type: "text",
-                text: `Color this paint-by-numbers template perfectly. Fill each numbered region with these colors:
-1 = Sky Blue (#87CEEB)
-2 = Grass Green (#90EE90)
-3 = Sunny Yellow (#FFD700)
-4 = Rose Pink (#FFB6C1)
-5 = Earth Brown (#D2691E)
-6 = Ocean Blue (#4682B4)
-7 = Lavender Purple (#E6E6FA)
-8 = Bright White (#FFFFFF)
+                text: `Fill this coloring template with colors. Use these exact colors:
+1 = light blue
+2 = green
+3 = yellow
+4 = pink
+5 = brown
+6 = dark blue
+7 = purple
+8 = white
 
-IMPORTANT: 
-- Keep the EXACT same outlines and structure
-- Remove all numbers after coloring
-- Fill regions completely with solid colors
-- Make it look like a finished coloring page`
+CRITICAL:
+- Keep EXACT same shapes and outlines
+- REMOVE all numbers
+- Fill each region with solid color
+- Do not change the structure at all`
               },
               {
                 type: "image_url",
@@ -111,7 +108,7 @@ IMPORTANT:
 
     if (!coloredResponse.ok) {
       const errorText = await coloredResponse.text();
-      console.error("AI Gateway error for colored version:", coloredResponse.status, errorText);
+      console.error("AI Gateway error for coloring:", coloredResponse.status, errorText);
       throw new Error(`AI Gateway error: ${coloredResponse.status}`);
     }
 
@@ -119,10 +116,10 @@ IMPORTANT:
     const coloredImageUrl = coloredData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!coloredImageUrl) {
-      throw new Error("No colored version generated");
+      throw new Error("No colored image generated");
     }
 
-    console.log("Successfully generated both images");
+    console.log("Success! Both images created from same template");
 
     return new Response(
       JSON.stringify({ 
