@@ -208,6 +208,7 @@ const Navbar = () => {
   ];
 
   const otherServices = [
+    { path: "/masterchef-subscription", label: "👨‍🍳 MasterChef Súťaže", icon: ChefHat },
     { path: "/f1-racing", label: "🏎️ F1 Fantasy Racing", icon: Car },
     { path: "/tiktok", label: t('navbar.videos'), icon: Video },
     { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
