@@ -62,7 +62,7 @@ Requirements:
 
     console.log("Step 1 done. Now coloring the same template...");
 
-    // Step 2: Color THE SAME template (keeping structure identical)
+    // Step 2: Color THE SAME template - NO NUMBERS
     const coloredResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -77,21 +77,22 @@ Requirements:
             content: [
               {
                 type: "text",
-                text: `Fill this coloring template with colors. Use these exact colors:
-1 = light blue
-2 = green
-3 = yellow
-4 = pink
-5 = brown
-6 = dark blue
-7 = purple
-8 = white
+                text: `Color this image. Each numbered region should be filled with solid color:
+Region 1 = sky blue
+Region 2 = bright green  
+Region 3 = sunny yellow
+Region 4 = soft pink
+Region 5 = brown
+Region 6 = ocean blue
+Region 7 = lavender purple
+Region 8 = white
 
-CRITICAL:
-- Keep EXACT same shapes and outlines
-- REMOVE all numbers
-- Fill each region with solid color
-- Do not change the structure at all`
+CRITICAL REQUIREMENTS:
+- DELETE ALL NUMBERS from the image
+- NO TEXT should remain visible
+- Keep the exact same outlines and shapes
+- Fill regions completely with solid colors
+- Make it look like a finished colored picture WITHOUT any numbers`
               },
               {
                 type: "image_url",
