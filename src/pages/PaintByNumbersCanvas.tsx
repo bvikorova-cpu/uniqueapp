@@ -81,32 +81,108 @@ export default function PaintByNumbersCanvas() {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvasSize.width / rect.width;
     const scaleY = canvasSize.height / rect.height;
-    const x = (event.clientX - rect.left) * scaleX;
-    const y = (event.clientY - rect.top) * scaleY;
+    const x = Math.floor((event.clientX - rect.left) * scaleX);
+    const y = Math.floor((event.clientY - rect.top) * scaleY);
 
-    // Get pixel data at click position
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // For simplicity, we'll use a section-based approach
-    // In a real implementation, you'd detect the number at the clicked pixel
-    const sectionId = Math.floor(Math.random() * painting.total_sections) + 1;
+    // Get the color at clicked position to determine the section
+    const imageData = ctx.getImageData(x, y, 1, 1);
+    const clickedPixel = imageData.data;
     
-    if (!completedSections.includes(sectionId)) {
-      // Fill the clicked area with the selected color
+    // Check if clicked on a white area (area to be colored)
+    const isWhiteArea = clickedPixel[0] > 200 && clickedPixel[1] > 200 && clickedPixel[2] > 200;
+    
+    if (isWhiteArea) {
+      // Get the selected color
       const color = painting.image_data.colors?.find(c => c.number === selectedColor);
       if (color) {
-        ctx.fillStyle = color.color;
-        // This is simplified - you'd need proper flood fill algorithm
-        ctx.fillRect(x - 20, y - 20, 40, 40);
+        // Flood fill algorithm
+        floodFill(ctx, x, y, color.color, canvasSize.width, canvasSize.height);
         
-        updateProgress.mutate({
-          paintId: paintId!,
-          sectionId: sectionId,
-          totalSections: painting.total_sections,
-        });
+        // Update progress (simplified - using random section ID)
+        const sectionId = selectedColor;
+        if (!completedSections.includes(sectionId)) {
+          updateProgress.mutate({
+            paintId: paintId!,
+            sectionId: sectionId,
+            totalSections: painting.total_sections,
+          });
+        }
       }
     }
+  };
+
+  // Simple flood fill algorithm
+  const floodFill = (
+    ctx: CanvasRenderingContext2D,
+    startX: number,
+    startY: number,
+    fillColor: string,
+    width: number,
+    height: number
+  ) => {
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const pixels = imageData.data;
+    
+    const startPos = (startY * width + startX) * 4;
+    const startR = pixels[startPos];
+    const startG = pixels[startPos + 1];
+    const startB = pixels[startPos + 2];
+    
+    // Don't fill if clicking on black outline
+    if (startR < 100 && startG < 100 && startB < 100) return;
+    
+    // Convert fill color to RGB
+    const tempCanvas = document.createElement('canvas');
+    const tempCtx = tempCanvas.getContext('2d')!;
+    tempCtx.fillStyle = fillColor;
+    tempCtx.fillRect(0, 0, 1, 1);
+    const tempData = tempCtx.getImageData(0, 0, 1, 1).data;
+    const fillR = tempData[0];
+    const fillG = tempData[1];
+    const fillB = tempData[2];
+    
+    const stack: [number, number][] = [[startX, startY]];
+    const visited = new Set<string>();
+    
+    while (stack.length > 0) {
+      const [x, y] = stack.pop()!;
+      
+      if (x < 0 || x >= width || y < 0 || y >= height) continue;
+      
+      const key = `${x},${y}`;
+      if (visited.has(key)) continue;
+      visited.add(key);
+      
+      const pos = (y * width + x) * 4;
+      const r = pixels[pos];
+      const g = pixels[pos + 1];
+      const b = pixels[pos + 2];
+      
+      // Check if pixel matches start color (allowing some tolerance)
+      const colorMatch = 
+        Math.abs(r - startR) < 30 &&
+        Math.abs(g - startG) < 30 &&
+        Math.abs(b - startB) < 30;
+      
+      // Skip black pixels (outlines)
+      const isBlack = r < 100 && g < 100 && b < 100;
+      
+      if (colorMatch && !isBlack) {
+        pixels[pos] = fillR;
+        pixels[pos + 1] = fillG;
+        pixels[pos + 2] = fillB;
+        
+        stack.push([x + 1, y]);
+        stack.push([x - 1, y]);
+        stack.push([x, y + 1]);
+        stack.push([x, y - 1]);
+      }
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
   };
 
   const handleReset = () => {

@@ -18,48 +18,9 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log(`Generating paint-by-numbers images for: ${title}`);
+    console.log(`Generating paint-by-numbers template for: ${title}`);
 
-    // Generate colored reference image
-    const coloredResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: `Create a colorful, cute illustration for children: ${title}${description ? ` - ${description}` : ''}.
-
-Requirements:
-- Bright, vibrant colors
-- Simple shapes and clear outlines
-- Child-friendly, cute style
-- High quality illustration
-- 800x600 pixels`
-          }
-        ],
-        modalities: ["image", "text"]
-      }),
-    });
-
-    if (!coloredResponse.ok) {
-      const errorText = await coloredResponse.text();
-      console.error("AI Gateway error for colored image:", coloredResponse.status, errorText);
-      throw new Error(`AI Gateway error: ${coloredResponse.status}`);
-    }
-
-    const coloredData = await coloredResponse.json();
-    const coloredImageUrl = coloredData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-
-    if (!coloredImageUrl) {
-      throw new Error("No colored image generated");
-    }
-
-    // Generate black and white paint-by-numbers template
+    // Step 1: Generate black and white template with numbers
     const templateResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -71,17 +32,17 @@ Requirements:
         messages: [
           {
             role: "user",
-            content: `Create a black and white paint-by-numbers template for children: ${title}${description ? ` - ${description}` : ''}.
+            content: `Create a black and white paint-by-numbers coloring template for children: ${title}${description ? ` - ${description}` : ''}.
 
 CRITICAL Requirements:
 - BLACK OUTLINES on WHITE background ONLY
-- NO colors, completely black and white
-- 8 distinct regions, each with a number (1-8) inside
-- Numbers should be LARGE and clearly visible in each region
-- Simple shapes suitable for children
-- Clear borders between regions
-- Each number should appear multiple times across the image
-- Line art style, coloring book template
+- NO colors at all, completely black and white
+- 8 distinct regions with numbers 1-8
+- Numbers LARGE and clearly visible inside each region
+- Simple, child-friendly shapes
+- Clear thick borders between all regions
+- Each number appears multiple times
+- Coloring book style
 - 800x600 pixels`
           }
         ],
@@ -99,10 +60,69 @@ CRITICAL Requirements:
     const templateImageUrl = templateData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!templateImageUrl) {
-      throw new Error("No template image generated");
+      throw new Error("No template generated");
     }
 
-    console.log("Successfully generated both paint-by-numbers images");
+    console.log("Template generated, now creating colored version...");
+
+    // Step 2: Create colored version by editing the template
+    const coloredResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image-preview",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `Color this paint-by-numbers template perfectly. Fill each numbered region with these colors:
+1 = Sky Blue (#87CEEB)
+2 = Grass Green (#90EE90)
+3 = Sunny Yellow (#FFD700)
+4 = Rose Pink (#FFB6C1)
+5 = Earth Brown (#D2691E)
+6 = Ocean Blue (#4682B4)
+7 = Lavender Purple (#E6E6FA)
+8 = Bright White (#FFFFFF)
+
+IMPORTANT: 
+- Keep the EXACT same outlines and structure
+- Remove all numbers after coloring
+- Fill regions completely with solid colors
+- Make it look like a finished coloring page`
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: templateImageUrl
+                }
+              }
+            ]
+          }
+        ],
+        modalities: ["image", "text"]
+      }),
+    });
+
+    if (!coloredResponse.ok) {
+      const errorText = await coloredResponse.text();
+      console.error("AI Gateway error for colored version:", coloredResponse.status, errorText);
+      throw new Error(`AI Gateway error: ${coloredResponse.status}`);
+    }
+
+    const coloredData = await coloredResponse.json();
+    const coloredImageUrl = coloredData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+    if (!coloredImageUrl) {
+      throw new Error("No colored version generated");
+    }
+
+    console.log("Successfully generated both images");
 
     return new Response(
       JSON.stringify({ 
