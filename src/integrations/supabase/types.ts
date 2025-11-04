@@ -12175,6 +12175,143 @@ export type Database = {
           },
         ]
       }
+      time_reversal_followers: {
+        Row: {
+          created_at: string | null
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      time_reversal_likes: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_reversal_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "time_reversal_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_reversal_posts: {
+        Row: {
+          age_at_post: number
+          comments_count: number | null
+          content: string
+          created_at: string | null
+          id: string
+          image_url: string | null
+          is_paradox: boolean | null
+          likes_count: number | null
+          paradox_age: number | null
+          user_id: string
+        }
+        Insert: {
+          age_at_post: number
+          comments_count?: number | null
+          content: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_paradox?: boolean | null
+          likes_count?: number | null
+          paradox_age?: number | null
+          user_id: string
+        }
+        Update: {
+          age_at_post?: number
+          comments_count?: number | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_paradox?: boolean | null
+          likes_count?: number | null
+          paradox_age?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      time_reversal_profiles: {
+        Row: {
+          age_locks: Json | null
+          aging_speed: number | null
+          bio: string | null
+          created_at: string | null
+          current_age: number | null
+          follower_count: number | null
+          id: string
+          last_age_update: string | null
+          profile_image_url: string | null
+          starting_age: number | null
+          target_age: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          age_locks?: Json | null
+          aging_speed?: number | null
+          bio?: string | null
+          created_at?: string | null
+          current_age?: number | null
+          follower_count?: number | null
+          id?: string
+          last_age_update?: string | null
+          profile_image_url?: string | null
+          starting_age?: number | null
+          target_age?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          age_locks?: Json | null
+          aging_speed?: number | null
+          bio?: string | null
+          created_at?: string | null
+          current_age?: number | null
+          follower_count?: number | null
+          id?: string
+          last_age_update?: string | null
+          profile_image_url?: string | null
+          starting_age?: number | null
+          target_age?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       tournament_participants: {
         Row: {
           character_id: string

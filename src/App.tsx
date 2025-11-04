@@ -174,6 +174,8 @@ import F1Leaderboard from "./pages/F1Leaderboard";
 import MasterChefSubscription from "./pages/MasterChefSubscription";
 import MasterChefDashboard from "./pages/MasterChefDashboard";
 import MasterChefEarnings from "./pages/MasterChefEarnings";
+import TimeReversalSubscription from "./pages/TimeReversalSubscription";
+import TimeReversalTimeline from "./pages/TimeReversalTimeline";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import Navbar from "./components/Navbar";
@@ -360,6 +362,8 @@ const App = () => (
               <Route path="/masterchef-subscription" element={<MasterChefSubscription />} />
               <Route path="/masterchef/dashboard" element={<MasterChefDashboard />} />
               <Route path="/masterchef/earnings" element={<MasterChefEarnings />} />
+              <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
+              <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
               <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
