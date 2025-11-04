@@ -16,6 +16,18 @@ import bicycle from "@/assets/paint-thumbnails/bicycle.png";
 import braveMerida from "@/assets/paint-thumbnails/brave-merida.png";
 import bunnyRabbit from "@/assets/paint-thumbnails/bunny-rabbit.png";
 import cherryBlossoms from "@/assets/paint-thumbnails/cherry-blossoms.png";
+import cuteElephant from "@/assets/paint-thumbnails/cute-elephant.png";
+import mermaidPrincess from "@/assets/paint-thumbnails/mermaid-princess.png";
+import mountainLandscape from "@/assets/paint-thumbnails/mountain-landscape.png";
+import flowerGarden from "@/assets/paint-thumbnails/flower-garden.png";
+import starryNight from "@/assets/paint-thumbnails/starry-night.png";
+import fireTruck from "@/assets/paint-thumbnails/fire-truck.png";
+import pirateShip from "@/assets/paint-thumbnails/pirate-ship.png";
+import spaceRocket from "@/assets/paint-thumbnails/space-rocket.png";
+import princessAurora from "@/assets/paint-thumbnails/princess-aurora.png";
+import forestBear from "@/assets/paint-thumbnails/forest-bear.png";
+import oceanDolphin from "@/assets/paint-thumbnails/ocean-dolphin.png";
+import rainbowParrot from "@/assets/paint-thumbnails/rainbow-parrot.png";
 
 export const paintThumbnails: Record<string, string> = {
   "Cute Unicorn": cuteUnicorn,
@@ -36,4 +48,16 @@ export const paintThumbnails: Record<string, string> = {
   "Brave Merida": braveMerida,
   "Bunny Rabbit": bunnyRabbit,
   "Cherry Blossoms": cherryBlossoms,
+  "Cute Elephant": cuteElephant,
+  "Mermaid Princess": mermaidPrincess,
+  "Mountain Landscape": mountainLandscape,
+  "Flower Garden": flowerGarden,
+  "Starry Night": starryNight,
+  "Fire Truck": fireTruck,
+  "Pirate Ship": pirateShip,
+  "Space Rocket": spaceRocket,
+  "Princess Aurora": princessAurora,
+  "Forest Bear": forestBear,
+  "Ocean Dolphin": oceanDolphin,
+  "Rainbow Parrot": rainbowParrot,
 };

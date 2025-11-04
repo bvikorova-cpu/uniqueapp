@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Sparkles, RotateCcw } from "lucide-react";
 import { usePaintById, useUserPaintProgress, useUpdatePaintProgress } from "@/hooks/usePaintByNumbers";
 import { Progress } from "@/components/ui/progress";
+import { paintThumbnails } from "@/data/paintThumbnails";
+import { useGeneratePaintImage } from "@/hooks/useGeneratePaintImage";
 
 export default function PaintByNumbersCanvas() {
   const { paintId } = useParams<{ paintId: string }>();
@@ -14,10 +16,23 @@ export default function PaintByNumbersCanvas() {
   
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   
   const { data: painting } = usePaintById(paintId!);
   const { data: progress } = useUserPaintProgress(paintId);
   const updateProgress = useUpdatePaintProgress();
+  const generateImage = useGeneratePaintImage();
+
+  // Generate image if not available
+  useEffect(() => {
+    if (painting && !paintThumbnails[painting.title] && !painting.thumbnail_url && !generatedImage) {
+      generateImage.mutate(painting.title, {
+        onSuccess: (imageUrl) => {
+          setGeneratedImage(imageUrl);
+        }
+      });
+    }
+  }, [painting]);
 
   const completedSections = progress?.completed_sections || [];
   const progressPercent = painting ? (completedSections.length / painting.total_sections) * 100 : 0;
@@ -209,6 +224,17 @@ export default function PaintByNumbersCanvas() {
 
           {/* Canvas */}
           <Card className="p-4 lg:col-span-3">
+            {/* Preview Image */}
+            {(paintThumbnails[painting.title] || generatedImage || painting.thumbnail_url) && (
+              <div className="mb-4 flex justify-center">
+                <img 
+                  src={paintThumbnails[painting.title] || generatedImage || painting.thumbnail_url} 
+                  alt={`${painting.title} preview`}
+                  className="max-w-xs rounded-lg border-2 border-gray-300 opacity-30"
+                />
+              </div>
+            )}
+            
             <div className="flex items-center justify-center">
               <canvas
                 ref={canvasRef}
