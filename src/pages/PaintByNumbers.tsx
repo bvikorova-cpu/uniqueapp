@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -7,51 +7,14 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Palette, Lock, CheckCircle2, Coins } from "lucide-react";
 import { usePaintByNumbers, useUserPaintPurchases, useUserPaintProgress, usePurchasePaint } from "@/hooks/usePaintByNumbers";
 import { paintThumbnails } from "@/data/paintThumbnails";
-import { useGeneratePaintImage } from "@/hooks/useGeneratePaintImage";
 
 export default function PaintByNumbers() {
   const navigate = useNavigate();
   const [category, setCategory] = useState("all");
-  const [generatedImages, setGeneratedImages] = useState<Record<string, string>>({});
-  const [generatingIds, setGeneratingIds] = useState<Set<string>>(new Set());
   
   const { data: paintings, isLoading } = usePaintByNumbers(category);
   const { data: purchases } = useUserPaintPurchases();
   const purchasePaint = usePurchasePaint();
-  const generateImage = useGeneratePaintImage();
-
-  // Generate images for paintings that don't have static thumbnails
-  useEffect(() => {
-    if (!paintings) return;
-    
-    paintings.forEach((painting) => {
-      const needsImage = !paintThumbnails[painting.title] && 
-                        !painting.thumbnail_url && 
-                        !generatedImages[painting.id] &&
-                        !generatingIds.has(painting.id);
-      
-      if (needsImage) {
-        setGeneratingIds(prev => new Set(prev).add(painting.id));
-        generateImage.mutate(painting.title, {
-          onSuccess: (imageUrl) => {
-            setGeneratedImages(prev => ({ ...prev, [painting.id]: imageUrl }));
-            setGeneratingIds(prev => {
-              const next = new Set(prev);
-              next.delete(painting.id);
-              return next;
-            });
-          },
-          onError: () => {
-            setGeneratingIds(prev => {
-              const next = new Set(prev);
-              next.delete(painting.id);
-              return next;
-            });
-          }
-        });
-      }
-    });
-  }, [paintings, generatedImages]);
 
   const isPurchased = (paintId: string) => {
     return purchases?.some(p => p.paint_id === paintId);
@@ -140,14 +103,14 @@ export default function PaintByNumbers() {
             return (
               <Card key={painting.id} className="overflow-hidden hover:shadow-xl transition-all">
                 <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center overflow-hidden">
-                  {paintThumbnails[painting.title] || generatedImages[painting.id] || painting.thumbnail_url ? (
+                  {paintThumbnails[painting.title] || painting.thumbnail_url ? (
                     <img 
-                      src={paintThumbnails[painting.title] || generatedImages[painting.id] || painting.thumbnail_url} 
+                      src={paintThumbnails[painting.title] || painting.thumbnail_url} 
                       alt={painting.title}
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <Palette className="h-20 w-20 text-primary opacity-20 animate-pulse" />
+                    <Palette className="h-20 w-20 text-primary opacity-20" />
                   )}
                   
                   {/* Difficulty Badge */}
