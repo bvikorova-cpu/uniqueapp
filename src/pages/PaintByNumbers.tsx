@@ -101,8 +101,16 @@ export default function PaintByNumbers() {
             
             return (
               <Card key={painting.id} className="overflow-hidden hover:shadow-xl transition-all">
-                <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center">
-                  <Palette className="h-20 w-20 text-primary opacity-20" />
+                <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 flex items-center justify-center overflow-hidden">
+                  {painting.thumbnail_url ? (
+                    <img 
+                      src={painting.thumbnail_url} 
+                      alt={painting.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <Palette className="h-20 w-20 text-primary opacity-20" />
+                  )}
                   
                   {/* Difficulty Badge */}
                   <Badge className={`absolute top-2 left-2 ${getDifficultyColor(painting.difficulty)}`}>
