@@ -26,8 +26,8 @@ export default function MasterChefDashboard() {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Prosím prihláste sa pre pokračovanie",
+        title: "Login Required",
+        description: "Please sign in to continue",
         variant: "destructive",
       });
       navigate("/auth");
@@ -38,43 +38,43 @@ export default function MasterChefDashboard() {
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
             MasterChef Dashboard
           </h1>
-          <p className="text-muted-foreground">Tvoja cesta k dokonalosti v kuchyni</p>
+          <p className="text-muted-foreground">Your journey to culinary perfection</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Súťaže</CardTitle>
+              <CardTitle className="text-sm font-medium">Competitions</CardTitle>
               <Trophy className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalCompetitions}</div>
-              <p className="text-xs text-muted-foreground">Celkovo absolvovaných</p>
+              <p className="text-xs text-muted-foreground">Total completed</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Výhry</CardTitle>
+              <CardTitle className="text-sm font-medium">Wins</CardTitle>
               <Star className="h-4 w-4 text-yellow-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.wins}</div>
-              <p className="text-xs text-muted-foreground">1. miesta</p>
+              <p className="text-xs text-muted-foreground">1st places</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Hlasy</CardTitle>
+              <CardTitle className="text-sm font-medium">Votes</CardTitle>
               <Flame className="h-4 w-4 text-orange-500" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalVotes}</div>
-              <p className="text-xs text-muted-foreground">Od divákov</p>
+              <p className="text-xs text-muted-foreground">From viewers</p>
             </CardContent>
           </Card>
 
@@ -85,7 +85,7 @@ export default function MasterChefDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.currentRank}</div>
-              <p className="text-xs text-muted-foreground">Globálne umiestnenie</p>
+              <p className="text-xs text-muted-foreground">Global ranking</p>
             </CardContent>
           </Card>
         </div>
@@ -95,14 +95,14 @@ export default function MasterChefDashboard() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Calendar className="h-5 w-5" />
-                Aktívne súťaže
+                Active Competitions
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center py-12 text-muted-foreground">
-                <p className="mb-4">Momentálne nie sú žiadne aktívne súťaže</p>
+                <p className="mb-4">No active competitions at the moment</p>
                 <Button onClick={() => navigate("/masterchef/competitions")}>
-                  Prehľadať súťaže
+                  Browse Competitions
                 </Button>
               </div>
             </CardContent>
@@ -123,9 +123,9 @@ export default function MasterChefDashboard() {
                       {position}
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-sm">Šéfkuchár #{position}</p>
+                      <p className="font-medium text-sm">Chef #{position}</p>
                       <p className="text-xs text-muted-foreground">
-                        {1000 - position * 100} bodov
+                        {1000 - position * 100} points
                       </p>
                     </div>
                   </div>
@@ -143,7 +143,7 @@ export default function MasterChefDashboard() {
           >
             <Flame className="h-8 w-8" />
             <span className="text-lg font-semibold">Live Battles</span>
-            <span className="text-xs opacity-80">Súťaž v reálnom čase</span>
+            <span className="text-xs opacity-80">Compete in real-time</span>
           </Button>
 
           <Button
@@ -153,7 +153,7 @@ export default function MasterChefDashboard() {
             onClick={() => navigate("/masterchef/competitions")}
           >
             <Trophy className="h-8 w-8" />
-            <span className="text-lg font-semibold">Súťaže</span>
+            <span className="text-lg font-semibold">Competitions</span>
             <span className="text-xs opacity-80">Async competitions</span>
           </Button>
 
@@ -165,7 +165,7 @@ export default function MasterChefDashboard() {
           >
             <TrendingUp className="h-8 w-8" />
             <span className="text-lg font-semibold">Leaderboard</span>
-            <span className="text-xs opacity-80">Globálne rebríčky</span>
+            <span className="text-xs opacity-80">Global rankings</span>
           </Button>
 
           <Button
@@ -175,8 +175,8 @@ export default function MasterChefDashboard() {
             onClick={() => navigate("/masterchef/profile")}
           >
             <Users className="h-8 w-8" />
-            <span className="text-lg font-semibold">Profil</span>
-            <span className="text-xs opacity-80">Tvoje štatistiky</span>
+            <span className="text-lg font-semibold">Profile</span>
+            <span className="text-xs opacity-80">Your statistics</span>
           </Button>
         </div>
 
@@ -184,7 +184,7 @@ export default function MasterChefDashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="h-5 w-5" />
-              Najbližšie eventy
+              Upcoming Events
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -192,12 +192,12 @@ export default function MasterChefDashboard() {
               <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/50">
                 <div>
                   <h4 className="font-semibold">Quick Fire Challenge</h4>
-                  <p className="text-sm text-muted-foreground">30 minút | Live Battle</p>
+                  <p className="text-sm text-muted-foreground">30 minutes | Live Battle</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium">Dnes 18:00</p>
+                  <p className="text-sm font-medium">Today 6:00 PM</p>
                   <Button size="sm" className="mt-2">
-                    Prihlásiť sa
+                    Sign Up
                   </Button>
                 </div>
               </div>
@@ -208,9 +208,9 @@ export default function MasterChefDashboard() {
                   <p className="text-sm text-muted-foreground">48h upload | Async</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium">Zajtra 20:00</p>
+                  <p className="text-sm font-medium">Tomorrow 8:00 PM</p>
                   <Button size="sm" variant="outline" className="mt-2">
-                    Detaily
+                    Details
                   </Button>
                 </div>
               </div>

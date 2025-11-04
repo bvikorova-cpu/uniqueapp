@@ -15,11 +15,11 @@ const TIERS = {
     icon: ChefHat,
     popular: false,
     features: [
-      "5 súťaží za mesiac",
-      "Základné hlasovanie",
-      "Prístup k amatérskym kategóriám",
-      "Komunitné recepty",
-      "Základná štatistika výkonnosti",
+      "5 competitions per month",
+      "Basic voting system",
+      "Access to amateur categories",
+      "Community recipes",
+      "Basic performance statistics",
     ],
   },
   pro: {
@@ -30,13 +30,13 @@ const TIERS = {
     icon: Crown,
     popular: true,
     features: [
-      "Neobmedzené súťaže",
-      "Live battles v reálnom čase",
-      "Prémiové kategórie (Fine Dining, Dessert Masters)",
-      "Exkluzívne recepty od profesionálov",
-      "Podrobné štatistiky a analýzy",
-      "Prioritná podpora",
-      "Mystery Box výzvy",
+      "Unlimited competitions",
+      "Live battles in real-time",
+      "Premium categories (Fine Dining, Dessert Masters)",
+      "Exclusive recipes from professionals",
+      "Detailed statistics and analytics",
+      "Priority support",
+      "Mystery Box challenges",
     ],
   },
   elite: {
@@ -47,14 +47,14 @@ const TIERS = {
     icon: Sparkles,
     popular: false,
     features: [
-      "Všetko z Pro tier",
-      "Osobný mentoring od profesionálnych šéfkuchárov",
-      "VIP behind-the-scenes prístup",
-      "Výherné bonusy a odmeny",
-      "Bez provízií z výhier",
-      "Exkluzívne live eventy",
-      "Prvoradé umiestnenie v leaderboardoch",
-      "Prístup k uzavretým premium komunitám",
+      "Everything from Pro tier",
+      "Personal mentoring from professional chefs",
+      "VIP behind-the-scenes access",
+      "Winning bonuses and rewards",
+      "No commission on winnings",
+      "Exclusive live events",
+      "Priority leaderboard placement",
+      "Access to closed premium communities",
     ],
   },
 };
@@ -71,8 +71,8 @@ export default function MasterChefSubscription() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
-          title: "Prihlásenie potrebné",
-          description: "Prosím prihláste sa pre pokračovanie",
+          title: "Login Required",
+          description: "Please sign in to continue",
           variant: "destructive",
         });
         navigate("/auth");
@@ -94,8 +94,8 @@ export default function MasterChefSubscription() {
     } catch (error) {
       console.error("Subscription error:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa spustiť platbu. Skúste znova.",
+        title: "Error",
+        description: "Failed to start payment. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -104,14 +104,23 @@ export default function MasterChefSubscription() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            MasterChef Platforma
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Background with cooking theme */}
+      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-background to-red-500/10" />
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZjYzNDciIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE0YzAtMS4xLS45LTItMi0yaC0yYy0xLjEgMC0yIC45LTIgMnYyYzAgMS4xLjkgMiAyIDJoMmMxLjEgMCAyLS45IDItMnYtMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
+      
+      <div className="relative z-10 max-w-7xl mx-auto px-4 pt-24 pb-12">
+        <div className="text-center mb-16">
+          <div className="inline-block mb-6 px-6 py-2 bg-orange-500/20 rounded-full border border-orange-500/30">
+            <span className="text-orange-600 dark:text-orange-400 font-semibold text-sm uppercase tracking-wider">
+              Online Cooking Competition
+            </span>
+          </div>
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 bg-clip-text text-transparent">
+            MasterChef Platform
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Súťaž, hlasuj a staň sa kráľom kuchyne! Vyberte si balíček, ktorý vám najlepšie vyhovuje.
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            Compete, vote, and become the king of the kitchen! Choose the package that suits you best.
           </p>
         </div>
 
@@ -144,9 +153,9 @@ export default function MasterChefSubscription() {
                   </div>
                   <CardTitle className="text-2xl">{tier.name}</CardTitle>
                   <CardDescription>
-                    {tierKey === "amateur" && "Pre začiatočníkov a nadšencov"}
-                    {tierKey === "pro" && "Pre serious šéfkuchárov"}
-                    {tierKey === "elite" && "Pre profesionálov a víťazov"}
+                    {tierKey === "amateur" && "For beginners and enthusiasts"}
+                    {tierKey === "pro" && "For serious chefs"}
+                    {tierKey === "elite" && "For professionals and winners"}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -165,7 +174,7 @@ export default function MasterChefSubscription() {
                     onClick={() => handleSubscribe(tierKey)}
                     disabled={loading === tierKey}
                   >
-                    {loading === tierKey ? "Načítavam..." : "Vybrať balíček"}
+                    {loading === tierKey ? "Loading..." : "Choose Package"}
                   </Button>
                 </CardContent>
               </Card>
@@ -173,31 +182,33 @@ export default function MasterChefSubscription() {
           })}
         </div>
 
-        <div className="mt-16 text-center">
-          <h2 className="text-2xl font-bold mb-6">Ako to funguje?</h2>
+        <div className="mt-20 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
+            How It Works
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="p-6 rounded-lg bg-card">
-              <div className="text-3xl font-bold text-primary mb-2">1</div>
-              <h3 className="font-semibold mb-2">Vyber si tier</h3>
-              <p className="text-sm text-muted-foreground">Zvoľ balíček podľa tvojich ambícií</p>
+            <div className="p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-orange-500/20 hover:border-orange-500/40 transition-all">
+              <div className="text-4xl font-bold bg-gradient-to-br from-orange-500 to-red-500 bg-clip-text text-transparent mb-3">1</div>
+              <h3 className="font-semibold mb-2 text-lg">Choose Your Tier</h3>
+              <p className="text-sm text-muted-foreground">Select a package based on your ambitions</p>
             </div>
-            <div className="p-6 rounded-lg bg-card">
-              <div className="text-3xl font-bold text-primary mb-2">2</div>
-              <h3 className="font-semibold mb-2">Súťaž</h3>
+            <div className="p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-orange-500/20 hover:border-orange-500/40 transition-all">
+              <div className="text-4xl font-bold bg-gradient-to-br from-orange-500 to-red-500 bg-clip-text text-transparent mb-3">2</div>
+              <h3 className="font-semibold mb-2 text-lg">Compete</h3>
               <p className="text-sm text-muted-foreground">
-                Pripoj sa k live battles alebo nahraj svoje video
+                Join live battles or upload your video
               </p>
             </div>
-            <div className="p-6 rounded-lg bg-card">
-              <div className="text-3xl font-bold text-primary mb-2">3</div>
-              <h3 className="font-semibold mb-2">Získaj hlasy</h3>
-              <p className="text-sm text-muted-foreground">Diváci hlasujú za najlepšie jedlo</p>
+            <div className="p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-orange-500/20 hover:border-orange-500/40 transition-all">
+              <div className="text-4xl font-bold bg-gradient-to-br from-orange-500 to-red-500 bg-clip-text text-transparent mb-3">3</div>
+              <h3 className="font-semibold mb-2 text-lg">Get Votes</h3>
+              <p className="text-sm text-muted-foreground">Viewers vote for the best dish</p>
             </div>
-            <div className="p-6 rounded-lg bg-card">
-              <div className="text-3xl font-bold text-primary mb-2">4</div>
-              <h3 className="font-semibold mb-2">Vyhraj</h3>
+            <div className="p-6 rounded-xl bg-card/80 backdrop-blur-sm border border-orange-500/20 hover:border-orange-500/40 transition-all">
+              <div className="text-4xl font-bold bg-gradient-to-br from-orange-500 to-red-500 bg-clip-text text-transparent mb-3">4</div>
+              <h3 className="font-semibold mb-2 text-lg">Win</h3>
               <p className="text-sm text-muted-foreground">
-                Získaj odmeny, XP a stúpaj v rebríčku
+                Earn rewards, XP and climb the leaderboard
               </p>
             </div>
           </div>
