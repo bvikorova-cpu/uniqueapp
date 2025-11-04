@@ -215,6 +215,7 @@ const Navbar = () => {
     { path: "/phobia-trading", label: "😱 Phobia Trading Network", icon: Brain },
     { path: "/multiverse-network", label: "🌌 Multiverse Profile Network", icon: Globe },
     { path: "/holographic-concerts", label: "🎤 Holographic Concerts", icon: Music },
+    { path: "/live-concerts", label: "🎵 Live Concerts", icon: Music },
     { path: "/holographic-avatars", label: "🎭 Holographic Avatars", icon: Sparkles },
     { path: "/time-capsule-subscription", label: "⏰ Time Capsule Network", icon: Clock },
     { path: "/time-reversal-subscription", label: "⏮️ Time Reversal Social", icon: Clock },

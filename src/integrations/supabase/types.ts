@@ -3936,6 +3936,174 @@ export type Database = {
           },
         ]
       }
+      concert_gifts: {
+        Row: {
+          amount: number
+          commission_rate: number | null
+          concert_id: string
+          created_at: string | null
+          gift_id: string
+          id: string
+          message: string | null
+          musician_amount: number
+          musician_id: string
+          payment_status: string | null
+          platform_commission: number
+          sender_id: string
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount: number
+          commission_rate?: number | null
+          concert_id: string
+          created_at?: string | null
+          gift_id: string
+          id?: string
+          message?: string | null
+          musician_amount: number
+          musician_id: string
+          payment_status?: string | null
+          platform_commission: number
+          sender_id: string
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number
+          commission_rate?: number | null
+          concert_id?: string
+          created_at?: string | null
+          gift_id?: string
+          id?: string
+          message?: string | null
+          musician_amount?: number
+          musician_id?: string
+          payment_status?: string | null
+          platform_commission?: number
+          sender_id?: string
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concert_gifts_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concert_gifts_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "platform_gifts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concert_gifts_musician_id_fkey"
+            columns: ["musician_id"]
+            isOneToOne: false
+            referencedRelation: "musician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concert_ticket_purchases: {
+        Row: {
+          amount: number
+          commission_rate: number | null
+          concert_id: string
+          id: string
+          musician_amount: number
+          payment_status: string | null
+          platform_commission: number
+          purchased_at: string | null
+          stripe_session_id: string | null
+          ticket_type_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          commission_rate?: number | null
+          concert_id: string
+          id?: string
+          musician_amount: number
+          payment_status?: string | null
+          platform_commission: number
+          purchased_at?: string | null
+          stripe_session_id?: string | null
+          ticket_type_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          commission_rate?: number | null
+          concert_id?: string
+          id?: string
+          musician_amount?: number
+          payment_status?: string | null
+          platform_commission?: number
+          purchased_at?: string | null
+          stripe_session_id?: string | null
+          ticket_type_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concert_ticket_purchases_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concert_ticket_purchases_ticket_type_id_fkey"
+            columns: ["ticket_type_id"]
+            isOneToOne: false
+            referencedRelation: "concert_ticket_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concert_ticket_types: {
+        Row: {
+          concert_id: string
+          created_at: string | null
+          description: string | null
+          id: string
+          max_quantity: number | null
+          name: string
+          price: number
+          sold_count: number | null
+        }
+        Insert: {
+          concert_id: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          max_quantity?: number | null
+          name: string
+          price: number
+          sold_count?: number | null
+        }
+        Update: {
+          concert_id?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          max_quantity?: number | null
+          name?: string
+          price?: number
+          sold_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concert_ticket_types_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "live_concert_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -7731,6 +7899,62 @@ export type Database = {
         }
         Relationships: []
       }
+      live_concert_streams: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          ended_at: string | null
+          id: string
+          musician_id: string
+          scheduled_at: string
+          started_at: string | null
+          status: string | null
+          stream_key: string | null
+          title: string
+          total_revenue: number | null
+          updated_at: string | null
+          viewer_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          musician_id: string
+          scheduled_at: string
+          started_at?: string | null
+          status?: string | null
+          stream_key?: string | null
+          title: string
+          total_revenue?: number | null
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          musician_id?: string
+          scheduled_at?: string
+          started_at?: string | null
+          status?: string | null
+          stream_key?: string | null
+          title?: string
+          total_revenue?: number | null
+          updated_at?: string | null
+          viewer_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_concert_streams_musician_id_fkey"
+            columns: ["musician_id"]
+            isOneToOne: false
+            referencedRelation: "musician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       live_streams: {
         Row: {
           created_at: string | null
@@ -8822,6 +9046,45 @@ export type Database = {
           mood?: Database["public"]["Enums"]["mood_type"]
           notes?: string | null
           stress_level?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      musician_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          genre: string | null
+          id: string
+          stage_name: string
+          total_concerts: number | null
+          total_earnings: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          genre?: string | null
+          id?: string
+          stage_name: string
+          total_concerts?: number | null
+          total_earnings?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          genre?: string | null
+          id?: string
+          stage_name?: string
+          total_concerts?: number | null
+          total_earnings?: number | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []

@@ -74,12 +74,27 @@ serve(async (req) => {
     const senderId = session.metadata?.sender_id;
     const influencerId = session.metadata?.influencer_id;
     const message = session.metadata?.message || "";
+    
+    // Concert specific metadata
+    const concertId = session.metadata?.concert_id;
+    const ticketTypeId = session.metadata?.ticket_type_id;
+    const musicianId = session.metadata?.musician_id;
 
     // Validate metadata based on payment type
     if (itemType === "stream_gift") {
       if (!streamId || !giftId || !senderId || !influencerId) {
         console.error("Missing required stream gift metadata");
         throw new Error("Missing required metadata for stream gift");
+      }
+    } else if (itemType === "concert_ticket") {
+      if (!concertId || !ticketTypeId || !musicianId) {
+        console.error("Missing required concert ticket metadata");
+        throw new Error("Missing required metadata for concert ticket");
+      }
+    } else if (itemType === "concert_gift") {
+      if (!concertId || !giftId || !senderId || !musicianId) {
+        console.error("Missing required concert gift metadata");
+        throw new Error("Missing required metadata for concert gift");
       }
     } else {
       if (!itemId || !itemType || !sellerId) {
@@ -111,8 +126,8 @@ serve(async (req) => {
       .insert({
         stripe_payment_id: session.payment_intent as string,
         buyer_id: session.client_reference_id || session.customer as string,
-        seller_id: sellerId,
-        item_id: itemId,
+        seller_id: sellerId || musicianId,
+        item_id: itemId || concertId,
         item_type: itemType,
         total_amount: totalAmount,
         platform_fee: platformFee,
@@ -171,6 +186,82 @@ serve(async (req) => {
         });
 
       console.log(`[Verify Payment] Stream gift recorded with 20% commission`);
+    } else if (itemType === "concert_ticket") {
+      // Calculate commission (20%)
+      const commissionAmount = totalAmount * 0.20;
+      const musicianAmount = totalAmount - commissionAmount;
+
+      // Create concert ticket purchase record
+      const { error: ticketError } = await supabase
+        .from("concert_ticket_purchases")
+        .insert({
+          user_id: user.id,
+          concert_id: concertId,
+          ticket_type_id: ticketTypeId,
+          amount: totalAmount,
+          musician_amount: musicianAmount,
+          platform_commission: commissionAmount,
+          commission_rate: 20.00,
+          payment_status: "completed",
+          stripe_session_id: session_id
+        });
+
+      if (ticketError) {
+        console.error("Error creating concert ticket purchase:", ticketError);
+        throw ticketError;
+      }
+
+      // Update ticket sold count
+      await supabase.rpc('increment', {
+        table_name: 'concert_ticket_types',
+        row_id: ticketTypeId,
+        column_name: 'sold_count'
+      }).catch(() => {
+        // If RPC doesn't exist, use direct update
+        supabase
+          .from("concert_ticket_types")
+          .select("sold_count")
+          .eq("id", ticketTypeId)
+          .single()
+          .then(({ data }) => {
+            if (data) {
+              supabase
+                .from("concert_ticket_types")
+                .update({ sold_count: data.sold_count + 1 })
+                .eq("id", ticketTypeId);
+            }
+          });
+      });
+
+      console.log(`[Verify Payment] Concert ticket recorded with 20% commission`);
+    } else if (itemType === "concert_gift") {
+      // Calculate commission (20%)
+      const commissionAmount = totalAmount * 0.20;
+      const musicianAmount = totalAmount - commissionAmount;
+
+      // Create concert gift record
+      const { error: giftError } = await supabase
+        .from("concert_gifts")
+        .insert({
+          sender_id: senderId || user.id,
+          concert_id: concertId,
+          musician_id: musicianId,
+          gift_id: giftId,
+          amount: totalAmount,
+          musician_amount: musicianAmount,
+          platform_commission: commissionAmount,
+          commission_rate: 20.00,
+          message: message,
+          payment_status: "completed",
+          stripe_session_id: session_id
+        });
+
+      if (giftError) {
+        console.error("Error creating concert gift:", giftError);
+        throw giftError;
+      }
+
+      console.log(`[Verify Payment] Concert gift recorded with 20% commission`);
     } else {
       // Mark item as sold for bazaar/auction
       if (itemType === "bazaar") {
