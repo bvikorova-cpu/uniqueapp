@@ -7894,6 +7894,83 @@ export type Database = {
         }
         Relationships: []
       }
+      masterchef_gifts: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon: string
+          id: string
+          is_active: boolean | null
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
+      masterchef_sent_gifts: {
+        Row: {
+          amount: number
+          chef_id: string
+          competition_id: string | null
+          created_at: string | null
+          gift_id: string
+          id: string
+          message: string | null
+          sender_id: string
+          status: string | null
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount: number
+          chef_id: string
+          competition_id?: string | null
+          created_at?: string | null
+          gift_id: string
+          id?: string
+          message?: string | null
+          sender_id: string
+          status?: string | null
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number
+          chef_id?: string
+          competition_id?: string | null
+          created_at?: string | null
+          gift_id?: string
+          id?: string
+          message?: string | null
+          sender_id?: string
+          status?: string | null
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterchef_sent_gifts_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "masterchef_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meal_plans: {
         Row: {
           allergens: string[] | null

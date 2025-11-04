@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trophy, Flame, Users, Star, TrendingUp, Calendar, Clock } from "lucide-react";
+import { Trophy, Flame, Users, Star, TrendingUp, Calendar, Clock, Gift } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { SendGiftDialog } from "@/components/masterchef/SendGiftDialog";
 
 export default function MasterChefDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [giftDialogOpen, setGiftDialogOpen] = useState(false);
+  const [selectedChef, setSelectedChef] = useState<{ id: string; name: string } | null>(null);
   const [stats, setStats] = useState({
     totalCompetitions: 0,
     wins: 0,
@@ -128,11 +131,41 @@ export default function MasterChefDashboard() {
                         {1000 - position * 100} points
                       </p>
                     </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => {
+                        setSelectedChef({ id: `chef-${position}`, name: `Chef #${position}` });
+                        setGiftDialogOpen(true);
+                      }}
+                    >
+                      <Gift className="h-4 w-4" />
+                    </Button>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        <div className="mt-6 p-6 rounded-xl bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20">
+          <div className="flex items-start gap-4">
+            <Gift className="h-8 w-8 text-orange-500 shrink-0" />
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold mb-2">Support Your Favorite Chefs</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Send virtual gifts to show appreciation and support. All gifts go directly to the chefs!
+              </p>
+              <div className="flex gap-2 flex-wrap">
+                <div className="px-3 py-1 rounded-full bg-background/50 text-xs">👏 €2</div>
+                <div className="px-3 py-1 rounded-full bg-background/50 text-xs">🔥 €5</div>
+                <div className="px-3 py-1 rounded-full bg-background/50 text-xs">👨‍🍳 €10</div>
+                <div className="px-3 py-1 rounded-full bg-background/50 text-xs">⭐ €25</div>
+                <div className="px-3 py-1 rounded-full bg-background/50 text-xs">🏆 €50</div>
+                <div className="px-3 py-1 rounded-full bg-background/50 text-xs">💎 €100</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -217,6 +250,15 @@ export default function MasterChefDashboard() {
             </div>
           </CardContent>
         </Card>
+
+        {selectedChef && (
+          <SendGiftDialog
+            open={giftDialogOpen}
+            onOpenChange={setGiftDialogOpen}
+            chefId={selectedChef.id}
+            chefName={selectedChef.name}
+          />
+        )}
       </div>
     </div>
   );
