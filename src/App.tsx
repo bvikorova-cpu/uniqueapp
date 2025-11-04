@@ -189,6 +189,7 @@ import LiveConcerts from "./pages/LiveConcerts";
 import MusicianDashboard from "./pages/MusicianDashboard";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
+import IQPlatform from "./pages/IQPlatform";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -398,6 +399,7 @@ const App = () => (
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/product/:handle" element={<ProductDetail />} />
+          <Route path="/iq-platform" element={<IQPlatform />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
           </Routes>

@@ -7205,6 +7205,258 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_analyses: {
+        Row: {
+          analysis_type: string
+          created_at: string
+          credits_cost: number
+          id: string
+          results: Json
+          user_id: string
+        }
+        Insert: {
+          analysis_type: string
+          created_at?: string
+          credits_cost: number
+          id?: string
+          results: Json
+          user_id: string
+        }
+        Update: {
+          analysis_type?: string
+          created_at?: string
+          credits_cost?: number
+          id?: string
+          results?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      iq_competition_participants: {
+        Row: {
+          competition_id: string
+          id: string
+          joined_at: string
+          prize_amount: number | null
+          rank: number | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          competition_id: string
+          id?: string
+          joined_at?: string
+          prize_amount?: number | null
+          rank?: number | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          competition_id?: string
+          id?: string
+          joined_at?: string
+          prize_amount?: number | null
+          rank?: number | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_competition_participants_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "iq_competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iq_competitions: {
+        Row: {
+          created_at: string
+          description: string | null
+          end_time: string
+          entry_fee: number
+          id: string
+          max_participants: number | null
+          prize_pool: number
+          start_time: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          end_time: string
+          entry_fee: number
+          id?: string
+          max_participants?: number | null
+          prize_pool?: number
+          start_time: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          end_time?: string
+          entry_fee?: number
+          id?: string
+          max_participants?: number | null
+          prize_pool?: number
+          start_time?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      iq_credits: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      iq_test_questions: {
+        Row: {
+          correct_answer: string
+          created_at: string
+          difficulty: string
+          id: string
+          options: Json
+          order_num: number
+          question: string
+          test_id: string
+        }
+        Insert: {
+          correct_answer: string
+          created_at?: string
+          difficulty: string
+          id?: string
+          options: Json
+          order_num: number
+          question: string
+          test_id: string
+        }
+        Update: {
+          correct_answer?: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          options?: Json
+          order_num?: number
+          question?: string
+          test_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_test_questions_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "iq_tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iq_test_results: {
+        Row: {
+          answers: Json
+          completed_at: string
+          id: string
+          iq_score: number
+          score: number
+          test_id: string
+          time_taken: number
+          user_id: string
+        }
+        Insert: {
+          answers: Json
+          completed_at?: string
+          id?: string
+          iq_score: number
+          score: number
+          test_id: string
+          time_taken: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          completed_at?: string
+          id?: string
+          iq_score?: number
+          score?: number
+          test_id?: string
+          time_taken?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iq_test_results_test_id_fkey"
+            columns: ["test_id"]
+            isOneToOne: false
+            referencedRelation: "iq_tests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iq_tests: {
+        Row: {
+          created_at: string
+          credits_cost: number
+          description: string | null
+          difficulty: string
+          id: string
+          is_active: boolean
+          questions_count: number
+          time_limit: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credits_cost?: number
+          description?: string | null
+          difficulty: string
+          id?: string
+          is_active?: boolean
+          questions_count: number
+          time_limit: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credits_cost?: number
+          description?: string | null
+          difficulty?: string
+          id?: string
+          is_active?: boolean
+          questions_count?: number
+          time_limit?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       job_applications: {
         Row: {
           applicant_id: string

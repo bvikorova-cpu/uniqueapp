@@ -130,6 +130,15 @@ const Index = () => {
       badge: "Wellness",
       badgeColor: "bg-emerald-500",
       gradient: "from-emerald-500 to-teal-500"
+    },
+    {
+      title: "🧩 IQ Platform",
+      description: "IQ tests, AI analysis, online competitions & earn credits",
+      icon: Brain,
+      path: "/iq-platform",
+      badge: "Intelligence",
+      badgeColor: "bg-blue-600",
+      gradient: "from-blue-600 to-indigo-600"
     }
   ];
   
