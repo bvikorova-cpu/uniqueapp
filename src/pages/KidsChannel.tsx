@@ -421,26 +421,6 @@ const KidsChannel = () => {
               <Badge className="bg-blue-500 text-white shadow-md">Virtual Tour</Badge>
             </div>
           </Card>
-
-          {/* 10. Paint by Numbers */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-purple-100/95 to-pink-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-purple-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-purple-300/50 animate-fade-in"
-            style={{ animationDelay: "0.9s" }}
-            onClick={() => navigate('/kids-channel/paint-by-numbers')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Palette className="w-10 h-10 text-purple-500" />
-              </div>
-              <h3 className="text-xl font-bold text-purple-700 mb-2">
-                Paint by Numbers! 🎨
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Color 100+ beautiful pictures by matching numbers to colors!
-              </p>
-              <Badge className="bg-purple-500 text-white shadow-md">Creative Fun</Badge>
-            </div>
-          </Card>
         </div>
       </div>
 
