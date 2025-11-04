@@ -186,6 +186,7 @@ import PhobiaTrading from "./pages/PhobiaTrading";
 import MultiverseNetwork from "./pages/MultiverseNetwork";
 import HolographicConcerts from "./pages/HolographicConcerts";
 import LiveConcerts from "./pages/LiveConcerts";
+import MusicianDashboard from "./pages/MusicianDashboard";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import Navbar from "./components/Navbar";
@@ -384,6 +385,7 @@ const App = () => (
           <Route path="/multiverse-network" element={<MultiverseNetwork />} />
           <Route path="/holographic-concerts" element={<HolographicConcerts />} />
           <Route path="/live-concerts" element={<LiveConcerts />} />
+          <Route path="/musician-dashboard" element={<MusicianDashboard />} />
               <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />

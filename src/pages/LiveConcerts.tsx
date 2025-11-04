@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { MusicianRegistration } from "@/components/musician/MusicianRegistration";
 
 const LiveConcerts = () => {
   const [loading, setLoading] = useState<string | null>(null);
@@ -190,7 +191,7 @@ const LiveConcerts = () => {
             <p className="text-xl text-white/90 mb-6">
               Watch world-class musicians perform live. Send virtual gifts, interact in real-time, and become part of an elite community.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 mb-6">
               <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
                 <Users className="h-5 w-5" />
                 <span className="font-semibold">{concerts?.length || 0} Live Shows</span>
@@ -204,6 +205,7 @@ const LiveConcerts = () => {
                 <span className="font-semibold">Virtual Gifts</span>
               </div>
             </div>
+            <MusicianRegistration />
           </div>
           <div className="absolute -right-10 -top-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
           <div className="absolute -left-10 -bottom-10 w-64 h-64 bg-purple-300/10 rounded-full blur-3xl"></div>
