@@ -181,6 +181,7 @@ import HolographicAvatars from "./pages/HolographicAvatars";
 import CrystalEnergyNetwork from "./pages/CrystalEnergyNetwork";
 import DNAMemoryNetwork from "./pages/DNAMemoryNetwork";
 import ReincarnationSocial from "./pages/ReincarnationSocial";
+import BlockchainConfessions from "./pages/BlockchainConfessions";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import Navbar from "./components/Navbar";
@@ -374,6 +375,7 @@ const App = () => (
           <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />
           <Route path="/dna-memory-network" element={<DNAMemoryNetwork />} />
           <Route path="/reincarnation-social" element={<ReincarnationSocial />} />
+          <Route path="/blockchain-confessions" element={<BlockchainConfessions />} />
               <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
