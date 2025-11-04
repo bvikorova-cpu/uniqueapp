@@ -7,7 +7,7 @@ import { ArrowLeft, Sparkles, RotateCcw } from "lucide-react";
 import { usePaintById, useUserPaintProgress, useUpdatePaintProgress } from "@/hooks/usePaintByNumbers";
 import { Progress } from "@/components/ui/progress";
 import { paintThumbnails } from "@/data/paintThumbnails";
-import { useGeneratePaintImage } from "@/hooks/useGeneratePaintImage";
+import { useGeneratePaintTemplate } from "@/hooks/useGeneratePaintTemplate";
 
 export default function PaintByNumbersCanvas() {
   const { paintId } = useParams<{ paintId: string }>();
@@ -21,16 +21,19 @@ export default function PaintByNumbersCanvas() {
   const { data: painting } = usePaintById(paintId!);
   const { data: progress } = useUserPaintProgress(paintId);
   const updateProgress = useUpdatePaintProgress();
-  const generateImage = useGeneratePaintImage();
+  const generateTemplate = useGeneratePaintTemplate();
 
-  // Generate image if not available
+  // Generate paint-by-numbers template if not available
   useEffect(() => {
     if (painting && !paintThumbnails[painting.title] && !painting.thumbnail_url && !generatedImage) {
-      generateImage.mutate(painting.title, {
-        onSuccess: (imageUrl) => {
-          setGeneratedImage(imageUrl);
+      generateTemplate.mutate(
+        { title: painting.title, description: `A ${painting.category} themed paint-by-numbers` },
+        {
+          onSuccess: (imageUrl) => {
+            setGeneratedImage(imageUrl);
+          }
         }
-      });
+      );
     }
   }, [painting]);
 
@@ -224,29 +227,31 @@ export default function PaintByNumbersCanvas() {
 
           {/* Canvas */}
           <Card className="p-4 lg:col-span-3">
-            {/* Preview Image */}
-            {(paintThumbnails[painting.title] || generatedImage || painting.thumbnail_url) && (
-              <div className="mb-4 flex justify-center">
-                <img 
-                  src={paintThumbnails[painting.title] || generatedImage || painting.thumbnail_url} 
-                  alt={`${painting.title} preview`}
-                  className="max-w-xs rounded-lg border-2 border-gray-300 opacity-30"
-                />
-              </div>
-            )}
-            
             <div className="flex items-center justify-center">
-              <canvas
-                ref={canvasRef}
-                width={canvasSize.width}
-                height={canvasSize.height}
-                onClick={handleCanvasClick}
-                className="border-2 border-gray-300 rounded-lg cursor-pointer max-w-full"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
+              {(paintThumbnails[painting.title] || generatedImage || painting.thumbnail_url) ? (
+                <div className="relative">
+                  <img 
+                    src={paintThumbnails[painting.title] || generatedImage || painting.thumbnail_url} 
+                    alt={`${painting.title} paint-by-numbers template`}
+                    className="max-w-full rounded-lg border-2 border-gray-300"
+                    style={{ maxHeight: "600px" }}
+                  />
+                  {selectedColor && (
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-4 py-2 rounded-lg shadow-lg">
+                      <div className="text-sm font-semibold">Selected Color: {selectedColor}</div>
+                      <div className="text-xs text-muted-foreground">Click on matching numbers</div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-4 p-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                  <p className="text-muted-foreground">Generating paint-by-numbers template...</p>
+                </div>
+              )}
             </div>
             
-            {!selectedColor && (
+            {!selectedColor && (paintThumbnails[painting.title] || generatedImage || painting.thumbnail_url) && (
               <div className="text-center mt-4 text-muted-foreground">
                 ← Select a color from the palette to start painting
               </div>
