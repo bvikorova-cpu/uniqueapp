@@ -208,6 +208,7 @@ const Navbar = () => {
   ];
 
   const otherServices = [
+    { path: "/crystal-energy-network", label: "💎 Crystal & Energy Network", icon: Gem },
     { path: "/holographic-avatars", label: "🎭 Holographic Avatars", icon: Sparkles },
     { path: "/time-capsule-subscription", label: "⏰ Time Capsule Network", icon: Clock },
     { path: "/time-reversal-subscription", label: "⏮️ Time Reversal Social", icon: Clock },
