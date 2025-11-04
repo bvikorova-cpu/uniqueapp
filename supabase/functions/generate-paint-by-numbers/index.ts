@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -12,117 +13,79 @@ serve(async (req) => {
 
   try {
     const { title, description } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    console.log(`Generating paint-by-numbers template for: ${title}`);
+    console.log(`Generating paint-by-numbers for: ${title}`);
 
-    // Step 1: Generate black and white template with numbers
-    const templateResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Generate black and white template with numbers using OpenAI
+    const templateResponse = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: `Create a simple black and white paint-by-numbers template: ${title}${description ? ` - ${description}` : ''}.
-
-Requirements:
-- BLACK OUTLINES on WHITE background
-- 8 regions labeled with numbers 1-8
-- Large, clear numbers in each region
-- Simple shapes for children
-- Thick borders between regions
-- 800x600 pixels`
-          }
-        ],
-        modalities: ["image", "text"]
+        model: "gpt-image-1",
+        prompt: `Paint by numbers coloring page for children: ${title}. Black outlines on white background. 8 regions with large numbers 1-8 clearly visible inside each region. Simple shapes. Thick borders. Line art style. No colors, only black and white.`,
+        size: "1024x1024",
+        output_format: "png",
+        quality: "high"
       }),
     });
 
     if (!templateResponse.ok) {
-      const errorText = await templateResponse.text();
-      console.error("AI Gateway error:", templateResponse.status, errorText);
-      throw new Error(`AI Gateway error: ${templateResponse.status}`);
+      const error = await templateResponse.text();
+      console.error("OpenAI error (template):", error);
+      throw new Error(`OpenAI error: ${templateResponse.status}`);
     }
 
     const templateData = await templateResponse.json();
-    const templateImageUrl = templateData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const templateImageUrl = templateData.data?.[0]?.b64_json 
+      ? `data:image/png;base64,${templateData.data[0].b64_json}`
+      : templateData.data?.[0]?.url;
 
     if (!templateImageUrl) {
       throw new Error("No template generated");
     }
 
-    console.log("Step 1 done. Now coloring the same template...");
+    console.log("Template created. Generating colored version...");
 
-    // Step 2: Color THE SAME template - COMPLETELY REMOVE ALL NUMBERS
-    const coloredResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Generate colored version - same subject but without numbers
+    const coloredResponse = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: `Color this paint-by-numbers template. Fill regions with solid colors and ERASE ALL NUMBERS COMPLETELY.
-
-Color mapping:
-1 → Sky Blue
-2 → Grass Green  
-3 → Sunny Yellow
-4 → Pink
-5 → Brown
-6 → Ocean Blue
-7 → Purple
-8 → White
-
-ABSOLUTE REQUIREMENTS:
-- ERASE every single number (1,2,3,4,5,6,7,8) from the image
-- NO digits or text should be visible ANYWHERE
-- Keep exact same shapes and outlines as the original
-- Fill all regions with SOLID colors
-- The result must be a clean colored picture WITHOUT any numbers or text`
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: templateImageUrl
-                }
-              }
-            ]
-          }
-        ],
-        modalities: ["image", "text"]
+        model: "gpt-image-1",
+        prompt: `Colorful illustration for children: ${title}. Bright colors: blue, green, yellow, pink, brown, purple. Simple shapes matching a paint-by-numbers style. Cute cartoon style. NO numbers, NO text. Just a finished colored picture.`,
+        size: "1024x1024",
+        output_format: "png",
+        quality: "high"
       }),
     });
 
     if (!coloredResponse.ok) {
-      const errorText = await coloredResponse.text();
-      console.error("AI Gateway error for coloring:", coloredResponse.status, errorText);
-      throw new Error(`AI Gateway error: ${coloredResponse.status}`);
+      const error = await coloredResponse.text();
+      console.error("OpenAI error (colored):", error);
+      throw new Error(`OpenAI error: ${coloredResponse.status}`);
     }
 
     const coloredData = await coloredResponse.json();
-    const coloredImageUrl = coloredData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const coloredImageUrl = coloredData.data?.[0]?.b64_json
+      ? `data:image/png;base64,${coloredData.data[0].b64_json}`
+      : coloredData.data?.[0]?.url;
 
     if (!coloredImageUrl) {
       throw new Error("No colored image generated");
     }
 
-    console.log("Success! Both images created from same template");
+    console.log("Both images generated successfully!");
 
     return new Response(
       JSON.stringify({ 
@@ -136,7 +99,7 @@ ABSOLUTE REQUIREMENTS:
     );
 
   } catch (error) {
-    console.error("Error in generate-paint-by-numbers:", error);
+    console.error("Error:", error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
       { 
