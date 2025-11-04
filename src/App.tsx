@@ -159,6 +159,14 @@ import ComedyClub from "./pages/ComedyClub";
 import ComedianDashboard from "./pages/ComedianDashboard";
 import DisneyCastles from "./pages/DisneyCastles";
 import DisneyCastleTour from "./pages/DisneyCastleTour";
+import DinosaurQuiz from "./pages/DinosaurQuiz";
+import TravelMap from "./pages/TravelMap";
+import PuppetTheater from "./pages/PuppetTheater";
+import CircusAcademy from "./pages/CircusAcademy";
+import MasterChefJunior from "./pages/MasterChefJunior";
+import CakeDecorating from "./pages/CakeDecorating";
+import Formula1Racing from "./pages/Formula1Racing";
+import MonsterTrucks from "./pages/MonsterTrucks";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import Navbar from "./components/Navbar";
@@ -330,6 +338,14 @@ const App = () => (
               <Route path="/comedian-dashboard" element={<ComedianDashboard />} />
               <Route path="/kids-channel/disney-castles" element={<DisneyCastles />} />
               <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
+              <Route path="/kids-channel/dinosaur-quiz" element={<DinosaurQuiz />} />
+              <Route path="/kids-channel/travel-map" element={<TravelMap />} />
+              <Route path="/kids-channel/puppet-theater" element={<PuppetTheater />} />
+              <Route path="/kids-channel/circus-academy" element={<CircusAcademy />} />
+              <Route path="/kids-channel/masterchef-junior" element={<MasterChefJunior />} />
+              <Route path="/kids-channel/cake-decorating" element={<CakeDecorating />} />
+              <Route path="/kids-channel/formula1" element={<Formula1Racing />} />
+              <Route path="/kids-channel/monster-trucks" element={<MonsterTrucks />} />
               <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
