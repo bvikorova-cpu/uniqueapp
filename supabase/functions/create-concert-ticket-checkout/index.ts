@@ -42,7 +42,7 @@ serve(async (req) => {
     // Get ticket type details
     const { data: ticketType, error: ticketError } = await supabaseClient
       .from("concert_ticket_types")
-      .select("*, live_concert_streams(title, musician_id, musician_profiles(stage_name))")
+      .select("*, live_concert_streams(title, musician_id)")
       .eq("id", ticketTypeId)
       .single();
 
@@ -50,6 +50,13 @@ serve(async (req) => {
       logStep("Ticket type not found", { error: ticketError });
       throw new Error("Ticket type not found");
     }
+
+    // Get musician profile
+    const { data: musician } = await supabaseClient
+      .from("musician_profiles")
+      .select("stage_name")
+      .eq("id", ticketType.live_concert_streams.musician_id)
+      .single();
 
     logStep("Ticket type found", { ticketType });
 
@@ -88,7 +95,7 @@ serve(async (req) => {
             currency: "eur",
             product_data: {
               name: `${ticketType.name.toUpperCase()} Ticket - ${ticketType.live_concert_streams.title}`,
-              description: `Live concert by ${ticketType.live_concert_streams.musician_profiles.stage_name}`,
+              description: `Live concert by ${musician?.stage_name || 'Artist'}`,
             },
             unit_amount: Math.round(ticketType.price * 100),
           },

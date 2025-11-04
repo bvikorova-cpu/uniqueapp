@@ -54,7 +54,7 @@ serve(async (req) => {
     // Get concert details
     const { data: concert, error: concertError } = await supabaseClient
       .from("live_concert_streams")
-      .select("musician_id, title, musician_profiles(stage_name)")
+      .select("musician_id, title")
       .eq("id", concertId)
       .single();
 
@@ -62,6 +62,13 @@ serve(async (req) => {
       logStep("Concert not found", { error: concertError });
       throw new Error("Concert not found");
     }
+
+    // Get musician profile
+    const { data: musician } = await supabaseClient
+      .from("musician_profiles")
+      .select("stage_name")
+      .eq("id", concert.musician_id)
+      .single();
 
     logStep("Concert and gift found", { concert, gift });
 
@@ -87,7 +94,7 @@ serve(async (req) => {
             currency: "eur",
             product_data: {
               name: `${gift.icon} ${gift.name}`,
-              description: message || `Gift for ${concert.musician_profiles.stage_name}`,
+              description: message || `Gift for ${musician?.stage_name || 'Artist'}`,
             },
             unit_amount: Math.round(gift.price * 100),
           },
