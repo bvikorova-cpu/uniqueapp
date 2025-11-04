@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { DollarSign, Users, TrendingUp, CreditCard, Search } from "lucide-react";
+import { DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat } from "lucide-react";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -22,6 +22,7 @@ const Admin = () => {
     premiumUsers: 0,
     totalRevenue: 0,
     monthlyRevenue: 0,
+    masterchefEarnings: 0,
   });
   
   // Data
@@ -140,11 +141,21 @@ const Admin = () => {
           return sum + commission;
         }, 0) || 0;
 
+      // Load MasterChef earnings
+      const { data: masterchefData } = await supabase
+        .from('masterchef_platform_earnings')
+        .select('commission_amount');
+      
+      const masterchefEarnings = masterchefData?.reduce((sum, e) => {
+        return sum + (parseFloat(String(e.commission_amount)) || 0);
+      }, 0) || 0;
+
       setStats({
         totalUsers,
         premiumUsers,
         totalRevenue,
         monthlyRevenue,
+        masterchefEarnings,
       });
     } catch (error) {
       console.error('Load data error:', error);
@@ -249,6 +260,36 @@ const Admin = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* MasterChef Earnings Card */}
+        <Card 
+          className="mb-8 cursor-pointer hover:shadow-lg transition-shadow border-2 border-orange-500/30 bg-gradient-to-br from-orange-500/5 to-red-500/5"
+          onClick={() => navigate('/masterchef/earnings')}
+        >
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-orange-500/20">
+                  <ChefHat className="h-6 w-6 text-orange-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">MasterChef Platform Earnings</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Total commissions from virtual gifts (20% per gift)
+                  </p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold text-orange-600">
+                  €{stats.masterchefEarnings.toFixed(2)}
+                </div>
+                <Button variant="outline" size="sm" className="mt-2">
+                  View Details →
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
 
         {/* Search */}
         <div className="mb-6">
