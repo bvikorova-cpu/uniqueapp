@@ -16,7 +16,6 @@ export default function PaintByNumbersCanvas() {
   
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
-  const [coloredPreview, setColoredPreview] = useState<string | null>(null);
   const [templateImage, setTemplateImage] = useState<string | null>(null);
   const [templateLoaded, setTemplateLoaded] = useState(false);
   const templateImgRef = useRef<HTMLImageElement | null>(null);
@@ -28,12 +27,11 @@ export default function PaintByNumbersCanvas() {
 
   // Generate paint-by-numbers template if not available
   useEffect(() => {
-    if (painting && !coloredPreview && !templateImage) {
+    if (painting && !templateImage) {
       generateTemplate.mutate(
         { title: painting.title, description: `A ${painting.category} themed paint-by-numbers` },
         {
           onSuccess: (images) => {
-            setColoredPreview(images.coloredImageUrl);
             setTemplateImage(images.templateImageUrl);
           }
         }
@@ -258,43 +256,30 @@ export default function PaintByNumbersCanvas() {
             </div>
           </Card>
 
-          {/* Canvas and Preview */}
+          {/* Canvas */}
           <Card className="p-4 lg:col-span-3">
-            {templateImage && coloredPreview ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Colored Preview */}
-                <div>
-                  <h4 className="font-semibold mb-2 text-center">Preview</h4>
-                  <img 
-                    src={coloredPreview} 
-                    alt="Colored preview"
-                    className="w-full rounded-lg border-2 border-gray-300"
+            {templateImage ? (
+              <div>
+                <h4 className="font-semibold mb-2 text-center">Paint by Numbers</h4>
+                <div className="relative flex justify-center">
+                  <canvas
+                    ref={canvasRef}
+                    width={canvasSize.width}
+                    height={canvasSize.height}
+                    onClick={handleCanvasClick}
+                    className="w-full max-w-2xl border-2 border-gray-300 rounded-lg cursor-pointer"
                   />
-                </div>
-                
-                {/* Paint-by-numbers Canvas */}
-                <div>
-                  <h4 className="font-semibold mb-2 text-center">Your Canvas</h4>
-                  <div className="relative">
-                    <canvas
-                      ref={canvasRef}
-                      width={canvasSize.width}
-                      height={canvasSize.height}
-                      onClick={handleCanvasClick}
-                      className="w-full border-2 border-gray-300 rounded-lg cursor-pointer"
-                    />
-                    {selectedColor && (
-                      <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-3 py-1 rounded-lg shadow-lg text-sm">
-                        Color: {selectedColor}
-                      </div>
-                    )}
-                  </div>
+                  {selectedColor && (
+                    <div className="absolute top-2 right-2 bg-white/90 backdrop-blur px-3 py-1 rounded-lg shadow-lg text-sm">
+                      Selected: {selectedColor}
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-4 p-8">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                <p className="text-muted-foreground">Generating paint-by-numbers images...</p>
+                <p className="text-muted-foreground">Generating detailed paint-by-numbers...</p>
               </div>
             )}
             

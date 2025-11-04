@@ -20,7 +20,7 @@ serve(async (req) => {
 
     console.log(`Generating paint-by-numbers for: ${title}`);
 
-    // Generate template with numbers
+    // Generate detailed template with numbers
     const templateResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -32,7 +32,18 @@ serve(async (req) => {
         messages: [
           {
             role: "user",
-            content: `Simple paint-by-numbers coloring page: ${title}. BLACK outlines on WHITE background. Numbers 1, 2, 3, 4, 5, 6, 7, 8 inside regions. Child-friendly. 800x600px.`
+            content: `Detailed paint-by-numbers coloring page: ${title}${description ? ` - ${description}` : ''}.
+
+REQUIREMENTS:
+- BLACK thick outlines on WHITE background
+- 20-30 distinct regions with numbers 1-8
+- Numbers clearly visible in EACH region
+- Complex, detailed design with many small areas
+- Intricate patterns and details
+- Professional coloring book quality
+- Child-friendly but detailed
+- 1024x1024 pixels
+- Each number (1-8) appears multiple times across different regions`
           }
         ],
         modalities: ["image", "text"]
@@ -50,45 +61,10 @@ serve(async (req) => {
       throw new Error("No template generated");
     }
 
-    console.log("Template done. Creating colored version...");
-
-    // Generate colored version WITHOUT numbers
-    const coloredResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: `Cute colorful illustration: ${title}. Bright colors. Simple shapes. Children's book style. NO numbers. NO text. Clean finished artwork. 800x600px.`
-          }
-        ],
-        modalities: ["image", "text"]
-      }),
-    });
-
-    if (!coloredResponse.ok) {
-      throw new Error(`Colored error: ${coloredResponse.status}`);
-    }
-
-    const coloredData = await coloredResponse.json();
-    const coloredImageUrl = coloredData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-
-    if (!coloredImageUrl) {
-      throw new Error("No colored image generated");
-    }
-
-    console.log("Success!");
+    console.log("Detailed template generated!");
 
     return new Response(
-      JSON.stringify({ 
-        coloredImageUrl,
-        templateImageUrl 
-      }),
+      JSON.stringify({ templateImageUrl }),
       { 
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200 

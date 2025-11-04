@@ -7,7 +7,6 @@ interface GenerateTemplateParams {
 }
 
 interface GeneratedImages {
-  coloredImageUrl: string;
   templateImageUrl: string;
 }
 
@@ -19,8 +18,8 @@ export const useGeneratePaintTemplate = () => {
       });
 
       if (error) throw error;
-      if (!data?.coloredImageUrl || !data?.templateImageUrl) {
-        throw new Error("No images returned");
+      if (!data?.templateImageUrl) {
+        throw new Error("No template returned");
       }
 
       return data as GeneratedImages;
