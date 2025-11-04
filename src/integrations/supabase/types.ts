@@ -7924,39 +7924,89 @@ export type Database = {
         }
         Relationships: []
       }
+      masterchef_platform_earnings: {
+        Row: {
+          chef_amount: number
+          commission_amount: number
+          commission_rate: number
+          created_at: string | null
+          gift_id: string
+          id: string
+          status: string | null
+          total_amount: number
+        }
+        Insert: {
+          chef_amount: number
+          commission_amount: number
+          commission_rate: number
+          created_at?: string | null
+          gift_id: string
+          id?: string
+          status?: string | null
+          total_amount: number
+        }
+        Update: {
+          chef_amount?: number
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string | null
+          gift_id?: string
+          id?: string
+          status?: string | null
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterchef_platform_earnings_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: true
+            referencedRelation: "masterchef_sent_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       masterchef_sent_gifts: {
         Row: {
           amount: number
+          chef_amount: number | null
           chef_id: string
+          commission_rate: number | null
           competition_id: string | null
           created_at: string | null
           gift_id: string
           id: string
           message: string | null
+          platform_commission: number | null
           sender_id: string
           status: string | null
           stripe_session_id: string | null
         }
         Insert: {
           amount: number
+          chef_amount?: number | null
           chef_id: string
+          commission_rate?: number | null
           competition_id?: string | null
           created_at?: string | null
           gift_id: string
           id?: string
           message?: string | null
+          platform_commission?: number | null
           sender_id: string
           status?: string | null
           stripe_session_id?: string | null
         }
         Update: {
           amount?: number
+          chef_amount?: number | null
           chef_id?: string
+          commission_rate?: number | null
           competition_id?: string | null
           created_at?: string | null
           gift_id?: string
           id?: string
           message?: string | null
+          platform_commission?: number | null
           sender_id?: string
           status?: string | null
           stripe_session_id?: string | null

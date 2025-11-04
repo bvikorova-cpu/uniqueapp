@@ -113,6 +113,24 @@ serve(async (req) => {
       client_reference_id: user.id,
     });
 
+    // Pre-create gift record with pending status
+    const { error: insertError } = await supabaseClient
+      .from("masterchef_sent_gifts")
+      .insert({
+        sender_id: user.id,
+        chef_id: chefId,
+        gift_id: giftId,
+        competition_id: competitionId || null,
+        message: message || null,
+        amount: gift.price,
+        status: "pending",
+      });
+
+    if (insertError) {
+      console.error("Error creating gift record:", insertError);
+      throw new Error("Failed to create gift record");
+    }
+
     return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
