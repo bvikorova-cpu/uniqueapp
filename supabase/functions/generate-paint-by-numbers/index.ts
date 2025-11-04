@@ -62,7 +62,7 @@ Requirements:
 
     console.log("Step 1 done. Now coloring the same template...");
 
-    // Step 2: Color THE SAME template - NO NUMBERS
+    // Step 2: Color THE SAME template - COMPLETELY REMOVE ALL NUMBERS
     const coloredResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -77,22 +77,24 @@ Requirements:
             content: [
               {
                 type: "text",
-                text: `Color this image. Each numbered region should be filled with solid color:
-Region 1 = sky blue
-Region 2 = bright green  
-Region 3 = sunny yellow
-Region 4 = soft pink
-Region 5 = brown
-Region 6 = ocean blue
-Region 7 = lavender purple
-Region 8 = white
+                text: `Color this paint-by-numbers template. Fill regions with solid colors and ERASE ALL NUMBERS COMPLETELY.
 
-CRITICAL REQUIREMENTS:
-- DELETE ALL NUMBERS from the image
-- NO TEXT should remain visible
-- Keep the exact same outlines and shapes
-- Fill regions completely with solid colors
-- Make it look like a finished colored picture WITHOUT any numbers`
+Color mapping:
+1 → Sky Blue
+2 → Grass Green  
+3 → Sunny Yellow
+4 → Pink
+5 → Brown
+6 → Ocean Blue
+7 → Purple
+8 → White
+
+ABSOLUTE REQUIREMENTS:
+- ERASE every single number (1,2,3,4,5,6,7,8) from the image
+- NO digits or text should be visible ANYWHERE
+- Keep exact same shapes and outlines as the original
+- Fill all regions with SOLID colors
+- The result must be a clean colored picture WITHOUT any numbers or text`
               },
               {
                 type: "image_url",

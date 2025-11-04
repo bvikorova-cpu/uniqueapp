@@ -207,39 +207,25 @@ export default function PaintByNumbersCanvas() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50 dark:from-gray-900 dark:to-gray-800 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/kids-channel/paint-by-numbers")}
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
-            <div>
-              <h2 className="text-2xl font-bold">{painting.title}</h2>
-              <p className="text-sm text-muted-foreground">
-                Select a color, then click the matching numbers
-              </p>
-            </div>
+        <div className="flex items-center gap-4 mb-8 mt-4">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/kids-channel/paint-by-numbers")}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold">{painting.title}</h2>
+            <p className="text-sm text-muted-foreground">
+              Select a color, then click the matching numbers
+            </p>
           </div>
-
           <Button variant="outline" onClick={handleReset}>
             <RotateCcw className="mr-2 h-4 w-4" />
             Reset
           </Button>
         </div>
-
-        {/* Progress */}
-        <Card className="p-4 mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-semibold">Progress</span>
-            <span className="text-sm text-muted-foreground">
-              {completedSections.length} / {painting.total_sections} sections
-            </span>
-          </div>
-          <Progress value={progressPercent} className="h-2" />
-        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Color Palette */}
