@@ -28,6 +28,14 @@ import princessAurora from "@/assets/paint-thumbnails/princess-aurora.png";
 import forestBear from "@/assets/paint-thumbnails/forest-bear.png";
 import oceanDolphin from "@/assets/paint-thumbnails/ocean-dolphin.png";
 import rainbowParrot from "@/assets/paint-thumbnails/rainbow-parrot.png";
+import rainbowSky from "@/assets/paint-thumbnails/rainbow-sky.png";
+import rapunzelTower from "@/assets/paint-thumbnails/rapunzel-tower.png";
+import sailboat from "@/assets/paint-thumbnails/sailboat.png";
+import schoolBus from "@/assets/paint-thumbnails/school-bus.png";
+import seaTurtle from "@/assets/paint-thumbnails/sea-turtle.png";
+import solarSystem from "@/assets/paint-thumbnails/solar-system.png";
+import springGarden from "@/assets/paint-thumbnails/spring-garden.png";
+import snowQueen from "@/assets/paint-thumbnails/snow-queen.png";
 
 export const paintThumbnails: Record<string, string> = {
   "Cute Unicorn": cuteUnicorn,
@@ -60,4 +68,12 @@ export const paintThumbnails: Record<string, string> = {
   "Forest Bear": forestBear,
   "Ocean Dolphin": oceanDolphin,
   "Rainbow Parrot": rainbowParrot,
+  "Rainbow Sky": rainbowSky,
+  "Rapunzel Tower": rapunzelTower,
+  "Sailboat": sailboat,
+  "School Bus": schoolBus,
+  "Sea Turtle": seaTurtle,
+  "Solar System": solarSystem,
+  "Spring Garden": springGarden,
+  "Snow Queen": snowQueen,
 };

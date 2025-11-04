@@ -13,6 +13,7 @@ export default function PaintByNumbers() {
   const navigate = useNavigate();
   const [category, setCategory] = useState("all");
   const [generatedImages, setGeneratedImages] = useState<Record<string, string>>({});
+  const [generatingIds, setGeneratingIds] = useState<Set<string>>(new Set());
   
   const { data: paintings, isLoading } = usePaintByNumbers(category);
   const { data: purchases } = useUserPaintPurchases();
@@ -24,15 +25,33 @@ export default function PaintByNumbers() {
     if (!paintings) return;
     
     paintings.forEach((painting) => {
-      if (!paintThumbnails[painting.title] && !generatedImages[painting.id] && !painting.thumbnail_url) {
+      const needsImage = !paintThumbnails[painting.title] && 
+                        !painting.thumbnail_url && 
+                        !generatedImages[painting.id] &&
+                        !generatingIds.has(painting.id);
+      
+      if (needsImage) {
+        setGeneratingIds(prev => new Set(prev).add(painting.id));
         generateImage.mutate(painting.title, {
           onSuccess: (imageUrl) => {
             setGeneratedImages(prev => ({ ...prev, [painting.id]: imageUrl }));
+            setGeneratingIds(prev => {
+              const next = new Set(prev);
+              next.delete(painting.id);
+              return next;
+            });
+          },
+          onError: () => {
+            setGeneratingIds(prev => {
+              const next = new Set(prev);
+              next.delete(painting.id);
+              return next;
+            });
           }
         });
       }
     });
-  }, [paintings]);
+  }, [paintings, generatedImages]);
 
   const isPurchased = (paintId: string) => {
     return purchases?.some(p => p.paint_id === paintId);
