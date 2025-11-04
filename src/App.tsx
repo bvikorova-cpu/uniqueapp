@@ -167,6 +167,10 @@ import MasterChefJunior from "./pages/MasterChefJunior";
 import CakeDecorating from "./pages/CakeDecorating";
 import Formula1Racing from "./pages/Formula1Racing";
 import MonsterTrucks from "./pages/MonsterTrucks";
+import F1Racing from "./pages/F1Racing";
+import F1Subscription from "./pages/F1Subscription";
+import F1FantasyTeam from "./pages/F1FantasyTeam";
+import F1Leaderboard from "./pages/F1Leaderboard";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import Navbar from "./components/Navbar";
@@ -346,6 +350,10 @@ const App = () => (
               <Route path="/kids-channel/cake-decorating" element={<CakeDecorating />} />
               <Route path="/kids-channel/formula1" element={<Formula1Racing />} />
               <Route path="/kids-channel/monster-trucks" element={<MonsterTrucks />} />
+              <Route path="/f1-racing" element={<F1Racing />} />
+              <Route path="/f1-subscription" element={<F1Subscription />} />
+              <Route path="/f1-fantasy-team" element={<F1FantasyTeam />} />
+              <Route path="/f1-leaderboard" element={<F1Leaderboard />} />
               <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />

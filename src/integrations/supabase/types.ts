@@ -5651,6 +5651,102 @@ export type Database = {
         }
         Relationships: []
       }
+      f1_fantasy_teams: {
+        Row: {
+          constructor_id: string | null
+          created_at: string | null
+          driver1_id: string | null
+          driver2_id: string | null
+          id: string
+          team_name: string
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          constructor_id?: string | null
+          created_at?: string | null
+          driver1_id?: string | null
+          driver2_id?: string | null
+          id?: string
+          team_name: string
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          constructor_id?: string | null
+          created_at?: string | null
+          driver1_id?: string | null
+          driver2_id?: string | null
+          id?: string
+          team_name?: string
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      f1_leaderboard: {
+        Row: {
+          created_at: string | null
+          id: string
+          tier: string | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+          username: string
+          wins: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          tier?: string | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+          username: string
+          wins?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          tier?: string | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string
+          wins?: number | null
+        }
+        Relationships: []
+      }
+      f1_user_credits: {
+        Row: {
+          created_at: string | null
+          credits: number
+          id: string
+          tier: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits?: number
+          id?: string
+          tier?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits?: number
+          id?: string
+          tier?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       fashion_categories: {
         Row: {
           created_at: string | null
