@@ -419,34 +419,32 @@ export default function LotteryAI() {
             </div>
           )}
 
-          {/* Hero Section */}
-          <section className="relative py-20 px-4 bg-gradient-to-br from-primary/20 via-background to-secondary/20 overflow-hidden">
-            <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
-            <div className="container mx-auto text-center relative z-10">
-              <Badge className="mb-4" variant="secondary">
-                <Sparkles className="h-3 w-3 mr-1" />
-                AI-Powered Predictions
-              </Badge>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
-                Lottery Numbers - AI Predictions
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                AI generates "lucky" numbers based on historical data and your personal preferences
-              </p>
-              <div className="flex flex-wrap gap-4 justify-center">
-                <Button size="lg" onClick={generateNumbers}>
-                  <Sparkles className="mr-2 h-5 w-5" />
-                  Generate Lucky Numbers
-                </Button>
-                <Button size="lg" variant="outline">
-                  <BarChart3 className="mr-2 h-5 w-5" />
-                  View Statistics
-                </Button>
-              </div>
-            </div>
-          </section>
-        </>
-      )}
+      {/* Hero Section */}
+      <section className="relative py-20 px-4 bg-gradient-to-br from-primary/20 via-background to-secondary/20 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
+        <div className="container mx-auto text-center relative z-10">
+          <Badge className="mb-4" variant="secondary">
+            <Sparkles className="h-3 w-3 mr-1" />
+            AI-Powered Predictions
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent">
+            Lottery Numbers - AI Predictions
+          </h1>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            AI generates "lucky" numbers based on historical data and your personal preferences
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button size="lg" onClick={generateNumbers}>
+              <Sparkles className="mr-2 h-5 w-5" />
+              Generate Lucky Numbers
+            </Button>
+            <Button size="lg" variant="outline">
+              <BarChart3 className="mr-2 h-5 w-5" />
+              View Statistics
+            </Button>
+          </div>
+        </div>
+      </section>
 
       {/* Main Generator Section */}
       <section className="py-12 px-4">
