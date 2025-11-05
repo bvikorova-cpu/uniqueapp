@@ -38,6 +38,8 @@ const Auth = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const fullName = formData.get("fullName") as string;
+    const phone = formData.get("phone") as string;
+    const companyName = formData.get("companyName") as string;
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -46,6 +48,8 @@ const Auth = () => {
         emailRedirectTo: `${window.location.origin}/`,
         data: {
           full_name: fullName,
+          phone: phone,
+          company_name: companyName || null,
         },
       },
     });
@@ -224,6 +228,25 @@ const Auth = () => {
                       type="text"
                       placeholder="Your name"
                       required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-phone">Telefón *</Label>
+                    <Input
+                      id="signup-phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="+421 XXX XXX XXX"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-company">Názov firmy (voliteľné)</Label>
+                    <Input
+                      id="signup-company"
+                      name="companyName"
+                      type="text"
+                      placeholder="Realitná kancelária XYZ"
                     />
                   </div>
                   <div className="space-y-2">

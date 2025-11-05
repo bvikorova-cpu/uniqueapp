@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check } from "lucide-react";
+import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const LISTING_PACKAGES = [
   {
@@ -73,6 +75,9 @@ const ADDITIONAL_SERVICES = [
 
 export default function PropertyMarketplace() {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchFilters, setSearchFilters] = useState({
     priceMin: "",
     priceMax: "",
@@ -80,6 +85,45 @@ export default function PropertyMarketplace() {
     area: "",
     rooms: ""
   });
+
+  useEffect(() => {
+    checkAuth();
+    
+    // Handle payment success/cancel
+    const success = searchParams.get('success');
+    const canceled = searchParams.get('canceled');
+    
+    if (success === 'true') {
+      toast({
+        title: "Platba úspešná!",
+        description: "Váš inzerát bol aktivovaný.",
+      });
+    } else if (canceled === 'true') {
+      toast({
+        title: "Platba zrušená",
+        description: "Platbu môžete dokončiť neskôr.",
+        variant: "destructive"
+      });
+    }
+  }, [searchParams]);
+
+  const checkAuth = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setIsAuthenticated(!!session);
+  };
+
+  const handleCreateListing = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Pre vytvorenie inzerátu sa musíte prihlásiť",
+        variant: "destructive"
+      });
+      navigate("/auth");
+      return;
+    }
+    navigate("/property-submission");
+  };
 
   const handlePurchaseListing = (packageId: string, price: number) => {
     toast({
@@ -98,15 +142,18 @@ export default function PropertyMarketplace() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
       <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-block p-3 bg-primary/10 rounded-full mb-4">
-            <Building2 className="h-12 w-12 text-primary" />
-          </div>
-          <h1 className="text-4xl font-bold mb-4">Property Marketplace</h1>
+        {/* Hero Section */}
+        <div className="text-center mb-12 space-y-4">
+          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Trh s nehnuteľnosťami
+          </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Professional platform for real estate agents and private sellers
+            Predajte alebo kúpte nehnuteľnosť s profesionálnym prístupom
           </p>
+          <Button size="lg" className="mt-4" onClick={handleCreateListing}>
+            <Plus className="mr-2 h-5 w-5" />
+            Pridať inzerát
+          </Button>
         </div>
 
         {/* Advanced Search */}
