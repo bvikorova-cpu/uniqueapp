@@ -1,6 +1,7 @@
 import Navbar from '@/components/Navbar';
 import { VoiceCloneUpload } from '@/components/voice-memorial/VoiceCloneUpload';
 import { VoiceMemoryPlayer } from '@/components/voice-memorial/VoiceMemoryPlayer';
+import { VoiceCloneManager } from '@/components/voice-memorial/VoiceCloneManager';
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ const VoiceMemorial = () => {
 
           <div className="grid gap-8 md:grid-cols-1">
             <VoiceCloneUpload />
+            <VoiceCloneManager />
             <VoiceMemoryPlayer />
           </div>
 
