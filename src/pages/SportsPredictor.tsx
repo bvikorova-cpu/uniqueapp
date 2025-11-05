@@ -267,6 +267,12 @@ export default function SportsPredictor() {
               <BarChart3 className="mr-2 h-5 w-5" />
               View Top Tipsters
             </Button>
+            {user && (
+              <Button size="lg" variant="secondary" onClick={() => navigate("/admin/sports-matches")}>
+                <Activity className="mr-2 h-5 w-5" />
+                Pridať zápas
+              </Button>
+            )}
           </div>
 
           {/* Legal Disclaimer */}
