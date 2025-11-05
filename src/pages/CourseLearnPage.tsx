@@ -4,10 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import { QuizTaker } from "@/components/student-learning/QuizTaker";
+import { CertificateGenerator } from "@/components/student-learning/CertificateGenerator";
 import {
   BookOpen,
   CheckCircle,
@@ -65,6 +68,10 @@ export default function CourseLearnPage() {
   const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [userId, setUserId] = useState<string>("");
   const [enrollmentId, setEnrollmentId] = useState<string>("");
+  const [studentName, setStudentName] = useState<string>("");
+  const [showCertificate, setShowCertificate] = useState(false);
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [nameInput, setNameInput] = useState("");
 
   useEffect(() => {
     loadCourseData();
@@ -85,6 +92,18 @@ export default function CourseLearnPage() {
       }
 
       setUserId(user.id);
+
+      // Load user profile for student name
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profile?.full_name) {
+        setStudentName(profile.full_name);
+      }
+
 
       // Check enrollment
       const { data: enrollment } = await supabase
@@ -234,6 +253,22 @@ export default function CourseLearnPage() {
     if (lessons.length === 0) return 0;
     const completed = Object.values(progress).filter((p) => p.is_completed).length;
     return Math.round((completed / lessons.length) * 100);
+  };
+
+  const handleGenerateCertificate = () => {
+    if (!studentName) {
+      setShowNamePrompt(true);
+    } else {
+      setShowCertificate(true);
+    }
+  };
+
+  const handleNameSubmit = () => {
+    if (nameInput.trim()) {
+      setStudentName(nameInput.trim());
+      setShowNamePrompt(false);
+      setShowCertificate(true);
+    }
   };
 
   if (loading) {
@@ -460,7 +495,51 @@ export default function CourseLearnPage() {
                   }
 
                   if (overallProgress === 100) {
-                    return (
+                    return showCertificate ? (
+                      <CertificateGenerator
+                        courseTitle={course.title}
+                        studentName={studentName}
+                        completionDate={new Date().toISOString()}
+                        userId={userId}
+                        courseId={courseId!}
+                      />
+                    ) : showNamePrompt ? (
+                      <Card className="bg-primary/5 border-primary/20">
+                        <CardContent className="py-8">
+                          <h3 className="text-xl font-bold mb-4 text-center">
+                            Enter Your Name for Certificate
+                          </h3>
+                          <p className="text-muted-foreground mb-6 text-center">
+                            Please enter your full name as you'd like it to appear on your certificate
+                          </p>
+                          <div className="max-w-md mx-auto space-y-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="student-name">Full Name</Label>
+                              <Input
+                                id="student-name"
+                                value={nameInput}
+                                onChange={(e) => setNameInput(e.target.value)}
+                                placeholder="John Doe"
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    handleNameSubmit();
+                                  }
+                                }}
+                              />
+                            </div>
+                            <Button
+                              onClick={handleNameSubmit}
+                              disabled={!nameInput.trim()}
+                              className="w-full"
+                              size="lg"
+                            >
+                              <Award className="mr-2 h-5 w-5" />
+                              Generate Certificate
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ) : (
                       <Card className="bg-primary/5 border-primary/20">
                         <CardContent className="text-center py-8">
                           <Award className="h-16 w-16 text-primary mx-auto mb-4" />
@@ -470,7 +549,7 @@ export default function CourseLearnPage() {
                           <p className="text-muted-foreground mb-4">
                             You've completed all lessons in this course!
                           </p>
-                          <Button size="lg">
+                          <Button size="lg" onClick={handleGenerateCertificate}>
                             <Award className="mr-2 h-5 w-5" />
                             Get Your Certificate
                           </Button>
