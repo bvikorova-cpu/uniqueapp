@@ -13,7 +13,8 @@ const HomeDecorSubscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [currentSubscription, setCurrentSubscription] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     loadSubscription();
@@ -33,60 +34,51 @@ const HomeDecorSubscription = () => {
       .single();
 
     setCurrentSubscription(data);
-    setLoading(false);
+    setInitialLoading(false);
   };
 
-  const handleSubscribe = async (tier: 'free' | 'pro') => {
+  const handleSubscribe = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       navigate("/auth");
       return;
     }
 
-    if (tier === 'pro') {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-decor-checkout');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
       toast({
-        title: "Stripe integrácia",
-        description: "Stripe checkout bude pridaný čoskoro",
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa vytvoriť checkout session",
+        variant: "destructive",
       });
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    toast({
-      title: "Free plán aktívny",
-      description: "Máte 2 AI návrhy mesačne",
-    });
   };
 
-  const plans = [
-    {
-      tier: 'free',
-      name: 'Free',
-      price: 0,
-      designs: 2,
-      features: [
-        '2 AI návrhy mesačne',
-        'Základné štýly',
-        'Odporúčané produkty',
-        'Uloženie 1 projektu'
-      ]
-    },
-    {
-      tier: 'pro',
-      name: 'Pro',
-      price: 7.99,
-      designs: 50,
-      popular: true,
-      features: [
-        '50 AI návrhov mesačne',
-        'Všetky štýly & customizácia',
-        'Detailné produktové návrhy',
-        'Neobmedzené uložené projekty',
-        'AR preview (€0.99/náhľad)',
-        'Prioritná podpora',
-        'Export do PDF'
-      ]
-    }
-  ];
+  const plan = {
+    tier: 'pro',
+    name: 'Pro',
+    price: 7.99,
+    designs: 50,
+    features: [
+      '50 AI návrhov mesačne',
+      'Všetky štýly & customizácia',
+      'Detailné produktové návrhy',
+      'Neobmedzené uložené projekty',
+      'AR preview (€0.99/náhľad)',
+      'Prioritná podpora',
+      'Export do PDF'
+    ]
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
@@ -123,58 +115,50 @@ const HomeDecorSubscription = () => {
           </Card>
         )}
 
-        {/* Plans Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {plans.map((plan) => (
-            <Card 
-              key={plan.tier} 
-              className={plan.popular ? "border-primary border-2 relative" : ""}
-            >
-              {plan.popular && (
-                <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-1 rounded-bl-lg rounded-tr-lg">
-                  <Sparkles className="h-4 w-4 inline mr-1" />
-                  Najpopulárnejšie
+        {/* Plan Card */}
+        <div className="max-w-2xl mx-auto">
+          <Card className="border-primary border-2 relative">
+            <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-1 rounded-bl-lg rounded-tr-lg">
+              <Sparkles className="h-4 w-4 inline mr-1" />
+              Odporúčané
+            </div>
+            
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-3xl">{plan.name}</CardTitle>
+                  <CardDescription>{plan.designs} AI návrhov / mesiac</CardDescription>
                 </div>
-              )}
-              
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-3xl">{plan.name}</CardTitle>
-                    <CardDescription>{plan.designs} AI návrhov / mesiac</CardDescription>
-                  </div>
-                  {plan.tier === 'pro' && <Crown className="h-8 w-8 text-primary" />}
-                </div>
-                <div className="mt-4">
-                  <span className="text-5xl font-bold">€{plan.price}</span>
-                  <span className="text-muted-foreground">/mesiac</span>
-                </div>
-              </CardHeader>
+                <Crown className="h-8 w-8 text-primary" />
+              </div>
+              <div className="mt-4">
+                <span className="text-5xl font-bold">€{plan.price}</span>
+                <span className="text-muted-foreground">/mesiac</span>
+              </div>
+            </CardHeader>
 
-              <CardContent className="space-y-6">
-                <div className="space-y-3">
-                  {plan.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <div className="flex-shrink-0 h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Check className="h-3 w-3 text-primary" />
-                      </div>
-                      <span className="text-sm">{feature}</span>
+            <CardContent className="space-y-6">
+              <div className="space-y-3">
+                {plan.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <div className="flex-shrink-0 h-5 w-5 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Check className="h-3 w-3 text-primary" />
                     </div>
-                  ))}
-                </div>
+                    <span className="text-sm">{feature}</span>
+                  </div>
+                ))}
+              </div>
 
-                <Button
-                  onClick={() => handleSubscribe(plan.tier as 'free' | 'pro')}
-                  className="w-full"
-                  size="lg"
-                  variant={plan.popular ? "default" : "outline"}
-                  disabled={currentSubscription?.tier === plan.tier}
-                >
-                  {currentSubscription?.tier === plan.tier ? "Aktívny plán" : `Aktivovať ${plan.name}`}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+              <Button
+                onClick={handleSubscribe}
+                className="w-full"
+                size="lg"
+                disabled={loading || currentSubscription?.tier === 'pro'}
+              >
+                {loading ? "Načítavam..." : currentSubscription?.tier === 'pro' ? "Aktívny plán" : "Aktivovať Pro"}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Additional Services */}

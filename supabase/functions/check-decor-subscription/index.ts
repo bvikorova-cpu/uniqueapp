@@ -9,7 +9,7 @@ const corsHeaders = {
 
 const logStep = (step: string, details?: any) => {
   const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CHECK-DECOR-SUB] ${step}${detailsStr}`);
+  console.log(`[CHECK-DECOR-SUBSCRIPTION] ${step}${detailsStr}`);
 };
 
 serve(async (req) => {
@@ -26,31 +26,50 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header");
-
+    
     const token = authHeader.replace("Bearer ", "");
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
+    if (userError) throw new Error(`Auth error: ${userError.message}`);
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+      apiVersion: "2025-08-27.basil",
+    });
+
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
     if (customers.data.length === 0) {
       logStep("No customer found");
-      return new Response(JSON.stringify({ subscribed: false, designs_used: 0, designs_limit: 0 }), {
+      
+      // Update or insert subscription record
+      await supabaseClient
+        .from('decor_subscriptions')
+        .upsert({
+          user_id: user.id,
+          tier: 'free',
+          designs_used: 0,
+          designs_limit: 0,
+        }, {
+          onConflict: 'user_id'
+        });
+      
+      return new Response(JSON.stringify({ 
+        tier: 'free',
+        designs_limit: 0,
+        designs_used: 0 
+      }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
       });
     }
 
     const customerId = customers.data[0].id;
+    logStep("Found customer", { customerId });
+
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
       status: "active",
@@ -58,59 +77,40 @@ serve(async (req) => {
     });
 
     const hasActiveSub = subscriptions.data.length > 0;
-    let subscriptionEnd = null;
-    let productId = null;
+    let tier = 'free';
+    let designsLimit = 0;
 
     if (hasActiveSub) {
+      tier = 'pro';
+      designsLimit = 50;
       const subscription = subscriptions.data[0];
-      subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
-      productId = subscription.items.data[0].price.product as string;
-      
-      // Update or create subscription record in database
-      const { data: existingSub } = await supabaseClient
-        .from("decor_subscriptions")
-        .select("*")
-        .eq("user_id", user.id)
-        .single();
-
-      if (existingSub) {
-        await supabaseClient
-          .from("decor_subscriptions")
-          .update({
-            stripe_customer_id: customerId,
-            stripe_subscription_id: subscription.id,
-            status: "active",
-            current_period_end: subscriptionEnd,
-          })
-          .eq("user_id", user.id);
-      } else {
-        await supabaseClient
-          .from("decor_subscriptions")
-          .insert({
-            user_id: user.id,
-            stripe_customer_id: customerId,
-            stripe_subscription_id: subscription.id,
-            status: "active",
-            current_period_end: subscriptionEnd,
-          });
-      }
-
-      logStep("Active subscription found");
+      logStep("Active subscription found", { subscriptionId: subscription.id });
+    } else {
+      logStep("No active subscription");
     }
 
-    // Get subscription usage from database
-    const { data: subData } = await supabaseClient
-      .from("decor_subscriptions")
-      .select("designs_used, designs_limit")
-      .eq("user_id", user.id)
+    // Update or insert subscription record
+    const { data: existingSub } = await supabaseClient
+      .from('decor_subscriptions')
+      .select('designs_used')
+      .eq('user_id', user.id)
       .single();
 
+    await supabaseClient
+      .from('decor_subscriptions')
+      .upsert({
+        user_id: user.id,
+        tier: tier,
+        designs_used: existingSub?.designs_used || 0,
+        designs_limit: designsLimit,
+      }, {
+        onConflict: 'user_id'
+      });
+
     return new Response(JSON.stringify({
-      subscribed: hasActiveSub,
-      product_id: productId,
-      subscription_end: subscriptionEnd,
-      designs_used: subData?.designs_used || 0,
-      designs_limit: hasActiveSub ? (subData?.designs_limit || 50) : 0,
+      tier: tier,
+      designs_limit: designsLimit,
+      designs_used: existingSub?.designs_used || 0
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

@@ -2,12 +2,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Video, Calendar, Clock, Euro } from "lucide-react";
+import { Video, Calendar, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 export function DesignConsultations() {
   const { toast } = useToast();
-  const [selectedDuration, setSelectedDuration] = useState<30 | 60 | null>(null);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState<number | null>(null);
 
   const packages = [
     {
@@ -35,11 +38,33 @@ export function DesignConsultations() {
     }
   ];
 
-  const handleBookConsultation = (duration: 30 | 60, price: number) => {
-    toast({
-      title: "Rezervácia konzultácie",
-      description: `Funkcia platby bude čoskoro dostupná. Cena: €${price}`,
-    });
+  const handleBookConsultation = async (duration: 30 | 60, price: number) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    setLoading(duration);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-consultation-checkout', {
+        body: { duration: duration.toString() }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa vytvoriť checkout session",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(null);
+    }
   };
 
   return (
@@ -92,9 +117,10 @@ export function DesignConsultations() {
                 onClick={() => handleBookConsultation(pkg.duration as 30 | 60, pkg.price)}
                 className="w-full"
                 variant={pkg.popular ? "default" : "outline"}
+                disabled={loading === pkg.duration}
               >
                 <Calendar className="mr-2 h-4 w-4" />
-                Rezervovať konzultáciu
+                {loading === pkg.duration ? "Načítavam..." : "Rezervovať konzultáciu"}
               </Button>
             </CardContent>
           </Card>
