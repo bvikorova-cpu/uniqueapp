@@ -9128,6 +9128,36 @@ export type Database = {
           },
         ]
       }
+      lottery_generations: {
+        Row: {
+          bonus_numbers: number[] | null
+          created_at: string | null
+          id: string
+          is_favorite: boolean | null
+          lottery_type: string
+          main_numbers: number[]
+          user_id: string
+        }
+        Insert: {
+          bonus_numbers?: number[] | null
+          created_at?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          lottery_type: string
+          main_numbers: number[]
+          user_id: string
+        }
+        Update: {
+          bonus_numbers?: number[] | null
+          created_at?: string | null
+          id?: string
+          is_favorite?: boolean | null
+          lottery_type?: string
+          main_numbers?: number[]
+          user_id?: string
+        }
+        Relationships: []
+      }
       macro_tracking: {
         Row: {
           calories: number | null
@@ -14965,6 +14995,48 @@ export type Database = {
           created_at?: string | null
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_subscriptions: {
+        Row: {
+          created_at: string | null
+          generations_limit: number | null
+          generations_used: number | null
+          id: string
+          stripe_customer_id: string | null
+          stripe_product_id: string | null
+          subscription_end: string | null
+          subscription_status: string | null
+          subscription_tier: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          generations_limit?: number | null
+          generations_used?: number | null
+          id?: string
+          stripe_customer_id?: string | null
+          stripe_product_id?: string | null
+          subscription_end?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          generations_limit?: number | null
+          generations_used?: number | null
+          id?: string
+          stripe_customer_id?: string | null
+          stripe_product_id?: string | null
+          subscription_end?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
