@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search, Home, Upload, ShoppingBag, Store, Star, Sparkles, Video, Zap } from "lucide-react";
+import { Plus, Search, Home, Upload, ShoppingBag, Store, Star, Sparkles, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,7 +13,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 import { AIRoomDesigner } from "@/components/home-decor/AIRoomDesigner";
-import { DesignConsultations } from "@/components/home-decor/DesignConsultations";
 import { useDecorSubscription } from "@/hooks/useDecorSubscription";
 import { CheckCircle } from "lucide-react";
 
@@ -283,7 +282,7 @@ const HomeDecorMarketplace = () => {
         </div>
 
         <Tabs defaultValue="ai-designer" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger value="ai-designer">
               <Sparkles className="h-4 w-4 mr-2" />
               AI Designer
@@ -295,10 +294,6 @@ const HomeDecorMarketplace = () => {
             <TabsTrigger value="sell">
               <Store className="h-4 w-4 mr-2" />
               Sell
-            </TabsTrigger>
-            <TabsTrigger value="consultations">
-              <Video className="h-4 w-4 mr-2" />
-              Consultations
             </TabsTrigger>
           </TabsList>
 
@@ -541,11 +536,6 @@ const HomeDecorMarketplace = () => {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          {/* Consultations Tab */}
-          <TabsContent value="consultations">
-            <DesignConsultations />
           </TabsContent>
         </Tabs>
       </div>
