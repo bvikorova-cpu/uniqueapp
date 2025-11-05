@@ -11928,6 +11928,7 @@ export type Database = {
           birth_date: string | null
           coins: number | null
           company: string | null
+          company_name: string | null
           created_at: string
           email: string | null
           full_name: string | null
@@ -11939,6 +11940,7 @@ export type Database = {
           phone: string | null
           social_links: Json | null
           updated_at: string
+          user_type: string | null
           website: string | null
         }
         Insert: {
@@ -11947,6 +11949,7 @@ export type Database = {
           birth_date?: string | null
           coins?: number | null
           company?: string | null
+          company_name?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -11958,6 +11961,7 @@ export type Database = {
           phone?: string | null
           social_links?: Json | null
           updated_at?: string
+          user_type?: string | null
           website?: string | null
         }
         Update: {
@@ -11966,6 +11970,7 @@ export type Database = {
           birth_date?: string | null
           coins?: number | null
           company?: string | null
+          company_name?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -11977,9 +11982,222 @@ export type Database = {
           phone?: string | null
           social_links?: Json | null
           updated_at?: string
+          user_type?: string | null
           website?: string | null
         }
         Relationships: []
+      }
+      properties: {
+        Row: {
+          area_sqm: number | null
+          bathrooms: number | null
+          bedrooms: number | null
+          created_at: string | null
+          description: string | null
+          id: string
+          location: string
+          price: number
+          property_type: string | null
+          rooms: number | null
+          status: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          area_sqm?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location: string
+          price: number
+          property_type?: string | null
+          rooms?: number | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          area_sqm?: number | null
+          bathrooms?: number | null
+          bedrooms?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          location?: string
+          price?: number
+          property_type?: string | null
+          rooms?: number | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_images: {
+        Row: {
+          created_at: string | null
+          display_order: number | null
+          id: string
+          image_url: string
+          is_primary: boolean | null
+          property_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url: string
+          is_primary?: boolean | null
+          property_id: string
+        }
+        Update: {
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          image_url?: string
+          is_primary?: boolean | null
+          property_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_images_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_listings: {
+        Row: {
+          created_at: string | null
+          end_date: string
+          id: string
+          inquiries_count: number | null
+          is_active: boolean | null
+          package_type: string
+          price_paid: number
+          property_id: string
+          start_date: string | null
+          views_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          end_date: string
+          id?: string
+          inquiries_count?: number | null
+          is_active?: boolean | null
+          package_type: string
+          price_paid: number
+          property_id: string
+          start_date?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          end_date?: string
+          id?: string
+          inquiries_count?: number | null
+          is_active?: boolean | null
+          package_type?: string
+          price_paid?: number
+          property_id?: string
+          start_date?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_listings_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_transactions: {
+        Row: {
+          amount: number
+          created_at: string | null
+          id: string
+          package_type: string | null
+          payment_intent_id: string | null
+          payment_status: string | null
+          property_id: string | null
+          service_type: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          id?: string
+          package_type?: string | null
+          payment_intent_id?: string | null
+          payment_status?: string | null
+          property_id?: string | null
+          service_type?: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          id?: string
+          package_type?: string | null
+          payment_intent_id?: string | null
+          payment_status?: string | null
+          property_id?: string | null
+          service_type?: string | null
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_transactions_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_videos: {
+        Row: {
+          created_at: string | null
+          id: string
+          property_id: string
+          video_type: string | null
+          video_url: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          property_id: string
+          video_type?: string | null
+          video_url: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          property_id?: string
+          video_type?: string | null
+          video_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_videos_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       psychology_messages: {
         Row: {
