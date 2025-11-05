@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale } from "lucide-react";
+import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import megatalentLogo from "@/assets/megatalent-logo.png";
@@ -284,6 +284,13 @@ const Navbar = () => {
     { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
     { path: "/referral", label: t('navbar.invite_friend'), icon: User },
     { path: "/iq-platform", label: "🧩 IQ Platform", icon: Brain },
+    { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
+    { path: "/fundraising/dream", label: "✨ Dream Maker", icon: Sparkles },
+    { path: "/fundraising/hero", label: "🦸 Community Hero", icon: Shield },
+    { path: "/fundraising/pet", label: "🐾 Pet Rescue", icon: Heart },
+    { path: "/fundraising/student", label: "🎓 Student Support", icon: GraduationCap },
+    { path: "/fundraising/crisis", label: "🆘 Crisis Relief", icon: AlertTriangle },
+    { path: "/fundraising/talent", label: "🎭 Talent Sponsorship", icon: Star },
     { path: "/terms", label: t('navbar.terms'), icon: FileText },
   ];
 

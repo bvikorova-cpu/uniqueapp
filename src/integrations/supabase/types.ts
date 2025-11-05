@@ -1646,6 +1646,60 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_donations: {
+        Row: {
+          amount: number
+          campaign_id: string
+          campaign_type: string
+          created_at: string | null
+          donor_email: string | null
+          donor_id: string | null
+          donor_name: string | null
+          id: string
+          is_anonymous: boolean | null
+          is_monthly: boolean | null
+          message: string | null
+          net_amount: number
+          platform_fee: number
+          status: string | null
+          stripe_payment_id: string | null
+        }
+        Insert: {
+          amount: number
+          campaign_id: string
+          campaign_type: string
+          created_at?: string | null
+          donor_email?: string | null
+          donor_id?: string | null
+          donor_name?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_monthly?: boolean | null
+          message?: string | null
+          net_amount: number
+          platform_fee: number
+          status?: string | null
+          stripe_payment_id?: string | null
+        }
+        Update: {
+          amount?: number
+          campaign_id?: string
+          campaign_type?: string
+          created_at?: string | null
+          donor_email?: string | null
+          donor_id?: string | null
+          donor_name?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_monthly?: boolean | null
+          message?: string | null
+          net_amount?: number
+          platform_fee?: number
+          status?: string | null
+          stripe_payment_id?: string | null
+        }
+        Relationships: []
+      }
       certificate_purchases: {
         Row: {
           amount: number
@@ -4323,6 +4377,72 @@ export type Database = {
           },
         ]
       }
+      crisis_campaigns: {
+        Row: {
+          created_at: string | null
+          crisis_type: string
+          current_amount: number | null
+          description: string
+          expires_at: string | null
+          id: string
+          images: string[] | null
+          location: string | null
+          status: string | null
+          story: string
+          supporters_count: number | null
+          target_amount: number
+          title: string
+          updated_at: string | null
+          urgent: boolean | null
+          user_id: string
+          verified: boolean | null
+          verified_by: string | null
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          crisis_type: string
+          current_amount?: number | null
+          description: string
+          expires_at?: string | null
+          id?: string
+          images?: string[] | null
+          location?: string | null
+          status?: string | null
+          story: string
+          supporters_count?: number | null
+          target_amount: number
+          title: string
+          updated_at?: string | null
+          urgent?: boolean | null
+          user_id: string
+          verified?: boolean | null
+          verified_by?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          crisis_type?: string
+          current_amount?: number | null
+          description?: string
+          expires_at?: string | null
+          id?: string
+          images?: string[] | null
+          location?: string | null
+          status?: string | null
+          story?: string
+          supporters_count?: number | null
+          target_amount?: number
+          title?: string
+          updated_at?: string | null
+          urgent?: boolean | null
+          user_id?: string
+          verified?: boolean | null
+          verified_by?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       cross_reality_reveals: {
         Row: {
           id: string
@@ -4993,6 +5113,66 @@ export type Database = {
           price_coins?: number
           thumbnail_url?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      dream_campaigns: {
+        Row: {
+          created_at: string | null
+          current_amount: number | null
+          description: string
+          dream_type: string
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          milestones: Json | null
+          status: string | null
+          story: string
+          supporters_count: number | null
+          target_amount: number
+          title: string
+          updated_at: string | null
+          updates: Json | null
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_amount?: number | null
+          description: string
+          dream_type: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          milestones?: Json | null
+          status?: string | null
+          story: string
+          supporters_count?: number | null
+          target_amount: number
+          title: string
+          updated_at?: string | null
+          updates?: Json | null
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_amount?: number | null
+          description?: string
+          dream_type?: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          milestones?: Json | null
+          status?: string | null
+          story?: string
+          supporters_count?: number | null
+          target_amount?: number
+          title?: string
+          updated_at?: string | null
+          updates?: Json | null
+          user_id?: string
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -6676,6 +6856,72 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      hero_campaigns: {
+        Row: {
+          created_at: string | null
+          current_amount: number | null
+          description: string
+          ends_at: string | null
+          hero_type: string
+          id: string
+          image_url: string | null
+          organization_name: string | null
+          sponsors: Json | null
+          status: string | null
+          story: string
+          supporters_count: number | null
+          target_amount: number
+          title: string
+          updated_at: string | null
+          user_id: string
+          verified: boolean | null
+          verified_by: string | null
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_amount?: number | null
+          description: string
+          ends_at?: string | null
+          hero_type: string
+          id?: string
+          image_url?: string | null
+          organization_name?: string | null
+          sponsors?: Json | null
+          status?: string | null
+          story: string
+          supporters_count?: number | null
+          target_amount: number
+          title: string
+          updated_at?: string | null
+          user_id: string
+          verified?: boolean | null
+          verified_by?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_amount?: number | null
+          description?: string
+          ends_at?: string | null
+          hero_type?: string
+          id?: string
+          image_url?: string | null
+          organization_name?: string | null
+          sponsors?: Json | null
+          status?: string | null
+          story?: string
+          supporters_count?: number | null
+          target_amount?: number
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          verified?: boolean | null
+          verified_by?: string | null
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -8628,6 +8874,81 @@ export type Database = {
           },
         ]
       }
+      medical_campaigns: {
+        Row: {
+          created_at: string | null
+          current_amount: number | null
+          description: string
+          diagnosis: string
+          ends_at: string | null
+          hospital: string | null
+          id: string
+          image_url: string | null
+          medical_documents: string[] | null
+          monthly_donors_count: number | null
+          one_time_donors_count: number | null
+          patient_name: string
+          status: string | null
+          story: string
+          target_amount: number
+          title: string
+          updated_at: string | null
+          user_id: string
+          verified: boolean | null
+          verified_at: string | null
+          verified_by: string | null
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_amount?: number | null
+          description: string
+          diagnosis: string
+          ends_at?: string | null
+          hospital?: string | null
+          id?: string
+          image_url?: string | null
+          medical_documents?: string[] | null
+          monthly_donors_count?: number | null
+          one_time_donors_count?: number | null
+          patient_name: string
+          status?: string | null
+          story: string
+          target_amount: number
+          title: string
+          updated_at?: string | null
+          user_id: string
+          verified?: boolean | null
+          verified_at?: string | null
+          verified_by?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_amount?: number | null
+          description?: string
+          diagnosis?: string
+          ends_at?: string | null
+          hospital?: string | null
+          id?: string
+          image_url?: string | null
+          medical_documents?: string[] | null
+          monthly_donors_count?: number | null
+          one_time_donors_count?: number | null
+          patient_name?: string
+          status?: string | null
+          story?: string
+          target_amount?: number
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          verified?: boolean | null
+          verified_at?: string | null
+          verified_by?: string | null
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       megatalent_referral_codes: {
         Row: {
           code: string
@@ -10149,6 +10470,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pet_rescue_campaigns: {
+        Row: {
+          created_at: string | null
+          current_amount: number | null
+          description: string
+          id: string
+          images: string[] | null
+          medical_condition: string | null
+          pet_name: string
+          pet_type: string
+          shelter_name: string | null
+          status: string | null
+          story: string
+          supporters_count: number | null
+          target_amount: number
+          title: string
+          updated_at: string | null
+          urgent: boolean | null
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_amount?: number | null
+          description: string
+          id?: string
+          images?: string[] | null
+          medical_condition?: string | null
+          pet_name: string
+          pet_type: string
+          shelter_name?: string | null
+          status?: string | null
+          story: string
+          supporters_count?: number | null
+          target_amount: number
+          title: string
+          updated_at?: string | null
+          urgent?: boolean | null
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_amount?: number | null
+          description?: string
+          id?: string
+          images?: string[] | null
+          medical_condition?: string | null
+          pet_name?: string
+          pet_type?: string
+          shelter_name?: string | null
+          status?: string | null
+          story?: string
+          supporters_count?: number | null
+          target_amount?: number
+          title?: string
+          updated_at?: string | null
+          urgent?: boolean | null
+          user_id?: string
+          video_url?: string | null
+        }
+        Relationships: []
       }
       pet_trades: {
         Row: {
@@ -12383,6 +12767,66 @@ export type Database = {
           },
         ]
       }
+      student_campaigns: {
+        Row: {
+          created_at: string | null
+          current_amount: number | null
+          description: string
+          ends_at: string | null
+          field_of_study: string | null
+          id: string
+          image_url: string | null
+          pay_it_forward: boolean | null
+          school_name: string | null
+          status: string | null
+          story: string
+          support_type: string
+          supporters_count: number | null
+          target_amount: number
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_amount?: number | null
+          description: string
+          ends_at?: string | null
+          field_of_study?: string | null
+          id?: string
+          image_url?: string | null
+          pay_it_forward?: boolean | null
+          school_name?: string | null
+          status?: string | null
+          story: string
+          support_type: string
+          supporters_count?: number | null
+          target_amount: number
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_amount?: number | null
+          description?: string
+          ends_at?: string | null
+          field_of_study?: string | null
+          id?: string
+          image_url?: string | null
+          pay_it_forward?: boolean | null
+          school_name?: string | null
+          status?: string | null
+          story?: string
+          support_type?: string
+          supporters_count?: number | null
+          target_amount?: number
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       styling_sessions: {
         Row: {
           ai_recommendations: Json | null
@@ -12455,6 +12899,75 @@ export type Database = {
           tier?: Database["public"]["Enums"]["subscription_tier"]
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      talent_campaigns: {
+        Row: {
+          achievements: string[] | null
+          created_at: string | null
+          current_amount: number | null
+          description: string
+          ends_at: string | null
+          goals: string[] | null
+          id: string
+          images: string[] | null
+          portfolio_url: string | null
+          premium_subscriber: boolean | null
+          sponsors: Json | null
+          sponsors_count: number | null
+          status: string | null
+          story: string
+          talent_type: string
+          target_amount: number
+          title: string
+          updated_at: string | null
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          achievements?: string[] | null
+          created_at?: string | null
+          current_amount?: number | null
+          description: string
+          ends_at?: string | null
+          goals?: string[] | null
+          id?: string
+          images?: string[] | null
+          portfolio_url?: string | null
+          premium_subscriber?: boolean | null
+          sponsors?: Json | null
+          sponsors_count?: number | null
+          status?: string | null
+          story: string
+          talent_type: string
+          target_amount: number
+          title: string
+          updated_at?: string | null
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          achievements?: string[] | null
+          created_at?: string | null
+          current_amount?: number | null
+          description?: string
+          ends_at?: string | null
+          goals?: string[] | null
+          id?: string
+          images?: string[] | null
+          portfolio_url?: string | null
+          premium_subscriber?: boolean | null
+          sponsors?: Json | null
+          sponsors_count?: number | null
+          status?: string | null
+          story?: string
+          talent_type?: string
+          target_amount?: number
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          video_url?: string | null
         }
         Relationships: []
       }

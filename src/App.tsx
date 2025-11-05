@@ -190,6 +190,13 @@ import MusicianDashboard from "./pages/MusicianDashboard";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import IQPlatform from "./pages/IQPlatform";
+import MedicalFundraising from "./pages/fundraising/MedicalFundraising";
+import DreamMaker from "./pages/fundraising/DreamMaker";
+import CommunityHero from "./pages/fundraising/CommunityHero";
+import PetRescue from "./pages/fundraising/PetRescue";
+import StudentSupport from "./pages/fundraising/StudentSupport";
+import CrisisRelief from "./pages/fundraising/CrisisRelief";
+import TalentSponsorship from "./pages/fundraising/TalentSponsorship";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -398,8 +405,18 @@ const App = () => (
           <Route path="/story-video-demo" element={<StoryVideoDemo />} />
           <Route path="/admin/image-editor" element={<AdminImageEditor />} />
           <Route path="/shop" element={<Shop />} />
-          <Route path="/product/:handle" element={<ProductDetail />} />
-          <Route path="/iq-platform" element={<IQPlatform />} />
+              <Route path="/product/:handle" element={<ProductDetail />} />
+              <Route path="/iq-platform" element={<IQPlatform />} />
+              
+              {/* Fundraising Routes */}
+              <Route path="/fundraising/medical" element={<MedicalFundraising />} />
+              <Route path="/fundraising/dream" element={<DreamMaker />} />
+              <Route path="/fundraising/hero" element={<CommunityHero />} />
+              <Route path="/fundraising/pet" element={<PetRescue />} />
+              <Route path="/fundraising/student" element={<StudentSupport />} />
+              <Route path="/fundraising/crisis" element={<CrisisRelief />} />
+              <Route path="/fundraising/talent" element={<TalentSponsorship />} />
+              
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
           </Routes>
