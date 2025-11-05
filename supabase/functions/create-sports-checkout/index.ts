@@ -8,7 +8,7 @@ const corsHeaders = {
 };
 
 const PRICE_IDS = {
-  ai_premium: "price_1SQ73GaXSfGYlTPbjJvVMTky",
+  ai_premium: "price_1SQ73iGaXSfGtYFtjUsVM7Ky",
   expert_tipster: "price_1SQeeFGaSKfGYlTblxcSmkq8",
 };
 
