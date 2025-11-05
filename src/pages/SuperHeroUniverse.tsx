@@ -26,88 +26,284 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-// 3D Hero Character Component
-const HeroCharacter = ({ position, color }: { position: [number, number, number]; color: string }) => {
-  const meshRef = useRef<any>();
+// Enhanced 3D Hero Character Component with Dynamic Poses and Details
+const HeroCharacter = ({ 
+  position, 
+  color, 
+  pose = "ready" 
+}: { 
+  position: [number, number, number]; 
+  color: string;
+  pose?: "attack" | "defend" | "ready";
+}) => {
+  const groupRef = useRef<any>();
+  
+  // Animation based on pose
+  const rotation = pose === "attack" ? [0.2, 0, 0.3] : pose === "defend" ? [-0.2, 0, -0.2] : [0, 0, 0];
+  const armRotation = pose === "attack" ? -1.5 : pose === "defend" ? 0.5 : 0.3;
   
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-      <group position={position}>
-        {/* Body */}
-        <mesh position={[0, 0, 0]} castShadow>
-          <capsuleGeometry args={[0.3, 0.8, 16, 32]} />
-          <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
+      <group ref={groupRef} position={position} rotation={rotation as any}>
+        {/* Torso - Muscular Build */}
+        <mesh position={[0, 0.3, 0]} castShadow>
+          <boxGeometry args={[0.5, 0.7, 0.35]} />
+          <meshStandardMaterial 
+            color={color} 
+            metalness={0.4} 
+            roughness={0.3}
+            emissive={color}
+            emissiveIntensity={0.2}
+          />
         </mesh>
-        {/* Head */}
-        <mesh position={[0, 0.9, 0]} castShadow>
-          <sphereGeometry args={[0.25, 32, 32]} />
-          <meshStandardMaterial color={color} metalness={0.2} roughness={0.3} />
+        
+        {/* Chest Emblem */}
+        <mesh position={[0, 0.4, 0.18]} castShadow>
+          <cylinderGeometry args={[0.12, 0.12, 0.02, 6]} />
+          <meshStandardMaterial 
+            color="#fbbf24" 
+            metalness={0.9} 
+            roughness={0.1}
+            emissive="#fbbf24"
+            emissiveIntensity={0.5}
+          />
         </mesh>
-        {/* Cape */}
-        <mesh position={[0, 0.3, -0.3]} rotation={[0.3, 0, 0]} castShadow>
-          <planeGeometry args={[0.8, 1.2]} />
-          <meshStandardMaterial color={color} side={2} metalness={0.5} roughness={0.5} />
+        
+        {/* Head with Mask */}
+        <mesh position={[0, 1, 0]} castShadow>
+          <sphereGeometry args={[0.28, 32, 32]} />
+          <meshStandardMaterial 
+            color={color} 
+            metalness={0.3} 
+            roughness={0.4}
+          />
         </mesh>
-        {/* Energy Glow */}
-        <Sphere args={[0.35, 32, 32]} position={[0, 0, 0]}>
+        
+        {/* Helmet/Mask Detail */}
+        <mesh position={[0, 1.05, 0.1]} castShadow>
+          <boxGeometry args={[0.35, 0.15, 0.3]} />
+          <meshStandardMaterial 
+            color={color} 
+            metalness={0.6} 
+            roughness={0.2}
+          />
+        </mesh>
+        
+        {/* Eyes Glow */}
+        <mesh position={[-0.08, 1.05, 0.25]}>
+          <sphereGeometry args={[0.04, 16, 16]} />
+          <meshBasicMaterial color="#00ffff" />
+        </mesh>
+        <mesh position={[0.08, 1.05, 0.25]}>
+          <sphereGeometry args={[0.04, 16, 16]} />
+          <meshBasicMaterial color="#00ffff" />
+        </mesh>
+        
+        {/* Left Arm - Dynamic Pose */}
+        <group position={[-0.35, 0.4, 0]} rotation={[armRotation, 0, -0.5]}>
+          <mesh position={[0, -0.25, 0]} castShadow>
+            <capsuleGeometry args={[0.08, 0.4, 8, 16]} />
+            <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+          </mesh>
+          {/* Forearm */}
+          <mesh position={[0, -0.6, 0]} castShadow>
+            <capsuleGeometry args={[0.07, 0.35, 8, 16]} />
+            <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+          </mesh>
+          {/* Fist */}
+          <mesh position={[0, -0.85, 0]} castShadow>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshStandardMaterial color={color} metalness={0.4} roughness={0.3} />
+          </mesh>
+        </group>
+        
+        {/* Right Arm - Dynamic Pose */}
+        <group position={[0.35, 0.4, 0]} rotation={[-armRotation, 0, 0.5]}>
+          <mesh position={[0, -0.25, 0]} castShadow>
+            <capsuleGeometry args={[0.08, 0.4, 8, 16]} />
+            <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+          </mesh>
+          {/* Forearm */}
+          <mesh position={[0, -0.6, 0]} castShadow>
+            <capsuleGeometry args={[0.07, 0.35, 8, 16]} />
+            <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+          </mesh>
+          {/* Fist */}
+          <mesh position={[0, -0.85, 0]} castShadow>
+            <sphereGeometry args={[0.1, 16, 16]} />
+            <meshStandardMaterial color={color} metalness={0.4} roughness={0.3} />
+          </mesh>
+        </group>
+        
+        {/* Legs */}
+        <group position={[-0.12, -0.15, 0]}>
+          <mesh position={[0, -0.35, 0]} castShadow>
+            <capsuleGeometry args={[0.1, 0.5, 8, 16]} />
+            <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+          </mesh>
+          <mesh position={[0, -0.75, 0.05]} castShadow>
+            <capsuleGeometry args={[0.09, 0.4, 8, 16]} />
+            <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+          </mesh>
+          {/* Boot */}
+          <mesh position={[0, -1.05, 0.1]} castShadow>
+            <boxGeometry args={[0.15, 0.1, 0.25]} />
+            <meshStandardMaterial color={color} metalness={0.5} roughness={0.3} />
+          </mesh>
+        </group>
+        
+        <group position={[0.12, -0.15, 0]}>
+          <mesh position={[0, -0.35, 0]} castShadow>
+            <capsuleGeometry args={[0.1, 0.5, 8, 16]} />
+            <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+          </mesh>
+          <mesh position={[0, -0.75, 0.05]} castShadow>
+            <capsuleGeometry args={[0.09, 0.4, 8, 16]} />
+            <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+          </mesh>
+          {/* Boot */}
+          <mesh position={[0, -1.05, 0.1]} castShadow>
+            <boxGeometry args={[0.15, 0.1, 0.25]} />
+            <meshStandardMaterial color={color} metalness={0.5} roughness={0.3} />
+          </mesh>
+        </group>
+        
+        {/* Dynamic Cape with Physics-like Movement */}
+        <mesh position={[0, 0.5, -0.2]} rotation={[0.4, 0, 0]} castShadow>
+          <planeGeometry args={[0.9, 1.5, 10, 10]} />
+          <meshStandardMaterial 
+            color={color} 
+            side={2} 
+            metalness={0.6} 
+            roughness={0.4}
+            emissive={color}
+            emissiveIntensity={0.1}
+          />
+        </mesh>
+        
+        {/* Power Aura - Larger and More Intense */}
+        <Sphere args={[0.6, 32, 32]} position={[0, 0.3, 0]}>
           <MeshDistortMaterial
             color={color}
             attach="material"
-            distort={0.3}
-            speed={2}
-            roughness={0.2}
+            distort={0.5}
+            speed={3}
+            roughness={0}
             transparent
-            opacity={0.3}
+            opacity={0.25}
           />
         </Sphere>
+        
+        {/* Energy Particles */}
+        {pose === "attack" && (
+          <>
+            <mesh position={[0.5, 0.5, 0.5]}>
+              <sphereGeometry args={[0.08, 16, 16]} />
+              <meshBasicMaterial color="#ffff00" />
+            </mesh>
+            <mesh position={[-0.5, 0.6, 0.4]}>
+              <sphereGeometry args={[0.06, 16, 16]} />
+              <meshBasicMaterial color="#ff00ff" />
+            </mesh>
+            <mesh position={[0, 0.8, 0.6]}>
+              <sphereGeometry args={[0.07, 16, 16]} />
+              <meshBasicMaterial color="#00ffff" />
+            </mesh>
+          </>
+        )}
       </group>
     </Float>
   );
 };
 
-// 3D Battle Scene Component
+// Energy Blast Effect
+const EnergyBlast = ({ position, color }: { position: [number, number, number]; color: string }) => {
+  return (
+    <Float speed={4} rotationIntensity={2} floatIntensity={2}>
+      <mesh position={position}>
+        <sphereGeometry args={[0.15, 16, 16]} />
+        <meshBasicMaterial color={color} />
+      </mesh>
+      <Sphere args={[0.3, 16, 16]} position={position}>
+        <MeshDistortMaterial
+          color={color}
+          attach="material"
+          distort={0.8}
+          speed={5}
+          transparent
+          opacity={0.4}
+        />
+      </Sphere>
+    </Float>
+  );
+};
+
+// Enhanced 3D Battle Scene Component
 const BattleScene = () => {
   return (
     <>
-      <PerspectiveCamera makeDefault position={[0, 2, 8]} />
+      <PerspectiveCamera makeDefault position={[0, 3, 10]} />
       <OrbitControls 
         enableZoom={true} 
         enablePan={false}
-        minDistance={5}
-        maxDistance={15}
+        minDistance={6}
+        maxDistance={18}
         maxPolarAngle={Math.PI / 2}
+        autoRotate
+        autoRotateSpeed={0.5}
       />
       
-      {/* Lighting */}
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#9333ea" />
-      <pointLight position={[10, -10, -5]} intensity={0.5} color="#3b82f6" />
+      {/* Enhanced Lighting */}
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[10, 15, 5]} intensity={1.5} castShadow shadow-mapSize={[2048, 2048]} />
+      <pointLight position={[-10, 5, -5]} intensity={1} color="#9333ea" />
+      <pointLight position={[10, 5, -5]} intensity={1} color="#3b82f6" />
+      <spotLight position={[0, 10, 0]} intensity={0.8} angle={0.6} penumbra={1} color="#ec4899" />
       
       {/* Environment */}
-      <Environment preset="sunset" />
+      <Environment preset="night" />
       
-      {/* Heroes */}
-      <HeroCharacter position={[-2, 0, 0]} color="#9333ea" />
-      <HeroCharacter position={[2, 0, 0]} color="#3b82f6" />
-      <HeroCharacter position={[0, 0, -2]} color="#ec4899" />
+      {/* Heroes in Dynamic Combat Poses */}
+      <HeroCharacter position={[-3, 0.5, 0]} color="#9333ea" pose="attack" />
+      <HeroCharacter position={[3, 0.5, 0]} color="#3b82f6" pose="defend" />
+      <HeroCharacter position={[0, 0.5, -3]} color="#ec4899" pose="ready" />
       
-      {/* Battle Platform */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} receiveShadow>
-        <circleGeometry args={[5, 64]} />
+      {/* Energy Blasts */}
+      <EnergyBlast position={[-1, 1.5, 0]} color="#9333ea" />
+      <EnergyBlast position={[1, 1.5, 0]} color="#3b82f6" />
+      
+      {/* Battle Platform with Glow */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.5, 0]} receiveShadow>
+        <circleGeometry args={[6, 64]} />
         <meshStandardMaterial 
-          color="#1e1b4b" 
-          metalness={0.8} 
-          roughness={0.2}
+          color="#0f0a1f" 
+          metalness={0.9} 
+          roughness={0.1}
           emissive="#4c1d95"
-          emissiveIntensity={0.2}
+          emissiveIntensity={0.3}
         />
       </mesh>
       
-      {/* Energy Grid */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.98, 0]}>
-        <ringGeometry args={[3, 5, 32]} />
-        <meshBasicMaterial color="#9333ea" transparent opacity={0.3} />
+      {/* Hexagonal Energy Grid Pattern */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <mesh 
+          key={i} 
+          rotation={[-Math.PI / 2, 0, (Math.PI / 3) * i]} 
+          position={[0, -1.48, 0]}
+        >
+          <ringGeometry args={[2 + i * 0.5, 2.1 + i * 0.5, 6]} />
+          <meshBasicMaterial 
+            color={i % 2 === 0 ? "#9333ea" : "#3b82f6"} 
+            transparent 
+            opacity={0.3 - i * 0.04} 
+          />
+        </mesh>
+      ))}
+      
+      {/* Lightning Effects */}
+      <mesh position={[0, 3, 0]}>
+        <cylinderGeometry args={[0.02, 0.02, 4, 8]} />
+        <meshBasicMaterial color="#ffff00" transparent opacity={0.6} />
       </mesh>
     </>
   );
