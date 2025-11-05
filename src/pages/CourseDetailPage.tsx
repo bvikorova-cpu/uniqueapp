@@ -228,7 +228,11 @@ export default function CourseDetailPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {isEnrolled ? (
-                    <Button className="w-full" size="lg">
+                    <Button
+                      className="w-full"
+                      size="lg"
+                      onClick={() => navigate(`/course/${courseId}/learn`)}
+                    >
                       <Play className="mr-2 h-5 w-5" />
                       Continue Learning
                     </Button>
