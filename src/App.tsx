@@ -191,6 +191,7 @@ import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import IQPlatform from "./pages/IQPlatform";
 import MedicalFundraising from "./pages/fundraising/MedicalFundraising";
+import MedicalDetail from "./pages/fundraising/MedicalDetail";
 import DreamMaker from "./pages/fundraising/DreamMaker";
 import CommunityHero from "./pages/fundraising/CommunityHero";
 import PetRescue from "./pages/fundraising/PetRescue";
@@ -410,6 +411,7 @@ const App = () => (
               
               {/* Fundraising Routes */}
               <Route path="/fundraising/medical" element={<MedicalFundraising />} />
+              <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
               <Route path="/fundraising/dream" element={<DreamMaker />} />
               <Route path="/fundraising/hero" element={<CommunityHero />} />
               <Route path="/fundraising/pet" element={<PetRescue />} />
