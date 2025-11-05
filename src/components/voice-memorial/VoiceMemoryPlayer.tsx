@@ -52,8 +52,8 @@ export const VoiceMemoryPlayer = ({}: VoiceMemoryPlayerProps = {}) => {
     } catch (error: any) {
       console.error('Load voice clones error:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať hlasové klony',
+        title: 'Error',
+        description: 'Failed to load voice clones',
         variant: 'destructive',
       });
     }
@@ -62,8 +62,8 @@ export const VoiceMemoryPlayer = ({}: VoiceMemoryPlayerProps = {}) => {
   const handleGenerate = async () => {
     if (!text || !selectedVoiceId) {
       toast({
-        title: 'Chýbajúce údaje',
-        description: 'Prosím vyplňte text a vyberte hlas',
+        title: 'Missing data',
+        description: 'Please enter text and select a voice',
         variant: 'destructive',
       });
       return;
@@ -90,14 +90,14 @@ export const VoiceMemoryPlayer = ({}: VoiceMemoryPlayerProps = {}) => {
       }
 
       toast({
-        title: 'Úspech!',
-        description: 'Audio spomienka bola vygenerovaná',
+        title: 'Success!',
+        description: 'Voice memory generated',
       });
     } catch (error: any) {
       console.error('Generate voice memory error:', error);
       toast({
-        title: 'Chyba',
-        description: error.message || 'Nepodarilo sa vygenerovať audio',
+        title: 'Error',
+        description: error.message || 'Failed to generate audio',
         variant: 'destructive',
       });
     } finally {
@@ -148,19 +148,19 @@ export const VoiceMemoryPlayer = ({}: VoiceMemoryPlayerProps = {}) => {
         <div className="space-y-2">
           <h3 className="text-2xl font-bold flex items-center gap-2">
             <Volume2 className="h-6 w-6" />
-            Vytvorte hlasovú spomienku
+            Create Voice Memory
           </h3>
           <p className="text-muted-foreground">
-            Napíšte text a vyberte hlasový klon pre vytvorenie spomienky
+            Write text and select a voice clone to create a memory
           </p>
         </div>
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="voice-select">Vyberte hlas</Label>
+            <Label htmlFor="voice-select">Select Voice</Label>
             <Select value={selectedVoiceId} onValueChange={setSelectedVoiceId}>
               <SelectTrigger id="voice-select">
-                <SelectValue placeholder="Vyberte hlasový klon" />
+                <SelectValue placeholder="Select a voice clone" />
               </SelectTrigger>
               <SelectContent>
                 {voiceClones.map((voice) => (
@@ -173,12 +173,12 @@ export const VoiceMemoryPlayer = ({}: VoiceMemoryPlayerProps = {}) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="memory-text">Text spomienky</Label>
+            <Label htmlFor="memory-text">Memory Text</Label>
             <Textarea
               id="memory-text"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="Napíšte vašu spomienku..."
+              placeholder="Write your memory..."
               rows={6}
             />
           </div>
@@ -192,17 +192,17 @@ export const VoiceMemoryPlayer = ({}: VoiceMemoryPlayerProps = {}) => {
           {isGenerating ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generujem audio...
+              Generating audio...
             </>
           ) : (
-            'Vytvoriť hlasovú spomienku'
+            'Create Voice Memory'
           )}
         </Button>
 
         {audioUrl && (
           <div className="space-y-4 pt-4 border-t">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Náhľad:</span>
+              <span className="text-sm font-medium">Preview:</span>
               <Button
                 variant="outline"
                 size="sm"

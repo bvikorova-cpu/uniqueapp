@@ -26,8 +26,8 @@ export const VoiceCloneUpload = ({ onSuccess }: VoiceCloneUploadProps) => {
         setAudioFile(file);
       } else {
         toast({
-          title: 'Nesprávny formát',
-          description: 'Prosím nahrajte audio súbor',
+          title: 'Invalid format',
+          description: 'Please upload an audio file',
           variant: 'destructive',
         });
       }
@@ -39,8 +39,8 @@ export const VoiceCloneUpload = ({ onSuccess }: VoiceCloneUploadProps) => {
     
     if (!name || !audioFile) {
       toast({
-        title: 'Chýbajúce údaje',
-        description: 'Prosím vyplňte meno a nahrajte audio súbor',
+        title: 'Missing data',
+        description: 'Please fill in the name and upload an audio file',
         variant: 'destructive',
       });
       return;
@@ -61,8 +61,8 @@ export const VoiceCloneUpload = ({ onSuccess }: VoiceCloneUploadProps) => {
       if (error) throw error;
 
       toast({
-        title: 'Úspech!',
-        description: 'Hlas bol úspešne naklonovaný',
+        title: 'Success!',
+        description: 'Voice successfully cloned',
       });
 
       setName('');
@@ -75,8 +75,8 @@ export const VoiceCloneUpload = ({ onSuccess }: VoiceCloneUploadProps) => {
     } catch (error: any) {
       console.error('Clone voice error:', error);
       toast({
-        title: 'Chyba',
-        description: error.message || 'Nepodarilo sa naklonovať hlas',
+        title: 'Error',
+        description: error.message || 'Failed to clone voice',
         variant: 'destructive',
       });
     } finally {
@@ -90,38 +90,38 @@ export const VoiceCloneUpload = ({ onSuccess }: VoiceCloneUploadProps) => {
         <div className="space-y-2">
           <h3 className="text-2xl font-bold flex items-center gap-2">
             <Mic className="h-6 w-6" />
-            Vytvorte hlasový klon
+            Create Voice Clone
           </h3>
           <p className="text-muted-foreground">
-            Nahrajte audio nahrávku pre vytvorenie digitálneho klonu hlasu
+            Upload an audio recording to create a digital voice clone
           </p>
         </div>
 
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Meno hlasu *</Label>
+            <Label htmlFor="name">Voice Name *</Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Napr. Babička Mária"
+              placeholder="e.g. Grandma Maria"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Popis (voliteľný)</Label>
+            <Label htmlFor="description">Description (optional)</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Krátky popis o hlase..."
+              placeholder="Short description about the voice..."
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="audio">Audio súbor *</Label>
+            <Label htmlFor="audio">Audio File *</Label>
             <div className="flex items-center gap-4">
               <Input
                 id="audio"
@@ -138,7 +138,7 @@ export const VoiceCloneUpload = ({ onSuccess }: VoiceCloneUploadProps) => {
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              Minimálne 30 sekúnd čistého zvuku pre najlepšie výsledky
+              Minimum 30 seconds of clear audio for best results
             </p>
           </div>
         </div>
@@ -151,12 +151,12 @@ export const VoiceCloneUpload = ({ onSuccess }: VoiceCloneUploadProps) => {
           {isUploading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Vytváram klon...
+              Creating clone...
             </>
           ) : (
             <>
               <Upload className="mr-2 h-4 w-4" />
-              Vytvoriť hlasový klon
+              Create Voice Clone
             </>
           )}
         </Button>

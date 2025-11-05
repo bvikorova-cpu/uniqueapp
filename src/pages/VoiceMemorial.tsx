@@ -12,11 +12,11 @@ const VoiceMemorial = () => {
       <Navbar />
       
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
+          <div className="mb-8">
           <Link to="/time-capsule">
             <Button variant="ghost" size="sm">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Späť na Time Capsule
+              Back to Time Capsule
             </Button>
           </Link>
         </div>
@@ -27,7 +27,7 @@ const VoiceMemorial = () => {
               Voice Clone Memorial
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Zachovajte hlas vašich blízkych navždy. Vytvorte digitálny klon hlasu a prehrávajte spomienky tak, akoby boli tu.
+              Preserve the voices of your loved ones forever. Create digital voice clones and play memories as if they were here.
             </p>
           </div>
 
@@ -38,23 +38,23 @@ const VoiceMemorial = () => {
           </div>
 
           <div className="bg-card p-6 rounded-lg border">
-            <h3 className="text-lg font-semibold mb-4">Ako to funguje?</h3>
+            <h3 className="text-lg font-semibold mb-4">How it works?</h3>
             <ol className="space-y-3 text-muted-foreground">
               <li className="flex gap-3">
                 <span className="font-bold text-primary">1.</span>
-                <span>Nahrajte audio nahrávku hlasu osoby (minimálne 30 sekúnd)</span>
+                <span>Upload an audio recording of the person's voice (minimum 30 seconds)</span>
               </li>
               <li className="flex gap-3">
                 <span className="font-bold text-primary">2.</span>
-                <span>Systém vytvorí digitálny klon hlasu pomocou AI technológie</span>
+                <span>The system creates a digital voice clone using AI technology</span>
               </li>
               <li className="flex gap-3">
                 <span className="font-bold text-primary">3.</span>
-                <span>Napíšte text spomienky a vyberte klonovaný hlas</span>
+                <span>Write the memory text and select the cloned voice</span>
               </li>
               <li className="flex gap-3">
                 <span className="font-bold text-primary">4.</span>
-                <span>Počúvajte spomienky v pôvodnom hlase kedykoľvek chcete</span>
+                <span>Listen to memories in the original voice whenever you want</span>
               </li>
             </ol>
           </div>

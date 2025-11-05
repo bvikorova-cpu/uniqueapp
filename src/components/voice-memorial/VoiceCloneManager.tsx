@@ -44,8 +44,8 @@ export function VoiceCloneManager() {
       
       if (!session) {
         toast({
-          title: "Chyba",
-          description: "Musíte byť prihlásený",
+          title: "Error",
+          description: "You must be logged in",
           variant: "destructive",
         });
         return;
@@ -64,7 +64,7 @@ export function VoiceCloneManager() {
       }
     } catch (error: any) {
       toast({
-        title: "Chyba pri načítaní",
+        title: "Loading error",
         description: error.message,
         variant: "destructive",
       });
@@ -86,8 +86,8 @@ export function VoiceCloneManager() {
   const handleUpdate = async (voiceCloneId: string) => {
     if (!editForm.name.trim()) {
       toast({
-        title: "Chyba",
-        description: "Meno je povinné",
+        title: "Error",
+        description: "Name is required",
         variant: "destructive",
       });
       return;
@@ -113,15 +113,15 @@ export function VoiceCloneManager() {
 
       if (data.success) {
         toast({
-          title: "Úspech",
-          description: "Hlas bol aktualizovaný",
+          title: "Success",
+          description: "Voice updated",
         });
         setEditingId(null);
         loadVoiceClones();
       }
     } catch (error: any) {
       toast({
-        title: "Chyba pri aktualizácii",
+        title: "Update error",
         description: error.message,
         variant: "destructive",
       });
@@ -145,15 +145,15 @@ export function VoiceCloneManager() {
 
       if (data.success) {
         toast({
-          title: "Úspech",
-          description: "Hlas bol zmazaný",
+          title: "Success",
+          description: "Voice deleted",
         });
         setDeleteDialogId(null);
         loadVoiceClones();
       }
     } catch (error: any) {
       toast({
-        title: "Chyba pri mazaní",
+        title: "Deletion error",
         description: error.message,
         variant: "destructive",
       });
@@ -172,8 +172,8 @@ export function VoiceCloneManager() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Správa hlasových klonov</CardTitle>
-          <CardDescription>Načítavam...</CardDescription>
+          <CardTitle>Voice Clone Management</CardTitle>
+          <CardDescription>Loading...</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -185,18 +185,18 @@ export function VoiceCloneManager() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Music className="h-5 w-5" />
-            Správa hlasových klonov
+            Voice Clone Management
           </CardTitle>
           <CardDescription>
-            Spravujte svoje naklonované hlasy - upravte názvy, popisy alebo zmažte nepotrebné
+            Manage your cloned voices - edit names, descriptions or delete unused ones
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {voiceClones.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
               <Music className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Zatiaľ nemáte žiadne naklonované hlasy</p>
-              <p className="text-sm mt-2">Nahrajte svoj prvý audio súbor vyššie</p>
+              <p>You don't have any cloned voices yet</p>
+              <p className="text-sm mt-2">Upload your first audio file above</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -206,31 +206,31 @@ export function VoiceCloneManager() {
                     {editingId === clone.id ? (
                       <div className="space-y-4">
                         <div>
-                          <label className="text-sm font-medium">Názov</label>
+                          <label className="text-sm font-medium">Name</label>
                           <Input
                             value={editForm.name}
                             onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                            placeholder="Názov hlasu"
+                            placeholder="Voice name"
                             className="mt-1"
                           />
                         </div>
                         <div>
-                          <label className="text-sm font-medium">Popis</label>
+                          <label className="text-sm font-medium">Description</label>
                           <Textarea
                             value={editForm.description}
                             onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                            placeholder="Popis hlasu (voliteľné)"
+                            placeholder="Voice description (optional)"
                             className="mt-1"
                           />
                         </div>
                         <div className="flex gap-2">
                           <Button onClick={() => handleUpdate(clone.id)} size="sm">
                             <Save className="h-4 w-4 mr-2" />
-                            Uložiť
+                            Save
                           </Button>
                           <Button onClick={cancelEdit} variant="outline" size="sm">
                             <X className="h-4 w-4 mr-2" />
-                            Zrušiť
+                            Cancel
                           </Button>
                         </div>
                       </div>
@@ -243,7 +243,7 @@ export function VoiceCloneManager() {
                               <p className="text-sm text-muted-foreground mt-1">{clone.description}</p>
                             )}
                             <p className="text-xs text-muted-foreground mt-2">
-                              Vytvorené: {formatDate(clone.created_at)}
+                              Created: {formatDate(clone.created_at)}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               Voice ID: {clone.voice_id}
@@ -279,18 +279,18 @@ export function VoiceCloneManager() {
       <AlertDialog open={deleteDialogId !== null} onOpenChange={() => setDeleteDialogId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Naozaj chcete zmazať tento hlas?</AlertDialogTitle>
+            <AlertDialogTitle>Are you sure you want to delete this voice?</AlertDialogTitle>
             <AlertDialogDescription>
-              Táto akcia je nevratná. Hlas bude trvalo zmazaný z vášho účtu aj z ElevenLabs.
+              This action cannot be undone. The voice will be permanently deleted from your account and ElevenLabs.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteDialogId && handleDelete(deleteDialogId)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Zmazať
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
