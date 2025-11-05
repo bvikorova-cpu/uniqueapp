@@ -1,456 +1,427 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Sparkles, Camera, Maximize2, ShoppingBag, Eye, Upload, Wand2, Crown, Loader2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Search, Home, Upload, X, ShoppingBag, Store, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { useDecorSubscription } from "@/hooks/useDecorSubscription";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { useNavigate } from "react-router-dom";
 
-const DESIGN_STYLES = [
-  { id: "minimalist", name: "Minimalist", emoji: "⚪" },
-  { id: "bohemian", name: "Bohemian", emoji: "🌸" },
-  { id: "industrial", name: "Industrial", emoji: "🏭" },
-  { id: "scandinavian", name: "Scandinavian", emoji: "🌲" },
-  { id: "modern", name: "Modern", emoji: "✨" },
-  { id: "vintage", name: "Vintage", emoji: "🕰️" },
-];
+interface DecorItem {
+  id: string;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  condition: string;
+  image_url: string | null;
+  created_at: string;
+  user_id: string;
+  profiles?: {
+    full_name: string | null;
+  } | null;
+}
 
-const SUBSCRIPTION_PLAN = {
-  name: "Pro Designer",
-  price: 7.99,
-  features: [
-    "50 AI room designs per month",
-    "Unlimited saved projects",
-    "Priority support",
-    "Advanced style filters",
-    "HD renders"
-  ]
-};
-
-export default function HomeDecorMarketplace() {
-  const { toast } = useToast();
+const HomeDecorMarketplace = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { subscription, subscribe, generateDesign, purchaseARPreview, checkSubscription } = useDecorSubscription();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [selectedStyle, setSelectedStyle] = useState<string>("");
-  const [roomDescription, setRoomDescription] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedDesign, setGeneratedDesign] = useState<string | null>(null);
+  const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [items, setItems] = useState<DecorItem[]>([]);
+  const [formData, setFormData] = useState({
+    title: "",
+    price: "",
+    description: "",
+    category: "furniture",
+    condition: "Like New",
+  });
 
   useEffect(() => {
     checkAuth();
-    handlePaymentRedirects();
-  }, [searchParams]);
+    loadItems();
+  }, []);
 
   const checkAuth = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    setIsAuthenticated(!!session);
-  };
-
-  const handlePaymentRedirects = () => {
-    const success = searchParams.get('success');
-    const canceled = searchParams.get('canceled');
-    const arSuccess = searchParams.get('ar_success');
-    const arCanceled = searchParams.get('ar_canceled');
-
-    if (success === 'true') {
-      toast({
-        title: "Subscription Activated!",
-        description: "Your Pro Designer subscription is now active.",
-      });
-      checkSubscription();
-    } else if (canceled === 'true') {
-      toast({
-        title: "Subscription Canceled",
-        description: "You can complete your subscription later.",
-        variant: "destructive",
-      });
-    } else if (arSuccess === 'true') {
-      toast({
-        title: "AR Preview Unlocked!",
-        description: "You can now use AR to preview this decoration.",
-      });
-    } else if (arCanceled === 'true') {
-      toast({
-        title: "Payment Canceled",
-        description: "AR preview payment was canceled.",
-        variant: "destructive",
-      });
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      setCurrentUserId(user.id);
     }
   };
 
-  const handleUploadRoom = async () => {
-    if (!isAuthenticated) {
+  const loadItems = async () => {
+    // Mock data for now - will be replaced with actual DB call
+    const mockItems: DecorItem[] = [
+      {
+        id: '1',
+        title: 'Moderné nástenné hodiny',
+        price: 29.99,
+        description: 'Elegantné nástenné hodiny v minimalistickom dizajne',
+        category: 'accessories',
+        condition: 'Like New',
+        image_url: null,
+        created_at: new Date().toISOString(),
+        user_id: '1',
+        profiles: { full_name: 'Peter Novák' }
+      },
+      {
+        id: '2',
+        title: 'Vankúše s geometrickým vzorom',
+        price: 15.99,
+        description: 'Set 2 dekoračných vankúšov, 45x45cm',
+        category: 'textiles',
+        condition: 'New',
+        image_url: null,
+        created_at: new Date().toISOString(),
+        user_id: '2',
+        profiles: { full_name: 'Jana Kováčová' }
+      },
+      {
+        id: '3',
+        title: 'LED stolová lampa',
+        price: 39.99,
+        description: 'Moderná LED lampa s nastaviteľnou intenzitou',
+        category: 'lighting',
+        condition: 'Good',
+        image_url: null,
+        created_at: new Date().toISOString(),
+        user_id: '3',
+        profiles: { full_name: 'Martin Horváth' }
+      }
+    ];
+    setItems(mockItems);
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!currentUserId) {
       toast({
-        title: "Login Required",
-        description: "Please sign in to use AI Room Designer",
-        variant: "destructive"
+        title: "Prihlásenie potrebné",
+        description: "Prosím prihláste sa pre pridanie položky",
+        variant: "destructive",
       });
       navigate("/auth");
       return;
     }
 
-    if (!subscription.subscribed) {
+    if (!formData.title || !formData.price || !formData.description) {
       toast({
-        title: "Subscription Required",
-        description: "Subscribe to Pro Designer to generate AI room designs.",
-        variant: "destructive"
+        title: "Chýbajúce informácie",
+        description: "Vyplňte prosím všetky povinné polia",
+        variant: "destructive",
       });
       return;
     }
 
-    if (!selectedStyle) {
-      toast({
-        title: "Select a Style",
-        description: "Please choose a design style before generating.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-    const result = await generateDesign(selectedStyle, roomDescription);
-    setIsGenerating(false);
-
-    if (result) {
-      setGeneratedDesign(result.design);
-      toast({
-        title: "Design Generated!",
-        description: `${result.designs_remaining} designs remaining this month.`,
-      });
-    }
-  };
-
-  const handleARPreview = () => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please sign in to use AR Preview",
-        variant: "destructive"
-      });
-      navigate("/auth");
-      return;
-    }
     toast({
-      title: "Select a Product",
-      description: "Browse marketplace and select a product to preview in AR.",
+      title: "Úspech!",
+      description: "Vaša položka bola pridaná (demo mód)",
     });
+
+    setFormData({
+      title: "",
+      price: "",
+      description: "",
+      category: "furniture",
+      condition: "Like New",
+    });
+    setImageFile(null);
+    setImagePreview("");
   };
 
-  const handleSubscribe = () => {
-    if (!isAuthenticated) {
-      toast({
-        title: "Login Required",
-        description: "Please sign in to subscribe",
-        variant: "destructive"
-      });
-      navigate("/auth");
-      return;
-    }
-    subscribe();
-  };
+  const filteredItems = items.filter(item => {
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const categories = [
+    { value: "furniture", label: "Nábytok" },
+    { value: "lighting", label: "Osvetlenie" },
+    { value: "textiles", label: "Textílie & Koberce" },
+    { value: "wall-art", label: "Nástenné dekorácie" },
+    { value: "accessories", label: "Doplnky" },
+    { value: "plants", label: "Rastliny & Kvetináče" },
+    { value: "storage", label: "Úložné riešenia" },
+    { value: "kitchenware", label: "Kuchynské potreby" },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
-      <div className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-12 space-y-6">
-          <div className="inline-block p-3 bg-primary/10 rounded-full mb-4">
-            <Sparkles className="h-12 w-12 text-primary" />
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
+      <Navbar />
+      
+      <div className="container mx-auto px-4 pt-24 pb-12">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <Home className="h-12 w-12 text-primary" />
+            <h1 className="text-4xl md:text-5xl font-bold">
+              Home Decor Marketplace
+            </h1>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Home Decor Marketplace
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            AI-powered inspiration meets stunning decorations
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            Nájdite alebo predajte jedinečné dekorácie pre váš domov
           </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" onClick={handleUploadRoom}>
-              <Camera className="mr-2 h-5 w-5" />
-              Design Your Room
-            </Button>
-            <Button size="lg" variant="outline">
-              <ShoppingBag className="mr-2 h-5 w-5" />
-              Browse Marketplace
-            </Button>
-          </div>
         </div>
 
-        {/* Subscription Plan */}
-        <Card className={`mb-12 border-primary/20 ${subscription.subscribed ? 'bg-gradient-to-br from-green-500/10 to-transparent' : 'bg-gradient-to-br from-primary/5 to-transparent'}`}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Crown className="h-6 w-6 text-primary" />
-                <CardTitle className="text-2xl">{SUBSCRIPTION_PLAN.name}</CardTitle>
-              </div>
-              <div className="flex gap-2">
-                {subscription.subscribed ? (
-                  <Badge className="text-lg px-4 py-2 bg-green-500">Active</Badge>
-                ) : (
-                  <Badge variant="secondary" className="text-lg px-4 py-2">
-                    €{SUBSCRIPTION_PLAN.price}/month
-                  </Badge>
-                )}
-              </div>
-            </div>
-            <CardDescription>
-              {subscription.subscribed 
-                ? `You have ${subscription.designs_limit - subscription.designs_used} designs remaining this month`
-                : "Unlock unlimited AI-powered design possibilities"}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <ul className="space-y-3">
-                {SUBSCRIPTION_PLAN.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <div className="flex items-center justify-center">
-                {subscription.subscribed ? (
-                  <div className="text-center space-y-2">
-                    <p className="text-sm text-muted-foreground">
-                      Designs used: {subscription.designs_used}/{subscription.designs_limit}
-                    </p>
-                    <Button size="lg" variant="outline" className="w-full md:w-auto" onClick={checkSubscription}>
-                      Refresh Status
-                    </Button>
-                  </div>
-                ) : (
-                  <Button 
-                    size="lg" 
-                    className="w-full md:w-auto" 
-                    onClick={handleSubscribe}
-                    disabled={subscription.loading}
-                  >
-                    {subscription.loading ? "Loading..." : "Subscribe Now"}
-                  </Button>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Tabs defaultValue="ai-designer" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="ai-designer">
-              <Wand2 className="h-4 w-4 mr-2" />
-              AI Designer
-            </TabsTrigger>
-            <TabsTrigger value="marketplace">
+        <Tabs defaultValue="browse" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
+            <TabsTrigger value="browse">
               <ShoppingBag className="h-4 w-4 mr-2" />
-              Marketplace
+              Prehliadať
             </TabsTrigger>
-            <TabsTrigger value="ar-preview">
-              <Eye className="h-4 w-4 mr-2" />
-              AR Preview
+            <TabsTrigger value="sell">
+              <Store className="h-4 w-4 mr-2" />
+              Predať položku
             </TabsTrigger>
           </TabsList>
 
-          {/* AI Room Designer */}
-          <TabsContent value="ai-designer" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>AI Room Designer</CardTitle>
-                <CardDescription>
-                  Upload a photo of your room and let AI create stunning design suggestions
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Room Description */}
-                <div className="space-y-2">
-                  <Label>Describe Your Room (Optional)</Label>
-                  <Textarea
-                    placeholder="E.g., Small living room with natural light, white walls, hardwood floors..."
-                    value={roomDescription}
-                    onChange={(e) => setRoomDescription(e.target.value)}
-                    rows={3}
-                    disabled={isGenerating}
+          {/* Browse Tab */}
+          <TabsContent value="browse" className="space-y-6">
+            {/* Search and Filters */}
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    placeholder="Hľadať dekorácie..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
                   />
                 </div>
+              </div>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full md:w-[200px]">
+                  <SelectValue placeholder="Všetky kategórie" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Všetky kategórie</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-                {/* Style Filters */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Choose Your Style</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {DESIGN_STYLES.map((style) => (
-                      <Card
-                        key={style.id}
-                        className={`cursor-pointer transition-all hover:scale-105 ${
-                          selectedStyle === style.id ? "ring-2 ring-primary" : ""
-                        }`}
-                        onClick={() => !isGenerating && setSelectedStyle(style.id)}
-                      >
-                        <CardContent className="p-6 text-center">
-                          <div className="text-4xl mb-2">{style.emoji}</div>
-                          <p className="text-sm font-medium">{style.name}</p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Generate Button */}
-                <Button 
-                  size="lg" 
-                  className="w-full" 
-                  onClick={handleUploadRoom}
-                  disabled={isGenerating || !selectedStyle}
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                      Generating Design...
-                    </>
-                  ) : (
-                    <>
-                      <Wand2 className="mr-2 h-5 w-5" />
-                      Generate AI Design
-                    </>
-                  )}
-                </Button>
-
-                {/* Generated Design Display */}
-                {generatedDesign && (
-                  <Card className="bg-gradient-to-br from-primary/5 to-transparent">
+            {/* Items Grid */}
+            {filteredItems.length === 0 ? (
+              <Card>
+                <CardContent className="pt-6 text-center text-muted-foreground">
+                  <Home className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Žiadne položky zodpovedajúce kritériám.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredItems.map((item) => (
+                  <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    {item.image_url ? (
+                      <div className="aspect-square overflow-hidden bg-muted">
+                        <img
+                          src={item.image_url}
+                          alt={item.title}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-square bg-gradient-subtle flex items-center justify-center">
+                        <Home className="h-16 w-16 text-muted-foreground/30" />
+                      </div>
+                    )}
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-primary" />
-                        Your AI Design Suggestion
-                      </CardTitle>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <CardTitle className="text-xl mb-2">{item.title}</CardTitle>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="secondary">
+                              {categories.find(c => c.value === item.category)?.label || item.category}
+                            </Badge>
+                            <Badge variant="outline">{item.condition}</Badge>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-2xl font-bold text-primary">€{item.price}</p>
                     </CardHeader>
                     <CardContent>
-                      <div className="prose prose-sm max-w-none whitespace-pre-wrap">
-                        {generatedDesign}
+                      <p className="text-muted-foreground line-clamp-2 mb-4">
+                        {item.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Star className="h-4 w-4" />
+                          <span>{item.profiles?.full_name || "Anonymný"}</span>
+                        </div>
+                        <Button size="sm">
+                          Kontaktovať
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
-                )}
-              </CardContent>
-            </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
-          {/* Marketplace */}
-          <TabsContent value="marketplace" className="space-y-6">
+          {/* Sell Tab */}
+          <TabsContent value="sell">
             <Card>
               <CardHeader>
-                <CardTitle>Shoppable Marketplace</CardTitle>
+                <CardTitle>Pridať novú položku</CardTitle>
                 <CardDescription>
-                  Browse curated decorations and click to buy all items in styled rooms
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[1, 2, 3, 4, 5, 6].map((item) => (
-                    <Card key={item} className="overflow-hidden group cursor-pointer hover:shadow-lg transition-all">
-                      <div className="aspect-square bg-gradient-to-br from-primary/10 to-secondary/10 relative">
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <ShoppingBag className="h-12 w-12 text-muted-foreground group-hover:scale-110 transition-transform" />
-                        </div>
-                        <Badge className="absolute top-2 right-2">15% commission</Badge>
-                      </div>
-                      <CardContent className="p-4">
-                        <h4 className="font-semibold mb-1">Styled Room #{item}</h4>
-                        <p className="text-sm text-muted-foreground">Click to shop all items</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* AR Preview */}
-          <TabsContent value="ar-preview" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>AR Try-Before-Buy</CardTitle>
-                <CardDescription>
-                  See how decorations look in your actual room using augmented reality
+                  Pridajte fotky a popis vašej dekorácie
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="text-center py-12 space-y-4">
-                  <div className="inline-block p-4 bg-primary/10 rounded-full mb-4">
-                    <Maximize2 className="h-16 w-16 text-primary" />
+                {/* Image Upload */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Fotografia *</label>
+                  <div className="border-2 border-dashed rounded-lg p-8 text-center">
+                    {imagePreview ? (
+                      <div className="space-y-4">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="max-w-full h-64 object-contain mx-auto rounded-lg"
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setImageFile(null);
+                            setImagePreview("");
+                          }}
+                        >
+                          Zmeniť fotku
+                        </Button>
+                      </div>
+                    ) : (
+                      <div>
+                        <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageSelect}
+                          className="max-w-xs mx-auto"
+                        />
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Nahrajte jasný obrázok vašej dekorácie
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <h3 className="text-2xl font-bold">Preview in Your Space</h3>
-                  <p className="text-muted-foreground max-w-md mx-auto">
-                    Use your phone camera to place virtual decorations in your room before buying
-                  </p>
-                  <div className="flex items-center justify-center gap-2 text-lg">
-                    <Badge variant="secondary" className="text-base px-4 py-2">€0.99 per preview</Badge>
-                  </div>
-                  <Button size="lg" onClick={handleARPreview}>
-                    <Eye className="mr-2 h-5 w-5" />
-                    Try AR Preview
-                  </Button>
                 </div>
 
-                <div className="grid md:grid-cols-3 gap-6 pt-6 border-t">
-                  <div className="text-center space-y-2">
-                    <div className="text-3xl mb-2">📱</div>
-                    <h4 className="font-semibold">Use Your Camera</h4>
-                    <p className="text-sm text-muted-foreground">Point at your room</p>
+                {/* Form Fields */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium">Názov *</label>
+                    <Input
+                      placeholder="napr. Moderné nástenné hodiny"
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    />
                   </div>
-                  <div className="text-center space-y-2">
-                    <div className="text-3xl mb-2">🎨</div>
-                    <h4 className="font-semibold">Place Virtually</h4>
-                    <p className="text-sm text-muted-foreground">See it in your space</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium">Cena (€) *</label>
+                      <Input
+                        type="number"
+                        placeholder="0.00"
+                        value={formData.price}
+                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium">Kategória *</label>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) => setFormData({ ...formData, category: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((cat) => (
+                            <SelectItem key={cat.value} value={cat.value}>
+                              {cat.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                  <div className="text-center space-y-2">
-                    <div className="text-3xl mb-2">✅</div>
-                    <h4 className="font-semibold">Buy with Confidence</h4>
-                    <p className="text-sm text-muted-foreground">Know it fits perfectly</p>
+
+                  <div>
+                    <label className="text-sm font-medium">Stav *</label>
+                    <Select
+                      value={formData.condition}
+                      onValueChange={(value) => setFormData({ ...formData, condition: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="New">Nový</SelectItem>
+                        <SelectItem value="Like New">Ako nový</SelectItem>
+                        <SelectItem value="Good">Dobrý</SelectItem>
+                        <SelectItem value="Fair">Opotrebovaný</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium">Popis *</label>
+                    <Textarea
+                      placeholder="Podrobný popis vašej dekorácie..."
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={4}
+                    />
                   </div>
                 </div>
+
+                <Button
+                  onClick={handleSubmit}
+                  disabled={uploading}
+                  className="w-full"
+                  size="lg"
+                >
+                  {uploading ? "Pridáva sa..." : "Pridať položku"}
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
-
-        {/* Features Section */}
-        <div className="mt-12 grid md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <Wand2 className="h-8 w-8 mx-auto mb-3 text-primary" />
-              <h3 className="font-semibold mb-2">AI-Powered</h3>
-              <p className="text-sm text-muted-foreground">Smart design suggestions</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <Eye className="h-8 w-8 mx-auto mb-3 text-primary" />
-              <h3 className="font-semibold mb-2">AR Preview</h3>
-              <p className="text-sm text-muted-foreground">See before you buy</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <ShoppingBag className="h-8 w-8 mx-auto mb-3 text-primary" />
-              <h3 className="font-semibold mb-2">Shoppable Feed</h3>
-              <p className="text-sm text-muted-foreground">Click to buy instantly</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <Sparkles className="h-8 w-8 mx-auto mb-3 text-primary" />
-              <h3 className="font-semibold mb-2">Curated Styles</h3>
-              <p className="text-sm text-muted-foreground">All design aesthetics</p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
+
+      <Footer />
     </div>
   );
-}
+};
+
+export default HomeDecorMarketplace;

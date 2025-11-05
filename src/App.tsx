@@ -418,6 +418,7 @@ const App = () => (
               <Route path="/time-capsule-subscription" element={<TimeCapsuleSubscription />} />
               <Route path="/time-capsule" element={<TimeCapsule />} />
               <Route path="/voice-memorial" element={<VoiceMemorial />} />
+              <Route path="/home-decor-marketplace" element={<HomeDecorMarketplace />} />
           <Route path="/holographic-avatars" element={<HolographicAvatars />} />
           <Route path="/superhero-universe" element={<SuperHeroUniverse />} />
           <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />
