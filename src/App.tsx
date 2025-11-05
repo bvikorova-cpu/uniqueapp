@@ -149,6 +149,8 @@ import AIContentMarketplace from "./pages/AIContentMarketplace";
 import MembershipCommunity from "./pages/MembershipCommunity";
 import CreatorDashboard from "./pages/CreatorDashboard";
 import CreatorProfile from "./pages/CreatorProfile";
+import CourseMarketplace from "./pages/CourseMarketplace";
+import CourseDetailPage from "./pages/CourseDetailPage";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
@@ -364,6 +366,8 @@ const App = () => (
           <Route path="/membership-community" element={<MembershipCommunity />} />
           <Route path="/creator-dashboard" element={<CreatorDashboard />} />
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
+          <Route path="/course-marketplace" element={<CourseMarketplace />} />
+          <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/print-on-demand" element={<PrintOnDemand />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/custom-commissions" element={<CustomCommissions />} />
