@@ -11,9 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Upload } from "lucide-react";
 
 const LISTING_PACKAGES = [
-  { id: "basic", name: "Basic", price: 29, duration: 30, features: ["Základná prezentácia", "30 dní aktívne"] },
-  { id: "premium", name: "Premium", price: 79, duration: 60, features: ["Rozšírená prezentácia", "Propagácia", "60 dní aktívne"] },
-  { id: "featured", name: "Featured", price: 149, duration: 90, features: ["TOP pozícia", "Maximálna viditeľnosť", "90 dní aktívne"] },
+  { id: "basic", name: "Basic", price: 29, duration: 30, features: ["Basic presentation", "30 days active"] },
+  { id: "premium", name: "Premium", price: 79, duration: 60, features: ["Extended presentation", "Promotion", "60 days active"] },
+  { id: "featured", name: "Featured", price: 149, duration: 90, features: ["TOP position", "Maximum visibility", "90 days active"] },
 ];
 
 export default function PropertySubmissionForm() {
@@ -54,7 +54,7 @@ export default function PropertySubmissionForm() {
     e.preventDefault();
     
     if (!formData.title || !formData.description || !formData.price || !formData.location) {
-      toast.error("Prosím vyplňte všetky povinné polia");
+      toast.error("Please fill in all required fields");
       return;
     }
 
@@ -63,7 +63,7 @@ export default function PropertySubmissionForm() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("Musíte byť prihlásený");
+        toast.error("You must be logged in");
         navigate("/auth");
         return;
       }
@@ -153,12 +153,12 @@ export default function PropertySubmissionForm() {
 
       // Redirect to Stripe checkout
       window.open(paymentData.url, '_blank');
-      toast.success("Nehnuteľnosť vytvorená! Dokončite platbu.");
+      toast.success("Property created! Complete payment.");
       navigate("/property-marketplace");
 
     } catch (error: any) {
       console.error("Error:", error);
-      toast.error(error.message || "Chyba pri vytváraní inzerátu");
+      toast.error(error.message || "Error creating listing");
     } finally {
       setIsSubmitting(false);
     }
@@ -168,29 +168,29 @@ export default function PropertySubmissionForm() {
     <div className="max-w-4xl mx-auto p-6">
       <Card>
         <CardHeader>
-          <CardTitle>Pridať nehnuteľnosť</CardTitle>
-          <CardDescription>Vyplňte informácie o vašej nehnuteľnosti</CardDescription>
+          <CardTitle>Add Property Listing</CardTitle>
+          <CardDescription>Fill in the details about your property</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="title">Názov *</Label>
+              <Label htmlFor="title">Title *</Label>
               <Input
                 id="title"
                 value={formData.title}
                 onChange={(e) => handleInputChange("title", e.target.value)}
-                placeholder="Napr. 3-izbový byt v centre"
+                placeholder="E.g., 3-bedroom apartment downtown"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">Popis *</Label>
+              <Label htmlFor="description">Description *</Label>
               <Textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => handleInputChange("description", e.target.value)}
-                placeholder="Podrobný popis nehnuteľnosti..."
+                placeholder="Detailed property description..."
                 rows={5}
                 required
               />
@@ -198,7 +198,7 @@ export default function PropertySubmissionForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="price">Cena (€) *</Label>
+                <Label htmlFor="price">Price (€) *</Label>
                 <Input
                   id="price"
                   type="number"
@@ -210,12 +210,12 @@ export default function PropertySubmissionForm() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="location">Lokácia *</Label>
+                <Label htmlFor="location">Location *</Label>
                 <Input
                   id="location"
                   value={formData.location}
                   onChange={(e) => handleInputChange("location", e.target.value)}
-                  placeholder="Bratislava, Staré Mesto"
+                  placeholder="City, District"
                   required
                 />
               </div>
@@ -223,22 +223,22 @@ export default function PropertySubmissionForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="propertyType">Typ</Label>
+                <Label htmlFor="propertyType">Type</Label>
                 <Select value={formData.propertyType} onValueChange={(value) => handleInputChange("propertyType", value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Vyberte typ" />
+                    <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="apartment">Byt</SelectItem>
-                    <SelectItem value="house">Dom</SelectItem>
-                    <SelectItem value="land">Pozemok</SelectItem>
-                    <SelectItem value="commercial">Komerčná nehnuteľnosť</SelectItem>
+                    <SelectItem value="apartment">Apartment</SelectItem>
+                    <SelectItem value="house">House</SelectItem>
+                    <SelectItem value="land">Land</SelectItem>
+                    <SelectItem value="commercial">Commercial Property</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="area">Plocha (m²)</Label>
+                <Label htmlFor="area">Area (m²)</Label>
                 <Input
                   id="area"
                   type="number"
@@ -249,7 +249,7 @@ export default function PropertySubmissionForm() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="rooms">Počet izieb</Label>
+                <Label htmlFor="rooms">Rooms</Label>
                 <Input
                   id="rooms"
                   type="number"
@@ -261,7 +261,7 @@ export default function PropertySubmissionForm() {
             </div>
 
             <div className="space-y-2">
-              <Label>Fotografie</Label>
+              <Label>Photos</Label>
               <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
                 <Input
                   type="file"
@@ -274,14 +274,14 @@ export default function PropertySubmissionForm() {
                 <label htmlFor="image-upload" className="cursor-pointer">
                   <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground">
-                    {images.length > 0 ? `${images.length} fotiek vybraných` : "Kliknite pre nahranie fotiek"}
+                    {images.length > 0 ? `${images.length} photos selected` : "Click to upload photos"}
                   </p>
                 </label>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label>Video (voliteľné)</Label>
+              <Label>Video (optional)</Label>
               <div className="border-2 border-dashed rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
                 <Input
                   type="file"
@@ -294,14 +294,14 @@ export default function PropertySubmissionForm() {
                 <label htmlFor="video-upload" className="cursor-pointer">
                   <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground">
-                    {videos.length > 0 ? `${videos.length} videí vybraných` : "Kliknite pre nahranie videa"}
+                    {videos.length > 0 ? `${videos.length} videos selected` : "Click to upload video"}
                   </p>
                 </label>
               </div>
             </div>
 
             <div className="space-y-4">
-              <Label>Vyberte balík</Label>
+              <Label>Select Package</Label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {LISTING_PACKAGES.map((pkg) => (
                   <Card
@@ -328,7 +328,7 @@ export default function PropertySubmissionForm() {
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Vytváram..." : "Vytvoriť inzerát a prejsť na platbu"}
+              {isSubmitting ? "Creating..." : "Create Listing & Proceed to Payment"}
             </Button>
           </form>
         </CardContent>

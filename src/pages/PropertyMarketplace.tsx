@@ -95,13 +95,13 @@ export default function PropertyMarketplace() {
     
     if (success === 'true') {
       toast({
-        title: "Platba úspešná!",
-        description: "Váš inzerát bol aktivovaný.",
+        title: "Payment Successful!",
+        description: "Your listing has been activated.",
       });
     } else if (canceled === 'true') {
       toast({
-        title: "Platba zrušená",
-        description: "Platbu môžete dokončiť neskôr.",
+        title: "Payment Canceled",
+        description: "You can complete the payment later.",
         variant: "destructive"
       });
     }
@@ -115,8 +115,8 @@ export default function PropertyMarketplace() {
   const handleCreateListing = () => {
     if (!isAuthenticated) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre vytvorenie inzerátu sa musíte prihlásiť",
+        title: "Login Required",
+        description: "Please sign in to create a listing",
         variant: "destructive"
       });
       navigate("/auth");
@@ -143,16 +143,19 @@ export default function PropertyMarketplace() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
-        <div className="text-center mb-12 space-y-4">
+        <div className="text-center mb-12 space-y-6">
+          <div className="inline-block p-3 bg-primary/10 rounded-full mb-4">
+            <Building2 className="h-12 w-12 text-primary" />
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Trh s nehnuteľnosťami
+            Property Marketplace
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Predajte alebo kúpte nehnuteľnosť s profesionálnym prístupom
+            Professional platform for real estate agents and private sellers
           </p>
           <Button size="lg" className="mt-4" onClick={handleCreateListing}>
             <Plus className="mr-2 h-5 w-5" />
-            Pridať inzerát
+            Add Listing
           </Button>
         </div>
 

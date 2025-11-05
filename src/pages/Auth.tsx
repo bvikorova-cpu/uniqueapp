@@ -231,22 +231,22 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-phone">Telefón *</Label>
+                    <Label htmlFor="signup-phone">Phone *</Label>
                     <Input
                       id="signup-phone"
                       name="phone"
                       type="tel"
-                      placeholder="+421 XXX XXX XXX"
+                      placeholder="+1 XXX XXX XXXX"
                       required
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-company">Názov firmy (voliteľné)</Label>
+                    <Label htmlFor="signup-company">Company Name (optional)</Label>
                     <Input
                       id="signup-company"
                       name="companyName"
                       type="text"
-                      placeholder="Realitná kancelária XYZ"
+                      placeholder="Real Estate Agency XYZ"
                     />
                   </div>
                   <div className="space-y-2">
