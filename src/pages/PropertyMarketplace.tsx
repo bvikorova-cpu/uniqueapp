@@ -44,7 +44,7 @@ const LISTING_PACKAGES = [
     features: [
       "Homepage banner placement",
       "Social media promotion",
-      "Professional 3D tour",
+      "3D tour upload support",
       "Premium placement",
       "Dedicated account manager",
       "Enhanced analytics"
