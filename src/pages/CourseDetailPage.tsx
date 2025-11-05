@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import {
   Play,
   Clock,
@@ -34,6 +35,7 @@ interface Lesson {
   id: string;
   title: string;
   description: string;
+  video_url: string;
   duration_minutes: number;
   order_index: number;
   is_preview: boolean;
@@ -48,6 +50,8 @@ export default function CourseDetailPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 
   useEffect(() => {
     loadCourseDetails();
@@ -135,6 +139,21 @@ export default function CourseDetailPage() {
     }
   };
 
+  const handlePlayLesson = (lesson: Lesson) => {
+    // Allow preview lessons to be played by anyone
+    // Only enrolled users can play non-preview lessons
+    if (lesson.is_preview || isEnrolled) {
+      setSelectedLesson(lesson);
+      setIsPlayerOpen(true);
+    } else {
+      toast({
+        title: "Purchase Required",
+        description: "You need to purchase this course to access this lesson",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -150,6 +169,19 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Lesson Player Modal */}
+      {selectedLesson && (
+        <LessonPlayer
+          isOpen={isPlayerOpen}
+          onClose={() => {
+            setIsPlayerOpen(false);
+            setSelectedLesson(null);
+          }}
+          lessonTitle={selectedLesson.title}
+          videoUrl={selectedLesson.video_url || ""}
+          description={selectedLesson.description || ""}
+        />
+      )}
       {/* Course Header */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-16">
         <div className="container mx-auto px-4">
@@ -281,7 +313,11 @@ export default function CourseDetailPage() {
                           {lesson.duration_minutes} min
                         </span>
                         {lesson.is_preview ? (
-                          <Button size="sm" variant="outline">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handlePlayLesson(lesson)}
+                          >
                             <Play className="h-4 w-4 mr-2" />
                             Preview
                           </Button>
@@ -291,6 +327,7 @@ export default function CourseDetailPage() {
                           <Button
                             size="sm"
                             variant="ghost"
+                            onClick={() => handlePlayLesson(lesson)}
                           >
                             <Play className="h-4 w-4" />
                           </Button>
