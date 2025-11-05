@@ -43,24 +43,14 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
     if (customers.data.length === 0) {
-      logStep("No customer found");
-      
-      // Update or insert subscription record
-      await supabaseClient
-        .from('decor_subscriptions')
-        .upsert({
-          user_id: user.id,
-          tier: 'free',
-          designs_used: 0,
-          designs_limit: 2,
-        }, {
-          onConflict: 'user_id'
-        });
+      logStep("No customer found - no subscription");
       
       return new Response(JSON.stringify({ 
-        tier: 'free',
-        designs_limit: 2,
-        designs_used: 0 
+        subscribed: false,
+        product_id: null,
+        subscription_end: null,
+        designs_used: 0,
+        designs_limit: 0
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -77,40 +67,53 @@ serve(async (req) => {
     });
 
     const hasActiveSub = subscriptions.data.length > 0;
-    let tier = 'free';
-    let designsLimit = 2;
 
-    if (hasActiveSub) {
-      tier = 'pro';
-      designsLimit = 50;
-      const subscription = subscriptions.data[0];
-      logStep("Active subscription found", { subscriptionId: subscription.id });
-    } else {
-      logStep("No active subscription");
+    if (!hasActiveSub) {
+      logStep("No active subscription found");
+      return new Response(JSON.stringify({
+        subscribed: false,
+        product_id: null,
+        subscription_end: null,
+        designs_used: 0,
+        designs_limit: 0
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
-    // Update or insert subscription record
+    const subscription = subscriptions.data[0];
+    const productId = subscription.items.data[0].price.product;
+    const subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+    logStep("Active Pro subscription found", { subscriptionId: subscription.id, productId });
+
+    // Get or initialize designs usage
     const { data: existingSub } = await supabaseClient
       .from('decor_subscriptions')
       .select('designs_used')
       .eq('user_id', user.id)
       .single();
 
+    const designsUsed = existingSub?.designs_used || 0;
+
+    // Update subscription record
     await supabaseClient
       .from('decor_subscriptions')
       .upsert({
         user_id: user.id,
-        tier: tier,
-        designs_used: existingSub?.designs_used || 0,
-        designs_limit: designsLimit,
+        tier: 'pro',
+        designs_used: designsUsed,
+        designs_limit: 50,
       }, {
         onConflict: 'user_id'
       });
 
     return new Response(JSON.stringify({
-      tier: tier,
-      designs_limit: designsLimit,
-      designs_used: existingSub?.designs_used || 0
+      subscribed: true,
+      product_id: productId,
+      subscription_end: subscriptionEnd,
+      designs_used: designsUsed,
+      designs_limit: 50
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

@@ -265,23 +265,19 @@ const HomeDecorMarketplace = () => {
           <div className="flex items-center justify-center gap-4 mt-4">
             {subscription.subscribed ? (
               <>
-                <Badge variant="secondary" className="flex items-center gap-2">
+                <Badge variant="default" className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4" />
-                  Pro Designer Active ({subscription.designs_used}/{subscription.designs_limit} designs)
+                  Pro Designer ({subscription.designs_used}/{subscription.designs_limit} designs used)
                 </Badge>
                 <Button onClick={manageSubscription} size="sm" variant="outline">
                   Manage Subscription
                 </Button>
               </>
             ) : (
-              <>
-                <Badge variant="secondary">
-                  Free Plan ({subscription.designs_limit || 2} designs)
-                </Badge>
-                <Button onClick={handleSubscribe} size="sm">
-                  Upgrade to Pro
-                </Button>
-              </>
+              <Button onClick={handleSubscribe} size="lg" className="gap-2">
+                <Sparkles className="h-5 w-5" />
+                Subscribe to Pro Designer (€9.99/month)
+              </Button>
             )}
           </div>
         </div>

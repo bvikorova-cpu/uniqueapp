@@ -142,8 +142,8 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
     }
   };
 
-  const remainingDesigns = subscription ? subscription.designs_limit - subscription.designs_used : 2;
-  const isFreeTier = !subscription || subscription.tier === 'free';
+  const remainingDesigns = subscription?.subscribed ? subscription.designs_limit - subscription.designs_used : 0;
+  const hasSubscription = subscription?.subscribed || false;
 
   return (
     <div className="space-y-6">
@@ -157,9 +157,11 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
                 Upload room photos and AI will create designs based on your style
               </CardDescription>
             </div>
-            <Badge variant={isFreeTier ? "secondary" : "default"} className="text-lg px-4 py-2">
-              {remainingDesigns} / {subscription?.designs_limit || 2} designs
-            </Badge>
+            {hasSubscription && (
+              <Badge variant="default" className="text-lg px-4 py-2">
+                {remainingDesigns} / {subscription?.designs_limit} designs remaining
+              </Badge>
+            )}
           </div>
         </CardHeader>
       </Card>
@@ -257,28 +259,35 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
             />
           </div>
 
-          <Button
-            onClick={handleGenerateDesign}
-            disabled={loading || remainingDesigns <= 0}
-            className="w-full"
-            size="lg"
-          >
-            {loading ? (
-              <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating Design...</>
-            ) : (
-              <><Sparkles className="mr-2 h-5 w-5" /> Generate Design (1 credit)</>
-            )}
-          </Button>
-
-          {isFreeTier && (
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground mb-2">
-                Free: {remainingDesigns}/2 designs monthly
+          {!hasSubscription ? (
+            <Card className="bg-muted/50 p-6 text-center">
+              <Sparkles className="h-12 w-12 mx-auto mb-4 text-primary" />
+              <h3 className="text-xl font-semibold mb-2">Pro Designer Subscription Required</h3>
+              <p className="text-muted-foreground mb-4">
+                Subscribe to Pro Designer to generate AI room designs
               </p>
-              <Button variant="outline" size="sm">
-                Upgrade to Pro (50 designs/month)
-              </Button>
-            </div>
+              <p className="text-2xl font-bold mb-4">€9.99/month</p>
+              <p className="text-sm text-muted-foreground mb-4">
+                • 50 AI room designs per month<br/>
+                • AR preview for designs<br/>
+                • Priority support
+              </p>
+            </Card>
+          ) : (
+            <Button
+              onClick={handleGenerateDesign}
+              disabled={loading || remainingDesigns <= 0}
+              className="w-full"
+              size="lg"
+            >
+              {loading ? (
+                <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating Design...</>
+              ) : remainingDesigns <= 0 ? (
+                <>Design Limit Reached</>
+              ) : (
+                <><Sparkles className="mr-2 h-5 w-5" /> Generate AI Design</>
+              )}
+            </Button>
           )}
         </CardContent>
       </Card>
