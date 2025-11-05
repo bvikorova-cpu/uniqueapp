@@ -16448,6 +16448,173 @@ export type Database = {
           },
         ]
       }
+      voice_clones: {
+        Row: {
+          created_at: string
+          description: string | null
+          elevenlabs_voice_id: string | null
+          id: string
+          name: string
+          payment_status: string | null
+          relationship: string | null
+          sample_audio_urls: string[] | null
+          status: string | null
+          stripe_payment_id: string | null
+          updated_at: string
+          user_id: string
+          voice_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          elevenlabs_voice_id?: string | null
+          id?: string
+          name: string
+          payment_status?: string | null
+          relationship?: string | null
+          sample_audio_urls?: string[] | null
+          status?: string | null
+          stripe_payment_id?: string | null
+          updated_at?: string
+          user_id: string
+          voice_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          elevenlabs_voice_id?: string | null
+          id?: string
+          name?: string
+          payment_status?: string | null
+          relationship?: string | null
+          sample_audio_urls?: string[] | null
+          status?: string | null
+          stripe_payment_id?: string | null
+          updated_at?: string
+          user_id?: string
+          voice_id?: string | null
+        }
+        Relationships: []
+      }
+      voice_conversation_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          id: string
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          unlimited_generations: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          unlimited_generations?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          unlimited_generations?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      voice_generations: {
+        Row: {
+          audio_url: string | null
+          created_at: string
+          id: string
+          payment_status: string | null
+          status: string | null
+          stripe_payment_id: string | null
+          text_content: string
+          user_id: string
+          voice_clone_id: string
+          word_count: number
+        }
+        Insert: {
+          audio_url?: string | null
+          created_at?: string
+          id?: string
+          payment_status?: string | null
+          status?: string | null
+          stripe_payment_id?: string | null
+          text_content: string
+          user_id: string
+          voice_clone_id: string
+          word_count: number
+        }
+        Update: {
+          audio_url?: string | null
+          created_at?: string
+          id?: string
+          payment_status?: string | null
+          status?: string | null
+          stripe_payment_id?: string | null
+          text_content?: string
+          user_id?: string
+          voice_clone_id?: string
+          word_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_generations_voice_clone_id_fkey"
+            columns: ["voice_clone_id"]
+            isOneToOne: false
+            referencedRelation: "voice_clones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      voice_library_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          id: string
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+          voices_limit: number | null
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+          voices_limit?: number | null
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+          voices_limit?: number | null
+        }
+        Relationships: []
+      }
       wardrobe_items: {
         Row: {
           brand: string | null
