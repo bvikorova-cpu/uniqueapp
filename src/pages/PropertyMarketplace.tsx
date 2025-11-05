@@ -43,11 +43,11 @@ const LISTING_PACKAGES = [
     duration: "90 days",
     features: [
       "Homepage banner placement",
-      "Social media promotion",
+      "Social media sharing tools",
       "3D tour upload support",
       "Premium placement",
-      "Dedicated account manager",
-      "Enhanced analytics"
+      "Priority customer support",
+      "Advanced analytics dashboard"
     ],
     icon: Megaphone,
     popular: false
@@ -57,9 +57,9 @@ const LISTING_PACKAGES = [
 const ADDITIONAL_SERVICES = [
   {
     id: "virtual_tour",
-    name: "Virtual Tour Package",
+    name: "Virtual Tour Hosting",
     price: 99,
-    description: "Professional 3D property walkthrough",
+    description: "Upload and host unlimited 3D tours for your property",
     icon: Video
   },
   {
