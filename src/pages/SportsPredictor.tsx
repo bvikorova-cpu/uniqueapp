@@ -24,26 +24,12 @@ import {
 
 const PRICING_TIERS = [
   {
-    name: "Free Tips",
-    price: "0",
-    period: "forever",
-    description: "Get started with basic predictions",
-    features: [
-      "3 free predictions per week",
-      "Basic match statistics",
-      "Community tips access",
-      "Win rate stats",
-    ],
-    icon: Star,
-    color: "from-gray-500 to-gray-600",
-  },
-  {
     name: "AI Premium",
     price: "9.99",
     period: "month",
     description: "Advanced AI-powered predictions",
     features: [
-      "Unlimited AI predictions",
+      "3 predictions per week",
       "Advanced analytics & insights",
       "Live match notifications",
       "Head-to-head analysis",
@@ -112,48 +98,106 @@ const TOP_TIPSTERS = [
 const getUpcomingMatches = () => {
   const today = new Date();
   const tomorrow = addDays(today, 1);
+  const dayAfter = addDays(today, 2);
   
-  return [
-    {
-      id: 1,
-      homeTeam: "Manchester United",
-      awayTeam: "Liverpool",
-      sport: "Football",
-      time: "18:30",
-      date: format(today, "MMM dd, yyyy"),
-      dateLabel: "Today",
-      prediction: "Home Win",
-      confidence: 72,
-      tipster: "Mike Rodriguez",
-      odds: "2.10",
-    },
-    {
-      id: 2,
-      homeTeam: "Lakers",
-      awayTeam: "Warriors",
-      sport: "Basketball",
-      time: "20:00",
-      date: format(today, "MMM dd, yyyy"),
-      dateLabel: "Today",
-      prediction: "Over 215.5",
-      confidence: 68,
-      tipster: "Sarah Thompson",
-      odds: "1.85",
-    },
-    {
-      id: 3,
-      homeTeam: "Real Madrid",
-      awayTeam: "Barcelona",
-      sport: "Football",
-      time: "21:00",
-      date: format(tomorrow, "MMM dd, yyyy"),
-      dateLabel: "Tomorrow",
-      prediction: "Both Teams Score",
-      confidence: 75,
-      tipster: "Mike Rodriguez",
-      odds: "1.95",
-    },
+  const footballTeams = [
+    ["Manchester United", "Liverpool"], ["Real Madrid", "Barcelona"], ["Bayern Munich", "Borussia Dortmund"],
+    ["PSG", "Marseille"], ["Juventus", "Inter Milan"], ["Arsenal", "Chelsea"],
+    ["Manchester City", "Tottenham"], ["Atletico Madrid", "Valencia"], ["AC Milan", "Napoli"],
+    ["Benfica", "Porto"], ["Ajax", "PSV"], ["Celtic", "Rangers"],
+    ["Sevilla", "Real Betis"], ["Roma", "Lazio"], ["Galatasaray", "Fenerbahce"],
+    ["Lyon", "Monaco"], ["RB Leipzig", "Bayer Leverkusen"], ["Sporting CP", "Braga"],
+    ["Feyenoord", "AZ Alkmaar"], ["Frankfurt", "Union Berlin"], ["Atalanta", "Fiorentina"],
+    ["Real Sociedad", "Athletic Bilbao"], ["Nice", "Lens"], ["Stuttgart", "Hoffenheim"],
+    ["Villarreal", "Getafe"], ["Newcastle", "Aston Villa"], ["Brighton", "West Ham"],
   ];
+  
+  const basketballTeams = [
+    ["Lakers", "Warriors"], ["Celtics", "Heat"], ["Bucks", "Nets"],
+    ["Nuggets", "Suns"], ["76ers", "Knicks"], ["Clippers", "Mavericks"],
+    ["Grizzlies", "Timberwolves"], ["Cavaliers", "Raptors"], ["Hawks", "Wizards"],
+    ["Kings", "Trail Blazers"], ["Thunder", "Spurs"], ["Pelicans", "Rockets"],
+    ["Magic", "Hornets"], ["Pistons", "Pacers"], ["Bulls", "Jazz"],
+  ];
+  
+  const tennisPlayers = [
+    ["Novak Djokovic", "Carlos Alcaraz"], ["Rafael Nadal", "Daniil Medvedev"],
+    ["Jannik Sinner", "Stefanos Tsitsipas"], ["Alexander Zverev", "Andrey Rublev"],
+    ["Taylor Fritz", "Casper Ruud"], ["Holger Rune", "Felix Auger-Aliassime"],
+    ["Hubert Hurkacz", "Frances Tiafoe"], ["Tommy Paul", "Cameron Norrie"],
+    ["Karen Khachanov", "Grigor Dimitrov"], ["Alex De Minaur", "Lorenzo Musetti"],
+  ];
+  
+  const tipsters = ["Mike Rodriguez", "Sarah Thompson", "James Chen"];
+  const footballPredictions = ["Home Win", "Away Win", "Draw", "Both Teams Score", "Over 2.5", "Under 2.5"];
+  const basketballPredictions = ["Over 215.5", "Under 215.5", "Home -5.5", "Away +5.5"];
+  const tennisPredictions = ["Home Win 2-0", "Home Win 2-1", "Away Win 2-0", "Away Win 2-1"];
+  
+  const matches = [];
+  const dates = [today, tomorrow, dayAfter];
+  const dateLabels = ["Today", "Tomorrow", "In 2 days"];
+  
+  // Generate 30 Football matches
+  for (let i = 0; i < 30; i++) {
+    const teamPair = footballTeams[i % footballTeams.length];
+    const dateIndex = Math.floor(i / 10);
+    const hour = 14 + (i % 8);
+    matches.push({
+      id: matches.length + 1,
+      homeTeam: teamPair[0],
+      awayTeam: teamPair[1],
+      sport: "Football",
+      time: `${hour}:${(i % 4) * 15}0`,
+      date: format(dates[dateIndex], "MMM dd, yyyy"),
+      dateLabel: dateLabels[dateIndex],
+      prediction: footballPredictions[i % footballPredictions.length],
+      confidence: 65 + Math.floor(Math.random() * 20),
+      tipster: tipsters[i % tipsters.length],
+      odds: (1.5 + Math.random() * 2).toFixed(2),
+    });
+  }
+  
+  // Generate 15 Basketball matches
+  for (let i = 0; i < 15; i++) {
+    const teamPair = basketballTeams[i % basketballTeams.length];
+    const dateIndex = Math.floor(i / 5);
+    const hour = 19 + (i % 5);
+    matches.push({
+      id: matches.length + 1,
+      homeTeam: teamPair[0],
+      awayTeam: teamPair[1],
+      sport: "Basketball",
+      time: `${hour}:${(i % 2) * 30}0`,
+      date: format(dates[dateIndex], "MMM dd, yyyy"),
+      dateLabel: dateLabels[dateIndex],
+      prediction: basketballPredictions[i % basketballPredictions.length],
+      confidence: 60 + Math.floor(Math.random() * 25),
+      tipster: tipsters[i % tipsters.length],
+      odds: (1.7 + Math.random() * 1.5).toFixed(2),
+    });
+  }
+  
+  // Generate 10 Tennis matches
+  for (let i = 0; i < 10; i++) {
+    const playerPair = tennisPlayers[i % tennisPlayers.length];
+    const dateIndex = Math.floor(i / 4);
+    const hour = 10 + (i % 8);
+    matches.push({
+      id: matches.length + 1,
+      homeTeam: playerPair[0],
+      awayTeam: playerPair[1],
+      sport: "Tennis",
+      time: `${hour}:00`,
+      date: format(dates[dateIndex], "MMM dd, yyyy"),
+      dateLabel: dateLabels[dateIndex],
+      prediction: tennisPredictions[i % tennisPredictions.length],
+      confidence: 65 + Math.floor(Math.random() * 20),
+      tipster: tipsters[i % tipsters.length],
+      odds: (1.4 + Math.random() * 2.5).toFixed(2),
+    });
+  }
+  
+  return matches;
 };
 
 export default function SportsPredictor() {
@@ -183,8 +227,8 @@ export default function SportsPredictor() {
           
           <div className="flex flex-wrap gap-4 justify-center mb-8">
             <Button size="lg" onClick={() => navigate("/auth")}>
-              <Star className="mr-2 h-5 w-5" />
-              Start Free
+              <Trophy className="mr-2 h-5 w-5" />
+              Subscribe Now
             </Button>
             <Button size="lg" variant="outline">
               <BarChart3 className="mr-2 h-5 w-5" />
@@ -387,10 +431,10 @@ export default function SportsPredictor() {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
-            <p className="text-muted-foreground">Start free or upgrade for premium features</p>
+            <p className="text-muted-foreground">All predictions are paid - subscribe to unlock expert insights</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {PRICING_TIERS.map((tier) => (
               <Card
                 key={tier.name}
