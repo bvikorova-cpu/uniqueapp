@@ -382,7 +382,7 @@ export default function CoursesHub() {
                 }}
               >
                 <GraduationCap className="mr-2 h-5 w-5" />
-                Become an Instructor
+                Become a Course Creator
               </Button>
             </div>
           </section>
