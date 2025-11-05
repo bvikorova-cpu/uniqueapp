@@ -1,370 +1,366 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
-import { 
-  Users, 
-  Crown, 
-  Lock, 
-  MessageCircle, 
-  DollarSign,
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Users,
+  Crown,
+  MessageCircle,
   TrendingUp,
-  Calendar,
   Star,
+  Calendar,
   CheckCircle2,
-  Sparkles
-} from 'lucide-react';
-
-interface Creator {
-  id: string;
-  display_name: string;
-  bio: string;
-  avatar_url: string;
-  total_subscribers: number;
-  is_verified: boolean;
-}
-
-interface SubscriptionTier {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  benefits: string[];
-}
+  Sparkles,
+  Heart,
+} from "lucide-react";
 
 export default function MembershipCommunity() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [creators, setCreators] = useState<Creator[]>([]);
-  const [isCreator, setIsCreator] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    checkAuth();
-    loadCreators();
-  }, []);
+  const features = [
+    {
+      icon: Crown,
+      title: "Exclusive Content",
+      description: "Share premium posts, videos, and resources with your paying members only",
+    },
+    {
+      icon: MessageCircle,
+      title: "Community Chat",
+      description: "Discord-style group chats for different membership tiers",
+    },
+    {
+      icon: TrendingUp,
+      title: "Creator Dashboard",
+      description: "Track earnings, subscriber growth, and engagement metrics",
+    },
+    {
+      icon: Calendar,
+      title: "Content Scheduling",
+      description: "Schedule posts in advance and maintain consistent engagement",
+    },
+  ];
 
-  const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-    setUser(user);
-    
-    // Check if user is a creator
-    const { data: profile } = await supabase
-      .from('creator_profiles')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle();
-    
-    setIsCreator(!!profile);
-    setLoading(false);
-  };
+  const sampleCreators = [
+    {
+      id: 1,
+      name: "Sarah Fitness Pro",
+      category: "Fitness & Health",
+      subscribers: 2847,
+      tiers: ["$9.99/mo", "$29.99/mo", "$99.99/mo"],
+      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80",
+      isVerified: true,
+    },
+    {
+      id: 2,
+      name: "Tech Mentor Mike",
+      category: "Business & Education",
+      subscribers: 1523,
+      tiers: ["$14.99/mo", "$49.99/mo"],
+      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
+      isVerified: true,
+    },
+    {
+      id: 3,
+      name: "Creative Artist Emma",
+      category: "Art & Design",
+      subscribers: 3291,
+      tiers: ["$7.99/mo", "$24.99/mo", "$74.99/mo"],
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80",
+      isVerified: false,
+    },
+  ];
 
-  const loadCreators = async () => {
-    const { data, error } = await supabase
-      .from('creator_profiles')
-      .select('*')
-      .order('total_subscribers', { ascending: false })
-      .limit(6);
+  const handleBecomeCreator = async () => {
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to become a creator",
+          variant: "destructive",
+        });
+        navigate("/auth");
+        return;
+      }
 
-    if (!error && data) {
-      setCreators(data);
-    }
-  };
+      // Check if user already has a creator profile
+      const { data: existingProfile } = await supabase
+        .from("creator_profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
 
-  const becomeCreator = async () => {
-    if (!user) return;
+      if (existingProfile) {
+        toast({
+          title: "Already a Creator",
+          description: "You already have a creator profile!",
+        });
+        return;
+      }
 
-    const { error } = await supabase
-      .from('creator_profiles')
-      .insert({
-        user_id: user.id,
-        display_name: user.email?.split('@')[0] || 'Creator',
-        bio: 'New creator on the platform',
-      });
+      // Create creator profile
+      const { error } = await supabase
+        .from("creator_profiles")
+        .insert({
+          user_id: user.id,
+          display_name: user.email?.split("@")[0] || "Creator",
+          bio: "New creator on the platform",
+        });
 
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create creator profile",
-        variant: "destructive",
-      });
-    } else {
+      if (error) throw error;
+
       toast({
         title: "Success!",
-        description: "Welcome to the creator community!",
+        description: "Your creator profile has been created. Start building your community!",
       });
-      setIsCreator(true);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
-      <div className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-16 space-y-4">
-          <Badge className="mb-4" variant="secondary">
-            <Crown className="w-3 h-3 mr-1" />
-            Premium Creator Platform
-          </Badge>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Membership Community Platform
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Build your exclusive community. Share premium content. Earn recurring revenue.
-          </p>
-          <div className="flex gap-4 justify-center mt-6">
-            {!isCreator ? (
-              <Button onClick={becomeCreator} size="lg" className="gap-2">
-                <Sparkles className="w-4 h-4" />
-                Become a Creator
-              </Button>
-            ) : (
-              <Button onClick={() => navigate('/creator-dashboard')} size="lg" className="gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Creator Dashboard
-              </Button>
-            )}
-            <Button variant="outline" size="lg" className="gap-2">
-              <Users className="w-4 h-4" />
-              Browse Creators
-            </Button>
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-primary/5">
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+          <Sparkles className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium">SFW Community-First Platform</span>
+        </div>
+        
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          Build Your Exclusive Community
+        </h1>
+        
+        <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+          Create recurring revenue with monthly subscriptions. Share exclusive content, 
+          host private communities, and connect directly with your most dedicated fans.
+        </p>
+
+        <div className="flex flex-wrap gap-4 justify-center mb-12">
+          <Button size="lg" onClick={handleBecomeCreator} disabled={loading}>
+            <Crown className="mr-2 h-5 w-5" />
+            Become a Creator
+          </Button>
+          <Button size="lg" variant="outline">
+            <Users className="mr-2 h-5 w-5" />
+            Browse Creators
+          </Button>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          <div className="p-6 rounded-lg bg-card border">
+            <div className="text-3xl font-bold text-primary mb-1">15-20%</div>
+            <div className="text-sm text-muted-foreground">Platform Fee</div>
+          </div>
+          <div className="p-6 rounded-lg bg-card border">
+            <div className="text-3xl font-bold text-primary mb-1">80-85%</div>
+            <div className="text-sm text-muted-foreground">You Keep</div>
+          </div>
+          <div className="p-6 rounded-lg bg-card border">
+            <div className="text-3xl font-bold text-primary mb-1">∞</div>
+            <div className="text-sm text-muted-foreground">Content Types</div>
+          </div>
+          <div className="p-6 rounded-lg bg-card border">
+            <div className="text-3xl font-bold text-primary mb-1">Real-time</div>
+            <div className="text-sm text-muted-foreground">Community Chat</div>
           </div>
         </div>
+      </section>
 
-        {/* Key Features */}
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
-          <Card className="border-2 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <Lock className="w-10 h-10 text-purple-600 mb-2" />
-              <CardTitle>Exclusive Content</CardTitle>
-              <CardDescription>
-                Share premium posts, videos, and resources only with paying members
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-2 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <MessageCircle className="w-10 h-10 text-pink-600 mb-2" />
-              <CardTitle>Community Chat</CardTitle>
-              <CardDescription>
-                Build engaged communities with real-time group chats and discussions
-              </CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="border-2 hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <DollarSign className="w-10 h-10 text-blue-600 mb-2" />
-              <CardTitle>Recurring Revenue</CardTitle>
-              <CardDescription>
-                Earn 80-85% of subscription fees with monthly recurring payments
-              </CardDescription>
-            </CardHeader>
-          </Card>
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-12">Everything You Need to Succeed</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {features.map((feature, index) => (
+            <Card key={index} className="border-2 hover:border-primary/50 transition-all">
+              <CardHeader>
+                <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                  <feature.icon className="h-6 w-6 text-primary" />
+                </div>
+                <CardTitle className="text-xl">{feature.title}</CardTitle>
+                <CardDescription>{feature.description}</CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
         </div>
+      </section>
 
-        {/* Featured Creators */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold mb-8 text-center">Featured Creators</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {creators.length > 0 ? (
-              creators.map((creator) => (
-                <Card key={creator.id} className="hover:shadow-xl transition-shadow cursor-pointer">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white font-bold">
-                          {creator.display_name[0]}
-                        </div>
-                        <div>
-                          <CardTitle className="flex items-center gap-2">
-                            {creator.display_name}
-                            {creator.is_verified && (
-                              <CheckCircle2 className="w-4 h-4 text-blue-600" />
-                            )}
-                          </CardTitle>
-                          <p className="text-sm text-muted-foreground">
-                            {creator.total_subscribers} members
-                          </p>
-                        </div>
-                      </div>
+      {/* Sample Creators */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-12">Featured Creators</h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sampleCreators.map((creator) => (
+            <Card key={creator.id} className="hover:shadow-lg transition-all">
+              <CardHeader>
+                <div className="flex items-start gap-4">
+                  <img
+                    src={creator.avatar}
+                    alt={creator.name}
+                    className="h-16 w-16 rounded-full object-cover"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <CardTitle className="text-lg">{creator.name}</CardTitle>
+                      {creator.isVerified && (
+                        <CheckCircle2 className="h-5 w-5 text-primary" />
+                      )}
                     </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">{creator.bio}</p>
-                    <Button className="w-full">View Profile</Button>
-                  </CardContent>
-                </Card>
-              ))
-            ) : (
-              <div className="col-span-3 text-center py-12">
-                <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">No creators yet. Be the first!</p>
-              </div>
-            )}
+                    <CardDescription>{creator.category}</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
+                  <Users className="h-4 w-4" />
+                  <span>{creator.subscribers.toLocaleString()} subscribers</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {creator.tiers.map((tier, i) => (
+                    <Badge key={i} variant="secondary">
+                      {tier}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button className="w-full" variant="outline">
+                  <Heart className="mr-2 h-4 w-4" />
+                  View Profile
+                </Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="text-center">
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl font-bold text-primary">1</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Create Your Profile</h3>
+            <p className="text-muted-foreground">
+              Set up your creator profile and define your membership tiers with exclusive benefits
+            </p>
+          </div>
+          <div className="text-center">
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl font-bold text-primary">2</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Share Exclusive Content</h3>
+            <p className="text-muted-foreground">
+              Post premium content, host live chats, and engage with your community members
+            </p>
+          </div>
+          <div className="text-center">
+            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl font-bold text-primary">3</span>
+            </div>
+            <h3 className="text-xl font-semibold mb-2">Earn Recurring Revenue</h3>
+            <p className="text-muted-foreground">
+              Get paid monthly as your community grows. Keep 80-85% of all subscription revenue
+            </p>
           </div>
         </div>
+      </section>
 
-        {/* How It Works */}
-        <Card className="bg-gradient-to-br from-purple-600 to-pink-600 text-white">
-          <CardHeader>
-            <CardTitle className="text-3xl text-center">How It Works</CardTitle>
+      {/* Comparison */}
+      <section className="container mx-auto px-4 py-16">
+        <Card className="max-w-4xl mx-auto border-2 border-primary/20">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">Why Choose Our Platform?</CardTitle>
+            <CardDescription>
+              Built for creators who value community and want to keep more of their earnings
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-4 gap-6 text-center">
-              <div>
-                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">1</span>
-                </div>
-                <h3 className="font-semibold mb-2">Create Profile</h3>
-                <p className="text-sm opacity-90">Set up your creator profile and introduce yourself</p>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h4 className="font-semibold text-lg flex items-center gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                  Similar to Patreon/OnlyFans
+                </h4>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5" />
+                    <span>Monthly recurring subscriptions</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5" />
+                    <span>Exclusive content for paying members</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5" />
+                    <span>Direct creator-fan relationships</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5" />
+                    <span>Multiple subscription tiers</span>
+                  </li>
+                </ul>
               </div>
-              <div>
-                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">2</span>
-                </div>
-                <h3 className="font-semibold mb-2">Set Tiers</h3>
-                <p className="text-sm opacity-90">Define subscription tiers with different benefits</p>
-              </div>
-              <div>
-                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">3</span>
-                </div>
-                <h3 className="font-semibold mb-2">Share Content</h3>
-                <p className="text-sm opacity-90">Post exclusive content for your members</p>
-              </div>
-              <div>
-                <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl font-bold">4</span>
-                </div>
-                <h3 className="font-semibold mb-2">Earn Money</h3>
-                <p className="text-sm opacity-90">Get paid monthly with 80-85% of subscription fees</p>
+              <div className="space-y-4">
+                <h4 className="font-semibold text-lg flex items-center gap-2">
+                  <Star className="h-5 w-5 text-primary" />
+                  Our Unique Features
+                </h4>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-start gap-2">
+                    <Star className="h-4 w-4 text-primary mt-0.5" />
+                    <span>Community-focused (Discord-style group chats)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Star className="h-4 w-4 text-primary mt-0.5" />
+                    <span>SFW-first (fitness, education, business mentors)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Star className="h-4 w-4 text-primary mt-0.5" />
+                    <span>Real-time chat and live interactions</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Star className="h-4 w-4 text-primary mt-0.5" />
+                    <span>Integrated with our course platform</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </CardContent>
         </Card>
+      </section>
 
-        {/* Platform Features */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold mb-8 text-center">Platform Features</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-500" />
-                  For Creators
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Multiple subscription tiers with custom pricing</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Exclusive content posting (text, images, videos)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Real-time chat rooms for community engagement</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Analytics dashboard with earnings insights</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Content scheduling and management</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-blue-500" />
-                  For Members
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Access exclusive content from your favorite creators</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Join private community chats and discussions</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Direct interaction with creators</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Flexible subscription management</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>Cancel anytime, no commitments</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
+      {/* CTA Section */}
+      <section className="container mx-auto px-4 py-16 text-center">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold mb-4">Ready to Build Your Community?</h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Join thousands of creators who are earning recurring revenue while building meaningful connections
+          </p>
+          <Button size="lg" onClick={handleBecomeCreator} disabled={loading}>
+            <Crown className="mr-2 h-5 w-5" />
+            Start Creating Today
+          </Button>
+          <p className="text-sm text-muted-foreground mt-4">
+            No credit card required • Set up in minutes • Cancel anytime
+          </p>
         </div>
-
-        {/* CTA Section */}
-        <div className="mt-16 text-center">
-          <Card className="border-2 border-primary">
-            <CardHeader>
-              <CardTitle className="text-2xl">Ready to Build Your Community?</CardTitle>
-              <CardDescription className="text-base">
-                Join thousands of creators earning recurring revenue from their passionate communities
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-4 justify-center">
-                {!isCreator && (
-                  <Button onClick={becomeCreator} size="lg" className="gap-2">
-                    <Crown className="w-4 h-4" />
-                    Start Creating Now
-                  </Button>
-                )}
-                <Button variant="outline" size="lg" className="gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Learn More
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }
