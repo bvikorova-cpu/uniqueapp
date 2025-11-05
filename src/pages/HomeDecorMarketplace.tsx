@@ -50,6 +50,10 @@ const HomeDecorMarketplace = () => {
     checkAuth();
     loadItems();
     loadSubscription();
+
+    // Auto-refresh subscription every minute
+    const interval = setInterval(loadSubscription, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   const checkAuth = async () => {
@@ -63,29 +67,22 @@ const HomeDecorMarketplace = () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data } = await supabase
-      .from('decor_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
-
-    if (!data) {
-      // Create free subscription
-      const { data: newSub } = await supabase
+    try {
+      // Call check subscription function to sync with Stripe
+      const { data, error } = await supabase.functions.invoke('check-decor-subscription');
+      
+      if (error) throw error;
+      
+      // Update local state with synced data
+      const { data: localSub } = await supabase
         .from('decor_subscriptions')
-        .insert({
-          user_id: user.id,
-          tier: 'free',
-          designs_limit: 2,
-          designs_used: 0,
-          status: 'active'
-        })
-        .select()
+        .select('*')
+        .eq('user_id', user.id)
         .single();
       
-      setSubscription(newSub);
-    } else {
-      setSubscription(data);
+      setSubscription(localSub);
+    } catch (error) {
+      console.error('Error loading subscription:', error);
     }
   };
 
@@ -196,6 +193,36 @@ const HomeDecorMarketplace = () => {
       });
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handlePurchaseItem = async (itemId: string) => {
+    if (!currentUserId) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Prosím prihláste sa pre nákup",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-marketplace-item-checkout', {
+        body: { item_id: itemId }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa vytvoriť checkout",
+        variant: "destructive",
+      });
     }
   };
 
@@ -348,8 +375,12 @@ const HomeDecorMarketplace = () => {
                           <Star className="h-4 w-4" />
                           <span>Predajca</span>
                         </div>
-                        <Button size="sm">
-                          Kontaktovať
+                        <Button 
+                          size="sm"
+                          onClick={() => handlePurchaseItem(item.id)}
+                          disabled={item.user_id === currentUserId}
+                        >
+                          {item.user_id === currentUserId ? "Vaša položka" : "Kúpiť"}
                         </Button>
                       </div>
                     </CardContent>

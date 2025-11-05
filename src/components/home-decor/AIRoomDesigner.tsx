@@ -6,9 +6,52 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Sparkles, Loader2, ShoppingBag } from "lucide-react";
+import { Upload, Sparkles, Loader2, ShoppingBag, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+
+function ARPreviewButton({ designId }: { designId: string }) {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleARPreview = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-ar-preview-checkout', {
+        body: { design_id: designId }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa vytvoriť checkout",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Button onClick={handleARPreview} disabled={loading} variant="outline" size="sm">
+      <Eye className="mr-2 h-4 w-4" />
+      {loading ? "Načítavam..." : "AR Preview €0.99"}
+    </Button>
+  );
+}
 
 interface AIRoomDesignerProps {
   subscription: any;
@@ -242,7 +285,10 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
       {designResult && (
         <Card>
           <CardHeader>
-            <CardTitle>Váš AI návrh</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>Váš AI návrh</CardTitle>
+              <ARPreviewButton designId={designResult.design.id} />
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
             {designResult.design.redesigned_image_url && (
