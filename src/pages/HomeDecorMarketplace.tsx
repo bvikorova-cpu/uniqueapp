@@ -1,12 +1,15 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Camera, Maximize2, ShoppingBag, Eye, Upload, Wand2, Crown } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Sparkles, Camera, Maximize2, ShoppingBag, Eye, Upload, Wand2, Crown, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useDecorSubscription } from "@/hooks/useDecorSubscription";
 
 const DESIGN_STYLES = [
   { id: "minimalist", name: "Minimalist", emoji: "⚪" },
@@ -32,19 +35,57 @@ const SUBSCRIPTION_PLAN = {
 export default function HomeDecorMarketplace() {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [selectedStyle, setSelectedStyle] = useState<string>("");
+  const [searchParams] = useSearchParams();
+  const { subscription, subscribe, generateDesign, purchaseARPreview, checkSubscription } = useDecorSubscription();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedStyle, setSelectedStyle] = useState<string>("");
+  const [roomDescription, setRoomDescription] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedDesign, setGeneratedDesign] = useState<string | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     checkAuth();
-  });
+    handlePaymentRedirects();
+  }, [searchParams]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     setIsAuthenticated(!!session);
   };
 
-  const handleUploadRoom = () => {
+  const handlePaymentRedirects = () => {
+    const success = searchParams.get('success');
+    const canceled = searchParams.get('canceled');
+    const arSuccess = searchParams.get('ar_success');
+    const arCanceled = searchParams.get('ar_canceled');
+
+    if (success === 'true') {
+      toast({
+        title: "Subscription Activated!",
+        description: "Your Pro Designer subscription is now active.",
+      });
+      checkSubscription();
+    } else if (canceled === 'true') {
+      toast({
+        title: "Subscription Canceled",
+        description: "You can complete your subscription later.",
+        variant: "destructive",
+      });
+    } else if (arSuccess === 'true') {
+      toast({
+        title: "AR Preview Unlocked!",
+        description: "You can now use AR to preview this decoration.",
+      });
+    } else if (arCanceled === 'true') {
+      toast({
+        title: "Payment Canceled",
+        description: "AR preview payment was canceled.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUploadRoom = async () => {
     if (!isAuthenticated) {
       toast({
         title: "Login Required",
@@ -54,16 +95,51 @@ export default function HomeDecorMarketplace() {
       navigate("/auth");
       return;
     }
-    toast({
-      title: "Coming Soon",
-      description: "AI Room Designer feature will be available soon!",
-    });
+
+    if (!subscription.subscribed) {
+      toast({
+        title: "Subscription Required",
+        description: "Subscribe to Pro Designer to generate AI room designs.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!selectedStyle) {
+      toast({
+        title: "Select a Style",
+        description: "Please choose a design style before generating.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    const result = await generateDesign(selectedStyle, roomDescription);
+    setIsGenerating(false);
+
+    if (result) {
+      setGeneratedDesign(result.design);
+      toast({
+        title: "Design Generated!",
+        description: `${result.designs_remaining} designs remaining this month.`,
+      });
+    }
   };
 
   const handleARPreview = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please sign in to use AR Preview",
+        variant: "destructive"
+      });
+      navigate("/auth");
+      return;
+    }
     toast({
-      title: "AR Preview",
-      description: "AR Try-before-buy (€0.99) coming soon!",
+      title: "Select a Product",
+      description: "Browse marketplace and select a product to preview in AR.",
     });
   };
 
@@ -77,10 +153,7 @@ export default function HomeDecorMarketplace() {
       navigate("/auth");
       return;
     }
-    toast({
-      title: "Coming Soon",
-      description: "Pro Designer subscription will be available soon!",
-    });
+    subscribe();
   };
 
   return (
@@ -110,18 +183,28 @@ export default function HomeDecorMarketplace() {
         </div>
 
         {/* Subscription Plan */}
-        <Card className="mb-12 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+        <Card className={`mb-12 border-primary/20 ${subscription.subscribed ? 'bg-gradient-to-br from-green-500/10 to-transparent' : 'bg-gradient-to-br from-primary/5 to-transparent'}`}>
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Crown className="h-6 w-6 text-primary" />
                 <CardTitle className="text-2xl">{SUBSCRIPTION_PLAN.name}</CardTitle>
               </div>
-              <Badge variant="secondary" className="text-lg px-4 py-2">
-                €{SUBSCRIPTION_PLAN.price}/month
-              </Badge>
+              <div className="flex gap-2">
+                {subscription.subscribed ? (
+                  <Badge className="text-lg px-4 py-2 bg-green-500">Active</Badge>
+                ) : (
+                  <Badge variant="secondary" className="text-lg px-4 py-2">
+                    €{SUBSCRIPTION_PLAN.price}/month
+                  </Badge>
+                )}
+              </div>
             </div>
-            <CardDescription>Unlock unlimited AI-powered design possibilities</CardDescription>
+            <CardDescription>
+              {subscription.subscribed 
+                ? `You have ${subscription.designs_limit - subscription.designs_used} designs remaining this month`
+                : "Unlock unlimited AI-powered design possibilities"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6">
@@ -134,9 +217,25 @@ export default function HomeDecorMarketplace() {
                 ))}
               </ul>
               <div className="flex items-center justify-center">
-                <Button size="lg" className="w-full md:w-auto" onClick={handleSubscribe}>
-                  Subscribe Now
-                </Button>
+                {subscription.subscribed ? (
+                  <div className="text-center space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      Designs used: {subscription.designs_used}/{subscription.designs_limit}
+                    </p>
+                    <Button size="lg" variant="outline" className="w-full md:w-auto" onClick={checkSubscription}>
+                      Refresh Status
+                    </Button>
+                  </div>
+                ) : (
+                  <Button 
+                    size="lg" 
+                    className="w-full md:w-auto" 
+                    onClick={handleSubscribe}
+                    disabled={subscription.loading}
+                  >
+                    {subscription.loading ? "Loading..." : "Subscribe Now"}
+                  </Button>
+                )}
               </div>
             </div>
           </CardContent>
@@ -168,17 +267,16 @@ export default function HomeDecorMarketplace() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Upload Section */}
-                <div className="border-2 border-dashed rounded-lg p-12 text-center hover:border-primary transition-colors cursor-pointer bg-gradient-to-br from-secondary/20 to-transparent">
-                  <Upload className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">Upload Your Room Photo</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Take a photo of your space and watch AI transform it
-                  </p>
-                  <Button onClick={handleUploadRoom}>
-                    <Camera className="mr-2 h-4 w-4" />
-                    Upload Photo
-                  </Button>
+                {/* Room Description */}
+                <div className="space-y-2">
+                  <Label>Describe Your Room (Optional)</Label>
+                  <Textarea
+                    placeholder="E.g., Small living room with natural light, white walls, hardwood floors..."
+                    value={roomDescription}
+                    onChange={(e) => setRoomDescription(e.target.value)}
+                    rows={3}
+                    disabled={isGenerating}
+                  />
                 </div>
 
                 {/* Style Filters */}
@@ -191,7 +289,7 @@ export default function HomeDecorMarketplace() {
                         className={`cursor-pointer transition-all hover:scale-105 ${
                           selectedStyle === style.id ? "ring-2 ring-primary" : ""
                         }`}
-                        onClick={() => setSelectedStyle(style.id)}
+                        onClick={() => !isGenerating && setSelectedStyle(style.id)}
                       >
                         <CardContent className="p-6 text-center">
                           <div className="text-4xl mb-2">{style.emoji}</div>
@@ -201,6 +299,43 @@ export default function HomeDecorMarketplace() {
                     ))}
                   </div>
                 </div>
+
+                {/* Generate Button */}
+                <Button 
+                  size="lg" 
+                  className="w-full" 
+                  onClick={handleUploadRoom}
+                  disabled={isGenerating || !selectedStyle}
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Generating Design...
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="mr-2 h-5 w-5" />
+                      Generate AI Design
+                    </>
+                  )}
+                </Button>
+
+                {/* Generated Design Display */}
+                {generatedDesign && (
+                  <Card className="bg-gradient-to-br from-primary/5 to-transparent">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Sparkles className="h-5 w-5 text-primary" />
+                        Your AI Design Suggestion
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="prose prose-sm max-w-none whitespace-pre-wrap">
+                        {generatedDesign}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

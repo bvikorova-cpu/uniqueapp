@@ -284,3 +284,15 @@ verify_jwt = true
 
 [functions.send-concert-gift]
 verify_jwt = true
+
+[functions.create-decor-subscription]
+verify_jwt = true
+
+[functions.check-decor-subscription]
+verify_jwt = true
+
+[functions.create-ar-preview-payment]
+verify_jwt = true
+
+[functions.generate-room-design]
+verify_jwt = true
