@@ -7659,6 +7659,83 @@ export type Database = {
         }
         Relationships: []
       }
+      home_decor_items: {
+        Row: {
+          category: string
+          condition: string
+          created_at: string | null
+          description: string
+          id: string
+          image_url: string | null
+          price: number
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          condition: string
+          created_at?: string | null
+          description: string
+          id?: string
+          image_url?: string | null
+          price: number
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          condition?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          image_url?: string | null
+          price?: number
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      home_decor_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          item_id: string
+          message: string
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          item_id: string
+          message: string
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          item_id?: string
+          message?: string
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "home_decor_messages_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "home_decor_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       home_designs: {
         Row: {
           created_at: string | null

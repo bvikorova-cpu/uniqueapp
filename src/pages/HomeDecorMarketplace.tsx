@@ -23,9 +23,6 @@ interface DecorItem {
   image_url: string | null;
   created_at: string;
   user_id: string;
-  profiles?: {
-    full_name: string | null;
-  } | null;
 }
 
 const HomeDecorMarketplace = () => {
@@ -59,46 +56,17 @@ const HomeDecorMarketplace = () => {
   };
 
   const loadItems = async () => {
-    // Mock data for now - will be replaced with actual DB call
-    const mockItems: DecorItem[] = [
-      {
-        id: '1',
-        title: 'Moderné nástenné hodiny',
-        price: 29.99,
-        description: 'Elegantné nástenné hodiny v minimalistickom dizajne',
-        category: 'accessories',
-        condition: 'Like New',
-        image_url: null,
-        created_at: new Date().toISOString(),
-        user_id: '1',
-        profiles: { full_name: 'Peter Novák' }
-      },
-      {
-        id: '2',
-        title: 'Vankúše s geometrickým vzorom',
-        price: 15.99,
-        description: 'Set 2 dekoračných vankúšov, 45x45cm',
-        category: 'textiles',
-        condition: 'New',
-        image_url: null,
-        created_at: new Date().toISOString(),
-        user_id: '2',
-        profiles: { full_name: 'Jana Kováčová' }
-      },
-      {
-        id: '3',
-        title: 'LED stolová lampa',
-        price: 39.99,
-        description: 'Moderná LED lampa s nastaviteľnou intenzitou',
-        category: 'lighting',
-        condition: 'Good',
-        image_url: null,
-        created_at: new Date().toISOString(),
-        user_id: '3',
-        profiles: { full_name: 'Martin Horváth' }
-      }
-    ];
-    setItems(mockItems);
+    const { data, error } = await supabase
+      .from('home_decor_items')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading items:', error);
+      return;
+    }
+
+    setItems(data || []);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,6 +79,25 @@ const HomeDecorMarketplace = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const uploadImage = async () => {
+    if (!imageFile || !currentUserId) return null;
+
+    const fileExt = imageFile.name.split('.').pop();
+    const fileName = `${currentUserId}/${Date.now()}.${fileExt}`;
+    
+    const { data, error } = await supabase.storage
+      .from('home-decor-items')
+      .upload(fileName, imageFile);
+
+    if (error) throw error;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('home-decor-items')
+      .getPublicUrl(fileName);
+
+    return publicUrl;
   };
 
   const handleSubmit = async () => {
@@ -133,20 +120,49 @@ const HomeDecorMarketplace = () => {
       return;
     }
 
-    toast({
-      title: "Úspech!",
-      description: "Vaša položka bola pridaná (demo mód)",
-    });
+    try {
+      setUploading(true);
+      const imageUrl = await uploadImage();
 
-    setFormData({
-      title: "",
-      price: "",
-      description: "",
-      category: "furniture",
-      condition: "Like New",
-    });
-    setImageFile(null);
-    setImagePreview("");
+      const { error } = await supabase
+        .from('home_decor_items')
+        .insert({
+          title: formData.title,
+          price: parseFloat(formData.price),
+          description: formData.description,
+          category: formData.category,
+          condition: formData.condition,
+          image_url: imageUrl,
+          user_id: currentUserId,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspech!",
+        description: "Vaša položka bola pridaná do marketplace",
+      });
+
+      setFormData({
+        title: "",
+        price: "",
+        description: "",
+        category: "furniture",
+        condition: "Like New",
+      });
+      setImageFile(null);
+      setImagePreview("");
+      await loadItems();
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa pridať položku",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
   };
 
   const filteredItems = items.filter(item => {
@@ -273,7 +289,7 @@ const HomeDecorMarketplace = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Star className="h-4 w-4" />
-                          <span>{item.profiles?.full_name || "Anonymný"}</span>
+                          <span>Predajca</span>
                         </div>
                         <Button size="sm">
                           Kontaktovať
