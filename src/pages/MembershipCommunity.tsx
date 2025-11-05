@@ -154,7 +154,7 @@ export default function MembershipCommunity() {
             <Crown className="mr-2 h-5 w-5" />
             Become a Creator
           </Button>
-          <Button size="lg" variant="outline">
+          <Button size="lg" variant="outline" onClick={() => navigate("/browse-creators")}>
             <Users className="mr-2 h-5 w-5" />
             Browse Creators
           </Button>
@@ -237,7 +237,7 @@ export default function MembershipCommunity() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" variant="outline">
+                <Button className="w-full" variant="outline" onClick={() => navigate(`/creator/${creator.id}`)}>
                   <Heart className="mr-2 h-4 w-4" />
                   View Profile
                 </Button>

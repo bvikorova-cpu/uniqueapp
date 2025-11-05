@@ -147,6 +147,9 @@ import QuantumSocial from "./pages/QuantumSocial";
 import VirtualInfluencerAgency from "./pages/VirtualInfluencerAgency";
 import AIContentMarketplace from "./pages/AIContentMarketplace";
 import MembershipCommunity from "./pages/MembershipCommunity";
+import CreatorDashboard from "./pages/CreatorDashboard";
+import BrowseCreators from "./pages/BrowseCreators";
+import CreatorProfile from "./pages/CreatorProfile";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
@@ -360,6 +363,9 @@ const App = () => (
           <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
           <Route path="/ai-content-marketplace" element={<AIContentMarketplace />} />
           <Route path="/membership-community" element={<MembershipCommunity />} />
+          <Route path="/creator-dashboard" element={<CreatorDashboard />} />
+          <Route path="/browse-creators" element={<BrowseCreators />} />
+          <Route path="/creator/:creatorId" element={<CreatorProfile />} />
           <Route path="/print-on-demand" element={<PrintOnDemand />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/custom-commissions" element={<CustomCommissions />} />

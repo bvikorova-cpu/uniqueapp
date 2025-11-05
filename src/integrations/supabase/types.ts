@@ -4500,6 +4500,60 @@ export type Database = {
           },
         ]
       }
+      creator_gifts_sent: {
+        Row: {
+          amount_paid: number
+          created_at: string | null
+          creator_earning: number
+          gift_id: string
+          id: string
+          message: string | null
+          platform_fee: number
+          recipient_creator_id: string
+          sender_id: string
+          stripe_payment_intent_id: string | null
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string | null
+          creator_earning: number
+          gift_id: string
+          id?: string
+          message?: string | null
+          platform_fee: number
+          recipient_creator_id: string
+          sender_id: string
+          stripe_payment_intent_id?: string | null
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string | null
+          creator_earning?: number
+          gift_id?: string
+          id?: string
+          message?: string | null
+          platform_fee?: number
+          recipient_creator_id?: string
+          sender_id?: string
+          stripe_payment_intent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_gifts_sent_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "virtual_gifts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_gifts_sent_recipient_creator_id_fkey"
+            columns: ["recipient_creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_memberships: {
         Row: {
           creator_id: string
@@ -14789,6 +14843,42 @@ export type Database = {
           stripe_subscription_id?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      virtual_gifts: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          price: number
+          stripe_price_id: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          price: number
+          stripe_price_id?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          stripe_price_id?: string | null
         }
         Relationships: []
       }
