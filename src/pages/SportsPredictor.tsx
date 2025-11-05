@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { format, addDays } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -108,36 +109,57 @@ const TOP_TIPSTERS = [
   },
 ];
 
-const UPCOMING_MATCHES = [
-  {
-    id: 1,
-    homeTeam: "Manchester United",
-    awayTeam: "Liverpool",
-    sport: "Football",
-    time: "18:30",
-    date: "Today",
-    prediction: "Home Win",
-    confidence: 72,
-    tipster: "Mike Rodriguez",
-    odds: "2.10",
-  },
-  {
-    id: 2,
-    homeTeam: "Lakers",
-    awayTeam: "Warriors",
-    sport: "Basketball",
-    time: "20:00",
-    date: "Today",
-    prediction: "Over 215.5",
-    confidence: 68,
-    tipster: "Sarah Thompson",
-    odds: "1.85",
-  },
-];
+const getUpcomingMatches = () => {
+  const today = new Date();
+  const tomorrow = addDays(today, 1);
+  
+  return [
+    {
+      id: 1,
+      homeTeam: "Manchester United",
+      awayTeam: "Liverpool",
+      sport: "Football",
+      time: "18:30",
+      date: format(today, "MMM dd, yyyy"),
+      dateLabel: "Today",
+      prediction: "Home Win",
+      confidence: 72,
+      tipster: "Mike Rodriguez",
+      odds: "2.10",
+    },
+    {
+      id: 2,
+      homeTeam: "Lakers",
+      awayTeam: "Warriors",
+      sport: "Basketball",
+      time: "20:00",
+      date: format(today, "MMM dd, yyyy"),
+      dateLabel: "Today",
+      prediction: "Over 215.5",
+      confidence: 68,
+      tipster: "Sarah Thompson",
+      odds: "1.85",
+    },
+    {
+      id: 3,
+      homeTeam: "Real Madrid",
+      awayTeam: "Barcelona",
+      sport: "Football",
+      time: "21:00",
+      date: format(tomorrow, "MMM dd, yyyy"),
+      dateLabel: "Tomorrow",
+      prediction: "Both Teams Score",
+      confidence: 75,
+      tipster: "Mike Rodriguez",
+      odds: "1.95",
+    },
+  ];
+};
 
 export default function SportsPredictor() {
   const navigate = useNavigate();
   const [selectedSport, setSelectedSport] = useState("all");
+  const upcomingMatches = useMemo(() => getUpcomingMatches(), []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -264,7 +286,7 @@ export default function SportsPredictor() {
 
             <TabsContent value="all" className="mt-6">
               <div className="grid gap-4">
-                {UPCOMING_MATCHES.map((match) => (
+                {upcomingMatches.map((match) => (
                   <Card key={match.id} className="hover:shadow-lg transition-all">
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between">
@@ -276,7 +298,7 @@ export default function SportsPredictor() {
                             <span className="font-bold text-lg">{match.awayTeam}</span>
                           </div>
                           <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span>{match.date} • {match.time}</span>
+                            <span>{match.dateLabel} ({match.date}) • {match.time}</span>
                             <span>•</span>
                             <div className="flex items-center gap-1">
                               <Avatar className="h-5 w-5">
