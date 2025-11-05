@@ -142,12 +142,13 @@ const getUpcomingMatches = () => {
     const teamPair = footballTeams[i % footballTeams.length];
     const dateIndex = Math.floor(i / 10);
     const hour = 14 + (i % 8);
+    const minutes = ((i % 4) * 15).toString().padStart(2, '0');
     matches.push({
       id: matches.length + 1,
       homeTeam: teamPair[0],
       awayTeam: teamPair[1],
       sport: "Football",
-      time: `${hour}:${(i % 4) * 15}0`,
+      time: `${hour}:${minutes}`,
       date: format(dates[dateIndex], "MMM dd, yyyy"),
       dateLabel: dateLabels[dateIndex],
       prediction: footballPredictions[i % footballPredictions.length],
@@ -162,12 +163,13 @@ const getUpcomingMatches = () => {
     const teamPair = basketballTeams[i % basketballTeams.length];
     const dateIndex = Math.floor(i / 5);
     const hour = 19 + (i % 5);
+    const minutes = ((i % 2) * 30).toString().padStart(2, '0');
     matches.push({
       id: matches.length + 1,
       homeTeam: teamPair[0],
       awayTeam: teamPair[1],
       sport: "Basketball",
-      time: `${hour}:${(i % 2) * 30}0`,
+      time: `${hour}:${minutes}`,
       date: format(dates[dateIndex], "MMM dd, yyyy"),
       dateLabel: dateLabels[dateIndex],
       prediction: basketballPredictions[i % basketballPredictions.length],
