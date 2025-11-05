@@ -157,6 +157,7 @@ import LotteryAI from "./pages/LotteryAI";
 import LotteryHistory from "./pages/LotteryHistory";
 import SportsPredictor from "./pages/SportsPredictor";
 import AdminSportsMatches from "./pages/AdminSportsMatches";
+import PropertyMarketplace from "./pages/PropertyMarketplace";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
@@ -448,6 +449,7 @@ const App = () => (
               <Route path="/fundraising/student" element={<StudentSupport />} />
               <Route path="/fundraising/crisis" element={<CrisisRelief />} />
               <Route path="/fundraising/talent" element={<TalentSponsorship />} />
+              <Route path="/property-marketplace" element={<PropertyMarketplace />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
