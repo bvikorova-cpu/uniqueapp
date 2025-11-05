@@ -1,0 +1,391 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Progress } from '@/components/ui/progress';
+import { 
+  Heart, 
+  TrendingUp, 
+  Users, 
+  Euro,
+  Plus,
+  Eye,
+  Edit,
+  Clock,
+  CheckCircle,
+  XCircle
+} from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
+
+interface Campaign {
+  id: string;
+  title: string;
+  target_amount: number;
+  current_amount: number;
+  status: string;
+  verified: boolean;
+  monthly_donors_count?: number;
+  one_time_donors_count?: number;
+  supporters_count?: number;
+  created_at: string;
+}
+
+interface DonationStat {
+  total_donations: number;
+  total_amount: number;
+  monthly_amount: number;
+}
+
+export default function FundraisingDashboard() {
+  const navigate = useNavigate();
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [stats, setStats] = useState<DonationStat>({
+    total_donations: 0,
+    total_amount: 0,
+    monthly_amount: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkAuthAndFetch();
+  }, []);
+
+  const checkAuthAndFetch = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: 'Chyba',
+          description: 'Musíte byť prihlásený',
+          variant: 'destructive',
+        });
+        navigate('/auth');
+        return;
+      }
+
+      await Promise.all([
+        fetchCampaigns(session.user.id),
+        fetchStats(session.user.id),
+      ]);
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCampaigns = async (userId: string) => {
+    try {
+      // Fetch from all campaign tables
+      const tables = [
+        'medical_campaigns',
+        'dream_campaigns',
+        'hero_campaigns',
+        'pet_rescue_campaigns',
+        'student_campaigns',
+        'crisis_campaigns',
+        'talent_campaigns',
+      ];
+
+      const allCampaigns: Campaign[] = [];
+
+      for (const table of tables) {
+        try {
+          const { data, error } = await supabase
+            .from(table as any)
+            .select('id, title, target_amount, current_amount, status, verified, monthly_donors_count, one_time_donors_count, supporters_count, created_at')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false });
+
+          if (error) {
+            console.error(`Error fetching ${table}:`, error);
+            continue;
+          }
+
+          if (data && Array.isArray(data)) {
+            allCampaigns.push(...(data as any[]));
+          }
+        } catch (err) {
+          console.error(`Error in ${table}:`, err);
+        }
+      }
+
+      setCampaigns(allCampaigns);
+    } catch (error) {
+      console.error('Error fetching campaigns:', error);
+    }
+  };
+
+  const fetchStats = async (userId: string) => {
+    try {
+      // Get all campaign IDs for this user
+      const campaignIds = campaigns.map(c => c.id);
+
+      if (campaignIds.length === 0) return;
+
+      const { data, error } = await supabase
+        .from('campaign_donations')
+        .select('amount, is_monthly')
+        .in('campaign_id', campaignIds)
+        .eq('status', 'completed');
+
+      if (error) throw error;
+
+      if (data) {
+        const totalAmount = data.reduce((sum, d) => sum + d.amount, 0);
+        const monthlyAmount = data
+          .filter(d => d.is_monthly)
+          .reduce((sum, d) => sum + d.amount, 0);
+
+        setStats({
+          total_donations: data.length,
+          total_amount: totalAmount,
+          monthly_amount: monthlyAmount,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  const getStatusBadge = (campaign: Campaign) => {
+    if (campaign.status === 'pending') {
+      return <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" />Čaká na schválenie</Badge>;
+    }
+    if (campaign.status === 'active' && campaign.verified) {
+      return <Badge variant="default"><CheckCircle className="h-3 w-3 mr-1" />Aktívna</Badge>;
+    }
+    if (campaign.status === 'rejected') {
+      return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Zamietnutá</Badge>;
+    }
+    if (campaign.status === 'completed') {
+      return <Badge variant="outline"><CheckCircle className="h-3 w-3 mr-1" />Dokončená</Badge>;
+    }
+    return <Badge variant="outline">{campaign.status}</Badge>;
+  };
+
+  const getProgress = (campaign: Campaign) => {
+    return Math.min((campaign.current_amount / campaign.target_amount) * 100, 100);
+  };
+
+  const getDonorsCount = (campaign: Campaign) => {
+    return (campaign.monthly_donors_count || 0) + 
+           (campaign.one_time_donors_count || 0) + 
+           (campaign.supporters_count || 0);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Načítavam...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Dashboard - Moje kampane</h1>
+            <p className="text-muted-foreground">Spravujte svoje fundraising kampane</p>
+          </div>
+          <Button onClick={() => navigate('/fundraising/medical/create')} size="lg">
+            <Plus className="mr-2 h-5 w-5" />
+            Nová kampaň
+          </Button>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Celkovo vyzbierané</p>
+                  <p className="text-2xl font-bold">{stats.total_amount.toFixed(2)}€</p>
+                </div>
+                <Euro className="h-8 w-8 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Mesačné príjmy</p>
+                  <p className="text-2xl font-bold">{stats.monthly_amount.toFixed(2)}€</p>
+                </div>
+                <TrendingUp className="h-8 w-8 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Celkovo darov</p>
+                  <p className="text-2xl font-bold">{stats.total_donations}</p>
+                </div>
+                <Heart className="h-8 w-8 text-red-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Aktívne kampane</p>
+                  <p className="text-2xl font-bold">
+                    {campaigns.filter(c => c.status === 'active').length}
+                  </p>
+                </div>
+                <Users className="h-8 w-8 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Campaigns List */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Vaše kampane</CardTitle>
+            <CardDescription>Prehľad všetkých vašich fundraising kampaní</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList>
+                <TabsTrigger value="all">Všetky ({campaigns.length})</TabsTrigger>
+                <TabsTrigger value="active">
+                  Aktívne ({campaigns.filter(c => c.status === 'active').length})
+                </TabsTrigger>
+                <TabsTrigger value="pending">
+                  Čakajúce ({campaigns.filter(c => c.status === 'pending').length})
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="all" className="space-y-4 mt-4">
+                {campaigns.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground mb-4">Zatiaľ nemáte žiadne kampane</p>
+                    <Button onClick={() => navigate('/fundraising/medical/create')}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Vytvoriť prvú kampaň
+                    </Button>
+                  </div>
+                ) : (
+                  campaigns.map((campaign) => (
+                    <Card key={campaign.id}>
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <h3 className="text-xl font-semibold mb-2">{campaign.title}</h3>
+                            {getStatusBadge(campaign)}
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => navigate(`/fundraising/medical/${campaign.id}`)}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <div>
+                            <div className="flex justify-between text-sm mb-2">
+                              <span className="font-semibold">{campaign.current_amount.toFixed(2)}€</span>
+                              <span className="text-muted-foreground">z {campaign.target_amount.toFixed(2)}€</span>
+                            </div>
+                            <Progress value={getProgress(campaign)} />
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-4 text-sm">
+                            <div>
+                              <p className="text-muted-foreground">Darcovia</p>
+                              <p className="font-semibold">{getDonorsCount(campaign)}</p>
+                            </div>
+                            <div>
+                              <p className="text-muted-foreground">Progress</p>
+                              <p className="font-semibold">{getProgress(campaign).toFixed(0)}%</p>
+                            </div>
+                            <div>
+                              <p className="text-muted-foreground">Vytvorené</p>
+                              <p className="font-semibold">
+                                {new Date(campaign.created_at).toLocaleDateString('sk')}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </TabsContent>
+
+              <TabsContent value="active" className="space-y-4 mt-4">
+                {campaigns.filter(c => c.status === 'active').map((campaign) => (
+                  <Card key={campaign.id}>
+                    <CardContent className="pt-6">
+                      {/* Same content as above */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-semibold mb-2">{campaign.title}</h3>
+                          {getStatusBadge(campaign)}
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => navigate(`/fundraising/medical/${campaign.id}`)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex justify-between text-sm mb-2">
+                            <span className="font-semibold">{campaign.current_amount.toFixed(2)}€</span>
+                            <span className="text-muted-foreground">z {campaign.target_amount.toFixed(2)}€</span>
+                          </div>
+                          <Progress value={getProgress(campaign)} />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </TabsContent>
+
+              <TabsContent value="pending" className="space-y-4 mt-4">
+                {campaigns.filter(c => c.status === 'pending').map((campaign) => (
+                  <Card key={campaign.id}>
+                    <CardContent className="pt-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-semibold mb-2">{campaign.title}</h3>
+                          {getStatusBadge(campaign)}
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Kampaň čaká na overenie a schválenie administrátorom. Budete informovaný emailom.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}

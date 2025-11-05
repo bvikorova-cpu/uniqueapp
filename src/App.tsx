@@ -190,8 +190,11 @@ import MusicianDashboard from "./pages/MusicianDashboard";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import IQPlatform from "./pages/IQPlatform";
+import FundraisingHub from "./pages/fundraising/FundraisingHub";
 import MedicalFundraising from "./pages/fundraising/MedicalFundraising";
 import MedicalDetail from "./pages/fundraising/MedicalDetail";
+import CreateMedicalCampaign from "./pages/fundraising/CreateMedicalCampaign";
+import FundraisingDashboard from "./pages/fundraising/FundraisingDashboard";
 import DreamMaker from "./pages/fundraising/DreamMaker";
 import CommunityHero from "./pages/fundraising/CommunityHero";
 import PetRescue from "./pages/fundraising/PetRescue";
@@ -410,7 +413,10 @@ const App = () => (
               <Route path="/iq-platform" element={<IQPlatform />} />
               
               {/* Fundraising Routes */}
+              <Route path="/fundraising" element={<FundraisingHub />} />
+              <Route path="/fundraising/dashboard" element={<FundraisingDashboard />} />
               <Route path="/fundraising/medical" element={<MedicalFundraising />} />
+              <Route path="/fundraising/medical/create" element={<CreateMedicalCampaign />} />
               <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
               <Route path="/fundraising/dream" element={<DreamMaker />} />
               <Route path="/fundraising/hero" element={<CommunityHero />} />

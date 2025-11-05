@@ -32,7 +32,17 @@ export default function MedicalFundraising() {
 
   useEffect(() => {
     fetchCampaigns();
+    checkUserCampaigns();
   }, []);
+
+  const checkUserCampaigns = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      // Optional: Check if user has campaigns to show dashboard link
+    } catch (error) {
+      console.error('Error checking user campaigns:', error);
+    }
+  };
 
   const fetchCampaigns = async () => {
     try {
@@ -77,14 +87,23 @@ export default function MedicalFundraising() {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Pomôžte ľuďom s vážnymi zdravotnými problémami získať potrebnú liečbu
           </p>
-          <Button 
-            size="lg" 
-            onClick={() => navigate('/fundraising/medical/create')}
-            className="bg-gradient-to-r from-primary to-primary/80"
-          >
-            <Heart className="mr-2 h-5 w-5" />
-            Vytvoriť kampaň
-          </Button>
+          <div className="flex gap-4 justify-center">
+            <Button 
+              size="lg" 
+              onClick={() => navigate('/fundraising/medical/create')}
+              className="bg-gradient-to-r from-primary to-primary/80"
+            >
+              <Heart className="mr-2 h-5 w-5" />
+              Vytvoriť kampaň
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => navigate('/fundraising/dashboard')}
+            >
+              Moje kampane
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
