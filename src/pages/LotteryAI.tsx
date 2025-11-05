@@ -724,13 +724,15 @@ export default function LotteryAI() {
                     <Card key={combo.id}>
                       <CardHeader>
                         <div className="flex items-center justify-between">
-                          <CardTitle className="text-base">{combo.lottery}</CardTitle>
-                          <Badge variant="secondary">{combo.date}</Badge>
+                          <CardTitle className="text-base">{combo.lottery_type}</CardTitle>
+                          <Badge variant="secondary">
+                            {new Date(combo.created_at).toLocaleDateString()}
+                          </Badge>
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="flex flex-wrap gap-2 mb-3">
-                          {combo.numbers.map((num: number, idx: number) => (
+                          {combo.main_numbers?.map((num: number, idx: number) => (
                             <div
                               key={idx}
                               className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary"
@@ -738,7 +740,7 @@ export default function LotteryAI() {
                               {num}
                             </div>
                           ))}
-                          {combo.bonus.map((num: number, idx: number) => (
+                          {combo.bonus_numbers?.map((num: number, idx: number) => (
                             <div
                               key={`bonus-${idx}`}
                               className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center font-bold text-orange-500"

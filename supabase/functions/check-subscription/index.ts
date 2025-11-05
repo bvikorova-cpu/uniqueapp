@@ -7,10 +7,9 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const PRICE_TO_TIER = {
-  "price_basic_monthly": "basic",
-  "price_premium_monthly": "premium",
-  "price_business_monthly": "business",
+const SUBSCRIPTION_TIERS = {
+  "price_1SQ5bv0QTWhd4oRpEQwOsKMQ": "basic",  // Basic tier
+  "price_1SQ5cIGaXSfGtYFtKghPwnpp": "pro",    // Pro tier
 };
 
 serve(async (req) => {
@@ -41,21 +40,14 @@ serve(async (req) => {
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
     if (customers.data.length === 0) {
-      // No Stripe customer - update to free tier
-      await supabaseClient
-        .from('subscriptions')
-        .upsert({
-          user_id: user.id,
-          tier: 'free',
-          price: 0,
-          status: 'active',
-          expires_at: null,
-        }, {
-          onConflict: 'user_id',
-        });
-
+      // No Stripe customer - no subscription
       return new Response(
-        JSON.stringify({ tier: "free", active: false }),
+        JSON.stringify({ 
+          subscribed: false,
+          tier: null,
+          limit: 0,
+          generations_used: 0
+        }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -69,47 +61,38 @@ serve(async (req) => {
 
     if (subscriptions.data.length === 0) {
       // No active subscription
-      await supabaseClient
-        .from('subscriptions')
-        .upsert({
-          user_id: user.id,
-          tier: 'free',
-          price: 0,
-          status: 'active',
-          expires_at: null,
-        }, {
-          onConflict: 'user_id',
-        });
-
       return new Response(
-        JSON.stringify({ tier: "free", active: false }),
+        JSON.stringify({ 
+          subscribed: false,
+          tier: null,
+          limit: 0,
+          generations_used: 0
+        }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     const subscription = subscriptions.data[0];
     const priceId = subscription.items.data[0].price.id;
-    const tier = PRICE_TO_TIER[priceId as keyof typeof PRICE_TO_TIER] || "free";
-    const expiresAt = new Date(subscription.current_period_end * 1000).toISOString();
+    const tier = SUBSCRIPTION_TIERS[priceId as keyof typeof SUBSCRIPTION_TIERS] || null;
+    
+    // Get user subscription data from database
+    const { data: userSubData } = await supabaseClient
+      .from("user_subscriptions")
+      .select("generations_used, generations_limit")
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-    // Update subscription in database
-    await supabaseClient
-      .from('subscriptions')
-      .upsert({
-        user_id: user.id,
-        tier: tier,
-        price: subscription.items.data[0].price.unit_amount! / 100,
-        status: 'active',
-        expires_at: expiresAt,
-      }, {
-        onConflict: 'user_id',
-      });
+    const generationsUsed = userSubData?.generations_used || 0;
+    const generationsLimit = tier === "pro" ? -1 : (userSubData?.generations_limit || 10);
 
     return new Response(
       JSON.stringify({
+        subscribed: true,
         tier: tier,
-        active: true,
-        expires_at: expiresAt,
+        limit: generationsLimit,
+        generations_used: generationsUsed,
+        subscription_end: new Date(subscription.current_period_end * 1000).toISOString(),
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
