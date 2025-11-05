@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { format, addDays } from "date-fns";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSportsSubscription } from "@/hooks/useSportsSubscription";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Trophy,
   TrendingUp,
@@ -100,112 +101,20 @@ const TOP_TIPSTERS = [
   },
 ];
 
-const getUpcomingMatches = () => {
-  const today = new Date();
-  const tomorrow = addDays(today, 1);
-  const dayAfter = addDays(today, 2);
-  
-  const footballTeams = [
-    ["Manchester United", "Liverpool"], ["Real Madrid", "Barcelona"], ["Bayern Munich", "Borussia Dortmund"],
-    ["PSG", "Marseille"], ["Juventus", "Inter Milan"], ["Arsenal", "Chelsea"],
-    ["Manchester City", "Tottenham"], ["Atletico Madrid", "Valencia"], ["AC Milan", "Napoli"],
-    ["Benfica", "Porto"], ["Ajax", "PSV"], ["Celtic", "Rangers"],
-    ["Sevilla", "Real Betis"], ["Roma", "Lazio"], ["Galatasaray", "Fenerbahce"],
-    ["Lyon", "Monaco"], ["RB Leipzig", "Bayer Leverkusen"], ["Sporting CP", "Braga"],
-    ["Feyenoord", "AZ Alkmaar"], ["Frankfurt", "Union Berlin"], ["Atalanta", "Fiorentina"],
-    ["Real Sociedad", "Athletic Bilbao"], ["Nice", "Lens"], ["Stuttgart", "Hoffenheim"],
-    ["Villarreal", "Getafe"], ["Newcastle", "Aston Villa"], ["Brighton", "West Ham"],
-  ];
-  
-  const basketballTeams = [
-    ["Lakers", "Warriors"], ["Celtics", "Heat"], ["Bucks", "Nets"],
-    ["Nuggets", "Suns"], ["76ers", "Knicks"], ["Clippers", "Mavericks"],
-    ["Grizzlies", "Timberwolves"], ["Cavaliers", "Raptors"], ["Hawks", "Wizards"],
-    ["Kings", "Trail Blazers"], ["Thunder", "Spurs"], ["Pelicans", "Rockets"],
-    ["Magic", "Hornets"], ["Pistons", "Pacers"], ["Bulls", "Jazz"],
-  ];
-  
-  const tennisPlayers = [
-    ["Novak Djokovic", "Carlos Alcaraz"], ["Rafael Nadal", "Daniil Medvedev"],
-    ["Jannik Sinner", "Stefanos Tsitsipas"], ["Alexander Zverev", "Andrey Rublev"],
-    ["Taylor Fritz", "Casper Ruud"], ["Holger Rune", "Felix Auger-Aliassime"],
-    ["Hubert Hurkacz", "Frances Tiafoe"], ["Tommy Paul", "Cameron Norrie"],
-    ["Karen Khachanov", "Grigor Dimitrov"], ["Alex De Minaur", "Lorenzo Musetti"],
-  ];
-  
-  const tipsters = ["Mike Rodriguez", "Sarah Thompson", "James Chen"];
-  const footballPredictions = ["Home Win", "Away Win", "Draw", "Both Teams Score", "Over 2.5", "Under 2.5"];
-  const basketballPredictions = ["Over 215.5", "Under 215.5", "Home -5.5", "Away +5.5"];
-  const tennisPredictions = ["Home Win 2-0", "Home Win 2-1", "Away Win 2-0", "Away Win 2-1"];
-  
-  const matches = [];
-  const dates = [today, tomorrow, dayAfter];
-  const dateLabels = ["Today", "Tomorrow", "In 2 days"];
-  
-  // Generate 30 Football matches
-  for (let i = 0; i < 30; i++) {
-    const teamPair = footballTeams[i % footballTeams.length];
-    const dateIndex = Math.floor(i / 10);
-    const hour = 14 + (i % 8);
-    const minutes = ((i % 4) * 15).toString().padStart(2, '0');
-    matches.push({
-      id: matches.length + 1,
-      homeTeam: teamPair[0],
-      awayTeam: teamPair[1],
-      sport: "Football",
-      time: `${hour}:${minutes}`,
-      date: format(dates[dateIndex], "MMM dd, yyyy"),
-      dateLabel: dateLabels[dateIndex],
-      prediction: footballPredictions[i % footballPredictions.length],
-      confidence: 65 + Math.floor(Math.random() * 20),
-      tipster: tipsters[i % tipsters.length],
-      odds: (1.5 + Math.random() * 2).toFixed(2),
-    });
-  }
-  
-  // Generate 15 Basketball matches
-  for (let i = 0; i < 15; i++) {
-    const teamPair = basketballTeams[i % basketballTeams.length];
-    const dateIndex = Math.floor(i / 5);
-    const hour = 19 + (i % 5);
-    const minutes = ((i % 2) * 30).toString().padStart(2, '0');
-    matches.push({
-      id: matches.length + 1,
-      homeTeam: teamPair[0],
-      awayTeam: teamPair[1],
-      sport: "Basketball",
-      time: `${hour}:${minutes}`,
-      date: format(dates[dateIndex], "MMM dd, yyyy"),
-      dateLabel: dateLabels[dateIndex],
-      prediction: basketballPredictions[i % basketballPredictions.length],
-      confidence: 60 + Math.floor(Math.random() * 25),
-      tipster: tipsters[i % tipsters.length],
-      odds: (1.7 + Math.random() * 1.5).toFixed(2),
-    });
-  }
-  
-  // Generate 10 Tennis matches
-  for (let i = 0; i < 10; i++) {
-    const playerPair = tennisPlayers[i % tennisPlayers.length];
-    const dateIndex = Math.floor(i / 4);
-    const hour = 10 + (i % 8);
-    matches.push({
-      id: matches.length + 1,
-      homeTeam: playerPair[0],
-      awayTeam: playerPair[1],
-      sport: "Tennis",
-      time: `${hour}:00`,
-      date: format(dates[dateIndex], "MMM dd, yyyy"),
-      dateLabel: dateLabels[dateIndex],
-      prediction: tennisPredictions[i % tennisPredictions.length],
-      confidence: 65 + Math.floor(Math.random() * 20),
-      tipster: tipsters[i % tipsters.length],
-      odds: (1.4 + Math.random() * 2.5).toFixed(2),
-    });
-  }
-  
-  return matches;
-};
+interface Match {
+  id: string;
+  sport: string;
+  league: string;
+  home_team: string;
+  away_team: string;
+  match_date: string;
+  match_time: string;
+  prediction?: {
+    prediction_type: string;
+    confidence: number;
+    odds: number;
+  };
+}
 
 export default function SportsPredictor() {
   const navigate = useNavigate();
@@ -214,7 +123,56 @@ export default function SportsPredictor() {
   const { toast } = useToast();
   const [selectedSport, setSelectedSport] = useState("all");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const upcomingMatches = useMemo(() => getUpcomingMatches(), []);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [loadingMatches, setLoadingMatches] = useState(true);
+
+  useEffect(() => {
+    fetchMatches();
+  }, []);
+
+  const fetchMatches = async () => {
+    try {
+      setLoadingMatches(true);
+      const { data: matchesData, error: matchesError } = await supabase
+        .from('sports_matches')
+        .select('*')
+        .gte('match_date', new Date().toISOString())
+        .order('match_date', { ascending: true });
+
+      if (matchesError) throw matchesError;
+
+      // Fetch predictions for each match
+      const { data: predictionsData, error: predictionsError } = await supabase
+        .from('sports_predictions')
+        .select('*');
+
+      if (predictionsError) throw predictionsError;
+
+      // Combine matches with predictions
+      const matchesWithPredictions = (matchesData || []).map(match => {
+        const prediction = predictionsData?.find(p => p.match_id === match.id);
+        return {
+          ...match,
+          prediction: prediction ? {
+            prediction_type: prediction.prediction_type,
+            confidence: prediction.confidence,
+            odds: prediction.odds,
+          } : undefined,
+        };
+      });
+
+      setMatches(matchesWithPredictions);
+    } catch (error) {
+      console.error('Error fetching matches:', error);
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa načítať zápasy",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingMatches(false);
+    }
+  };
 
   const handleSubscribe = async (selectedTier: 'ai_premium' | 'expert_tipster') => {
     if (!user) {
@@ -368,65 +326,79 @@ export default function SportsPredictor() {
             </TabsList>
 
             <TabsContent value="all" className="mt-6">
-              <div className="grid gap-4">
-                {upcomingMatches.map((match) => (
-                  <Card key={match.id} className="hover:shadow-lg transition-all">
-                    <CardContent className="p-6">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <Badge variant="outline" className="mb-2">{match.sport}</Badge>
-                          <div className="flex items-center gap-4 mb-2">
-                            <span className="font-bold text-lg">{match.homeTeam}</span>
-                            <span className="text-muted-foreground">vs</span>
-                            <span className="font-bold text-lg">{match.awayTeam}</span>
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span>{match.dateLabel} ({match.date}) • {match.time}</span>
-                            <span>•</span>
-                            <div className="flex items-center gap-1">
-                              <Avatar className="h-5 w-5">
-                                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${match.tipster}`} />
-                              </Avatar>
-                              <span>{match.tipster}</span>
+              {loadingMatches ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ) : matches.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-muted-foreground">Zatiaľ nie sú žiadne plánované zápasy</p>
+                </div>
+              ) : (
+                <div className="grid gap-4">
+                  {matches.map((match) => (
+                    <Card key={match.id} className="hover:shadow-lg transition-all">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge variant="outline">{match.sport}</Badge>
+                              <Badge variant="secondary">{match.league}</Badge>
+                            </div>
+                            <div className="flex items-center gap-4 mb-2">
+                              <span className="font-bold text-lg">{match.home_team}</span>
+                              <span className="text-muted-foreground">vs</span>
+                              <span className="font-bold text-lg">{match.away_team}</span>
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                              <span>{format(new Date(match.match_date), "dd.MM.yyyy")} • {match.match_time}</span>
                             </div>
                           </div>
-                        </div>
 
-                        {/* Paywall overlay for non-subscribers */}
-                        <div className="flex items-center gap-6 relative">
-                          {!canViewPredictions && (
-                            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
-                              <div className="text-center">
-                                <Lock className="h-8 w-8 text-primary mx-auto mb-2" />
-                                <p className="text-sm font-semibold">Predplatné vyžadované</p>
+                          {/* Paywall overlay for non-subscribers */}
+                          {match.prediction ? (
+                            <div className="flex items-center gap-6 relative">
+                              {!canViewPredictions && (
+                                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+                                  <div className="text-center">
+                                    <Lock className="h-8 w-8 text-primary mx-auto mb-2" />
+                                    <p className="text-sm font-semibold">Predplatné vyžadované</p>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
+                                <div className="text-sm text-muted-foreground mb-1">Predikcia</div>
+                                <Badge className="bg-green-500">{match.prediction.prediction_type}</Badge>
                               </div>
+                              <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
+                                <div className="text-sm text-muted-foreground mb-1">Istota</div>
+                                <div className="text-2xl font-bold">{match.prediction.confidence}%</div>
+                              </div>
+                              {match.prediction.odds && (
+                                <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
+                                  <div className="text-sm text-muted-foreground mb-1">Kurz</div>
+                                  <div className="text-2xl font-bold text-primary">{match.prediction.odds}</div>
+                                </div>
+                              )}
+                              {canViewPredictions && (
+                                <Button>
+                                  <Bell className="mr-2 h-4 w-4" />
+                                  Upozornenie
+                                </Button>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="text-sm text-muted-foreground">
+                              Predikcia ešte nebola pridaná
                             </div>
                           )}
-                          
-                          <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
-                            <div className="text-sm text-muted-foreground mb-1">Prediction</div>
-                            <Badge className="bg-green-500">{match.prediction}</Badge>
-                          </div>
-                          <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
-                            <div className="text-sm text-muted-foreground mb-1">Confidence</div>
-                            <div className="text-2xl font-bold">{match.confidence}%</div>
-                          </div>
-                          <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
-                            <div className="text-sm text-muted-foreground mb-1">Odds</div>
-                            <div className="text-2xl font-bold text-primary">{match.odds}</div>
-                          </div>
-                          {canViewPredictions && (
-                            <Button>
-                              <Bell className="mr-2 h-4 w-4" />
-                              Get Alert
-                            </Button>
-                          )}
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </div>
