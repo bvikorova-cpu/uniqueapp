@@ -27,7 +27,7 @@ const LISTING_PACKAGES = [
     price: 79,
     duration: "60 days",
     features: [
-      "Video tour included",
+      "Video tour upload support",
       "Top placement in search",
       "3D virtual walkthrough",
       "Priority support",
