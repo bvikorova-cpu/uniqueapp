@@ -14746,6 +14746,137 @@ export type Database = {
           },
         ]
       }
+      time_capsule_files: {
+        Row: {
+          capsule_id: string
+          created_at: string
+          file_size: number | null
+          file_type: string
+          file_url: string
+          id: string
+        }
+        Insert: {
+          capsule_id: string
+          created_at?: string
+          file_size?: number | null
+          file_type: string
+          file_url: string
+          id?: string
+        }
+        Update: {
+          capsule_id?: string
+          created_at?: string
+          file_size?: number | null
+          file_type?: string
+          file_url?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_capsule_files_capsule_id_fkey"
+            columns: ["capsule_id"]
+            isOneToOne: false
+            referencedRelation: "time_capsules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_capsule_subscriptions: {
+        Row: {
+          capsules_created: number | null
+          created_at: string
+          current_period_end: string | null
+          id: string
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          capsules_created?: number | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          capsules_created?: number | null
+          created_at?: string
+          current_period_end?: string | null
+          id?: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      time_capsules: {
+        Row: {
+          capsule_type: string
+          created_at: string
+          delivery_date: string
+          duration_years: number
+          id: string
+          is_delivered: boolean | null
+          is_opened: boolean | null
+          message: string | null
+          opened_at: string | null
+          payment_status: string | null
+          price_paid: number | null
+          recipient_email: string | null
+          recipient_name: string | null
+          stripe_payment_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          capsule_type: string
+          created_at?: string
+          delivery_date: string
+          duration_years: number
+          id?: string
+          is_delivered?: boolean | null
+          is_opened?: boolean | null
+          message?: string | null
+          opened_at?: string | null
+          payment_status?: string | null
+          price_paid?: number | null
+          recipient_email?: string | null
+          recipient_name?: string | null
+          stripe_payment_id?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          capsule_type?: string
+          created_at?: string
+          delivery_date?: string
+          duration_years?: number
+          id?: string
+          is_delivered?: boolean | null
+          is_opened?: boolean | null
+          message?: string | null
+          opened_at?: string | null
+          payment_status?: string | null
+          price_paid?: number | null
+          recipient_email?: string | null
+          recipient_name?: string | null
+          stripe_payment_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       time_reversal_followers: {
         Row: {
           created_at: string | null

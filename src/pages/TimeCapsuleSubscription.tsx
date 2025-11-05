@@ -6,88 +6,80 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 
-const FEATURES = {
-  messageSmall: {
-    name: "Future Message - Small",
-    price: "€1",
-    priceId: "price_1SPj8zGaXSfGtYFtlowYtYZu",
+const CAPSULE_PLANS = {
+  oneYear: {
+    name: "1 Year Capsule",
+    price: "€4.99",
+    priceId: "price_1SQAOcGaXSfGtYFtunvQGLzb",
     icon: Clock,
     popular: false,
-    description: "Send a short message to your future",
+    duration: 1,
+    description: "Send a message to yourself or loved ones 1 year into the future",
     features: [
-      "Up to 100 characters",
-      "Delivery date of your choice",
-      "AI-powered time prediction",
-      "Instant confirmation",
+      "Text, video, or letter format",
+      "Automatic delivery in 1 year",
+      "Email notifications",
+      "Secure encrypted storage",
     ],
   },
-  messageMedium: {
-    name: "Future Message - Medium",
-    price: "€5",
-    priceId: "price_1SPj9P0QTWhd4oRpePZWZlc4",
+  fiveYears: {
+    name: "5 Years Capsule",
+    price: "€9.99",
+    priceId: "price_1SQAOwGaXSfGtYFtn0rkkTSB",
     icon: Clock,
-    popular: false,
-    description: "Send a medium message to your future",
-    features: [
-      "Up to 500 characters",
-      "Delivery date of your choice",
-      "AI-powered time prediction",
-      "Priority delivery",
-    ],
-  },
-  messageLarge: {
-    name: "Future Message - Large",
-    price: "€10",
-    priceId: "price_1SPjA2GaXSfGtYFt6iMPrver",
-    icon: Clock,
-    popular: false,
-    description: "Send a large message to your future",
-    features: [
-      "Up to 2000 characters",
-      "Delivery date of your choice",
-      "AI-powered time prediction",
-      "Priority delivery & encryption",
-    ],
-  },
-  paradoxFix: {
-    name: "Time Paradox Fix",
-    price: "€5",
-    priceId: "price_1SPjAJGaXSfGtYFteKl4JLou",
-    icon: AlertCircle,
-    popular: false,
-    description: "Restore timeline integrity",
-    features: [
-      "Fix timeline paradoxes",
-      "Restore corrupted messages",
-      "Timeline integrity check",
-      "24/7 AI support",
-    ],
-  },
-  aiConsultation: {
-    name: "Future AI Consultation",
-    price: "€20",
-    priceId: "price_1SPjAaGaXSfGtYFtog9lTrCh",
-    icon: Sparkles,
     popular: true,
-    description: "Get personalized future insights",
+    duration: 5,
+    description: "Create a time capsule to be opened 5 years from now",
     features: [
-      "AI predicts your future",
-      "Personalized timeline analysis",
-      "30-minute consultation",
-      "Detailed report & recommendations",
+      "All formats supported",
+      "Delivery in 5 years",
+      "Priority storage",
+      "HD video support (up to 500MB)",
     ],
   },
-  insurance: {
-    name: "Timeline Insurance",
-    price: "€10",
-    priceId: "price_1SPjAyGaXSfGtYFtxbuDUwXA",
+  tenYears: {
+    name: "10 Years Capsule",
+    price: "€19.99",
+    priceId: "price_1SQAPFGaXSfGtYFtSHQvDsqK",
+    icon: Clock,
+    popular: false,
+    duration: 10,
+    description: "A decade-long message for major life milestones",
+    features: [
+      "All formats + attachments",
+      "Delivery in 10 years",
+      "Premium storage",
+      "HD video support (up to 1GB)",
+    ],
+  },
+  twentyYears: {
+    name: "20 Years Capsule",
+    price: "€49.99",
+    priceId: "price_1SQAPXGaXSfGtYFtLUC7c9DS",
+    icon: Sparkles,
+    popular: false,
+    duration: 20,
+    description: "Legacy messages for the next generation",
+    features: [
+      "Unlimited formats & files",
+      "Delivery in 20 years",
+      "Lifetime storage guarantee",
+      "4K video support (up to 5GB)",
+    ],
+  },
+  premium: {
+    name: "Premium Unlimited",
+    price: "€19.99/month",
+    priceId: "price_1SQAPtGaXSfGtYFtuhuiyuUV",
     icon: Shield,
     popular: false,
-    description: "Protect your timeline",
+    duration: 0,
+    description: "Unlimited capsules with premium features",
     features: [
-      "Unlimited paradox fixes",
-      "Timeline backup & restore",
-      "Priority AI support",
+      "Unlimited time capsules",
+      "Any delivery date",
+      "Priority support 24/7",
+      "Advanced scheduling & reminders",
       "Cancel anytime",
     ],
   },
@@ -98,9 +90,9 @@ export default function TimeCapsuleSubscription() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handlePurchase = async (featureKey: keyof typeof FEATURES) => {
+  const handlePurchase = async (planKey: keyof typeof CAPSULE_PLANS) => {
     try {
-      setLoading(featureKey);
+      setLoading(planKey);
 
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -113,18 +105,29 @@ export default function TimeCapsuleSubscription() {
         return;
       }
 
-      const feature = FEATURES[featureKey];
-      const { data, error } = await supabase.functions.invoke("create-time-capsule-checkout", {
-        body: {
-          priceId: feature.priceId,
-          featureName: feature.name,
-        },
-      });
+      const plan = CAPSULE_PLANS[planKey];
+      
+      // Premium subscription uses different endpoint
+      if (planKey === 'premium') {
+        const { data, error } = await supabase.functions.invoke("create-time-capsule-premium-subscription");
+        if (error) throw error;
+        if (data?.url) {
+          window.open(data.url, "_blank");
+        }
+      } else {
+        // Regular capsule payment
+        const { data, error } = await supabase.functions.invoke("create-time-capsule-payment", {
+          body: {
+            priceId: plan.priceId,
+            durationYears: plan.duration,
+          },
+        });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      if (data?.url) {
-        window.open(data.url, "_blank");
+        if (data?.url) {
+          window.open(data.url, "_blank");
+        }
       }
     } catch (error) {
       console.error("Purchase error:", error);
@@ -152,26 +155,26 @@ export default function TimeCapsuleSubscription() {
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
-            Send Messages to Your Future
+            Time Capsule 2.0
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            AI predicts your future and delivers messages when the time is right. Create a living network of time capsules.
+            Create messages, videos, and letters for your future self or loved ones. Delivered automatically at the perfect moment.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {(Object.keys(FEATURES) as Array<keyof typeof FEATURES>).map((featureKey) => {
-            const feature = FEATURES[featureKey];
-            const Icon = feature.icon;
+          {(Object.keys(CAPSULE_PLANS) as Array<keyof typeof CAPSULE_PLANS>).map((planKey) => {
+            const plan = CAPSULE_PLANS[planKey];
+            const Icon = plan.icon;
 
             return (
               <Card
-                key={featureKey}
+                key={planKey}
                 className={`relative ${
-                  feature.popular ? "border-blue-500 shadow-lg shadow-blue-500/20 lg:col-span-3" : ""
+                  plan.popular ? "border-blue-500 shadow-lg shadow-blue-500/20" : ""
                 }`}
               >
-                {feature.popular && (
+                {plan.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                       Most Popular
@@ -182,18 +185,18 @@ export default function TimeCapsuleSubscription() {
                   <div className="flex items-center justify-between mb-4">
                     <Icon className="h-8 w-8 text-blue-600" />
                     <div className="text-right">
-                      <div className="text-3xl font-bold">{feature.price}</div>
+                      <div className="text-3xl font-bold">{plan.price}</div>
                       <div className="text-sm text-muted-foreground">
-                        {featureKey === "insurance" ? "/month" : "one-time"}
+                        {planKey === "premium" ? "subscription" : "one-time"}
                       </div>
                     </div>
                   </div>
-                  <CardTitle className="text-2xl">{feature.name}</CardTitle>
-                  <CardDescription className="text-base">{feature.description}</CardDescription>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <CardDescription className="text-base">{plan.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-3 mb-6">
-                    {feature.features.map((item, index) => (
+                    {plan.features.map((item, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <Check className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
                         <span className="text-sm">{item}</span>
@@ -203,11 +206,11 @@ export default function TimeCapsuleSubscription() {
                   <Button
                     className="w-full"
                     size="lg"
-                    variant={feature.popular ? "default" : "outline"}
-                    onClick={() => handlePurchase(featureKey)}
-                    disabled={loading === featureKey}
+                    variant={plan.popular ? "default" : "outline"}
+                    onClick={() => handlePurchase(planKey)}
+                    disabled={loading === planKey}
                   >
-                    {loading === featureKey ? "Loading..." : featureKey === "insurance" ? "Subscribe" : "Purchase Now"}
+                    {loading === planKey ? "Loading..." : planKey === "premium" ? "Subscribe" : "Create Capsule"}
                   </Button>
                 </CardContent>
               </Card>

@@ -191,6 +191,7 @@ import MasterChefEarnings from "./pages/MasterChefEarnings";
 import TimeReversalSubscription from "./pages/TimeReversalSubscription";
 import TimeReversalTimeline from "./pages/TimeReversalTimeline";
 import TimeCapsuleSubscription from "./pages/TimeCapsuleSubscription";
+import TimeCapsule from "./pages/TimeCapsule";
 import HolographicAvatars from "./pages/HolographicAvatars";
 import CrystalEnergyNetwork from "./pages/CrystalEnergyNetwork";
 import DNAMemoryNetwork from "./pages/DNAMemoryNetwork";
@@ -414,6 +415,7 @@ const App = () => (
               <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
               <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
               <Route path="/time-capsule-subscription" element={<TimeCapsuleSubscription />} />
+              <Route path="/time-capsule" element={<TimeCapsule />} />
           <Route path="/holographic-avatars" element={<HolographicAvatars />} />
           <Route path="/superhero-universe" element={<SuperHeroUniverse />} />
           <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />

@@ -296,3 +296,12 @@ verify_jwt = true
 
 [functions.generate-room-design]
 verify_jwt = true
+
+[functions.create-time-capsule-payment]
+verify_jwt = true
+
+[functions.create-time-capsule-premium-subscription]
+verify_jwt = true
+
+[functions.save-time-capsule]
+verify_jwt = true
