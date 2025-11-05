@@ -21,11 +21,9 @@ interface VoiceClone {
   description: string;
 }
 
-interface VoiceMemoryPlayerProps {
-  memoryId?: string;
-}
+interface VoiceMemoryPlayerProps {}
 
-export const VoiceMemoryPlayer = ({ memoryId }: VoiceMemoryPlayerProps) => {
+export const VoiceMemoryPlayer = ({}: VoiceMemoryPlayerProps = {}) => {
   const [text, setText] = useState('');
   const [voiceClones, setVoiceClones] = useState<VoiceClone[]>([]);
   const [selectedVoiceId, setSelectedVoiceId] = useState('');
@@ -77,8 +75,7 @@ export const VoiceMemoryPlayer = ({ memoryId }: VoiceMemoryPlayerProps) => {
       const { data, error } = await supabase.functions.invoke('generate-voice-memory', {
         body: { 
           text, 
-          voiceId: selectedVoiceId,
-          memoryId 
+          voiceId: selectedVoiceId
         },
       });
 

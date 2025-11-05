@@ -25,13 +25,13 @@ serve(async (req) => {
     )
     if (userError || !user) throw new Error('Unauthorized')
 
-    const { text, voiceId, memoryId } = await req.json()
+    const { text, voiceId } = await req.json()
 
     if (!text || !voiceId) {
       throw new Error('Text and voice ID are required')
     }
 
-    console.log('Generating voice memory:', { voiceId, textLength: text.length, memoryId })
+    console.log('Generating voice memory:', { voiceId, textLength: text.length })
 
     // Generate audio using ElevenLabs text-to-speech with cloned voice
     const response = await fetch(
@@ -66,49 +66,6 @@ serve(async (req) => {
     )
 
     console.log('Audio generated successfully, size:', audioArrayBuffer.byteLength)
-
-    // If memoryId is provided, store the audio URL in the time_capsule_memories table
-    if (memoryId) {
-      // Upload audio to Supabase storage
-      const fileName = `${user.id}/${memoryId}_${Date.now()}.mp3`
-      
-      const { data: uploadData, error: uploadError } = await supabaseClient.storage
-        .from('voice-memories')
-        .upload(fileName, Buffer.from(audioArrayBuffer), {
-          contentType: 'audio/mpeg',
-          upsert: false,
-        })
-
-      if (uploadError) {
-        console.error('Storage upload error:', uploadError)
-        throw new Error('Failed to upload audio')
-      }
-
-      const { data: { publicUrl } } = supabaseClient.storage
-        .from('voice-memories')
-        .getPublicUrl(fileName)
-
-      // Update memory with audio URL
-      const { error: updateError } = await supabaseClient
-        .from('time_capsule_memories')
-        .update({ audio_url: publicUrl })
-        .eq('id', memoryId)
-        .eq('user_id', user.id)
-
-      if (updateError) {
-        console.error('Memory update error:', updateError)
-      }
-
-      return new Response(
-        JSON.stringify({ 
-          success: true, 
-          audioUrl: publicUrl
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      )
-    }
 
     return new Response(
       JSON.stringify({ 
