@@ -223,8 +223,18 @@ export default function LotteryAI() {
       return;
     }
 
-    // Check generation limits
-    if (subscription && subscription.limit !== -1) {
+    // Require active subscription
+    if (!subscription?.subscribed) {
+      toast({
+        title: "Subscription Required",
+        description: "You need an active subscription to generate lottery numbers.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check generation limits for Basic tier
+    if (subscription.tier === "basic") {
       const { data: subData } = await supabase
         .from("user_subscriptions")
         .select("generations_used, generations_limit")
@@ -234,7 +244,7 @@ export default function LotteryAI() {
       if (subData && subData.generations_used >= subData.generations_limit) {
         toast({
           title: "Generation Limit Reached",
-          description: "Please upgrade your plan to generate more numbers",
+          description: "Upgrade to Pro for unlimited generations",
           variant: "destructive",
         });
         return;
@@ -403,22 +413,24 @@ export default function LotteryAI() {
           </div>
 
           {/* Subscription Status Banner */}
-          {subscription && (
+          {subscription?.subscribed ? (
             <div className="bg-gradient-to-r from-primary/10 to-secondary/10 border-b">
               <div className="container mx-auto px-4 py-3 text-center">
                 <p className="text-sm">
-                  {subscription.subscribed ? (
-                    <>
-                      Your <strong>{subscription.tier === "pro" ? "Pro" : "Basic"}</strong> plan is active. 
-                      {subscription.limit === -1 ? (
-                        <strong className="ml-1">Unlimited generations remaining</strong>
-                      ) : (
-                        <strong className="ml-1">{subscription.limit - (subscription.generations_used || 0)} generations remaining this month</strong>
-                      )}
-                    </>
+                  Your <strong>{subscription.tier === "pro" ? "Pro" : "Basic"}</strong> plan is active. 
+                  {subscription.tier === "pro" ? (
+                    <strong className="ml-1">Unlimited generations remaining</strong>
                   ) : (
-                    <>You're on the free tier. <strong>Upgrade to generate more lucky numbers!</strong></>
+                    <strong className="ml-1">{subscription.limit - (subscription.generations_used || 0)} generations remaining this month</strong>
                   )}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-b border-orange-200">
+              <div className="container mx-auto px-4 py-3 text-center">
+                <p className="text-sm font-medium">
+                  ⚠️ No active subscription. <strong>Subscribe now to start generating lucky numbers!</strong>
                 </p>
               </div>
             </div>
@@ -439,7 +451,11 @@ export default function LotteryAI() {
             AI generates "lucky" numbers based on historical data and your personal preferences
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Button size="lg" onClick={generateNumbers}>
+            <Button 
+              size="lg" 
+              onClick={generateNumbers}
+              disabled={!subscription?.subscribed}
+            >
               <Sparkles className="mr-2 h-5 w-5" />
               Generate Lucky Numbers
             </Button>
