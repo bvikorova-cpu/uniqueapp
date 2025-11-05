@@ -97,7 +97,7 @@ export default function CourseDetailPage() {
         description: error.message,
         variant: "destructive",
       });
-      navigate("/course-marketplace");
+      navigate("/courses");
     } finally {
       setLoading(false);
     }

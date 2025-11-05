@@ -149,9 +149,8 @@ import AIContentMarketplace from "./pages/AIContentMarketplace";
 import MembershipCommunity from "./pages/MembershipCommunity";
 import CreatorDashboard from "./pages/CreatorDashboard";
 import CreatorProfile from "./pages/CreatorProfile";
-import CourseMarketplace from "./pages/CourseMarketplace";
+import CoursesHub from "./pages/CoursesHub";
 import CourseDetailPage from "./pages/CourseDetailPage";
-import CourseCreatorDashboard from "./pages/CourseCreatorDashboard";
 import CourseLearnPage from "./pages/CourseLearnPage";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
@@ -368,10 +367,9 @@ const App = () => (
           <Route path="/membership-community" element={<MembershipCommunity />} />
           <Route path="/creator-dashboard" element={<CreatorDashboard />} />
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
-          <Route path="/course-marketplace" element={<CourseMarketplace />} />
+          <Route path="/courses" element={<CoursesHub />} />
           <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
-          <Route path="/course-creator-dashboard" element={<CourseCreatorDashboard />} />
           <Route path="/print-on-demand" element={<PrintOnDemand />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/custom-commissions" element={<CustomCommissions />} />
