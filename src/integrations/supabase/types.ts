@@ -13204,6 +13204,401 @@ export type Database = {
         }
         Relationships: []
       }
+      sports_ai_subscriptions: {
+        Row: {
+          amount_paid: number | null
+          created_at: string
+          expires_at: string | null
+          features: Json | null
+          id: string
+          plan: string
+          started_at: string
+          status: string
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          created_at?: string
+          expires_at?: string | null
+          features?: Json | null
+          id?: string
+          plan: string
+          started_at?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number | null
+          created_at?: string
+          expires_at?: string | null
+          features?: Json | null
+          id?: string
+          plan?: string
+          started_at?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      sports_matches: {
+        Row: {
+          away_form: string | null
+          away_score: number | null
+          away_team: string
+          created_at: string
+          head_to_head: Json | null
+          home_form: string | null
+          home_score: number | null
+          home_team: string
+          id: string
+          injuries: Json | null
+          league: string | null
+          match_date: string
+          match_time: string
+          result: string | null
+          sport: string
+          status: string | null
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          away_form?: string | null
+          away_score?: number | null
+          away_team: string
+          created_at?: string
+          head_to_head?: Json | null
+          home_form?: string | null
+          home_score?: number | null
+          home_team: string
+          id?: string
+          injuries?: Json | null
+          league?: string | null
+          match_date: string
+          match_time: string
+          result?: string | null
+          sport: string
+          status?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          away_form?: string | null
+          away_score?: number | null
+          away_team?: string
+          created_at?: string
+          head_to_head?: Json | null
+          home_form?: string | null
+          home_score?: number | null
+          home_team?: string
+          id?: string
+          injuries?: Json | null
+          league?: string | null
+          match_date?: string
+          match_time?: string
+          result?: string | null
+          sport?: string
+          status?: string | null
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
+      sports_platform_earnings: {
+        Row: {
+          created_at: string
+          id: string
+          platform_commission: number
+          related_id: string | null
+          tipster_amount: number
+          tipster_id: string
+          total_amount: number
+          transaction_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          platform_commission: number
+          related_id?: string | null
+          tipster_amount: number
+          tipster_id: string
+          total_amount: number
+          transaction_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          platform_commission?: number
+          related_id?: string | null
+          tipster_amount?: number
+          tipster_id?: string
+          total_amount?: number
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sports_platform_earnings_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sports_predictions: {
+        Row: {
+          analysis_text: string | null
+          confidence: number | null
+          created_at: string
+          id: string
+          is_free: boolean | null
+          is_premium: boolean | null
+          key_factors: Json | null
+          match_id: string
+          odds: number
+          prediction_type: string
+          prediction_value: string | null
+          result: string | null
+          settled_at: string | null
+          tipster_id: string
+          updated_at: string
+        }
+        Insert: {
+          analysis_text?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          is_free?: boolean | null
+          is_premium?: boolean | null
+          key_factors?: Json | null
+          match_id: string
+          odds: number
+          prediction_type: string
+          prediction_value?: string | null
+          result?: string | null
+          settled_at?: string | null
+          tipster_id: string
+          updated_at?: string
+        }
+        Update: {
+          analysis_text?: string | null
+          confidence?: number | null
+          created_at?: string
+          id?: string
+          is_free?: boolean | null
+          is_premium?: boolean | null
+          key_factors?: Json | null
+          match_id?: string
+          odds?: number
+          prediction_type?: string
+          prediction_value?: string | null
+          result?: string | null
+          settled_at?: string | null
+          tipster_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sports_predictions_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "sports_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sports_predictions_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sports_purchased_tips: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          id: string
+          prediction_id: string
+          stripe_payment_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string
+          id?: string
+          prediction_id: string
+          stripe_payment_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          id?: string
+          prediction_id?: string
+          stripe_payment_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sports_purchased_tips_prediction_id_fkey"
+            columns: ["prediction_id"]
+            isOneToOne: false
+            referencedRelation: "sports_predictions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sports_tipster_followers: {
+        Row: {
+          created_at: string
+          id: string
+          notifications_enabled: boolean | null
+          tipster_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notifications_enabled?: boolean | null
+          tipster_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notifications_enabled?: boolean | null
+          tipster_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sports_tipster_followers_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sports_tipster_subscriptions: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          expires_at: string
+          id: string
+          started_at: string
+          status: string
+          stripe_subscription_id: string | null
+          tipster_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string
+          expires_at: string
+          id?: string
+          started_at?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          tipster_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          started_at?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          tipster_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sports_tipster_subscriptions_tipster_id_fkey"
+            columns: ["tipster_id"]
+            isOneToOne: false
+            referencedRelation: "sports_tipsters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sports_tipsters: {
+        Row: {
+          avatar_url: string | null
+          badge: string | null
+          bio: string | null
+          correct_predictions: number | null
+          created_at: string
+          display_name: string
+          followers_count: number | null
+          id: string
+          pending_payout: number | null
+          roi: number | null
+          sport_specialization: string
+          status: string
+          subscription_price: number | null
+          tip_price: number | null
+          total_earnings: number | null
+          total_predictions: number | null
+          updated_at: string
+          user_id: string
+          win_rate: number | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          badge?: string | null
+          bio?: string | null
+          correct_predictions?: number | null
+          created_at?: string
+          display_name: string
+          followers_count?: number | null
+          id?: string
+          pending_payout?: number | null
+          roi?: number | null
+          sport_specialization: string
+          status?: string
+          subscription_price?: number | null
+          tip_price?: number | null
+          total_earnings?: number | null
+          total_predictions?: number | null
+          updated_at?: string
+          user_id: string
+          win_rate?: number | null
+        }
+        Update: {
+          avatar_url?: string | null
+          badge?: string | null
+          bio?: string | null
+          correct_predictions?: number | null
+          created_at?: string
+          display_name?: string
+          followers_count?: number | null
+          id?: string
+          pending_payout?: number | null
+          roi?: number | null
+          sport_specialization?: string
+          status?: string
+          subscription_price?: number | null
+          tip_price?: number | null
+          total_earnings?: number | null
+          total_predictions?: number | null
+          updated_at?: string
+          user_id?: string
+          win_rate?: number | null
+        }
+        Relationships: []
+      }
       stories: {
         Row: {
           caption: string | null
