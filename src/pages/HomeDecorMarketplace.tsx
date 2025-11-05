@@ -108,8 +108,8 @@ const HomeDecorMarketplace = () => {
   const handleSubmit = async () => {
     if (!currentUserId) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Prosím prihláste sa pre pridanie položky",
+        title: "Login Required",
+        description: "Please log in to add an item",
         variant: "destructive",
       });
       navigate("/auth");
@@ -118,8 +118,8 @@ const HomeDecorMarketplace = () => {
 
     if (!formData.title || !formData.price || !formData.description) {
       toast({
-        title: "Chýbajúce informácie",
-        description: "Vyplňte prosím všetky povinné polia",
+        title: "Missing Information",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
@@ -144,8 +144,8 @@ const HomeDecorMarketplace = () => {
       if (error) throw error;
 
       toast({
-        title: "Úspech!",
-        description: "Vaša položka bola pridaná do marketplace",
+        title: "Success!",
+        description: "Your item has been added to the marketplace",
       });
 
       setFormData({
@@ -161,8 +161,8 @@ const HomeDecorMarketplace = () => {
     } catch (error) {
       console.error('Error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa pridať položku",
+        title: "Error",
+        description: "Failed to add item",
         variant: "destructive",
       });
     } finally {
@@ -173,8 +173,8 @@ const HomeDecorMarketplace = () => {
   const handleSubscribe = async () => {
     if (!currentUserId) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Prosím prihláste sa pre upgrade",
+        title: "Login Required",
+        description: "Please log in to upgrade",
         variant: "destructive",
       });
       navigate("/auth");
@@ -190,8 +190,8 @@ const HomeDecorMarketplace = () => {
       }
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť checkout",
+        title: "Error",
+        description: error.message || "Failed to create checkout",
         variant: "destructive",
       });
     }
@@ -200,8 +200,8 @@ const HomeDecorMarketplace = () => {
   const handlePurchaseItem = async (itemId: string) => {
     if (!currentUserId) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Prosím prihláste sa pre nákup",
+        title: "Login Required",
+        description: "Please log in to make a purchase",
         variant: "destructive",
       });
       navigate("/auth");
@@ -220,8 +220,8 @@ const HomeDecorMarketplace = () => {
       }
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť checkout",
+        title: "Error",
+        description: error.message || "Failed to create checkout",
         variant: "destructive",
       });
     }
@@ -235,14 +235,14 @@ const HomeDecorMarketplace = () => {
   });
 
   const categories = [
-    { value: "furniture", label: "Nábytok" },
-    { value: "lighting", label: "Osvetlenie" },
-    { value: "textiles", label: "Textílie & Koberce" },
-    { value: "wall-art", label: "Nástenné dekorácie" },
-    { value: "accessories", label: "Doplnky" },
-    { value: "plants", label: "Rastliny & Kvetináče" },
-    { value: "storage", label: "Úložné riešenia" },
-    { value: "kitchenware", label: "Kuchynské potreby" },
+    { value: "furniture", label: "Furniture" },
+    { value: "lighting", label: "Lighting" },
+    { value: "textiles", label: "Textiles & Rugs" },
+    { value: "wall-art", label: "Wall Art" },
+    { value: "accessories", label: "Accessories" },
+    { value: "plants", label: "Plants & Planters" },
+    { value: "storage", label: "Storage Solutions" },
+    { value: "kitchenware", label: "Kitchenware" },
   ];
 
   return (
@@ -259,7 +259,7 @@ const HomeDecorMarketplace = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            AI-powered inšpirácia + marketplace pre predaj dekorácií
+            AI-powered inspiration + marketplace for home decor
           </p>
 
           <div className="flex items-center justify-center gap-4 mt-4">
@@ -270,16 +270,16 @@ const HomeDecorMarketplace = () => {
                   Pro Designer Active ({subscription.designs_used}/{subscription.designs_limit} designs)
                 </Badge>
                 <Button onClick={manageSubscription} size="sm" variant="outline">
-                  Spravovať predplatné
+                  Manage Subscription
                 </Button>
               </>
             ) : (
               <>
                 <Badge variant="secondary">
-                  Free Plan (0 designs)
+                  Free Plan ({subscription.designs_limit || 2} designs)
                 </Badge>
                 <Button onClick={handleSubscribe} size="sm">
-                  Upgrade na Pro
+                  Upgrade to Pro
                 </Button>
               </>
             )}
@@ -294,15 +294,15 @@ const HomeDecorMarketplace = () => {
             </TabsTrigger>
             <TabsTrigger value="browse">
               <ShoppingBag className="h-4 w-4 mr-2" />
-              Prehliadať
+              Browse
             </TabsTrigger>
             <TabsTrigger value="sell">
               <Store className="h-4 w-4 mr-2" />
-              Predať
+              Sell
             </TabsTrigger>
             <TabsTrigger value="consultations">
               <Video className="h-4 w-4 mr-2" />
-              Konzultácie
+              Consultations
             </TabsTrigger>
           </TabsList>
 
@@ -321,7 +321,7 @@ const HomeDecorMarketplace = () => {
                 <div className="relative">
                   <Search className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
                   <Input
-                    placeholder="Hľadať dekorácie..."
+                    placeholder="Search decorations..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -330,10 +330,10 @@ const HomeDecorMarketplace = () => {
               </div>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                 <SelectTrigger className="w-full md:w-[200px]">
-                  <SelectValue placeholder="Všetky kategórie" />
+                  <SelectValue placeholder="All categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Všetky kategórie</SelectItem>
+                  <SelectItem value="all">All categories</SelectItem>
                   {categories.map((cat) => (
                     <SelectItem key={cat.value} value={cat.value}>
                       {cat.label}
@@ -348,7 +348,7 @@ const HomeDecorMarketplace = () => {
               <Card>
                 <CardContent className="pt-6 text-center text-muted-foreground">
                   <Home className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Žiadne položky zodpovedajúce kritériám.</p>
+                  <p>No items match your criteria.</p>
                 </CardContent>
               </Card>
             ) : (
@@ -389,14 +389,14 @@ const HomeDecorMarketplace = () => {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Star className="h-4 w-4" />
-                          <span>Predajca</span>
+                          <span>Seller</span>
                         </div>
                         <Button 
                           size="sm"
                           onClick={() => handlePurchaseItem(item.id)}
                           disabled={item.user_id === currentUserId}
                         >
-                          {item.user_id === currentUserId ? "Vaša položka" : "Kúpiť"}
+                          {item.user_id === currentUserId ? "Your Item" : "Buy"}
                         </Button>
                       </div>
                     </CardContent>
@@ -410,7 +410,7 @@ const HomeDecorMarketplace = () => {
               <CardContent className="pt-6">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Zap className="h-4 w-4" />
-                  <span>Provízia z predaja: 15% • Bezpečné platby cez Stripe</span>
+                  <span>Sales commission: 15% • Secure payments via Stripe</span>
                 </div>
               </CardContent>
             </Card>
@@ -420,15 +420,15 @@ const HomeDecorMarketplace = () => {
           <TabsContent value="sell">
             <Card>
               <CardHeader>
-                <CardTitle>Pridať novú položku</CardTitle>
+                <CardTitle>Add New Item</CardTitle>
                 <CardDescription>
-                  Pridajte fotky a popis vašej dekorácie
+                  Add photos and description of your decoration
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {/* Image Upload */}
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Fotografia *</label>
+                  <label className="text-sm font-medium">Photo *</label>
                   <div className="border-2 border-dashed rounded-lg p-8 text-center">
                     {imagePreview ? (
                       <div className="space-y-4">
@@ -444,7 +444,7 @@ const HomeDecorMarketplace = () => {
                             setImagePreview("");
                           }}
                         >
-                          Zmeniť fotku
+                          Change Photo
                         </Button>
                       </div>
                     ) : (
@@ -463,9 +463,9 @@ const HomeDecorMarketplace = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium">Názov *</label>
+                    <label className="text-sm font-medium">Title *</label>
                     <Input
-                      placeholder="napr. Moderné nástenné hodiny"
+                      placeholder="e.g. Modern wall clock"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     />
@@ -473,7 +473,7 @@ const HomeDecorMarketplace = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-sm font-medium">Cena (€) *</label>
+                      <label className="text-sm font-medium">Price (€) *</label>
                       <Input
                         type="number"
                         placeholder="0.00"
@@ -483,7 +483,7 @@ const HomeDecorMarketplace = () => {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium">Kategória *</label>
+                      <label className="text-sm font-medium">Category *</label>
                       <Select
                         value={formData.category}
                         onValueChange={(value) => setFormData({ ...formData, category: value })}
@@ -503,7 +503,7 @@ const HomeDecorMarketplace = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium">Stav *</label>
+                    <label className="text-sm font-medium">Condition *</label>
                     <Select
                       value={formData.condition}
                       onValueChange={(value) => setFormData({ ...formData, condition: value })}
@@ -512,18 +512,18 @@ const HomeDecorMarketplace = () => {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="New">Nový</SelectItem>
-                        <SelectItem value="Like New">Ako nový</SelectItem>
-                        <SelectItem value="Good">Dobrý</SelectItem>
-                        <SelectItem value="Fair">Opotrebovaný</SelectItem>
+                        <SelectItem value="New">New</SelectItem>
+                        <SelectItem value="Like New">Like New</SelectItem>
+                        <SelectItem value="Good">Good</SelectItem>
+                        <SelectItem value="Fair">Fair</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium">Popis *</label>
+                    <label className="text-sm font-medium">Description *</label>
                     <Textarea
-                      placeholder="Podrobný popis vašej dekorácie..."
+                      placeholder="Detailed description of your decoration..."
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       rows={4}
@@ -537,11 +537,11 @@ const HomeDecorMarketplace = () => {
                   className="w-full"
                   size="lg"
                 >
-                  {uploading ? "Pridáva sa..." : "Pridať položku"}
+                  {uploading ? "Adding..." : "Add Item"}
                 </Button>
 
                 <div className="text-sm text-muted-foreground text-center">
-                  Provízia 15% z každého predaja
+                  15% commission on each sale
                 </div>
               </CardContent>
             </Card>

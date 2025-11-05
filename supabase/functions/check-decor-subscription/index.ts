@@ -52,14 +52,14 @@ serve(async (req) => {
           user_id: user.id,
           tier: 'free',
           designs_used: 0,
-          designs_limit: 0,
+          designs_limit: 2,
         }, {
           onConflict: 'user_id'
         });
       
       return new Response(JSON.stringify({ 
         tier: 'free',
-        designs_limit: 0,
+        designs_limit: 2,
         designs_used: 0 
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ serve(async (req) => {
 
     const hasActiveSub = subscriptions.data.length > 0;
     let tier = 'free';
-    let designsLimit = 0;
+    let designsLimit = 2;
 
     if (hasActiveSub) {
       tier = 'pro';

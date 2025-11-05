@@ -36,8 +36,8 @@ function ARPreviewButton({ designId }: { designId: string }) {
       }
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vytvoriť checkout",
+        title: "Error",
+        description: error.message || "Failed to create checkout",
         variant: "destructive",
       });
     } finally {
@@ -48,7 +48,7 @@ function ARPreviewButton({ designId }: { designId: string }) {
   return (
     <Button onClick={handleARPreview} disabled={loading} variant="outline" size="sm">
       <Eye className="mr-2 h-4 w-4" />
-      {loading ? "Načítavam..." : "AR Preview €0.99"}
+      {loading ? "Loading..." : "AR Preview €0.99"}
     </Button>
   );
 }
@@ -83,8 +83,8 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
   const handleGenerateDesign = async () => {
     if (!selectedImage || !roomType || !stylePreference) {
       toast({
-        title: "Chýbajúce informácie",
-        description: "Prosím vyplňte všetky požadované polia",
+        title: "Missing Information",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
@@ -126,15 +126,15 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
       }
 
       toast({
-        title: "✨ Návrh pripravený!",
-        description: `Zostáva vám ${data.remainingDesigns} návrhov`,
+        title: "✨ Design Ready!",
+        description: `You have ${data.remainingDesigns} designs remaining`,
       });
 
     } catch (error: any) {
       console.error('Error:', error);
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vygenerovať návrh",
+        title: "Error",
+        description: error.message || "Failed to generate design",
         variant: "destructive",
       });
     } finally {
@@ -154,11 +154,11 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
             <div>
               <CardTitle className="text-2xl">AI Room Designer</CardTitle>
               <CardDescription>
-                Upload fotky miestnosti a AI vytvorí návrh podľa vášho štýlu
+                Upload room photos and AI will create designs based on your style
               </CardDescription>
             </div>
             <Badge variant={isFreeTier ? "secondary" : "default"} className="text-lg px-4 py-2">
-              {remainingDesigns} / {subscription?.designs_limit || 2} návrhov
+              {remainingDesigns} / {subscription?.designs_limit || 2} designs
             </Badge>
           </div>
         </CardHeader>
@@ -167,12 +167,12 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
       {/* Design Form */}
       <Card>
         <CardHeader>
-          <CardTitle>Vytvorte nový návrh</CardTitle>
+          <CardTitle>Create New Design</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Image Upload */}
           <div className="space-y-2">
-            <Label>Fotka miestnosti *</Label>
+            <Label>Room Photo *</Label>
             <div className="border-2 border-dashed rounded-lg p-8 text-center">
               {imagePreview ? (
                 <div className="space-y-4">
@@ -188,7 +188,7 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
                       setImagePreview("");
                     }}
                   >
-                    Zmeniť fotku
+                    Change Photo
                   </Button>
                 </div>
               ) : (
@@ -201,7 +201,7 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
                     className="max-w-xs mx-auto"
                   />
                   <p className="text-sm text-muted-foreground mt-2">
-                    Nahrajte jasnú fotku miestnosti
+                    Upload a clear photo of your room
                   </p>
                 </div>
               )}
@@ -211,28 +211,28 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
           {/* Room Type & Style */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label>Typ miestnosti *</Label>
+              <Label>Room Type *</Label>
               <Select value={roomType} onValueChange={setRoomType}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Vyberte typ" />
+                  <SelectValue placeholder="Select type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="living-room">Obývacia izba</SelectItem>
-                  <SelectItem value="bedroom">Spálňa</SelectItem>
-                  <SelectItem value="kitchen">Kuchyňa</SelectItem>
-                  <SelectItem value="bathroom">Kúpeľňa</SelectItem>
-                  <SelectItem value="dining-room">Jedáleň</SelectItem>
-                  <SelectItem value="office">Kancelária</SelectItem>
-                  <SelectItem value="kids-room">Detská izba</SelectItem>
+                  <SelectItem value="living-room">Living Room</SelectItem>
+                  <SelectItem value="bedroom">Bedroom</SelectItem>
+                  <SelectItem value="kitchen">Kitchen</SelectItem>
+                  <SelectItem value="bathroom">Bathroom</SelectItem>
+                  <SelectItem value="dining-room">Dining Room</SelectItem>
+                  <SelectItem value="office">Office</SelectItem>
+                  <SelectItem value="kids-room">Kids Room</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label>Štýl *</Label>
+              <Label>Style *</Label>
               <Select value={stylePreference} onValueChange={setStylePreference}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Vyberte štýl" />
+                  <SelectValue placeholder="Select style" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="modern">Modern</SelectItem>
@@ -248,9 +248,9 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
 
           {/* Custom Prompt */}
           <div className="space-y-2">
-            <Label>Dodatočné požiadavky (voliteľné)</Label>
+            <Label>Additional Requirements (Optional)</Label>
             <Textarea
-              placeholder="napr. Chcem viac rastlín, teplé farby, čítací kútik..."
+              placeholder="e.g. More plants, warm colors, reading nook..."
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
               rows={3}
@@ -264,19 +264,19 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
             size="lg"
           >
             {loading ? (
-              <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generujem návrh...</>
+              <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating Design...</>
             ) : (
-              <><Sparkles className="mr-2 h-5 w-5" /> Vygenerovať návrh (1 kredit)</>
+              <><Sparkles className="mr-2 h-5 w-5" /> Generate Design (1 credit)</>
             )}
           </Button>
 
           {isFreeTier && (
             <div className="text-center">
               <p className="text-sm text-muted-foreground mb-2">
-                Free: {remainingDesigns}/2 návrhov mesačne
+                Free: {remainingDesigns}/2 designs monthly
               </p>
               <Button variant="outline" size="sm">
-                Upgrade na Pro (50 návrhov/mesiac)
+                Upgrade to Pro (50 designs/month)
               </Button>
             </div>
           )}
@@ -288,7 +288,7 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Váš AI návrh</CardTitle>
+              <CardTitle>Your AI Design</CardTitle>
               <ARPreviewButton designId={designResult.design.id} />
             </div>
           </CardHeader>
@@ -296,14 +296,14 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
             {designResult.design.redesigned_image_url && (
               <img 
                 src={designResult.design.redesigned_image_url} 
-                alt="AI návrh"
+                alt="AI design"
                 className="w-full rounded-lg"
               />
             )}
 
             {designResult.designData?.description && (
               <div>
-                <h3 className="font-semibold mb-2">Popis:</h3>
+                <h3 className="font-semibold mb-2">Description:</h3>
                 <p className="text-muted-foreground">{designResult.designData.description}</p>
               </div>
             )}
@@ -312,7 +312,7 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
               <div>
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
                   <ShoppingBag className="h-5 w-5" />
-                  Odporúčané produkty:
+                  Recommended Products:
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {designResult.designData.products.map((product: any, idx: number) => (
