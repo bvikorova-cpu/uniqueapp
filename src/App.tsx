@@ -148,7 +148,6 @@ import VirtualInfluencerAgency from "./pages/VirtualInfluencerAgency";
 import AIContentMarketplace from "./pages/AIContentMarketplace";
 import MembershipCommunity from "./pages/MembershipCommunity";
 import CreatorDashboard from "./pages/CreatorDashboard";
-import BrowseCreators from "./pages/BrowseCreators";
 import CreatorProfile from "./pages/CreatorProfile";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
@@ -364,7 +363,6 @@ const App = () => (
           <Route path="/ai-content-marketplace" element={<AIContentMarketplace />} />
           <Route path="/membership-community" element={<MembershipCommunity />} />
           <Route path="/creator-dashboard" element={<CreatorDashboard />} />
-          <Route path="/browse-creators" element={<BrowseCreators />} />
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
           <Route path="/print-on-demand" element={<PrintOnDemand />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />

@@ -209,7 +209,6 @@ const Navbar = () => {
 
   const otherServices = [
     { path: "/membership-community", label: "Membership Community", icon: Users },
-    { path: "/browse-creators", label: "Browse Creators", icon: Users },
     { path: "/superhero-universe", label: "🦸 SuperHero Universe", icon: Zap },
     { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
     { path: "/fundraising/dream", label: "✨ Dream Maker", icon: Sparkles },

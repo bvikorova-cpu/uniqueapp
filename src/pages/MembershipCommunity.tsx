@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -15,12 +16,63 @@ import {
   CheckCircle2,
   Sparkles,
   Heart,
+  Search,
+  Gift,
 } from "lucide-react";
+
+interface Creator {
+  id: string;
+  user_id: string;
+  display_name: string;
+  bio: string;
+  avatar_url: string;
+  total_subscribers: number;
+  is_verified: boolean;
+}
 
 export default function MembershipCommunity() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [creators, setCreators] = useState<Creator[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredCreators, setFilteredCreators] = useState<Creator[]>([]);
+  const [loadingCreators, setLoadingCreators] = useState(true);
+
+  useEffect(() => {
+    loadCreators();
+  }, []);
+
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = creators.filter(
+        (creator) =>
+          creator.display_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          creator.bio?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredCreators(filtered);
+    } else {
+      setFilteredCreators(creators);
+    }
+  }, [searchTerm, creators]);
+
+  const loadCreators = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("creator_profiles")
+        .select("*")
+        .order("total_subscribers", { ascending: false });
+
+      if (error) throw error;
+
+      setCreators(data || []);
+      setFilteredCreators(data || []);
+    } catch (error: any) {
+      console.error("Error loading creators:", error);
+    } finally {
+      setLoadingCreators(false);
+    }
+  };
 
   const features = [
     {
@@ -42,36 +94,6 @@ export default function MembershipCommunity() {
       icon: Calendar,
       title: "Content Scheduling",
       description: "Schedule posts in advance and maintain consistent engagement",
-    },
-  ];
-
-  const sampleCreators = [
-    {
-      id: 1,
-      name: "Sarah Fitness Pro",
-      category: "Fitness & Health",
-      subscribers: 2847,
-      tiers: ["$9.99/mo", "$29.99/mo", "$99.99/mo"],
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=80",
-      isVerified: true,
-    },
-    {
-      id: 2,
-      name: "Tech Mentor Mike",
-      category: "Business & Education",
-      subscribers: 1523,
-      tiers: ["$14.99/mo", "$49.99/mo"],
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80",
-      isVerified: true,
-    },
-    {
-      id: 3,
-      name: "Creative Artist Emma",
-      category: "Art & Design",
-      subscribers: 3291,
-      tiers: ["$7.99/mo", "$24.99/mo", "$74.99/mo"],
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80",
-      isVerified: false,
     },
   ];
 
@@ -154,10 +176,6 @@ export default function MembershipCommunity() {
             <Crown className="mr-2 h-5 w-5" />
             Become a Creator
           </Button>
-          <Button size="lg" variant="outline" onClick={() => navigate("/browse-creators")}>
-            <Users className="mr-2 h-5 w-5" />
-            Browse Creators
-          </Button>
         </div>
 
         {/* Stats */}
@@ -199,52 +217,88 @@ export default function MembershipCommunity() {
         </div>
       </section>
 
-      {/* Sample Creators */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Featured Creators</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sampleCreators.map((creator) => (
-            <Card key={creator.id} className="hover:shadow-lg transition-all">
-              <CardHeader>
-                <div className="flex items-start gap-4">
-                  <img
-                    src={creator.avatar}
-                    alt={creator.name}
-                    className="h-16 w-16 rounded-full object-cover"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <CardTitle className="text-lg">{creator.name}</CardTitle>
-                      {creator.isVerified && (
-                        <CheckCircle2 className="h-5 w-5 text-primary" />
-                      )}
-                    </div>
-                    <CardDescription>{creator.category}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-                  <Users className="h-4 w-4" />
-                  <span>{creator.subscribers.toLocaleString()} subscribers</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {creator.tiers.map((tier, i) => (
-                    <Badge key={i} variant="secondary">
-                      {tier}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button className="w-full" variant="outline" onClick={() => navigate(`/creator/${creator.id}`)}>
-                  <Heart className="mr-2 h-4 w-4" />
-                  View Profile
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+      {/* Browse All Creators */}
+      <section className="container mx-auto px-4 py-16 bg-muted/30">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold mb-4">Browse All Creators</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Discover amazing creators and support them with memberships and gifts
+          </p>
         </div>
+
+        {/* Search */}
+        <div className="max-w-2xl mx-auto mb-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              placeholder="Search creators by name or bio..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+        </div>
+
+        {/* Creators Grid */}
+        {loadingCreators ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading creators...</p>
+          </div>
+        ) : filteredCreators.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              {searchTerm ? "No creators found matching your search" : "No creators yet"}
+            </p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredCreators.map((creator) => (
+              <Card key={creator.id} className="hover:shadow-lg transition-all">
+                <CardHeader>
+                  <div className="flex items-start gap-4">
+                    <div className="h-16 w-16 rounded-full bg-gradient-to-r from-primary to-purple-500 flex items-center justify-center text-white font-bold text-2xl">
+                      {creator.display_name.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <CardTitle className="text-lg truncate">{creator.display_name}</CardTitle>
+                        {creator.is_verified && (
+                          <CheckCircle2 className="h-5 w-5 text-primary flex-shrink-0" />
+                        )}
+                      </div>
+                      <CardDescription className="line-clamp-2">
+                        {creator.bio || "No bio yet"}
+                      </CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Users className="h-4 w-4" />
+                    <span>{creator.total_subscribers || 0} subscribers</span>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex gap-2">
+                  <Button
+                    className="flex-1"
+                    variant="outline"
+                    onClick={() => navigate(`/creator/${creator.id}`)}
+                  >
+                    <Heart className="mr-2 h-4 w-4" />
+                    View
+                  </Button>
+                  <Button
+                    variant="default"
+                    onClick={() => navigate(`/creator/${creator.id}`)}
+                  >
+                    <Gift className="h-4 w-4" />
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* How It Works */}
