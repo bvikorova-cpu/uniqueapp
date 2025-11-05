@@ -55,7 +55,7 @@ function ARPreviewButton({ designId }: { designId: string }) {
 
 interface AIRoomDesignerProps {
   subscription: any;
-  onDesignComplete: () => void;
+  onDesignComplete?: () => void;
 }
 
 export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesignerProps) {
@@ -121,7 +121,9 @@ export function AIRoomDesigner({ subscription, onDesignComplete }: AIRoomDesigne
       if (error) throw error;
 
       setDesignResult(data);
-      onDesignComplete();
+      if (onDesignComplete) {
+        onDesignComplete();
+      }
 
       toast({
         title: "✨ Návrh pripravený!",

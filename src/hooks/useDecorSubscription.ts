@@ -145,6 +145,28 @@ export function useDecorSubscription() {
     }
   };
 
+  const manageSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("decor-customer-portal");
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast({
+          title: "Opening Customer Portal",
+          description: "Manage your subscription in the Stripe portal.",
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Portal Error",
+        description: error.message || "Failed to open customer portal",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     checkSubscription();
 
@@ -159,5 +181,6 @@ export function useDecorSubscription() {
     subscribe,
     generateDesign,
     purchaseARPreview,
+    manageSubscription,
   };
 }

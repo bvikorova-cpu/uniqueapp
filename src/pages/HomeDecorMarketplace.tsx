@@ -14,6 +14,8 @@ import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
 import { AIRoomDesigner } from "@/components/home-decor/AIRoomDesigner";
 import { DesignConsultations } from "@/components/home-decor/DesignConsultations";
+import { useDecorSubscription } from "@/hooks/useDecorSubscription";
+import { CheckCircle } from "lucide-react";
 
 interface DecorItem {
   id: string;
@@ -30,6 +32,7 @@ interface DecorItem {
 const HomeDecorMarketplace = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { subscription, manageSubscription } = useDecorSubscription();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -37,7 +40,6 @@ const HomeDecorMarketplace = () => {
   const [uploading, setUploading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [items, setItems] = useState<DecorItem[]>([]);
-  const [subscription, setSubscription] = useState<any>(null);
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -49,40 +51,12 @@ const HomeDecorMarketplace = () => {
   useEffect(() => {
     checkAuth();
     loadItems();
-    loadSubscription();
-
-    // Auto-refresh subscription every minute
-    const interval = setInterval(loadSubscription, 60000);
-    return () => clearInterval(interval);
   }, []);
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       setCurrentUserId(user.id);
-    }
-  };
-
-  const loadSubscription = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    try {
-      // Call check subscription function to sync with Stripe
-      const { data, error } = await supabase.functions.invoke('check-decor-subscription');
-      
-      if (error) throw error;
-      
-      // Update local state with synced data
-      const { data: localSub } = await supabase
-        .from('decor_subscriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-      
-      setSubscription(localSub);
-    } catch (error) {
-      console.error('Error loading subscription:', error);
     }
   };
 
@@ -196,6 +170,33 @@ const HomeDecorMarketplace = () => {
     }
   };
 
+  const handleSubscribe = async () => {
+    if (!currentUserId) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Prosím prihláste sa pre upgrade",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-decor-subscription');
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa vytvoriť checkout",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handlePurchaseItem = async (itemId: string) => {
     if (!currentUserId) {
       toast({
@@ -261,12 +262,28 @@ const HomeDecorMarketplace = () => {
             AI-powered inšpirácia + marketplace pre predaj dekorácií
           </p>
 
-          {subscription && (
-            <Badge variant="secondary" className="mt-4">
-              {subscription.tier === 'free' ? 'Free Plan' : 'Pro Plan'} - 
-              {subscription.designs_used}/{subscription.designs_limit} návrhov použitých
-            </Badge>
-          )}
+          <div className="flex items-center justify-center gap-4 mt-4">
+            {subscription.subscribed ? (
+              <>
+                <Badge variant="secondary" className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  Pro Designer Active ({subscription.designs_used}/{subscription.designs_limit} designs)
+                </Badge>
+                <Button onClick={manageSubscription} size="sm" variant="outline">
+                  Spravovať predplatné
+                </Button>
+              </>
+            ) : (
+              <>
+                <Badge variant="secondary">
+                  Free Plan (0 designs)
+                </Badge>
+                <Button onClick={handleSubscribe} size="sm">
+                  Upgrade na Pro
+                </Button>
+              </>
+            )}
+          </div>
         </div>
 
         <Tabs defaultValue="ai-designer" className="w-full">
@@ -292,8 +309,7 @@ const HomeDecorMarketplace = () => {
           {/* AI Designer Tab */}
           <TabsContent value="ai-designer">
             <AIRoomDesigner 
-              subscription={subscription} 
-              onDesignComplete={loadSubscription}
+              subscription={subscription}
             />
           </TabsContent>
 
