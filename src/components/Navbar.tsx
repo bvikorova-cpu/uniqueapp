@@ -210,6 +210,7 @@ const Navbar = () => {
   const otherServices = [
     { path: "/courses", label: "Courses Hub", icon: GraduationCap },
     { path: "/lottery-ai", label: "Lottery Numbers - AI Predictions", icon: Sparkles },
+    { path: "/sports-predictor", label: "⚽ Sports Match Predictions", icon: Trophy },
     { path: "/membership-community", label: "Membership Community", icon: Users },
     { path: "/superhero-universe", label: "🦸 SuperHero Universe", icon: Zap },
     { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
