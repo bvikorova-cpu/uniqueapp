@@ -1,4 +1,4 @@
-import { Navbar } from '@/components/Navbar';
+import Navbar from '@/components/Navbar';
 import { VoiceCloneUpload } from '@/components/voice-memorial/VoiceCloneUpload';
 import { VoiceMemoryPlayer } from '@/components/voice-memorial/VoiceMemoryPlayer';
 import { ArrowLeft } from 'lucide-react';
