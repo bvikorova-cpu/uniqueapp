@@ -4377,6 +4377,266 @@ export type Database = {
           },
         ]
       }
+      creator_chat_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_chat_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "creator_chat_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_chat_rooms: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          tier_ids: string[] | null
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          tier_ids?: string[] | null
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          tier_ids?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_chat_rooms_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_exclusive_posts: {
+        Row: {
+          comments_count: number | null
+          content: string
+          created_at: string | null
+          creator_id: string
+          id: string
+          is_published: boolean | null
+          likes_count: number | null
+          media_urls: string[] | null
+          scheduled_for: string | null
+          tier_ids: string[] | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          comments_count?: number | null
+          content: string
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          is_published?: boolean | null
+          likes_count?: number | null
+          media_urls?: string[] | null
+          scheduled_for?: string | null
+          tier_ids?: string[] | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          comments_count?: number | null
+          content?: string
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          is_published?: boolean | null
+          likes_count?: number | null
+          media_urls?: string[] | null
+          scheduled_for?: string | null
+          tier_ids?: string[] | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_exclusive_posts_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_memberships: {
+        Row: {
+          creator_id: string
+          expires_at: string | null
+          id: string
+          started_at: string | null
+          status: string | null
+          stripe_subscription_id: string | null
+          subscriber_id: string
+          tier_id: string
+        }
+        Insert: {
+          creator_id: string
+          expires_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: string | null
+          stripe_subscription_id?: string | null
+          subscriber_id: string
+          tier_id: string
+        }
+        Update: {
+          creator_id?: string
+          expires_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: string | null
+          stripe_subscription_id?: string | null
+          subscriber_id?: string
+          tier_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_memberships_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creator_memberships_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "creator_subscription_tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          display_name: string
+          id: string
+          is_verified: boolean | null
+          total_earnings: number | null
+          total_subscribers: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          display_name: string
+          id?: string
+          is_verified?: boolean | null
+          total_earnings?: number | null
+          total_subscribers?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          display_name?: string
+          id?: string
+          is_verified?: boolean | null
+          total_earnings?: number | null
+          total_subscribers?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      creator_subscription_tiers: {
+        Row: {
+          benefits: string[] | null
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          max_subscribers: number | null
+          name: string
+          price: number
+          stripe_price_id: string | null
+        }
+        Insert: {
+          benefits?: string[] | null
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_subscribers?: number | null
+          name: string
+          price: number
+          stripe_price_id?: string | null
+        }
+        Update: {
+          benefits?: string[] | null
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_subscribers?: number | null
+          name?: string
+          price?: number
+          stripe_price_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_subscription_tiers_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       crisis_campaigns: {
         Row: {
           created_at: string | null

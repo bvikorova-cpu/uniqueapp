@@ -146,6 +146,7 @@ import MemoryTheft from "./pages/MemoryTheft";
 import QuantumSocial from "./pages/QuantumSocial";
 import VirtualInfluencerAgency from "./pages/VirtualInfluencerAgency";
 import AIContentMarketplace from "./pages/AIContentMarketplace";
+import MembershipCommunity from "./pages/MembershipCommunity";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
@@ -358,6 +359,7 @@ const App = () => (
           <Route path="/quantum-social" element={<QuantumSocial />} />
           <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
           <Route path="/ai-content-marketplace" element={<AIContentMarketplace />} />
+          <Route path="/membership-community" element={<MembershipCommunity />} />
           <Route path="/print-on-demand" element={<PrintOnDemand />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/custom-commissions" element={<CustomCommissions />} />
