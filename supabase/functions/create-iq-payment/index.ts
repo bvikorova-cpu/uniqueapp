@@ -36,14 +36,14 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    const priceMap: Record<number, { price: number; priceId: string }> = {
-      50: { price: 499, priceId: "price_iq_50" },
-      150: { price: 1299, priceId: "price_iq_150" },
-      500: { price: 3999, priceId: "price_iq_500" },
+    const priceMap: Record<number, string> = {
+      50: "price_1SQ7vD0QTWhd4oRpVeopmhjN",
+      150: "price_1SQ7vmGaXSfGtYFtDzpCaANo",
+      500: "price_1SQ7wLGaXSfGtYFtwD3Qw7dy",
     };
 
-    const packageInfo = priceMap[credits];
-    if (!packageInfo) {
+    const priceId = priceMap[credits];
+    if (!priceId) {
       throw new Error("Invalid credit package");
     }
 
@@ -52,14 +52,7 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price_data: {
-            currency: "usd",
-            unit_amount: packageInfo.price,
-            product_data: {
-              name: `${credits} IQ Platform Credits`,
-              description: `Purchase ${credits} credits for IQ tests, analyses, and competitions`,
-            },
-          },
+          price: priceId,
           quantity: 1,
         },
       ],
