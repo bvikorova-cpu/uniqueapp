@@ -6,6 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSportsSubscription } from "@/hooks/useSportsSubscription";
+import { useToast } from "@/hooks/use-toast";
 import {
   Trophy,
   TrendingUp,
@@ -20,6 +23,8 @@ import {
   Activity,
   CheckCircle2,
   AlertCircle,
+  Lock,
+  Loader2,
 } from "lucide-react";
 
 const PRICING_TIERS = [
@@ -204,8 +209,34 @@ const getUpcomingMatches = () => {
 
 export default function SportsPredictor() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { subscribed, tier, loading, createCheckout } = useSportsSubscription();
+  const { toast } = useToast();
   const [selectedSport, setSelectedSport] = useState("all");
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const upcomingMatches = useMemo(() => getUpcomingMatches(), []);
+
+  const handleSubscribe = async (selectedTier: 'ai_premium' | 'expert_tipster') => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      setCheckoutLoading(true);
+      await createCheckout(selectedTier);
+    } catch (error) {
+      toast({
+        title: "Chyba",
+        description: "Nepodarilo sa vytvoriť platbu. Skúste to znova.",
+        variant: "destructive",
+      });
+    } finally {
+      setCheckoutLoading(false);
+    }
+  };
+
+  const canViewPredictions = subscribed && (tier === 'ai_premium' || tier === 'expert_tipster');
 
   return (
     <div className="min-h-screen bg-background">
@@ -228,9 +259,9 @@ export default function SportsPredictor() {
           </p>
           
           <div className="flex flex-wrap gap-4 justify-center mb-8">
-            <Button size="lg" onClick={() => navigate("/auth")}>
+            <Button size="lg" onClick={() => user ? handleSubscribe('ai_premium') : navigate("/auth")}>
               <Trophy className="mr-2 h-5 w-5" />
-              Subscribe Now
+              {user ? "Predplatiť" : "Prihlásiť sa"}
             </Button>
             <Button size="lg" variant="outline">
               <BarChart3 className="mr-2 h-5 w-5" />
@@ -355,23 +386,35 @@ export default function SportsPredictor() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                          <div className="text-center">
+                        {/* Paywall overlay for non-subscribers */}
+                        <div className="flex items-center gap-6 relative">
+                          {!canViewPredictions && (
+                            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
+                              <div className="text-center">
+                                <Lock className="h-8 w-8 text-primary mx-auto mb-2" />
+                                <p className="text-sm font-semibold">Predplatné vyžadované</p>
+                              </div>
+                            </div>
+                          )}
+                          
+                          <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
                             <div className="text-sm text-muted-foreground mb-1">Prediction</div>
                             <Badge className="bg-green-500">{match.prediction}</Badge>
                           </div>
-                          <div className="text-center">
+                          <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
                             <div className="text-sm text-muted-foreground mb-1">Confidence</div>
                             <div className="text-2xl font-bold">{match.confidence}%</div>
                           </div>
-                          <div className="text-center">
+                          <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
                             <div className="text-sm text-muted-foreground mb-1">Odds</div>
                             <div className="text-2xl font-bold text-primary">{match.odds}</div>
                           </div>
-                          <Button>
-                            <Bell className="mr-2 h-4 w-4" />
-                            Get Alert
-                          </Button>
+                          {canViewPredictions && (
+                            <Button>
+                              <Bell className="mr-2 h-4 w-4" />
+                              Get Alert
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </CardContent>
@@ -437,14 +480,14 @@ export default function SportsPredictor() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {PRICING_TIERS.map((tier) => (
+            {PRICING_TIERS.map((pricingTier) => (
               <Card
-                key={tier.name}
+                key={pricingTier.name}
                 className={`relative ${
-                  tier.popular ? "border-2 border-primary shadow-xl" : ""
+                  pricingTier.popular ? "border-2 border-primary shadow-xl" : ""
                 }`}
               >
-                {tier.popular && (
+                {pricingTier.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-primary text-white px-4 py-1">
                       Most Popular
@@ -454,21 +497,21 @@ export default function SportsPredictor() {
 
                 <CardHeader className="text-center pb-8">
                   <div
-                    className={`w-12 h-12 rounded-lg bg-gradient-to-br ${tier.color} flex items-center justify-center mx-auto mb-4`}
+                    className={`w-12 h-12 rounded-lg bg-gradient-to-br ${pricingTier.color} flex items-center justify-center mx-auto mb-4`}
                   >
-                    <tier.icon className="h-6 w-6 text-white" />
+                    <pricingTier.icon className="h-6 w-6 text-white" />
                   </div>
-                  <CardTitle className="text-2xl mb-2">{tier.name}</CardTitle>
-                  <CardDescription>{tier.description}</CardDescription>
+                  <CardTitle className="text-2xl mb-2">{pricingTier.name}</CardTitle>
+                  <CardDescription>{pricingTier.description}</CardDescription>
                   <div className="mt-4">
-                    <span className="text-4xl font-bold">${tier.price}</span>
-                    <span className="text-muted-foreground">/{tier.period}</span>
+                    <span className="text-4xl font-bold">${pricingTier.price}</span>
+                    <span className="text-muted-foreground">/{pricingTier.period}</span>
                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-6">
                   <ul className="space-y-3">
-                    {tier.features.map((feature, index) => (
+                    {pricingTier.features.map((feature, index) => (
                       <li key={index} className="flex items-start gap-2">
                         <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                         <span className="text-sm">{feature}</span>
@@ -478,10 +521,23 @@ export default function SportsPredictor() {
 
                   <Button
                     className="w-full"
-                    variant={tier.popular ? "default" : "outline"}
-                    onClick={() => navigate("/auth")}
+                    variant={pricingTier.popular ? "default" : "outline"}
+                    onClick={() => handleSubscribe(pricingTier.name === "AI Premium" ? "ai_premium" : "expert_tipster")}
+                    disabled={checkoutLoading || loading}
                   >
-                    Get Started
+                    {checkoutLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Načítavam...
+                      </>
+                    ) : subscribed && ((pricingTier.name === "AI Premium" && tier === 'ai_premium') || (pricingTier.name === "Expert Tipster" && tier === 'expert_tipster')) ? (
+                      <>
+                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                        Aktívne
+                      </>
+                    ) : (
+                      "Predplatiť"
+                    )}
                   </Button>
                 </CardContent>
               </Card>
