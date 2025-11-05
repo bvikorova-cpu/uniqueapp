@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -70,6 +71,15 @@ const ADDITIONAL_SERVICES = [
     price: 19,
     description: "Push listing to 1000+ potential buyers via email",
     icon: TrendingUp
+  },
+  {
+    id: "home_decor",
+    name: "Home Decor Marketplace",
+    price: 7.99,
+    description: "AI-powered room design + marketplace for decorations with AR preview",
+    icon: Sparkles,
+    isSubscription: true,
+    link: "/home-decor"
   }
 ];
 
@@ -132,7 +142,11 @@ export default function PropertyMarketplace() {
     });
   };
 
-  const handlePurchaseService = (serviceId: string, price: number) => {
+  const handlePurchaseService = (serviceId: string, price: number, link?: string) => {
+    if (link) {
+      navigate(link);
+      return;
+    }
     toast({
       title: "Coming Soon",
       description: `This service (€${price}) will be available soon!`,
@@ -304,20 +318,23 @@ export default function PropertyMarketplace() {
                         <div>
                           <CardTitle className="text-xl">{service.name}</CardTitle>
                           <CardDescription className="mt-2">{service.description}</CardDescription>
+                          {service.isSubscription && (
+                            <Badge variant="secondary" className="mt-2">€{service.price}/month</Badge>
+                          )}
                         </div>
                       </div>
                       <div className="text-2xl font-bold text-primary">
-                        €{service.price}
+                        {service.isSubscription ? '' : `€${service.price}`}
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent>
                     <Button 
-                      onClick={() => handlePurchaseService(service.name, service.price)}
+                      onClick={() => handlePurchaseService(service.name, service.price, service.link)}
                       className="w-full"
                       variant="outline"
                     >
-                      Add Service
+                      {service.link ? "Explore" : "Add Service"}
                     </Button>
                   </CardContent>
                 </Card>

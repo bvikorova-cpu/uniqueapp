@@ -159,6 +159,7 @@ import SportsPredictor from "./pages/SportsPredictor";
 import AdminSportsMatches from "./pages/AdminSportsMatches";
 import PropertyMarketplace from "./pages/PropertyMarketplace";
 import PropertySubmission from "./pages/PropertySubmission";
+import HomeDecorMarketplace from "./pages/HomeDecorMarketplace";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
@@ -452,6 +453,7 @@ const App = () => (
               <Route path="/fundraising/talent" element={<TalentSponsorship />} />
               <Route path="/property-marketplace" element={<PropertyMarketplace />} />
               <Route path="/property-submission" element={<PropertySubmission />} />
+              <Route path="/home-decor" element={<HomeDecorMarketplace />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
