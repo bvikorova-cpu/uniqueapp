@@ -152,6 +152,7 @@ import CreatorProfile from "./pages/CreatorProfile";
 import CoursesHub from "./pages/CoursesHub";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CourseLearnPage from "./pages/CourseLearnPage";
+import LotteryAI from "./pages/LotteryAI";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
@@ -370,6 +371,7 @@ const App = () => (
           <Route path="/courses" element={<CoursesHub />} />
           <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
+          <Route path="/lottery-ai" element={<LotteryAI />} />
           <Route path="/print-on-demand" element={<PrintOnDemand />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/custom-commissions" element={<CustomCommissions />} />
