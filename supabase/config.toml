@@ -305,3 +305,12 @@ verify_jwt = true
 
 [functions.save-time-capsule]
 verify_jwt = true
+
+[functions.check-pet-subscription]
+verify_jwt = true
+
+[functions.create-pet-checkout]
+verify_jwt = true
+
+[functions.analyze-pet-sound]
+verify_jwt = true

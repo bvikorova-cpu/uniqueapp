@@ -65,6 +65,8 @@ import PremiumStore from "./pages/PremiumStore";
 import AICreditsStore from "./pages/AICreditsStore";
 import AIMusic from "./pages/AIMusic";
 import MysteryBox from "./pages/MysteryBox";
+import PetTranslator from "./pages/PetTranslator";
+import PetTranslatorPricing from "./pages/PetTranslatorPricing";
 import RoutineOptimizer from "./pages/RoutineOptimizer";
 import Psychology from "./pages/Psychology";
 import Quiz from "./pages/Quiz";
@@ -299,6 +301,8 @@ const App = () => (
           <Route path="/character-arena" element={<CharacterArena />} />
           <Route path="/ai-music" element={<AIMusic />} />
           <Route path="/mystery-box" element={<MysteryBox />} />
+          <Route path="/pet-translator" element={<PetTranslator />} />
+          <Route path="/pet-translator-pricing" element={<PetTranslatorPricing />} />
               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />
