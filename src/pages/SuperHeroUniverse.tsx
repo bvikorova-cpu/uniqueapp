@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { BattleArena } from "@/components/superhero/BattleArena";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -182,8 +183,8 @@ const SuperHeroUniverse = () => {
               Overview
             </TabsTrigger>
             <TabsTrigger value="create" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 text-white rounded-lg">
-              <Zap className="h-4 w-4 mr-2" />
-              Create Hero
+              <Swords className="h-4 w-4 mr-2" />
+              Battle Arena
             </TabsTrigger>
             <TabsTrigger value="tournaments" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 text-white rounded-lg">
               <Trophy className="h-4 w-4 mr-2" />
@@ -255,24 +256,10 @@ const SuperHeroUniverse = () => {
           <TabsContent value="create" className="space-y-8">
             <Card className="bg-white/5 backdrop-blur-md border-white/10 p-8">
               <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-                <Sparkles className="h-8 w-8 text-purple-400" />
-                Hero Creation
+                <Swords className="h-8 w-8 text-red-400" />
+                Battle Arena
               </h2>
-              <div className="text-center py-12">
-                <Zap className="h-24 w-24 mx-auto mb-6 text-purple-400 animate-pulse" />
-                <h3 className="text-2xl font-bold text-white mb-4">Create Your First Hero</h3>
-                <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-                  Use AI to generate unique superhero designs with custom powers, stats, and abilities. Each hero is one-of-a-kind!
-                </p>
-                <Button 
-                  onClick={handleCreateHero}
-                  size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-12 py-6 rounded-xl text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105"
-                >
-                  <Plus className="h-6 w-6 mr-2" />
-                  Start Creating (500 Credits)
-                </Button>
-              </div>
+              <BattleArena />
             </Card>
           </TabsContent>
 
