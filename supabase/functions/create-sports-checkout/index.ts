@@ -8,8 +8,8 @@ const corsHeaders = {
 };
 
 const PRICE_IDS = {
-  ai_premium: "price_ai_premium_sports",  // Nahraď za skutočné Stripe price ID
-  expert_tipster: "price_expert_tipster_sports",  // Nahraď za skutočné Stripe price ID
+  ai_premium: "price_1SQ73GaXSfGYlTPbjJvVMTky",
+  expert_tipster: "price_1SQeeFGaSKfGYlTblxcSmkq8",
 };
 
 const logStep = (step: string, details?: any) => {
