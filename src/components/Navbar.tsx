@@ -209,6 +209,7 @@ const Navbar = () => {
 
   const otherServices = [
     { path: "/course-marketplace", label: "Course Marketplace", icon: GraduationCap },
+    { path: "/course-creator-dashboard", label: "Course Creator Dashboard", icon: GraduationCap },
     { path: "/membership-community", label: "Membership Community", icon: Users },
     { path: "/superhero-universe", label: "🦸 SuperHero Universe", icon: Zap },
     { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
