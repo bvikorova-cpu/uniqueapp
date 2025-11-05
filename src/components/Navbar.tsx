@@ -208,6 +208,7 @@ const Navbar = () => {
   ];
 
   const otherServices = [
+    { path: "/superhero-universe", label: "🦸 SuperHero Universe", icon: Zap },
     { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
     { path: "/fundraising/dream", label: "✨ Dream Maker", icon: Sparkles },
     { path: "/fundraising/hero", label: "🦸 Community Hero", icon: Shield },

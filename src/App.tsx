@@ -190,6 +190,7 @@ import MusicianDashboard from "./pages/MusicianDashboard";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
 import IQPlatform from "./pages/IQPlatform";
+import SuperHeroUniverse from "./pages/SuperHeroUniverse";
 import FundraisingHub from "./pages/fundraising/FundraisingHub";
 import MedicalFundraising from "./pages/fundraising/MedicalFundraising";
 import MedicalDetail from "./pages/fundraising/MedicalDetail";
@@ -388,7 +389,8 @@ const App = () => (
               <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
               <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
               <Route path="/time-capsule-subscription" element={<TimeCapsuleSubscription />} />
-              <Route path="/holographic-avatars" element={<HolographicAvatars />} />
+          <Route path="/holographic-avatars" element={<HolographicAvatars />} />
+          <Route path="/superhero-universe" element={<SuperHeroUniverse />} />
           <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />
           <Route path="/dna-memory-network" element={<DNAMemoryNetwork />} />
           <Route path="/reincarnation-social" element={<ReincarnationSocial />} />
