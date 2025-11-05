@@ -272,6 +272,39 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_room_designs: {
+        Row: {
+          ai_design_url: string | null
+          created_at: string
+          id: string
+          is_saved: boolean
+          room_image_url: string
+          style: string
+          suggested_products: string[] | null
+          user_id: string
+        }
+        Insert: {
+          ai_design_url?: string | null
+          created_at?: string
+          id?: string
+          is_saved?: boolean
+          room_image_url: string
+          style: string
+          suggested_products?: string[] | null
+          user_id: string
+        }
+        Update: {
+          ai_design_url?: string | null
+          created_at?: string
+          id?: string
+          is_saved?: boolean
+          room_image_url?: string
+          style?: string
+          suggested_products?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_routine_optimizations: {
         Row: {
           analysis_date: string
@@ -630,6 +663,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      ar_preview_sessions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          payment_status: string
+          product_id: string
+          stripe_payment_intent_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_status?: string
+          product_id: string
+          stripe_payment_intent_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_status?: string
+          product_id?: string
+          stripe_payment_intent_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ar_preview_sessions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "decor_products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       astro_subscriptions: {
         Row: {
@@ -5453,6 +5524,140 @@ export type Database = {
           id?: string
           swiped_id?: string
           swiper_id?: string
+        }
+        Relationships: []
+      }
+      decor_products: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          image_urls: string[]
+          is_available: boolean
+          price: number
+          sales_count: number
+          seller_id: string
+          style: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[]
+          is_available?: boolean
+          price: number
+          sales_count?: number
+          seller_id: string
+          style: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_urls?: string[]
+          is_available?: boolean
+          price?: number
+          sales_count?: number
+          seller_id?: string
+          style?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      decor_sales: {
+        Row: {
+          amount: number
+          buyer_id: string
+          commission: number
+          created_at: string
+          id: string
+          product_id: string
+          seller_amount: number
+          seller_id: string
+          stripe_payment_intent_id: string | null
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          commission: number
+          created_at?: string
+          id?: string
+          product_id: string
+          seller_amount: number
+          seller_id: string
+          stripe_payment_intent_id?: string | null
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          commission?: number
+          created_at?: string
+          id?: string
+          product_id?: string
+          seller_amount?: number
+          seller_id?: string
+          stripe_payment_intent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "decor_sales_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "decor_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      decor_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          designs_limit: number
+          designs_used: number
+          id: string
+          plan_type: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          designs_limit?: number
+          designs_used?: number
+          id?: string
+          plan_type?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          designs_limit?: number
+          designs_used?: number
+          id?: string
+          plan_type?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
