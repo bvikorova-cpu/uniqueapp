@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, PerspectiveCamera, Environment, Float, MeshDistortMaterial, Sphere, Text3D, Center } from "@react-three/drei";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,6 +25,93 @@ import {
   Rocket
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+// 3D Hero Character Component
+const HeroCharacter = ({ position, color }: { position: [number, number, number]; color: string }) => {
+  const meshRef = useRef<any>();
+  
+  return (
+    <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+      <group position={position}>
+        {/* Body */}
+        <mesh position={[0, 0, 0]} castShadow>
+          <capsuleGeometry args={[0.3, 0.8, 16, 32]} />
+          <meshStandardMaterial color={color} metalness={0.3} roughness={0.4} />
+        </mesh>
+        {/* Head */}
+        <mesh position={[0, 0.9, 0]} castShadow>
+          <sphereGeometry args={[0.25, 32, 32]} />
+          <meshStandardMaterial color={color} metalness={0.2} roughness={0.3} />
+        </mesh>
+        {/* Cape */}
+        <mesh position={[0, 0.3, -0.3]} rotation={[0.3, 0, 0]} castShadow>
+          <planeGeometry args={[0.8, 1.2]} />
+          <meshStandardMaterial color={color} side={2} metalness={0.5} roughness={0.5} />
+        </mesh>
+        {/* Energy Glow */}
+        <Sphere args={[0.35, 32, 32]} position={[0, 0, 0]}>
+          <MeshDistortMaterial
+            color={color}
+            attach="material"
+            distort={0.3}
+            speed={2}
+            roughness={0.2}
+            transparent
+            opacity={0.3}
+          />
+        </Sphere>
+      </group>
+    </Float>
+  );
+};
+
+// 3D Battle Scene Component
+const BattleScene = () => {
+  return (
+    <>
+      <PerspectiveCamera makeDefault position={[0, 2, 8]} />
+      <OrbitControls 
+        enableZoom={true} 
+        enablePan={false}
+        minDistance={5}
+        maxDistance={15}
+        maxPolarAngle={Math.PI / 2}
+      />
+      
+      {/* Lighting */}
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
+      <pointLight position={[-10, -10, -5]} intensity={0.5} color="#9333ea" />
+      <pointLight position={[10, -10, -5]} intensity={0.5} color="#3b82f6" />
+      
+      {/* Environment */}
+      <Environment preset="sunset" />
+      
+      {/* Heroes */}
+      <HeroCharacter position={[-2, 0, 0]} color="#9333ea" />
+      <HeroCharacter position={[2, 0, 0]} color="#3b82f6" />
+      <HeroCharacter position={[0, 0, -2]} color="#ec4899" />
+      
+      {/* Battle Platform */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1, 0]} receiveShadow>
+        <circleGeometry args={[5, 64]} />
+        <meshStandardMaterial 
+          color="#1e1b4b" 
+          metalness={0.8} 
+          roughness={0.2}
+          emissive="#4c1d95"
+          emissiveIntensity={0.2}
+        />
+      </mesh>
+      
+      {/* Energy Grid */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.98, 0]}>
+        <ringGeometry args={[3, 5, 32]} />
+        <meshBasicMaterial color="#9333ea" transparent opacity={0.3} />
+      </mesh>
+    </>
+  );
+};
 
 const SuperHeroUniverse = () => {
   const navigate = useNavigate();
@@ -104,10 +193,19 @@ const SuperHeroUniverse = () => {
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/50 rounded-full mb-6 backdrop-blur-sm">
+      <div className="relative z-10 container mx-auto px-4 py-8">
+        {/* 3D Hero Battle Scene */}
+        <div className="w-full h-[500px] mb-12 rounded-2xl overflow-hidden border-4 border-purple-500/30 shadow-2xl shadow-purple-500/20">
+          <Canvas shadows>
+            <Suspense fallback={null}>
+              <BattleScene />
+            </Suspense>
+          </Canvas>
+        </div>
+
+        {/* Hero Section - Moved Lower */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/50 rounded-full mb-4 backdrop-blur-sm">
             <Zap className="h-4 w-4 text-yellow-400 animate-pulse" />
             <span className="text-sm font-semibold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
               BUILD • BATTLE • DOMINATE
@@ -115,15 +213,15 @@ const SuperHeroUniverse = () => {
             <Zap className="h-4 w-4 text-yellow-400 animate-pulse" />
           </div>
           
-          <h1 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent drop-shadow-2xl">
+          <h1 className="text-5xl md:text-7xl font-black mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent drop-shadow-2xl">
             SUPERHERO UNIVERSE
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-gray-300 mb-6 max-w-3xl mx-auto leading-relaxed">
             Create legendary heroes, form unstoppable teams, and compete in epic tournaments for real prizes
           </p>
 
-          <div className="flex flex-wrap gap-4 justify-center mb-12">
+          <div className="flex flex-wrap gap-4 justify-center mb-8">
             <Button 
               onClick={handleCreateHero}
               size="lg"
