@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Mic, StopCircle, Loader2, PawPrint, Heart, AlertCircle } from 'lucide-react';
+import { Mic, StopCircle, Loader2, PawPrint, Heart, AlertCircle, Sparkles, Brain, TrendingUp, Shield, Zap, CheckCircle } from 'lucide-react';
 import { usePetSubscription } from '@/hooks/usePetSubscription';
 import { Link } from 'react-router-dom';
 
@@ -90,35 +90,151 @@ const PetTranslator = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="text-center mb-8">
-        <div className="flex justify-center mb-4">
-          <PawPrint className="w-16 h-16 text-primary" />
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
+      {/* Hero Section */}
+      <div className="container mx-auto px-4 pt-20 pb-12">
+        <div className="text-center max-w-4xl mx-auto">
+          <div className="flex justify-center mb-6">
+            <div className="relative">
+              <PawPrint className="w-20 h-20 text-primary animate-pulse" />
+              <Sparkles className="w-8 h-8 text-primary absolute -top-2 -right-2 animate-bounce" />
+            </div>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+            AI Pet Translator
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Ever wonder what your dog or cat is really trying to tell you? Our advanced AI analyzes your pet's sounds to reveal their emotions and translate their messages.
+          </p>
+          
+          {!subscription.subscribed && (
+            <Link to="/pet-translator-pricing">
+              <Button size="lg" className="text-lg px-8 py-6">
+                Start Understanding Your Pet Today
+              </Button>
+            </Link>
+          )}
         </div>
-        <h1 className="text-4xl font-bold mb-4">AI Pet Translator</h1>
-        <p className="text-lg text-muted-foreground">
-          Discover what your pet is really saying
-        </p>
       </div>
 
-      {!subscription.subscribed ? (
-        <Card className="p-8 text-center">
-          <AlertCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-          <h2 className="text-2xl font-semibold mb-4">Subscription Required</h2>
-          <p className="text-muted-foreground mb-6">
-            Subscribe to unlock unlimited pet translations and emotion tracking
-          </p>
-          <Link to="/pet-translator-pricing">
-            <Button size="lg">View Plans</Button>
-          </Link>
-        </Card>
-      ) : (
+      {/* Features Section */}
+      <div className="container mx-auto px-4 py-16">
+        <h2 className="text-3xl font-bold text-center mb-12">How It Works</h2>
+        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Mic className="w-8 h-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">1. Record Sound</h3>
+            <p className="text-muted-foreground">
+              Simply press record and let your pet bark, meow, or make any sound naturally
+            </p>
+          </Card>
+
+          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Brain className="w-8 h-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">2. AI Analysis</h3>
+            <p className="text-muted-foreground">
+              Our advanced AI analyzes tone, pitch, and patterns to understand the emotion
+            </p>
+          </Card>
+
+          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Heart className="w-8 h-8 text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold mb-3">3. Get Translation</h3>
+            <p className="text-muted-foreground">
+              Receive instant translation and understand your pet's emotional state
+            </p>
+          </Card>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-2xl p-8 md:p-12 mb-16">
+          <h2 className="text-3xl font-bold text-center mb-12">Why Pet Owners Love It</h2>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="flex gap-4">
+              <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold mb-2">Better Understanding</h3>
+                <p className="text-muted-foreground">
+                  Know when your pet is happy, anxious, hungry, or needs attention
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold mb-2">Stronger Bond</h3>
+                <p className="text-muted-foreground">
+                  Improve communication and deepen your relationship with your pet
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold mb-2">Early Warning Signs</h3>
+                <p className="text-muted-foreground">
+                  Detect stress, discomfort, or health issues before they become serious
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold mb-2">Track Emotions Over Time</h3>
+                <p className="text-muted-foreground">
+                  Monitor your pet's emotional patterns and behavioral changes
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Translator Interface */}
+      <div className="container mx-auto px-4 pb-16">
+        {!subscription.subscribed ? (
+          <Card className="max-w-2xl mx-auto p-12 text-center bg-gradient-to-br from-card to-secondary/20">
+            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="w-10 h-10 text-primary" />
+            </div>
+            <h2 className="text-3xl font-semibold mb-4">Ready to Understand Your Pet?</h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+              Choose a plan that fits your needs and start discovering what your furry friend is really saying
+            </p>
+            <div className="grid md:grid-cols-3 gap-4 mb-8">
+              <div className="flex items-center gap-2 justify-center">
+                <Zap className="w-5 h-5 text-primary" />
+                <span className="text-sm">Instant Translations</span>
+              </div>
+              <div className="flex items-center gap-2 justify-center">
+                <TrendingUp className="w-5 h-5 text-primary" />
+                <span className="text-sm">Emotion Tracking</span>
+              </div>
+              <div className="flex items-center gap-2 justify-center">
+                <Shield className="w-5 h-5 text-primary" />
+                <span className="text-sm">Secure & Private</span>
+              </div>
+            </div>
+            <Link to="/pet-translator-pricing">
+              <Button size="lg" className="text-lg px-8">View Plans & Pricing</Button>
+            </Link>
+          </Card>
+        ) : (
         <>
-          <Card className="p-8 mb-6">
+          <Card className="max-w-3xl mx-auto p-8 md:p-12 mb-6">
             <div className="text-center">
-              <h2 className="text-2xl font-semibold mb-4">Record Your Pet</h2>
-              <p className="text-muted-foreground mb-6">
-                Press the button and let your pet make their sound
+              <h2 className="text-3xl font-semibold mb-4">Start Recording</h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Press the microphone button and let your pet bark, meow, or vocalize. Our AI will analyze their emotions in real-time.
               </p>
 
               <div className="flex justify-center mb-6">
@@ -165,42 +281,62 @@ const PetTranslator = () => {
           </Card>
 
           {translation && (
-            <Card className="p-8 bg-gradient-to-br from-primary/5 to-primary/10">
-              <div className="flex items-start gap-4 mb-4">
-                <Heart className="w-8 h-8 text-primary flex-shrink-0 mt-1" />
+            <Card className="max-w-3xl mx-auto p-8 md:p-12 bg-gradient-to-br from-primary/10 to-purple-500/10 border-primary/20">
+              <div className="flex items-start gap-6 mb-6">
+                <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Heart className="w-8 h-8 text-primary" />
+                </div>
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold mb-2">
-                    Emotion: {translation.emotion}
+                  <h3 className="text-2xl font-bold mb-3">
+                    Emotion Detected: {translation.emotion}
                   </h3>
-                  <p className="text-lg mb-4">{translation.message}</p>
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 bg-background rounded-full h-2 overflow-hidden">
+                  <p className="text-xl mb-6 italic">"{translation.message}"</p>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-medium">Confidence Level</span>
+                      <span className="text-muted-foreground">
+                        {Math.round(translation.confidence * 100)}%
+                      </span>
+                    </div>
+                    <div className="flex-1 bg-background rounded-full h-3 overflow-hidden">
                       <div
-                        className="bg-primary h-full transition-all duration-500"
+                        className="bg-gradient-to-r from-primary to-purple-600 h-full transition-all duration-500 rounded-full"
                         style={{ width: `${translation.confidence * 100}%` }}
                       />
                     </div>
-                    <span className="text-sm text-muted-foreground">
-                      {Math.round(translation.confidence * 100)}% confident
-                    </span>
+                  </div>
+
+                  <div className="mt-6 p-4 bg-background/50 rounded-lg">
+                    <p className="text-sm text-muted-foreground">
+                      <strong>What this means:</strong> Your pet's vocalization indicates they are feeling {translation.emotion.toLowerCase()}. Pay attention to their body language and environment for more context.
+                    </p>
                   </div>
                 </div>
               </div>
             </Card>
           )}
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              Active Plan: <span className="font-semibold">{subscription.tier}</span>
-            </p>
-            {subscription.pets_tracked && (
-              <p className="text-sm text-muted-foreground">
-                Pets tracked: {subscription.pets_tracked} / {subscription.max_pets}
+          <div className="mt-8 text-center max-w-3xl mx-auto">
+            <div className="bg-secondary/30 rounded-lg p-6">
+              <p className="text-sm font-medium mb-2">
+                Active Plan: <span className="text-primary font-bold">{subscription.tier}</span>
               </p>
-            )}
+              {subscription.pets_tracked !== undefined && (
+                <p className="text-sm text-muted-foreground">
+                  Pets tracked: {subscription.pets_tracked} / {subscription.max_pets}
+                </p>
+              )}
+              <Link to="/pet-translator-pricing">
+                <Button variant="outline" size="sm" className="mt-4">
+                  Manage Subscription
+                </Button>
+              </Link>
+            </div>
           </div>
         </>
-      )}
+        )}
+      </div>
     </div>
   );
 };
