@@ -208,6 +208,13 @@ const Navbar = () => {
   ];
 
   const otherServices = [
+    { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
+    { path: "/fundraising/dream", label: "✨ Dream Maker", icon: Sparkles },
+    { path: "/fundraising/hero", label: "🦸 Community Hero", icon: Shield },
+    { path: "/fundraising/pet", label: "🐾 Pet Rescue", icon: PawPrint },
+    { path: "/fundraising/student", label: "🎓 Student Support", icon: GraduationCap },
+    { path: "/fundraising/crisis", label: "🆘 Crisis Relief", icon: AlertTriangle },
+    { path: "/fundraising/talent", label: "🎭 Talent Sponsorship", icon: Star },
     { path: "/crystal-energy-network", label: "💎 Crystal & Energy Network", icon: Gem },
     { path: "/dna-memory-network", label: "🧬 DNA Social Memory Network", icon: Dna },
     { path: "/reincarnation-social", label: "♾️ Reincarnation Social", icon: Sparkles },
@@ -284,7 +291,6 @@ const Navbar = () => {
     { path: "/best-friend", label: t('navbar.best_friend'), icon: UserPlus },
     { path: "/referral", label: t('navbar.invite_friend'), icon: User },
     { path: "/iq-platform", label: "🧩 IQ Platform", icon: Brain },
-    { path: "/fundraising", label: "💝 Fundraising Hub", icon: Heart },
     { path: "/terms", label: t('navbar.terms'), icon: FileText },
   ];
 
