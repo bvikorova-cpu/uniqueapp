@@ -27,6 +27,7 @@ import {
   LogOut,
   User,
   Settings,
+  History,
 } from "lucide-react";
 
 const LOTTERY_TYPES = [
@@ -380,6 +381,10 @@ export default function LotteryAI() {
                 )}
               </div>
               <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => navigate("/lottery-history")}>
+                  <History className="mr-2 h-4 w-4" />
+                  History
+                </Button>
                 {subscription?.subscribed && (
                   <Button variant="outline" size="sm" onClick={handleManageSubscription}>
                     <Settings className="mr-2 h-4 w-4" />

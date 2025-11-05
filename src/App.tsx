@@ -153,6 +153,7 @@ import CoursesHub from "./pages/CoursesHub";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CourseLearnPage from "./pages/CourseLearnPage";
 import LotteryAI from "./pages/LotteryAI";
+import LotteryHistory from "./pages/LotteryHistory";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
@@ -360,6 +361,7 @@ const App = () => (
           <Route path="/coffee/buddy" element={<CoffeeBuddy />} />
           <Route path="/ai-clone" element={<AIClone />} />
           <Route path="/parallel-lives" element={<ParallelLives />} />
+          <Route path="/lottery-history" element={<LotteryHistory />} />
           <Route path="/emotion-economy" element={<EmotionEconomy />} />
           <Route path="/memory-theft" element={<MemoryTheft />} />
           <Route path="/quantum-social" element={<QuantumSocial />} />
