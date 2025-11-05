@@ -160,6 +160,7 @@ import AdminSportsMatches from "./pages/AdminSportsMatches";
 import PropertyMarketplace from "./pages/PropertyMarketplace";
 import PropertySubmission from "./pages/PropertySubmission";
 import HomeDecorMarketplace from "./pages/HomeDecorMarketplace";
+import HomeDecorSubscription from "./pages/HomeDecorSubscription";
 import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
@@ -419,6 +420,7 @@ const App = () => (
               <Route path="/time-capsule" element={<TimeCapsule />} />
               <Route path="/voice-memorial" element={<VoiceMemorial />} />
               <Route path="/home-decor-marketplace" element={<HomeDecorMarketplace />} />
+              <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
           <Route path="/holographic-avatars" element={<HolographicAvatars />} />
           <Route path="/superhero-universe" element={<SuperHeroUniverse />} />
           <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />

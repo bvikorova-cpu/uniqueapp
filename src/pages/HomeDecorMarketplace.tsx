@@ -5,13 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Search, Home, Upload, X, ShoppingBag, Store, Star } from "lucide-react";
+import { Plus, Search, Home, Upload, ShoppingBag, Store, Star, Sparkles, Video, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useNavigate } from "react-router-dom";
+import { AIRoomDesigner } from "@/components/home-decor/AIRoomDesigner";
+import { DesignConsultations } from "@/components/home-decor/DesignConsultations";
 
 interface DecorItem {
   id: string;
@@ -35,6 +37,7 @@ const HomeDecorMarketplace = () => {
   const [uploading, setUploading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [items, setItems] = useState<DecorItem[]>([]);
+  const [subscription, setSubscription] = useState<any>(null);
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -46,12 +49,43 @@ const HomeDecorMarketplace = () => {
   useEffect(() => {
     checkAuth();
     loadItems();
+    loadSubscription();
   }, []);
 
   const checkAuth = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       setCurrentUserId(user.id);
+    }
+  };
+
+  const loadSubscription = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data } = await supabase
+      .from('decor_subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!data) {
+      // Create free subscription
+      const { data: newSub } = await supabase
+        .from('decor_subscriptions')
+        .insert({
+          user_id: user.id,
+          tier: 'free',
+          designs_limit: 2,
+          designs_used: 0,
+          status: 'active'
+        })
+        .select()
+        .single();
+      
+      setSubscription(newSub);
+    } else {
+      setSubscription(data);
     }
   };
 
@@ -197,21 +231,44 @@ const HomeDecorMarketplace = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Nájdite alebo predajte jedinečné dekorácie pre váš domov
+            AI-powered inšpirácia + marketplace pre predaj dekorácií
           </p>
+
+          {subscription && (
+            <Badge variant="secondary" className="mt-4">
+              {subscription.tier === 'free' ? 'Free Plan' : 'Pro Plan'} - 
+              {subscription.designs_used}/{subscription.designs_limit} návrhov použitých
+            </Badge>
+          )}
         </div>
 
-        <Tabs defaultValue="browse" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+        <Tabs defaultValue="ai-designer" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsTrigger value="ai-designer">
+              <Sparkles className="h-4 w-4 mr-2" />
+              AI Designer
+            </TabsTrigger>
             <TabsTrigger value="browse">
               <ShoppingBag className="h-4 w-4 mr-2" />
               Prehliadať
             </TabsTrigger>
             <TabsTrigger value="sell">
               <Store className="h-4 w-4 mr-2" />
-              Predať položku
+              Predať
+            </TabsTrigger>
+            <TabsTrigger value="consultations">
+              <Video className="h-4 w-4 mr-2" />
+              Konzultácie
             </TabsTrigger>
           </TabsList>
+
+          {/* AI Designer Tab */}
+          <TabsContent value="ai-designer">
+            <AIRoomDesigner 
+              subscription={subscription} 
+              onDesignComplete={loadSubscription}
+            />
+          </TabsContent>
 
           {/* Browse Tab */}
           <TabsContent value="browse" className="space-y-6">
@@ -300,6 +357,16 @@ const HomeDecorMarketplace = () => {
                 ))}
               </div>
             )}
+
+            {/* Info about commission */}
+            <Card className="bg-muted/50">
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Zap className="h-4 w-4" />
+                  <span>Provízia z predaja: 15% • Bezpečné platby cez Stripe</span>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Sell Tab */}
@@ -342,15 +409,11 @@ const HomeDecorMarketplace = () => {
                           onChange={handleImageSelect}
                           className="max-w-xs mx-auto"
                         />
-                        <p className="text-sm text-muted-foreground mt-2">
-                          Nahrajte jasný obrázok vašej dekorácie
-                        </p>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Form Fields */}
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-medium">Názov *</label>
@@ -429,8 +492,17 @@ const HomeDecorMarketplace = () => {
                 >
                   {uploading ? "Pridáva sa..." : "Pridať položku"}
                 </Button>
+
+                <div className="text-sm text-muted-foreground text-center">
+                  Provízia 15% z každého predaja
+                </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Consultations Tab */}
+          <TabsContent value="consultations">
+            <DesignConsultations />
           </TabsContent>
         </Tabs>
       </div>

@@ -702,6 +702,50 @@ export type Database = {
           },
         ]
       }
+      ar_previews: {
+        Row: {
+          ar_preview_url: string | null
+          created_at: string | null
+          id: string
+          item_id: string
+          payment_intent_id: string | null
+          price: number | null
+          room_image_url: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          ar_preview_url?: string | null
+          created_at?: string | null
+          id?: string
+          item_id: string
+          payment_intent_id?: string | null
+          price?: number | null
+          room_image_url: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          ar_preview_url?: string | null
+          created_at?: string | null
+          id?: string
+          item_id?: string
+          payment_intent_id?: string | null
+          price?: number | null
+          room_image_url?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ar_previews_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "home_decor_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       astro_subscriptions: {
         Row: {
           created_at: string | null
@@ -5661,6 +5705,51 @@ export type Database = {
         }
         Relationships: []
       }
+      design_consultations: {
+        Row: {
+          created_at: string | null
+          designer_id: string | null
+          duration: number
+          id: string
+          meeting_url: string | null
+          notes: string | null
+          payment_intent_id: string | null
+          price: number
+          scheduled_at: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          designer_id?: string | null
+          duration: number
+          id?: string
+          meeting_url?: string | null
+          notes?: string | null
+          payment_intent_id?: string | null
+          price: number
+          scheduled_at: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          designer_id?: string | null
+          duration?: number
+          id?: string
+          meeting_url?: string | null
+          notes?: string | null
+          payment_intent_id?: string | null
+          price?: number
+          scheduled_at?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       destination_photos: {
         Row: {
           created_at: string
@@ -7729,6 +7818,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "home_decor_messages_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "home_decor_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      home_decor_sales: {
+        Row: {
+          buyer_id: string
+          commission_amount: number | null
+          commission_rate: number | null
+          created_at: string | null
+          id: string
+          item_id: string
+          payment_intent_id: string | null
+          sale_price: number
+          seller_amount: number | null
+          seller_id: string
+          status: string
+        }
+        Insert: {
+          buyer_id: string
+          commission_amount?: number | null
+          commission_rate?: number | null
+          created_at?: string | null
+          id?: string
+          item_id: string
+          payment_intent_id?: string | null
+          sale_price: number
+          seller_amount?: number | null
+          seller_id: string
+          status?: string
+        }
+        Update: {
+          buyer_id?: string
+          commission_amount?: number | null
+          commission_rate?: number | null
+          created_at?: string | null
+          id?: string
+          item_id?: string
+          payment_intent_id?: string | null
+          sale_price?: number
+          seller_amount?: number | null
+          seller_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "home_decor_sales_item_id_fkey"
             columns: ["item_id"]
             isOneToOne: false
             referencedRelation: "home_decor_items"
