@@ -30,8 +30,8 @@ export default function CreateMedicalCampaign() {
     // Validation
     if (!formData.title || !formData.description || !formData.story || !formData.patient_name || !formData.diagnosis || !formData.target_amount) {
       toast({
-        title: 'Chyba',
-        description: 'Vyplňte prosím všetky povinné polia',
+        title: 'Error',
+        description: 'Please fill in all required fields',
         variant: 'destructive',
       });
       return;
@@ -40,8 +40,8 @@ export default function CreateMedicalCampaign() {
     const targetAmount = parseFloat(formData.target_amount);
     if (isNaN(targetAmount) || targetAmount < 100) {
       toast({
-        title: 'Chyba',
-        description: 'Minimálna cieľová suma je 100€',
+        title: 'Error',
+        description: 'Minimum target amount is 100€',
         variant: 'destructive',
       });
       return;
@@ -54,8 +54,8 @@ export default function CreateMedicalCampaign() {
       
       if (!session) {
         toast({
-          title: 'Chyba',
-          description: 'Musíte byť prihlásený pre vytvorenie kampane',
+          title: 'Error',
+          description: 'You must be logged in to create a campaign',
           variant: 'destructive',
         });
         navigate('/auth');
@@ -75,7 +75,7 @@ export default function CreateMedicalCampaign() {
           target_amount: targetAmount,
           image_url: formData.image_url || null,
           ends_at: formData.ends_at || null,
-          status: 'pending', // Čaká na schválenie
+          status: 'pending', // Pending approval
         })
         .select()
         .single();
@@ -83,16 +83,16 @@ export default function CreateMedicalCampaign() {
       if (error) throw error;
 
       toast({
-        title: 'Úspech!',
-        description: 'Kampaň bola vytvorená a čaká na schválenie adminom',
+        title: 'Success!',
+        description: 'Campaign created and waiting for admin approval',
       });
 
       navigate(`/fundraising/medical/${data.id}`);
     } catch (error) {
       console.error('Error creating campaign:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa vytvoriť kampaň',
+        title: 'Error',
+        description: 'Failed to create campaign',
         variant: 'destructive',
       });
     } finally {
@@ -106,8 +106,8 @@ export default function CreateMedicalCampaign() {
 
     if (file.size > 5 * 1024 * 1024) {
       toast({
-        title: 'Chyba',
-        description: 'Obrázok je príliš veľký (max 5MB)',
+        title: 'Error',
+        description: 'Image is too large (max 5MB)',
         variant: 'destructive',
       });
       return;
@@ -117,8 +117,8 @@ export default function CreateMedicalCampaign() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
-          title: 'Chyba',
-          description: 'Musíte byť prihlásený',
+          title: 'Error',
+          description: 'You must be logged in',
           variant: 'destructive',
         });
         return;
@@ -140,14 +140,14 @@ export default function CreateMedicalCampaign() {
       setFormData({ ...formData, image_url: publicUrl });
 
       toast({
-        title: 'Úspech',
-        description: 'Obrázok bol nahraný',
+        title: 'Success',
+        description: 'Image uploaded',
       });
     } catch (error) {
       console.error('Error uploading image:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa nahrať obrázok',
+        title: 'Error',
+        description: 'Failed to upload image',
         variant: 'destructive',
       });
     }
@@ -162,23 +162,23 @@ export default function CreateMedicalCampaign() {
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Späť na kampane
+          Back to campaigns
         </Button>
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-3xl">🏥 Vytvoriť Medical Fundraising kampaň</CardTitle>
+            <CardTitle className="text-3xl">🏥 Create Medical Fundraising Campaign</CardTitle>
             <CardDescription>
-              Vytvorte kampaň pre pomoc s nákladmi na liečbu. Všetky kampane musia byť overené a schválené pred zverejnením.
+              Create a campaign to help with medical treatment costs. All campaigns must be verified and approved before publishing.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="title">Názov kampane *</Label>
+                <Label htmlFor="title">Campaign Title *</Label>
                 <Input
                   id="title"
-                  placeholder="Napr. Pomoc pre Petra s liečbou rakoviny"
+                  placeholder="E.g. Help Peter with cancer treatment"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
@@ -186,10 +186,10 @@ export default function CreateMedicalCampaign() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Krátky popis *</Label>
+                <Label htmlFor="description">Short Description *</Label>
                 <Textarea
                   id="description"
-                  placeholder="Stručný popis kampane (max 200 znakov)"
+                  placeholder="Brief campaign description (max 200 characters)"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   maxLength={200}
@@ -197,15 +197,15 @@ export default function CreateMedicalCampaign() {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  {formData.description.length}/200 znakov
+                  {formData.description.length}/200 characters
                 </p>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="story">Podrobný príbeh *</Label>
+                <Label htmlFor="story">Detailed Story *</Label>
                 <Textarea
                   id="story"
-                  placeholder="Opíšte podrobne situáciu, zdravotný stav pacienta, potreby a prečo potrebujete pomoc..."
+                  placeholder="Describe the situation, patient's health condition, needs, and why you need help in detail..."
                   value={formData.story}
                   onChange={(e) => setFormData({ ...formData, story: e.target.value })}
                   rows={8}
@@ -215,10 +215,10 @@ export default function CreateMedicalCampaign() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="patient_name">Meno pacienta *</Label>
+                  <Label htmlFor="patient_name">Patient Name *</Label>
                   <Input
                     id="patient_name"
-                    placeholder="Celé meno"
+                    placeholder="Full name"
                     value={formData.patient_name}
                     onChange={(e) => setFormData({ ...formData, patient_name: e.target.value })}
                     required
@@ -226,10 +226,10 @@ export default function CreateMedicalCampaign() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="diagnosis">Diagnóza *</Label>
+                  <Label htmlFor="diagnosis">Diagnosis *</Label>
                   <Input
                     id="diagnosis"
-                    placeholder="Zdravotná diagnóza"
+                    placeholder="Medical diagnosis"
                     value={formData.diagnosis}
                     onChange={(e) => setFormData({ ...formData, diagnosis: e.target.value })}
                     required
@@ -238,10 +238,10 @@ export default function CreateMedicalCampaign() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="hospital">Nemocnica (voliteľné)</Label>
+                <Label htmlFor="hospital">Hospital (optional)</Label>
                 <Input
                   id="hospital"
-                  placeholder="Názov nemocnice alebo zdravotníckeho zariadenia"
+                  placeholder="Hospital or medical facility name"
                   value={formData.hospital}
                   onChange={(e) => setFormData({ ...formData, hospital: e.target.value })}
                 />
@@ -249,11 +249,11 @@ export default function CreateMedicalCampaign() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="target_amount">Cieľová suma (€) *</Label>
+                  <Label htmlFor="target_amount">Target Amount (€) *</Label>
                   <Input
                     id="target_amount"
                     type="number"
-                    placeholder="Napr. 5000"
+                    placeholder="E.g. 5000"
                     value={formData.target_amount}
                     onChange={(e) => setFormData({ ...formData, target_amount: e.target.value })}
                     min="100"
@@ -261,12 +261,12 @@ export default function CreateMedicalCampaign() {
                     required
                   />
                   <p className="text-xs text-muted-foreground">
-                    Minimálna suma: 100€ • Poplatok platformy: 6%
+                    Minimum amount: 100€ • Platform fee: 6%
                   </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="ends_at">Koniec kampane (voliteľné)</Label>
+                  <Label htmlFor="ends_at">Campaign End Date (optional)</Label>
                   <Input
                     id="ends_at"
                     type="date"
@@ -278,7 +278,7 @@ export default function CreateMedicalCampaign() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image">Hlavný obrázok (voliteľné)</Label>
+                <Label htmlFor="image">Main Image (optional)</Label>
                 <div className="flex items-center gap-4">
                   <Input
                     id="image"
@@ -293,23 +293,23 @@ export default function CreateMedicalCampaign() {
                   <div className="mt-2">
                     <img
                       src={formData.image_url}
-                      alt="Náhľad"
+                      alt="Preview"
                       className="w-full h-48 object-cover rounded-lg"
                     />
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Max 5MB • JPG, PNG alebo WEBP
+                  Max 5MB • JPG, PNG or WEBP
                 </p>
               </div>
 
               <div className="bg-muted p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">⚠️ Dôležité informácie</h4>
+                <h4 className="font-semibold mb-2">⚠️ Important Information</h4>
                 <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                  <li>Všetky kampane musia byť overené administrátorom pred zverejnením</li>
-                  <li>Budete musieť poskytnúť lekárske správy a dokumentáciu</li>
-                  <li>Platforma si účtuje 6% poplatok z každého daru</li>
-                  <li>Falošné kampane budú zablokované a nahlásené</li>
+                  <li>All campaigns must be verified by an administrator before publishing</li>
+                  <li>You will need to provide medical reports and documentation</li>
+                  <li>The platform charges a 6% fee on each donation</li>
+                  <li>Fake campaigns will be blocked and reported</li>
                 </ul>
               </div>
 
@@ -320,7 +320,7 @@ export default function CreateMedicalCampaign() {
                   onClick={() => navigate('/fundraising/medical')}
                   className="flex-1"
                 >
-                  Zrušiť
+                  Cancel
                 </Button>
                 <Button
                   type="submit"
@@ -328,7 +328,7 @@ export default function CreateMedicalCampaign() {
                   className="flex-1"
                 >
                   <Heart className="mr-2 h-4 w-4" />
-                  {creating ? 'Vytváram...' : 'Vytvoriť kampaň'}
+                  {creating ? 'Creating...' : 'Create Campaign'}
                 </Button>
               </div>
             </form>

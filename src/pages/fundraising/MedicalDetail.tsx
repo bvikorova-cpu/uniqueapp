@@ -88,8 +88,8 @@ export default function MedicalDetail() {
     } catch (error) {
       console.error('Error fetching campaign:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať kampaň',
+        title: 'Error',
+        description: 'Failed to load campaign',
         variant: 'destructive',
       });
       navigate('/fundraising/medical');
@@ -126,8 +126,8 @@ export default function MedicalDetail() {
 
       if (data.verified) {
         toast({
-          title: 'Ďakujeme!',
-          description: `Váš príspevok ${data.donation.amount}€ bol úspešne spracovaný.`,
+          title: 'Thank you!',
+          description: `Your contribution of ${data.donation.amount}€ was successfully processed.`,
         });
         // Refresh campaign data
         fetchCampaign();
@@ -143,8 +143,8 @@ export default function MedicalDetail() {
 
     if (!finalAmount || finalAmount < 1) {
       toast({
-        title: 'Chyba',
-        description: 'Minimálna suma daru je 1€',
+        title: 'Error',
+        description: 'Minimum donation amount is 1€',
         variant: 'destructive',
       });
       return;
@@ -152,8 +152,8 @@ export default function MedicalDetail() {
 
     if (!donorEmail) {
       toast({
-        title: 'Chyba',
-        description: 'Zadajte prosím váš email',
+        title: 'Error',
+        description: 'Please enter your email',
         variant: 'destructive',
       });
       return;
@@ -185,15 +185,15 @@ export default function MedicalDetail() {
       if (data.url) {
         window.open(data.url, '_blank');
         toast({
-          title: 'Presmerovanie',
-          description: 'Otvorili sme platobnú bránu v novom okne',
+          title: 'Redirecting',
+          description: 'We opened the payment gateway in a new window',
         });
       }
     } catch (error) {
       console.error('Error creating donation:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa vytvoriť platbu',
+        title: 'Error',
+        description: 'Failed to create payment',
         variant: 'destructive',
       });
     } finally {
@@ -222,8 +222,8 @@ export default function MedicalDetail() {
     } else {
       navigator.clipboard.writeText(window.location.href);
       toast({
-        title: 'Link skopírovaný',
-        description: 'Link na kampaň bol skopírovaný do schránky',
+        title: 'Link copied',
+        description: 'Campaign link copied to clipboard',
       });
     }
   };
@@ -231,7 +231,7 @@ export default function MedicalDetail() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Načítavam...</p>
+        <p className="text-muted-foreground">Loading...</p>
       </div>
     );
   }
@@ -249,7 +249,7 @@ export default function MedicalDetail() {
           className="mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Späť na kampane
+          Back to campaigns
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -265,7 +265,7 @@ export default function MedicalDetail() {
                   {campaign.verified && (
                     <Badge variant="default" className="ml-4">
                       <CheckCircle className="h-3 w-3 mr-1" />
-                      Overené
+                      Verified
                     </Badge>
                   )}
                 </div>
@@ -280,7 +280,7 @@ export default function MedicalDetail() {
                 )}
 
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">Príbeh</h3>
+                  <h3 className="text-xl font-semibold mb-2">Story</h3>
                   <p className="text-muted-foreground whitespace-pre-wrap">{campaign.story}</p>
                 </div>
 
@@ -288,16 +288,16 @@ export default function MedicalDetail() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Pacient</p>
+                    <p className="text-sm text-muted-foreground">Patient</p>
                     <p className="font-medium">{campaign.patient_name}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">Diagnóza</p>
+                    <p className="text-sm text-muted-foreground">Diagnosis</p>
                     <p className="font-medium">{campaign.diagnosis}</p>
                   </div>
                   {campaign.hospital && (
                     <div className="col-span-2">
-                      <p className="text-sm text-muted-foreground">Nemocnica</p>
+                      <p className="text-sm text-muted-foreground">Hospital</p>
                       <p className="font-medium">{campaign.hospital}</p>
                     </div>
                   )}
@@ -308,12 +308,12 @@ export default function MedicalDetail() {
             {/* Recent Donations */}
             <Card>
               <CardHeader>
-                <CardTitle>Najnovšie príspevky</CardTitle>
+                <CardTitle>Recent Donations</CardTitle>
               </CardHeader>
               <CardContent>
                 {donations.length === 0 ? (
                   <p className="text-muted-foreground text-center py-8">
-                    Zatiaľ žiadne príspevky
+                    No donations yet
                   </p>
                 ) : (
                   <div className="space-y-4">
@@ -321,19 +321,19 @@ export default function MedicalDetail() {
                       <div key={donation.id} className="flex items-start justify-between border-b pb-4 last:border-0">
                         <div className="flex-1">
                           <p className="font-medium">
-                            {donation.is_anonymous ? 'Anonymný darca' : (donation.donor_name || 'Anonymný darca')}
+                            {donation.is_anonymous ? 'Anonymous donor' : (donation.donor_name || 'Anonymous donor')}
                           </p>
                           {donation.message && (
                             <p className="text-sm text-muted-foreground mt-1">{donation.message}</p>
                           )}
                           <p className="text-xs text-muted-foreground mt-1">
-                            {formatDistanceToNow(new Date(donation.created_at), { addSuffix: true, locale: sk })}
+                            {formatDistanceToNow(new Date(donation.created_at), { addSuffix: true })}
                           </p>
                         </div>
                         <div className="text-right ml-4">
                           <p className="font-bold text-primary">{donation.amount.toFixed(2)}€</p>
                           {donation.is_monthly && (
-                            <Badge variant="secondary" className="text-xs mt-1">Mesačne</Badge>
+                            <Badge variant="secondary" className="text-xs mt-1">Monthly</Badge>
                           )}
                         </div>
                       </div>
@@ -360,12 +360,12 @@ export default function MedicalDetail() {
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                   <div className="text-center">
                     <p className="text-2xl font-bold">{campaign.monthly_donors_count + campaign.one_time_donors_count}</p>
-                    <p className="text-sm text-muted-foreground">Darcov</p>
+                    <p className="text-sm text-muted-foreground">Donors</p>
                   </div>
                   {getDaysLeft() !== null && (
                     <div className="text-center">
                       <p className="text-2xl font-bold">{getDaysLeft()}</p>
-                      <p className="text-sm text-muted-foreground">Dní zostáva</p>
+                      <p className="text-sm text-muted-foreground">Days left</p>
                     </div>
                   )}
                 </div>
@@ -376,7 +376,7 @@ export default function MedicalDetail() {
                   onClick={() => document.getElementById('donate-form')?.scrollIntoView({ behavior: 'smooth' })}
                 >
                   <Heart className="mr-2 h-5 w-5" />
-                  Prispieť teraz
+                  Donate Now
                 </Button>
 
                 <Button
@@ -385,7 +385,7 @@ export default function MedicalDetail() {
                   onClick={handleShare}
                 >
                   <Share2 className="mr-2 h-4 w-4" />
-                  Zdieľať kampaň
+                  Share Campaign
                 </Button>
               </CardContent>
             </Card>
@@ -393,11 +393,11 @@ export default function MedicalDetail() {
             {/* Donation Form */}
             <Card id="donate-form">
               <CardHeader>
-                <CardTitle>Váš príspevok</CardTitle>
+                <CardTitle>Your Donation</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Vyberte sumu</label>
+                  <label className="text-sm font-medium mb-2 block">Select amount</label>
                   <div className="grid grid-cols-3 gap-2">
                     {predefinedAmounts.map((amt) => (
                       <Button
@@ -417,12 +417,12 @@ export default function MedicalDetail() {
                     className="w-full mt-2"
                     onClick={() => setAmount('custom')}
                   >
-                    Vlastná suma
+                    Custom amount
                   </Button>
                   {amount === 'custom' && (
                     <Input
                       type="number"
-                      placeholder="Zadajte sumu"
+                      placeholder="Enter amount"
                       value={customAmount}
                       onChange={(e) => setCustomAmount(e.target.value)}
                       className="mt-2"
@@ -441,7 +441,7 @@ export default function MedicalDetail() {
                     htmlFor="monthly"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    Mesačný príspevok
+                    Monthly donation
                   </label>
                 </div>
 
@@ -449,14 +449,14 @@ export default function MedicalDetail() {
 
                 <div className="space-y-2">
                   <Input
-                    placeholder="Vaše meno"
+                    placeholder="Your name"
                     value={donorName}
                     onChange={(e) => setDonorName(e.target.value)}
                     disabled={isAnonymous}
                   />
                   <Input
                     type="email"
-                    placeholder="Váš email *"
+                    placeholder="Your email *"
                     value={donorEmail}
                     onChange={(e) => setDonorEmail(e.target.value)}
                     required
@@ -464,7 +464,7 @@ export default function MedicalDetail() {
                 </div>
 
                 <Textarea
-                  placeholder="Správa (voliteľné)"
+                  placeholder="Message (optional)"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
@@ -480,7 +480,7 @@ export default function MedicalDetail() {
                     htmlFor="anonymous"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    Darovať anonymne
+                    Donate anonymously
                   </label>
                 </div>
 
@@ -490,11 +490,11 @@ export default function MedicalDetail() {
                   onClick={handleDonate}
                   disabled={donating || !amount || (!customAmount && amount === 'custom')}
                 >
-                  {donating ? 'Spracovávam...' : `Darovať ${amount === 'custom' ? customAmount || '0' : amount}€`}
+                  {donating ? 'Processing...' : `Donate ${amount === 'custom' ? customAmount || '0' : amount}€`}
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  Poplatok platformy: 6% • Bezpečná platba cez Stripe
+                  Platform fee: 6% • Secure payment via Stripe
                 </p>
               </CardContent>
             </Card>

@@ -58,8 +58,8 @@ export default function MedicalFundraising() {
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať kampane',
+        title: 'Error',
+        description: 'Failed to load campaigns',
         variant: 'destructive',
       });
     } finally {
@@ -85,7 +85,7 @@ export default function MedicalFundraising() {
             🏥 Medical Fundraising Hub
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Pomôžte ľuďom s vážnymi zdravotnými problémami získať potrebnú liečbu
+            Help people with serious health issues get the treatment they need
           </p>
           <div className="flex gap-4 justify-center">
             <Button 
@@ -94,14 +94,14 @@ export default function MedicalFundraising() {
               className="bg-gradient-to-r from-primary to-primary/80"
             >
               <Heart className="mr-2 h-5 w-5" />
-              Vytvoriť kampaň
+              Create Campaign
             </Button>
             <Button 
               size="lg" 
               variant="outline"
               onClick={() => navigate('/fundraising/dashboard')}
             >
-              Moje kampane
+              My Campaigns
             </Button>
           </div>
         </div>
@@ -109,11 +109,11 @@ export default function MedicalFundraising() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Načítavam kampane...</p>
+              <p className="text-muted-foreground">Loading campaigns...</p>
             </div>
           ) : campaigns.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Žiadne aktívne kampane</p>
+              <p className="text-muted-foreground">No active campaigns</p>
             </div>
           ) : (
             campaigns.map((campaign) => (
@@ -133,7 +133,7 @@ export default function MedicalFundraising() {
                     {campaign.verified && (
                       <Badge variant="default" className="ml-2">
                         <CheckCircle className="h-3 w-3 mr-1" />
-                        Overené
+                        Verified
                       </Badge>
                     )}
                   </div>
@@ -148,7 +148,7 @@ export default function MedicalFundraising() {
                         {campaign.current_amount.toFixed(2)}€
                       </span>
                       <span className="text-muted-foreground">
-                        z {campaign.target_amount.toFixed(2)}€
+                        of {campaign.target_amount.toFixed(2)}€
                       </span>
                     </div>
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />
@@ -157,26 +157,26 @@ export default function MedicalFundraising() {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <TrendingUp className="h-4 w-4" />
-                      <span>{campaign.monthly_donors_count} mesačných darcov</span>
+                      <span>{campaign.monthly_donors_count} monthly donors</span>
                     </div>
                     {getDaysLeft(campaign.ends_at) !== null && (
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <Clock className="h-4 w-4" />
-                        <span>{getDaysLeft(campaign.ends_at)} dní</span>
+                        <span>{getDaysLeft(campaign.ends_at)} days</span>
                       </div>
                     )}
                   </div>
 
                   <div className="pt-2 border-t">
                     <p className="text-sm">
-                      <strong>Pacient:</strong> {campaign.patient_name}
+                      <strong>Patient:</strong> {campaign.patient_name}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      <strong>Diagnóza:</strong> {campaign.diagnosis}
+                      <strong>Diagnosis:</strong> {campaign.diagnosis}
                     </p>
                     {campaign.hospital && (
                       <p className="text-sm text-muted-foreground">
-                        <strong>Nemocnica:</strong> {campaign.hospital}
+                        <strong>Hospital:</strong> {campaign.hospital}
                       </p>
                     )}
                   </div>
@@ -187,7 +187,7 @@ export default function MedicalFundraising() {
                     onClick={() => navigate(`/fundraising/medical/${campaign.id}`)}
                   >
                     <Heart className="mr-2 h-4 w-4" />
-                    Prispieť
+                    Donate
                   </Button>
                 </CardFooter>
               </Card>

@@ -59,8 +59,8 @@ export default function FundraisingDashboard() {
       
       if (!session) {
         toast({
-          title: 'Chyba',
-          description: 'Musíte byť prihlásený',
+          title: 'Error',
+          description: 'You must be logged in',
           variant: 'destructive',
         });
         navigate('/auth');
@@ -154,16 +154,16 @@ export default function FundraisingDashboard() {
 
   const getStatusBadge = (campaign: Campaign) => {
     if (campaign.status === 'pending') {
-      return <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" />Čaká na schválenie</Badge>;
+      return <Badge variant="secondary"><Clock className="h-3 w-3 mr-1" />Pending Approval</Badge>;
     }
     if (campaign.status === 'active' && campaign.verified) {
-      return <Badge variant="default"><CheckCircle className="h-3 w-3 mr-1" />Aktívna</Badge>;
+      return <Badge variant="default"><CheckCircle className="h-3 w-3 mr-1" />Active</Badge>;
     }
     if (campaign.status === 'rejected') {
-      return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Zamietnutá</Badge>;
+      return <Badge variant="destructive"><XCircle className="h-3 w-3 mr-1" />Rejected</Badge>;
     }
     if (campaign.status === 'completed') {
-      return <Badge variant="outline"><CheckCircle className="h-3 w-3 mr-1" />Dokončená</Badge>;
+      return <Badge variant="outline"><CheckCircle className="h-3 w-3 mr-1" />Completed</Badge>;
     }
     return <Badge variant="outline">{campaign.status}</Badge>;
   };
@@ -181,7 +181,7 @@ export default function FundraisingDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Načítavam...</p>
+        <p className="text-muted-foreground">Loading...</p>
       </div>
     );
   }
@@ -191,12 +191,12 @@ export default function FundraisingDashboard() {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-2">Dashboard - Moje kampane</h1>
-            <p className="text-muted-foreground">Spravujte svoje fundraising kampane</p>
+            <h1 className="text-4xl font-bold mb-2">Dashboard - My Campaigns</h1>
+            <p className="text-muted-foreground">Manage your fundraising campaigns</p>
           </div>
           <Button onClick={() => navigate('/fundraising/medical/create')} size="lg">
             <Plus className="mr-2 h-5 w-5" />
-            Nová kampaň
+            New Campaign
           </Button>
         </div>
 
@@ -206,7 +206,7 @@ export default function FundraisingDashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Celkovo vyzbierané</p>
+                  <p className="text-sm text-muted-foreground">Total Raised</p>
                   <p className="text-2xl font-bold">{stats.total_amount.toFixed(2)}€</p>
                 </div>
                 <Euro className="h-8 w-8 text-primary" />
@@ -218,7 +218,7 @@ export default function FundraisingDashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Mesačné príjmy</p>
+                  <p className="text-sm text-muted-foreground">Monthly Income</p>
                   <p className="text-2xl font-bold">{stats.monthly_amount.toFixed(2)}€</p>
                 </div>
                 <TrendingUp className="h-8 w-8 text-green-500" />
@@ -230,7 +230,7 @@ export default function FundraisingDashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Celkovo darov</p>
+                  <p className="text-sm text-muted-foreground">Total Donations</p>
                   <p className="text-2xl font-bold">{stats.total_donations}</p>
                 </div>
                 <Heart className="h-8 w-8 text-red-500" />
@@ -242,7 +242,7 @@ export default function FundraisingDashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Aktívne kampane</p>
+                  <p className="text-sm text-muted-foreground">Active Campaigns</p>
                   <p className="text-2xl font-bold">
                     {campaigns.filter(c => c.status === 'active').length}
                   </p>
@@ -256,18 +256,18 @@ export default function FundraisingDashboard() {
         {/* Campaigns List */}
         <Card>
           <CardHeader>
-            <CardTitle>Vaše kampane</CardTitle>
-            <CardDescription>Prehľad všetkých vašich fundraising kampaní</CardDescription>
+            <CardTitle>Your Campaigns</CardTitle>
+            <CardDescription>Overview of all your fundraising campaigns</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="all" className="w-full">
               <TabsList>
-                <TabsTrigger value="all">Všetky ({campaigns.length})</TabsTrigger>
+                <TabsTrigger value="all">All ({campaigns.length})</TabsTrigger>
                 <TabsTrigger value="active">
-                  Aktívne ({campaigns.filter(c => c.status === 'active').length})
+                  Active ({campaigns.filter(c => c.status === 'active').length})
                 </TabsTrigger>
                 <TabsTrigger value="pending">
-                  Čakajúce ({campaigns.filter(c => c.status === 'pending').length})
+                  Pending ({campaigns.filter(c => c.status === 'pending').length})
                 </TabsTrigger>
               </TabsList>
 
@@ -275,10 +275,10 @@ export default function FundraisingDashboard() {
                 {campaigns.length === 0 ? (
                   <div className="text-center py-12">
                     <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">Zatiaľ nemáte žiadne kampane</p>
+                    <p className="text-muted-foreground mb-4">You don't have any campaigns yet</p>
                     <Button onClick={() => navigate('/fundraising/medical/create')}>
                       <Plus className="mr-2 h-4 w-4" />
-                      Vytvoriť prvú kampaň
+                      Create First Campaign
                     </Button>
                   </div>
                 ) : (
@@ -305,14 +305,14 @@ export default function FundraisingDashboard() {
                           <div>
                             <div className="flex justify-between text-sm mb-2">
                               <span className="font-semibold">{campaign.current_amount.toFixed(2)}€</span>
-                              <span className="text-muted-foreground">z {campaign.target_amount.toFixed(2)}€</span>
+                              <span className="text-muted-foreground">of {campaign.target_amount.toFixed(2)}€</span>
                             </div>
                             <Progress value={getProgress(campaign)} />
                           </div>
 
                           <div className="grid grid-cols-3 gap-4 text-sm">
                             <div>
-                              <p className="text-muted-foreground">Darcovia</p>
+                              <p className="text-muted-foreground">Donors</p>
                               <p className="font-semibold">{getDonorsCount(campaign)}</p>
                             </div>
                             <div>
@@ -320,9 +320,9 @@ export default function FundraisingDashboard() {
                               <p className="font-semibold">{getProgress(campaign).toFixed(0)}%</p>
                             </div>
                             <div>
-                              <p className="text-muted-foreground">Vytvorené</p>
+                              <p className="text-muted-foreground">Created</p>
                               <p className="font-semibold">
-                                {new Date(campaign.created_at).toLocaleDateString('sk')}
+                                {new Date(campaign.created_at).toLocaleDateString()}
                               </p>
                             </div>
                           </div>
@@ -355,7 +355,7 @@ export default function FundraisingDashboard() {
                         <div>
                           <div className="flex justify-between text-sm mb-2">
                             <span className="font-semibold">{campaign.current_amount.toFixed(2)}€</span>
-                            <span className="text-muted-foreground">z {campaign.target_amount.toFixed(2)}€</span>
+                            <span className="text-muted-foreground">of {campaign.target_amount.toFixed(2)}€</span>
                           </div>
                           <Progress value={getProgress(campaign)} />
                         </div>
@@ -376,7 +376,7 @@ export default function FundraisingDashboard() {
                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Kampaň čaká na overenie a schválenie administrátorom. Budete informovaný emailom.
+                        Campaign is pending verification and admin approval. You will be notified by email.
                       </p>
                     </CardContent>
                   </Card>
