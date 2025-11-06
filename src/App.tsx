@@ -44,6 +44,7 @@ import InfluKing from "./pages/InfluKing";
 import Megaforum from "./pages/Megaforum";
 import OnlinePsychologist from "./pages/OnlinePsychologist";
 import LiveStream from "./pages/LiveStream";
+import LiveStreamList from "./pages/LiveStreamList";
 import Games from "./pages/Games";
 import Rewards from "./pages/Rewards";
 import Jobs from "./pages/Jobs";
@@ -291,6 +292,7 @@ const App = () => (
               <Route path="/ai-credits" element={<AICreditsStore />} />
               <Route path="/admin/transactions" element={<AdminTransactions />} />
               <Route path="/earnings" element={<Earnings />} />
+              <Route path="/livestream" element={<LiveStreamList />} />
               <Route path="/live/:streamId" element={<LiveStream />} />
               <Route path="/stories/:userId" element={<Stories />} />
               <Route path="/rewards" element={<Rewards />} />
