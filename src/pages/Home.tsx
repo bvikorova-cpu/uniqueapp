@@ -90,9 +90,6 @@ const Home = () => {
       >
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10 text-center space-y-8 px-4 pt-32">
-          <Badge className="bg-gold text-gold-foreground animate-glow text-lg px-4 py-2">
-            {t('home.contest_badge')}
-          </Badge>
           <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
             {t('home.hero_title')}{" "}
             <span className="bg-gradient-gold bg-clip-text text-transparent">
