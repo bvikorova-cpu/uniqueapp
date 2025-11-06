@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Send, ArrowLeft, MessageCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import VideoCall from "@/components/messenger/VideoCall";
 
 interface Message {
   id: string;
@@ -265,7 +266,7 @@ export const SkillSwapMessages = () => {
               <Avatar>
                 <AvatarFallback>U</AvatarFallback>
               </Avatar>
-              <div>
+              <div className="flex-1">
                 <p className="font-medium">User</p>
                 {conversations.find(c => c.id === selectedConversation)?.offering_title && (
                   <p className="text-xs text-muted-foreground">
@@ -273,6 +274,14 @@ export const SkillSwapMessages = () => {
                   </p>
                 )}
               </div>
+              {currentUserId && (
+                <VideoCall
+                  conversationId={selectedConversation}
+                  userId={currentUserId}
+                  otherUserId={conversations.find(c => c.id === selectedConversation)?.other_user_id || ""}
+                  otherUserName="User"
+                />
+              )}
             </div>
 
             {/* Messages */}
