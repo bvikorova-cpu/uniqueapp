@@ -181,7 +181,7 @@ const FutureFace = () => {
       id: 'basic',
       name: 'Basic',
       price: '€2.99',
-      priceId: 'price_1SQMAN0QTWhd4oRp89H32TJl',
+      priceId: 'price_1SQMOiGaXSfGtYFtG9pyLN4y',
       description: 'One-time purchase',
       features: [
         '1 photo analysis',
@@ -196,7 +196,7 @@ const FutureFace = () => {
       id: 'premium',
       name: 'Premium HD',
       price: '€9.99',
-      priceId: 'price_1SQMB70QTWhd4oRpXRcePjMA',
+      priceId: 'price_1SQMP40QTWhd4oRpNUwVVsDe',
       description: 'One-time purchase',
       features: [
         'HD quality results',
