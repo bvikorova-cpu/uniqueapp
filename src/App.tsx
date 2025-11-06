@@ -70,6 +70,7 @@ import PetTranslatorPricing from "./pages/PetTranslatorPricing";
 import FutureFace from "./pages/FutureFace";
 import AncestorTwin from "./pages/AncestorTwin";
 import AncestorTwinUpload from "./pages/AncestorTwinUpload";
+import SkillSwap from "./pages/SkillSwap";
 import SubscriptionManagement from "./pages/SubscriptionManagement";
 import RoutineOptimizer from "./pages/RoutineOptimizer";
 import Psychology from "./pages/Psychology";
@@ -310,6 +311,7 @@ const App = () => (
           <Route path="/future-face" element={<FutureFace />} />
           <Route path="/ancestor-twin" element={<AncestorTwin />} />
           <Route path="/ancestor-twin/upload" element={<AncestorTwinUpload />} />
+          <Route path="/skill-swap" element={<SkillSwap />} />
           <Route path="/subscription-management" element={<SubscriptionManagement />} />
               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
