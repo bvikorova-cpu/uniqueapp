@@ -229,6 +229,7 @@ import PetRescue from "./pages/fundraising/PetRescue";
 import StudentSupport from "./pages/fundraising/StudentSupport";
 import CrisisRelief from "./pages/fundraising/CrisisRelief";
 import TalentSponsorship from "./pages/fundraising/TalentSponsorship";
+import Wellness from "./pages/Wellness";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -313,11 +314,12 @@ const App = () => (
           <Route path="/future-face" element={<FutureFace />} />
           <Route path="/ancestor-twin" element={<AncestorTwin />} />
           <Route path="/ancestor-twin/upload" element={<AncestorTwinUpload />} />
-          <Route path="/skill-swap" element={<SkillSwap />} />
-          <Route path="/skill-swap/profile/:userId" element={<SkillSwapProfile />} />
-          <Route path="/skill-swap/profile/edit" element={<SkillSwapSettings />} />
-          <Route path="/subscription-management" element={<SubscriptionManagement />} />
-              <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
+           <Route path="/skill-swap" element={<SkillSwap />} />
+           <Route path="/skill-swap/profile/:userId" element={<SkillSwapProfile />} />
+           <Route path="/skill-swap/profile/edit" element={<SkillSwapSettings />} />
+           <Route path="/subscription-management" element={<SubscriptionManagement />} />
+               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
+           <Route path="/wellness" element={<Wellness />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />
           <Route path="/home-designer" element={<HomeDesigner />} />

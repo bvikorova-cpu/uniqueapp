@@ -208,6 +208,7 @@ const Navbar = () => {
   ];
 
   const otherServices = [
+    { path: "/wellness", label: "🧘 Wellness & Relaxation", icon: Heart },
     { path: "/skill-swap", label: "🔄 Global Skill Swap", icon: Globe },
     { path: "/ancestor-twin", label: "👥 Ancestor Twin Finder", icon: Users },
     { path: "/courses", label: "Courses Hub", icon: GraduationCap },
