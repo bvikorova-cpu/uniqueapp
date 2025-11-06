@@ -15,52 +15,52 @@ interface BodyPart {
 const bodyParts: BodyPart[] = [
   {
     id: "head",
-    name: "Hlava a tvár",
+    name: "Head & Face",
     nameEn: "head",
     duration: 30,
-    instructions: "Sústreďte sa na svoju hlavu a tvár. Uvoľnite napätie v čele, okolo očí a čeľuste.",
+    instructions: "Focus on your head and face. Release tension in your forehead, around your eyes, and jaw.",
   },
   {
     id: "neck",
-    name: "Krk a plecia",
+    name: "Neck & Shoulders",
     nameEn: "neck",
     duration: 30,
-    instructions: "Vnímajte svoj krk a plecia. Nechajte napätie odplynúť z tejto oblasti.",
+    instructions: "Notice your neck and shoulders. Let the tension flow away from this area.",
   },
   {
     id: "arms",
-    name: "Ruky a ramená",
+    name: "Arms & Hands",
     nameEn: "arms",
     duration: 30,
-    instructions: "Prejdite pozornosťou cez ramená, lakte až po prsty rúk. Uvoľnite každý sval.",
+    instructions: "Move your attention through your shoulders, elbows, down to your fingertips. Release each muscle.",
   },
   {
     id: "chest",
-    name: "Hruď a brucho",
+    name: "Chest & Abdomen",
     nameEn: "chest",
     duration: 30,
-    instructions: "Vnímajte svoje dýchanie v hrudi a bruchu. Každý nádech vás upokojuje.",
+    instructions: "Notice your breathing in your chest and abdomen. Each breath calms you.",
   },
   {
     id: "back",
-    name: "Chrbát",
+    name: "Back",
     nameEn: "back",
     duration: 30,
-    instructions: "Prejdite pozornosťou po celom chrbtici. Uvoľnite napätie v dolnej časti chrbta.",
+    instructions: "Move your attention along your entire spine. Release tension in your lower back.",
   },
   {
     id: "legs",
-    name: "Nohy",
+    name: "Legs",
     nameEn: "legs",
     duration: 30,
-    instructions: "Vnímajte svoje stehná, kolená a lýtka. Cítite, ako sa uvoľňujú.",
+    instructions: "Notice your thighs, knees, and calves. Feel them relaxing.",
   },
   {
     id: "feet",
-    name: "Chodidlá",
+    name: "Feet",
     nameEn: "feet",
     duration: 30,
-    instructions: "Na záver sa sústreďte na chodidlá a prsty nôh. Cítite spojenie so zemou.",
+    instructions: "Finally, focus on your feet and toes. Feel your connection to the ground.",
   },
 ];
 
@@ -80,7 +80,7 @@ export function BodyScanMeditation() {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'sk-SK';
+      utterance.lang = 'en-US';
       utterance.rate = 0.8;
       utterance.pitch = 1;
       speechRef.current = utterance;
@@ -123,7 +123,7 @@ export function BodyScanMeditation() {
             } else {
               // Meditation complete
               setIsPlaying(false);
-              speak("Meditácia body scan je dokončená. Pomaly otvorte oči a vráťte sa do prítomnosti.");
+              speak("Body scan meditation is complete. Slowly open your eyes and return to the present moment.");
               return 0;
             }
           }
@@ -147,9 +147,9 @@ export function BodyScanMeditation() {
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h2 className="text-2xl font-bold mb-2">Body Scan Meditácia</h2>
+        <h2 className="text-2xl font-bold mb-2">Body Scan Meditation</h2>
         <p className="text-muted-foreground mb-6">
-          Postupne sa sústreďte na jednotlivé časti tela a uvoľnite napätie
+          Progressively focus on each body part and release tension
         </p>
 
         {/* Body Visualization */}
@@ -309,7 +309,7 @@ export function BodyScanMeditation() {
         <div className="mb-6">
           <Progress value={progress} className="h-2" />
           <p className="text-sm text-muted-foreground text-center mt-2">
-            Časť {currentPartIndex + 1} z {bodyParts.length}
+            Part {currentPartIndex + 1} of {bodyParts.length}
           </p>
         </div>
 
@@ -323,12 +323,12 @@ export function BodyScanMeditation() {
             {isPlaying ? (
               <>
                 <Pause className="w-5 h-5" />
-                Pozastaviť
+                Pause
               </>
             ) : (
               <>
                 <Play className="w-5 h-5" />
-                {currentPartIndex === 0 && totalElapsed === 0 ? "Začať" : "Pokračovať"}
+                {currentPartIndex === 0 && totalElapsed === 0 ? "Start" : "Continue"}
               </>
             )}
           </Button>
@@ -341,7 +341,7 @@ export function BodyScanMeditation() {
 
       {/* Body Parts List */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Časti tela</h3>
+        <h3 className="text-lg font-semibold mb-4">Body Parts</h3>
         <div className="space-y-2">
           {bodyParts.map((part, index) => (
             <div

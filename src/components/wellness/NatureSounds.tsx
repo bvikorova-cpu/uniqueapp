@@ -7,24 +7,24 @@ import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX } from "lucide-react
 const NATURE_SOUNDS = [
   {
     id: "rain",
-    name: "Dážď",
+    name: "Rain",
     icon: Cloud,
     url: "https://cdn.pixabay.com/download/audio/2022/03/10/audio_4037f5ea8e.mp3",
-    description: "Jemný zvuk dažďa pre upokojenie mysle"
+    description: "Gentle rain sounds for calming the mind"
   },
   {
     id: "waves",
-    name: "Vlny",
+    name: "Ocean Waves",
     icon: Waves,
     url: "https://cdn.pixabay.com/download/audio/2022/05/13/audio_c49e4b9ea9.mp3",
-    description: "Relaxačné zvuky oceánskych vĺn"
+    description: "Relaxing sounds of ocean waves"
   },
   {
     id: "forest",
-    name: "Les",
+    name: "Forest",
     icon: Trees,
     url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_13d711e6c6.mp3",
-    description: "Pokojné zvuky prírody a vtákov"
+    description: "Peaceful nature sounds with birds"
   }
 ];
 
@@ -98,10 +98,10 @@ export function NatureSounds() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Volume2 className="w-5 h-5 text-primary" />
-            Zvuky prírody
+            Nature Sounds
           </CardTitle>
           <CardDescription>
-            Vyber si zvuk prírody pre hlbšiu relaxáciu a upokojenie mysle
+            Choose a nature sound for deeper relaxation and peace of mind
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -153,7 +153,7 @@ export function NatureSounds() {
                   
                   <div className="flex-1 space-y-2">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Hlasitosť</span>
+                      <span className="text-muted-foreground">Volume</span>
                       <span className="font-medium">{isMuted ? 0 : volume}%</span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -186,7 +186,7 @@ export function NatureSounds() {
                 </div>
                 
                 <p className="text-sm text-center text-muted-foreground">
-                  Zvuk sa prehráva v slučke. Relaxuj a nechaj sa uniesť zvukmi prírody.
+                  Sound is playing on loop. Relax and let the sounds of nature carry you away.
                 </p>
               </CardContent>
             </Card>
