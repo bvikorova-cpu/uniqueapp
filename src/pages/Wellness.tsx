@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check } from "lucide-react";
+import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check, Volume2 } from "lucide-react";
 import { MindfulnessChat } from "@/components/wellness/MindfulnessChat";
 import { BreathingExercises } from "@/components/wellness/BreathingExercises";
 import { GratitudeJournal } from "@/components/wellness/GratitudeJournal";
 import { GroundingExercise } from "@/components/wellness/GroundingExercise";
 import { DigitalMandala } from "@/components/wellness/DigitalMandala";
+import { NatureSounds } from "@/components/wellness/NatureSounds";
 
 const WELLNESS_PLANS = {
   basicMonthly: {
@@ -22,6 +23,7 @@ const WELLNESS_PLANS = {
     features: [
       "Breathing Exercises",
       "5-4-3-2-1 Grounding",
+      "Nature Sounds"
     ]
   },
   premiumMonthly: {
@@ -48,6 +50,7 @@ const WELLNESS_PLANS = {
       "Lifetime Access",
       "Breathing Exercises",
       "5-4-3-2-1 Grounding",
+      "Nature Sounds"
     ]
   },
   premiumLifetime: {
@@ -242,7 +245,7 @@ export default function Wellness() {
       )}
 
       <Tabs defaultValue="breathing" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="breathing" disabled={!hasBasicAccess}>
             <Wind className="w-4 h-4 mr-2" />
             Breathing
@@ -250,6 +253,10 @@ export default function Wellness() {
           <TabsTrigger value="grounding" disabled={!hasBasicAccess}>
             <Brain className="w-4 h-4 mr-2" />
             Grounding
+          </TabsTrigger>
+          <TabsTrigger value="sounds" disabled={!hasBasicAccess}>
+            <Volume2 className="w-4 h-4 mr-2" />
+            Sounds
           </TabsTrigger>
           <TabsTrigger value="chat" disabled={!hasPremiumAccess}>
             <Heart className="w-4 h-4 mr-2" />
@@ -271,6 +278,10 @@ export default function Wellness() {
 
         <TabsContent value="grounding">
           {hasBasicAccess ? <GroundingExercise /> : <PremiumRequired />}
+        </TabsContent>
+
+        <TabsContent value="sounds">
+          {hasBasicAccess ? <NatureSounds /> : <PremiumRequired />}
         </TabsContent>
 
         <TabsContent value="chat">
