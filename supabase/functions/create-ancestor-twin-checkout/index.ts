@@ -69,7 +69,9 @@ serve(async (req) => {
         },
       ],
       mode: isSubscription ? "subscription" : "payment",
-      success_url: `${req.headers.get("origin")}/ancestor-twin?success=true`,
+      success_url: isSubscription 
+        ? `${req.headers.get("origin")}/ancestor-twin?success=true&subscription=true`
+        : `${req.headers.get("origin")}/ancestor-twin/upload?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
       cancel_url: `${req.headers.get("origin")}/ancestor-twin?canceled=true`,
       metadata: {
         user_id: user.id,
