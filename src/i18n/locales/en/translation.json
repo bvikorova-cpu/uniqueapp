@@ -20,8 +20,8 @@
     "privacy": "Privacy Policy",
     "contact": "Contact"
   },
-  "feed": {
-    "title": "Feed",
+  "wall": {
+    "title": "Wall",
     "loading": "Loading...",
     "noPosts": "No posts yet. Be the first to add something!",
     "errorLoadingPosts": "Error loading posts"
@@ -328,8 +328,8 @@
     }
   },
   "services": {
-    "feed": {
-      "title": "Feed",
+    "wall": {
+      "title": "Wall",
       "description": "Share moments and communicate with friends"
     },
     "videos": {

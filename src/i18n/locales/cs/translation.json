@@ -21,8 +21,8 @@
     "contact": "Kontakt"
   },
   "services": {
-    "feed": {
-      "title": "Feed",
+    "wall": {
+      "title": "Wall",
       "description": "Sdílejte momenty a komunikujte s přáteli"
     },
     "videos": {

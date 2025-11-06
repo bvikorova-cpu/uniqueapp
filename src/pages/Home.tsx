@@ -57,7 +57,7 @@ const Home = () => {
   }, [heroImages.length]);
 
   const services = [
-    { name: "Feed", path: "/feed", keywords: ["feed", "príspevky", "zdieľanie", "sociálna sieť"] },
+    { name: "Wall", path: "/wall", keywords: ["wall", "posts", "sharing", "social network"] },
     { name: "Videá", path: "/tiktok", keywords: ["videá", "tiktok", "krátke videá"] },
     { name: "Messenger", path: "/messenger", keywords: ["messenger", "chat", "správy", "komunikácia"] },
     { name: "Megatalent", path: "/megatalent", keywords: ["megatalent", "súťaž", "talent", "výhra"] },
@@ -270,15 +270,15 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            <Link to="/feed">
+            <Link to="/wall">
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <MessageSquare className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <CardTitle>{t('services.feed.title')}</CardTitle>
+                  <CardTitle>{t('services.wall.title')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">
-                    {t('services.feed.description')}
+                    {t('services.wall.description')}
                   </p>
                 </CardContent>
               </Card>

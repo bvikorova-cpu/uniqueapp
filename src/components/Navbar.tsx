@@ -159,7 +159,7 @@ const Navbar = () => {
   };
 
   const mainNavItems = [
-    { path: "/feed", label: t('services.feed.title'), icon: MessageSquare },
+    { path: "/wall", label: t('services.wall.title'), icon: MessageSquare },
     { path: "/jobs", label: t('navbar.work'), icon: Briefcase },
     { path: "/games", label: t('navbar.games'), icon: Gamepad2 },
     { path: "/rewards", label: t('navbar.rewards'), icon: Trophy },

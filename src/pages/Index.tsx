@@ -88,10 +88,10 @@ const Index = () => {
       gradient: "from-orange-500 to-red-500"
     },
     {
-      title: "👥 Social Network",
+      title: "👥 Social Wall",
       description: "Connect with friends, share stories, and build your community",
       icon: Users,
-      path: "/feed",
+      path: "/wall",
       badge: "Social",
       badgeColor: "bg-teal-500",
       gradient: "from-teal-500 to-cyan-500"

@@ -357,8 +357,8 @@ const Profile = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="p-8 text-center">
           <p className="text-muted-foreground mb-4">Profile not found</p>
-          <Button onClick={() => navigate("/feed")}>
-            Back to Feed
+          <Button onClick={() => navigate("/wall")}>
+            Back to Wall
           </Button>
         </Card>
       </div>
@@ -370,7 +370,7 @@ const Profile = () => {
       <div className="container mx-auto px-4 max-w-2xl">
         <Button
           variant="ghost"
-          onClick={() => navigate("/feed")}
+          onClick={() => navigate("/wall")}
           className="mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />

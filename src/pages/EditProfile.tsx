@@ -138,7 +138,7 @@ const EditProfile = () => {
         description: "Your profile has been successfully updated",
       });
 
-      navigate("/feed");
+      navigate("/wall");
     } catch (error: any) {
       toast({
         title: "Error saving profile",
@@ -270,7 +270,7 @@ const EditProfile = () => {
       <div className="container mx-auto px-4 max-w-2xl">
         <Button
           variant="ghost"
-          onClick={() => navigate("/feed")}
+          onClick={() => navigate("/wall")}
           className="mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -490,7 +490,7 @@ const EditProfile = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate("/feed")}
+              onClick={() => navigate("/wall")}
             >
               Cancel
             </Button>

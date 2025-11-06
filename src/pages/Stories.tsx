@@ -127,7 +127,7 @@ export default function Stories() {
             setCurrentIndex((i) => i + 1);
             return 0;
           } else {
-            navigate("/feed");
+            navigate("/wall");
             return 100;
           }
         }
@@ -202,7 +202,7 @@ export default function Stories() {
         setCurrentIndex((i) => i - 1);
         setProgress(0);
       } else {
-        navigate("/feed");
+        navigate("/wall");
       }
     },
     onError: (error) => {
@@ -224,8 +224,8 @@ export default function Stories() {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center text-white">
           <p>Žiadne aktívne stories</p>
-          <Button onClick={() => navigate("/feed")} className="mt-4">
-            Späť na Feed
+          <Button onClick={() => navigate("/wall")} className="mt-4">
+            Back to Wall
           </Button>
         </div>
       </div>
@@ -283,7 +283,7 @@ export default function Stories() {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate("/feed")}
+            onClick={() => navigate("/wall")}
             className="text-white hover:bg-white/20"
           >
             <X className="h-6 w-6" />
@@ -418,7 +418,7 @@ export default function Stories() {
               setCurrentIndex((i) => i + 1);
               setProgress(0);
             } else {
-              navigate("/feed");
+              navigate("/wall");
             }
           }}
         />

@@ -10,7 +10,7 @@ import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
-import Feed from "./pages/Feed";
+import Wall from "./pages/Wall";
 import Messenger from "./pages/Messenger";
 import Megatalent from "./pages/Megatalent";
 import Subscription from "./pages/Subscription";
@@ -248,7 +248,7 @@ const App = () => (
             <main className="flex-1">
               <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/feed" element={<Feed />} />
+              <Route path="/wall" element={<Wall />} />
               <Route path="/tiktok" element={<TikTok />} />
               <Route path="/messenger" element={<Messenger />} />
               <Route path="/megatalent" element={<Megatalent />} />
