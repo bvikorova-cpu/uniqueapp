@@ -320,3 +320,6 @@ verify_jwt = true
 
 [functions.create-future-face-checkout]
 verify_jwt = true
+
+[functions.check-future-face-subscription]
+verify_jwt = true
