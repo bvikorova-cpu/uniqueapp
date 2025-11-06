@@ -8735,6 +8735,7 @@ export type Database = {
           amount: number
           created_at: string | null
           duration_days: number
+          expiration_notification_sent_at: string | null
           expires_at: string
           id: string
           job_id: string | null
@@ -8746,6 +8747,7 @@ export type Database = {
           amount: number
           created_at?: string | null
           duration_days?: number
+          expiration_notification_sent_at?: string | null
           expires_at: string
           id?: string
           job_id?: string | null
@@ -8757,6 +8759,7 @@ export type Database = {
           amount?: number
           created_at?: string | null
           duration_days?: number
+          expiration_notification_sent_at?: string | null
           expires_at?: string
           id?: string
           job_id?: string | null
