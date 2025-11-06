@@ -57,7 +57,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/jobs?success=true&job_id=${jobId}`,
+      success_url: `${req.headers.get("origin")}/jobs?success=true&job_id=${jobId}&session_id=${session.id}`,
       cancel_url: `${req.headers.get("origin")}/jobs?canceled=true`,
       metadata: {
         user_id: user.id,

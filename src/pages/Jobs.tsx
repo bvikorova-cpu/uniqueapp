@@ -73,6 +73,53 @@ const Jobs = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Check for payment success and activate job listing
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get('success');
+    const jobId = params.get('job_id');
+    const sessionId = params.get('session_id');
+    
+    if (success === 'true' && jobId && sessionId) {
+      // Activate the job listing
+      const activateJob = async () => {
+        try {
+          const { error } = await supabase.functions.invoke('activate-job-listing', {
+            body: { jobId, sessionId }
+          });
+
+          if (error) throw error;
+
+          toast({
+            title: "✅ Payment Successful!",
+            description: "Your job listing is now active and visible to candidates",
+          });
+          
+          // Refresh jobs list
+          queryClient.invalidateQueries({ queryKey: ["jobs"] });
+        } catch (error: any) {
+          console.error('Activation error:', error);
+          toast({
+            title: "⚠️ Activation Pending",
+            description: "Payment received, your listing will be activated shortly",
+          });
+        }
+      };
+      
+      activateJob();
+      
+      // Clean up URL
+      window.history.replaceState({}, '', '/jobs');
+    } else if (params.get('canceled') === 'true') {
+      toast({
+        title: "❌ Payment Canceled",
+        description: "Your job listing was not published. You can try again anytime.",
+        variant: "destructive",
+      });
+      window.history.replaceState({}, '', '/jobs');
+    }
+  }, [toast, queryClient]);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
@@ -83,6 +130,8 @@ const Jobs = () => {
   const [selectedJob, setSelectedJob] = useState<JobListing | null>(null);
   const [showJobDetailsDialog, setShowJobDetailsDialog] = useState(false);
   const [showJobSeekerDialog, setShowJobSeekerDialog] = useState(false);
+  const [showPackageDialog, setShowPackageDialog] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<{ days: number; price: number; priceId: string } | null>(null);
   
   // Form states for job seeker profile
   const [jobSeekerProfile, setJobSeekerProfile] = useState({
@@ -90,6 +139,13 @@ const Jobs = () => {
     location: "",
     description: "",
   });
+
+  // Job listing packages
+  const JOB_PACKAGES = [
+    { days: 7, price: 29, priceId: "price_1SQSCK0QTWhd4oRpjXyY0KsF", popular: false },
+    { days: 14, price: 49, priceId: "price_1SQSCb0QTWhd4oRpN3xgLqQQ", popular: true },
+    { days: 30, price: 79, priceId: "price_1SQSCyGaXSfGtYFtBJTglXoH", popular: false },
+  ];
 
   // Form states for creating job
   const [newJob, setNewJob] = useState({
@@ -167,12 +223,12 @@ const Jobs = () => {
   // Get unique countries from jobs (filter out empty values)
   const countries = Array.from(new Set(jobs.map((job) => job.country).filter(country => country && country.trim() !== ""))).sort();
 
-  // Create job mutation
+  // Create job mutation - now creates inactive job first
   const createJobMutation = useMutation({
     mutationFn: async () => {
-      if (!user) throw new Error("Must be logged in");
+      if (!user || !selectedPackage) throw new Error("Must be logged in and package selected");
 
-      const { error } = await supabase.from("job_listings").insert([{
+      const { data: jobData, error } = await supabase.from("job_listings").insert([{
         employer_id: user.id,
         title: newJob.title,
         description: newJob.description,
@@ -187,32 +243,66 @@ const Jobs = () => {
         requirements: newJob.requirements,
         benefits: newJob.benefits,
         contact_email: newJob.contact_email,
-      }]);
+        is_active: false, // Inactive until payment
+      }]).select().single();
 
       if (error) throw error;
+      return jobData;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-      setShowCreateDialog(false);
-      setNewJob({
-        title: "",
-        description: "",
-        company_name: "",
-        location: "",
-        country: "",
-        category: "it_software",
-        job_type: "full_time",
-        salary_min: "",
-        salary_max: "",
-        salary_currency: "EUR",
-        requirements: "",
-        benefits: "",
-        contact_email: "",
-      });
-      toast({
-        title: "✅ Position Created",
-        description: "Job listing has been successfully added",
-      });
+    onSuccess: async (jobData) => {
+      if (!selectedPackage || !jobData) return;
+      
+      try {
+        // Call payment edge function
+        const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+          'create-job-listing-payment',
+          {
+            body: {
+              jobId: jobData.id,
+              durationDays: selectedPackage.days,
+              price: selectedPackage.price,
+            },
+          }
+        );
+
+        if (paymentError) throw paymentError;
+
+        // Open Stripe checkout in new tab
+        if (paymentData?.url) {
+          window.open(paymentData.url, '_blank');
+          toast({
+            title: "🔄 Payment Required",
+            description: "Please complete payment in the new tab to activate your listing",
+          });
+        }
+
+        // Reset form and close dialogs
+        queryClient.invalidateQueries({ queryKey: ["jobs"] });
+        setShowCreateDialog(false);
+        setShowPackageDialog(false);
+        setSelectedPackage(null);
+        setNewJob({
+          title: "",
+          description: "",
+          company_name: "",
+          location: "",
+          country: "",
+          category: "it_software",
+          job_type: "full_time",
+          salary_min: "",
+          salary_max: "",
+          salary_currency: "EUR",
+          requirements: "",
+          benefits: "",
+          contact_email: "",
+        });
+      } catch (error: any) {
+        toast({
+          title: "❌ Payment Error",
+          description: error.message || "Failed to process payment",
+          variant: "destructive",
+        });
+      }
     },
     onError: (error: any) => {
       toast({
@@ -510,10 +600,20 @@ const Jobs = () => {
                   </div>
                   <Button 
                     className="w-full" 
-                    onClick={() => createJobMutation.mutate()}
-                    disabled={createJobMutation.isPending}
+                    onClick={() => {
+                      if (!newJob.title || !newJob.company_name || !newJob.location || !newJob.country || !newJob.description || !newJob.contact_email) {
+                        toast({
+                          title: "❌ Missing Fields",
+                          description: "Please fill in all required fields",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+                      setShowCreateDialog(false);
+                      setShowPackageDialog(true);
+                    }}
                   >
-                    {createJobMutation.isPending ? "Creating..." : "Create Position"}
+                    Continue to Payment
                   </Button>
                 </div>
               </DialogContent>
@@ -849,6 +949,85 @@ const Jobs = () => {
               >
                 <Search className="h-5 w-5 mr-2" />
                 Apply for This Position
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Package Selection Dialog */}
+        <Dialog open={showPackageDialog} onOpenChange={setShowPackageDialog}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">Choose Your Job Listing Package</DialogTitle>
+              <DialogDescription>
+                Select how long you want your job listing to be visible
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6">
+              {JOB_PACKAGES.map((pkg) => (
+                <Card 
+                  key={pkg.days}
+                  className={`relative cursor-pointer transition-all hover:shadow-elegant ${
+                    selectedPackage?.days === pkg.days ? 'ring-2 ring-primary' : ''
+                  } ${pkg.popular ? 'border-primary' : ''}`}
+                  onClick={() => setSelectedPackage(pkg)}
+                >
+                  {pkg.popular && (
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                        Most Popular
+                      </span>
+                    </div>
+                  )}
+                  <CardHeader>
+                    <CardTitle className="text-center text-3xl font-bold">
+                      {pkg.days} Days
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="text-center">
+                      <div className="text-4xl font-bold">€{pkg.price}</div>
+                      <div className="text-sm text-muted-foreground mt-1">
+                        €{(pkg.price / pkg.days).toFixed(2)} per day
+                      </div>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        <span>Visible for {pkg.days} days</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        <span>Unlimited applications</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        <span>Full job details display</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        <span>Email notifications</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <div className="flex gap-3 justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowPackageDialog(false);
+                  setShowCreateDialog(true);
+                }}
+              >
+                Back
+              </Button>
+              <Button
+                onClick={() => createJobMutation.mutate()}
+                disabled={!selectedPackage || createJobMutation.isPending}
+              >
+                {createJobMutation.isPending ? "Processing..." : "Proceed to Payment"}
               </Button>
             </div>
           </DialogContent>
