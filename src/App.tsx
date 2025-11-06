@@ -48,6 +48,7 @@ import LiveStreamList from "./pages/LiveStreamList";
 import Games from "./pages/Games";
 import Rewards from "./pages/Rewards";
 import Jobs from "./pages/Jobs";
+import EmployerDashboard from "./pages/EmployerDashboard";
 import AIMentor from "./pages/AIMentor";
 import AIMentorChat from "./pages/AIMentorChat";
 import ContentStudio from "./pages/ContentStudio";
@@ -264,6 +265,7 @@ const App = () => (
               <Route path="/referral" element={<Referral />} />
               <Route path="/games" element={<Games />} />
               <Route path="/jobs" element={<Jobs />} />
+              <Route path="/employer-dashboard" element={<EmployerDashboard />} />
               <Route path="/influ-king" element={<InfluKing />} />
               <Route path="/auction" element={<Auction />} />
               <Route path="/ai-generation" element={<AIGeneration />} />
