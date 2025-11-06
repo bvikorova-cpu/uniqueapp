@@ -113,15 +113,6 @@ const Home = () => {
               />
             </div>
           </form>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/megatalent">
-              <Button variant="hero" size="lg" className="text-xl px-8 py-4">
-                <Crown className="h-6 w-6 mr-2" />
-                {t('home.enter_contest')}
-              </Button>
-            </Link>
-          </div>
         </div>
       </section>
 
