@@ -5,10 +5,12 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle } from "lucide-react";
+import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare } from "lucide-react";
 
 interface SkillOffering {
   id: string;
@@ -110,7 +112,37 @@ export default function SkillSwap() {
       return;
     }
 
-    toast.success("Exchange request sent! Check your messages.");
+    // Get the offering to find the owner
+    const { data: offering } = await supabase
+      .from('skill_offerings')
+      .select('user_id')
+      .eq('id', offeringId)
+      .single();
+
+    if (!offering) {
+      toast.error("Offering not found");
+      return;
+    }
+
+    // Create or get conversation
+    const { data: existingConv } = await supabase
+      .from('skill_swap_conversations')
+      .select('id')
+      .or(`and(user1_id.eq.${session.user.id},user2_id.eq.${offering.user_id}),and(user1_id.eq.${offering.user_id},user2_id.eq.${session.user.id})`)
+      .eq('offering_id', offeringId)
+      .maybeSingle();
+
+    if (!existingConv) {
+      await supabase.from('skill_swap_conversations').insert([
+        {
+          user1_id: session.user.id,
+          user2_id: offering.user_id,
+          offering_id: offeringId,
+        },
+      ]);
+    }
+
+    toast.success("Conversation started! Check the Messages tab.");
   };
 
   if (loading) {
@@ -182,8 +214,22 @@ export default function SkillSwap() {
           </Card>
         )}
 
-        {/* Add Skill Offering */}
-        <div className="mb-8">
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="browse" className="mb-8">
+          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 mb-6">
+            <TabsTrigger value="browse" className="flex items-center gap-2">
+              <Globe className="w-4 h-4" />
+              Browse Skills
+            </TabsTrigger>
+            <TabsTrigger value="messages" className="flex items-center gap-2">
+              <MessageSquare className="w-4 h-4" />
+              Messages
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="browse">
+            {/* Add Skill Offering */}
+            <div className="mb-8">
           {!showAddForm ? (
             <Button onClick={() => setShowAddForm(true)} className="w-full md:w-auto">
               Offer Your Skill
@@ -235,40 +281,46 @@ export default function SkillSwap() {
           )}
         </div>
 
-        {/* Skill Offerings Grid */}
-        <div>
-          <h2 className="text-2xl font-bold mb-6">Available Skills</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {offerings.map((offering) => (
-              <Card key={offering.id} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-xl font-semibold">{offering.title}</h3>
-                  <Badge variant="secondary">{offering.category}</Badge>
+            {/* Skill Offerings Grid */}
+            <div>
+              <h2 className="text-2xl font-bold mb-6">Available Skills</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {offerings.map((offering) => (
+                  <Card key={offering.id} className="p-6 hover:shadow-lg transition-shadow">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="text-xl font-semibold">{offering.title}</h3>
+                      <Badge variant="secondary">{offering.category}</Badge>
+                    </div>
+                    <p className="text-muted-foreground mb-4 line-clamp-3">
+                      {offering.description}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        Posted by user
+                      </span>
+                      <Button
+                        size="sm"
+                        onClick={() => handleRequestExchange(offering.id)}
+                        disabled={!subscription.hasSubscription}
+                      >
+                        Request Exchange
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+              {offerings.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  <p>No skill offerings yet. Be the first to add one!</p>
                 </div>
-                <p className="text-muted-foreground mb-4 line-clamp-3">
-                  {offering.description}
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Posted by user
-                  </span>
-                  <Button
-                    size="sm"
-                    onClick={() => handleRequestExchange(offering.id)}
-                    disabled={!subscription.hasSubscription}
-                  >
-                    Request Exchange
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-          {offerings.length === 0 && (
-            <div className="text-center py-12 text-muted-foreground">
-              <p>No skill offerings yet. Be the first to add one!</p>
+              )}
             </div>
-          )}
-        </div>
+          </TabsContent>
+
+          <TabsContent value="messages">
+            <SkillSwapMessages />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
