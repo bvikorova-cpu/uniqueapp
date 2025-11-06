@@ -7682,6 +7682,42 @@ export type Database = {
         }
         Relationships: []
       }
+      future_face_progressions: {
+        Row: {
+          anti_aging_tips: string | null
+          created_at: string | null
+          has_comparison: boolean | null
+          healthy_image_url: string | null
+          id: string
+          original_image_url: string
+          unhealthy_image_url: string | null
+          user_id: string
+          years_forward: number
+        }
+        Insert: {
+          anti_aging_tips?: string | null
+          created_at?: string | null
+          has_comparison?: boolean | null
+          healthy_image_url?: string | null
+          id?: string
+          original_image_url: string
+          unhealthy_image_url?: string | null
+          user_id: string
+          years_forward: number
+        }
+        Update: {
+          anti_aging_tips?: string | null
+          created_at?: string | null
+          has_comparison?: boolean | null
+          healthy_image_url?: string | null
+          id?: string
+          original_image_url?: string
+          unhealthy_image_url?: string | null
+          user_id?: string
+          years_forward?: number
+        }
+        Relationships: []
+      }
       hero_campaigns: {
         Row: {
           created_at: string | null

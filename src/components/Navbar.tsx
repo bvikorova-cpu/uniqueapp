@@ -300,6 +300,7 @@ const Navbar = () => {
     { path: "/referral", label: t('navbar.invite_friend'), icon: User },
     { path: "/iq-platform", label: "🧩 IQ Platform", icon: Brain },
     { path: "/pet-translator", label: "🐾 AI Pet Translator", icon: PawPrint },
+    { path: "/future-face", label: "🔮 Future Face - Age Prediction", icon: Clock },
     { path: "/terms", label: t('navbar.terms'), icon: FileText },
   ];
 
