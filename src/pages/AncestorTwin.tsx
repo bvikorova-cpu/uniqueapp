@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Sparkles, Users, Dna, Image as ImageIcon, Crown, Calendar, Check, Upload } from "lucide-react";
+import { Sparkles, Users, Dna, Image as ImageIcon, Crown, Calendar, Check, Upload, CreditCard } from "lucide-react";
 import { useAncestorTwin } from "@/hooks/useAncestorTwin";
 
 const AncestorTwin = () => {
@@ -164,6 +164,19 @@ const AncestorTwin = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Discover your celebrity double from history! Find your lookalike among historical figures, celebrities, and famous artworks.
           </p>
+          {subscription?.hasSubscription && (
+            <div className="pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/subscription-management")}
+                className="gap-2"
+              >
+                <CreditCard className="h-4 w-4" />
+                Spravovať predplatné
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Upload Section */}

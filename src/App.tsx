@@ -69,6 +69,7 @@ import PetTranslator from "./pages/PetTranslator";
 import PetTranslatorPricing from "./pages/PetTranslatorPricing";
 import FutureFace from "./pages/FutureFace";
 import AncestorTwin from "./pages/AncestorTwin";
+import SubscriptionManagement from "./pages/SubscriptionManagement";
 import RoutineOptimizer from "./pages/RoutineOptimizer";
 import Psychology from "./pages/Psychology";
 import Quiz from "./pages/Quiz";
@@ -307,6 +308,7 @@ const App = () => (
           <Route path="/pet-translator-pricing" element={<PetTranslatorPricing />} />
           <Route path="/future-face" element={<FutureFace />} />
           <Route path="/ancestor-twin" element={<AncestorTwin />} />
+          <Route path="/subscription-management" element={<SubscriptionManagement />} />
               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />
