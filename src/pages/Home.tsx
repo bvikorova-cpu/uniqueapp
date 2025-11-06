@@ -145,10 +145,10 @@ const Home = () => {
         ))}
         
         {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/25 to-black/35"></div>
         
         {/* Subtle animated gradient overlay for premium feel */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-transparent to-blue-900/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10"></div>
         
         <div className="relative z-10 text-center space-y-8 px-4 pt-32">
           <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
