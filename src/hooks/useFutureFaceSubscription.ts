@@ -30,14 +30,14 @@ export const useFutureFaceSubscription = () => {
         return;
       }
 
-      // Check for one-time purchases in Stripe or local storage
-      const basicPurchased = localStorage.getItem(`future_face_basic_${user.id}`) === 'true';
-      const premiumPurchased = localStorage.getItem(`future_face_premium_${user.id}`) === 'true';
+      // Check subscription status via Stripe
+      const { data, error } = await supabase.functions.invoke('check-future-face-subscription');
 
-      // Check for active subscriptions (Family or Corporate)
-      // In a real implementation, this would check Stripe subscriptions
-      const familyActive = localStorage.getItem(`future_face_family_${user.id}`) === 'active';
-      const corporateActive = localStorage.getItem(`future_face_corporate_${user.id}`) === 'active';
+      if (error) {
+        console.error('Error checking subscription:', error);
+        setSubscription(prev => ({ ...prev, loading: false }));
+        return;
+      }
 
       // Get family members count
       const { count } = await supabase
@@ -46,10 +46,10 @@ export const useFutureFaceSubscription = () => {
         .eq('user_id', user.id);
 
       setSubscription({
-        hasBasic: basicPurchased,
-        hasPremium: premiumPurchased,
-        hasFamily: familyActive,
-        hasCorporate: corporateActive,
+        hasBasic: data?.hasBasic || false,
+        hasPremium: data?.hasPremium || false,
+        hasFamily: data?.hasFamily || false,
+        hasCorporate: data?.hasCorporate || false,
         loading: false,
         familyMembersCount: count || 0,
         familyMembersLimit: 5
