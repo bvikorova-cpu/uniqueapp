@@ -4,13 +4,29 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2, Image, Gem, Coffee, Bot, Globe } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [displayedText, setDisplayedText] = useState("");
+  const fullText = t('home.hero_title_highlight');
+
+  useEffect(() => {
+    let currentIndex = 0;
+    const intervalId = setInterval(() => {
+      if (currentIndex <= fullText.length) {
+        setDisplayedText(fullText.slice(0, currentIndex));
+        currentIndex++;
+      } else {
+        clearInterval(intervalId);
+      }
+    }, 150);
+
+    return () => clearInterval(intervalId);
+  }, [fullText]);
 
   const services = [
     { name: "Feed", path: "/feed", keywords: ["feed", "príspevky", "zdieľanie", "sociálna sieť"] },
@@ -84,16 +100,26 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background pt-16">
       {/* Hero Section */}
-      <section 
-        className="relative h-screen flex items-start justify-center bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(/hero-bg.jpg)' }}
-      >
-        <div className="absolute inset-0 bg-black/50"></div>
+      <section className="relative h-screen flex items-start justify-center overflow-hidden">
+        {/* Animated Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 animate-gradient-shift">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(147,51,234,0.3),transparent_50%)] animate-pulse"></div>
+          <div className="absolute top-20 left-20 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-float"></div>
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-float-delayed"></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+        </div>
+        
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"></div>
+        
         <div className="relative z-10 text-center space-y-8 px-4 pt-32">
-          <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
+          <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
             {t('home.hero_title')}{" "}
-            <span className="bg-gradient-gold bg-clip-text text-transparent">
-              {t('home.hero_title_highlight')}
+            <span className="relative inline-block">
+              <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent animate-glow drop-shadow-[0_0_30px_rgba(251,191,36,0.5)]">
+                {displayedText}
+                <span className="animate-blink">|</span>
+              </span>
             </span>
           </h1>
           <p className="text-xl md:text-2xl text-gray-200 max-w-3xl mx-auto">
