@@ -323,3 +323,12 @@ verify_jwt = true
 
 [functions.check-future-face-subscription]
 verify_jwt = true
+
+[functions.find-historical-match]
+verify_jwt = true
+
+[functions.create-ancestor-twin-checkout]
+verify_jwt = true
+
+[functions.check-ancestor-twin-subscription]
+verify_jwt = true

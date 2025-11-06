@@ -208,6 +208,7 @@ const Navbar = () => {
   ];
 
   const otherServices = [
+    { path: "/ancestor-twin", label: "👥 Ancestor Twin Finder", icon: Users },
     { path: "/courses", label: "Courses Hub", icon: GraduationCap },
     { path: "/lottery-ai", label: "Lottery Numbers - AI Predictions", icon: Sparkles },
     { path: "/sports-predictor", label: "⚽ Sports Match Predictions", icon: Trophy },
