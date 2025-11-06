@@ -12386,6 +12386,7 @@ export type Database = {
           coins: number | null
           company: string | null
           company_name: string | null
+          completed_exchanges: number | null
           created_at: string
           email: string | null
           full_name: string | null
@@ -12395,7 +12396,11 @@ export type Database = {
           location: string | null
           occupation: string | null
           phone: string | null
+          rating_average: number | null
+          skills_offered: string[] | null
+          skills_wanted: string[] | null
           social_links: Json | null
+          total_reviews: number | null
           updated_at: string
           user_type: string | null
           website: string | null
@@ -12407,6 +12412,7 @@ export type Database = {
           coins?: number | null
           company?: string | null
           company_name?: string | null
+          completed_exchanges?: number | null
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -12416,7 +12422,11 @@ export type Database = {
           location?: string | null
           occupation?: string | null
           phone?: string | null
+          rating_average?: number | null
+          skills_offered?: string[] | null
+          skills_wanted?: string[] | null
           social_links?: Json | null
+          total_reviews?: number | null
           updated_at?: string
           user_type?: string | null
           website?: string | null
@@ -12428,6 +12438,7 @@ export type Database = {
           coins?: number | null
           company?: string | null
           company_name?: string | null
+          completed_exchanges?: number | null
           created_at?: string
           email?: string | null
           full_name?: string | null
@@ -12437,7 +12448,11 @@ export type Database = {
           location?: string | null
           occupation?: string | null
           phone?: string | null
+          rating_average?: number | null
+          skills_offered?: string[] | null
+          skills_wanted?: string[] | null
           social_links?: Json | null
+          total_reviews?: number | null
           updated_at?: string
           user_type?: string | null
           website?: string | null
@@ -13881,26 +13896,32 @@ export type Database = {
       }
       skill_swap_conversations: {
         Row: {
+          completed_at: string | null
           created_at: string | null
           id: string
           last_message_at: string | null
           offering_id: string | null
+          status: string | null
           user1_id: string
           user2_id: string
         }
         Insert: {
+          completed_at?: string | null
           created_at?: string | null
           id?: string
           last_message_at?: string | null
           offering_id?: string | null
+          status?: string | null
           user1_id: string
           user2_id: string
         }
         Update: {
+          completed_at?: string | null
           created_at?: string | null
           id?: string
           last_message_at?: string | null
           offering_id?: string | null
+          status?: string | null
           user1_id?: string
           user2_id?: string
         }
@@ -13948,6 +13969,47 @@ export type Database = {
             columns: ["offering_id"]
             isOneToOne: false
             referencedRelation: "skill_offerings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      skill_swap_reviews: {
+        Row: {
+          comment: string | null
+          conversation_id: string | null
+          created_at: string
+          id: string
+          rating: number
+          reviewed_user_id: string
+          reviewer_id: string
+          updated_at: string
+        }
+        Insert: {
+          comment?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          reviewed_user_id: string
+          reviewer_id: string
+          updated_at?: string
+        }
+        Update: {
+          comment?: string | null
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          reviewed_user_id?: string
+          reviewer_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "skill_swap_reviews_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "skill_swap_conversations"
             referencedColumns: ["id"]
           },
         ]
