@@ -6,9 +6,10 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
-import { Send, ArrowLeft, MessageCircle } from "lucide-react";
+import { Send, ArrowLeft, MessageCircle, CheckCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import VideoCall from "@/components/messenger/VideoCall";
+import { ReviewDialog } from "./ReviewDialog";
 
 interface Message {
   id: string;
@@ -26,6 +27,7 @@ interface Conversation {
   user2_id: string;
   offering_id?: string;
   last_message_at: string;
+  status: string;
   other_user_id?: string;
   offering_title?: string;
 }
@@ -37,6 +39,7 @@ export const SkillSwapMessages = () => {
   const [newMessage, setNewMessage] = useState("");
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showReviewDialog, setShowReviewDialog] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -195,6 +198,31 @@ export const SkillSwapMessages = () => {
     }
   };
 
+  const handleCompleteExchange = async () => {
+    if (!selectedConversation) return;
+
+    try {
+      const { error } = await supabase
+        .from('skill_swap_conversations')
+        .update({ status: 'completed' })
+        .eq('id', selectedConversation);
+
+      if (error) throw error;
+
+      toast.success("Exchange marked as complete!");
+      loadConversations();
+      setShowReviewDialog(true);
+    } catch (error) {
+      console.error('Error completing exchange:', error);
+      toast.error("Failed to complete exchange");
+    }
+  };
+
+  const handleReviewSubmitted = () => {
+    toast.success("Thank you for your review!");
+    loadConversations();
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -273,16 +301,40 @@ export const SkillSwapMessages = () => {
                     {conversations.find(c => c.id === selectedConversation)?.offering_title}
                   </p>
                 )}
+                {conversations.find(c => c.id === selectedConversation)?.status === 'completed' && (
+                  <div className="flex items-center gap-1 text-xs text-green-600">
+                    <CheckCircle className="w-3 h-3" />
+                    <span>Exchange Completed</span>
+                  </div>
+                )}
               </div>
-              {currentUserId && (
-                <VideoCall
-                  conversationId={selectedConversation}
-                  userId={currentUserId}
-                  otherUserId={conversations.find(c => c.id === selectedConversation)?.other_user_id || ""}
-                  otherUserName="User"
-                />
-              )}
+              <div className="flex items-center gap-2">
+                {conversations.find(c => c.id === selectedConversation)?.status === 'active' && (
+                  <Button onClick={handleCompleteExchange} size="sm" variant="outline">
+                    Mark Complete
+                  </Button>
+                )}
+                {currentUserId && (
+                  <VideoCall
+                    conversationId={selectedConversation}
+                    userId={currentUserId}
+                    otherUserId={conversations.find(c => c.id === selectedConversation)?.other_user_id || ""}
+                    otherUserName="User"
+                  />
+                )}
+              </div>
             </div>
+
+            {showReviewDialog && selectedConversation && (
+              <ReviewDialog
+                open={showReviewDialog}
+                onOpenChange={setShowReviewDialog}
+                conversationId={selectedConversation}
+                reviewedUserId={conversations.find(c => c.id === selectedConversation)?.other_user_id || ""}
+                reviewedUserName="User"
+                onReviewSubmitted={handleReviewSubmitted}
+              />
+            )}
 
             {/* Messages */}
             <ScrollArea className="flex-1 p-4">

@@ -45,19 +45,32 @@ export default function SkillSwap() {
   const fetchOfferings = async () => {
     const { data, error } = await supabase
       .from('skill_offerings')
-      .select(`
-        *,
-        profiles(full_name, rating_average, total_reviews, completed_exchanges)
-      `)
+      .select('*')
       .eq('is_active', true)
       .order('created_at', { ascending: false })
       .limit(20);
 
     if (error) {
       console.error('Error fetching offerings:', error);
-    } else {
-      setOfferings(data || []);
+      setOfferings([]);
+      return;
     }
+
+    // Fetch profiles for all users
+    const userIds = data?.map(o => o.user_id) || [];
+    const { data: profilesData } = await supabase
+      .from('profiles')
+      .select('id, full_name, rating_average, total_reviews, completed_exchanges')
+      .in('id', userIds);
+
+    const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
+
+    const offeringsWithProfiles = (data || []).map(offering => ({
+      ...offering,
+      profiles: profilesMap.get(offering.user_id) || undefined
+    }));
+
+    setOfferings(offeringsWithProfiles);
   };
 
   const handleSubscribe = async () => {
