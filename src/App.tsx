@@ -71,6 +71,8 @@ import FutureFace from "./pages/FutureFace";
 import AncestorTwin from "./pages/AncestorTwin";
 import AncestorTwinUpload from "./pages/AncestorTwinUpload";
 import SkillSwap from "./pages/SkillSwap";
+import SkillSwapProfile from "./pages/SkillSwapProfile";
+import SkillSwapSettings from "./pages/SkillSwapSettings";
 import SubscriptionManagement from "./pages/SubscriptionManagement";
 import RoutineOptimizer from "./pages/RoutineOptimizer";
 import Psychology from "./pages/Psychology";
@@ -312,6 +314,8 @@ const App = () => (
           <Route path="/ancestor-twin" element={<AncestorTwin />} />
           <Route path="/ancestor-twin/upload" element={<AncestorTwinUpload />} />
           <Route path="/skill-swap" element={<SkillSwap />} />
+          <Route path="/skill-swap/profile/:userId" element={<SkillSwapProfile />} />
+          <Route path="/skill-swap/profile/edit" element={<SkillSwapSettings />} />
           <Route path="/subscription-management" element={<SubscriptionManagement />} />
               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />

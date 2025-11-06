@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
 import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare } from "lucide-react";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star } from "lucide-react";
 
 interface SkillOffering {
   id: string;
@@ -21,6 +21,9 @@ interface SkillOffering {
   is_active: boolean;
   profiles?: {
     full_name: string;
+    rating_average: number;
+    total_reviews: number;
+    completed_exchanges: number;
   };
 }
 
@@ -42,7 +45,10 @@ export default function SkillSwap() {
   const fetchOfferings = async () => {
     const { data, error } = await supabase
       .from('skill_offerings')
-      .select('*')
+      .select(`
+        *,
+        profiles(full_name, rating_average, total_reviews, completed_exchanges)
+      `)
       .eq('is_active', true)
       .order('created_at', { ascending: false })
       .limit(20);
@@ -310,9 +316,27 @@ export default function SkillSwap() {
                       {offering.description}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-muted-foreground">
-                        Posted by user
-                      </span>
+                      <div>
+                        <button
+                          onClick={() => navigate(`/skill-swap/profile/${offering.user_id}`)}
+                          className="text-sm text-primary hover:underline mb-1"
+                        >
+                          {offering.profiles?.full_name || 'User'}
+                        </button>
+                        {offering.profiles && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <div className="flex items-center gap-1">
+                              <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                              <span className="font-medium">{offering.profiles.rating_average.toFixed(1)}</span>
+                              <span className="text-muted-foreground">({offering.profiles.total_reviews})</span>
+                            </div>
+                            <span className="text-muted-foreground">•</span>
+                            <span className="text-muted-foreground">
+                              {offering.profiles.completed_exchanges} exchanges
+                            </span>
+                          </div>
+                        )}
+                      </div>
                       <Button
                         size="sm"
                         onClick={() => handleRequestExchange(offering.id)}
