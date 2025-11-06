@@ -101,16 +101,22 @@ const Home = () => {
     <div className="min-h-screen bg-background pt-16">
       {/* Hero Section */}
       <section className="relative h-screen flex items-start justify-center overflow-hidden">
-        {/* Animated Gradient Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 animate-gradient-shift">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(147,51,234,0.3),transparent_50%)] animate-pulse"></div>
-          <div className="absolute top-20 left-20 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-float"></div>
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/30 rounded-full blur-3xl animate-float-delayed"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+        {/* Video Background */}
+        <div className="absolute inset-0">
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="w-full h-full object-cover"
+          >
+            <source src="https://assets.mixkit.co/videos/preview/mixkit-people-using-their-cell-phones-in-a-meeting-4924-large.mp4" type="video/mp4" />
+          </video>
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70"></div>
+          {/* Subtle animated gradient overlay for premium feel */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-transparent to-blue-900/30 animate-gradient-shift"></div>
         </div>
-        
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]"></div>
         
         <div className="relative z-10 text-center space-y-8 px-4 pt-32">
           <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
