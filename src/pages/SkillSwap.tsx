@@ -10,7 +10,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
 import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star } from "lucide-react";
+import { SkillMatches } from "@/components/skill-swap/SkillMatches";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles } from "lucide-react";
 
 interface SkillOffering {
   id: string;
@@ -250,16 +251,24 @@ export default function SkillSwap() {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="browse" className="mb-8">
-          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2 mb-6">
+          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-3 mb-6">
             <TabsTrigger value="browse" className="flex items-center gap-2">
               <Globe className="w-4 h-4" />
               Browse Skills
+            </TabsTrigger>
+            <TabsTrigger value="matches" className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Suggested Matches
             </TabsTrigger>
             <TabsTrigger value="messages" className="flex items-center gap-2">
               <MessageSquare className="w-4 h-4" />
               Messages
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="matches">
+            <SkillMatches />
+          </TabsContent>
 
           <TabsContent value="browse">
             {/* Add Skill Offering */}

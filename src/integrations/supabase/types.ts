@@ -13852,6 +13852,39 @@ export type Database = {
         }
         Relationships: []
       }
+      skill_matches: {
+        Row: {
+          created_at: string
+          id: string
+          match_score: number
+          matched_user_id: string
+          matching_skills: string[]
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          match_score?: number
+          matched_user_id: string
+          matching_skills: string[]
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          match_score?: number
+          matched_user_id?: string
+          matching_skills?: string[]
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       skill_offerings: {
         Row: {
           category: Database["public"]["Enums"]["skill_category"]
@@ -17168,6 +17201,7 @@ export type Database = {
       }
       calculate_level: { Args: { points: number }; Returns: number }
       expire_featured_listings: { Args: never; Returns: undefined }
+      find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       generate_certificate_number: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
       has_role: {
