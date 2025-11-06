@@ -12,6 +12,7 @@ import { GratitudeJournal } from "@/components/wellness/GratitudeJournal";
 import { GroundingExercise } from "@/components/wellness/GroundingExercise";
 import { DigitalMandala } from "@/components/wellness/DigitalMandala";
 import { NatureSounds } from "@/components/wellness/NatureSounds";
+import { BodyScanMeditation } from "@/components/wellness/BodyScanMeditation";
 
 const WELLNESS_PLANS = {
   basicMonthly: {
@@ -23,7 +24,8 @@ const WELLNESS_PLANS = {
     features: [
       "Breathing Exercises",
       "5-4-3-2-1 Grounding",
-      "Nature Sounds"
+      "Nature Sounds",
+      "Body Scan Meditation"
     ]
   },
   premiumMonthly: {
@@ -37,7 +39,8 @@ const WELLNESS_PLANS = {
       "Breathing Exercises",
       "Gratitude Journal with AI",
       "5-4-3-2-1 Grounding",
-      "Digital Mandalas"
+      "Digital Mandalas",
+      "Body Scan Meditation"
     ]
   },
   basicLifetime: {
@@ -50,7 +53,8 @@ const WELLNESS_PLANS = {
       "Lifetime Access",
       "Breathing Exercises",
       "5-4-3-2-1 Grounding",
-      "Nature Sounds"
+      "Nature Sounds",
+      "Body Scan Meditation"
     ]
   },
   premiumLifetime: {
@@ -65,7 +69,8 @@ const WELLNESS_PLANS = {
       "Breathing Exercises",
       "Gratitude Journal with AI",
       "5-4-3-2-1 Grounding",
-      "Digital Mandalas"
+      "Digital Mandalas",
+      "Body Scan Meditation"
     ]
   }
 };
@@ -245,7 +250,7 @@ export default function Wellness() {
       )}
 
       <Tabs defaultValue="breathing" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="breathing" disabled={!hasBasicAccess}>
             <Wind className="w-4 h-4 mr-2" />
             Breathing
@@ -258,8 +263,12 @@ export default function Wellness() {
             <Volume2 className="w-4 h-4 mr-2" />
             Sounds
           </TabsTrigger>
-          <TabsTrigger value="chat" disabled={!hasPremiumAccess}>
+          <TabsTrigger value="bodyscan" disabled={!hasBasicAccess}>
             <Heart className="w-4 h-4 mr-2" />
+            Body Scan
+          </TabsTrigger>
+          <TabsTrigger value="chat" disabled={!hasPremiumAccess}>
+            <Brain className="w-4 h-4 mr-2" />
             AI Coach
           </TabsTrigger>
           <TabsTrigger value="journal" disabled={!hasPremiumAccess}>
@@ -282,6 +291,10 @@ export default function Wellness() {
 
         <TabsContent value="sounds">
           {hasBasicAccess ? <NatureSounds /> : <PremiumRequired />}
+        </TabsContent>
+
+        <TabsContent value="bodyscan">
+          {hasBasicAccess ? <BodyScanMeditation /> : <PremiumRequired />}
         </TabsContent>
 
         <TabsContent value="chat">
