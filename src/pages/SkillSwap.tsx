@@ -155,18 +155,33 @@ export default function SkillSwap() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-4 py-16 max-w-7xl">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-6">
             <ArrowLeftRight className="w-12 h-12 text-primary" />
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Global Skill Swap
             </h1>
           </div>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Exchange skills without money. Learn guitar, teach cooking. Join the global marketplace.
+          
+          <p className="text-2xl font-semibold text-foreground mb-4 max-w-3xl mx-auto">
+            The Revolutionary Platform for Skill Exchange Without Money
           </p>
+          
+          <div className="max-w-4xl mx-auto space-y-4 text-lg text-muted-foreground">
+            <p>
+              Welcome to Global Skill Swap - where knowledge meets opportunity. Our platform connects people worldwide who want to exchange skills without traditional payment. Whether you're a guitar virtuoso looking to learn web development, or a chef wanting to master photography, you'll find the perfect exchange partner here.
+            </p>
+            
+            <p>
+              How it works: Simply create a skill offering describing what you can teach, browse through hundreds of available skills from our global community, and request exchanges that interest you. Connect through our real-time messaging system, schedule video lessons, and start learning from experts around the world - all without spending a cent.
+            </p>
+            
+            <p className="font-medium text-foreground">
+              Join thousands of learners exchanging skills in categories like teaching, technology, creative arts, repairs, construction, gardening, and more. Your next skill is just an exchange away!
+            </p>
+          </div>
         </div>
 
         {/* Premium Features */}
