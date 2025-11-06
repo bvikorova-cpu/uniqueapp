@@ -39,7 +39,7 @@ const WELLNESS_PLANS = {
       "Breathing Exercises",
       "Gratitude Journal with AI",
       "5-4-3-2-1 Grounding",
-      "Digital Mandalas",
+      "Digital Mandala Drawing",
       "Body Scan Meditation"
     ]
   },
@@ -69,7 +69,7 @@ const WELLNESS_PLANS = {
       "Breathing Exercises",
       "Gratitude Journal with AI",
       "5-4-3-2-1 Grounding",
-      "Digital Mandalas",
+      "Digital Mandala Drawing",
       "Body Scan Meditation"
     ]
   }
@@ -166,87 +166,87 @@ export default function Wellness() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-8 space-y-4">
-        <div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 flex items-center gap-3">
-            <Heart className="w-10 h-10 text-primary" />
-            Wellness & Duševné Zdravie
+    <div className="container mx-auto px-4 py-16 max-w-7xl">
+      <div className="mb-12 space-y-6">
+        <div className="text-center max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 flex items-center justify-center gap-3">
+            <Heart className="w-12 h-12 text-primary" />
+            Wellness & Mental Health
           </h1>
-          <p className="text-lg text-muted-foreground max-w-3xl">
-            Profesionálne nástroje pre relaxáciu, mindfulness a duševnú pohodu. Redukujte stres, 
-            zlepšite spánok a kultivujte vnútorný pokoj pomocou vedecky overených techník.
+          <p className="text-xl text-muted-foreground">
+            Professional tools for relaxation, mindfulness, and mental wellbeing. Reduce stress, 
+            improve sleep, and cultivate inner peace using scientifically proven techniques.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
               <Brain className="w-8 h-8 text-primary mb-2" />
               <h3 className="font-semibold mb-1">AI Mindfulness Coach</h3>
               <p className="text-sm text-muted-foreground">
-                Inteligentný asistent s empatiou pre vašu mentálnu pohodu
+                Empathetic AI assistant for your mental wellbeing
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
               <Wind className="w-8 h-8 text-primary mb-2" />
-              <h3 className="font-semibold mb-1">Dychové Cvičenia</h3>
+              <h3 className="font-semibold mb-1">Breathing Exercises</h3>
               <p className="text-sm text-muted-foreground">
-                4-7-8 a Box Breathing techniky s vizuálnym vedením
+                4-7-8 and Box Breathing with visual guidance
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
               <Heart className="w-8 h-8 text-primary mb-2" />
-              <h3 className="font-semibold mb-1">Body Scan Meditácia</h3>
+              <h3 className="font-semibold mb-1">Body Scan Meditation</h3>
               <p className="text-sm text-muted-foreground">
-                Postupné uvoľnenie tela s audio vodením a vizualizáciou
+                Progressive relaxation with audio guidance and visualization
               </p>
             </CardContent>
           </Card>
 
-          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover:shadow-lg transition-shadow">
             <CardContent className="pt-6">
               <Volume2 className="w-8 h-8 text-primary mb-2" />
-              <h3 className="font-semibold mb-1">Zvuky Prírody</h3>
+              <h3 className="font-semibold mb-1">Nature Sounds</h3>
               <p className="text-sm text-muted-foreground">
-                Dážď, vlny a les pre hlbšiu relaxáciu a koncentráciu
+                Rain, ocean waves, and forest for deeper relaxation
               </p>
             </CardContent>
           </Card>
         </div>
 
-        <Card className="border-primary/20 bg-gradient-to-br from-primary/10 to-transparent mt-4">
+        <Card className="border-primary/20 bg-gradient-to-br from-primary/10 to-transparent mt-6">
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
               <Sparkles className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
               <div>
-                <h3 className="font-semibold text-lg mb-2">Prečo Wellness Nástroje?</h3>
+                <h3 className="font-semibold text-lg mb-2">Why Use Wellness Tools?</h3>
                 <p className="text-muted-foreground mb-3">
-                  V dnešnej uponáhľanej dobe je starostlivosť o duševné zdravie dôležitejšia než kedykoľvek predtým. 
-                  Naše nástroje využívajú vedecky overené techniky mindfulness, meditácie a relaxácie.
+                  In today's fast-paced world, taking care of mental health is more important than ever. 
+                  Our tools use scientifically proven techniques of mindfulness, meditation, and relaxation.
                 </p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>Redukcia stresu a úzkosti</strong> - Dychové cvičenia a meditácie dokázateľne znižujú stres</span>
+                    <span><strong>Reduce stress and anxiety</strong> - Breathing exercises and meditation provably lower stress levels</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>Zlepšenie spánku</strong> - Body scan a zvuky prírody pomáhajú pri zaspávaní</span>
+                    <span><strong>Improve sleep quality</strong> - Body scan and nature sounds help you fall asleep faster</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>Zvýšená koncentrácia</strong> - Grounding techniky vás vrátia do prítomného momentu</span>
+                    <span><strong>Enhanced focus</strong> - Grounding techniques bring you back to the present moment</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span><strong>AI podpora 24/7</strong> - Mindfulness coach je vždy k dispozícii, keď ho potrebujete</span>
+                    <span><strong>24/7 AI support</strong> - Mindfulness coach is always available when you need it</span>
                   </li>
                 </ul>
               </div>
@@ -258,12 +258,12 @@ export default function Wellness() {
       {!hasBasicAccess && (
         <Card className="mb-8 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
+            <CardTitle className="flex items-center gap-2 text-2xl">
+              <Sparkles className="w-6 h-6 text-primary" />
               Choose Your Wellness Plan
             </CardTitle>
-            <CardDescription>
-              Select a plan to access our relaxation and mindfulness tools
+            <CardDescription className="text-base">
+              Select a plan to unlock our comprehensive relaxation and mindfulness tools
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -307,7 +307,7 @@ export default function Wellness() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="w-5 h-5" />
-              Your Wellness Plan
+              Your Active Wellness Plan
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -316,7 +316,7 @@ export default function Wellness() {
                 {subscriptionStatus.tier.toUpperCase()}
               </Badge>
               {subscriptionStatus.is_lifetime ? (
-                <span className="text-sm">Lifetime Access</span>
+                <span className="text-sm">Lifetime Access ✨</span>
               ) : (
                 <span className="text-sm">
                   Active until {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
@@ -397,10 +397,10 @@ function PremiumRequired({ premium = false }: { premium?: boolean }) {
       <CardContent className="pt-6 text-center">
         <Sparkles className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
         <h3 className="text-lg font-semibold mb-2">
-          {premium ? 'Premium' : 'Subscription'} Required
+          {premium ? 'Premium Plan' : 'Subscription'} Required
         </h3>
         <p className="text-muted-foreground">
-          Subscribe to access this wellness tool and find your inner peace
+          Subscribe to unlock this wellness tool and discover inner peace
         </p>
       </CardContent>
     </Card>
