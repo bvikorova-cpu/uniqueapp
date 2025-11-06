@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2, Image, Gem, Coffee, Bot, Globe, Layers, Coins, Rocket } from "lucide-react";
+import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2, Image, Gem, Coffee, Bot, Globe, Layers, Coins, Rocket, Car, Baby, Mic } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -979,6 +979,96 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Create courses and tutorials about AI skills, earn 70%
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/f1-subscription">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer border-2 border-red-500/50">
+                <CardHeader>
+                  <Car className="h-12 w-12 text-red-600 mx-auto mb-4" />
+                  <Badge className="mb-2 bg-red-600">Premium</Badge>
+                  <CardTitle>F1 Fantasy Racing</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Premium 3D F1 racing platform with fantasy teams & live competitions
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/kids-channel">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Baby className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+                  <Badge className="mb-2 bg-blue-500">Family</Badge>
+                  <CardTitle>Kids Channel</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Interactive educational games, stories, and fun activities for children
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/livestream">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Video className="h-12 w-12 text-indigo-500 mx-auto mb-4" />
+                  <Badge className="mb-2 bg-indigo-500">Entertainment</Badge>
+                  <CardTitle>Live Streaming</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Stream live content, watch shows, and interact with creators
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/comedy-club">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Mic className="h-12 w-12 text-fuchsia-500 mx-auto mb-4" />
+                  <Badge className="mb-2 bg-fuchsia-500">Entertainment</Badge>
+                  <CardTitle>Comedy Club</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Watch comedy shows, become a comedian, and make people laugh
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/iq-platform">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <Brain className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                  <Badge className="mb-2 bg-blue-600">Intelligence</Badge>
+                  <CardTitle>IQ Platform</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    IQ tests, AI analysis, online competitions & earn credits
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link to="/sports-predictor">
+              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
+                <CardHeader>
+                  <TrendingUp className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                  <Badge className="mb-2 bg-green-600">Sports</Badge>
+                  <CardTitle>Sports Match Predictions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">
+                    Expert tipsters + AI predictions for sports betting with win rate stats
                   </p>
                 </CardContent>
               </Card>
