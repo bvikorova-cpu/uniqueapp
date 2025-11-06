@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2, Image, Gem, Coffee, Bot, Globe } from "lucide-react";
+import { Crown, Users, ShoppingBag, Store, Star, TrendingUp, Gift, MessageSquare, Video, MessageCircle, Trophy, FileText, Brain, Plane, Heart, Cross, Dumbbell, Home as HomeIcon, Package, UserPlus, Gamepad2, Briefcase, Radio, GraduationCap, Gavel, Sparkles, Search, Disc3, Music, Leaf, ImageIcon, Zap, PawPrint, Shirt, Palette, Sofa, Wand2, Image, Gem, Coffee, Bot, Globe, Layers, Coins, Rocket } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -177,6 +177,80 @@ const Home = () => {
               />
             </div>
           </form>
+        </div>
+      </section>
+
+      {/* Why Unique Section */}
+      <section className="py-20 px-4 bg-gradient-to-b from-background to-background/50">
+        <div className="container mx-auto max-w-7xl">
+          <div className="text-center mb-16 animate-fade-in">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+              Why{" "}
+              <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
+                Unique
+              </span>
+              ?
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Discover what makes our platform stand out from the rest
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card 1: All-in-One Platform */}
+            <Card className="group relative overflow-hidden border-2 border-primary/20 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-xl hover:border-primary/50 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_50px_rgba(var(--primary),0.3)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <CardHeader className="relative">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-glow">
+                  <Layers className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl group-hover:text-primary transition-colors duration-300">
+                  All-in-One Platform
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative">
+                <p className="text-muted-foreground leading-relaxed">
+                  Everything you need in one place - from social networking and entertainment to education, shopping, and AI-powered tools. No need to juggle multiple apps.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Card 2: Premium Features */}
+            <Card className="group relative overflow-hidden border-2 border-accent/20 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-xl hover:border-accent/50 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_50px_rgba(var(--accent),0.3)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <CardHeader className="relative">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-purple-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-glow">
+                  <Sparkles className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl group-hover:text-accent transition-colors duration-300">
+                  Premium Features
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative">
+                <p className="text-muted-foreground leading-relaxed">
+                  Access cutting-edge AI technology, advanced tools, and exclusive features. Experience the future of social networking with intelligent assistance.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Card 3: Earn While You Social */}
+            <Card className="group relative overflow-hidden border-2 border-gold/20 bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-xl hover:border-gold/50 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_50px_rgba(var(--gold),0.3)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <CardHeader className="relative">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold to-yellow-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-gold">
+                  <Coins className="w-8 h-8 text-white" />
+                </div>
+                <CardTitle className="text-2xl group-hover:text-gold transition-colors duration-300">
+                  Earn While You Social
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative">
+                <p className="text-muted-foreground leading-relaxed">
+                  Turn your social activities into income. Create content, offer services, compete in contests, and get rewarded for your engagement and talent.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
