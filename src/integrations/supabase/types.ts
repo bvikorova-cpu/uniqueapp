@@ -1815,6 +1815,54 @@ export type Database = {
         }
         Relationships: []
       }
+      castle_room_collectibles: {
+        Row: {
+          collectible_id: string
+          created_at: string | null
+          hint_text: string | null
+          id: string
+          position_x: number
+          position_y: number
+          position_z: number | null
+          room_id: string
+        }
+        Insert: {
+          collectible_id: string
+          created_at?: string | null
+          hint_text?: string | null
+          id?: string
+          position_x: number
+          position_y: number
+          position_z?: number | null
+          room_id: string
+        }
+        Update: {
+          collectible_id?: string
+          created_at?: string | null
+          hint_text?: string | null
+          id?: string
+          position_x?: number
+          position_y?: number
+          position_z?: number | null
+          room_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "castle_room_collectibles_collectible_id_fkey"
+            columns: ["collectible_id"]
+            isOneToOne: false
+            referencedRelation: "disney_collectibles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "castle_room_collectibles_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "disney_castle_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       certificate_purchases: {
         Row: {
           amount: number
@@ -5936,6 +5984,39 @@ export type Database = {
           price_coins?: number
           thumbnail_url?: string | null
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      disney_collectibles: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          points: number | null
+          rarity: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          points?: number | null
+          rarity?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          points?: number | null
+          rarity?: string | null
         }
         Relationships: []
       }
