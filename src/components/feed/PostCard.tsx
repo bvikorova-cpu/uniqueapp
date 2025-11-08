@@ -12,7 +12,11 @@ import {
   Smile,
   Maximize2,
   Edit2,
-  MoreVertical
+  MoreVertical,
+  Image as ImageIcon,
+  Video as VideoIcon,
+  X,
+  Loader2
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -79,6 +83,9 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [editContent, setEditContent] = useState(post.content);
   const [saving, setSaving] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [existingMedia, setExistingMedia] = useState(post.media || []);
+  const [mediaToDelete, setMediaToDelete] = useState<string[]>([]);
   const { toast } = useToast();
 
   // Get current user
@@ -87,6 +94,22 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       if (user) setCurrentUserId(user.id);
     });
   }, []);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files);
+      setNewFiles((prev) => [...prev, ...selectedFiles]);
+    }
+  };
+
+  const removeNewFile = (index: number) => {
+    setNewFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingMedia = (mediaId: string) => {
+    setMediaToDelete((prev) => [...prev, mediaId]);
+    setExistingMedia((prev) => prev.filter((m) => m.id !== mediaId));
+  };
 
   const handleUserClick = (e: React.MouseEvent, userId: string) => {
     e.stopPropagation();
@@ -197,10 +220,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   };
 
   const handleEdit = async () => {
-    if (!editContent.trim()) {
+    if (!editContent.trim() && existingMedia.length === 0 && newFiles.length === 0) {
       toast({
         title: "Chyba",
-        description: "Obsah príspevku nemôže byť prázdny",
+        description: "Príspevok musí obsahovať text alebo obrázky",
         variant: "destructive",
       });
       return;
@@ -208,12 +231,60 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
     setSaving(true);
     try {
-      const { error } = await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Nie ste prihlásený");
+
+      // Update post content
+      const { error: updateError } = await supabase
         .from("posts")
         .update({ content: editContent })
         .eq("id", post.id);
 
-      if (error) throw error;
+      if (updateError) throw updateError;
+
+      // Delete marked media
+      for (const mediaId of mediaToDelete) {
+        const media = post.media.find(m => m.id === mediaId);
+        if (media) {
+          // Extract file path from URL
+          const urlParts = media.file_url.split('/');
+          const fileName = urlParts.slice(-2).join('/'); // Get user_id/timestamp.ext
+          
+          // Delete from storage
+          await supabase.storage.from("media").remove([fileName]);
+          
+          // Delete from database
+          await supabase.from("media").delete().eq("id", mediaId);
+        }
+      }
+
+      // Upload new files
+      if (newFiles.length > 0) {
+        for (const file of newFiles) {
+          const fileExt = file.name.split(".").pop();
+          const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+          const fileType = file.type.startsWith("image/") ? "image" : "video";
+
+          const { error: uploadError } = await supabase.storage
+            .from("media")
+            .upload(fileName, file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from("media")
+            .getPublicUrl(fileName);
+
+          const { error: mediaError } = await supabase.from("media").insert({
+            post_id: post.id,
+            file_url: publicUrl,
+            file_type: fileType,
+            file_name: file.name,
+          });
+
+          if (mediaError) throw mediaError;
+        }
+      }
 
       toast({
         title: "Úspech",
@@ -221,6 +292,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       });
 
       setShowEditDialog(false);
+      setNewFiles([]);
+      setMediaToDelete([]);
       onDelete(); // Refresh posts
     } catch (error: any) {
       toast({
@@ -810,12 +883,20 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       </Dialog>
 
       {/* Edit Dialog */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="sm:max-w-[525px]" onClick={(e) => e.stopPropagation()}>
+      <Dialog open={showEditDialog} onOpenChange={(open) => {
+        setShowEditDialog(open);
+        if (!open) {
+          setEditContent(post.content);
+          setNewFiles([]);
+          setExistingMedia(post.media || []);
+          setMediaToDelete([]);
+        }
+      }}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
             <DialogTitle>Upraviť príspevok</DialogTitle>
             <DialogDescription>
-              Upravte text vášho príspevku
+              Upravte text alebo obrázky vášho príspevku
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -823,22 +904,133 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               placeholder="Čo máte na mysli?"
-              className="min-h-[150px]"
+              className="min-h-[100px]"
             />
+
+            {/* Existing Media */}
+            {existingMedia.length > 0 && (
+              <div>
+                <p className="text-sm font-medium mb-2">Existujúce obrázky:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {existingMedia.map((media) => (
+                    <div key={media.id} className="relative">
+                      <div className="aspect-video bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
+                        {media.file_type === "image" ? (
+                          <img
+                            src={media.file_url}
+                            alt="Media"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <VideoIcon className="h-12 w-12 text-muted-foreground" />
+                        )}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2 h-6 w-6"
+                        onClick={() => removeExistingMedia(media.id)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* New Files */}
+            {newFiles.length > 0 && (
+              <div>
+                <p className="text-sm font-medium mb-2">Nové obrázky:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {newFiles.map((file, index) => (
+                    <div key={index} className="relative">
+                      <div className="aspect-video bg-secondary rounded-lg overflow-hidden flex items-center justify-center">
+                        {file.type.startsWith("image/") ? (
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={file.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <VideoIcon className="h-12 w-12 text-muted-foreground" />
+                        )}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2 h-6 w-6"
+                        onClick={() => removeNewFile(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Upload buttons */}
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => document.getElementById("edit-image-upload")?.click()}
+              >
+                <ImageIcon className="h-4 w-4 mr-2" />
+                Pridať obrázky
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => document.getElementById("edit-video-upload")?.click()}
+              >
+                <VideoIcon className="h-4 w-4 mr-2" />
+                Pridať video
+              </Button>
+              <input
+                id="edit-image-upload"
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+              <input
+                id="edit-video-upload"
+                type="file"
+                accept="video/*"
+                multiple
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+            </div>
           </div>
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => {
-                setShowEditDialog(false);
-                setEditContent(post.content);
-              }}
+              onClick={() => setShowEditDialog(false)}
               disabled={saving}
             >
               Zrušiť
             </Button>
-            <Button onClick={handleEdit} disabled={saving || !editContent.trim()}>
-              {saving ? "Ukladá sa..." : "Uložiť"}
+            <Button 
+              onClick={handleEdit} 
+              disabled={saving || (!editContent.trim() && existingMedia.length === 0 && newFiles.length === 0)}
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Ukladá sa...
+                </>
+              ) : (
+                "Uložiť"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
