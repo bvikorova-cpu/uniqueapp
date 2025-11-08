@@ -21,6 +21,7 @@ interface Message {
   content: string;
   sender_id: string;
   created_at: string;
+  story_id?: string | null;
 }
 
 interface MessageWithProfile extends Message {
@@ -134,7 +135,7 @@ const Messenger = () => {
 
         const { data: messagesData } = await supabase
           .from("messages")
-          .select("id, content, sender_id, created_at")
+          .select("id, content, sender_id, created_at, story_id")
           .eq("conversation_id", conv.id)
           .order("created_at", { ascending: false })
           .limit(1);
@@ -169,7 +170,7 @@ const Messenger = () => {
 
     const { data, error } = await supabase
       .from("messages")
-      .select("id, content, sender_id, created_at")
+      .select("id, content, sender_id, created_at, story_id")
       .eq("conversation_id", selectedConversation)
       .order("created_at", { ascending: true });
 
@@ -418,13 +419,18 @@ const Messenger = () => {
                           <AvatarImage src={msg.sender_profile?.avatar_url || undefined} />
                           <AvatarFallback>{msg.sender_profile?.full_name?.[0] || "U"}</AvatarFallback>
                         </Avatar>
-                        <div
+                         <div
                           className={`max-w-[70%] rounded-lg p-3 ${
                             msg.sender_id === user.id
                               ? "bg-primary text-primary-foreground"
                               : "bg-muted"
                           }`}
                         >
+                          {msg.story_id && (
+                            <div className="text-xs opacity-70 mb-2 pb-2 border-b border-current/20">
+                              📷 Odpoveď na story
+                            </div>
+                          )}
                           <p className="break-words">{msg.content}</p>
                           <span className="text-xs opacity-70 mt-1 block">
                             {new Date(msg.created_at).toLocaleTimeString("sk-SK", {

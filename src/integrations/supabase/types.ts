@@ -10771,6 +10771,7 @@ export type Database = {
           id: string
           is_read: boolean | null
           sender_id: string
+          story_id: string | null
           updated_at: string
         }
         Insert: {
@@ -10780,6 +10781,7 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           sender_id: string
+          story_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -10789,6 +10791,7 @@ export type Database = {
           id?: string
           is_read?: boolean | null
           sender_id?: string
+          story_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -10797,6 +10800,13 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
             referencedColumns: ["id"]
           },
         ]

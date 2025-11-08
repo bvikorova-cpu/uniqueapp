@@ -140,22 +140,89 @@ export default function Stories() {
     return () => clearInterval(interval);
   }, [currentIndex, currentStory, stories.length, navigate]);
 
-  // Send reaction
+  // Send reaction as message
   const sendReactionMutation = useMutation({
-    mutationFn: async (emoji: string) => {
+    mutationFn: async (messageText: string) => {
       if (!user || !currentStory) throw new Error("Not ready");
 
-      const { error } = await supabase.from("story_reactions").insert({
+      // Don't send reactions to own stories
+      if (currentStory.user_id === user.id) {
+        throw new Error("Cannot reply to own story");
+      }
+
+      // Check if conversation already exists
+      const { data: existingConv } = await supabase
+        .from("conversation_participants")
+        .select("conversation_id")
+        .eq("user_id", user.id);
+
+      let conversationId = null;
+
+      if (existingConv) {
+        for (const conv of existingConv) {
+          const { data: otherParticipant } = await supabase
+            .from("conversation_participants")
+            .select("user_id")
+            .eq("conversation_id", conv.conversation_id)
+            .eq("user_id", currentStory.user_id)
+            .maybeSingle();
+
+          if (otherParticipant) {
+            conversationId = conv.conversation_id;
+            break;
+          }
+        }
+      }
+
+      // Create new conversation if needed
+      if (!conversationId) {
+        const { data: conversation, error: convError } = await supabase
+          .from("conversations")
+          .insert({})
+          .select()
+          .single();
+
+        if (convError || !conversation) throw convError;
+
+        const { error: participantsError } = await supabase
+          .from("conversation_participants")
+          .insert([
+            { conversation_id: conversation.id, user_id: user.id },
+            { conversation_id: conversation.id, user_id: currentStory.user_id },
+          ]);
+
+        if (participantsError) throw participantsError;
+
+        conversationId = conversation.id;
+      }
+
+      // Send message with story reference
+      const { error: messageError } = await supabase.from("messages").insert({
+        conversation_id: conversationId,
+        sender_id: user.id,
+        content: messageText,
         story_id: currentStory.id,
-        user_id: user.id,
-        reaction: emoji,
       });
 
-      if (error) throw error;
+      if (messageError) throw messageError;
+
+      // Also save as story reaction
+      await supabase.from("story_reactions").insert({
+        story_id: currentStory.id,
+        user_id: user.id,
+        reaction: messageText,
+      });
     },
     onSuccess: () => {
-      toast.success("Reakcia odoslaná!");
+      toast.success("Správa odoslaná!");
       setReaction("");
+    },
+    onError: (error: any) => {
+      if (error.message === "Cannot reply to own story") {
+        toast.error("Nemôžeš odpovedať na vlastnú story");
+      } else {
+        toast.error("Chyba pri odosielaní správy");
+      }
     },
   });
 
@@ -382,37 +449,41 @@ export default function Stories() {
         </div>
       )}
 
-      {/* Reaction bar */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
-        <div className="flex gap-2">
-          <Input
-            value={reaction}
-            onChange={(e) => setReaction(e.target.value)}
-            placeholder="Napíš správu..."
-            className="flex-1 bg-white/90"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && reaction.trim()) {
-                sendReactionMutation.mutate(reaction);
-              }
-            }}
-          />
-          <Button
-            size="icon"
-            onClick={() => sendReactionMutation.mutate("❤️")}
-            className="bg-white/90 hover:bg-white text-red-500"
-          >
-            <Heart className="h-5 w-5" />
-          </Button>
-          <Button
-            size="icon"
-            onClick={() => reaction.trim() && sendReactionMutation.mutate(reaction)}
-            disabled={!reaction.trim()}
-            className="bg-white/90 hover:bg-white text-primary"
-          >
-            <Send className="h-5 w-5" />
-          </Button>
+      {/* Reaction bar - only show for other users' stories */}
+      {user && currentStory.user_id !== user.id && (
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
+          <div className="flex gap-2">
+            <Input
+              value={reaction}
+              onChange={(e) => setReaction(e.target.value)}
+              placeholder="Napíš správu..."
+              className="flex-1 bg-white/90"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && reaction.trim()) {
+                  sendReactionMutation.mutate(reaction);
+                }
+              }}
+              disabled={sendReactionMutation.isPending}
+            />
+            <Button
+              size="icon"
+              onClick={() => sendReactionMutation.mutate("❤️")}
+              className="bg-white/90 hover:bg-white text-red-500"
+              disabled={sendReactionMutation.isPending}
+            >
+              <Heart className="h-5 w-5" />
+            </Button>
+            <Button
+              size="icon"
+              onClick={() => reaction.trim() && sendReactionMutation.mutate(reaction)}
+              disabled={!reaction.trim() || sendReactionMutation.isPending}
+              className="bg-white/90 hover:bg-white text-primary"
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Navigation areas */}
       <div className="absolute inset-0 flex">
