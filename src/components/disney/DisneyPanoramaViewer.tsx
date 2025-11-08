@@ -1,9 +1,9 @@
 import { useRef, useEffect, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Canvas, useThree } from "@react-three/fiber";
+import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
-import { Info, Volume2, VolumeX } from "lucide-react";
+import { Info, Volume2, VolumeX, Sparkles } from "lucide-react";
 
 import cinderellaThrone from "@/assets/disney/cinderella-throne.jpg";
 import sleepingBeautyBallroom from "@/assets/disney/sleeping-beauty-ballroom.jpg";
@@ -24,6 +24,20 @@ interface DisneyPanoramaViewerProps {
   imageUrl: string;
   audioGuideText?: string;
   ambientSound?: string;
+  collectibles?: Array<{
+    id: string;
+    position_x: number;
+    position_y: number;
+    position_z: number;
+    collectible: {
+      id: string;
+      name: string;
+      description: string;
+      rarity: string;
+    };
+  }>;
+  onCollectItem?: (collectibleId: string) => void;
+  collectedIds?: string[];
 }
 
 function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
@@ -99,15 +113,61 @@ function CameraController() {
   );
 }
 
+function CollectibleMarker({ 
+  position, 
+  collectible, 
+  onCollect, 
+  isCollected 
+}: { 
+  position: [number, number, number]; 
+  collectible: any;
+  onCollect: () => void;
+  isCollected: boolean;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  if (isCollected) return null;
+
+  return (
+    <mesh
+      position={position}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+      onClick={onCollect}
+    >
+      <sphereGeometry args={[5, 16, 16]} />
+      <meshStandardMaterial 
+        color={hovered ? "#FFD700" : "#FFA500"} 
+        emissive={hovered ? "#FFD700" : "#FFA500"}
+        emissiveIntensity={0.8}
+      />
+      {hovered && (
+        <Html center>
+          <div className="bg-black/90 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap pointer-events-none">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              <span>{collectible.collectible?.name}</span>
+            </div>
+          </div>
+        </Html>
+      )}
+    </mesh>
+  );
+}
+
 export function DisneyPanoramaViewer({ 
   imageUrl, 
   audioGuideText,
-  ambientSound 
+  ambientSound,
+  collectibles = [],
+  onCollectItem,
+  collectedIds = []
 }: DisneyPanoramaViewerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
   const [ambientVolume, setAmbientVolume] = useState(0.3);
   const [isAmbientMuted, setIsAmbientMuted] = useState(false);
+  const [hoveredCollectible, setHoveredCollectible] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -176,7 +236,27 @@ export function DisneyPanoramaViewer({
         }}
         dpr={[1, 2]}
       >
+        <ambientLight intensity={0.5} />
         <PanoramaSphere imageUrl={imageUrl} />
+        {collectibles.map((item: any) => {
+          const theta = (item.position_x * Math.PI) / 180;
+          const phi = ((90 - item.position_y) * Math.PI) / 180;
+          const radius = item.position_z || 480;
+          
+          const x = radius * Math.sin(phi) * Math.cos(theta);
+          const y = radius * Math.cos(phi);
+          const z = radius * Math.sin(phi) * Math.sin(theta);
+
+          return (
+            <CollectibleMarker
+              key={item.id}
+              position={[x, y, z]}
+              collectible={item}
+              onCollect={() => onCollectItem?.(item.collectible.id)}
+              isCollected={collectedIds.includes(item.collectible.id)}
+            />
+          );
+        })}
         <CameraController />
       </Canvas>
 

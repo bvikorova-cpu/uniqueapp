@@ -130,3 +130,162 @@ export const useCollectibles = (userId?: string) => {
     openMysteryBox
   };
 };
+
+// Disney Castle specific collectibles
+export const useRoomCollectibles = (roomId: string) => {
+  return useQuery({
+    queryKey: ["room-collectibles", roomId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("castle_room_collectibles")
+        .select(`
+          *,
+          collectible:disney_collectibles(*)
+        `)
+        .eq("room_id", roomId);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!roomId,
+  });
+};
+
+export const useUserDisneyCollectibles = () => {
+  return useQuery({
+    queryKey: ["user-disney-collectibles"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+
+      const { data, error } = await supabase
+        .from("user_collectibles")
+        .select(`
+          *,
+          collectible:disney_collectibles(*),
+          castle:disney_castles(name),
+          room:disney_castle_rooms(room_name)
+        `)
+        .eq("user_id", user.id)
+        .order("found_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+};
+
+export const useCollectDisneyItem = () => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      collectibleId,
+      castleId,
+      roomId,
+    }: {
+      collectibleId: string;
+      castleId: string;
+      roomId: string;
+    }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Please sign in to collect items");
+
+      // Check if already collected
+      const { data: existing } = await supabase
+        .from("user_collectibles")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("collectible_id", collectibleId)
+        .single();
+
+      if (existing) {
+        throw new Error("already_collected");
+      }
+
+      // Get collectible details
+      const { data: collectible } = await supabase
+        .from("disney_collectibles")
+        .select("*")
+        .eq("id", collectibleId)
+        .single();
+
+      const { data, error } = await supabase
+        .from("user_collectibles")
+        .insert([{
+          user_id: user.id,
+          collectible_id: collectibleId,
+          castle_id: castleId,
+          room_id: roomId,
+        } as any])
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      return { data, collectible };
+    },
+    onSuccess: ({ collectible }) => {
+      queryClient.invalidateQueries({ queryKey: ["user-disney-collectibles"] });
+      
+      const rarityEmoji = {
+        common: "⭐",
+        rare: "💎",
+        epic: "👑",
+        legendary: "🌟",
+      }[collectible?.rarity || "common"];
+
+      toast({
+        title: `${rarityEmoji} Found ${collectible?.name}!`,
+        description: `${collectible?.description} (+${collectible?.points} points)`,
+      });
+    },
+    onError: (error: Error) => {
+      if (error.message !== "already_collected") {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive"
+        });
+      }
+    },
+  });
+};
+
+export const useDisneyCollectionStats = () => {
+  return useQuery({
+    queryKey: ["disney-collection-stats"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { total: 0, collected: 0, points: 0 };
+
+      // Get total collectibles
+      const { count: total } = await supabase
+        .from("disney_collectibles")
+        .select("*", { count: "exact", head: true });
+
+      // Get user's collected items with points
+      const { data: collected, error } = await supabase
+        .from("user_collectibles")
+        .select(`
+          *,
+          collectible:disney_collectibles(points)
+        `)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
+      const points = collected?.reduce(
+        (sum, item: any) => sum + (item.collectible?.points || 0),
+        0
+      ) || 0;
+
+      return {
+        total: total || 0,
+        collected: collected?.length || 0,
+        points,
+      };
+    },
+  });
+};

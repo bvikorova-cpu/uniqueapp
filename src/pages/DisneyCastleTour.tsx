@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, Sparkles, Award } from "lucide-react";
 import { DisneyPanoramaViewer } from "@/components/disney/DisneyPanoramaViewer";
 import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useDisneyCastles";
+import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -18,6 +19,12 @@ export default function DisneyCastleTour() {
   const startTour = useStartTour();
   const completeRoom = useCompleteRoom();
   const earnStamp = useEarnStamp();
+  
+  const currentRoom = rooms?.[currentRoomIndex];
+  const { data: roomCollectibles } = useRoomCollectibles(currentRoom?.id || "");
+  const { data: userCollectibles } = useUserDisneyCollectibles();
+  const collectItem = useCollectDisneyItem();
+  const collectedIds = userCollectibles?.map((item: any) => item.collectible_id) || [];
 
   const { data: castle } = useQuery({
     queryKey: ["castle", castleId],
@@ -59,7 +66,6 @@ export default function DisneyCastleTour() {
     }
   }, [castle, visit]);
 
-  const currentRoom = rooms?.[currentRoomIndex];
   const isLastRoom = currentRoomIndex === (rooms?.length || 0) - 1;
   const progress = ((currentRoomIndex + 1) / (rooms?.length || 1)) * 100;
 
@@ -147,6 +153,16 @@ export default function DisneyCastleTour() {
   const panoramaUrl = getPanoramaUrl();
   const ambientSound = getAmbientSound();
 
+  const handleCollectItem = (collectibleId: string) => {
+    if (castleId && currentRoom) {
+      collectItem.mutate({
+        collectibleId,
+        castleId,
+        roomId: currentRoom.id,
+      });
+    }
+  };
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Header */}
@@ -196,6 +212,9 @@ export default function DisneyCastleTour() {
         imageUrl={panoramaUrl}
         audioGuideText={currentRoom.audio_guide_text || ""}
         ambientSound={ambientSound}
+        collectibles={roomCollectibles || []}
+        onCollectItem={handleCollectItem}
+        collectedIds={collectedIds}
       />
 
       {/* Navigation Controls */}
