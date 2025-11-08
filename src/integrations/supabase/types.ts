@@ -17363,6 +17363,17 @@ export type Database = {
         Returns: undefined
       }
       calculate_level: { Args: { points: number }; Returns: number }
+      create_notification: {
+        Args: {
+          p_actor_id: string
+          p_comment_id?: string
+          p_post_id?: string
+          p_repost_id?: string
+          p_type: string
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       expire_featured_listings: { Args: never; Returns: undefined }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       generate_certificate_number: { Args: never; Returns: string }

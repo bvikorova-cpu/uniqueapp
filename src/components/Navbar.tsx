@@ -13,6 +13,7 @@ import {
 import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle, Briefcase, Users, Brain, Plane, Heart, Activity, Apple, Mail, Video, Gamepad2, Star, FileText, GraduationCap, ChefHat, UserCircle, MoreHorizontal, Sparkles, Gavel, UserPlus, Settings, Bell, Music, Euro, Trophy, Award, Moon, Sun, Shirt, PawPrint, Gift, Zap, Home, Leaf, ImageIcon, BookOpen, Calculator, FlaskConical, Palette, Calendar, DollarSign, Image, Gem, Building2, Coffee, Bot, Globe, Lock, Mic2, Car, Clock, Dna, Scale, Shield, AlertTriangle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
+import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { useTranslation } from "react-i18next";
 
@@ -428,7 +429,10 @@ const Navbar = () => {
                   <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 </Button>
                 
-                {/* Notifications Dropdown */}
+                {/* Wall Notifications */}
+                <NotificationsDropdown />
+                
+                {/* Marketplace/Bazaar Notifications Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="relative">
