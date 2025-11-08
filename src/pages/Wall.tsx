@@ -83,82 +83,87 @@ const Feed = () => {
 
       if (postsError) throw postsError;
 
-      // Fetch profiles for posts
-      const postsWithProfiles = await Promise.all(
-        (postsData || []).map(async (post) => {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .eq("id", post.user_id)
-            .single();
-          
-          return {
-            ...post,
-            profiles: profile || { id: post.user_id, full_name: null, avatar_url: null }
-          };
-        })
-      );
-
-      setPosts(postsWithProfiles);
-
       // Fetch reposts
       const { data: repostsData, error: repostsError } = await supabase
         .from("reposts")
-        .select(`
-          *
-        `)
+        .select(`*`)
         .order("created_at", { ascending: false });
 
       if (repostsError) throw repostsError;
 
-      // Fetch all data for reposts (profiles and original posts with their media)
-      const repostsWithData = await Promise.all(
-        (repostsData || []).map(async (repost) => {
-          // Get repost author profile
-          const { data: repostProfile } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .eq("id", repost.user_id)
-            .single();
+      // Collect all unique user IDs and post IDs needed
+      const userIds = new Set<string>();
+      const originalPostIds = new Set<string>();
 
-          // Get original post with media
-          const { data: originalPost } = await supabase
-            .from("posts")
-            .select(`
-              *,
-              media (*)
-            `)
-            .eq("id", repost.original_post_id)
-            .single();
+      (postsData || []).forEach(post => userIds.add(post.user_id));
+      (repostsData || []).forEach(repost => {
+        userIds.add(repost.user_id);
+        originalPostIds.add(repost.original_post_id);
+      });
 
+      // Batch fetch all profiles
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", Array.from(userIds));
+
+      const profilesMap = new Map(
+        (profilesData || []).map(p => [p.id, p])
+      );
+
+      // Batch fetch all original posts for reposts
+      const { data: originalPostsData } = await supabase
+        .from("posts")
+        .select(`*, media (*)`)
+        .in("id", Array.from(originalPostIds));
+
+      const originalPostsMap = new Map(
+        (originalPostsData || []).map(p => [p.id, p])
+      );
+
+      // Map posts with profiles
+      const postsWithProfiles = (postsData || []).map(post => ({
+        ...post,
+        profiles: profilesMap.get(post.user_id) || { 
+          id: post.user_id, 
+          full_name: null, 
+          avatar_url: null 
+        }
+      }));
+
+      setPosts(postsWithProfiles);
+
+      // Map reposts with profiles and original posts
+      const repostsWithData = (repostsData || [])
+        .map(repost => {
+          const originalPost = originalPostsMap.get(repost.original_post_id);
           if (!originalPost) return null;
-
-          // Get original post author profile
-          const { data: originalProfile } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .eq("id", originalPost.user_id)
-            .single();
 
           return {
             ...repost,
-            profiles: repostProfile || { id: repost.user_id, full_name: null, avatar_url: null },
+            profiles: profilesMap.get(repost.user_id) || { 
+              id: repost.user_id, 
+              full_name: null, 
+              avatar_url: null 
+            },
             original_post: {
               ...originalPost,
-              profiles: originalProfile || { id: originalPost.user_id, full_name: null, avatar_url: null }
+              profiles: profilesMap.get(originalPost.user_id) || { 
+                id: originalPost.user_id, 
+                full_name: null, 
+                avatar_url: null 
+              }
             }
           };
         })
-      );
+        .filter(r => r !== null) as Repost[];
 
-      // Filter out null values (posts that were deleted)
-      const validReposts = repostsWithData.filter(r => r !== null) as Repost[];
-      setReposts(validReposts);
+      setReposts(repostsWithData);
 
       // Combine and sort all feed items by created_at
       const combined: FeedItem[] = [
         ...postsWithProfiles.map(post => ({ type: 'post' as const, data: post })),
-        ...validReposts.map(repost => ({ type: 'repost' as const, data: repost }))
+        ...repostsWithData.map(repost => ({ type: 'repost' as const, data: repost }))
       ];
 
       combined.sort((a, b) => {
@@ -408,35 +413,6 @@ const Feed = () => {
                 <p className="text-sm text-muted-foreground">
                   Follow users to see their posts here
                 </p>
-              </Card>
-            ) : (
-              <div className="masonry-grid">
-                {followingPosts.map((post, index) => (
-                  <div 
-                    key={post.id}
-                    className="masonry-item animate-fade-in"
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <PostCard
-                      post={post}
-                      onDelete={fetchPosts}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="following" className="mt-6">
-            {followingLoading ? (
-              <Card className="p-8 flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </Card>
-            ) : !followingPosts || followingPosts.length === 0 ? (
-              <Card className="p-8 text-center text-muted-foreground">
-                <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-lg font-semibold mb-2">No posts from people you follow</p>
-                <p className="text-sm">Start following users to see their posts here!</p>
               </Card>
             ) : (
               <div className="masonry-grid">
