@@ -16,7 +16,8 @@ import {
   Image as ImageIcon,
   Video as VideoIcon,
   X,
-  Loader2
+  Loader2,
+  Bookmark
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -91,14 +92,29 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [repostComment, setRepostComment] = useState("");
   const [reposting, setReposting] = useState(false);
   const [repostsCount, setRepostsCount] = useState(post.reposts_count || 0);
+  const [saved, setSaved] = useState(false);
   const { toast } = useToast();
 
-  // Get current user
+  // Get current user and check if post is saved
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) setCurrentUserId(user.id);
-    });
-  }, []);
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUserId(user.id);
+        
+        // Check if post is saved
+        const { data } = await supabase
+          .from("saved_posts")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("post_id", post.id)
+          .maybeSingle();
+        
+        setSaved(!!data);
+      }
+    };
+    init();
+  }, [post.id]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -331,6 +347,49 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           .insert({ post_id: post.id, user_id: user.id });
         setLiked(true);
         setLikesCount((prev) => prev + 1);
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Login required",
+          description: "Please login to save posts",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (saved) {
+        await supabase
+          .from("saved_posts")
+          .delete()
+          .eq("post_id", post.id)
+          .eq("user_id", user.id);
+        setSaved(false);
+        toast({
+          title: "Removed",
+          description: "Post removed from bookmarks",
+        });
+      } else {
+        await supabase
+          .from("saved_posts")
+          .insert({ post_id: post.id, user_id: user.id });
+        setSaved(true);
+        toast({
+          title: "Saved",
+          description: "Post saved to bookmarks",
+        });
       }
     } catch (error: any) {
       toast({
@@ -693,6 +752,16 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           >
             <Share2 className="h-4 w-4" />
             <span className="text-xs font-medium">{repostsCount}</span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleSave}
+            className="gap-1.5 hover:bg-purple-50 dark:hover:bg-purple-950/20 transition-colors"
+            title={saved ? "Remove from bookmarks" : "Save to bookmarks"}
+          >
+            <Bookmark className={`h-4 w-4 transition-all ${saved ? "fill-purple-500 text-purple-500" : ""}`} />
           </Button>
 
           <Popover>

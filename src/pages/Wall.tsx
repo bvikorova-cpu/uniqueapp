@@ -13,7 +13,7 @@ import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/fe
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X } from "lucide-react";
+import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark } from "lucide-react";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import { useFollowingPosts } from "@/hooks/useFollow";
 
@@ -82,6 +82,8 @@ const Feed = () => {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [savedPosts, setSavedPosts] = useState<Post[]>([]);
+  const [loadingSaved, setLoadingSaved] = useState(false);
 
   const fetchPosts = async (loadMore = false) => {
     try {
@@ -225,6 +227,72 @@ const Feed = () => {
       } else {
         setLoading(false);
       }
+    }
+  };
+
+  const fetchSavedPosts = async () => {
+    if (!user) return;
+    
+    setLoadingSaved(true);
+    try {
+      // Get saved post IDs
+      const { data: savedData, error: savedError } = await supabase
+        .from("saved_posts")
+        .select("post_id")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (savedError) throw savedError;
+
+      if (!savedData || savedData.length === 0) {
+        setSavedPosts([]);
+        setLoadingSaved(false);
+        return;
+      }
+
+      const postIds = savedData.map(s => s.post_id);
+
+      // Fetch posts with their media
+      const { data: postsData, error: postsError } = await supabase
+        .from("posts")
+        .select(`*, media (*)`)
+        .in("id", postIds);
+
+      if (postsError) throw postsError;
+
+      // Collect unique user IDs
+      const userIds = new Set<string>();
+      (postsData || []).forEach(post => userIds.add(post.user_id));
+
+      // Batch fetch all profiles
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", Array.from(userIds));
+
+      const profilesMap = new Map(
+        (profilesData || []).map(p => [p.id, p])
+      );
+
+      // Map posts with profiles
+      const postsWithProfiles = (postsData || []).map(post => ({
+        ...post,
+        profiles: profilesMap.get(post.user_id) || { 
+          id: post.user_id, 
+          full_name: null, 
+          avatar_url: null 
+        }
+      }));
+
+      setSavedPosts(postsWithProfiles);
+    } catch (error: any) {
+      toast({
+        title: "Error loading saved posts",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingSaved(false);
     }
   };
 
@@ -550,7 +618,7 @@ const Feed = () => {
         />
 
         <Tabs defaultValue="all" className="mt-8">
-          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4">
             <TabsTrigger value="all" className="flex items-center gap-2">
               <Home className="h-4 w-4" />
               All Posts
@@ -562,6 +630,14 @@ const Feed = () => {
             <TabsTrigger value="trending" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               Trending
+            </TabsTrigger>
+            <TabsTrigger 
+              value="saved" 
+              className="flex items-center gap-2"
+              onClick={() => fetchSavedPosts()}
+            >
+              <Bookmark className="h-4 w-4" />
+              Saved
             </TabsTrigger>
           </TabsList>
 
@@ -671,6 +747,42 @@ const Feed = () => {
               <Card className="p-4 mt-4 text-center text-muted-foreground text-sm">
                 You've reached the end! 🎉
               </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="saved" className="mt-6">
+            {loadingSaved ? (
+              <Card className="p-8 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </Card>
+            ) : !savedPosts || savedPosts.length === 0 ? (
+              <Card className="p-8 text-center">
+                <Bookmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground mb-2">
+                  No saved posts yet
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Save posts by clicking the bookmark icon to view them here
+                </p>
+              </Card>
+            ) : (
+              <div className="masonry-grid">
+                {savedPosts.map((post, index) => (
+                  <div 
+                    key={post.id}
+                    className="masonry-item animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <PostCard
+                      post={post}
+                      onDelete={() => {
+                        fetchPosts();
+                        fetchSavedPosts();
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
             )}
           </TabsContent>
         </Tabs>
