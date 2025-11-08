@@ -10,7 +10,10 @@ export const useTrendingPosts = () => {
 
       const { data, error } = await supabase
         .from("posts")
-        .select("*")
+        .select(`
+          *,
+          media (*)
+        `)
         .gte("created_at", oneWeekAgo.toISOString())
         .order("likes_count", { ascending: false })
         .limit(10);

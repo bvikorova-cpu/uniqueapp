@@ -10,7 +10,9 @@ import UserSearch from "@/components/feed/UserSearch";
 import StoriesBar from "@/components/feed/StoriesBar";
 import CreateStory from "@/components/feed/CreateStory";
 import { Card } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, TrendingUp, Home } from "lucide-react";
+import { useTrendingPosts } from "@/hooks/useTrends";
 
 interface Post {
   id: string;
@@ -58,6 +60,7 @@ const Feed = () => {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { data: trendingPosts, isLoading: trendingLoading } = useTrendingPosts();
 
   const fetchPosts = async () => {
     try {
@@ -247,39 +250,79 @@ const Feed = () => {
 
         <CreatePost onPostCreated={fetchPosts} />
 
-        <div className="mt-8">
-          {loading ? (
-            <Card className="p-8 flex items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </Card>
-          ) : feedItems.length === 0 ? (
-            <Card className="p-8 text-center text-muted-foreground">
-              No posts yet. Be the first to add something!
-            </Card>
-          ) : (
-            <div className="masonry-grid">
-              {feedItems.map((item, index) => (
-                <div 
-                  key={`${item.type}-${item.data.id}`}
-                  className="masonry-item animate-fade-in"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  {item.type === 'post' ? (
+        <Tabs defaultValue="all" className="mt-8">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+            <TabsTrigger value="all" className="flex items-center gap-2">
+              <Home className="h-4 w-4" />
+              All Posts
+            </TabsTrigger>
+            <TabsTrigger value="trending" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Trending
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="all" className="mt-6">
+            {loading ? (
+              <Card className="p-8 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </Card>
+            ) : feedItems.length === 0 ? (
+              <Card className="p-8 text-center text-muted-foreground">
+                No posts yet. Be the first to add something!
+              </Card>
+            ) : (
+              <div className="masonry-grid">
+                {feedItems.map((item, index) => (
+                  <div 
+                    key={`${item.type}-${item.data.id}`}
+                    className="masonry-item animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    {item.type === 'post' ? (
+                      <PostCard
+                        post={item.data}
+                        onDelete={fetchPosts}
+                      />
+                    ) : (
+                      <RepostCard
+                        repost={item.data}
+                        onDelete={fetchPosts}
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="trending" className="mt-6">
+            {trendingLoading ? (
+              <Card className="p-8 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </Card>
+            ) : !trendingPosts || trendingPosts.length === 0 ? (
+              <Card className="p-8 text-center text-muted-foreground">
+                No trending posts yet. Be the first to create viral content!
+              </Card>
+            ) : (
+              <div className="masonry-grid">
+                {trendingPosts.map((post, index) => (
+                  <div 
+                    key={post.id}
+                    className="masonry-item animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
                     <PostCard
-                      post={item.data}
+                      post={post}
                       onDelete={fetchPosts}
                     />
-                  ) : (
-                    <RepostCard
-                      repost={item.data}
-                      onDelete={fetchPosts}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
