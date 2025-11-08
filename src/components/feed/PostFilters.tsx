@@ -34,7 +34,7 @@ export const PostFilters = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground" />
-          <h3 className="font-semibold">Filtre</h3>
+          <h3 className="font-semibold">Filters</h3>
         </div>
         {hasActiveFilters && (
           <Button
@@ -44,53 +44,53 @@ export const PostFilters = ({
             className="text-xs"
           >
             <X className="h-3 w-3 mr-1" />
-            Resetovať
+            Reset
           </Button>
         )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="sort">Zoradiť podľa</Label>
+          <Label htmlFor="sort">Sort by</Label>
           <Select value={sortBy} onValueChange={onSortChange}>
             <SelectTrigger id="sort">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="newest">Najnovšie</SelectItem>
-              <SelectItem value="oldest">Najstaršie</SelectItem>
-              <SelectItem value="popular">Najpopulárnejšie</SelectItem>
-              <SelectItem value="most-comments">Najviac komentárov</SelectItem>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="oldest">Oldest</SelectItem>
+              <SelectItem value="popular">Most Popular</SelectItem>
+              <SelectItem value="most-comments">Most Comments</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="time">Časové obdobie</Label>
+          <Label htmlFor="time">Time Period</Label>
           <Select value={timeFilter} onValueChange={onTimeChange}>
             <SelectTrigger id="time">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Všetky</SelectItem>
-              <SelectItem value="today">Dnes</SelectItem>
-              <SelectItem value="week">Tento týždeň</SelectItem>
-              <SelectItem value="month">Tento mesiac</SelectItem>
+              <SelectItem value="all">All Time</SelectItem>
+              <SelectItem value="today">Today</SelectItem>
+              <SelectItem value="week">This Week</SelectItem>
+              <SelectItem value="month">This Month</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="category">Kategória</Label>
+          <Label htmlFor="category">Category</Label>
           <Select value={categoryFilter} onValueChange={onCategoryChange}>
             <SelectTrigger id="category">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Všetko</SelectItem>
+              <SelectItem value="all">All</SelectItem>
               <SelectItem value="text">Text</SelectItem>
-              <SelectItem value="image">Obrázky</SelectItem>
-              <SelectItem value="video">Video</SelectItem>
+              <SelectItem value="image">Images</SelectItem>
+              <SelectItem value="video">Videos</SelectItem>
             </SelectContent>
           </Select>
         </div>

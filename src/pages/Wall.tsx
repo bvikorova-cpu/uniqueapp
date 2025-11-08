@@ -367,7 +367,7 @@ const Feed = () => {
               </Card>
             ) : filteredFeedItems.length === 0 ? (
               <Card className="p-8 text-center text-muted-foreground">
-                Žiadne príspevky sa nenašli. Skúste zmeniť filtre.
+                No posts found. Try adjusting your filters.
               </Card>
             ) : (
               <div className="masonry-grid">
