@@ -7,9 +7,10 @@ import { DisneyPanoramaViewer } from "@/components/disney/DisneyPanoramaViewer";
 import { CastleRoomMiniMap } from "@/components/disney/CastleRoomMiniMap";
 import { CastleProgressTracker } from "@/components/disney/CastleProgressTracker";
 import { CastleCertificate } from "@/components/disney/CastleCertificate";
+import { useQuery } from "@tanstack/react-query";
 import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useDisneyCastles";
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
-import { useQuery } from "@tanstack/react-query";
+import { useSaveCertificate } from "@/hooks/useCertificates";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function DisneyCastleTour() {
@@ -28,6 +29,7 @@ export default function DisneyCastleTour() {
   const startTour = useStartTour();
   const completeRoom = useCompleteRoom();
   const earnStamp = useEarnStamp();
+  const saveCertificate = useSaveCertificate();
   
   const currentRoom = rooms?.[currentRoomIndex];
   const { data: roomCollectibles } = useRoomCollectibles(currentRoom?.id || "");
@@ -87,10 +89,24 @@ export default function DisneyCastleTour() {
       }
 
     if (isLastRoom) {
+      // Complete room first
+      if (currentRoom && visit) {
+        completeRoom.mutate({ visitId: visit.id, roomId: currentRoom.id });
+      }
+
       // Award stamp on completion
       if (castleId) {
         earnStamp.mutate({ castleId });
+        
+        // Save certificate
+        saveCertificate.mutate({
+          castleId,
+          completionTimeMs: Date.now() - tourStartTime,
+          unlockedMilestones,
+          totalRooms: rooms?.length || 0,
+        });
       }
+      
       // Show certificate
       setShowCertificate(true);
     } else {

@@ -15813,6 +15813,47 @@ export type Database = {
           },
         ]
       }
+      user_castle_certificates: {
+        Row: {
+          castle_id: string
+          completed_at: string
+          completion_time_ms: number
+          created_at: string
+          id: string
+          total_rooms: number
+          unlocked_milestones: number[]
+          user_id: string
+        }
+        Insert: {
+          castle_id: string
+          completed_at?: string
+          completion_time_ms: number
+          created_at?: string
+          id?: string
+          total_rooms: number
+          unlocked_milestones?: number[]
+          user_id: string
+        }
+        Update: {
+          castle_id?: string
+          completed_at?: string
+          completion_time_ms?: number
+          created_at?: string
+          id?: string
+          total_rooms?: number
+          unlocked_milestones?: number[]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_castle_certificates_castle_id_fkey"
+            columns: ["castle_id"]
+            isOneToOne: false
+            referencedRelation: "disney_castles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_castle_stamps: {
         Row: {
           castle_id: string | null

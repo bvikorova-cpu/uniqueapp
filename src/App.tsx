@@ -185,6 +185,7 @@ import ComedyClub from "./pages/ComedyClub";
 import ComedianDashboard from "./pages/ComedianDashboard";
 import DisneyCastles from "./pages/DisneyCastles";
 import DisneyCastleTour from "./pages/DisneyCastleTour";
+import CertificateGallery from "./pages/CertificateGallery";
 import DinosaurQuiz from "./pages/DinosaurQuiz";
 import TravelMap from "./pages/TravelMap";
 import PuppetTheater from "./pages/PuppetTheater";
@@ -424,6 +425,7 @@ const App = () => (
               <Route path="/comedian-dashboard" element={<ComedianDashboard />} />
               <Route path="/kids-channel/disney-castles" element={<DisneyCastles />} />
               <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
+              <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
               <Route path="/kids-channel/dinosaur-quiz" element={<DinosaurQuiz />} />
               <Route path="/kids-channel/travel-map" element={<TravelMap />} />
               <Route path="/kids-channel/puppet-theater" element={<PuppetTheater />} />

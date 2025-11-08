@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useDisneyCastles, useUserVisits, useUserStamps } from "@/hooks/useDisneyCastles";
-import { Globe2, MapPin, Sparkles, Trophy, ArrowLeft } from "lucide-react";
+import { useUserCertificates } from "@/hooks/useCertificates";
+import { Globe2, MapPin, Sparkles, Trophy, ArrowLeft, Award } from "lucide-react";
 import cinderellaFlorida from "@/assets/disney/cinderella-castle-florida.jpg";
 import sleepingBeautyCalifornia from "@/assets/disney/sleeping-beauty-castle-california.jpg";
 import parisCastle from "@/assets/disney/paris-castle.jpg";
@@ -34,6 +35,7 @@ export default function DisneyCastles() {
   const { castles, isLoading } = useDisneyCastles();
   const { visits } = useUserVisits();
   const { stamps } = useUserStamps();
+  const { certificates } = useUserCertificates();
 
   const visitedCastleIds = visits?.map(v => v.castle_id) || [];
   const stampedCastleIds = stamps?.map(s => s.castle_id) || [];
@@ -63,6 +65,19 @@ export default function DisneyCastles() {
               Back to Kids Channel
             </Button>
             <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate("/kids-channel/certificate-gallery")}
+                className="gap-2"
+              >
+                <Award className="h-4 w-4" />
+                My Certificates
+                {certificates && certificates.length > 0 && (
+                  <Badge variant="secondary" className="ml-1">
+                    {certificates.length}
+                  </Badge>
+                )}
+              </Button>
               <div className="text-right">
                 <p className="text-sm text-muted-foreground">Your Progress</p>
                 <p className="font-bold text-lg">
