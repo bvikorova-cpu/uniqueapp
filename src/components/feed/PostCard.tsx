@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +10,9 @@ import {
   MessageCircle, 
   Share2, 
   Smile,
-  Maximize2
+  Maximize2,
+  Edit2,
+  MoreVertical
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -23,7 +25,15 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
@@ -65,7 +75,18 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string>("");
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editContent, setEditContent] = useState(post.content);
+  const [saving, setSaving] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Get current user
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setCurrentUserId(user.id);
+    });
+  }, []);
 
   const handleUserClick = (e: React.MouseEvent, userId: string) => {
     e.stopPropagation();
@@ -137,7 +158,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm("Do you really want to delete this post?")) return;
+    if (!confirm("Naozaj chcete odstrániť tento príspevok?")) return;
 
     setDeleting(true);
     try {
@@ -147,8 +168,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       if (user?.id !== post.user_id) {
         toast({
-          title: "Cannot delete",
-          description: "You can only delete your own posts",
+          title: "Nedá sa odstrániť",
+          description: "Môžete odstrániť len vlastné príspevky",
           variant: "destructive",
         });
         return;
@@ -159,19 +180,56 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       if (error) throw error;
 
       toast({
-        title: "Success",
-        description: "Post was deleted",
+        title: "Úspech",
+        description: "Príspevok bol odstránený",
       });
 
       onDelete();
     } catch (error: any) {
       toast({
-        title: "Error",
+        title: "Chyba",
         description: error.message,
         variant: "destructive",
       });
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const handleEdit = async () => {
+    if (!editContent.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Obsah príspevku nemôže byť prázdny",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const { error } = await supabase
+        .from("posts")
+        .update({ content: editContent })
+        .eq("id", post.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspech",
+        description: "Príspevok bol aktualizovaný",
+      });
+
+      setShowEditDialog(false);
+      onDelete(); // Refresh posts
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -467,15 +525,40 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               })}
             </p>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleDelete}
-            disabled={deleting}
-            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <Trash2 className="h-3.5 w-3.5 text-destructive" />
-          </Button>
+          {currentUserId === post.user_id && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowEditDialog(true);
+                  }}
+                  className="gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  Upraviť
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="gap-2 text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Odstrániť
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
         {/* Content */}
@@ -723,6 +806,41 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
             alt="Full size"
             className="w-full h-auto max-h-[90vh] object-contain"
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="sm:max-w-[525px]" onClick={(e) => e.stopPropagation()}>
+          <DialogHeader>
+            <DialogTitle>Upraviť príspevok</DialogTitle>
+            <DialogDescription>
+              Upravte text vášho príspevku
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              placeholder="Čo máte na mysli?"
+              className="min-h-[150px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowEditDialog(false);
+                setEditContent(post.content);
+              }}
+              disabled={saving}
+            >
+              Zrušiť
+            </Button>
+            <Button onClick={handleEdit} disabled={saving || !editContent.trim()}>
+              {saving ? "Ukladá sa..." : "Uložiť"}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </Card>
