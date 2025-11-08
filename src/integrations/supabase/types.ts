@@ -5907,7 +5907,7 @@ export type Database = {
           hotspots: Json | null
           id: string
           order_index: number | null
-          panorama_url: string
+          panorama_url: string | null
           room_name: string
         }
         Insert: {
@@ -5918,7 +5918,7 @@ export type Database = {
           hotspots?: Json | null
           id?: string
           order_index?: number | null
-          panorama_url: string
+          panorama_url?: string | null
           room_name: string
         }
         Update: {
@@ -5929,7 +5929,7 @@ export type Database = {
           hotspots?: Json | null
           id?: string
           order_index?: number | null
-          panorama_url?: string
+          panorama_url?: string | null
           room_name?: string
         }
         Relationships: [
