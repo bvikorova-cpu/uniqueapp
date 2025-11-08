@@ -14,6 +14,9 @@ import { CourseHistory } from "@/components/profile/CourseHistory";
 import { UserVideos } from "@/components/profile/UserVideos";
 import { SavedVideos } from "@/components/profile/SavedVideos";
 import { UserContests } from "@/components/profile/UserContests";
+import { FollowButton } from "@/components/profile/FollowButton";
+import { FollowersModal } from "@/components/profile/FollowersModal";
+import { useFollowCounts } from "@/hooks/useFollow";
 
 interface Profile {
   id: string;
@@ -61,6 +64,9 @@ const Profile = () => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [friendshipStatus, setFriendshipStatus] = useState<'none' | 'pending_sent' | 'pending_received' | 'accepted'>('none');
   const [friends, setFriends] = useState<Profile[]>([]);
+  const [followersModalOpen, setFollowersModalOpen] = useState(false);
+  const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
+  const { data: followCounts } = useFollowCounts(userId);
   const [stats, setStats] = useState({
     postsCount: 0,
     likesGiven: 0,
@@ -417,13 +423,19 @@ const Profile = () => {
                           <UserCheck className="h-4 w-4 mr-2" />
                           Accept Request
                         </Button>
-                      )}
-                      {friendshipStatus === 'accepted' && (
-                        <Button variant="outline" size="sm" onClick={handleRemoveFriend}>
-                          <Users className="h-4 w-4 mr-2" />
-                          Friends
-                        </Button>
-                      )}
+                       )}
+                       {friendshipStatus === 'accepted' && (
+                         <Button variant="outline" size="sm" onClick={handleRemoveFriend}>
+                           <Users className="h-4 w-4 mr-2" />
+                           Friends
+                         </Button>
+                       )}
+                       <FollowButton
+                         userId={userId}
+                         currentUserId={currentUserId || undefined}
+                         variant="default"
+                         size="sm"
+                       />
                     </>
                   )}
                 </div>
@@ -510,6 +522,26 @@ const Profile = () => {
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.postsCount}</div>
               <div className="text-sm text-muted-foreground">Posts</div>
+            </div>
+            <div 
+              className="text-center cursor-pointer hover:bg-accent rounded-lg p-2 transition-colors"
+              onClick={() => {
+                setFollowersModalTab("followers");
+                setFollowersModalOpen(true);
+              }}
+            >
+              <div className="text-3xl font-bold text-primary">{followCounts?.followers || 0}</div>
+              <div className="text-sm text-muted-foreground">Followers</div>
+            </div>
+            <div 
+              className="text-center cursor-pointer hover:bg-accent rounded-lg p-2 transition-colors"
+              onClick={() => {
+                setFollowersModalTab("following");
+                setFollowersModalOpen(true);
+              }}
+            >
+              <div className="text-3xl font-bold text-primary">{followCounts?.following || 0}</div>
+              <div className="text-sm text-muted-foreground">Following</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.friendsCount}</div>
@@ -614,6 +646,14 @@ const Profile = () => {
             )}
           </TabsContent>
         </Tabs>
+
+        <FollowersModal
+          userId={userId!}
+          currentUserId={currentUserId || undefined}
+          isOpen={followersModalOpen}
+          onClose={() => setFollowersModalOpen(false)}
+          defaultTab={followersModalTab}
+        />
       </div>
     </div>
   );
