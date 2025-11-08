@@ -19,10 +19,11 @@ interface Notification {
   type: string;
   created_at: string;
   is_read: boolean;
-  post_id: string | null;
-  comment_id: string | null;
-  repost_id: string | null;
-  actor: {
+  post_id?: string | null;
+  comment_id?: string | null;
+  repost_id?: string | null;
+  actor_id?: string;
+  actor?: {
     id: string;
     full_name: string | null;
     avatar_url: string | null;
@@ -62,7 +63,7 @@ const NotificationBell = () => {
       if (error) throw error;
 
       // Fetch actor profiles
-      const actorIds = [...new Set(data?.map(n => n.actor_id) || [])];
+      const actorIds = [...new Set(data?.map(n => n.actor_id).filter(Boolean) || [])];
       const { data: profiles } = await supabase
         .from("profiles")
         .select("id, full_name, avatar_url")
@@ -72,14 +73,14 @@ const NotificationBell = () => {
 
       const notificationsWithActors = (data || []).map(notification => ({
         ...notification,
-        actor: profilesMap.get(notification.actor_id) || {
+        actor: notification.actor_id ? (profilesMap.get(notification.actor_id) || {
           id: notification.actor_id,
           full_name: null,
           avatar_url: null,
-        },
+        }) : undefined,
       }));
 
-      setNotifications(notificationsWithActors);
+      setNotifications(notificationsWithActors as Notification[]);
       setUnreadCount(notificationsWithActors.filter(n => !n.is_read).length);
     } catch (error: any) {
       console.error("Error fetching notifications:", error);
@@ -101,29 +102,31 @@ const NotificationBell = () => {
         },
         async (payload) => {
           // Fetch actor profile for the new notification
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .eq("id", payload.new.actor_id)
-            .single();
+          if (payload.new.actor_id) {
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("id, full_name, avatar_url")
+              .eq("id", payload.new.actor_id)
+              .single();
 
-          const newNotification = {
-            ...payload.new,
-            actor: profile || {
-              id: payload.new.actor_id,
-              full_name: null,
-              avatar_url: null,
-            },
-          };
+            const newNotification = {
+              ...payload.new,
+              actor: profile || {
+                id: payload.new.actor_id,
+                full_name: null,
+                avatar_url: null,
+              },
+            };
 
-          setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
-          setUnreadCount(prev => prev + 1);
+            setNotifications(prev => [newNotification as Notification, ...prev].slice(0, 20));
+            setUnreadCount(prev => prev + 1);
 
-          // Show toast for new notification
-          toast({
-            title: "New notification",
-            description: getNotificationText(newNotification as Notification),
-          });
+            // Show toast for new notification
+            toast({
+              title: "New notification",
+              description: getNotificationText(newNotification as Notification),
+            });
+          }
         }
       )
       .subscribe();
@@ -134,7 +137,7 @@ const NotificationBell = () => {
   };
 
   const getNotificationText = (notification: Notification): string => {
-    const actorName = notification.actor.full_name || "Someone";
+    const actorName = notification.actor?.full_name || "Someone";
     
     switch (notification.type) {
       case "like":
@@ -267,9 +270,9 @@ const NotificationBell = () => {
                 >
                   <div className="flex gap-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={notification.actor.avatar_url || undefined} />
+                      <AvatarImage src={notification.actor?.avatar_url || undefined} />
                       <AvatarFallback>
-                        {notification.actor.full_name?.charAt(0) || "U"}
+                        {notification.actor?.full_name?.charAt(0) || "U"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
@@ -278,9 +281,9 @@ const NotificationBell = () => {
                         <div className="flex-1">
                           <p className="text-sm">
                             <span className="font-semibold">
-                              {notification.actor.full_name || "Someone"}
+                              {notification.actor?.full_name || "Someone"}
                             </span>{" "}
-                            {getNotificationText(notification).replace(notification.actor.full_name || "Someone", "").trim()}
+                            {getNotificationText(notification).replace(notification.actor?.full_name || "Someone", "").trim()}
                           </p>
                           <p className="text-xs text-muted-foreground mt-1">
                             {formatDistanceToNow(new Date(notification.created_at), {

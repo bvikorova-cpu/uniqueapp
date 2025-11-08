@@ -14,6 +14,7 @@ import { Crown, ShoppingBag, Store, User, Menu, X, MessageSquare, MessageCircle,
 import { useTheme } from "next-themes";
 import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
+import NotificationBell from "@/components/notifications/NotificationBell";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import { useTranslation } from "react-i18next";
 
@@ -430,7 +431,7 @@ const Navbar = () => {
                 </Button>
                 
                 {/* Wall Notifications */}
-                <NotificationsDropdown />
+                <NotificationBell />
                 
                 {/* Marketplace/Bazaar Notifications Dropdown */}
                 <DropdownMenu>

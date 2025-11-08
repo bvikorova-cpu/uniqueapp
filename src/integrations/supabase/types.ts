@@ -11039,36 +11039,56 @@ export type Database = {
       }
       notifications: {
         Row: {
+          actor_id: string | null
+          comment_id: string | null
           created_at: string
           id: string
           is_read: boolean | null
           message: string
+          post_id: string | null
           related_id: string | null
+          repost_id: string | null
           title: string
           type: string
           user_id: string
         }
         Insert: {
+          actor_id?: string | null
+          comment_id?: string | null
           created_at?: string
           id?: string
           is_read?: boolean | null
           message: string
+          post_id?: string | null
           related_id?: string | null
+          repost_id?: string | null
           title: string
           type: string
           user_id: string
         }
         Update: {
+          actor_id?: string | null
+          comment_id?: string | null
           created_at?: string
           id?: string
           is_read?: boolean | null
           message?: string
+          post_id?: string | null
           related_id?: string | null
+          repost_id?: string | null
           title?: string
           type?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notifications_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       numerology_readings: {
         Row: {
