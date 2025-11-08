@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { supabase } from "@/integrations/supabase/client";
 
 // Magical Dreams (Hong Kong) - 10 rooms
 import magicalDreams1 from "@/assets/disney/panoramas/magical-dreams-1.jpg";
@@ -296,7 +297,10 @@ export function DisneyPanoramaViewer({
   const [isAmbientMuted, setIsAmbientMuted] = useState(false);
   const [hoveredCollectible, setHoveredCollectible] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>('en-US');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [audioCache, setAudioCache] = useState<Record<string, string>>({});
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const elevenLabsAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     // Auto-hide info after 5 seconds
@@ -333,31 +337,69 @@ export function DisneyPanoramaViewer({
     }
   }, [ambientVolume, isAmbientMuted]);
 
-  const handleSpeak = () => {
+  const handleSpeak = async () => {
     if (!audioGuideText) return;
 
     if (isPlaying) {
-      window.speechSynthesis.cancel();
-      setIsPlaying(false);
-    } else {
-      const utterance = new SpeechSynthesisUtterance(audioGuideText);
-      utterance.lang = selectedLanguage;
-      utterance.rate = 0.85;
-      utterance.pitch = 1.1;
-      utterance.volume = 1.0;
-      
-      // Try to select a voice that matches the language
-      const voices = window.speechSynthesis.getVoices();
-      const matchingVoice = voices.find(voice => voice.lang.startsWith(selectedLanguage.split('-')[0]));
-      if (matchingVoice) {
-        utterance.voice = matchingVoice;
+      if (elevenLabsAudioRef.current) {
+        elevenLabsAudioRef.current.pause();
+        elevenLabsAudioRef.current.currentTime = 0;
       }
-      
-      utterance.onend = () => setIsPlaying(false);
-      utterance.onerror = () => setIsPlaying(false);
-      window.speechSynthesis.speak(utterance);
-      setIsPlaying(true);
+      setIsPlaying(false);
+      return;
     }
+
+    // Check cache first
+    const cacheKey = `${imageUrl}-${selectedLanguage}`;
+    if (audioCache[cacheKey]) {
+      playAudio(audioCache[cacheKey]);
+      return;
+    }
+
+    // Generate new audio
+    setIsGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
+        body: {
+          text: audioGuideText,
+          language: selectedLanguage,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.audioContent) {
+        // Convert base64 to blob URL
+        const binaryString = atob(data.audioContent);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        const audioUrl = URL.createObjectURL(blob);
+
+        // Cache the audio URL
+        setAudioCache(prev => ({ ...prev, [cacheKey]: audioUrl }));
+        playAudio(audioUrl);
+      }
+    } catch (error) {
+      console.error('Error generating audio:', error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const playAudio = (audioUrl: string) => {
+    if (elevenLabsAudioRef.current) {
+      elevenLabsAudioRef.current.pause();
+    }
+
+    const audio = new Audio(audioUrl);
+    audio.onended = () => setIsPlaying(false);
+    audio.onerror = () => setIsPlaying(false);
+    audio.play();
+    elevenLabsAudioRef.current = audio;
+    setIsPlaying(true);
   };
 
   return (
@@ -404,9 +446,15 @@ export function DisneyPanoramaViewer({
           <Button
             onClick={handleSpeak}
             size="lg"
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-2xl"
+            disabled={isGenerating}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-2xl disabled:opacity-50"
           >
-            {isPlaying ? (
+            {isGenerating ? (
+              <>
+                <div className="mr-2 h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                Generating...
+              </>
+            ) : isPlaying ? (
               <>
                 <VolumeX className="mr-2 h-5 w-5" />
                 Stop Audio Guide

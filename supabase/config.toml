@@ -341,3 +341,6 @@ verify_jwt = true
 
 [functions.check-ancestor-twin-subscription]
 verify_jwt = true
+
+[functions.translate-and-generate-audio]
+verify_jwt = false
