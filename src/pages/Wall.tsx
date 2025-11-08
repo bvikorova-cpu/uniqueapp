@@ -65,7 +65,13 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [pullToRefresh, setPullToRefresh] = useState({
+    pulling: false,
+    pullDistance: 0,
+    canRefresh: false,
+  });
   const POSTS_PER_PAGE = 10;
+  const PULL_THRESHOLD = 80;
   const { toast } = useToast();
   const { data: trendingPosts, isLoading: trendingLoading } = useTrendingPosts();
   const { data: followingPosts, isLoading: followingLoading } = useFollowingPosts(user?.id);
@@ -280,6 +286,65 @@ const Feed = () => {
     };
   }, [navigate]);
 
+  // Pull-to-refresh functionality
+  useEffect(() => {
+    let startY = 0;
+    let currentY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      const scrollTop = document.documentElement.scrollTop;
+      if (scrollTop === 0) {
+        startY = e.touches[0].clientY;
+        setPullToRefresh(prev => ({ ...prev, pulling: true }));
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!pullToRefresh.pulling) return;
+      
+      const scrollTop = document.documentElement.scrollTop;
+      if (scrollTop > 0) {
+        setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
+        return;
+      }
+
+      currentY = e.touches[0].clientY;
+      const pullDistance = Math.max(0, currentY - startY);
+      
+      if (pullDistance > 0) {
+        e.preventDefault();
+      }
+
+      setPullToRefresh({
+        pulling: true,
+        pullDistance: Math.min(pullDistance, 120),
+        canRefresh: pullDistance > PULL_THRESHOLD,
+      });
+    };
+
+    const handleTouchEnd = async () => {
+      if (pullToRefresh.canRefresh && !loading) {
+        await fetchPosts();
+        toast({
+          title: "Feed refreshed",
+          description: "Your feed has been updated",
+        });
+      }
+      
+      setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
+    };
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [pullToRefresh.pulling, pullToRefresh.canRefresh, loading]);
+
   // Infinite scroll effect and back to top button visibility
   useEffect(() => {
     const handleScroll = () => {
@@ -381,6 +446,31 @@ const Feed = () => {
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-8">
+      {/* Pull-to-refresh indicator */}
+      {pullToRefresh.pulling && (
+        <div 
+          className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
+          style={{ 
+            height: `${pullToRefresh.pullDistance}px`,
+            opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
+          }}
+        >
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 
+              className={`h-6 w-6 text-primary transition-transform duration-200 ${
+                pullToRefresh.canRefresh ? 'animate-spin' : ''
+              }`}
+              style={{
+                transform: `rotate(${pullToRefresh.pullDistance * 3}deg)`
+              }}
+            />
+            <span className="text-sm text-muted-foreground">
+              {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
+            </span>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto px-4 max-w-4xl">
         <UserSearch />
 
