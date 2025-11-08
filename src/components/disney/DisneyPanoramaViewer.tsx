@@ -3,7 +3,13 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
-import { Info, Volume2, VolumeX, Sparkles } from "lucide-react";
+import { Info, Volume2, VolumeX, Sparkles, Languages } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 // Magical Dreams (Hong Kong) - 10 rooms
 import magicalDreams1 from "@/assets/disney/panoramas/magical-dreams-1.jpg";
@@ -269,6 +275,13 @@ function CollectibleMarker({
   );
 }
 
+const LANGUAGES = [
+  { code: 'en-US', name: 'English', flag: '🇬🇧' },
+  { code: 'sk-SK', name: 'Slovenčina', flag: '🇸🇰' },
+  { code: 'fr-FR', name: 'Français', flag: '🇫🇷' },
+  { code: 'es-ES', name: 'Español', flag: '🇪🇸' },
+];
+
 export function DisneyPanoramaViewer({ 
   imageUrl, 
   audioGuideText,
@@ -282,6 +295,7 @@ export function DisneyPanoramaViewer({
   const [ambientVolume, setAmbientVolume] = useState(0.3);
   const [isAmbientMuted, setIsAmbientMuted] = useState(false);
   const [hoveredCollectible, setHoveredCollectible] = useState<string | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('en-US');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -327,10 +341,20 @@ export function DisneyPanoramaViewer({
       setIsPlaying(false);
     } else {
       const utterance = new SpeechSynthesisUtterance(audioGuideText);
+      utterance.lang = selectedLanguage;
       utterance.rate = 0.85;
       utterance.pitch = 1.1;
       utterance.volume = 1.0;
+      
+      // Try to select a voice that matches the language
+      const voices = window.speechSynthesis.getVoices();
+      const matchingVoice = voices.find(voice => voice.lang.startsWith(selectedLanguage.split('-')[0]));
+      if (matchingVoice) {
+        utterance.voice = matchingVoice;
+      }
+      
       utterance.onend = () => setIsPlaying(false);
+      utterance.onerror = () => setIsPlaying(false);
       window.speechSynthesis.speak(utterance);
       setIsPlaying(true);
     }
@@ -376,7 +400,7 @@ export function DisneyPanoramaViewer({
 
       {/* Audio Guide Control */}
       {audioGuideText && (
-        <div className="absolute top-24 left-6 z-20">
+        <div className="absolute top-24 left-6 z-20 flex flex-col gap-2">
           <Button
             onClick={handleSpeak}
             size="lg"
@@ -394,6 +418,37 @@ export function DisneyPanoramaViewer({
               </>
             )}
           </Button>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                className="bg-white/90 hover:bg-white shadow-xl"
+              >
+                <Languages className="mr-2 h-5 w-5" />
+                {LANGUAGES.find(l => l.code === selectedLanguage)?.flag} {LANGUAGES.find(l => l.code === selectedLanguage)?.name}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white">
+              {LANGUAGES.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => {
+                    setSelectedLanguage(lang.code);
+                    if (isPlaying) {
+                      window.speechSynthesis.cancel();
+                      setIsPlaying(false);
+                    }
+                  }}
+                  className="cursor-pointer"
+                >
+                  <span className="mr-2">{lang.flag}</span>
+                  {lang.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
 
