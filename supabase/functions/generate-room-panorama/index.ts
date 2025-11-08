@@ -85,7 +85,15 @@ Format: 360-degree equirectangular projection for VR/panorama viewers.`;
     const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
     const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
 
-    const fileName = `${roomId}-${Date.now()}.png`;
+    // Sanitize filename
+    const sanitize = (str: string) => str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+
+    const fileName = `${sanitize(roomId)}-${Date.now()}.png`;
     const filePath = `panoramas/${fileName}`;
 
     console.log(`Uploading to storage: ${filePath}`);

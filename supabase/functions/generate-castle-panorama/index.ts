@@ -95,7 +95,15 @@ Ultra high resolution, professional theme park photography quality.`;
     const base64Data = imageUrl.split(',')[1];
     const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
     
-    const fileName = `${castleName.replace(/\s+/g, '-')}-${roomName.replace(/\s+/g, '-')}-${Date.now()}.png`;
+    // Sanitize filename - remove special characters and accents
+    const sanitize = (str: string) => str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-zA-Z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .toLowerCase();
+    
+    const fileName = `${sanitize(castleName)}-${sanitize(roomName)}-${Date.now()}.png`;
     const filePath = `castle-panoramas/${fileName}`;
 
     console.log('Uploading to storage:', filePath);

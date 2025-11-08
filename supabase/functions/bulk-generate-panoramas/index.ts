@@ -122,7 +122,15 @@ Ultra high resolution, professional theme park photography quality.`;
           const base64Data = imageUrl.split(',')[1];
           const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
           
-          const fileName = `${room.castle_name?.replace(/\s+/g, '-')}-${room.room_name.replace(/\s+/g, '-')}-${Date.now()}.png`;
+          // Sanitize filename - remove special characters and accents
+          const sanitize = (str: string) => str
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-zA-Z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .toLowerCase();
+          
+          const fileName = `${sanitize(room.castle_name || 'castle')}-${sanitize(room.room_name)}-${Date.now()}.png`;
           const filePath = `castle-panoramas/${fileName}`;
 
           const { error: uploadError } = await supabase.storage
