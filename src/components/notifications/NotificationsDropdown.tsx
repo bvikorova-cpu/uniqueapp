@@ -39,12 +39,30 @@ export const NotificationsDropdown = () => {
     return localStorage.getItem('notificationSoundEnabled') !== 'false';
   });
 
-  const playNotificationSound = () => {
-    if (soundEnabled) {
-      const audio = new Audio('/sounds/notification.mp3');
-      audio.volume = 0.5;
-      audio.play().catch(err => console.log('Could not play sound:', err));
+  const playNotificationSound = (type: string) => {
+    if (!soundEnabled) return;
+    
+    let soundFile = '/sounds/notification.mp3'; // default
+    
+    switch (type) {
+      case 'follow':
+        soundFile = '/sounds/follow.mp3';
+        break;
+      case 'like':
+        soundFile = '/sounds/like.mp3';
+        break;
+      case 'comment':
+        soundFile = '/sounds/comment.mp3';
+        break;
+      case 'reaction':
+      case 'repost':
+        soundFile = '/sounds/notification.mp3';
+        break;
     }
+    
+    const audio = new Audio(soundFile);
+    audio.volume = 0.5;
+    audio.play().catch(err => console.log('Could not play sound:', err));
   };
 
   useEffect(() => {
@@ -61,9 +79,10 @@ export const NotificationsDropdown = () => {
           table: "notifications",
         },
         async (payload) => {
-          // Play sound for follow notifications
-          if (payload.new.type === 'follow') {
-            playNotificationSound();
+          // Play sound based on notification type
+          const notificationType = payload.new.type;
+          if (['follow', 'like', 'comment', 'reaction', 'repost'].includes(notificationType)) {
+            playNotificationSound(notificationType);
           }
           fetchNotifications();
         }
