@@ -234,6 +234,7 @@ import StudentSupport from "./pages/fundraising/StudentSupport";
 import CrisisRelief from "./pages/fundraising/CrisisRelief";
 import TalentSponsorship from "./pages/fundraising/TalentSponsorship";
 import Wellness from "./pages/Wellness";
+import PostDetail from "./pages/PostDetail";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -252,6 +253,7 @@ const App = () => (
               <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/wall" element={<Wall />} />
+              <Route path="/post/:id" element={<PostDetail />} />
               <Route path="/tiktok" element={<TikTok />} />
               <Route path="/messenger" element={<Messenger />} />
               <Route path="/megatalent" element={<Megatalent />} />

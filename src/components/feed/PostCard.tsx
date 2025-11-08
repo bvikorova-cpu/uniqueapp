@@ -576,7 +576,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   };
 
   return (
-    <Card className={`overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 ${getAccentColor()}`}>
+    <Card 
+      className={`overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 ${getAccentColor()} cursor-pointer`}
+      onClick={() => navigate(`/post/${post.id}`)}
+    >
       {/* Media First - Pinterest Style */}
       {post.media && post.media.length > 0 && (
         <div className="relative overflow-hidden">
