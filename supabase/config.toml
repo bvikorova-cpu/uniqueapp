@@ -344,3 +344,6 @@ verify_jwt = true
 
 [functions.translate-and-generate-audio]
 verify_jwt = false
+
+[functions.generate-castle-panorama]
+verify_jwt = true
