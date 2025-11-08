@@ -5,20 +5,77 @@ import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Info, Volume2, VolumeX, Sparkles } from "lucide-react";
 
-import cinderellaThrone from "@/assets/disney/cinderella-throne.jpg";
-import sleepingBeautyBallroom from "@/assets/disney/sleeping-beauty-ballroom.jpg";
-import parisLibrary from "@/assets/disney/paris-library.jpg";
-import hongkongDreams from "@/assets/disney/hongkong-dreams.jpg";
-import shanghaiHall from "@/assets/disney/shanghai-hall.jpg";
-import tokyoCastle from "@/assets/disney/tokyo-castle.jpg";
-import stainedGlassGallery from "@/assets/disney/panoramas/stained-glass-gallery.jpg";
-import dragonCave from "@/assets/disney/panoramas/dragon-cave.jpg";
-import royalChapel from "@/assets/disney/panoramas/royal-chapel.jpg";
-import tapestryHall from "@/assets/disney/panoramas/tapestry-hall.jpg";
-import enchantedGarden from "@/assets/disney/panoramas/enchanted-garden.jpg";
-import royalLibrary from "@/assets/disney/panoramas/royal-library.jpg";
-import towerRoom from "@/assets/disney/panoramas/tower-room.jpg";
-import grandBallroom from "@/assets/disney/panoramas/grand-ballroom.jpg";
+// Magical Dreams (Hong Kong) - 10 rooms
+import magicalDreams1 from "@/assets/disney/panoramas/magical-dreams-1.jpg";
+import magicalDreams2 from "@/assets/disney/panoramas/magical-dreams-2.jpg";
+import magicalDreams3 from "@/assets/disney/panoramas/magical-dreams-3.jpg";
+import magicalDreams4 from "@/assets/disney/panoramas/magical-dreams-4.jpg";
+import magicalDreams5 from "@/assets/disney/panoramas/magical-dreams-5.jpg";
+import magicalDreams6 from "@/assets/disney/panoramas/magical-dreams-6.jpg";
+import magicalDreams7 from "@/assets/disney/panoramas/magical-dreams-7.jpg";
+import magicalDreams8 from "@/assets/disney/panoramas/magical-dreams-8.jpg";
+import magicalDreams9 from "@/assets/disney/panoramas/magical-dreams-9.jpg";
+import magicalDreams10 from "@/assets/disney/panoramas/magical-dreams-10.jpg";
+
+// Cinderella Castle (Magic Kingdom) - 10 rooms
+import cinderella1 from "@/assets/disney/panoramas/cinderella-1.jpg";
+import cinderella2 from "@/assets/disney/panoramas/cinderella-2.jpg";
+import cinderella3 from "@/assets/disney/panoramas/cinderella-3.jpg";
+import cinderella4 from "@/assets/disney/panoramas/cinderella-4.jpg";
+import cinderella5 from "@/assets/disney/panoramas/cinderella-5.jpg";
+import cinderella6 from "@/assets/disney/panoramas/cinderella-6.jpg";
+import cinderella7 from "@/assets/disney/panoramas/cinderella-7.jpg";
+import cinderella8 from "@/assets/disney/panoramas/cinderella-8.jpg";
+import cinderella9 from "@/assets/disney/panoramas/cinderella-9.jpg";
+import cinderella10 from "@/assets/disney/panoramas/cinderella-10.jpg";
+
+// Sleeping Beauty Castle (Disneyland) - 10 rooms
+import sleepingBeauty1 from "@/assets/disney/panoramas/sleeping-beauty-1.jpg";
+import sleepingBeauty2 from "@/assets/disney/panoramas/sleeping-beauty-2.jpg";
+import sleepingBeauty3 from "@/assets/disney/panoramas/sleeping-beauty-3.jpg";
+import sleepingBeauty4 from "@/assets/disney/panoramas/sleeping-beauty-4.jpg";
+import sleepingBeauty5 from "@/assets/disney/panoramas/sleeping-beauty-5.jpg";
+import sleepingBeauty6 from "@/assets/disney/panoramas/sleeping-beauty-6.jpg";
+import sleepingBeauty7 from "@/assets/disney/panoramas/sleeping-beauty-7.jpg";
+import sleepingBeauty8 from "@/assets/disney/panoramas/sleeping-beauty-8.jpg";
+import sleepingBeauty9 from "@/assets/disney/panoramas/sleeping-beauty-9.jpg";
+import sleepingBeauty10 from "@/assets/disney/panoramas/sleeping-beauty-10.jpg";
+
+// Le Château de la Belle au Bois Dormant (Paris) - 10 rooms
+import parisBelle1 from "@/assets/disney/panoramas/paris-belle-1.jpg";
+import parisBelle2 from "@/assets/disney/panoramas/paris-belle-2.jpg";
+import parisBelle3 from "@/assets/disney/panoramas/paris-belle-3.jpg";
+import parisBelle4 from "@/assets/disney/panoramas/paris-belle-4.jpg";
+import parisBelle5 from "@/assets/disney/panoramas/paris-belle-5.jpg";
+import parisBelle6 from "@/assets/disney/panoramas/paris-belle-6.jpg";
+import parisBelle7 from "@/assets/disney/panoramas/paris-belle-7.jpg";
+import parisBelle8 from "@/assets/disney/panoramas/paris-belle-8.jpg";
+import parisBelle9 from "@/assets/disney/panoramas/paris-belle-9.jpg";
+import parisBelle10 from "@/assets/disney/panoramas/paris-belle-10.jpg";
+
+// Cinderella Castle (Tokyo) - 10 rooms
+import tokyoCinderella1 from "@/assets/disney/panoramas/tokyo-cinderella-1.jpg";
+import tokyoCinderella2 from "@/assets/disney/panoramas/tokyo-cinderella-2.jpg";
+import tokyoCinderella3 from "@/assets/disney/panoramas/tokyo-cinderella-3.jpg";
+import tokyoCinderella4 from "@/assets/disney/panoramas/tokyo-cinderella-4.jpg";
+import tokyoCinderella5 from "@/assets/disney/panoramas/tokyo-cinderella-5.jpg";
+import tokyoCinderella6 from "@/assets/disney/panoramas/tokyo-cinderella-6.jpg";
+import tokyoCinderella7 from "@/assets/disney/panoramas/tokyo-cinderella-7.jpg";
+import tokyoCinderella8 from "@/assets/disney/panoramas/tokyo-cinderella-8.jpg";
+import tokyoCinderella9 from "@/assets/disney/panoramas/tokyo-cinderella-9.jpg";
+import tokyoCinderella10 from "@/assets/disney/panoramas/tokyo-cinderella-10.jpg";
+
+// Enchanted Storybook Castle (Shanghai) - 10 rooms
+import shanghaiStorybook1 from "@/assets/disney/panoramas/shanghai-storybook-1.jpg";
+import shanghaiStorybook2 from "@/assets/disney/panoramas/shanghai-storybook-2.jpg";
+import shanghaiStorybook3 from "@/assets/disney/panoramas/shanghai-storybook-3.jpg";
+import shanghaiStorybook4 from "@/assets/disney/panoramas/shanghai-storybook-4.jpg";
+import shanghaiStorybook5 from "@/assets/disney/panoramas/shanghai-storybook-5.jpg";
+import shanghaiStorybook6 from "@/assets/disney/panoramas/shanghai-storybook-6.jpg";
+import shanghaiStorybook7 from "@/assets/disney/panoramas/shanghai-storybook-7.jpg";
+import shanghaiStorybook8 from "@/assets/disney/panoramas/shanghai-storybook-8.jpg";
+import shanghaiStorybook9 from "@/assets/disney/panoramas/shanghai-storybook-9.jpg";
+import shanghaiStorybook10 from "@/assets/disney/panoramas/shanghai-storybook-10.jpg";
 
 interface DisneyPanoramaViewerProps {
   imageUrl: string;
@@ -47,25 +104,82 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
   useEffect(() => {
     const loader = new THREE.TextureLoader();
     
-    // Map URL to imported image
+    // Map URL to imported image - All 60 unique panoramas
     const imageMap: Record<string, string> = {
-      '/src/assets/disney/cinderella-throne.jpg': cinderellaThrone,
-      '/src/assets/disney/sleeping-beauty-ballroom.jpg': sleepingBeautyBallroom,
-      '/src/assets/disney/paris-library.jpg': parisLibrary,
-      '/src/assets/disney/hongkong-dreams.jpg': hongkongDreams,
-      '/src/assets/disney/shanghai-hall.jpg': shanghaiHall,
-      '/src/assets/disney/tokyo-castle.jpg': tokyoCastle,
-      'stained-glass-gallery': stainedGlassGallery,
-      'dragon-cave': dragonCave,
-      'royal-chapel': royalChapel,
-      'tapestry-hall': tapestryHall,
-      'enchanted-garden': enchantedGarden,
-      'royal-library': royalLibrary,
-      'tower-room': towerRoom,
-      'grand-ballroom': grandBallroom,
+      // Magical Dreams (Hong Kong) - 10 rooms
+      'magical-dreams-1': magicalDreams1,
+      'magical-dreams-2': magicalDreams2,
+      'magical-dreams-3': magicalDreams3,
+      'magical-dreams-4': magicalDreams4,
+      'magical-dreams-5': magicalDreams5,
+      'magical-dreams-6': magicalDreams6,
+      'magical-dreams-7': magicalDreams7,
+      'magical-dreams-8': magicalDreams8,
+      'magical-dreams-9': magicalDreams9,
+      'magical-dreams-10': magicalDreams10,
+      
+      // Cinderella Castle (Magic Kingdom) - 10 rooms
+      'cinderella-1': cinderella1,
+      'cinderella-2': cinderella2,
+      'cinderella-3': cinderella3,
+      'cinderella-4': cinderella4,
+      'cinderella-5': cinderella5,
+      'cinderella-6': cinderella6,
+      'cinderella-7': cinderella7,
+      'cinderella-8': cinderella8,
+      'cinderella-9': cinderella9,
+      'cinderella-10': cinderella10,
+      
+      // Sleeping Beauty Castle (Disneyland) - 10 rooms
+      'sleeping-beauty-1': sleepingBeauty1,
+      'sleeping-beauty-2': sleepingBeauty2,
+      'sleeping-beauty-3': sleepingBeauty3,
+      'sleeping-beauty-4': sleepingBeauty4,
+      'sleeping-beauty-5': sleepingBeauty5,
+      'sleeping-beauty-6': sleepingBeauty6,
+      'sleeping-beauty-7': sleepingBeauty7,
+      'sleeping-beauty-8': sleepingBeauty8,
+      'sleeping-beauty-9': sleepingBeauty9,
+      'sleeping-beauty-10': sleepingBeauty10,
+      
+      // Le Château de la Belle au Bois Dormant (Paris) - 10 rooms
+      'paris-belle-1': parisBelle1,
+      'paris-belle-2': parisBelle2,
+      'paris-belle-3': parisBelle3,
+      'paris-belle-4': parisBelle4,
+      'paris-belle-5': parisBelle5,
+      'paris-belle-6': parisBelle6,
+      'paris-belle-7': parisBelle7,
+      'paris-belle-8': parisBelle8,
+      'paris-belle-9': parisBelle9,
+      'paris-belle-10': parisBelle10,
+      
+      // Cinderella Castle (Tokyo) - 10 rooms
+      'tokyo-cinderella-1': tokyoCinderella1,
+      'tokyo-cinderella-2': tokyoCinderella2,
+      'tokyo-cinderella-3': tokyoCinderella3,
+      'tokyo-cinderella-4': tokyoCinderella4,
+      'tokyo-cinderella-5': tokyoCinderella5,
+      'tokyo-cinderella-6': tokyoCinderella6,
+      'tokyo-cinderella-7': tokyoCinderella7,
+      'tokyo-cinderella-8': tokyoCinderella8,
+      'tokyo-cinderella-9': tokyoCinderella9,
+      'tokyo-cinderella-10': tokyoCinderella10,
+      
+      // Enchanted Storybook Castle (Shanghai) - 10 rooms
+      'shanghai-storybook-1': shanghaiStorybook1,
+      'shanghai-storybook-2': shanghaiStorybook2,
+      'shanghai-storybook-3': shanghaiStorybook3,
+      'shanghai-storybook-4': shanghaiStorybook4,
+      'shanghai-storybook-5': shanghaiStorybook5,
+      'shanghai-storybook-6': shanghaiStorybook6,
+      'shanghai-storybook-7': shanghaiStorybook7,
+      'shanghai-storybook-8': shanghaiStorybook8,
+      'shanghai-storybook-9': shanghaiStorybook9,
+      'shanghai-storybook-10': shanghaiStorybook10,
     };
 
-    const actualImageUrl = imageMap[imageUrl] || cinderellaThrone;
+    const actualImageUrl = imageMap[imageUrl] || magicalDreams1;
     
     loader.load(
       actualImageUrl,
