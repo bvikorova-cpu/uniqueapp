@@ -11,8 +11,9 @@ import StoriesBar from "@/components/feed/StoriesBar";
 import CreateStory from "@/components/feed/CreateStory";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, TrendingUp, Home } from "lucide-react";
+import { Loader2, TrendingUp, Home, Users } from "lucide-react";
 import { useTrendingPosts } from "@/hooks/useTrends";
+import { useFollowingPosts } from "@/hooks/useFollow";
 
 interface Post {
   id: string;
@@ -61,6 +62,7 @@ const Feed = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { data: trendingPosts, isLoading: trendingLoading } = useTrendingPosts();
+  const { data: followingPosts, isLoading: followingLoading } = useFollowingPosts(user?.id);
 
   const fetchPosts = async () => {
     try {
@@ -251,10 +253,14 @@ const Feed = () => {
         <CreatePost onPostCreated={fetchPosts} />
 
         <Tabs defaultValue="all" className="mt-8">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3">
             <TabsTrigger value="all" className="flex items-center gap-2">
               <Home className="h-4 w-4" />
               All Posts
+            </TabsTrigger>
+            <TabsTrigger value="following" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Following
             </TabsTrigger>
             <TabsTrigger value="trending" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
@@ -290,6 +296,39 @@ const Feed = () => {
                         onDelete={fetchPosts}
                       />
                     )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="following" className="mt-6">
+            {followingLoading ? (
+              <Card className="p-8 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </Card>
+            ) : !followingPosts || followingPosts.length === 0 ? (
+              <Card className="p-8 text-center">
+                <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground mb-2">
+                  No posts from people you follow yet
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Follow users to see their posts here
+                </p>
+              </Card>
+            ) : (
+              <div className="masonry-grid">
+                {followingPosts.map((post, index) => (
+                  <div 
+                    key={post.id}
+                    className="masonry-item animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <PostCard
+                      post={post}
+                      onDelete={fetchPosts}
+                    />
                   </div>
                 ))}
               </div>
