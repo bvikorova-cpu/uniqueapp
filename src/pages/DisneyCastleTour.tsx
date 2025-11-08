@@ -6,6 +6,7 @@ import { ArrowLeft, Sparkles, Award, Map, TrendingUp } from "lucide-react";
 import { DisneyPanoramaViewer } from "@/components/disney/DisneyPanoramaViewer";
 import { CastleRoomMiniMap } from "@/components/disney/CastleRoomMiniMap";
 import { CastleProgressTracker } from "@/components/disney/CastleProgressTracker";
+import { CastleCertificate } from "@/components/disney/CastleCertificate";
 import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useDisneyCastles";
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +22,7 @@ export default function DisneyCastleTour() {
   const [showProgress, setShowProgress] = useState(false);
   const [tourStartTime] = useState(Date.now());
   const [unlockedMilestones, setUnlockedMilestones] = useState<number[]>([]);
+  const [showCertificate, setShowCertificate] = useState(false);
 
   const { rooms, isLoading: roomsLoading } = useCastleRooms(castleId!);
   const startTour = useStartTour();
@@ -84,13 +86,14 @@ export default function DisneyCastleTour() {
         completeRoom.mutate({ visitId: visit.id, roomId: currentRoom.id });
       }
 
-      if (isLastRoom) {
-        // Award stamp on completion
-        if (castleId) {
-          earnStamp.mutate({ castleId });
-        }
-        navigate("/kids-channel/disney-castles");
-      } else {
+    if (isLastRoom) {
+      // Award stamp on completion
+      if (castleId) {
+        earnStamp.mutate({ castleId });
+      }
+      // Show certificate
+      setShowCertificate(true);
+    } else {
         setCurrentRoomIndex(prev => prev + 1);
         setTimeout(() => setIsFading(false), 50);
       }
@@ -339,6 +342,19 @@ export default function DisneyCastleTour() {
         onClose={() => setShowProgress(false)}
         unlockedMilestones={unlockedMilestones}
         onMilestoneUnlock={handleMilestoneUnlock}
+      />
+
+      {/* Certificate */}
+      <CastleCertificate
+        castleName={castle?.name || ""}
+        completionTime={Date.now() - tourStartTime}
+        unlockedMilestones={unlockedMilestones}
+        totalRooms={rooms?.length || 0}
+        isVisible={showCertificate}
+        onClose={() => {
+          setShowCertificate(false);
+          navigate("/kids-channel/disney-castles");
+        }}
       />
     </div>
   );
