@@ -104,7 +104,48 @@ export default function DisneyCastleTour() {
     return currentRoom.panorama_url;
   };
 
+  // Ambient sound mapping based on room type
+  const getAmbientSound = () => {
+    if (!currentRoom) return undefined;
+    
+    const roomName = currentRoom.room_name.toLowerCase();
+    
+    // Map room types to ambient sounds
+    if (roomName.includes('garden') || roomName.includes('enchanted')) {
+      // Birds chirping, gentle breeze
+      return 'https://cdn.pixabay.com/audio/2022/03/10/audio_d1718abf88.mp3';
+    }
+    if (roomName.includes('library') || roomName.includes('book')) {
+      // Crackling fireplace
+      return 'https://cdn.pixabay.com/audio/2022/03/24/audio_c2eb9cb63b.mp3';
+    }
+    if (roomName.includes('cave') || roomName.includes('dragon')) {
+      // Mysterious cave ambience
+      return 'https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3';
+    }
+    if (roomName.includes('chapel') || roomName.includes('royal')) {
+      // Soft choir/church bells
+      return 'https://cdn.pixabay.com/audio/2021/08/04/audio_0625c1539c.mp3';
+    }
+    if (roomName.includes('ballroom') || roomName.includes('dance')) {
+      // Soft orchestral music
+      return 'https://cdn.pixabay.com/audio/2022/03/15/audio_21599d6316.mp3';
+    }
+    if (roomName.includes('gallery') || roomName.includes('hall')) {
+      // Gentle magical ambience
+      return 'https://cdn.pixabay.com/audio/2022/11/22/audio_a0c0b3d30f.mp3';
+    }
+    if (roomName.includes('tower')) {
+      // Wind sounds
+      return 'https://cdn.pixabay.com/audio/2022/03/12/audio_4019d3ca55.mp3';
+    }
+    
+    // Default magical ambience
+    return 'https://cdn.pixabay.com/audio/2022/08/02/audio_884fe5c87c.mp3';
+  };
+
   const panoramaUrl = getPanoramaUrl();
+  const ambientSound = getAmbientSound();
 
   return (
     <div className="relative h-screen w-full overflow-hidden">
@@ -154,6 +195,7 @@ export default function DisneyCastleTour() {
       <DisneyPanoramaViewer
         imageUrl={panoramaUrl}
         audioGuideText={currentRoom.audio_guide_text || ""}
+        ambientSound={ambientSound}
       />
 
       {/* Navigation Controls */}

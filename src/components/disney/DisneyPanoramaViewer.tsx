@@ -23,6 +23,7 @@ import grandBallroom from "@/assets/disney/panoramas/grand-ballroom.jpg";
 interface DisneyPanoramaViewerProps {
   imageUrl: string;
   audioGuideText?: string;
+  ambientSound?: string;
 }
 
 function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
@@ -100,16 +101,49 @@ function CameraController() {
 
 export function DisneyPanoramaViewer({ 
   imageUrl, 
-  audioGuideText 
+  audioGuideText,
+  ambientSound 
 }: DisneyPanoramaViewerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showInfo, setShowInfo] = useState(true);
+  const [ambientVolume, setAmbientVolume] = useState(0.3);
+  const [isAmbientMuted, setIsAmbientMuted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     // Auto-hide info after 5 seconds
     const timer = setTimeout(() => setShowInfo(false), 5000);
     return () => clearTimeout(timer);
   }, []);
+
+  // Ambient sound management
+  useEffect(() => {
+    if (ambientSound && !audioRef.current) {
+      const audio = new Audio(ambientSound);
+      audio.loop = true;
+      audio.volume = ambientVolume;
+      audioRef.current = audio;
+      
+      // Auto-play ambient sound
+      audio.play().catch(error => {
+        console.log("Ambient sound autoplay prevented:", error);
+      });
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, [ambientSound]);
+
+  // Update volume when changed
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = isAmbientMuted ? 0 : ambientVolume;
+    }
+  }, [ambientVolume, isAmbientMuted]);
 
   const handleSpeak = () => {
     if (!audioGuideText) return;
@@ -169,6 +203,36 @@ export function DisneyPanoramaViewer({
         </div>
       )}
 
+      {/* Ambient Sound Controls */}
+      {ambientSound && (
+        <div className="absolute top-24 right-6 bg-white/90 backdrop-blur-sm p-4 rounded-xl shadow-lg">
+          <div className="flex items-center gap-3">
+            <Button
+              onClick={() => setIsAmbientMuted(!isAmbientMuted)}
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+            >
+              {isAmbientMuted ? (
+                <VolumeX className="h-4 w-4" />
+              ) : (
+                <Volume2 className="h-4 w-4" />
+              )}
+            </Button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.1"
+              value={ambientVolume}
+              onChange={(e) => setAmbientVolume(parseFloat(e.target.value))}
+              className="w-20 accent-blue-600"
+            />
+          </div>
+          <p className="text-xs text-gray-600 mt-1 text-center">Ambient</p>
+        </div>
+      )}
+
       {/* Help Overlay */}
       {showInfo && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-2xl max-w-md animate-fade-in">
@@ -180,6 +244,7 @@ export function DisneyPanoramaViewer({
                 <li>🖱️ <strong>Click & drag</strong> to look around</li>
                 <li>🔍 <strong>Scroll</strong> to zoom in/out</li>
                 <li>🎧 <strong>Audio Guide</strong> tells the castle story</li>
+                <li>🎵 <strong>Ambient sounds</strong> create atmosphere</li>
                 <li>📱 <strong>Mobile</strong>: Touch and swipe to explore</li>
               </ul>
               <Button
