@@ -12256,6 +12256,7 @@ export type Database = {
           created_at: string
           id: string
           likes_count: number | null
+          reposts_count: number
           shares_count: number | null
           updated_at: string
           user_id: string
@@ -12266,6 +12267,7 @@ export type Database = {
           created_at?: string
           id?: string
           likes_count?: number | null
+          reposts_count?: number
           shares_count?: number | null
           updated_at?: string
           user_id: string
@@ -12276,6 +12278,7 @@ export type Database = {
           created_at?: string
           id?: string
           likes_count?: number | null
+          reposts_count?: number
           shares_count?: number | null
           updated_at?: string
           user_id?: string
@@ -13576,6 +13579,41 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      reposts: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          original_post_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          original_post_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          original_post_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reposts_original_post_id_fkey"
+            columns: ["original_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       restaurant_analyses: {
         Row: {

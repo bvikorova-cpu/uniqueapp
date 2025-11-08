@@ -52,6 +52,7 @@ interface PostCardProps {
     likes_count: number;
     comments_count: number;
     shares_count: number;
+    reposts_count: number;
     media: Array<{
       id: string;
       file_url: string;
@@ -86,6 +87,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [newFiles, setNewFiles] = useState<File[]>([]);
   const [existingMedia, setExistingMedia] = useState(post.media || []);
   const [mediaToDelete, setMediaToDelete] = useState<string[]>([]);
+  const [showRepostDialog, setShowRepostDialog] = useState(false);
+  const [repostComment, setRepostComment] = useState("");
+  const [reposting, setReposting] = useState(false);
+  const [repostsCount, setRepostsCount] = useState(post.reposts_count || 0);
   const { toast } = useToast();
 
   // Get current user
@@ -440,45 +445,59 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     }
   };
 
+  const handleRepost = async () => {
+    if (!repostComment.trim()) {
+      toast({
+        title: "Chyba",
+        description: "Pridajte komentár k repostu",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setReposting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Chyba",
+          description: "Musíte byť prihlásený",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase.from("reposts").insert({
+        user_id: user.id,
+        original_post_id: post.id,
+        comment: repostComment,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Úspech",
+        description: "Príspevok bol zdieľaný na váš profil",
+      });
+
+      setShowRepostDialog(false);
+      setRepostComment("");
+      setRepostsCount(prev => prev + 1);
+      onDelete(); // Refresh feed
+    } catch (error: any) {
+      toast({
+        title: "Chyba",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setReposting(false);
+    }
+  };
+
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    try {
-      const shareData = {
-        title: "Check out this post",
-        text: post.content || "Interesting post",
-        url: window.location.href,
-      };
-
-      // Check if navigator.share is available
-      if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-        await navigator.share(shareData);
-      } else {
-        // Fallback to clipboard
-        await navigator.clipboard.writeText(window.location.href);
-        toast({
-          title: "Success",
-          description: "Link copied to clipboard",
-        });
-      }
-    } catch (error: any) {
-      // If user cancels share or any other error
-      if (error.name !== "AbortError") {
-        // Try clipboard as fallback
-        try {
-          await navigator.clipboard.writeText(window.location.href);
-          toast({
-            title: "Success",
-            description: "Link copied to clipboard",
-          });
-        } catch (clipboardError) {
-          toast({
-            title: "Error",
-            description: "Unable to share",
-            variant: "destructive",
-          });
-        }
-      }
-    }
+    setShowRepostDialog(true);
   };
 
   const toggleComments = (e: React.MouseEvent) => {
@@ -673,6 +692,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
             className="gap-1.5 flex-1 hover:bg-green-50 dark:hover:bg-green-950/20 transition-colors"
           >
             <Share2 className="h-4 w-4" />
+            <span className="text-xs font-medium">{repostsCount}</span>
           </Button>
 
           <Popover>
@@ -879,6 +899,79 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
             alt="Full size"
             className="w-full h-auto max-h-[90vh] object-contain"
           />
+        </DialogContent>
+      </Dialog>
+
+      {/* Repost Dialog */}
+      <Dialog open={showRepostDialog} onOpenChange={setShowRepostDialog}>
+        <DialogContent className="sm:max-w-[525px]" onClick={(e) => e.stopPropagation()}>
+          <DialogHeader>
+            <DialogTitle>Zdieľať príspevok</DialogTitle>
+            <DialogDescription>
+              Pridajte svoj komentár k tomuto príspevku
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Textarea
+              value={repostComment}
+              onChange={(e) => setRepostComment(e.target.value)}
+              placeholder="Co si o tom myslíte?"
+              className="min-h-[100px]"
+            />
+            
+            {/* Preview of original post */}
+            <div className="border rounded-lg p-4 bg-muted/30">
+              <div className="flex items-center gap-2 mb-2">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={post.profiles?.avatar_url || undefined} />
+                  <AvatarFallback className="text-xs">
+                    {post.profiles?.full_name?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-sm font-semibold">
+                    {post.profiles?.full_name || "User"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatDistanceToNow(new Date(post.created_at), {
+                      addSuffix: true,
+                      locale: enUS,
+                    })}
+                  </p>
+                </div>
+              </div>
+              {post.content && (
+                <p className="text-sm line-clamp-3">{post.content}</p>
+              )}
+              {post.media && post.media.length > 0 && (
+                <div className="mt-2 text-xs text-muted-foreground">
+                  📷 {post.media.length} {post.media.length === 1 ? "obrázok" : "obrázky"}
+                </div>
+              )}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRepostDialog(false);
+                setRepostComment("");
+              }}
+              disabled={reposting}
+            >
+              Zrušiť
+            </Button>
+            <Button onClick={handleRepost} disabled={reposting || !repostComment.trim()}>
+              {reposting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Zdieľa sa...
+                </>
+              ) : (
+                "Zdieľať"
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 

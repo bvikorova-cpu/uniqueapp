@@ -38,6 +38,7 @@ interface Post {
   likes_count: number;
   comments_count: number;
   shares_count: number;
+  reposts_count: number;
   media: Array<{
     id: string;
     file_url: string;

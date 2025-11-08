@@ -5,6 +5,7 @@ import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
 import CreatePost from "@/components/feed/CreatePost";
 import PostCard from "@/components/feed/PostCard";
+import RepostCard from "@/components/feed/RepostCard";
 import UserSearch from "@/components/feed/UserSearch";
 import StoriesBar from "@/components/feed/StoriesBar";
 import CreateStory from "@/components/feed/CreateStory";
@@ -19,6 +20,7 @@ interface Post {
   likes_count: number;
   comments_count: number;
   shares_count: number;
+  reposts_count: number;
   media: Array<{
     id: string;
     file_url: string;
@@ -31,15 +33,35 @@ interface Post {
   };
 }
 
+interface Repost {
+  id: string;
+  user_id: string;
+  comment: string;
+  created_at: string;
+  original_post: Post;
+  profiles: {
+    id: string;
+    full_name: string | null;
+    avatar_url: string | null;
+  };
+}
+
+type FeedItem = 
+  | { type: 'post'; data: Post }
+  | { type: 'repost'; data: Repost };
+
 const Feed = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [reposts, setReposts] = useState<Repost[]>([]);
+  const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   const fetchPosts = async () => {
     try {
+      // Fetch regular posts
       const { data: postsData, error: postsError } = await supabase
         .from("posts")
         .select(`
@@ -50,7 +72,7 @@ const Feed = () => {
 
       if (postsError) throw postsError;
 
-      // Fetch profiles separately
+      // Fetch profiles for posts
       const postsWithProfiles = await Promise.all(
         (postsData || []).map(async (post) => {
           const { data: profile } = await supabase
@@ -67,6 +89,74 @@ const Feed = () => {
       );
 
       setPosts(postsWithProfiles);
+
+      // Fetch reposts
+      const { data: repostsData, error: repostsError } = await supabase
+        .from("reposts")
+        .select(`
+          *
+        `)
+        .order("created_at", { ascending: false });
+
+      if (repostsError) throw repostsError;
+
+      // Fetch all data for reposts (profiles and original posts with their media)
+      const repostsWithData = await Promise.all(
+        (repostsData || []).map(async (repost) => {
+          // Get repost author profile
+          const { data: repostProfile } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url")
+            .eq("id", repost.user_id)
+            .single();
+
+          // Get original post with media
+          const { data: originalPost } = await supabase
+            .from("posts")
+            .select(`
+              *,
+              media (*)
+            `)
+            .eq("id", repost.original_post_id)
+            .single();
+
+          if (!originalPost) return null;
+
+          // Get original post author profile
+          const { data: originalProfile } = await supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url")
+            .eq("id", originalPost.user_id)
+            .single();
+
+          return {
+            ...repost,
+            profiles: repostProfile || { id: repost.user_id, full_name: null, avatar_url: null },
+            original_post: {
+              ...originalPost,
+              profiles: originalProfile || { id: originalPost.user_id, full_name: null, avatar_url: null }
+            }
+          };
+        })
+      );
+
+      // Filter out null values (posts that were deleted)
+      const validReposts = repostsWithData.filter(r => r !== null) as Repost[];
+      setReposts(validReposts);
+
+      // Combine and sort all feed items by created_at
+      const combined: FeedItem[] = [
+        ...postsWithProfiles.map(post => ({ type: 'post' as const, data: post })),
+        ...validReposts.map(repost => ({ type: 'repost' as const, data: repost }))
+      ];
+
+      combined.sort((a, b) => {
+        const dateA = new Date(a.data.created_at).getTime();
+        const dateB = new Date(b.data.created_at).getTime();
+        return dateB - dateA;
+      });
+
+      setFeedItems(combined);
     } catch (error: any) {
       toast({
         title: "Error loading posts",
@@ -100,8 +190,8 @@ const Feed = () => {
 
     fetchPosts();
 
-    // Subscribe to new posts
-    const channel = supabase
+    // Subscribe to new posts and reposts
+    const postsChannel = supabase
       .channel("posts-changes")
       .on(
         "postgres_changes",
@@ -116,8 +206,24 @@ const Feed = () => {
       )
       .subscribe();
 
+    const repostsChannel = supabase
+      .channel("reposts-changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reposts",
+        },
+        () => {
+          fetchPosts();
+        }
+      )
+      .subscribe();
+
     return () => {
-      supabase.removeChannel(channel);
+      supabase.removeChannel(postsChannel);
+      supabase.removeChannel(repostsChannel);
       subscription.unsubscribe();
     };
   }, [navigate]);
@@ -146,22 +252,29 @@ const Feed = () => {
             <Card className="p-8 flex items-center justify-center">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </Card>
-          ) : posts.length === 0 ? (
+          ) : feedItems.length === 0 ? (
             <Card className="p-8 text-center text-muted-foreground">
               No posts yet. Be the first to add something!
             </Card>
           ) : (
             <div className="masonry-grid">
-              {posts.map((post, index) => (
+              {feedItems.map((item, index) => (
                 <div 
-                  key={post.id}
+                  key={`${item.type}-${item.data.id}`}
                   className="masonry-item animate-fade-in"
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <PostCard
-                    post={post}
-                    onDelete={fetchPosts}
-                  />
+                  {item.type === 'post' ? (
+                    <PostCard
+                      post={item.data}
+                      onDelete={fetchPosts}
+                    />
+                  ) : (
+                    <RepostCard
+                      repost={item.data}
+                      onDelete={fetchPosts}
+                    />
+                  )}
                 </div>
               ))}
             </div>
