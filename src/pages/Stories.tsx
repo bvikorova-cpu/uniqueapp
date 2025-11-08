@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { ArrowLeft, Heart, Send, X, Trash2 } from "lucide-react";
+import { ArrowLeft, Heart, Send, X, Trash2, Eye } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ViewersList } from "@/components/story/ViewersList";
 
 interface StoryProfile {
   full_name: string;
@@ -56,6 +57,7 @@ export default function Stories() {
   const [user, setUser] = useState<any>(null);
   const [reaction, setReaction] = useState("");
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showViewersList, setShowViewersList] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
@@ -269,6 +271,18 @@ export default function Stories() {
           </div>
         </div>
         <div className="flex gap-2">
+          {/* Viewers button (only for own stories) */}
+          {user && currentStory.user_id === user.id && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowViewersList(true)}
+              className="text-white hover:bg-white/20 gap-2"
+            >
+              <Eye className="h-4 w-4" />
+              {currentStory.views_count}
+            </Button>
+          )}
           {/* Delete button (only for own stories) */}
           {user && currentStory.user_id === user.id && (
             <Button
@@ -444,6 +458,16 @@ export default function Stories() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Viewers list dialog */}
+      {currentStory && user && currentStory.user_id === user.id && (
+        <ViewersList
+          storyId={currentStory.id}
+          viewsCount={currentStory.views_count}
+          open={showViewersList}
+          onOpenChange={setShowViewersList}
+        />
+      )}
     </div>
   );
 }
