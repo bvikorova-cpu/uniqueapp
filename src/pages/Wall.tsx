@@ -12,7 +12,7 @@ import CreateStory from "@/components/feed/CreateStory";
 import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, TrendingUp, Home, Users } from "lucide-react";
+import { Loader2, TrendingUp, Home, Users, ArrowUp } from "lucide-react";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import { useFollowingPosts } from "@/hooks/useFollow";
 
@@ -64,6 +64,7 @@ const Feed = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const POSTS_PER_PAGE = 10;
   const { toast } = useToast();
   const { data: trendingPosts, isLoading: trendingLoading } = useTrendingPosts();
@@ -279,13 +280,17 @@ const Feed = () => {
     };
   }, [navigate]);
 
-  // Infinite scroll effect
+  // Infinite scroll effect and back to top button visibility
   useEffect(() => {
     const handleScroll = () => {
+      const scrollTop = document.documentElement.scrollTop;
+      
+      // Show back to top button when scrolled down 400px
+      setShowBackToTop(scrollTop > 400);
+
       if (loadingMore || !hasMore) return;
 
       const scrollHeight = document.documentElement.scrollHeight;
-      const scrollTop = document.documentElement.scrollTop;
       const clientHeight = document.documentElement.clientHeight;
 
       // Load more when user is 300px from bottom
@@ -529,6 +534,17 @@ const Feed = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Back to top button */}
+      {showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-primary text-primary-foreground shadow-glow hover:shadow-lg transition-all duration-300 hover:scale-110 animate-fade-in"
+          aria-label="Back to top"
+        >
+          <ArrowUp className="h-5 w-5" />
+        </button>
+      )}
     </div>
   );
 };
