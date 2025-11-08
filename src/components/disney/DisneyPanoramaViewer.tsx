@@ -376,7 +376,7 @@ export function DisneyPanoramaViewer({
 
       {/* Audio Guide Control */}
       {audioGuideText && (
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2">
+        <div className="absolute top-24 left-6 z-20">
           <Button
             onClick={handleSpeak}
             size="lg"
