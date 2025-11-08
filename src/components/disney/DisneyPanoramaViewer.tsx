@@ -11,6 +11,14 @@ import parisLibrary from "@/assets/disney/paris-library.jpg";
 import hongkongDreams from "@/assets/disney/hongkong-dreams.jpg";
 import shanghaiHall from "@/assets/disney/shanghai-hall.jpg";
 import tokyoCastle from "@/assets/disney/tokyo-castle.jpg";
+import stainedGlassGallery from "@/assets/disney/panoramas/stained-glass-gallery.jpg";
+import dragonCave from "@/assets/disney/panoramas/dragon-cave.jpg";
+import royalChapel from "@/assets/disney/panoramas/royal-chapel.jpg";
+import tapestryHall from "@/assets/disney/panoramas/tapestry-hall.jpg";
+import enchantedGarden from "@/assets/disney/panoramas/enchanted-garden.jpg";
+import royalLibrary from "@/assets/disney/panoramas/royal-library.jpg";
+import towerRoom from "@/assets/disney/panoramas/tower-room.jpg";
+import grandBallroom from "@/assets/disney/panoramas/grand-ballroom.jpg";
 
 interface DisneyPanoramaViewerProps {
   imageUrl: string;
@@ -32,6 +40,14 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       '/src/assets/disney/hongkong-dreams.jpg': hongkongDreams,
       '/src/assets/disney/shanghai-hall.jpg': shanghaiHall,
       '/src/assets/disney/tokyo-castle.jpg': tokyoCastle,
+      'stained-glass-gallery': stainedGlassGallery,
+      'dragon-cave': dragonCave,
+      'royal-chapel': royalChapel,
+      'tapestry-hall': tapestryHall,
+      'enchanted-garden': enchantedGarden,
+      'royal-library': royalLibrary,
+      'tower-room': towerRoom,
+      'grand-ballroom': grandBallroom,
     };
 
     const actualImageUrl = imageMap[imageUrl] || cinderellaThrone;
@@ -39,6 +55,11 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
     loader.load(
       actualImageUrl,
       (loadedTexture) => {
+        // Optimize texture quality
+        loadedTexture.minFilter = THREE.LinearFilter;
+        loadedTexture.magFilter = THREE.LinearFilter;
+        loadedTexture.anisotropy = 16; // Maximum anisotropic filtering
+        loadedTexture.colorSpace = THREE.SRGBColorSpace;
         setTexture(loadedTexture);
       },
       undefined,
@@ -54,7 +75,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
 
   return (
     <mesh ref={meshRef} rotation={[0, Math.PI, 0]}>
-      <sphereGeometry args={[500, 60, 40]} />
+      <sphereGeometry args={[500, 128, 64]} />
       <meshBasicMaterial map={texture} side={THREE.BackSide} />
     </mesh>
   );
@@ -114,6 +135,12 @@ export function DisneyPanoramaViewer({
           position: [0, 0, 0.1],
           fov: 75,
         }}
+        gl={{ 
+          antialias: true,
+          alpha: false,
+          powerPreference: "high-performance",
+        }}
+        dpr={[1, 2]}
       >
         <PanoramaSphere imageUrl={imageUrl} />
         <CameraController />
