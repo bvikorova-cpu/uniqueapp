@@ -17,7 +17,7 @@ import { enUS } from "date-fns/locale";
 
 interface Notification {
   id: string;
-  type: 'like' | 'comment' | 'reaction' | 'repost';
+  type: 'like' | 'comment' | 'reaction' | 'repost' | 'follow';
   post_id: string | null;
   actor_id: string;
   is_read: boolean;
@@ -35,6 +35,17 @@ export const NotificationsDropdown = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    return localStorage.getItem('notificationSoundEnabled') !== 'false';
+  });
+
+  const playNotificationSound = () => {
+    if (soundEnabled) {
+      const audio = new Audio('/sounds/notification.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(err => console.log('Could not play sound:', err));
+    }
+  };
 
   useEffect(() => {
     fetchNotifications();
@@ -45,11 +56,15 @@ export const NotificationsDropdown = () => {
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "INSERT",
           schema: "public",
           table: "notifications",
         },
-        () => {
+        async (payload) => {
+          // Play sound for follow notifications
+          if (payload.new.type === 'follow') {
+            playNotificationSound();
+          }
           fetchNotifications();
         }
       )
@@ -58,7 +73,7 @@ export const NotificationsDropdown = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [soundEnabled]);
 
   const fetchNotifications = async () => {
     try {
@@ -153,7 +168,19 @@ export const NotificationsDropdown = () => {
     await markAsRead(notification.id);
     if (notification.post_id) {
       navigate(`/wall`);
+    } else if (notification.type === 'follow') {
+      navigate(`/profile/${notification.actor_id}`);
     }
+  };
+
+  const toggleSound = () => {
+    const newValue = !soundEnabled;
+    setSoundEnabled(newValue);
+    localStorage.setItem('notificationSoundEnabled', String(newValue));
+    toast({
+      title: newValue ? "Zvuky zapnuté" : "Zvuky vypnuté",
+      description: newValue ? "Budete počuť zvuk pri nových sledovaniach" : "Zvuky notifikácií sú vypnuté",
+    });
   };
 
   const getNotificationIcon = (type: string) => {
@@ -166,6 +193,8 @@ export const NotificationsDropdown = () => {
         return <Smile className="h-4 w-4 text-yellow-500" />;
       case 'repost':
         return <Repeat2 className="h-4 w-4 text-green-500" />;
+      case 'follow':
+        return <Bell className="h-4 w-4 text-purple-500" />;
       default:
         return null;
     }
@@ -182,6 +211,8 @@ export const NotificationsDropdown = () => {
         return `${name} reagoval na váš príspevok`;
       case 'repost':
         return `${name} zdieľal váš príspevok`;
+      case 'follow':
+        return `${name} vás začal sledovať`;
       default:
         return "";
     }
@@ -202,17 +233,28 @@ export const NotificationsDropdown = () => {
       <DropdownMenuContent align="end" className="w-80">
         <div className="flex items-center justify-between p-2 border-b">
           <h3 className="font-semibold">Notifikácie</h3>
-          {unreadCount > 0 && (
+          <div className="flex items-center gap-1">
             <Button
               variant="ghost"
               size="sm"
-              onClick={markAllAsRead}
-              className="text-xs"
+              onClick={toggleSound}
+              className="text-lg px-2"
+              title={soundEnabled ? "Vypnúť zvuky" : "Zapnúť zvuky"}
             >
-              <Check className="h-3 w-3 mr-1" />
-              Označ všetky
+              {soundEnabled ? "🔔" : "🔕"}
             </Button>
-          )}
+            {unreadCount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={markAllAsRead}
+                className="text-xs"
+              >
+                <Check className="h-3 w-3 mr-1" />
+                Označ všetky
+              </Button>
+            )}
+          </div>
         </div>
         <ScrollArea className="h-[400px]">
           {loading ? (
