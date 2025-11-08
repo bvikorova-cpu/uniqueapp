@@ -14,6 +14,7 @@ export default function DisneyCastleTour() {
   const navigate = useNavigate();
   const [currentRoomIndex, setCurrentRoomIndex] = useState(0);
   const [showFunFacts, setShowFunFacts] = useState(false);
+  const [isFading, setIsFading] = useState(false);
 
   const { rooms, isLoading: roomsLoading } = useCastleRooms(castleId!);
   const startTour = useStartTour();
@@ -70,24 +71,34 @@ export default function DisneyCastleTour() {
   const progress = ((currentRoomIndex + 1) / (rooms?.length || 1)) * 100;
 
   const handleNext = () => {
-    if (currentRoom && visit) {
-      completeRoom.mutate({ visitId: visit.id, roomId: currentRoom.id });
-    }
-
-    if (isLastRoom) {
-      // Award stamp on completion
-      if (castleId) {
-        earnStamp.mutate({ castleId });
+    setIsFading(true);
+    
+    setTimeout(() => {
+      if (currentRoom && visit) {
+        completeRoom.mutate({ visitId: visit.id, roomId: currentRoom.id });
       }
-      navigate("/kids-channel/disney-castles");
-    } else {
-      setCurrentRoomIndex(prev => prev + 1);
-    }
+
+      if (isLastRoom) {
+        // Award stamp on completion
+        if (castleId) {
+          earnStamp.mutate({ castleId });
+        }
+        navigate("/kids-channel/disney-castles");
+      } else {
+        setCurrentRoomIndex(prev => prev + 1);
+        setTimeout(() => setIsFading(false), 50);
+      }
+    }, 300);
   };
 
   const handlePrevious = () => {
     if (currentRoomIndex > 0) {
-      setCurrentRoomIndex(prev => prev - 1);
+      setIsFading(true);
+      
+      setTimeout(() => {
+        setCurrentRoomIndex(prev => prev - 1);
+        setTimeout(() => setIsFading(false), 50);
+      }, 300);
     }
   };
 
@@ -208,14 +219,16 @@ export default function DisneyCastleTour() {
       </div>
 
       {/* Panorama Viewer */}
-      <DisneyPanoramaViewer
-        imageUrl={panoramaUrl}
-        audioGuideText={currentRoom.audio_guide_text || ""}
-        ambientSound={ambientSound}
-        collectibles={roomCollectibles || []}
-        onCollectItem={handleCollectItem}
-        collectedIds={collectedIds}
-      />
+      <div className={`transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
+        <DisneyPanoramaViewer
+          imageUrl={panoramaUrl}
+          audioGuideText={currentRoom.audio_guide_text || ""}
+          ambientSound={ambientSound}
+          collectibles={roomCollectibles || []}
+          onCollectItem={handleCollectItem}
+          collectedIds={collectedIds}
+        />
+      </div>
 
       {/* Navigation Controls */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 z-10">
