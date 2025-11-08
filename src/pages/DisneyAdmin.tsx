@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Sparkles, Check, X } from "lucide-react";
 import { CastlePanoramaGenerator } from "@/components/disney/CastlePanoramaGenerator";
 import { useDisneyCastles, useCastleRooms } from "@/hooks/useDisneyCastles";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
 const DisneyAdmin = () => {
@@ -13,8 +14,16 @@ const DisneyAdmin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedCastleId, setSelectedCastleId] = useState<string | null>(null);
   const [isBulkGenerating, setIsBulkGenerating] = useState(false);
+  const [allRooms, setAllRooms] = useState<any[]>([]);
+  const [roomsLoading, setRoomsLoading] = useState(false);
   const { castles, isLoading: castlesLoading } = useDisneyCastles();
-  const { rooms, isLoading: roomsLoading } = useCastleRooms(selectedCastleId || "");
+  const { rooms, isLoading: selectedRoomsLoading } = useCastleRooms(selectedCastleId || "");
+
+  useEffect(() => {
+    if (castles && castles.length > 0) {
+      loadAllRooms();
+    }
+  }, [castles]);
 
   useEffect(() => {
     checkAdmin();
@@ -28,6 +37,31 @@ const DisneyAdmin = () => {
     }
     // Simple admin check - you can enhance this with proper role-based access
     setIsAdmin(true);
+  };
+
+  const loadAllRooms = async () => {
+    setRoomsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('disney_castle_rooms')
+        .select(`
+          *,
+          disney_castles (
+            name,
+            park_name
+          )
+        `)
+        .order('castle_id')
+        .order('order_index');
+
+      if (error) throw error;
+      setAllRooms(data || []);
+    } catch (error) {
+      console.error('Error loading rooms:', error);
+      toast.error('Nepodarilo sa načítať miestnosti');
+    } finally {
+      setRoomsLoading(false);
+    }
   };
 
   const handleBulkGenerate = async () => {
@@ -103,24 +137,67 @@ const DisneyAdmin = () => {
               </Button>
             </Card>
 
-            <h2 className="text-xl font-semibold mb-4">Vyber zámok</h2>
-            {castlesLoading ? (
+            <h2 className="text-xl font-semibold mb-4">Prehľad zámkov a miestností</h2>
+            {castlesLoading || roomsLoading ? (
               <p>Načítavam zámky...</p>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2">
-                {castles?.map((castle) => (
-                  <Button
-                    key={castle.id}
-                    variant="outline"
-                    className="h-auto p-4 justify-start text-left"
-                    onClick={() => setSelectedCastleId(castle.id)}
-                  >
-                    <div>
-                      <p className="font-semibold">{castle.name}</p>
-                      <p className="text-sm text-muted-foreground">{castle.park_name}</p>
-                    </div>
-                  </Button>
-                ))}
+              <div className="space-y-6">
+                {castles?.map((castle) => {
+                  const castleRooms = allRooms.filter(r => r.castle_id === castle.id);
+                  const roomsWithPanoramas = castleRooms.filter(r => r.panorama_url);
+                  const totalRooms = castleRooms.length;
+
+                  return (
+                    <Card key={castle.id} className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold mb-1">{castle.name}</h3>
+                          <p className="text-sm text-muted-foreground mb-2">{castle.park_name}</p>
+                          <div className="flex items-center gap-2">
+                            <Badge variant={roomsWithPanoramas.length === totalRooms ? "default" : "secondary"}>
+                              {roomsWithPanoramas.length} / {totalRooms} miestností má panorámu
+                            </Badge>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          onClick={() => setSelectedCastleId(castle.id)}
+                        >
+                          Generovať panorámy
+                        </Button>
+                      </div>
+
+                      <div className="space-y-2 mt-4">
+                        <h4 className="font-semibold text-sm mb-2">Miestnosti:</h4>
+                        <div className="grid gap-2">
+                          {castleRooms.map((room) => (
+                            <div
+                              key={room.id}
+                              className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
+                            >
+                              <div className="flex items-center gap-3">
+                                {room.panorama_url ? (
+                                  <Check className="w-5 h-5 text-green-500" />
+                                ) : (
+                                  <X className="w-5 h-5 text-red-500" />
+                                )}
+                                <div>
+                                  <p className="font-medium">{room.room_name}</p>
+                                  <p className="text-xs text-muted-foreground line-clamp-1">
+                                    {room.description}
+                                  </p>
+                                </div>
+                              </div>
+                              <Badge variant={room.panorama_url ? "default" : "outline"}>
+                                {room.panorama_url ? "Hotové" : "Chýba"}
+                              </Badge>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </Card>
+                  );
+                })}
               </div>
             )}
           </div>
