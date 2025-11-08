@@ -2,8 +2,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Sparkles, Award } from "lucide-react";
+import { ArrowLeft, Sparkles, Award, Map } from "lucide-react";
 import { DisneyPanoramaViewer } from "@/components/disney/DisneyPanoramaViewer";
+import { CastleRoomMiniMap } from "@/components/disney/CastleRoomMiniMap";
 import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useDisneyCastles";
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +16,7 @@ export default function DisneyCastleTour() {
   const [currentRoomIndex, setCurrentRoomIndex] = useState(0);
   const [showFunFacts, setShowFunFacts] = useState(false);
   const [isFading, setIsFading] = useState(false);
+  const [showMiniMap, setShowMiniMap] = useState(false);
 
   const { rooms, isLoading: roomsLoading } = useCastleRooms(castleId!);
   const startTour = useStartTour();
@@ -101,6 +103,18 @@ export default function DisneyCastleTour() {
       }, 300);
     }
   };
+
+  const handleRoomSelect = (index: number) => {
+    if (index === currentRoomIndex) return;
+    
+    setIsFading(true);
+    setTimeout(() => {
+      setCurrentRoomIndex(index);
+      setTimeout(() => setIsFading(false), 50);
+    }, 300);
+  };
+
+  const visitedRoomIds = visit?.rooms_visited || [];
 
   if (roomsLoading || !castle || !currentRoom) {
     return (
@@ -194,14 +208,24 @@ export default function DisneyCastleTour() {
             </div>
           </div>
 
-          <Button
-            onClick={() => setShowFunFacts(!showFunFacts)}
-            variant="outline"
-            className="bg-white/20 backdrop-blur-sm text-white border-white/30"
-          >
-            <Sparkles className="mr-2 h-4 w-4" />
-            Fun Facts
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowMiniMap(true)}
+              variant="outline"
+              className="bg-white/20 backdrop-blur-sm text-white border-white/30"
+            >
+              <Map className="mr-2 h-4 w-4" />
+              Map
+            </Button>
+            <Button
+              onClick={() => setShowFunFacts(!showFunFacts)}
+              variant="outline"
+              className="bg-white/20 backdrop-blur-sm text-white border-white/30"
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              Fun Facts
+            </Button>
+          </div>
         </div>
 
         {/* Progress Bar */}
@@ -274,6 +298,16 @@ export default function DisneyCastleTour() {
           </ul>
         </Card>
       )}
+
+      {/* Mini Map */}
+      <CastleRoomMiniMap
+        rooms={rooms || []}
+        currentRoomIndex={currentRoomIndex}
+        visitedRoomIds={visitedRoomIds}
+        onRoomSelect={handleRoomSelect}
+        isVisible={showMiniMap}
+        onClose={() => setShowMiniMap(false)}
+      />
     </div>
   );
 }
