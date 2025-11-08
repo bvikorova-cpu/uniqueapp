@@ -12,15 +12,15 @@ const Trends = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto pt-24 pb-8 px-4">
       <div className="flex items-center gap-3 mb-8">
         <div className="p-3 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl">
           <TrendingUp className="h-8 w-8 text-primary" />
         </div>
         <div>
-          <h1 className="text-3xl font-bold">Trendy</h1>
+          <h1 className="text-3xl font-bold">Trending</h1>
           <p className="text-muted-foreground">
-            Najpopulárnejší obsah za posledný týždeň
+            Most popular content from the last week
           </p>
         </div>
       </div>
@@ -32,7 +32,7 @@ const Trends = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Flame className="h-5 w-5 text-orange-500" />
-                Najpopulárnejšie príspevky
+                Most Popular Posts
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -70,7 +70,7 @@ const Trends = () => {
                           </AvatarFallback>
                         </Avatar>
                         <span className="font-semibold text-sm">
-                          {post.profiles?.full_name || "Používateľ"}
+                          {post.profiles?.full_name || "User"}
                         </span>
                       </div>
 
@@ -95,7 +95,7 @@ const Trends = () => {
                 ))
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
-                  Zatiaľ žiadne trendujúce príspevky
+                  No trending posts yet
                 </div>
               )}
             </CardContent>
@@ -108,7 +108,7 @@ const Trends = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="h-5 w-5 text-primary" />
-                Najaktívnejší
+                Most Active
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -150,10 +150,10 @@ const Trends = () => {
 
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm truncate">
-                        {user.full_name || "Používateľ"}
+                        {user.full_name || "User"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {user.post_count} príspevkov
+                        {user.post_count} posts
                       </p>
                     </div>
 
@@ -166,7 +166,7 @@ const Trends = () => {
                 ))
               ) : (
                 <div className="text-center py-8 text-muted-foreground text-sm">
-                  Žiadni aktívni používatelia
+                  No active users
                 </div>
               )}
             </CardContent>
