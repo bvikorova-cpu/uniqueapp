@@ -408,40 +408,70 @@ const Jobs = () => {
   });
 
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-background pt-20 pb-12 flex items-center justify-center">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle>Sign In Required</CardTitle>
-            <CardDescription>
-              You must be signed in to access job listings
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full" onClick={() => window.location.href = "/auth"}>
-              Sign In
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  const handleApply = (job: JobListing) => {
+    if (!user) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Pre uchádzanie sa o pozíciu sa musíte prihlásiť",
+      });
+      window.location.href = "/auth";
+      return;
+    }
+    setSelectedJob(job);
+    setShowApplyDialog(true);
+  };
+
+  const handleViewDetails = (job: JobListing) => {
+    if (!user) {
+      toast({
+        title: "Prihlásenie potrebné",
+        description: "Pre zobrazenie úplných detailov sa musíte prihlásiť",
+      });
+      window.location.href = "/auth";
+      return;
+    }
+    setSelectedJob(job);
+    setShowJobDetailsDialog(true);
+  };
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4">
+        {/* Info banner for non-authenticated users */}
+        {!user && (
+          <Card className="mb-6 border-primary/20 bg-primary/5">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Briefcase className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold mb-1">Vitajte na portáli pracovných ponúk!</p>
+                  <p className="text-sm text-muted-foreground">
+                    Môžete voľne prehliadať všetky pracovné ponuky. Pre uchádzanie sa o pozície sa musíte prihlásiť.
+                  </p>
+                </div>
+                <Button onClick={() => window.location.href = "/auth"}>
+                  Prihlásiť sa
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
-              Job Listings
+              Pracovné ponuky
             </h1>
             <p className="text-muted-foreground">
-              Find your dream job from around the world
+              {user 
+                ? "Nájdite svoju vysnívanú prácu z celého sveta"
+                : "Prehliadajte pracovné ponuky zadarmo - prihláste sa pre uchádzanie"}
             </p>
           </div>
           <div className="flex gap-2">
-            {isEmployer ? (
+            {user && isEmployer ? (
               <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogTrigger asChild>
                   <Button>
@@ -618,10 +648,14 @@ const Jobs = () => {
                 </div>
               </DialogContent>
             </Dialog>
-            ) : (
+            ) : user ? (
               <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending}>
                 <Building2 className="h-4 w-4 mr-2" />
                 {registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}
+              </Button>
+            ) : (
+              <Button onClick={() => window.location.href = "/auth"}>
+                Prihlásiť sa
               </Button>
             )}
           </div>
@@ -708,10 +742,7 @@ const Jobs = () => {
                     <div className="flex-1">
                       <CardTitle 
                         className="text-xl mb-2 cursor-pointer hover:text-primary transition-colors"
-                        onClick={() => {
-                          setSelectedJob(job);
-                          setShowJobDetailsDialog(true);
-                        }}
+                        onClick={() => handleViewDetails(job)}
                       >
                         {job.title}
                       </CardTitle>
@@ -780,15 +811,10 @@ const Jobs = () => {
                   
                   <div className="flex items-center justify-between pt-2 border-t border-border">
                     <span className="text-sm text-muted-foreground">
-                      {job.applications_count} applications
+                      {job.applications_count} aplikácií
                     </span>
-                    <Button
-                      onClick={() => {
-                        setSelectedJob(job);
-                        setShowApplyDialog(true);
-                      }}
-                    >
-                      Apply for Position
+                    <Button onClick={() => handleApply(job)}>
+                      {user ? "Uchádzať sa" : "Prihlásiť sa a uchádzať"}
                     </Button>
                   </div>
                 </CardContent>
@@ -943,12 +969,20 @@ const Jobs = () => {
               <Button 
                 className="w-full py-6 text-lg" 
                 onClick={() => {
+                  if (!user) {
+                    toast({
+                      title: "Prihlásenie potrebné",
+                      description: "Pre uchádzanie sa o pozíciu sa musíte prihlásiť",
+                    });
+                    window.location.href = "/auth";
+                    return;
+                  }
                   setShowJobDetailsDialog(false);
                   setShowApplyDialog(true);
                 }}
               >
                 <Search className="h-5 w-5 mr-2" />
-                Apply for This Position
+                {user ? "Uchádzať sa o pozíciu" : "Prihlásiť sa a uchádzať"}
               </Button>
             </div>
           </DialogContent>
