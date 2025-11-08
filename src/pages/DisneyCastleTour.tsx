@@ -284,6 +284,7 @@ export default function DisneyCastleTour() {
       {/* Panorama Viewer */}
       <div className={`transition-opacity duration-300 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
         <DisneyPanoramaViewer
+          key={`${castleId}-${currentRoomIndex}`}
           imageUrl={panoramaUrl}
           audioGuideText={currentRoom.audio_guide_text || ""}
           ambientSound={ambientSound}
