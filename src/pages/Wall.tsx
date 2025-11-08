@@ -61,6 +61,10 @@ const Feed = () => {
   const [reposts, setReposts] = useState<Repost[]>([]);
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(0);
+  const POSTS_PER_PAGE = 10;
   const { toast } = useToast();
   const { data: trendingPosts, isLoading: trendingLoading } = useTrendingPosts();
   const { data: followingPosts, isLoading: followingLoading } = useFollowingPosts(user?.id);
@@ -70,26 +74,44 @@ const Feed = () => {
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (loadMore = false) => {
     try {
-      // Fetch regular posts
+      if (loadMore) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+        setPage(0);
+        setHasMore(true);
+      }
+
+      const currentPage = loadMore ? page + 1 : 0;
+      const from = currentPage * POSTS_PER_PAGE;
+      const to = from + POSTS_PER_PAGE - 1;
+
+      // Fetch regular posts with pagination
       const { data: postsData, error: postsError } = await supabase
         .from("posts")
         .select(`
           *,
           media (*)
         `)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
       if (postsError) throw postsError;
 
-      // Fetch reposts
+      // Fetch reposts with pagination
       const { data: repostsData, error: repostsError } = await supabase
         .from("reposts")
         .select(`*`)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
       if (repostsError) throw repostsError;
+
+      // Check if we have more data
+      const hasMoreData = (postsData?.length || 0) + (repostsData?.length || 0) === POSTS_PER_PAGE;
+      setHasMore(hasMoreData);
 
       // Collect all unique user IDs and post IDs needed
       const userIds = new Set<string>();
@@ -131,8 +153,6 @@ const Feed = () => {
         }
       }));
 
-      setPosts(postsWithProfiles);
-
       // Map reposts with profiles and original posts
       const repostsWithData = (repostsData || [])
         .map(repost => {
@@ -158,21 +178,32 @@ const Feed = () => {
         })
         .filter(r => r !== null) as Repost[];
 
-      setReposts(repostsWithData);
+      if (loadMore) {
+        setPosts(prev => [...prev, ...postsWithProfiles]);
+        setReposts(prev => [...prev, ...repostsWithData]);
+      } else {
+        setPosts(postsWithProfiles);
+        setReposts(repostsWithData);
+      }
 
       // Combine and sort all feed items by created_at
-      const combined: FeedItem[] = [
+      const newItems: FeedItem[] = [
         ...postsWithProfiles.map(post => ({ type: 'post' as const, data: post })),
         ...repostsWithData.map(repost => ({ type: 'repost' as const, data: repost }))
       ];
 
-      combined.sort((a, b) => {
+      newItems.sort((a, b) => {
         const dateA = new Date(a.data.created_at).getTime();
         const dateB = new Date(b.data.created_at).getTime();
         return dateB - dateA;
       });
 
-      setFeedItems(combined);
+      if (loadMore) {
+        setFeedItems(prev => [...prev, ...newItems]);
+        setPage(currentPage);
+      } else {
+        setFeedItems(newItems);
+      }
     } catch (error: any) {
       toast({
         title: "Error loading posts",
@@ -180,7 +211,11 @@ const Feed = () => {
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      if (loadMore) {
+        setLoadingMore(false);
+      } else {
+        setLoading(false);
+      }
     }
   };
 
@@ -243,6 +278,25 @@ const Feed = () => {
       subscription.unsubscribe();
     };
   }, [navigate]);
+
+  // Infinite scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (loadingMore || !hasMore) return;
+
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
+
+      // Load more when user is 300px from bottom
+      if (scrollHeight - scrollTop - clientHeight < 300) {
+        fetchPosts(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loadingMore, hasMore, page]);
 
   // Filter and sort feed items
   const filteredFeedItems = useMemo(() => {
@@ -456,6 +510,21 @@ const Feed = () => {
                   </div>
                 ))}
               </div>
+            )}
+            
+            {/* Loading more indicator */}
+            {loadingMore && (
+              <Card className="p-4 mt-4 flex items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+                <span className="text-sm text-muted-foreground">Loading more posts...</span>
+              </Card>
+            )}
+            
+            {/* End of feed message */}
+            {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+              <Card className="p-4 mt-4 text-center text-muted-foreground text-sm">
+                You've reached the end! 🎉
+              </Card>
             )}
           </TabsContent>
         </Tabs>
