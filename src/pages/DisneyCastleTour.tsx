@@ -2,9 +2,10 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Sparkles, Award, Map } from "lucide-react";
+import { ArrowLeft, Sparkles, Award, Map, TrendingUp } from "lucide-react";
 import { DisneyPanoramaViewer } from "@/components/disney/DisneyPanoramaViewer";
 import { CastleRoomMiniMap } from "@/components/disney/CastleRoomMiniMap";
+import { CastleProgressTracker } from "@/components/disney/CastleProgressTracker";
 import { useCastleRooms, useStartTour, useCompleteRoom, useEarnStamp } from "@/hooks/useDisneyCastles";
 import { useRoomCollectibles, useCollectDisneyItem, useUserDisneyCollectibles } from "@/hooks/useCollectibles";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +18,8 @@ export default function DisneyCastleTour() {
   const [showFunFacts, setShowFunFacts] = useState(false);
   const [isFading, setIsFading] = useState(false);
   const [showMiniMap, setShowMiniMap] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [tourStartTime] = useState(Date.now());
 
   const { rooms, isLoading: roomsLoading } = useCastleRooms(castleId!);
   const startTour = useStartTour();
@@ -230,15 +233,27 @@ export default function DisneyCastleTour() {
 
         {/* Progress Bar */}
         <div className="mt-4">
-          <div className="h-2 bg-white/30 rounded-full overflow-hidden">
+          <div 
+            className="h-2 bg-white/30 rounded-full overflow-hidden cursor-pointer hover:h-3 transition-all"
+            onClick={() => setShowProgress(true)}
+          >
             <div
-              className="h-full bg-yellow-400 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="text-white text-sm mt-1">
-            Room {currentRoomIndex + 1} of {rooms?.length}
-          </p>
+          <div className="flex items-center justify-between mt-1">
+            <p className="text-white text-sm">
+              Room {currentRoomIndex + 1} of {rooms?.length}
+            </p>
+            <button
+              onClick={() => setShowProgress(true)}
+              className="text-white/80 hover:text-white text-xs flex items-center gap-1 transition-colors"
+            >
+              <TrendingUp className="h-3 w-3" />
+              View Progress
+            </button>
+          </div>
         </div>
       </div>
 
@@ -307,6 +322,16 @@ export default function DisneyCastleTour() {
         onRoomSelect={handleRoomSelect}
         isVisible={showMiniMap}
         onClose={() => setShowMiniMap(false)}
+      />
+
+      {/* Progress Tracker */}
+      <CastleProgressTracker
+        currentRoomIndex={currentRoomIndex}
+        totalRooms={rooms?.length || 0}
+        visitedRoomIds={visitedRoomIds}
+        startTime={tourStartTime}
+        isVisible={showProgress}
+        onClose={() => setShowProgress(false)}
       />
     </div>
   );
