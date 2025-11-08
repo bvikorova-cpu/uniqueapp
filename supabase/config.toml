@@ -353,3 +353,6 @@ verify_jwt = true
 
 [functions.princess-speech]
 verify_jwt = false
+
+[functions.generate-room-panorama]
+verify_jwt = true

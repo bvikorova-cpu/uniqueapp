@@ -195,21 +195,12 @@ export default function DisneyCastles() {
                         {castle.price_coins} coins
                       </span>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() => navigate(`/kids-channel/disney-castles/${castle.id}/3d`)}
-                        variant="outline"
-                        className="flex-1"
-                      >
-                        🏰 3D View
-                      </Button>
-                      <Button
-                        onClick={() => navigate(`/kids-channel/disney-castles/${castle.id}`)}
-                        className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600"
-                      >
-                        {isVisited ? "Continue" : "Start"}
-                      </Button>
-                    </div>
+                    <Button
+                      onClick={() => navigate(`/kids-channel/disney-castles/${castle.id}`)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600"
+                    >
+                      {isVisited ? "Continue" : "Start"}
+                    </Button>
                   </div>
                 </div>
               </Card>
