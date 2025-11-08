@@ -335,6 +335,35 @@ const Feed = () => {
             )}
           </TabsContent>
 
+          <TabsContent value="following" className="mt-6">
+            {followingLoading ? (
+              <Card className="p-8 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </Card>
+            ) : !followingPosts || followingPosts.length === 0 ? (
+              <Card className="p-8 text-center text-muted-foreground">
+                <Users className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-semibold mb-2">No posts from people you follow</p>
+                <p className="text-sm">Start following users to see their posts here!</p>
+              </Card>
+            ) : (
+              <div className="masonry-grid">
+                {followingPosts.map((post, index) => (
+                  <div 
+                    key={post.id}
+                    className="masonry-item animate-fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
+                    <PostCard
+                      post={post}
+                      onDelete={fetchPosts}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
           <TabsContent value="trending" className="mt-6">
             {trendingLoading ? (
               <Card className="p-8 flex items-center justify-center">

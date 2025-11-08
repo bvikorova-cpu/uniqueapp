@@ -3,59 +3,58 @@ import { useIsFollowing, useFollowMutation, useUnfollowMutation } from "@/hooks/
 import { Loader2, UserPlus, UserMinus } from "lucide-react";
 
 interface FollowButtonProps {
-  userId: string;
-  currentUserId?: string;
+  currentUserId: string | undefined;
+  targetUserId: string;
   variant?: "default" | "outline" | "ghost";
-  size?: "default" | "sm" | "lg";
+  size?: "default" | "sm" | "lg" | "icon";
 }
 
 export const FollowButton = ({
-  userId,
   currentUserId,
+  targetUserId,
   variant = "default",
   size = "default",
 }: FollowButtonProps) => {
-  const { data: isFollowing, isLoading } = useIsFollowing(currentUserId, userId);
+  const { data: isFollowing, isLoading } = useIsFollowing(currentUserId, targetUserId);
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();
 
-  if (!currentUserId || currentUserId === userId) return null;
+  if (!currentUserId || currentUserId === targetUserId) {
+    return null;
+  }
 
   const handleClick = () => {
     if (!currentUserId) return;
 
     if (isFollowing) {
-      unfollowMutation.mutate({ followerId: currentUserId, followingId: userId });
+      unfollowMutation.mutate({ followerId: currentUserId, followingId: targetUserId });
     } else {
-      followMutation.mutate({ followerId: currentUserId, followingId: userId });
+      followMutation.mutate({ followerId: currentUserId, followingId: targetUserId });
     }
   };
 
   const isProcessing = followMutation.isPending || unfollowMutation.isPending;
-
-  if (isLoading) {
-    return (
-      <Button variant={variant} size={size} disabled>
-        <Loader2 className="h-4 w-4 animate-spin" />
-      </Button>
-    );
-  }
 
   return (
     <Button
       variant={isFollowing ? "outline" : variant}
       size={size}
       onClick={handleClick}
-      disabled={isProcessing}
+      disabled={isLoading || isProcessing}
     >
       {isProcessing ? (
-        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+        <Loader2 className="h-4 w-4 animate-spin" />
       ) : isFollowing ? (
-        <UserMinus className="h-4 w-4 mr-2" />
+        <>
+          <UserMinus className="h-4 w-4 mr-2" />
+          Unfollow
+        </>
       ) : (
-        <UserPlus className="h-4 w-4 mr-2" />
+        <>
+          <UserPlus className="h-4 w-4 mr-2" />
+          Follow
+        </>
       )}
-      {isFollowing ? "Unfollow" : "Follow"}
     </Button>
   );
 };
