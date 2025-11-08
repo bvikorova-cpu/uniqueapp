@@ -5,6 +5,8 @@ import * as THREE from 'three';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X, Sparkles } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface Room {
   id: string;
@@ -24,6 +26,8 @@ interface Princess {
   color: string;
   description: string;
   favoritePlace: string;
+  phrase: string;
+  voiceId: string;
 }
 
 interface RoomBoxProps {
@@ -297,6 +301,9 @@ export function Castle3DViewer({ castleName, rooms }: Castle3DViewerProps) {
   const [showPanorama, setShowPanorama] = useState(false);
   const [selectedPrincess, setSelectedPrincess] = useState<Princess | null>(null);
   const [showPrincessDialog, setShowPrincessDialog] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { toast } = useToast();
 
   const handleRoomClick = (room: Room) => {
     if (room.panorama_url) {
@@ -305,9 +312,56 @@ export function Castle3DViewer({ castleName, rooms }: Castle3DViewerProps) {
     }
   };
 
-  const handlePrincessClick = (princess: Princess) => {
+  const handlePrincessClick = async (princess: Princess) => {
     setSelectedPrincess(princess);
     setShowPrincessDialog(true);
+    
+    // Play princess phrase
+    if (isPlayingAudio) return;
+
+    try {
+      setIsPlayingAudio(true);
+      
+      const { data, error } = await supabase.functions.invoke('princess-speech', {
+        body: { 
+          text: princess.phrase,
+          voiceId: princess.voiceId
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.audioContent) {
+        const audioBlob = new Blob(
+          [Uint8Array.from(atob(data.audioContent), c => c.charCodeAt(0))],
+          { type: 'audio/mpeg' }
+        );
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        if (audioRef.current) {
+          audioRef.current.pause();
+          URL.revokeObjectURL(audioRef.current.src);
+        }
+        
+        const audio = new Audio(audioUrl);
+        audioRef.current = audio;
+        
+        audio.onended = () => {
+          setIsPlayingAudio(false);
+          URL.revokeObjectURL(audioUrl);
+        };
+        
+        await audio.play();
+      }
+    } catch (error: any) {
+      console.error('Error playing princess phrase:', error);
+      toast({
+        title: 'Chyba',
+        description: 'Nepodarilo sa prehrať zvuk princeznej',
+        variant: 'destructive',
+      });
+      setIsPlayingAudio(false);
+    }
   };
 
   const roomsWithPanoramas = rooms.filter(r => r.panorama_url);
@@ -318,25 +372,33 @@ export function Castle3DViewer({ castleName, rooms }: Castle3DViewerProps) {
       name: "Elsa",
       color: "#87CEEB",
       description: "Kráľovná ľadu s magickými schopnosťami. Miluje zimu a sneh!",
-      favoritePlace: "Ľadový palác"
+      favoritePlace: "Ľadový palác",
+      phrase: "Pusť to za seba! Nechaj to byť! Už nemôžem to viac skrývať!",
+      voiceId: "EXAVITQu4vr4xnSDxMaL"
     },
     {
       name: "Anna",
       color: "#FF69B4",
       description: "Odvážna princezná, ktorá miluje dobrodružstvá a svoju sestru.",
-      favoritePlace: "Tróna sála"
+      favoritePlace: "Tróna sála",
+      phrase: "Niekto chce postaviť snehuliaka? Poďme sa hrať!",
+      voiceId: "9BWtsMINqrJLrRacOk9x"
     },
     {
       name: "Belle",
       color: "#FFD700",
       description: "Inteligentná princezná, ktorá miluje čítanie kníh.",
-      favoritePlace: "Knižnica"
+      favoritePlace: "Knižnica",
+      phrase: "Chcem viac než tento provinčný život! Chcem dobrodružstvo!",
+      voiceId: "pFZP5JQG7iQjIQuC4Bku"
     },
     {
       name: "Ariel",
       color: "#FF6B6B",
       description: "Morská víla s nádherným hlasom a láskou k oceánu.",
-      favoritePlace: "Fontána"
+      favoritePlace: "Fontána",
+      phrase: "Chcem byť tam, kde sú ľudia! Chcem vidieť ich tanec!",
+      voiceId: "XB0fDUnXU5powFXDhCwa"
     }
   ];
 
