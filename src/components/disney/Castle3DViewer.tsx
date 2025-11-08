@@ -195,13 +195,13 @@ function CastleStructure({
     }
   });
 
-  // Castle color palette
-  const roomColors = ['#9B59B6', '#E74C3C', '#3498DB', '#2ECC71', '#F39C12', '#1ABC9C'];
+  // Castle color palette - fairy tale colors
+  const roomColors = ['#DDA0DD', '#FFB6C1', '#87CEEB', '#98FB98', '#FFD700', '#FFA07A'];
 
   // Position rooms in a circular castle layout
   const positions: [number, number, number][] = rooms.map((_, index) => {
     const angle = (index / rooms.length) * Math.PI * 2;
-    const radius = 4;
+    const radius = 5;
     return [
       Math.cos(angle) * radius,
       Math.sin(index * 0.5), // Vary height slightly
@@ -211,23 +211,113 @@ function CastleStructure({
 
   return (
     <group ref={castleRef}>
-      {/* Castle base */}
-      <Box args={[10, 0.5, 10]} position={[0, -2, 0]}>
-        <meshStandardMaterial color="#8B4513" />
+      {/* Castle courtyard - stone */}
+      <Box args={[14, 0.3, 14]} position={[0, -2.15, 0]}>
+        <meshStandardMaterial color="#D3D3D3" roughness={0.8} />
       </Box>
 
-      {/* Central tower */}
-      <Box args={[2, 6, 2]} position={[0, 1, 0]}>
-        <meshStandardMaterial color="#A0522D" />
+      {/* Castle walls - main structure */}
+      <Box args={[12, 3, 12]} position={[0, -0.5, 0]}>
+        <meshStandardMaterial color="#F5DEB3" roughness={0.7} />
       </Box>
 
-      {/* Tower top */}
-      <mesh position={[0, 4.5, 0]}>
-        <coneGeometry args={[1.5, 2, 4]} />
-        <meshStandardMaterial color="#FF69B4" />
-      </mesh>
+      {/* Wall decorative trim */}
+      <Box args={[12.2, 0.3, 12.2]} position={[0, 0.95, 0]}>
+        <meshStandardMaterial color="#DEB887" />
+      </Box>
 
-      {/* Rooms around the castle */}
+      {/* Corner towers (4 towers) */}
+      {[
+        [4.5, 1.5, 4.5],
+        [-4.5, 1.5, 4.5],
+        [4.5, 1.5, -4.5],
+        [-4.5, 1.5, -4.5],
+      ].map((pos, i) => (
+        <group key={`corner-tower-${i}`} position={pos as [number, number, number]}>
+          {/* Tower body */}
+          <mesh>
+            <cylinderGeometry args={[0.8, 0.8, 5, 16]} />
+            <meshStandardMaterial color="#F4A460" roughness={0.6} />
+          </mesh>
+          {/* Tower roof */}
+          <mesh position={[0, 3, 0]}>
+            <coneGeometry args={[1.2, 2, 16]} />
+            <meshStandardMaterial color="#8B4789" metalness={0.3} roughness={0.5} />
+          </mesh>
+          {/* Gold top */}
+          <mesh position={[0, 4.2, 0]}>
+            <sphereGeometry args={[0.2, 8, 8]} />
+            <meshStandardMaterial color="#FFD700" metalness={0.8} roughness={0.2} />
+          </mesh>
+          {/* Windows */}
+          {[1, 2].map((h) => (
+            <mesh key={h} position={[0.8, h, 0]}>
+              <boxGeometry args={[0.05, 0.4, 0.3]} />
+              <meshStandardMaterial color="#4169E1" emissive="#87CEEB" emissiveIntensity={0.3} />
+            </mesh>
+          ))}
+        </group>
+      ))}
+
+      {/* Central main tower */}
+      <group position={[0, 2, 0]}>
+        {/* Tower body */}
+        <mesh>
+          <cylinderGeometry args={[1.5, 1.5, 8, 16]} />
+          <meshStandardMaterial color="#FFE4C4" roughness={0.6} />
+        </mesh>
+        
+        {/* Tower windows - multiple floors */}
+        {[-2, 0, 2].map((height, idx) => (
+          <group key={`window-floor-${idx}`}>
+            {[0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2].map((angle, i) => (
+              <mesh
+                key={i}
+                position={[Math.cos(angle) * 1.5, height, Math.sin(angle) * 1.5]}
+                rotation={[0, angle, 0]}
+              >
+                <boxGeometry args={[0.05, 0.6, 0.4]} />
+                <meshStandardMaterial 
+                  color="#4169E1" 
+                  emissive="#87CEEB" 
+                  emissiveIntensity={0.4} 
+                />
+              </mesh>
+            ))}
+          </group>
+        ))}
+
+        {/* Main entrance door */}
+        <mesh position={[0, -3.5, 1.5]}>
+          <boxGeometry args={[1, 2, 0.2]} />
+          <meshStandardMaterial color="#8B4513" roughness={0.8} />
+        </mesh>
+        {/* Door arch */}
+        <mesh position={[0, -2.5, 1.5]}>
+          <boxGeometry args={[1.2, 0.3, 0.2]} />
+          <meshStandardMaterial color="#654321" />
+        </mesh>
+
+        {/* Tower roof */}
+        <mesh position={[0, 6.5, 0]}>
+          <coneGeometry args={[2.2, 3, 16]} />
+          <meshStandardMaterial color="#9370DB" metalness={0.3} roughness={0.5} />
+        </mesh>
+
+        {/* Spire */}
+        <mesh position={[0, 9, 0]}>
+          <cylinderGeometry args={[0.1, 0.3, 2, 8]} />
+          <meshStandardMaterial color="#FFD700" metalness={0.9} roughness={0.1} />
+        </mesh>
+
+        {/* Flag on top */}
+        <mesh position={[0, 10.5, 0]}>
+          <boxGeometry args={[0.8, 0.5, 0.05]} />
+          <meshStandardMaterial color="#FF1493" />
+        </mesh>
+      </group>
+
+      {/* Magical room towers around */}
       {rooms.map((room, index) => (
         <RoomBox
           key={room.id}
@@ -243,14 +333,30 @@ function CastleStructure({
         <Princess3D
           key={princess.name}
           princess={princess}
-          pathRadius={6}
+          pathRadius={7.5}
           speed={0.2 + index * 0.1}
           onPrincessClick={onPrincessClick}
         />
       ))}
 
-      {/* Decorative elements */}
-      <pointLight position={[0, 8, 0]} intensity={0.5} color="#FFD700" />
+      {/* Magical lighting effects */}
+      <pointLight position={[0, 10, 0]} intensity={1.2} color="#FFD700" distance={20} />
+      <pointLight position={[6, 3, 6]} intensity={0.5} color="#FF69B4" distance={15} />
+      <pointLight position={[-6, 3, -6]} intensity={0.5} color="#87CEEB" distance={15} />
+      
+      {/* Ambient sparkles */}
+      {[...Array(8)].map((_, i) => {
+        const angle = (i / 8) * Math.PI * 2;
+        return (
+          <mesh
+            key={`sparkle-${i}`}
+            position={[Math.cos(angle) * 10, 4, Math.sin(angle) * 10]}
+          >
+            <sphereGeometry args={[0.1, 8, 8]} />
+            <meshBasicMaterial color="#FFD700" />
+          </mesh>
+        );
+      })}
     </group>
   );
 }
