@@ -2,14 +2,17 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import { CastlePanoramaGenerator } from "@/components/disney/CastlePanoramaGenerator";
 import { useDisneyCastles, useCastleRooms } from "@/hooks/useDisneyCastles";
+import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
 
 const DisneyAdmin = () => {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [selectedCastleId, setSelectedCastleId] = useState<string | null>(null);
+  const [isBulkGenerating, setIsBulkGenerating] = useState(false);
   const { castles, isLoading: castlesLoading } = useDisneyCastles();
   const { rooms, isLoading: roomsLoading } = useCastleRooms(selectedCastleId || "");
 
@@ -25,6 +28,33 @@ const DisneyAdmin = () => {
     }
     // Simple admin check - you can enhance this with proper role-based access
     setIsAdmin(true);
+  };
+
+  const handleBulkGenerate = async () => {
+    setIsBulkGenerating(true);
+    
+    try {
+      toast.info('Spúšťam bulk generáciu panorám...', {
+        description: 'Vygenerujem všetky chýbajúce panorámy pre všetky zámky'
+      });
+
+      const { data, error } = await supabase.functions.invoke('bulk-generate-panoramas');
+      
+      if (error) {
+        throw error;
+      }
+
+      toast.success('Bulk generácia spustená!', {
+        description: `Spracúvam ${data.total_rooms} miestností. Odhadovaný čas: ${data.estimated_time_minutes} minút. Skontroluj edge function logs pre progress.`
+      });
+    } catch (error) {
+      console.error('Bulk generation error:', error);
+      toast.error('Nepodarilo sa spustiť bulk generáciu', {
+        description: error instanceof Error ? error.message : 'Neznáma chyba'
+      });
+    } finally {
+      setIsBulkGenerating(false);
+    }
   };
 
   if (!isAdmin) {
@@ -53,7 +83,26 @@ const DisneyAdmin = () => {
         </div>
 
         {!selectedCastleId ? (
-          <div className="space-y-4">
+          <div className="space-y-6">
+            <Card className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 border-2">
+              <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                <Sparkles className="w-6 h-6" />
+                Bulk Generácia Panorám
+              </h2>
+              <p className="text-muted-foreground mb-4">
+                Vygeneruj všetky chýbajúce panorámy pre všetky zámky naraz. Tento proces beží na pozadí a môže trvať 30+ minút v závislosti od počtu miestností.
+              </p>
+              <Button
+                onClick={handleBulkGenerate}
+                disabled={isBulkGenerating}
+                size="lg"
+                className="w-full sm:w-auto"
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                {isBulkGenerating ? 'Spúšťam...' : 'Generovať všetky panorámy'}
+              </Button>
+            </Card>
+
             <h2 className="text-xl font-semibold mb-4">Vyber zámok</h2>
             {castlesLoading ? (
               <p>Načítavam zámky...</p>
