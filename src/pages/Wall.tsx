@@ -11,8 +11,9 @@ import StoriesBar from "@/components/feed/StoriesBar";
 import CreateStory from "@/components/feed/CreateStory";
 import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, TrendingUp, Home, Users, ArrowUp } from "lucide-react";
+import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X } from "lucide-react";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import { useFollowingPosts } from "@/hooks/useFollow";
 
@@ -80,6 +81,7 @@ const Feed = () => {
   const [sortBy, setSortBy] = useState<SortBy>("newest");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchPosts = async (loadMore = false) => {
     try {
@@ -372,6 +374,35 @@ const Feed = () => {
   const filteredFeedItems = useMemo(() => {
     let filtered = [...feedItems];
 
+    // Search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(item => {
+        if (item.type === 'post') {
+          const post = item.data as Post;
+          // Search in content
+          const contentMatch = post.content.toLowerCase().includes(query);
+          // Search in hashtags (extract hashtags from content)
+          const hashtags = post.content.match(/#\w+/g) || [];
+          const hashtagMatch = hashtags.some(tag => tag.toLowerCase().includes(query));
+          // Search in author name
+          const authorMatch = post.profiles.full_name?.toLowerCase().includes(query);
+          
+          return contentMatch || hashtagMatch || authorMatch;
+        } else {
+          const repost = item.data as Repost;
+          // Search in repost comment
+          const commentMatch = repost.comment?.toLowerCase().includes(query);
+          // Search in original post content
+          const originalContentMatch = repost.original_post.content.toLowerCase().includes(query);
+          // Search in repost author name
+          const authorMatch = repost.profiles.full_name?.toLowerCase().includes(query);
+          
+          return commentMatch || originalContentMatch || authorMatch;
+        }
+      });
+    }
+
     // Time filter
     if (timeFilter !== "all") {
       const now = new Date();
@@ -436,12 +467,13 @@ const Feed = () => {
     });
 
     return filtered;
-  }, [feedItems, sortBy, timeFilter, categoryFilter]);
+  }, [feedItems, sortBy, timeFilter, categoryFilter, searchQuery]);
 
   const handleResetFilters = () => {
     setSortBy("newest");
     setTimeFilter("all");
     setCategoryFilter("all");
+    setSearchQuery("");
   };
 
   return (
@@ -487,6 +519,27 @@ const Feed = () => {
         </div>
 
         <CreatePost onPostCreated={fetchPosts} />
+
+        {/* Search Bar */}
+        <div className="relative mt-4 mb-4">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Hľadať príspevky, hashtagy alebo používateľov..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 pr-10"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
 
         <PostFilters
           sortBy={sortBy}
