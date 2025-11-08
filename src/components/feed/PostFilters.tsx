@@ -1,0 +1,100 @@
+import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Filter, X } from "lucide-react";
+
+export type SortBy = "newest" | "oldest" | "popular" | "most-comments";
+export type TimeFilter = "all" | "today" | "week" | "month";
+export type CategoryFilter = "all" | "text" | "image" | "video";
+
+interface PostFiltersProps {
+  sortBy: SortBy;
+  timeFilter: TimeFilter;
+  categoryFilter: CategoryFilter;
+  onSortChange: (sort: SortBy) => void;
+  onTimeChange: (time: TimeFilter) => void;
+  onCategoryChange: (category: CategoryFilter) => void;
+  onReset: () => void;
+}
+
+export const PostFilters = ({
+  sortBy,
+  timeFilter,
+  categoryFilter,
+  onSortChange,
+  onTimeChange,
+  onCategoryChange,
+  onReset,
+}: PostFiltersProps) => {
+  const hasActiveFilters = sortBy !== "newest" || timeFilter !== "all" || categoryFilter !== "all";
+
+  return (
+    <Card className="p-4 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-muted-foreground" />
+          <h3 className="font-semibold">Filtre</h3>
+        </div>
+        {hasActiveFilters && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onReset}
+            className="text-xs"
+          >
+            <X className="h-3 w-3 mr-1" />
+            Resetovať
+          </Button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="sort">Zoradiť podľa</Label>
+          <Select value={sortBy} onValueChange={onSortChange}>
+            <SelectTrigger id="sort">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Najnovšie</SelectItem>
+              <SelectItem value="oldest">Najstaršie</SelectItem>
+              <SelectItem value="popular">Najpopulárnejšie</SelectItem>
+              <SelectItem value="most-comments">Najviac komentárov</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="time">Časové obdobie</Label>
+          <Select value={timeFilter} onValueChange={onTimeChange}>
+            <SelectTrigger id="time">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Všetky</SelectItem>
+              <SelectItem value="today">Dnes</SelectItem>
+              <SelectItem value="week">Tento týždeň</SelectItem>
+              <SelectItem value="month">Tento mesiac</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="category">Kategória</Label>
+          <Select value={categoryFilter} onValueChange={onCategoryChange}>
+            <SelectTrigger id="category">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Všetko</SelectItem>
+              <SelectItem value="text">Text</SelectItem>
+              <SelectItem value="image">Obrázky</SelectItem>
+              <SelectItem value="video">Video</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+    </Card>
+  );
+};

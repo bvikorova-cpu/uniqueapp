@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -9,6 +9,7 @@ import RepostCard from "@/components/feed/RepostCard";
 import UserSearch from "@/components/feed/UserSearch";
 import StoriesBar from "@/components/feed/StoriesBar";
 import CreateStory from "@/components/feed/CreateStory";
+import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, TrendingUp, Home, Users } from "lucide-react";
@@ -63,6 +64,11 @@ const Feed = () => {
   const { toast } = useToast();
   const { data: trendingPosts, isLoading: trendingLoading } = useTrendingPosts();
   const { data: followingPosts, isLoading: followingLoading } = useFollowingPosts(user?.id);
+  
+  // Filter states
+  const [sortBy, setSortBy] = useState<SortBy>("newest");
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
 
   const fetchPosts = async () => {
     try {
@@ -233,6 +239,82 @@ const Feed = () => {
     };
   }, [navigate]);
 
+  // Filter and sort feed items
+  const filteredFeedItems = useMemo(() => {
+    let filtered = [...feedItems];
+
+    // Time filter
+    if (timeFilter !== "all") {
+      const now = new Date();
+      const startOfDay = new Date(now.setHours(0, 0, 0, 0));
+      const startOfWeek = new Date(now.setDate(now.getDate() - 7));
+      const startOfMonth = new Date(now.setDate(now.getDate() - 30));
+
+      filtered = filtered.filter(item => {
+        const itemDate = new Date(item.data.created_at);
+        switch (timeFilter) {
+          case "today":
+            return itemDate >= startOfDay;
+          case "week":
+            return itemDate >= startOfWeek;
+          case "month":
+            return itemDate >= startOfMonth;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Category filter
+    if (categoryFilter !== "all") {
+      filtered = filtered.filter(item => {
+        if (item.type === "repost") return false;
+        
+        const post = item.data as Post;
+        const hasMedia = post.media && post.media.length > 0;
+        
+        switch (categoryFilter) {
+          case "text":
+            return !hasMedia;
+          case "image":
+            return hasMedia && post.media.some(m => m.file_type.startsWith("image"));
+          case "video":
+            return hasMedia && post.media.some(m => m.file_type.startsWith("video"));
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "newest":
+          return new Date(b.data.created_at).getTime() - new Date(a.data.created_at).getTime();
+        case "oldest":
+          return new Date(a.data.created_at).getTime() - new Date(b.data.created_at).getTime();
+        case "popular":
+          const aLikes = a.type === "post" ? a.data.likes_count : 0;
+          const bLikes = b.type === "post" ? b.data.likes_count : 0;
+          return bLikes - aLikes;
+        case "most-comments":
+          const aComments = a.type === "post" ? a.data.comments_count : 0;
+          const bComments = b.type === "post" ? b.data.comments_count : 0;
+          return bComments - aComments;
+        default:
+          return 0;
+      }
+    });
+
+    return filtered;
+  }, [feedItems, sortBy, timeFilter, categoryFilter]);
+
+  const handleResetFilters = () => {
+    setSortBy("newest");
+    setTimeFilter("all");
+    setCategoryFilter("all");
+  };
+
   return (
     <div className="min-h-screen bg-background pt-24 pb-8">
       <div className="container mx-auto px-4 max-w-4xl">
@@ -251,6 +333,16 @@ const Feed = () => {
         </div>
 
         <CreatePost onPostCreated={fetchPosts} />
+
+        <PostFilters
+          sortBy={sortBy}
+          timeFilter={timeFilter}
+          categoryFilter={categoryFilter}
+          onSortChange={setSortBy}
+          onTimeChange={setTimeFilter}
+          onCategoryChange={setCategoryFilter}
+          onReset={handleResetFilters}
+        />
 
         <Tabs defaultValue="all" className="mt-8">
           <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3">
@@ -273,13 +365,13 @@ const Feed = () => {
               <Card className="p-8 flex items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
               </Card>
-            ) : feedItems.length === 0 ? (
+            ) : filteredFeedItems.length === 0 ? (
               <Card className="p-8 text-center text-muted-foreground">
-                No posts yet. Be the first to add something!
+                Žiadne príspevky sa nenašli. Skúste zmeniť filtre.
               </Card>
             ) : (
               <div className="masonry-grid">
-                {feedItems.map((item, index) => (
+                {filteredFeedItems.map((item, index) => (
                   <div 
                     key={`${item.type}-${item.data.id}`}
                     className="masonry-item animate-fade-in"
