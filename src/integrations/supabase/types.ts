@@ -16246,6 +16246,45 @@ export type Database = {
           },
         ]
       }
+      user_job_preferences: {
+        Row: {
+          categories: string[] | null
+          created_at: string | null
+          id: string
+          job_types: string[] | null
+          locations: string[] | null
+          max_salary: number | null
+          min_salary: number | null
+          notify_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          categories?: string[] | null
+          created_at?: string | null
+          id?: string
+          job_types?: string[] | null
+          locations?: string[] | null
+          max_salary?: number | null
+          min_salary?: number | null
+          notify_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          categories?: string[] | null
+          created_at?: string | null
+          id?: string
+          job_types?: string[] | null
+          locations?: string[] | null
+          max_salary?: number | null
+          min_salary?: number | null
+          notify_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_message_limits: {
         Row: {
           id: string

@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import { JobPreferencesDialog } from "@/components/jobs/JobPreferencesDialog";
 
 interface JobListing {
   id: string;
@@ -471,6 +472,7 @@ const Jobs = () => {
             </p>
           </div>
           <div className="flex gap-2">
+            {user && <JobPreferencesDialog userId={user.id} />}
             {user && isEmployer ? (
               <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
                 <DialogTrigger asChild>

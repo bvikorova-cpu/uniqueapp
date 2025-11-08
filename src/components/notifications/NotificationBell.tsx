@@ -150,6 +150,8 @@ const NotificationBell = () => {
         return `${actorName} shared your post`;
       case "follow":
         return `${actorName} started following you`;
+      case "job_match":
+        return "New job listing matches your preferences";
       default:
         return `${actorName} interacted with your content`;
     }
@@ -167,6 +169,8 @@ const NotificationBell = () => {
         return "🔄";
       case "follow":
         return "👤";
+      case "job_match":
+        return "💼";
       default:
         return "🔔";
     }
@@ -214,8 +218,10 @@ const NotificationBell = () => {
   const handleNotificationClick = async (notification: Notification) => {
     await markAsRead(notification.id);
 
-    // Navigate to the relevant post
-    if (notification.post_id) {
+    // Navigate based on notification type
+    if (notification.type === "job_match" && notification.post_id) {
+      navigate(`/jobs`);
+    } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);
     }
   };
