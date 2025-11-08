@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Award, Download, Share2, X } from "lucide-react";
+import { Award, Download, Share2, X, Facebook, Twitter, Instagram } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import QRCode from "qrcode";
@@ -130,6 +130,85 @@ export const CastleCertificate = ({
     } catch (error) {
       console.error("Error sharing certificate:", error);
       toast.error("Failed to share certificate");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleFacebookShare = async () => {
+    if (!certificateRef.current) return;
+
+    setIsGenerating(true);
+    try {
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+
+      const imageUrl = canvas.toDataURL("image/png");
+      
+      // Create share text
+      const shareText = `I just completed the magical tour of ${castleName}! 🏰✨ Check out my certificate!`;
+      const shareUrl = window.location.origin;
+      
+      // Facebook Share Dialog (requires App ID for image sharing, so we use the sharer.php)
+      const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+      
+      window.open(facebookUrl, "_blank", "width=600,height=400");
+      
+      toast.success("Opening Facebook to share! 📘");
+      toast.info("Tip: Download the certificate and attach it to your post for the full effect!");
+    } catch (error) {
+      console.error("Error sharing to Facebook:", error);
+      toast.error("Failed to share to Facebook");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleTwitterShare = () => {
+    const shareText = `I just completed the magical tour of ${castleName}! 🏰✨ #DisneyCastles #MagicalTour`;
+    const shareUrl = window.location.origin;
+    
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+    
+    window.open(twitterUrl, "_blank", "width=600,height=400");
+    
+    toast.success("Opening Twitter to share! 🐦");
+    toast.info("Tip: Download the certificate and attach it to your tweet!");
+  };
+
+  const handleInstagramShare = async () => {
+    if (!certificateRef.current) return;
+
+    setIsGenerating(true);
+    try {
+      const canvas = await html2canvas(certificateRef.current, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        logging: false,
+      });
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+
+        const file = new File([blob], "certificate.png", { type: "image/png" });
+
+        // Instagram doesn't have a web sharing API, so we'll download and provide instructions
+        const link = document.createElement("a");
+        link.download = `${castleName.replace(/\s/g, "-")}-Certificate.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+
+        toast.success("Certificate downloaded! 📸", {
+          description: "Open Instagram app and create a new post with this image!",
+          duration: 5000,
+        });
+      });
+    } catch (error) {
+      console.error("Error preparing for Instagram:", error);
+      toast.error("Failed to prepare for Instagram");
     } finally {
       setIsGenerating(false);
     }
@@ -290,27 +369,71 @@ export const CastleCertificate = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 mt-6 justify-center">
-            <Button
-              onClick={handleDownload}
-              disabled={isGenerating}
-              size="lg"
-              className="gap-2"
-            >
-              <Download className="h-5 w-5" />
-              {isGenerating ? "Generating..." : "Download Certificate"}
-            </Button>
+          <div className="space-y-4 mt-6">
+            {/* Primary Actions */}
+            <div className="flex gap-4 justify-center">
+              <Button
+                onClick={handleDownload}
+                disabled={isGenerating}
+                size="lg"
+                className="gap-2"
+              >
+                <Download className="h-5 w-5" />
+                {isGenerating ? "Generating..." : "Download"}
+              </Button>
 
-            <Button
-              onClick={handleShare}
-              disabled={isGenerating}
-              variant="outline"
-              size="lg"
-              className="gap-2"
-            >
-              <Share2 className="h-5 w-5" />
-              Share
-            </Button>
+              <Button
+                onClick={handleShare}
+                disabled={isGenerating}
+                variant="outline"
+                size="lg"
+                className="gap-2"
+              >
+                <Share2 className="h-5 w-5" />
+                Share
+              </Button>
+            </div>
+
+            {/* Social Media Sharing */}
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-3">
+                Share on social media
+              </p>
+              <div className="flex gap-3 justify-center">
+                <Button
+                  onClick={handleFacebookShare}
+                  disabled={isGenerating}
+                  variant="outline"
+                  size="lg"
+                  className="gap-2 bg-[#1877F2]/10 hover:bg-[#1877F2]/20 border-[#1877F2]/30 text-[#1877F2]"
+                >
+                  <Facebook className="h-5 w-5" />
+                  Facebook
+                </Button>
+
+                <Button
+                  onClick={handleTwitterShare}
+                  disabled={isGenerating}
+                  variant="outline"
+                  size="lg"
+                  className="gap-2 bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 border-[#1DA1F2]/30 text-[#1DA1F2]"
+                >
+                  <Twitter className="h-5 w-5" />
+                  Twitter
+                </Button>
+
+                <Button
+                  onClick={handleInstagramShare}
+                  disabled={isGenerating}
+                  variant="outline"
+                  size="lg"
+                  className="gap-2 bg-gradient-to-r from-[#F58529]/10 via-[#DD2A7B]/10 to-[#8134AF]/10 hover:from-[#F58529]/20 hover:via-[#DD2A7B]/20 hover:to-[#8134AF]/20 border-[#DD2A7B]/30 text-[#DD2A7B]"
+                >
+                  <Instagram className="h-5 w-5" />
+                  Instagram
+                </Button>
+              </div>
+            </div>
           </div>
         </Card>
       </div>
