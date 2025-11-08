@@ -2,6 +2,8 @@ import { Card } from "@/components/ui/card";
 import { Trophy, Clock, Award, Star, Crown, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { ConfettiAnimation } from "./ConfettiAnimation";
+import { toast } from "sonner";
 
 interface CastleProgressTrackerProps {
   currentRoomIndex: number;
@@ -10,6 +12,8 @@ interface CastleProgressTrackerProps {
   startTime: number;
   isVisible: boolean;
   onClose: () => void;
+  unlockedMilestones: number[];
+  onMilestoneUnlock: (percentage: number) => void;
 }
 
 interface Milestone {
@@ -58,8 +62,11 @@ export const CastleProgressTracker = ({
   startTime,
   isVisible,
   onClose,
+  unlockedMilestones,
+  onMilestoneUnlock,
 }: CastleProgressTrackerProps) => {
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     if (!isVisible) return;
@@ -93,10 +100,36 @@ export const CastleProgressTracker = ({
     }
   };
 
-  const unlockedMilestones = MILESTONES.filter(
+  const currentUnlockedMilestones = MILESTONES.filter(
     (m) => progressPercentage >= m.percentage
   );
   const nextMilestone = MILESTONES.find((m) => progressPercentage < m.percentage);
+
+  // Check for newly unlocked milestones
+  useEffect(() => {
+    currentUnlockedMilestones.forEach((milestone) => {
+      if (!unlockedMilestones.includes(milestone.percentage)) {
+        // New milestone unlocked!
+        onMilestoneUnlock(milestone.percentage);
+        setShowConfetti(true);
+        
+        // Play achievement sound
+        const audio = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_c8c6d81121.mp3');
+        audio.volume = 0.3;
+        audio.play().catch(console.error);
+
+        // Show toast notification
+        toast.success(`🎉 ${milestone.title} Unlocked!`, {
+          description: milestone.description,
+          duration: 4000,
+        });
+      }
+    });
+  }, [progressPercentage]);
+
+  const handleConfettiComplete = () => {
+    setShowConfetti(false);
+  };
 
   return (
     <>
@@ -206,7 +239,7 @@ export const CastleProgressTracker = ({
 
           <div className="space-y-3">
             {MILESTONES.map((milestone) => {
-              const isUnlocked = progressPercentage >= milestone.percentage;
+              const isUnlocked = unlockedMilestones.includes(milestone.percentage);
               const isNext = nextMilestone?.percentage === milestone.percentage;
 
               return (
@@ -285,6 +318,13 @@ export const CastleProgressTracker = ({
           )}
         </div>
       </Card>
+
+      {/* Confetti Animation */}
+      <ConfettiAnimation
+        isActive={showConfetti}
+        duration={3000}
+        onComplete={handleConfettiComplete}
+      />
     </>
   );
 };

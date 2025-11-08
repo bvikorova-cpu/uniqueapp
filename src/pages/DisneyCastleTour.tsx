@@ -20,6 +20,7 @@ export default function DisneyCastleTour() {
   const [showMiniMap, setShowMiniMap] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [tourStartTime] = useState(Date.now());
+  const [unlockedMilestones, setUnlockedMilestones] = useState<number[]>([]);
 
   const { rooms, isLoading: roomsLoading } = useCastleRooms(castleId!);
   const startTour = useStartTour();
@@ -115,6 +116,10 @@ export default function DisneyCastleTour() {
       setCurrentRoomIndex(index);
       setTimeout(() => setIsFading(false), 50);
     }, 300);
+  };
+
+  const handleMilestoneUnlock = (percentage: number) => {
+    setUnlockedMilestones((prev) => [...prev, percentage]);
   };
 
   const visitedRoomIds = visit?.rooms_visited || [];
@@ -332,6 +337,8 @@ export default function DisneyCastleTour() {
         startTime={tourStartTime}
         isVisible={showProgress}
         onClose={() => setShowProgress(false)}
+        unlockedMilestones={unlockedMilestones}
+        onMilestoneUnlock={handleMilestoneUnlock}
       />
     </div>
   );
