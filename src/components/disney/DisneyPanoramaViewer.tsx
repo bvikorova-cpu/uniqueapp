@@ -125,31 +125,19 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'magical-dreams-9': magicalDreams9,
       'magical-dreams-10': magicalDreams10,
       
-      // Cinderella Castle (Magic Kingdom) - 10 rooms
-      'cinderella-1': cinderella1,
-      'cinderella-2': cinderella2,
-      'cinderella-3': cinderella3,
-      'cinderella-4': cinderella4,
-      'cinderella-5': cinderella5,
-      'cinderella-6': cinderella6,
-      'cinderella-7': cinderella7,
-      'cinderella-8': cinderella8,
-      'cinderella-9': cinderella9,
-      'cinderella-10': cinderella10,
+      // Neuschwanstein (Bavaria) - 10 rooms
+      'neuschwanstein-1': neuschwanstein1,
+      'neuschwanstein-2': neuschwanstein2,
+      'neuschwanstein-3': neuschwanstein3,
+      'neuschwanstein-4': neuschwanstein4,
+      'neuschwanstein-5': neuschwanstein5,
+      'neuschwanstein-6': neuschwanstein6,
+      'neuschwanstein-7': neuschwanstein7,
+      'neuschwanstein-8': neuschwanstein8,
+      'neuschwanstein-9': neuschwanstein9,
+      'neuschwanstein-10': neuschwanstein10,
       
-      // Sleeping Beauty Castle (Disneyland) - 10 rooms
-      'sleeping-beauty-1': sleepingBeauty1,
-      'sleeping-beauty-2': sleepingBeauty2,
-      'sleeping-beauty-3': sleepingBeauty3,
-      'sleeping-beauty-4': sleepingBeauty4,
-      'sleeping-beauty-5': sleepingBeauty5,
-      'sleeping-beauty-6': sleepingBeauty6,
-      'sleeping-beauty-7': sleepingBeauty7,
-      'sleeping-beauty-8': sleepingBeauty8,
-      'sleeping-beauty-9': sleepingBeauty9,
-      'sleeping-beauty-10': sleepingBeauty10,
-      
-      // Le Château de la Belle au Bois Dormant (Paris) - 10 rooms
+      // Paris Belle (Disneyland Paris) - 10 rooms
       'paris-belle-1': parisBelle1,
       'paris-belle-2': parisBelle2,
       'paris-belle-3': parisBelle3,
@@ -161,7 +149,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'paris-belle-9': parisBelle9,
       'paris-belle-10': parisBelle10,
       
-      // Cinderella Castle (Tokyo) - 10 rooms
+      // Tokyo Cinderella - 10 rooms
       'tokyo-cinderella-1': tokyoCinderella1,
       'tokyo-cinderella-2': tokyoCinderella2,
       'tokyo-cinderella-3': tokyoCinderella3,
@@ -173,7 +161,19 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'tokyo-cinderella-9': tokyoCinderella9,
       'tokyo-cinderella-10': tokyoCinderella10,
       
-      // Enchanted Storybook Castle (Shanghai) - 10 rooms
+      // WDW Cinderella - 10 rooms
+      'wdw-cinderella-1': wdwCinderella1,
+      'wdw-cinderella-2': wdwCinderella2,
+      'wdw-cinderella-3': wdwCinderella3,
+      'wdw-cinderella-4': wdwCinderella4,
+      'wdw-cinderella-5': wdwCinderella5,
+      'wdw-cinderella-6': wdwCinderella6,
+      'wdw-cinderella-7': wdwCinderella7,
+      'wdw-cinderella-8': wdwCinderella8,
+      'wdw-cinderella-9': wdwCinderella9,
+      'wdw-cinderella-10': wdwCinderella10,
+      
+      // Shanghai Storybook - 10 rooms
       'shanghai-storybook-1': shanghaiStorybook1,
       'shanghai-storybook-2': shanghaiStorybook2,
       'shanghai-storybook-3': shanghaiStorybook3,
@@ -186,7 +186,8 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
       'shanghai-storybook-10': shanghaiStorybook10,
     };
 
-    const actualImageUrl = imageMap[imageUrl] || magicalDreams1;
+    // Check if imageUrl is a key in imageMap or a direct URL
+    const actualImageUrl = imageMap[imageUrl] || imageUrl;
     
     loader.load(
       actualImageUrl,
