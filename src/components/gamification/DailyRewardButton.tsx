@@ -11,20 +11,27 @@ export default function DailyRewardButton() {
   const streak = checkCanClaim.data?.streak || 0;
 
   return (
-    <Card>
+    <Card className="animate-fade-in">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Gift className="h-5 w-5" />
+          <Gift className="h-5 w-5 animate-bounce" />
           Daily Reward
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Flame className="h-5 w-5 text-orange-500" />
+            <Flame className={`h-5 w-5 text-orange-500 transition-all duration-300 ${
+              streak > 0 ? "animate-pulse" : ""
+            }`} />
             <span className="text-sm font-medium">Streak</span>
           </div>
-          <Badge variant={streak > 0 ? "default" : "secondary"}>
+          <Badge 
+            variant={streak > 0 ? "default" : "secondary"}
+            className={`transition-all duration-300 ${
+              streak > 0 ? "animate-scale-in" : ""
+            }`}
+          >
             {streak} {streak === 1 ? "day" : "days"}
           </Badge>
         </div>
@@ -32,14 +39,21 @@ export default function DailyRewardButton() {
         <Button
           onClick={() => claimReward.mutate()}
           disabled={!canClaim || claimReward.isPending}
-          className="w-full"
+          className={`w-full transition-all duration-300 ${
+            canClaim 
+              ? "hover-scale animate-pulse shadow-lg hover:shadow-xl" 
+              : ""
+          }`}
           size="lg"
         >
           {claimReward.isPending ? (
-            "Claiming..."
+            <span className="flex items-center gap-2">
+              <Gift className="h-4 w-4 animate-spin" />
+              Claiming...
+            </span>
           ) : canClaim ? (
             <>
-              <Gift className="h-4 w-4 mr-2" />
+              <Gift className="h-4 w-4 mr-2 animate-bounce" />
               Claim Daily Reward
             </>
           ) : (
@@ -47,7 +61,7 @@ export default function DailyRewardButton() {
           )}
         </Button>
 
-        <p className="text-xs text-muted-foreground text-center">
+        <p className="text-xs text-muted-foreground text-center animate-fade-in">
           {canClaim
             ? "Earn points for logging in every day!"
             : "Come back tomorrow for another reward"}
