@@ -13,6 +13,7 @@ import { Briefcase, MapPin, DollarSign, Clock, Search, Plus, Building2, Globe } 
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { JobPreferencesDialog } from "@/components/jobs/JobPreferencesDialog";
 import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
+import { JobApplicationDialog } from "@/components/jobs/JobApplicationDialog";
 
 interface JobListing {
   id: string;
@@ -477,6 +478,15 @@ const Jobs = () => {
               <>
                 <JobPreferencesDialog userId={user.id} />
                 <JobAIAssistant />
+                {isEmployer && (
+                  <Button
+                    variant="outline"
+                    onClick={() => window.location.href = "/employer-dashboard"}
+                  >
+                    <Briefcase className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Button>
+                )}
               </>
             )}
             {user && isEmployer ? (
@@ -974,24 +984,28 @@ const Jobs = () => {
               </div>
 
               {/* Action Button */}
-              <Button 
-                className="w-full py-6 text-lg" 
-                onClick={() => {
-                  if (!user) {
+              {selectedJob && user && (
+                <JobApplicationDialog
+                  jobId={selectedJob.id}
+                  jobTitle={selectedJob.title}
+                  companyName={selectedJob.company_name}
+                />
+              )}
+              {!user && (
+                <Button 
+                  className="w-full py-6 text-lg" 
+                  onClick={() => {
                     toast({
                       title: "Prihlásenie potrebné",
                       description: "Pre uchádzanie sa o pozíciu sa musíte prihlásiť",
                     });
                     window.location.href = "/auth";
-                    return;
-                  }
-                  setShowJobDetailsDialog(false);
-                  setShowApplyDialog(true);
-                }}
-              >
-                <Search className="h-5 w-5 mr-2" />
-                {user ? "Uchádzať sa o pozíciu" : "Prihlásiť sa a uchádzať"}
-              </Button>
+                  }}
+                >
+                  <Search className="h-5 w-5 mr-2" />
+                  Prihlásiť sa a uchádzať
+                </Button>
+              )}
             </div>
           </DialogContent>
         </Dialog>
