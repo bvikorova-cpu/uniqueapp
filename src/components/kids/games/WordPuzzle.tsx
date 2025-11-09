@@ -10,11 +10,11 @@ interface WordPuzzleProps {
 }
 
 const words = [
-  { word: "KOCKA", hint: "Má mäkké labky a mňauká" },
-  { word: "SLNKO", hint: "Svieti cez deň na oblohe" },
-  { word: "KVET", hint: "Rastie na lúke a má peknú farbu" },
-  { word: "KNIHA", hint: "Čítame v nej príbehy" },
-  { word: "HVIEZDA", hint: "Svieti v noci na oblohe" },
+  { word: "KITTEN", hint: "Has soft paws and meows" },
+  { word: "SUNSHINE", hint: "Shines during the day in the sky" },
+  { word: "FLOWER", hint: "Grows in the meadow with pretty colors" },
+  { word: "STORYBOOK", hint: "We read tales and adventures in it" },
+  { word: "STARLIGHT", hint: "Twinkles at night in the sky" },
 ];
 
 export const WordPuzzle = ({ onComplete, onBack }: WordPuzzleProps) => {
@@ -26,7 +26,7 @@ export const WordPuzzle = ({ onComplete, onBack }: WordPuzzleProps) => {
 
   const currentWord = words[currentWordIndex].word;
   const currentHint = words[currentWordIndex].hint;
-  const alphabet = "AÁBCČDĎEÉFGHIÍJKLĹĽMNŇOÓÔPQRŔSŠTŤUÚVWXYÝZŽ".split("");
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   useEffect(() => {
     const allLettersGuessed = currentWord
@@ -36,7 +36,7 @@ export const WordPuzzle = ({ onComplete, onBack }: WordPuzzleProps) => {
     if (allLettersGuessed && currentWord) {
       const wordScore = Math.max(50 - wrongGuesses * 5, 10);
       setScore(score + wordScore);
-      toast.success(`Správne! +${wordScore} bodov`);
+      toast.success(`Correct! +${wordScore} points`);
 
       setTimeout(() => {
         if (currentWordIndex < words.length - 1) {
@@ -62,7 +62,7 @@ export const WordPuzzle = ({ onComplete, onBack }: WordPuzzleProps) => {
       setWrongGuesses(newWrong);
       
       if (newWrong >= maxWrong) {
-        toast.error("Prehra! Skús znova.");
+        toast.error("Game Over! Try again.");
         setTimeout(() => {
           setGuessedLetters(new Set());
           setWrongGuesses(0);
@@ -77,11 +77,11 @@ export const WordPuzzle = ({ onComplete, onBack }: WordPuzzleProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Späť
+            Back
           </Button>
           <div className="flex gap-6 text-lg font-bold">
-            <span className="text-red-600">Zlé pokusy: {wrongGuesses}/{maxWrong}</span>
-            <span className="text-green-600">Skóre: {score}</span>
+            <span className="text-red-600">Wrong Guesses: {wrongGuesses}/{maxWrong}</span>
+            <span className="text-green-600">Score: {score}</span>
           </div>
         </div>
 
@@ -91,12 +91,12 @@ export const WordPuzzle = ({ onComplete, onBack }: WordPuzzleProps) => {
               Word Puzzle 🔤
             </h2>
             <p className="text-center text-gray-700 mb-6">
-              Slovo {currentWordIndex + 1} z {words.length}
+              Word {currentWordIndex + 1} of {words.length}
             </p>
 
             <div className="mb-8">
               <p className="text-xl text-center text-purple-600 font-semibold mb-6">
-                💡 Nápoveda: {currentHint}
+                💡 Hint: {currentHint}
               </p>
 
               <div className="flex justify-center gap-3 mb-8">

@@ -46,7 +46,7 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
     const answer = parseInt(userAnswer);
     
     if (isNaN(answer)) {
-      toast.error("Zadaj číslo!");
+      toast.error("Enter a number!");
       return;
     }
 
@@ -55,21 +55,21 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
       setScore(score + points);
       setStreak(streak + 1);
       setProblemsSolved(problemsSolved + 1);
-      toast.success(`Správne! +${points} bodov (${streak + 1}× v rade)`);
+      toast.success(`Correct! +${points} points (${streak + 1}× in a row)`);
 
       if (problemsSolved + 1 >= totalProblems) {
         setTimeout(() => onComplete(score + points), 1500);
       } else {
         if ((problemsSolved + 1) % 3 === 0) {
           setLevel(level + 1);
-          toast.success("Úroveň zvýšená! 🎉");
+          toast.success("Level up! 🎉");
         }
         setProblem(generateProblem(level));
         setUserAnswer("");
       }
     } else {
       setStreak(0);
-      toast.error(`Nesprávne! Správna odpoveď je ${problem.answer}`);
+      toast.error(`Wrong! The correct answer is ${problem.answer}`);
       setTimeout(() => {
         setProblem(generateProblem(level));
         setUserAnswer("");
@@ -89,11 +89,11 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Späť
+            Back
           </Button>
           <div className="flex gap-6 text-lg font-bold">
-            <span className="text-purple-600">Úroveň: {level}</span>
-            <span className="text-green-600">Skóre: {score}</span>
+            <span className="text-purple-600">Level: {level}</span>
+            <span className="text-green-600">Score: {score}</span>
           </div>
         </div>
 
@@ -103,13 +103,13 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
               Number Adventure 🔢
             </h2>
             <p className="text-center text-gray-700 mb-6">
-              Príklad {problemsSolved + 1} z {totalProblems}
+              Problem {problemsSolved + 1} of {totalProblems}
             </p>
 
             {streak > 0 && (
               <div className="text-center mb-6">
                 <span className="inline-block px-6 py-2 bg-yellow-200 text-yellow-800 rounded-full font-bold text-lg animate-pulse">
-                  🔥 {streak}× v rade!
+                  🔥 {streak}× in a row!
                 </span>
               </div>
             )}
@@ -129,7 +129,7 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Tvoja odpoveď"
+                  placeholder="Your answer"
                   className="w-64 h-16 text-3xl text-center border-4 border-purple-400 rounded-xl focus:border-purple-600 focus:outline-none"
                   autoFocus
                 />
@@ -142,7 +142,7 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
                 disabled={!userAnswer}
                 className="text-xl px-8 py-6 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
               >
-                Skontrolovať
+                Check
               </Button>
               <Button
                 onClick={() => {
@@ -152,7 +152,7 @@ export const NumberAdventure = ({ onComplete, onBack }: NumberAdventureProps) =>
                 variant="outline"
                 className="text-xl px-8 py-6 border-2"
               >
-                Preskočiť
+                Skip
               </Button>
             </div>
 

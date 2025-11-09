@@ -123,14 +123,14 @@ export default function StoryGames() {
       <Navbar />
       
       <div className="container mx-auto px-4 pt-24 pb-12">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/kids-channel")}
-          className="mb-6 hover:bg-white/50"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Kids Channel
-        </Button>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/kids-channel")}
+            className="mb-6 hover:bg-white/50"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Kids Channel
+          </Button>
 
         <div className="max-w-6xl mx-auto">
           <Card className="bg-white/90 backdrop-blur-sm border-4 border-white/50 shadow-2xl mb-8">
@@ -221,13 +221,13 @@ export default function StoryGames() {
           <Card className="bg-gradient-to-br from-white to-red-50 border-4 border-red-200 mt-8">
             <CardContent className="p-8">
               <div className="text-center mb-6">
-                <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-red-600 mb-2">
-                  Achievements 🏆
-                </h3>
-                <p className="text-gray-700">
-                  Complete games to earn special badges!
-                </p>
+                  <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold text-red-600 mb-2">
+                    Achievements 🏆
+                  </h3>
+                  <p className="text-gray-700">
+                    Complete games to earn special badges!
+                  </p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -10,12 +10,12 @@ interface HiddenObjectsProps {
 }
 
 const objects = [
-  { emoji: "⭐", name: "hviezda", x: 20, y: 30 },
-  { emoji: "🌙", name: "mesiac", x: 70, y: 20 },
-  { emoji: "🎈", name: "balón", x: 40, y: 60 },
-  { emoji: "🎁", name: "darček", x: 80, y: 70 },
-  { emoji: "🦋", name: "motýľ", x: 15, y: 80 },
-  { emoji: "🌸", name: "kvet", x: 60, y: 45 },
+  { emoji: "⭐", name: "star", x: 20, y: 30 },
+  { emoji: "🌙", name: "moon", x: 70, y: 20 },
+  { emoji: "🎈", name: "balloon", x: 40, y: 60 },
+  { emoji: "🎁", name: "gift", x: 80, y: 70 },
+  { emoji: "🦋", name: "butterfly", x: 15, y: 80 },
+  { emoji: "🌸", name: "flower", x: 60, y: 45 },
 ];
 
 export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
@@ -27,7 +27,7 @@ export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
     if (timeLeft <= 0) {
       setGameOver(true);
       const score = foundObjects.size * 20;
-      toast.error(`Čas vypršal! Skóre: ${score}`);
+      toast.error(`Time's up! Score: ${score}`);
       setTimeout(() => onComplete(score), 2000);
       return;
     }
@@ -36,7 +36,7 @@ export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
       setGameOver(true);
       const bonus = timeLeft * 2;
       const score = foundObjects.size * 20 + bonus;
-      toast.success(`Výborne! Všetko našiel! +${bonus} bonus`);
+      toast.success(`Amazing! Found everything! +${bonus} bonus`);
       setTimeout(() => onComplete(score), 2000);
       return;
     }
@@ -54,7 +54,7 @@ export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
     const newFound = new Set(foundObjects);
     newFound.add(index);
     setFoundObjects(newFound);
-    toast.success(`Našiel si ${objects[index].name}! 🎉`);
+    toast.success(`Found the ${objects[index].name}! 🎉`);
   };
 
   return (
@@ -63,12 +63,12 @@ export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Späť
+            Back
           </Button>
           <div className="flex gap-6 text-lg font-bold">
-            <span className="text-red-600">Čas: {timeLeft}s</span>
+            <span className="text-red-600">Time: {timeLeft}s</span>
             <span className="text-green-600">
-              Našiel si: {foundObjects.size}/{objects.length}
+              Found: {foundObjects.size}/{objects.length}
             </span>
           </div>
         </div>
@@ -79,7 +79,7 @@ export const HiddenObjects = ({ onComplete, onBack }: HiddenObjectsProps) => {
               Hidden Objects 🔍
             </h2>
             <p className="text-center text-gray-700 mb-6">
-              Nájdi všetky ukryté objekty skôr ako vyprší čas!
+              Find all the hidden objects before time runs out!
             </p>
 
             <div className="mb-6 flex flex-wrap justify-center gap-3">

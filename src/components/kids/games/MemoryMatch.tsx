@@ -97,11 +97,11 @@ export const MemoryMatch = ({ onComplete, onBack }: MemoryMatchProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Späť
+            Back
           </Button>
           <div className="flex gap-6 text-lg font-bold">
-            <span className="text-red-600">Ťahy: {moves}</span>
-            <span className="text-green-600">Páry: {matches}/{emojis.length}</span>
+            <span className="text-red-600">Moves: {moves}</span>
+            <span className="text-green-600">Pairs: {matches}/{emojis.length}</span>
           </div>
         </div>
 
@@ -111,7 +111,7 @@ export const MemoryMatch = ({ onComplete, onBack }: MemoryMatchProps) => {
               Memory Match 🎴
             </h2>
             <p className="text-center text-gray-700 mb-6">
-              Nájdi všetky páry! Klikni na karty a zapamätaj si, kde sú rovnaké obrázky.
+              Find all the pairs! Click on cards and remember where the matching images are.
             </p>
 
             <div className="grid grid-cols-4 gap-4">
@@ -137,7 +137,7 @@ export const MemoryMatch = ({ onComplete, onBack }: MemoryMatchProps) => {
                 onClick={initializeGame}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
               >
-                Nová hra
+                New Game
               </Button>
             </div>
           </CardContent>

@@ -10,23 +10,23 @@ interface ColorQuestProps {
 }
 
 const colors = [
-  { name: "Červená", value: "#ef4444" },
-  { name: "Modrá", value: "#3b82f6" },
-  { name: "Zelená", value: "#22c55e" },
-  { name: "Žltá", value: "#eab308" },
-  { name: "Fialová", value: "#a855f7" },
-  { name: "Oranžová", value: "#f97316" },
-  { name: "Ružová", value: "#ec4899" },
-  { name: "Hnedá", value: "#92400e" },
+  { name: "Red", value: "#ef4444" },
+  { name: "Blue", value: "#3b82f6" },
+  { name: "Green", value: "#22c55e" },
+  { name: "Yellow", value: "#eab308" },
+  { name: "Purple", value: "#a855f7" },
+  { name: "Orange", value: "#f97316" },
+  { name: "Pink", value: "#ec4899" },
+  { name: "Brown", value: "#92400e" },
 ];
 
 const shapes = [
-  { id: 1, path: "M50,10 L90,90 L10,90 Z", name: "Trojuholník" },
-  { id: 2, path: "M10,10 L90,10 L90,90 L10,90 Z", name: "Štvorec" },
-  { id: 3, path: "M50,50 m-40,0 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0", name: "Kruh" },
-  { id: 4, path: "M50,10 L90,30 L75,70 L25,70 L10,30 Z", name: "Hviezda" },
-  { id: 5, path: "M30,90 L50,10 L70,90 Z M20,50 L80,50", name: "Srdce" },
-  { id: 6, path: "M10,40 L40,10 L90,10 L90,60 L60,90 L10,90 Z", name: "Šesťuholník" },
+  { id: 1, path: "M50,10 L90,90 L10,90 Z", name: "Triangle" },
+  { id: 2, path: "M10,10 L90,10 L90,90 L10,90 Z", name: "Square" },
+  { id: 3, path: "M50,50 m-40,0 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0", name: "Circle" },
+  { id: 4, path: "M50,10 L90,30 L75,70 L25,70 L10,30 Z", name: "Star" },
+  { id: 5, path: "M30,90 L50,10 L70,90 Z M20,50 L80,50", name: "Heart" },
+  { id: 6, path: "M10,40 L40,10 L90,10 L90,60 L60,90 L10,90 Z", name: "Hexagon" },
 ];
 
 export const ColorQuest = ({ onComplete, onBack }: ColorQuestProps) => {
@@ -45,7 +45,7 @@ export const ColorQuest = ({ onComplete, onBack }: ColorQuestProps) => {
     });
 
     if (coloredCount + 1 === shapes.length) {
-      toast.success("Výborne! Vymaľoval si všetky tvary! 🎨");
+      toast.success("Excellent! You colored all the shapes! 🎨");
       setTimeout(() => onComplete(100), 1500);
     }
   };
@@ -61,10 +61,10 @@ export const ColorQuest = ({ onComplete, onBack }: ColorQuestProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Späť
+            Back
           </Button>
           <div className="text-lg font-bold text-green-600">
-            Vymaľované: {coloredCount}/{shapes.length}
+            Colored: {coloredCount}/{shapes.length}
           </div>
         </div>
 
@@ -74,11 +74,11 @@ export const ColorQuest = ({ onComplete, onBack }: ColorQuestProps) => {
               Color Quest 🎨
             </h2>
             <p className="text-center text-gray-700 mb-6">
-              Vyber farbu a klikni na tvar, ktorý chceš vymaľovať!
+              Choose a color and click on the shape you want to paint!
             </p>
 
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-700 mb-3">Vyber farbu:</h3>
+              <h3 className="text-lg font-semibold text-gray-700 mb-3">Choose a color:</h3>
               <div className="flex flex-wrap gap-3 justify-center">
                 {colors.map((color) => (
                   <button
@@ -126,7 +126,7 @@ export const ColorQuest = ({ onComplete, onBack }: ColorQuestProps) => {
                 variant="outline"
                 className="border-2"
               >
-                Vymazať všetko
+                Clear All
               </Button>
             </div>
           </CardContent>

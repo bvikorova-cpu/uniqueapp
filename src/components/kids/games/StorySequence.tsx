@@ -11,13 +11,13 @@ interface StorySequenceProps {
 
 const stories = [
   {
-    title: "Červená čiapočka",
+    title: "Little Red Riding Hood",
     events: [
-      { id: 1, text: "Babička bola chorá", order: 1 },
-      { id: 2, text: "Červená čiapočka išla cez les", order: 2 },
-      { id: 3, text: "Stretla vlka v lese", order: 3 },
-      { id: 4, text: "Vlk dobehol k babičke", order: 4 },
-      { id: 5, text: "Poľovník zachránil babičku", order: 5 },
+      { id: 1, text: "Grandma was sick", order: 1 },
+      { id: 2, text: "Little Red Riding Hood walked through the forest", order: 2 },
+      { id: 3, text: "She met the wolf in the woods", order: 3 },
+      { id: 4, text: "The wolf ran to Grandma's house", order: 4 },
+      { id: 5, text: "The hunter saved Grandma", order: 5 },
     ],
   },
 ];
@@ -43,7 +43,7 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
 
   const handleCheck = () => {
     if (selectedEvents.length !== currentStory.events.length) {
-      toast.error("Vyber všetky udalosti!");
+      toast.error("Select all events!");
       return;
     }
 
@@ -52,10 +52,10 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
 
     if (isCorrect) {
       const score = Math.max(100 - attempts * 20, 20);
-      toast.success(`Výborne! Správne poradie! +${score} bodov`);
+      toast.success(`Excellent! Correct order! +${score} points`);
       setTimeout(() => onComplete(score), 2000);
     } else {
-      toast.error("Nesprávne poradie! Skús znova.");
+      toast.error("Wrong order! Try again.");
       setTimeout(() => {
         setIsChecked(false);
         setSelectedEvents([]);
@@ -76,10 +76,10 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
         <div className="flex items-center justify-between mb-6">
           <Button variant="ghost" onClick={onBack} className="hover:bg-white/50">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Späť
+            Back
           </Button>
           <div className="text-lg font-bold text-red-600">
-            Pokusy: {attempts}
+            Attempts: {attempts}
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
               Story Sequence 📚
             </h2>
             <p className="text-center text-gray-700 mb-2">
-              Usporiadaj udalosti v správnom poradí
+              Arrange the events in the correct order
             </p>
             <h3 className="text-2xl font-bold text-purple-600 text-center mb-8">
               {currentStory.title}
@@ -97,7 +97,7 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
 
             <div className="mb-8">
               <h4 className="text-lg font-semibold text-gray-700 mb-4">
-                Vyber udalosti v správnom poradí:
+                Select events in the correct order:
               </h4>
               <div className="grid gap-3">
                 {shuffledEvents.map((event) => {
@@ -145,14 +145,14 @@ export const StorySequence = ({ onComplete, onBack }: StorySequenceProps) => {
                 disabled={isChecked || selectedEvents.length === 0}
                 className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
               >
-                Skontrolovať
+                Check
               </Button>
               <Button
                 onClick={handleReset}
                 variant="outline"
                 className="border-2"
               >
-                Resetovať
+                Reset
               </Button>
             </div>
           </CardContent>
