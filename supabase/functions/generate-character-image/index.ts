@@ -20,21 +20,18 @@ serve(async (req) => {
 
     const prompt = `Create a cute, colorful, child-friendly animated character image of ${characterName}, a ${characterType}. The image should be vibrant, fun, and appealing to children aged 5-12. Style: Disney/Pixar animation style, bright colors, friendly expression, full character view on a simple background.`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        modalities: ['image', 'text']
+        model: 'gpt-image-1',
+        prompt: prompt,
+        n: 1,
+        size: '1024x1024',
+        quality: 'high'
       }),
     });
 
@@ -52,12 +49,12 @@ serve(async (req) => {
         );
       }
       const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
+      console.error('OpenAI API error:', response.status, errorText);
       throw new Error('Failed to generate image');
     }
 
     const data = await response.json();
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const imageUrl = data.data?.[0]?.url;
 
     if (!imageUrl) {
       throw new Error('No image URL in response');
