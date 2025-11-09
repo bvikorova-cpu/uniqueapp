@@ -149,9 +149,9 @@ const Jobs = () => {
 
   // Job listing packages
   const JOB_PACKAGES = [
-    { days: 7, price: 29, priceId: "price_1SQSCK0QTWhd4oRpjXyY0KsF", popular: false },
-    { days: 14, price: 49, priceId: "price_1SQSCb0QTWhd4oRpN3xgLqQQ", popular: true },
-    { days: 30, price: 79, priceId: "price_1SQSCyGaXSfGtYFtBJTglXoH", popular: false },
+    { days: 7, price: 29, priceId: "price_1SRNgrGaXSfGtYFtVbmPj1g8", popular: false },
+    { days: 14, price: 49, priceId: "price_1SRNhFGaXSfGtYFtwwgk6yOC", popular: true },
+    { days: 30, price: 79, priceId: "price_1SRNhXGaXSfGtYFtn9Y73lAp", popular: false },
   ];
 
   // Form states for creating job
@@ -266,8 +266,8 @@ const Jobs = () => {
           {
             body: {
               jobId: jobData.id,
+              priceId: selectedPackage.priceId,
               durationDays: selectedPackage.days,
-              price: selectedPackage.price,
             },
           }
         );

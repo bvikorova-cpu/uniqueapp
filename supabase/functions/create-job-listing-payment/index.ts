@@ -24,11 +24,13 @@ serve(async (req) => {
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
-    const { jobId, durationDays, price } = await req.json();
+    const { jobId, priceId, durationDays } = await req.json();
 
-    if (!jobId || !durationDays || !price) {
-      throw new Error("Missing required fields");
+    if (!jobId || !priceId || !durationDays) {
+      throw new Error("Missing required fields: jobId, priceId, durationDays");
     }
+
+    console.log("Creating payment session:", { jobId, priceId, durationDays, userEmail: user.email });
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -45,19 +47,12 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: `Job Listing - ${durationDays} dní`,
-              description: `Zverejnenie pracovnej ponuky na ${durationDays} dní`,
-            },
-            unit_amount: Math.round(price * 100),
-          },
+          price: priceId,
           quantity: 1,
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/jobs?success=true&job_id=${jobId}&session_id=${session.id}`,
+      success_url: `${req.headers.get("origin")}/jobs?success=true&job_id=${jobId}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${req.headers.get("origin")}/jobs?canceled=true`,
       metadata: {
         user_id: user.id,
@@ -67,6 +62,8 @@ serve(async (req) => {
       },
       client_reference_id: user.id,
     });
+
+    console.log("Payment session created:", { sessionId: session.id, url: session.url });
 
     return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
