@@ -12,61 +12,10 @@ export function CharacterCard({ character, onClick }: CharacterCardProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const cacheKey = `character-image-${character.id}`;
-    
-    // Check if image is cached in localStorage
-    try {
-      const cachedImage = localStorage.getItem(cacheKey);
-      if (cachedImage) {
-        setImageUrl(cachedImage);
-        setIsLoading(false);
-        return;
-      }
-    } catch (e) {
-      console.warn('Failed to read from localStorage:', e);
-    }
-
-    // Generate new image if not cached
-    const generateImage = async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-character-image`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              characterName: character.name,
-              characterType: character.characterType,
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error('Failed to generate image');
-        }
-
-        const data = await response.json();
-        if (data.imageUrl) {
-          // Cache the image in localStorage
-          try {
-            localStorage.setItem(cacheKey, data.imageUrl);
-          } catch (e) {
-            console.warn('Failed to cache image to localStorage:', e);
-          }
-          setImageUrl(data.imageUrl);
-        }
-      } catch (error) {
-        console.error('Error generating character image:', error);
-        setImageUrl(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    generateImage();
-  }, [character.id, character.name, character.characterType]);
+    // Use placeholder image from placeholder.svg
+    setImageUrl('/placeholder.svg');
+    setIsLoading(false);
+  }, [character.id]);
 
   return (
     <Button
