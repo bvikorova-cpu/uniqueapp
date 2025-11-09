@@ -51,8 +51,8 @@ export const ResponseTemplatesManager = () => {
       setTemplates(data || []);
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa načítať šablóny.",
+        title: "Error",
+        description: error.message || "Failed to load templates.",
         variant: "destructive",
       });
     } finally {
@@ -73,7 +73,7 @@ export const ResponseTemplatesManager = () => {
           .eq('id', editingTemplate.id);
 
         if (error) throw error;
-        toast({ title: "Šablóna aktualizovaná" });
+        toast({ title: "Template updated" });
       } else {
         const { error } = await supabase
           .from('job_response_templates')
@@ -83,7 +83,7 @@ export const ResponseTemplatesManager = () => {
           });
 
         if (error) throw error;
-        toast({ title: "Šablóna vytvorená" });
+        toast({ title: "Template created" });
       }
 
       setOpen(false);
@@ -91,7 +91,7 @@ export const ResponseTemplatesManager = () => {
       loadTemplates();
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -99,7 +99,7 @@ export const ResponseTemplatesManager = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Naozaj chcete odstrániť túto šablónu?")) return;
+    if (!confirm("Are you sure you want to delete this template?")) return;
 
     try {
       const { error } = await supabase
@@ -108,11 +108,11 @@ export const ResponseTemplatesManager = () => {
         .eq('id', id);
 
       if (error) throw error;
-      toast({ title: "Šablóna odstránená" });
+      toast({ title: "Template deleted" });
       loadTemplates();
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -142,89 +142,89 @@ export const ResponseTemplatesManager = () => {
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'accepted': return 'Prijatie';
-      case 'rejected': return 'Zamietnutie';
-      case 'interview': return 'Pohovor';
-      default: return 'Všeobecné';
+      case 'accepted': return 'Acceptance';
+      case 'rejected': return 'Rejection';
+      case 'interview': return 'Interview';
+      default: return 'General';
     }
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Šablóny odpovedí</h2>
+        <h2 className="text-2xl font-bold">Response Templates</h2>
         <Dialog open={open} onOpenChange={(o) => { setOpen(o); if (!o) resetForm(); }}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="h-4 w-4 mr-2" />
-              Nová šablóna
+              New Template
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>
-                {editingTemplate ? 'Upraviť šablónu' : 'Nová šablóna'}
+                {editingTemplate ? 'Edit Template' : 'New Template'}
               </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name">Názov šablóny</Label>
+                <Label htmlFor="name">Template Name</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Napr. Pozvánka na pohovor"
+                  placeholder="e.g. Interview Invitation"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="type">Typ šablóny</Label>
+                <Label htmlFor="type">Template Type</Label>
                 <select
                   id="type"
                   className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
                   value={formData.template_type}
                   onChange={(e) => setFormData({ ...formData, template_type: e.target.value })}
                 >
-                  <option value="general">Všeobecné</option>
-                  <option value="accepted">Prijatie žiadosti</option>
-                  <option value="rejected">Zamietnutie žiadosti</option>
-                  <option value="interview">Pozvánka na pohovor</option>
+                  <option value="general">General</option>
+                  <option value="accepted">Application Accepted</option>
+                  <option value="rejected">Application Rejected</option>
+                  <option value="interview">Interview Invitation</option>
                 </select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="subject">Predmet emailu</Label>
+                <Label htmlFor="subject">Email Subject</Label>
                 <Input
                   id="subject"
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  placeholder="Predmet správy"
+                  placeholder="Message subject"
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="body">Obsah správy</Label>
+                <Label htmlFor="body">Message Content</Label>
                 <Textarea
                   id="body"
                   value={formData.body}
                   onChange={(e) => setFormData({ ...formData, body: e.target.value })}
-                  placeholder="Text správy..."
+                  placeholder="Message text..."
                   rows={10}
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Môžete použiť premenné: {'{{job_title}}'}, {'{{company_name}}'}
+                  You can use variables: {'{{job_title}}'}, {'{{company_name}}'}
                 </p>
               </div>
 
               <div className="flex justify-end gap-2">
                 <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-                  Zrušiť
+                  Cancel
                 </Button>
                 <Button type="submit">
-                  {editingTemplate ? 'Uložiť' : 'Vytvoriť'}
+                  {editingTemplate ? 'Save' : 'Create'}
                 </Button>
               </div>
             </form>
@@ -233,12 +233,12 @@ export const ResponseTemplatesManager = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-8">Načítavam...</div>
+        <div className="text-center py-8">Loading...</div>
       ) : templates.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
             <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">Zatiaľ nemáte žiadne šablóny</p>
+            <p className="text-muted-foreground">You don't have any templates yet</p>
           </CardContent>
         </Card>
       ) : (
@@ -254,7 +254,7 @@ export const ResponseTemplatesManager = () => {
                         {getTypeLabel(template.template_type)}
                       </Badge>
                       {template.is_default && (
-                        <Badge variant="outline">Predvolená</Badge>
+                        <Badge variant="outline">Default</Badge>
                       )}
                     </div>
                   </div>
@@ -281,11 +281,11 @@ export const ResponseTemplatesManager = () => {
               <CardContent>
                 <div className="space-y-2">
                   <div>
-                    <p className="text-sm font-semibold">Predmet:</p>
+                    <p className="text-sm font-semibold">Subject:</p>
                     <p className="text-sm text-muted-foreground">{template.subject}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold">Obsah:</p>
+                    <p className="text-sm font-semibold">Content:</p>
                     <p className="text-sm text-muted-foreground line-clamp-3 whitespace-pre-wrap">
                       {template.body}
                     </p>
