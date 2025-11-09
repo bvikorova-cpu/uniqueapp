@@ -22,6 +22,7 @@ interface Notification {
   post_id?: string | null;
   comment_id?: string | null;
   repost_id?: string | null;
+  related_id?: string | null;
   actor_id?: string;
   actor?: {
     id: string;
@@ -154,6 +155,8 @@ const NotificationBell = () => {
         return "New job listing matches your preferences";
       case "job_application":
         return `${actorName} applied for your job position`;
+      case "verification_request":
+        return `${actorName} submitted a company verification request`;
       default:
         return `${actorName} interacted with your content`;
     }
@@ -175,6 +178,8 @@ const NotificationBell = () => {
         return "💼";
       case "job_application":
         return "📝";
+      case "verification_request":
+        return "🏢";
       default:
         return "🔔";
     }
@@ -227,6 +232,8 @@ const NotificationBell = () => {
       navigate(`/jobs`);
     } else if (notification.type === "job_application") {
       navigate(`/employer-dashboard`);
+    } else if (notification.type === "verification_request") {
+      navigate(`/admin/verifications`);
     } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);
     }
