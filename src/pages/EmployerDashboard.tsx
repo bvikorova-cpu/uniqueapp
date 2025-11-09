@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -20,6 +20,7 @@ import { format } from "date-fns";
 import { sk } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
+import { ResponseTemplatesManager } from "@/components/jobs/ResponseTemplatesManager";
 
 interface JobWithStats {
   id: string;
@@ -392,6 +393,10 @@ export default function EmployerDashboard() {
           <TabsList>
             <TabsTrigger value="jobs">Moje pozície</TabsTrigger>
             <TabsTrigger value="applications">Žiadosti</TabsTrigger>
+            <TabsTrigger value="templates">
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Šablóny
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="jobs" className="space-y-4">
@@ -615,6 +620,10 @@ export default function EmployerDashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="templates" className="space-y-4">
+            <ResponseTemplatesManager />
           </TabsContent>
         </Tabs>
       </div>

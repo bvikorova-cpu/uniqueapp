@@ -8948,6 +8948,42 @@ export type Database = {
         }
         Relationships: []
       }
+      job_response_templates: {
+        Row: {
+          body: string
+          created_at: string
+          employer_id: string
+          id: string
+          is_default: boolean | null
+          name: string
+          subject: string
+          template_type: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          employer_id: string
+          id?: string
+          is_default?: boolean | null
+          name: string
+          subject: string
+          template_type?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          employer_id?: string
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          subject?: string
+          template_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           ai_insights: string | null
