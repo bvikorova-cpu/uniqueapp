@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -19,6 +19,7 @@ import {
 import { format } from "date-fns";
 import { sk } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import jsPDF from "jspdf";
 
 interface JobWithStats {
   id: string;
@@ -194,6 +195,114 @@ export default function EmployerDashboard() {
       }
     });
 
+  const exportToCSV = () => {
+    const headers = ["Pozícia", "Dátum podania", "Stav", "Motivačný list", "CV"];
+    const rows = filteredApplications.map(app => [
+      app.job_title,
+      format(new Date(app.created_at), 'dd.MM.yyyy HH:mm', { locale: sk }),
+      app.status === 'pending' ? 'Čaká' :
+       app.status === 'accepted' ? 'Prijatá' :
+       app.status === 'rejected' ? 'Zamietnutá' : app.status,
+      `"${app.cover_letter.replace(/"/g, '""')}"`,
+      app.resume_url || 'Nie'
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `ziadosti_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    link.click();
+
+    toast({
+      title: "Export úspešný",
+      description: `Exportovaných ${filteredApplications.length} žiadostí do CSV.`,
+    });
+  };
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+    let yPosition = margin;
+
+    // Title
+    doc.setFontSize(18);
+    doc.text('Žiadosti o prácu', margin, yPosition);
+    yPosition += 10;
+
+    doc.setFontSize(10);
+    doc.text(`Exportované: ${format(new Date(), 'dd.MM.yyyy HH:mm', { locale: sk })}`, margin, yPosition);
+    yPosition += 5;
+    doc.text(`Počet žiadostí: ${filteredApplications.length}`, margin, yPosition);
+    yPosition += 10;
+
+    // Applications
+    filteredApplications.forEach((app, index) => {
+      // Check if we need a new page
+      if (yPosition > pageHeight - 40) {
+        doc.addPage();
+        yPosition = margin;
+      }
+
+      doc.setFontSize(12);
+      doc.setFont(undefined, 'bold');
+      doc.text(`${index + 1}. ${app.job_title}`, margin, yPosition);
+      yPosition += 7;
+
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Dátum: ${format(new Date(app.created_at), 'dd.MM.yyyy HH:mm', { locale: sk })}`, margin, yPosition);
+      yPosition += 5;
+
+      const statusText = app.status === 'pending' ? 'Čaká' :
+                         app.status === 'accepted' ? 'Prijatá' :
+                         app.status === 'rejected' ? 'Zamietnutá' : app.status;
+      doc.text(`Stav: ${statusText}`, margin, yPosition);
+      yPosition += 5;
+
+      doc.text('Motivačný list:', margin, yPosition);
+      yPosition += 5;
+
+      // Wrap text for cover letter
+      const coverLetterLines = doc.splitTextToSize(
+        app.cover_letter,
+        pageWidth - 2 * margin
+      );
+      
+      coverLetterLines.forEach((line: string) => {
+        if (yPosition > pageHeight - 20) {
+          doc.addPage();
+          yPosition = margin;
+        }
+        doc.text(line, margin + 5, yPosition);
+        yPosition += 5;
+      });
+
+      if (app.resume_url) {
+        yPosition += 2;
+        doc.text(`CV: ${app.resume_url}`, margin, yPosition);
+        yPosition += 5;
+      }
+
+      yPosition += 5;
+      doc.line(margin, yPosition, pageWidth - margin, yPosition);
+      yPosition += 5;
+    });
+
+    doc.save(`ziadosti_${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+
+    toast({
+      title: "Export úspešný",
+      description: `Exportovaných ${filteredApplications.length} žiadostí do PDF.`,
+    });
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto p-6">
@@ -338,10 +447,34 @@ export default function EmployerDashboard() {
           <TabsContent value="applications" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Prijaté žiadosti</CardTitle>
-                <CardDescription>
-                  Spravujte žiadosti o prácu
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Prijaté žiadosti</CardTitle>
+                    <CardDescription>
+                      Spravujte žiadosti o prácu
+                    </CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={exportToCSV}
+                      disabled={filteredApplications.length === 0}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={exportToPDF}
+                      disabled={filteredApplications.length === 0}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Export PDF
+                    </Button>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4 mb-6">
