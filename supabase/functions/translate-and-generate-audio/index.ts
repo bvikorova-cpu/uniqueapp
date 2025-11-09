@@ -106,10 +106,15 @@ serve(async (req) => {
       throw new Error(`Failed to generate audio: ${errorText}`)
     }
 
-    // Get audio as base64
+    // Get audio as base64 - use btoa directly with proper encoding
     const audioArrayBuffer = await elevenLabsResponse.arrayBuffer()
+    const uint8Array = new Uint8Array(audioArrayBuffer)
+    
+    // Convert to base64 using a more efficient method for large files
     const base64Audio = btoa(
-      String.fromCharCode(...new Uint8Array(audioArrayBuffer))
+      Array.from(uint8Array)
+        .map(byte => String.fromCharCode(byte))
+        .join('')
     )
 
     console.log('Audio generated successfully, size:', audioArrayBuffer.byteLength)
