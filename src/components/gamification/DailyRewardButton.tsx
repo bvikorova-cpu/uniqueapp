@@ -3,12 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Gift, Flame } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { triggerRewardConfetti } from "@/utils/confetti";
+import { useEffect, useRef } from "react";
 
 export default function DailyRewardButton() {
   const { checkCanClaim, claimReward } = useDailyReward();
+  const previousClaimStatus = useRef(false);
 
   const canClaim = checkCanClaim.data?.canClaim;
   const streak = checkCanClaim.data?.streak || 0;
+
+  useEffect(() => {
+    // Trigger confetti when claim status changes from true to false (successful claim)
+    if (previousClaimStatus.current === true && canClaim === false && !claimReward.isPending) {
+      triggerRewardConfetti();
+    }
+    previousClaimStatus.current = canClaim || false;
+  }, [canClaim, claimReward.isPending]);
 
   return (
     <Card className="animate-fade-in">

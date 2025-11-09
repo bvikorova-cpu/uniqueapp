@@ -2,6 +2,8 @@ import { useUserBadges, useAllBadges } from "@/hooks/useGamification";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Lock } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { triggerBadgeConfetti } from "@/utils/confetti";
 import {
   Tooltip,
   TooltipContent,
@@ -15,8 +17,17 @@ interface BadgesDisplayProps {
 export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
   const { data: userBadges = [] } = useUserBadges(userId);
   const { data: allBadges = [] } = useAllBadges();
+  const previousBadgeCount = useRef(0);
 
   const earnedBadgeIds = new Set(userBadges.map((ub: any) => ub.badge_id));
+
+  useEffect(() => {
+    // Trigger confetti when a new badge is earned
+    if (previousBadgeCount.current > 0 && userBadges.length > previousBadgeCount.current) {
+      triggerBadgeConfetti();
+    }
+    previousBadgeCount.current = userBadges.length;
+  }, [userBadges.length]);
 
   return (
     <Card>
@@ -39,7 +50,7 @@ export default function BadgesDisplay({ userId }: BadgesDisplayProps) {
                     className={`
                       flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all
                       ${earned 
-                        ? "border-primary bg-primary/5 hover:bg-primary/10" 
+                        ? "border-primary bg-primary/5 hover:bg-primary/10 animate-scale-in" 
                         : "border-muted bg-muted/50 opacity-50"
                       }
                     `}
