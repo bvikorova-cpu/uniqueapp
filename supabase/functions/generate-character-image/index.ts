@@ -20,18 +20,21 @@ serve(async (req) => {
 
     const prompt = `Create a cute, colorful, child-friendly animated character image of ${characterName}, a ${characterType}. The image should be vibrant, fun, and appealing to children aged 5-12. Style: Disney/Pixar animation style, bright colors, friendly expression, full character view on a simple background.`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-image-1',
-        prompt: prompt,
-        n: 1,
-        size: '1024x1024',
-        quality: 'high'
+        model: 'google/gemini-2.5-flash-image',
+        messages: [
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        modalities: ['image', 'text']
       }),
     });
 
@@ -54,7 +57,7 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const imageUrl = data.data?.[0]?.url;
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
     if (!imageUrl) {
       throw new Error('No image URL in response');
