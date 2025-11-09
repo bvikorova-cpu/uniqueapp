@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Bell, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface JobPreferencesDialogProps {
   userId: string;
@@ -41,6 +42,7 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
 
   const [preferences, setPreferences] = useState({
     categories: [] as string[],
@@ -103,15 +105,15 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobPreferences"] });
       toast({
-        title: "✅ Preferencie uložené",
-        description: "Budete dostávať notifikácie o nových pracovných ponukách zodpovedajúcich vašim preferenciám",
+        title: t('jobs.preferences.saved', '✅ Preferences Saved'),
+        description: t('jobs.preferences.savedDesc', 'You will receive notifications about new job offers matching your preferences'),
       });
       setOpen(false);
     },
     onError: (error: any) => {
       toast({
-        title: "❌ Chyba",
-        description: error.message || "Nepodarilo sa uložiť preferencie",
+        title: t('jobs.error'),
+        description: error.message || t('jobs.preferences.errorSaving', 'Failed to save preferences'),
         variant: "destructive",
       });
     },
@@ -157,14 +159,14 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Bell className="h-4 w-4 mr-2" />
-          Nastavenia notifikácií
+          {t('jobs.preferences.title', 'Notification Settings')}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Preferencie pracovných ponúk</DialogTitle>
+          <DialogTitle>{t('jobs.preferences.title', 'Job Preferences')}</DialogTitle>
           <DialogDescription>
-            Nastavte si preferencie a dostávajte notifikácie o nových ponukách, ktoré vám vyhovujú
+            {t('jobs.preferences.description', 'Set your preferences and receive notifications about new offers that match')}
           </DialogDescription>
         </DialogHeader>
 
@@ -172,9 +174,9 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
           {/* Enable Notifications */}
           <div className="flex items-center justify-between">
             <div>
-              <Label>Povoliť notifikácie</Label>
+              <Label>{t('jobs.preferences.enableNotifications', 'Enable Notifications')}</Label>
               <p className="text-sm text-muted-foreground">
-                Dostávať upozornenia na nové pracovné ponuky
+                {t('jobs.preferences.enableNotificationsDesc', 'Receive alerts about new job offers')}
               </p>
             </div>
             <Switch
@@ -187,9 +189,9 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
 
           {/* Categories */}
           <div>
-            <Label>Kategórie</Label>
+            <Label>{t('jobs.preferences.categories', 'Categories')}</Label>
             <p className="text-sm text-muted-foreground mb-3">
-              Vyberte kategórie, ktoré vás zaujímajú (ponechajte prázdne pre všetky)
+              {t('jobs.preferences.categoriesDesc', 'Select categories that interest you (leave empty for all)')}
             </p>
             <div className="flex flex-wrap gap-2">
               {Object.entries(CATEGORIES).map(([key, label]) => (
@@ -207,9 +209,9 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
 
           {/* Job Types */}
           <div>
-            <Label>Typ pracovného pomeru</Label>
+            <Label>{t('jobs.preferences.jobTypes', 'Employment Type')}</Label>
             <p className="text-sm text-muted-foreground mb-3">
-              Vyberte typy pozícií (ponechajte prázdne pre všetky)
+              {t('jobs.preferences.jobTypesDesc', 'Select position types (leave empty for all)')}
             </p>
             <div className="flex flex-wrap gap-2">
               {Object.entries(JOB_TYPES).map(([key, label]) => (
@@ -227,19 +229,19 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
 
           {/* Locations */}
           <div>
-            <Label>Lokality</Label>
+            <Label>{t('jobs.preferences.locations', 'Locations')}</Label>
             <p className="text-sm text-muted-foreground mb-3">
-              Pridajte lokality, kde hľadáte prácu (ponechajte prázdne pre všetky)
+              {t('jobs.preferences.locationsDesc', 'Add locations where you are looking for work (leave empty for all)')}
             </p>
             <div className="flex gap-2 mb-2">
               <Input
-                placeholder="Napríklad: Bratislava, Praha, Remote..."
+                placeholder={t('jobs.preferences.locationPlaceholder', 'e.g.: Bratislava, Prague, Remote...')}
                 value={locationInput}
                 onChange={(e) => setLocationInput(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && addLocation()}
               />
               <Button onClick={addLocation} type="button">
-                Pridať
+                {t('jobs.preferences.add', 'Add')}
               </Button>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -257,14 +259,14 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
 
           {/* Salary Range */}
           <div>
-            <Label>Platové rozpätie (€/mesiac)</Label>
+            <Label>{t('jobs.preferences.salaryRange', 'Salary Range (€/month)')}</Label>
             <p className="text-sm text-muted-foreground mb-3">
-              Minimálna a maximálna hrubá mzda (ponechajte prázdne pre akúkoľvek)
+              {t('jobs.preferences.salaryRangeDesc', 'Minimum and maximum gross salary (leave empty for any)')}
             </p>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="min_salary" className="text-sm">
-                  Minimum
+                  {t('jobs.preferences.minimum', 'Minimum')}
                 </Label>
                 <Input
                   id="min_salary"
@@ -278,7 +280,7 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
               </div>
               <div>
                 <Label htmlFor="max_salary" className="text-sm">
-                  Maximum
+                  {t('jobs.preferences.maximum', 'Maximum')}
                 </Label>
                 <Input
                   id="max_salary"
@@ -298,7 +300,7 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
             disabled={saveMutation.isPending}
             className="w-full"
           >
-            {saveMutation.isPending ? "Ukladám..." : "Uložiť preferencie"}
+            {saveMutation.isPending ? t('jobs.preferences.saving', 'Saving...') : t('jobs.preferences.save', 'Save Preferences')}
           </Button>
         </div>
       </DialogContent>

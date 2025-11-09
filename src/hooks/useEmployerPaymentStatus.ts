@@ -33,18 +33,14 @@ export function useEmployerPaymentStatus() {
         return;
       }
 
-      // Check if employer has any paid (active) job listings
-      const { data: jobsData, error: jobsError } = await supabase
-        .from('job_listings')
-        .select('id, is_active')
-        .eq('employer_id', user.id)
-        .eq('is_active', true)
-        .limit(1);
+      // Check payment via Stripe
+      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
+        'check-employer-payment'
+      );
 
-      if (jobsError) throw jobsError;
+      if (paymentError) throw paymentError;
 
-      const hasPaidStatus = jobsData && jobsData.length > 0;
-      setHasPaid(hasPaidStatus);
+      setHasPaid(paymentData?.hasPaid || false);
       setLoading(false);
     } catch (err: any) {
       console.error('Error checking payment status:', err);
