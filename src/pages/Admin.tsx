@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat } from "lucide-react";
+import { VerificationRequestsWidget } from "@/components/admin/VerificationRequestsWidget";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -219,7 +220,9 @@ const Admin = () => {
         <h1 className="text-4xl font-bold mb-8">Admin Panel</h1>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <VerificationRequestsWidget />
+          
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Celkový počet užívateľov</CardTitle>
