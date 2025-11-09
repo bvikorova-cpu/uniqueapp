@@ -368,17 +368,17 @@ const Jobs = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userRole"] });
-      setIsEmployer(true);
+      queryClient.invalidateQueries({ queryKey: ['user-role'] });
       toast({
-        title: "✅ Registration Successful",
-        description: "You can now add job listings",
+        title: "✅ Registered as Employer",
+        description: "Please complete verification to post jobs",
       });
+      navigate('/employer-verification');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
-        title: "❌ Error",
-        description: error.message || "Failed to register as employer",
+        title: "❌ Registration Failed",
+        description: error.message,
         variant: "destructive",
       });
     },

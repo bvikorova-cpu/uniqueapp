@@ -21,8 +21,11 @@ import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import { ResponseTemplatesManager } from "@/components/jobs/ResponseTemplatesManager";
 import { useEmployerPaymentStatus } from "@/hooks/useEmployerPaymentStatus";
+import { useEmployerVerification } from "@/hooks/useEmployerVerification";
 import { useTranslation } from "react-i18next";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle2, AlertCircle } from "lucide-react";
 
 interface JobWithStats {
   id: string;
@@ -65,12 +68,13 @@ export default function EmployerDashboard() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { hasPaid, loading: paymentLoading } = useEmployerPaymentStatus();
+  const { verificationStatus, isApproved, loading: verificationLoading } = useEmployerVerification();
 
   useEffect(() => {
-    if (!paymentLoading) {
+    if (!paymentLoading && !verificationLoading) {
       loadDashboardData();
     }
-  }, [paymentLoading]);
+  }, [paymentLoading, verificationLoading]);
 
   const loadDashboardData = async () => {
     try {
@@ -346,8 +350,50 @@ export default function EmployerDashboard() {
               <p className="text-muted-foreground">{t('jobs.dashboard.overview')}</p>
             </div>
           </div>
-          {user && <CreateJobDialog userId={user.id} />}
+          {user && isApproved && <CreateJobDialog userId={user.id} />}
         </div>
+
+        {/* Verification and Payment Status Alerts */}
+        {!isApproved && (
+          <Alert>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="flex items-center justify-between">
+              <div>
+                {verificationStatus === null && (
+                  <span>{t('jobs.dashboard.verification.notVerified')}</span>
+                )}
+                {verificationStatus === 'pending' && (
+                  <span>{t('jobs.dashboard.verification.pending')}</span>
+                )}
+                {verificationStatus === 'rejected' && (
+                  <span>{t('jobs.dashboard.verification.rejected')}</span>
+                )}
+                {verificationStatus === 'requires_resubmission' && (
+                  <span>{t('jobs.dashboard.verification.requiresResubmission')}</span>
+                )}
+              </div>
+              <Button 
+                size="sm" 
+                onClick={() => navigate('/employer-verification')}
+                variant={verificationStatus === null ? "default" : "outline"}
+              >
+                {verificationStatus === null ? t('jobs.dashboard.verification.startVerification') : t('jobs.dashboard.verification.viewStatus')}
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {isApproved && !hasPaid && (
+          <Alert>
+            <CheckCircle2 className="h-4 w-4 text-green-600" />
+            <AlertDescription className="flex items-center justify-between">
+              <div>
+                <span className="font-semibold text-green-600">{t('jobs.dashboard.verification.approved')}</span>
+                <span className="ml-2">{t('jobs.dashboard.verification.approvedDesc')}</span>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
 
         <div className="grid gap-4 md:grid-cols-4">
           <Card>

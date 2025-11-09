@@ -248,6 +248,18 @@
       "loading": "Loading...",
       "exportSuccess": "Export Successful",
       "yourJobPositions": "Your Job Positions",
+      "verification": {
+        "title": "Employer Verification",
+        "notVerified": "You need to verify your company before posting job listings.",
+        "pending": "Your verification is pending admin review. You'll be notified once approved.",
+        "rejected": "Your verification was rejected. Please resubmit with corrected information.",
+        "requiresResubmission": "Your verification requires resubmission. Please review and resubmit.",
+        "approved": "Verification Approved!",
+        "approvedDesc": "Post your first job to activate the dashboard.",
+        "startVerification": "Start Verification",
+        "viewStatus": "View Status",
+        "postJob": "Post Job"
+      },
       "jobStats": "Statistics of your listings",
       "myJobs": "My Positions",
       "receivedApplications": "Received Applications",

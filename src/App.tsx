@@ -49,6 +49,8 @@ import Games from "./pages/Games";
 import Rewards from "./pages/Rewards";
 import Jobs from "./pages/Jobs";
 import EmployerDashboard from "./pages/EmployerDashboard";
+import EmployerVerification from "./pages/EmployerVerification";
+import AdminVerifications from "./pages/AdminVerifications";
 import AIMentor from "./pages/AIMentor";
 import AIMentorChat from "./pages/AIMentorChat";
 import ContentStudio from "./pages/ContentStudio";
@@ -270,6 +272,8 @@ const App = () => (
               <Route path="/games" element={<Games />} />
               <Route path="/jobs" element={<Jobs />} />
               <Route path="/employer-dashboard" element={<EmployerDashboard />} />
+              <Route path="/employer-verification" element={<EmployerVerification />} />
+              <Route path="/admin/verifications" element={<AdminVerifications />} />
               <Route path="/influ-king" element={<InfluKing />} />
               <Route path="/auction" element={<Auction />} />
               <Route path="/ai-generation" element={<AIGeneration />} />

@@ -6508,6 +6508,92 @@ export type Database = {
         }
         Relationships: []
       }
+      employer_verification_documents: {
+        Row: {
+          document_name: string
+          document_type: string
+          document_url: string
+          id: string
+          uploaded_at: string
+          verification_id: string
+        }
+        Insert: {
+          document_name: string
+          document_type: string
+          document_url: string
+          id?: string
+          uploaded_at?: string
+          verification_id: string
+        }
+        Update: {
+          document_name?: string
+          document_type?: string
+          document_url?: string
+          id?: string
+          uploaded_at?: string
+          verification_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employer_verification_documents_verification_id_fkey"
+            columns: ["verification_id"]
+            isOneToOne: false
+            referencedRelation: "employer_verifications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employer_verifications: {
+        Row: {
+          admin_notes: string | null
+          company_address: string
+          company_name: string
+          company_phone: string
+          company_registration_number: string | null
+          company_website: string | null
+          employer_id: string
+          id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          submitted_at: string
+          updated_at: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Insert: {
+          admin_notes?: string | null
+          company_address: string
+          company_name: string
+          company_phone: string
+          company_registration_number?: string | null
+          company_website?: string | null
+          employer_id: string
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          submitted_at?: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Update: {
+          admin_notes?: string | null
+          company_address?: string
+          company_name?: string
+          company_phone?: string
+          company_registration_number?: string | null
+          company_website?: string | null
+          employer_id?: string
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          submitted_at?: string
+          updated_at?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
+        }
+        Relationships: []
+      }
       escape_room_challenges: {
         Row: {
           access_duration_hours: number
@@ -17671,6 +17757,11 @@ export type Database = {
         | "pet_talent"
         | "other"
       tarot_card_position: "past" | "present" | "future" | "outcome"
+      verification_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "requires_resubmission"
       zodiac_sign:
         | "aries"
         | "taurus"
@@ -17938,6 +18029,12 @@ export const Constants = {
         "other",
       ],
       tarot_card_position: ["past", "present", "future", "outcome"],
+      verification_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "requires_resubmission",
+      ],
       zodiac_sign: [
         "aries",
         "taurus",
