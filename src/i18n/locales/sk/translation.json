@@ -165,5 +165,40 @@
     "quizTitle": "Kvíz na porozumenie",
     "checkAnswer": "Skontrolovať odpoveď",
     "backToReading": "Späť na čítanie"
+  },
+  "jobs": {
+    "addPosition": "Pridať pozíciu",
+    "dashboard": {
+      "title": "Dashboard zamestnávateľa",
+      "overview": "Prehľad vašich pracovných ponúk a žiadostí",
+      "totalJobs": "Celkový počet pozícií",
+      "totalApplications": "Celkový počet žiadostí",
+      "totalViews": "Celkový počet zobrazení",
+      "activeJobs": "aktívnych",
+      "pending": "čakajúcich",
+      "allJobs": "Všetky pozície spolu",
+      "avgConversion": "Priem. konverzia",
+      "applicationsViews": "Žiadosti/Zobrazenia",
+      "myJobs": "Moje pozície",
+      "applications": "Žiadosti",
+      "templates": "Šablóny odpovedí",
+      "yourJobPositions": "Vaše pracovné pozície",
+      "jobStats": "Štatistiky vašich inzerátov",
+      "jobTitle": "Názov pozície",
+      "location": "Lokalita",
+      "status": "Stav",
+      "views": "Zobrazenia",
+      "exportSuccess": "Export úspešný",
+      "verification": {
+        "notVerified": "Musíte overiť vašu spoločnosť pred zverejnením pracovných ponúk.",
+        "pending": "Vaša žiadosť o overenie je v procese schvaľovania.",
+        "rejected": "Vaša žiadosť o overenie bola zamietnutá.",
+        "requiresResubmission": "Vaša žiadosť o overenie vyžaduje opätovné podanie.",
+        "approved": "Vaša spoločnosť je overená!",
+        "approvedDesc": "Teraz môžete pridávať pracovné ponuky po aktivácii predplatného.",
+        "startVerification": "Začať overenie",
+        "viewStatus": "Zobraziť stav"
+      }
+    }
   }
 }
