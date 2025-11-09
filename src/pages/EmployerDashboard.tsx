@@ -22,6 +22,7 @@ import jsPDF from "jspdf";
 import { ResponseTemplatesManager } from "@/components/jobs/ResponseTemplatesManager";
 import { useEmployerPaymentStatus } from "@/hooks/useEmployerPaymentStatus";
 import { useTranslation } from "react-i18next";
+import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 
 interface JobWithStats {
   id: string;
@@ -49,6 +50,7 @@ export default function EmployerDashboard() {
   const [jobs, setJobs] = useState<JobWithStats[]>([]);
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
   const [stats, setStats] = useState({
     totalJobs: 0,
     activeJobs: 0,
@@ -72,11 +74,13 @@ export default function EmployerDashboard() {
 
   const loadDashboardData = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (!currentUser) {
         navigate("/");
         return;
       }
+
+      setUser(currentUser);
 
       // Check payment status before loading data
       if (!hasPaid) {
@@ -88,7 +92,7 @@ export default function EmployerDashboard() {
       const { data: jobsData, error: jobsError } = await supabase
         .from('job_listings')
         .select('*')
-        .eq('employer_id', user.id)
+        .eq('employer_id', currentUser.id)
         .order('created_at', { ascending: false });
 
       if (jobsError) throw jobsError;
@@ -328,18 +332,21 @@ export default function EmployerDashboard() {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate("/jobs")}
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">{t('jobs.dashboard.title')}</h1>
-            <p className="text-muted-foreground">{t('jobs.dashboard.overview')}</p>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate("/jobs")}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-bold">{t('jobs.dashboard.title')}</h1>
+              <p className="text-muted-foreground">{t('jobs.dashboard.overview')}</p>
+            </div>
           </div>
+          {user && <CreateJobDialog userId={user.id} />}
         </div>
 
         <div className="grid gap-4 md:grid-cols-4">

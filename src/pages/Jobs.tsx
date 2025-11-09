@@ -15,6 +15,7 @@ import { JobPreferencesDialog } from "@/components/jobs/JobPreferencesDialog";
 import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
 import { JobApplicationDialog } from "@/components/jobs/JobApplicationDialog";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 interface JobListing {
   id: string;
@@ -61,6 +62,7 @@ const JOB_TYPES = {
 const Jobs = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const { t } = useTranslation();
 
@@ -491,189 +493,19 @@ const Jobs = () => {
                 )}
               </>
             )}
-            {user && isEmployer ? (
-              <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
-                    {t('jobs.addPosition')}
-                  </Button>
-                </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>Add Job Position</DialogTitle>
-                  <DialogDescription>
-                    Create a new job listing
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="title">Position Title *</Label>
-                    <Input
-                      id="title"
-                      value={newJob.title}
-                      onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
-                      placeholder="e.g. Senior React Developer"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="company">Company Name *</Label>
-                    <Input
-                      id="company"
-                      value={newJob.company_name}
-                      onChange={(e) => setNewJob({ ...newJob, company_name: e.target.value })}
-                      placeholder="e.g. Tech Solutions Ltd."
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="location">Location *</Label>
-                      <Input
-                        id="location"
-                        value={newJob.location}
-                        onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
-                        placeholder="e.g. Bratislava"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="country">Country *</Label>
-                      <Input
-                        id="country"
-                        value={newJob.country}
-                        onChange={(e) => setNewJob({ ...newJob, country: e.target.value })}
-                        placeholder="e.g. Slovakia"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="category">Category *</Label>
-                      <Select value={newJob.category} onValueChange={(value) => setNewJob({ ...newJob, category: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.entries(CATEGORIES).map(([key, label]) => (
-                            <SelectItem key={key} value={key}>
-                              {label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label htmlFor="type">Job Type *</Label>
-                      <Select value={newJob.job_type} onValueChange={(value) => setNewJob({ ...newJob, job_type: value })}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {Object.entries(JOB_TYPES).map(([key, label]) => (
-                            <SelectItem key={key} value={key}>
-                              {label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="salary_min">Salary From</Label>
-                      <Input
-                        id="salary_min"
-                        type="number"
-                        value={newJob.salary_min}
-                        onChange={(e) => setNewJob({ ...newJob, salary_min: e.target.value })}
-                        placeholder="1500"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="salary_max">Salary To</Label>
-                      <Input
-                        id="salary_max"
-                        type="number"
-                        value={newJob.salary_max}
-                        onChange={(e) => setNewJob({ ...newJob, salary_max: e.target.value })}
-                        placeholder="2500"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="currency">Currency</Label>
-                      <Input
-                        id="currency"
-                        value={newJob.salary_currency}
-                        onChange={(e) => setNewJob({ ...newJob, salary_currency: e.target.value })}
-                        placeholder="EUR"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="description">Job Description *</Label>
-                    <Textarea
-                      id="description"
-                      value={newJob.description}
-                      onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
-                      placeholder="Describe the job position..."
-                      rows={4}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="requirements">Requirements</Label>
-                    <Textarea
-                      id="requirements"
-                      value={newJob.requirements}
-                      onChange={(e) => setNewJob({ ...newJob, requirements: e.target.value })}
-                      placeholder="List requirements..."
-                      rows={3}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="benefits">Benefits</Label>
-                    <Textarea
-                      id="benefits"
-                      value={newJob.benefits}
-                      onChange={(e) => setNewJob({ ...newJob, benefits: e.target.value })}
-                      placeholder="What benefits do you offer?"
-                      rows={3}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email">Contact Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={newJob.contact_email}
-                      onChange={(e) => setNewJob({ ...newJob, contact_email: e.target.value })}
-                      placeholder="hr@company.com"
-                    />
-                  </div>
-                  <Button 
-                    className="w-full" 
-                    onClick={() => {
-                      if (!newJob.title || !newJob.company_name || !newJob.location || !newJob.country || !newJob.description || !newJob.contact_email) {
-                        toast({
-                          title: "❌ Missing Fields",
-                          description: "Please fill in all required fields",
-                          variant: "destructive",
-                        });
-                        return;
-                      }
-                      setShowCreateDialog(false);
-                      setShowPackageDialog(true);
-                    }}
-                  >
-                    Continue to Payment
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
-            ) : user ? (
+            {user && isEmployer && (
+              <Button onClick={() => navigate('/employer-dashboard')}>
+                <Building2 className="h-4 w-4 mr-2" />
+                {t('jobs.dashboard.title')}
+              </Button>
+            )}
+            {user && !isEmployer && (
               <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending}>
                 <Building2 className="h-4 w-4 mr-2" />
                 {registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}
               </Button>
-            ) : (
+            )}
+            {!user && (
               <Button onClick={() => window.location.href = "/auth"}>
                 Prihlásiť sa
               </Button>
