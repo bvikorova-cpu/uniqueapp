@@ -43,15 +43,30 @@ const JOB_PACKAGES = [
 
 interface CreateJobDialogProps {
   userId: string;
+  subscribed: boolean;
+  onRenewSubscription: () => void;
 }
 
-export function CreateJobDialog({ userId }: CreateJobDialogProps) {
+export function CreateJobDialog({ userId, subscribed, onRenewSubscription }: CreateJobDialogProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { t } = useTranslation();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showPackageDialog, setShowPackageDialog] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<typeof JOB_PACKAGES[0] | null>(null);
+
+  const handleOpenDialog = () => {
+    if (!subscribed) {
+      toast({
+        title: "Subscription Required",
+        description: "You need an active subscription to create job listings. Please renew your subscription.",
+        variant: "destructive",
+      });
+      onRenewSubscription();
+      return;
+    }
+    setShowCreateDialog(true);
+  };
   
   const [newJob, setNewJob] = useState({
     title: "",
@@ -155,7 +170,7 @@ export function CreateJobDialog({ userId }: CreateJobDialogProps) {
     <>
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogTrigger asChild>
-          <Button>
+          <Button onClick={handleOpenDialog}>
             <Plus className="h-4 w-4 mr-2" />
             {t('jobs.addPosition')}
           </Button>

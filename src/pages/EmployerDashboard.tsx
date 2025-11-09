@@ -351,7 +351,16 @@ export default function EmployerDashboard() {
               <p className="text-muted-foreground">{t('jobs.dashboard.overview')}</p>
             </div>
           </div>
-          {user && isApproved && <CreateJobDialog userId={user.id} />}
+          {user && isApproved && (
+            <CreateJobDialog 
+              userId={user.id} 
+              subscribed={subscribed}
+              onRenewSubscription={() => {
+                const element = document.getElementById('subscription-tiers');
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+            />
+          )}
         </div>
 
         {/* Verification and Payment Status Alerts */}
@@ -398,7 +407,9 @@ export default function EmployerDashboard() {
 
         {/* Subscription Section */}
         {isApproved && (
-          <EmployerSubscriptionTiers />
+          <div id="subscription-tiers">
+            <EmployerSubscriptionTiers />
+          </div>
         )}
 
         <div className="grid gap-4 md:grid-cols-4">
