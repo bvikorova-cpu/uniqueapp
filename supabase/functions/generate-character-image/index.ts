@@ -20,7 +20,7 @@ serve(async (req) => {
 
     const prompt = `Create a cute, colorful, child-friendly animated character image of ${characterName}, a ${characterType}. The image should be vibrant, fun, and appealing to children aged 5-12. Style: Disney/Pixar animation style, bright colors, friendly expression, full character view on a simple background.`;
 
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/images/generations', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
@@ -49,7 +49,7 @@ serve(async (req) => {
         );
       }
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
+      console.error('AI gateway error:', response.status, errorText);
       throw new Error('Failed to generate image');
     }
 
