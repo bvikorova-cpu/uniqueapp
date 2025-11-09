@@ -4,6 +4,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft } from "lucide-react";
 import {
@@ -50,6 +52,10 @@ export default function EmployerDashboard() {
     totalApplications: 0,
     totalViews: 0,
   });
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [jobFilter, setJobFilter] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("newest");
+  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -160,6 +166,33 @@ export default function EmployerDashboard() {
       });
     }
   };
+
+  // Filter and sort applications
+  const filteredApplications = applications
+    .filter(app => {
+      // Filter by status
+      if (statusFilter !== "all" && app.status !== statusFilter) return false;
+      
+      // Filter by job
+      if (jobFilter !== "all" && app.job_id !== jobFilter) return false;
+      
+      // Search in cover letter
+      if (searchQuery && !app.cover_letter.toLowerCase().includes(searchQuery.toLowerCase())) {
+        return false;
+      }
+      
+      return true;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      
+      if (sortBy === "newest") {
+        return dateB - dateA;
+      } else {
+        return dateA - dateB;
+      }
+    });
 
   if (loading) {
     return (
@@ -311,8 +344,67 @@ export default function EmployerDashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                <div className="space-y-4 mb-6">
+                  {/* Filters and Search */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="space-y-2">
+                      <Label>Hľadať v motivačnom liste</Label>
+                      <Input
+                        placeholder="Hľadať..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label>Stav žiadosti</Label>
+                      <select
+                        className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                      >
+                        <option value="all">Všetky stavy</option>
+                        <option value="pending">Čakajúce</option>
+                        <option value="accepted">Prijaté</option>
+                        <option value="rejected">Zamietnuté</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Pozícia</Label>
+                      <select
+                        className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        value={jobFilter}
+                        onChange={(e) => setJobFilter(e.target.value)}
+                      >
+                        <option value="all">Všetky pozície</option>
+                        {jobs.map(job => (
+                          <option key={job.id} value={job.id}>{job.title}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Triediť podľa</Label>
+                      <select
+                        className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                      >
+                        <option value="newest">Najnovšie</option>
+                        <option value="oldest">Najstaršie</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Results summary */}
+                  <div className="text-sm text-muted-foreground">
+                    Zobrazených {filteredApplications.length} z {applications.length} žiadostí
+                  </div>
+                </div>
+
                 <div className="space-y-4">
-                  {applications.map((application) => (
+                  {filteredApplications.map((application) => (
                     <Card key={application.id}>
                       <CardHeader>
                         <div className="flex items-start justify-between">
@@ -377,6 +469,11 @@ export default function EmployerDashboard() {
                       </CardContent>
                     </Card>
                   ))}
+                  {filteredApplications.length === 0 && applications.length > 0 && (
+                    <div className="text-center text-muted-foreground py-8">
+                      Žiadne žiadosti nezodpovedajú zvoleným filtrom
+                    </div>
+                  )}
                   {applications.length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
                       Zatiaľ nemáte žiadne žiadosti
