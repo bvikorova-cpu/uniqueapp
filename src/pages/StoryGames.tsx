@@ -5,10 +5,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowLeft, Gamepad2, Star, Trophy } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { MemoryMatch } from "@/components/kids/games/MemoryMatch";
+import { WordPuzzle } from "@/components/kids/games/WordPuzzle";
+import { HiddenObjects } from "@/components/kids/games/HiddenObjects";
+import { StorySequence } from "@/components/kids/games/StorySequence";
+import { ColorQuest } from "@/components/kids/games/ColorQuest";
+import { NumberAdventure } from "@/components/kids/games/NumberAdventure";
 
 export default function StoryGames() {
   const navigate = useNavigate();
   const [score, setScore] = useState(0);
+  const [activeGame, setActiveGame] = useState<string | null>(null);
 
   const games = [
     {
@@ -73,6 +80,43 @@ export default function StoryGames() {
         return "bg-gray-500";
     }
   };
+
+  const handleGameComplete = (gameScore: number) => {
+    setScore(score + gameScore);
+    setActiveGame(null);
+  };
+
+  const handleGameStart = (gameId: number) => {
+    const gameMap: { [key: number]: string } = {
+      1: "memory",
+      2: "word",
+      3: "hidden",
+      4: "sequence",
+      5: "color",
+      6: "number",
+    };
+    setActiveGame(gameMap[gameId]);
+  };
+
+  // Render active game
+  if (activeGame === "memory") {
+    return <MemoryMatch onComplete={handleGameComplete} onBack={() => setActiveGame(null)} />;
+  }
+  if (activeGame === "word") {
+    return <WordPuzzle onComplete={handleGameComplete} onBack={() => setActiveGame(null)} />;
+  }
+  if (activeGame === "hidden") {
+    return <HiddenObjects onComplete={handleGameComplete} onBack={() => setActiveGame(null)} />;
+  }
+  if (activeGame === "sequence") {
+    return <StorySequence onComplete={handleGameComplete} onBack={() => setActiveGame(null)} />;
+  }
+  if (activeGame === "color") {
+    return <ColorQuest onComplete={handleGameComplete} onBack={() => setActiveGame(null)} />;
+  }
+  if (activeGame === "number") {
+    return <NumberAdventure onComplete={handleGameComplete} onBack={() => setActiveGame(null)} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-100 via-pink-100 to-purple-100">
@@ -163,9 +207,7 @@ export default function StoryGames() {
 
                   <Button
                     className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white"
-                    onClick={() => {
-                      setScore(score + 10);
-                    }}
+                    onClick={() => handleGameStart(game.id)}
                   >
                     <Gamepad2 className="mr-2 h-4 w-4" />
                     Play Now!
