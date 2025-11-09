@@ -482,15 +482,6 @@ const Jobs = () => {
               <>
                 <JobPreferencesDialog userId={user.id} />
                 <JobAIAssistant />
-                {isEmployer && (
-                  <Button
-                    variant="outline"
-                    onClick={() => window.location.href = "/employer-dashboard"}
-                  >
-                    <Briefcase className="h-4 w-4 mr-2" />
-                    {t('jobs.viewDashboard')}
-                  </Button>
-                )}
               </>
             )}
             {user && isEmployer && (
