@@ -11,6 +11,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
+import QuizList from "@/components/education/QuizList";
 
 const quizCategories = [
   { id: "math", name: "Mathematics", icon: "📐" },
@@ -205,27 +206,7 @@ const Education = () => {
           </TabsContent>
 
           <TabsContent value="quiz">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {quizCategories.map((category) => (
-                <Card key={category.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <span className="text-3xl">{category.icon}</span>
-                      {category.name}
-                    </CardTitle>
-                    <CardDescription>20 questions</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button
-                      onClick={() => handleStartQuiz(category.id)}
-                      className="w-full"
-                    >
-                      Start
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <QuizList />
           </TabsContent>
 
         </Tabs>

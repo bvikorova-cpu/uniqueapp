@@ -31,6 +31,8 @@ import Contact from "./pages/Contact";
 import Marketplace from "./pages/Marketplace";
 import Terms from "./pages/Terms";
 import Education from "./pages/Education";
+import QuizCreator from "./components/education/QuizCreator";
+import QuizTaker from "./components/education/QuizTaker";
 import TikTok from "./pages/TikTok";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
@@ -292,6 +294,8 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/education" element={<Education />} />
+              <Route path="/quiz/create" element={<QuizCreator />} />
+              <Route path="/quiz/:quizId" element={<QuizTaker />} />
               <Route path="/course/:courseName" element={<CourseDetail />} />
               <Route path="/quiz" element={<Quiz />} />
               
