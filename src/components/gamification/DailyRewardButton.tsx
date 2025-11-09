@@ -25,16 +25,14 @@ export default function DailyRewardButton() {
     <Card className="animate-fade-in">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Gift className="h-5 w-5 animate-bounce" />
+          <Gift className="h-5 w-5" />
           Daily Reward
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Flame className={`h-5 w-5 text-orange-500 transition-all duration-300 ${
-              streak > 0 ? "animate-pulse" : ""
-            }`} />
+            <Flame className="h-5 w-5 text-orange-500 transition-all duration-300" />
             <span className="text-sm font-medium">Streak</span>
           </div>
           <Badge 
@@ -52,7 +50,7 @@ export default function DailyRewardButton() {
           disabled={!canClaim || claimReward.isPending}
           className={`w-full transition-all duration-300 ${
             canClaim 
-              ? "hover-scale animate-pulse shadow-lg hover:shadow-xl" 
+              ? "hover-scale shadow-lg hover:shadow-xl" 
               : ""
           }`}
           size="lg"
@@ -64,7 +62,7 @@ export default function DailyRewardButton() {
             </span>
           ) : canClaim ? (
             <>
-              <Gift className="h-4 w-4 mr-2 animate-bounce" />
+              <Gift className="h-4 w-4 mr-2" />
               Claim Daily Reward
             </>
           ) : (

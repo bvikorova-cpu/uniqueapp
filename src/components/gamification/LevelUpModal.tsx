@@ -46,12 +46,9 @@ export default function LevelUpModal({ open, onOpenChange, level, totalXP }: Lev
       <DialogContent className="sm:max-w-md animate-scale-in border-2 border-primary/50 shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-center space-y-4 pb-4">
-            <div className="flex justify-center animate-bounce">
+            <div className="flex justify-center">
               <div className="relative">
                 <Trophy className="h-24 w-24 text-yellow-500 drop-shadow-lg" />
-                <div className="absolute inset-0 animate-ping">
-                  <Trophy className="h-24 w-24 text-yellow-500/30" />
-                </div>
               </div>
             </div>
             
@@ -59,7 +56,7 @@ export default function LevelUpModal({ open, onOpenChange, level, totalXP }: Lev
               <h2 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
                 Level Up!
               </h2>
-              <p className="text-6xl font-black text-primary animate-pulse">
+              <p className="text-6xl font-black text-primary">
                 {level}
               </p>
             </div>

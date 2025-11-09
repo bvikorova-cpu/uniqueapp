@@ -96,7 +96,7 @@ export const PointsDisplay = () => {
             </div>
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <span>{progress.current} / {progress.needed} XP</span>
-              <span className="font-medium text-primary animate-pulse">
+              <span className="font-medium text-primary">
                 {progress.needed - progress.current} XP to next level
               </span>
             </div>
