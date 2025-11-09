@@ -156,8 +156,8 @@ export default function EmployerDashboard() {
       });
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa načítať údaje.",
+        title: "Error",
+        description: error.message || "Failed to load data.",
         variant: "destructive",
       });
     } finally {
@@ -175,15 +175,15 @@ export default function EmployerDashboard() {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Stav žiadosti bol aktualizovaný.",
+        title: "Success",
+        description: "Application status has been updated.",
       });
 
       loadDashboardData();
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa aktualizovať stav.",
+        title: "Error",
+        description: error.message || "Failed to update status.",
         variant: "destructive",
       });
     }
