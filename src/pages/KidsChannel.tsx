@@ -243,29 +243,9 @@ const KidsChannel = () => {
 
         {/* Interactive Features - Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {/* 1. Choose Your Adventure */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-pink-100/95 to-purple-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
-            onClick={() => navigate('/kids-stories/adventure')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <BookOpen className="w-10 h-10 text-pink-500" />
-              </div>
-              <h3 className="text-xl font-bold text-purple-700 mb-2">
-                Choose Your Adventure! 🎭
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                YOU decide what happens next! Make choices and create your own unique story.
-              </p>
-              <Badge className="bg-pink-500 text-white shadow-md">Interactive Stories</Badge>
-            </div>
-          </Card>
-
-          {/* 2. Talk to Characters */}
+          {/* 1. Talk to Characters */}
           <Card 
             className="group overflow-hidden bg-gradient-to-br from-green-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-green-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-green-300/50 animate-fade-in"
-            style={{ animationDelay: "0.1s" }}
             onClick={() => navigate('/kids-stories/voice-chat')}
           >
             <div className="p-6 text-center">
@@ -282,10 +262,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 3. Story Games */}
+          {/* 2. Story Games */}
           <Card 
             className="group overflow-hidden bg-gradient-to-br from-red-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-red-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-red-300/50 animate-fade-in"
-            style={{ animationDelay: "0.2s" }}
+            style={{ animationDelay: "0.1s" }}
             onClick={() => navigate('/kids-stories/games')}
           >
             <div className="p-6 text-center">
@@ -302,10 +282,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 4. Bedtime Stories */}
+          {/* 3. Bedtime Stories */}
           <Card 
             className="group overflow-hidden bg-gradient-to-br from-indigo-100/95 to-violet-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-indigo-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-indigo-300/50 animate-fade-in"
-            style={{ animationDelay: "0.3s" }}
+            style={{ animationDelay: "0.2s" }}
             onClick={() => navigate('/kids-stories/bedtime')}
           >
             <div className="p-6 text-center">
@@ -322,10 +302,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 5. Story Videos */}
+          {/* 4. Story Videos */}
           <Card 
             className="group overflow-hidden bg-gradient-to-br from-purple-100/95 to-fuchsia-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-purple-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-purple-300/50 animate-fade-in"
-            style={{ animationDelay: "0.4s" }}
+            style={{ animationDelay: "0.3s" }}
             onClick={() => navigate('/story-video-demo')}
           >
             <div className="p-6 text-center">
@@ -342,10 +322,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 6. Create Your Hero */}
+          {/* 5. Create Your Hero */}
           <Card 
             className="group overflow-hidden bg-gradient-to-br from-blue-100/95 to-cyan-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-blue-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-blue-300/50 animate-fade-in"
-            style={{ animationDelay: "0.5s" }}
+            style={{ animationDelay: "0.4s" }}
             onClick={() => navigate('/kids-stories/create-character')}
           >
             <div className="p-6 text-center">
@@ -362,10 +342,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 7. Learn & Play */}
+          {/* 6. Learn & Play */}
           <Card 
             className="group overflow-hidden bg-gradient-to-br from-yellow-100/95 to-orange-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-yellow-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-yellow-300/50 animate-fade-in"
-            style={{ animationDelay: "0.6s" }}
+            style={{ animationDelay: "0.5s" }}
             onClick={() => navigate('/kids-stories/educational')}
           >
             <div className="p-6 text-center">
@@ -382,10 +362,10 @@ const KidsChannel = () => {
             </div>
           </Card>
 
-          {/* 8. Pricing & Plans */}
+          {/* 7. Pricing & Plans */}
           <Card 
             className="group overflow-hidden bg-gradient-to-br from-pink-100/95 to-rose-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-pink-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-pink-300/50 animate-fade-in"
-            style={{ animationDelay: "0.7s" }}
+            style={{ animationDelay: "0.6s" }}
             onClick={() => navigate('/kids-pricing')}
           >
             <div className="p-6 text-center">

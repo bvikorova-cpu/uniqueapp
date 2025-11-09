@@ -16,7 +16,6 @@ const subscriptionPlans = [
     features: [
       '3 rozprávky/mesiac',
       'Základné ilustrácie',
-      'Choose Your Adventure',
       'Mini hry'
     ]
   },

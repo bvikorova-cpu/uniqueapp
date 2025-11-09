@@ -49,13 +49,12 @@ export function CharacterCard({ character, onClick }: CharacterCardProps) {
 
         const data = await response.json();
         if (data.imageUrl) {
-          // Try to cache the image, but don't fail if localStorage is full
+          // Cache the image in localStorage
           try {
             localStorage.setItem(cacheKey, data.imageUrl);
           } catch (e) {
             console.warn('Failed to cache image to localStorage:', e);
           }
-          // Always set the image URL even if caching fails
           setImageUrl(data.imageUrl);
         }
       } catch (error) {
@@ -83,11 +82,14 @@ export function CharacterCard({ character, onClick }: CharacterCardProps) {
           <img
             src={imageUrl}
             alt={character.name}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             className="w-full h-full object-cover transform group-hover:scale-110 transition-transform"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-            <div className="text-sm text-gray-600 text-center px-2">Loading...</div>
+            <div className="text-sm text-gray-600 text-center px-2">Image unavailable</div>
           </div>
         )}
       </div>
