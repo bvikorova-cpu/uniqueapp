@@ -206,7 +206,41 @@ const Education = () => {
           </TabsContent>
 
           <TabsContent value="quiz">
-            <QuizList />
+            <div className="space-y-8">
+              {/* Custom Quizzes Section */}
+              <QuizList />
+              
+              {/* Original Quiz Categories Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-2xl">AI-Generated Quizzes by Category</CardTitle>
+                  <CardDescription>20 questions with instant AI feedback</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {quizCategories.map((category) => (
+                      <Card key={category.id} className="hover:shadow-lg transition-shadow hover-scale">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2 text-base">
+                            <span className="text-3xl">{category.icon}</span>
+                            {category.name}
+                          </CardTitle>
+                          <CardDescription>20 questions</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Button
+                            onClick={() => handleStartQuiz(category.id)}
+                            className="w-full"
+                          >
+                            Start
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
         </Tabs>
