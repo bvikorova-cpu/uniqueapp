@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare } from "lucide-react";
+import { Briefcase, Users, Eye, TrendingUp, Mail, FileText, ArrowLeft, Download, MessageSquare, CreditCard } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -17,10 +17,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { sk } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import { ResponseTemplatesManager } from "@/components/jobs/ResponseTemplatesManager";
+import { useEmployerPaymentStatus } from "@/hooks/useEmployerPaymentStatus";
+import { useTranslation } from "react-i18next";
 
 interface JobWithStats {
   id: string;
@@ -60,16 +61,26 @@ export default function EmployerDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { hasPaid, loading: paymentLoading } = useEmployerPaymentStatus();
 
   useEffect(() => {
-    loadDashboardData();
-  }, []);
+    if (!paymentLoading) {
+      loadDashboardData();
+    }
+  }, [paymentLoading]);
 
   const loadDashboardData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         navigate("/");
+        return;
+      }
+
+      // Check payment status before loading data
+      if (!hasPaid) {
+        setLoading(false);
         return;
       }
 
@@ -200,7 +211,7 @@ export default function EmployerDashboard() {
     const headers = ["Pozícia", "Dátum podania", "Stav", "Motivačný list", "CV"];
     const rows = filteredApplications.map(app => [
       app.job_title,
-      format(new Date(app.created_at), 'dd.MM.yyyy HH:mm', { locale: sk }),
+      format(new Date(app.created_at), 'dd.MM.yyyy HH:mm'),
       app.status === 'pending' ? 'Čaká' :
        app.status === 'accepted' ? 'Prijatá' :
        app.status === 'rejected' ? 'Zamietnutá' : app.status,
@@ -238,7 +249,7 @@ export default function EmployerDashboard() {
     yPosition += 10;
 
     doc.setFontSize(10);
-    doc.text(`Exportované: ${format(new Date(), 'dd.MM.yyyy HH:mm', { locale: sk })}`, margin, yPosition);
+    doc.text(`Exportované: ${format(new Date(), 'dd.MM.yyyy HH:mm')}`, margin, yPosition);
     yPosition += 5;
     doc.text(`Počet žiadostí: ${filteredApplications.length}`, margin, yPosition);
     yPosition += 10;
@@ -258,7 +269,7 @@ export default function EmployerDashboard() {
 
       doc.setFontSize(10);
       doc.setFont(undefined, 'normal');
-      doc.text(`Dátum: ${format(new Date(app.created_at), 'dd.MM.yyyy HH:mm', { locale: sk })}`, margin, yPosition);
+      doc.text(`Dátum: ${format(new Date(app.created_at), 'dd.MM.yyyy HH:mm')}`, margin, yPosition);
       yPosition += 5;
 
       const statusText = app.status === 'pending' ? 'Čaká' :
@@ -432,7 +443,7 @@ export default function EmployerDashboard() {
                         <TableCell className="text-right">{job.applications_count}</TableCell>
                         <TableCell className="text-right">{job.views_count}</TableCell>
                         <TableCell className="text-right">
-                          {format(new Date(job.created_at), 'dd.MM.yyyy', { locale: sk })}
+                          {format(new Date(job.created_at), 'dd.MM.yyyy')}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -549,7 +560,7 @@ export default function EmployerDashboard() {
                           <div>
                             <CardTitle className="text-lg">{application.job_title}</CardTitle>
                             <CardDescription>
-                              Podané {format(new Date(application.created_at), 'dd.MM.yyyy HH:mm', { locale: sk })}
+                              Podané {format(new Date(application.created_at), 'dd.MM.yyyy HH:mm')}
                             </CardDescription>
                           </div>
                           <Badge variant={
