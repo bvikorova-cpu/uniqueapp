@@ -44,10 +44,8 @@ export default function Rewards() {
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-        <div className="md:col-span-2">
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
           <PointsDisplay />
-        </div>
           <DailyRewardButton />
         </div>
 
