@@ -14,6 +14,7 @@ import { User as SupabaseUser } from "@supabase/supabase-js";
 import { JobPreferencesDialog } from "@/components/jobs/JobPreferencesDialog";
 import { JobAIAssistant } from "@/components/jobs/JobAIAssistant";
 import { JobApplicationDialog } from "@/components/jobs/JobApplicationDialog";
+import { useTranslation } from "react-i18next";
 
 interface JobListing {
   id: string;
@@ -61,6 +62,7 @@ const Jobs = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -414,8 +416,8 @@ const Jobs = () => {
   const handleApply = (job: JobListing) => {
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre uchádzanie sa o pozíciu sa musíte prihlásiť",
+        title: t('jobs.loginRequired'),
+        description: t('jobs.loginDescription'),
       });
       window.location.href = "/auth";
       return;
@@ -427,8 +429,8 @@ const Jobs = () => {
   const handleViewDetails = (job: JobListing) => {
     if (!user) {
       toast({
-        title: "Prihlásenie potrebné",
-        description: "Pre zobrazenie úplných detailov sa musíte prihlásiť",
+        title: t('jobs.loginRequired'),
+        description: t('jobs.loginToApplyDesc'),
       });
       window.location.href = "/auth";
       return;
@@ -449,13 +451,13 @@ const Jobs = () => {
                   <Briefcase className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold mb-1">Vitajte na portáli pracovných ponúk!</p>
+                  <p className="font-semibold mb-1">{t('jobs.welcome', 'Welcome to the job portal!')}</p>
                   <p className="text-sm text-muted-foreground">
-                    Môžete voľne prehliadať všetky pracovné ponuky. Pre uchádzanie sa o pozície sa musíte prihlásiť.
+                    {t('jobs.welcomeDesc', 'You can freely browse all job listings. To apply for positions, you must log in.')}
                   </p>
                 </div>
                 <Button onClick={() => window.location.href = "/auth"}>
-                  Prihlásiť sa
+                  {t('jobs.login')}
                 </Button>
               </div>
             </CardContent>
@@ -465,12 +467,12 @@ const Jobs = () => {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
-              Pracovné ponuky
+              {t('jobs.title')}
             </h1>
             <p className="text-muted-foreground">
               {user 
-                ? "Nájdite svoju vysnívanú prácu z celého sveta"
-                : "Prehliadajte pracovné ponuky zadarmo - prihláste sa pre uchádzanie"}
+                ? t('jobs.subtitle')
+                : t('jobs.browseDesc', 'Browse job listings for free - log in to apply')}
             </p>
           </div>
           <div className="flex gap-2">
@@ -484,7 +486,7 @@ const Jobs = () => {
                     onClick={() => window.location.href = "/employer-dashboard"}
                   >
                     <Briefcase className="h-4 w-4 mr-2" />
-                    Dashboard
+                    {t('jobs.viewDashboard')}
                   </Button>
                 )}
               </>
@@ -494,7 +496,7 @@ const Jobs = () => {
                 <DialogTrigger asChild>
                   <Button>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Position
+                    {t('jobs.addPosition')}
                   </Button>
                 </DialogTrigger>
               <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

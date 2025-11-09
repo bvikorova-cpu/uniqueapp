@@ -208,15 +208,15 @@ export default function EmployerDashboard() {
     });
 
   const exportToCSV = () => {
-    const headers = ["Pozícia", "Dátum podania", "Stav", "Motivačný list", "CV"];
+    const headers = ["Position", "Date Applied", "Status", "Cover Letter", "Resume"];
     const rows = filteredApplications.map(app => [
       app.job_title,
       format(new Date(app.created_at), 'dd.MM.yyyy HH:mm'),
-      app.status === 'pending' ? 'Čaká' :
-       app.status === 'accepted' ? 'Prijatá' :
-       app.status === 'rejected' ? 'Zamietnutá' : app.status,
+      app.status === 'pending' ? 'Pending' :
+       app.status === 'accepted' ? 'Accepted' :
+       app.status === 'rejected' ? 'Rejected' : app.status,
       `"${app.cover_letter.replace(/"/g, '""')}"`,
-      app.resume_url || 'Nie'
+      app.resume_url || 'No'
     ]);
 
     const csvContent = [
@@ -227,12 +227,12 @@ export default function EmployerDashboard() {
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `ziadosti_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    link.download = `applications_${format(new Date(), 'yyyy-MM-dd')}.csv`;
     link.click();
 
     toast({
-      title: "Export úspešný",
-      description: `Exportovaných ${filteredApplications.length} žiadostí do CSV.`,
+      title: t('jobs.dashboard.exportSuccess', 'Export Successful'),
+      description: `Exported ${filteredApplications.length} applications to CSV.`,
     });
   };
 
@@ -245,13 +245,13 @@ export default function EmployerDashboard() {
 
     // Title
     doc.setFontSize(18);
-    doc.text('Žiadosti o prácu', margin, yPosition);
+    doc.text('Job Applications', margin, yPosition);
     yPosition += 10;
 
     doc.setFontSize(10);
-    doc.text(`Exportované: ${format(new Date(), 'dd.MM.yyyy HH:mm')}`, margin, yPosition);
+    doc.text(`Exported: ${format(new Date(), 'dd.MM.yyyy HH:mm')}`, margin, yPosition);
     yPosition += 5;
-    doc.text(`Počet žiadostí: ${filteredApplications.length}`, margin, yPosition);
+    doc.text(`Number of applications: ${filteredApplications.length}`, margin, yPosition);
     yPosition += 10;
 
     // Applications
@@ -269,16 +269,16 @@ export default function EmployerDashboard() {
 
       doc.setFontSize(10);
       doc.setFont(undefined, 'normal');
-      doc.text(`Dátum: ${format(new Date(app.created_at), 'dd.MM.yyyy HH:mm')}`, margin, yPosition);
+      doc.text(`Date: ${format(new Date(app.created_at), 'dd.MM.yyyy HH:mm')}`, margin, yPosition);
       yPosition += 5;
 
-      const statusText = app.status === 'pending' ? 'Čaká' :
-                         app.status === 'accepted' ? 'Prijatá' :
-                         app.status === 'rejected' ? 'Zamietnutá' : app.status;
-      doc.text(`Stav: ${statusText}`, margin, yPosition);
+      const statusText = app.status === 'pending' ? 'Pending' :
+                         app.status === 'accepted' ? 'Accepted' :
+                         app.status === 'rejected' ? 'Rejected' : app.status;
+      doc.text(`Status: ${statusText}`, margin, yPosition);
       yPosition += 5;
 
-      doc.text('Motivačný list:', margin, yPosition);
+      doc.text('Cover Letter:', margin, yPosition);
       yPosition += 5;
 
       // Wrap text for cover letter
@@ -298,7 +298,7 @@ export default function EmployerDashboard() {
 
       if (app.resume_url) {
         yPosition += 2;
-        doc.text(`CV: ${app.resume_url}`, margin, yPosition);
+        doc.text(`Resume: ${app.resume_url}`, margin, yPosition);
         yPosition += 5;
       }
 
@@ -307,11 +307,11 @@ export default function EmployerDashboard() {
       yPosition += 5;
     });
 
-    doc.save(`ziadosti_${format(new Date(), 'yyyy-MM-dd')}.pdf`);
+    doc.save(`applications_${format(new Date(), 'yyyy-MM-dd')}.pdf`);
 
     toast({
-      title: "Export úspešný",
-      description: `Exportovaných ${filteredApplications.length} žiadostí do PDF.`,
+      title: t('jobs.dashboard.exportSuccess', 'Export Successful'),
+      description: `Exported ${filteredApplications.length} applications to PDF.`,
     });
   };
 
@@ -337,54 +337,54 @@ export default function EmployerDashboard() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Dashboard zamestnávateľa</h1>
-            <p className="text-muted-foreground">Prehľad vašich inzerátov a žiadostí</p>
+            <h1 className="text-3xl font-bold">{t('jobs.dashboard.title')}</h1>
+            <p className="text-muted-foreground">{t('jobs.dashboard.overview')}</p>
           </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Celkom pozícií</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('jobs.dashboard.totalJobs')}</CardTitle>
               <Briefcase className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalJobs}</div>
               <p className="text-xs text-muted-foreground">
-                {stats.activeJobs} aktívnych
+                {stats.activeJobs} {t('jobs.dashboard.activeJobs', 'active')}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Celkom žiadostí</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('jobs.dashboard.totalApplications')}</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalApplications}</div>
               <p className="text-xs text-muted-foreground">
-                {applications.filter(a => a.status === 'pending').length} čakajúcich
+                {applications.filter(a => a.status === 'pending').length} {t('jobs.dashboard.pending', 'pending')}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Celkom zobrazení</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('jobs.dashboard.totalViews')}</CardTitle>
               <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalViews}</div>
               <p className="text-xs text-muted-foreground">
-                Všetky pozície spolu
+                {t('jobs.dashboard.allJobs', 'All positions combined')}
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Priem. konverzia</CardTitle>
+              <CardTitle className="text-sm font-medium">{t('jobs.dashboard.avgConversion', 'Avg. conversion')}</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -394,7 +394,7 @@ export default function EmployerDashboard() {
                   : 0}%
               </div>
               <p className="text-xs text-muted-foreground">
-                Žiadostí/Zobrazenia
+                {t('jobs.dashboard.applicationsViews', 'Applications/Views')}
               </p>
             </CardContent>
           </Card>
@@ -402,32 +402,32 @@ export default function EmployerDashboard() {
 
         <Tabs defaultValue="jobs" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="jobs">Moje pozície</TabsTrigger>
-            <TabsTrigger value="applications">Žiadosti</TabsTrigger>
+            <TabsTrigger value="jobs">{t('jobs.dashboard.myJobs', 'My Positions')}</TabsTrigger>
+            <TabsTrigger value="applications">{t('jobs.dashboard.applications')}</TabsTrigger>
             <TabsTrigger value="templates">
               <MessageSquare className="h-4 w-4 mr-2" />
-              Šablóny
+              {t('jobs.dashboard.templates')}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="jobs" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Vaše pracovné pozície</CardTitle>
+                <CardTitle>{t('jobs.dashboard.yourJobPositions', 'Your Job Positions')}</CardTitle>
                 <CardDescription>
-                  Štatistiky vašich inzerátov
+                  {t('jobs.dashboard.jobStats', 'Statistics of your listings')}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Pozícia</TableHead>
-                      <TableHead>Lokalita</TableHead>
-                      <TableHead>Stav</TableHead>
-                      <TableHead className="text-right">Žiadosti</TableHead>
-                      <TableHead className="text-right">Zobrazenia</TableHead>
-                      <TableHead className="text-right">Vytvorené</TableHead>
+                      <TableHead>{t('jobs.dashboard.jobTitle')}</TableHead>
+                      <TableHead>{t('jobs.dashboard.location')}</TableHead>
+                      <TableHead>{t('jobs.dashboard.status')}</TableHead>
+                      <TableHead className="text-right">{t('jobs.dashboard.applications')}</TableHead>
+                      <TableHead className="text-right">{t('jobs.dashboard.views')}</TableHead>
+                      <TableHead className="text-right">{t('jobs.dashboard.createdAt')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -437,7 +437,7 @@ export default function EmployerDashboard() {
                         <TableCell>{job.location}</TableCell>
                         <TableCell>
                           <Badge variant={job.is_active ? 'default' : 'secondary'}>
-                            {job.is_active ? 'Aktívna' : 'Neaktívna'}
+                            {job.is_active ? t('jobs.dashboard.active') : t('jobs.dashboard.inactive')}
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">{job.applications_count}</TableCell>
@@ -450,7 +450,7 @@ export default function EmployerDashboard() {
                     {jobs.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center text-muted-foreground">
-                          Zatiaľ nemáte žiadne pozície
+                          {t('jobs.dashboard.noJobs')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -465,9 +465,9 @@ export default function EmployerDashboard() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Prijaté žiadosti</CardTitle>
+                    <CardTitle>{t('jobs.dashboard.receivedApplications', 'Received Applications')}</CardTitle>
                     <CardDescription>
-                      Spravujte žiadosti o prácu
+                      {t('jobs.dashboard.manageApplications', 'Manage job applications')}
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
@@ -478,7 +478,7 @@ export default function EmployerDashboard() {
                       disabled={filteredApplications.length === 0}
                     >
                       <Download className="h-4 w-4 mr-2" />
-                      Export CSV
+                      {t('jobs.dashboard.exportCSV')}
                     </Button>
                     <Button
                       variant="outline"
@@ -487,7 +487,7 @@ export default function EmployerDashboard() {
                       disabled={filteredApplications.length === 0}
                     >
                       <Download className="h-4 w-4 mr-2" />
-                      Export PDF
+                      {t('jobs.dashboard.exportPDF')}
                     </Button>
                   </div>
                 </div>
@@ -497,36 +497,36 @@ export default function EmployerDashboard() {
                   {/* Filters and Search */}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="space-y-2">
-                      <Label>Hľadať v motivačnom liste</Label>
+                      <Label>{t('jobs.dashboard.search')}</Label>
                       <Input
-                        placeholder="Hľadať..."
+                        placeholder={t('jobs.dashboard.searchPlaceholder', 'Search...')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label>Stav žiadosti</Label>
+                      <Label>{t('jobs.dashboard.filterByStatus')}</Label>
                       <select
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
                       >
-                        <option value="all">Všetky stavy</option>
-                        <option value="pending">Čakajúce</option>
-                        <option value="accepted">Prijaté</option>
-                        <option value="rejected">Zamietnuté</option>
+                        <option value="all">{t('jobs.dashboard.allStatuses')}</option>
+                        <option value="pending">{t('jobs.dashboard.pending')}</option>
+                        <option value="accepted">{t('jobs.dashboard.accepted')}</option>
+                        <option value="rejected">{t('jobs.dashboard.rejected')}</option>
                       </select>
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Pozícia</Label>
+                      <Label>{t('jobs.dashboard.filterByJob')}</Label>
                       <select
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={jobFilter}
                         onChange={(e) => setJobFilter(e.target.value)}
                       >
-                        <option value="all">Všetky pozície</option>
+                        <option value="all">{t('jobs.dashboard.allJobs')}</option>
                         {jobs.map(job => (
                           <option key={job.id} value={job.id}>{job.title}</option>
                         ))}
@@ -534,21 +534,21 @@ export default function EmployerDashboard() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label>Triediť podľa</Label>
+                      <Label>{t('jobs.dashboard.sortBy')}</Label>
                       <select
                         className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}
                       >
-                        <option value="newest">Najnovšie</option>
-                        <option value="oldest">Najstaršie</option>
+                        <option value="newest">{t('jobs.dashboard.newest')}</option>
+                        <option value="oldest">{t('jobs.dashboard.oldest')}</option>
                       </select>
                     </div>
                   </div>
 
                   {/* Results summary */}
                   <div className="text-sm text-muted-foreground">
-                    Zobrazených {filteredApplications.length} z {applications.length} žiadostí
+                    {t('jobs.dashboard.showingResults', `Showing ${filteredApplications.length} of ${applications.length} applications`)}
                   </div>
                 </div>
 
@@ -560,7 +560,7 @@ export default function EmployerDashboard() {
                           <div>
                             <CardTitle className="text-lg">{application.job_title}</CardTitle>
                             <CardDescription>
-                              Podané {format(new Date(application.created_at), 'dd.MM.yyyy HH:mm')}
+                              {t('jobs.dashboard.appliedDate', 'Applied')} {format(new Date(application.created_at), 'dd.MM.yyyy HH:mm')}
                             </CardDescription>
                           </div>
                           <Badge variant={
@@ -568,9 +568,9 @@ export default function EmployerDashboard() {
                             application.status === 'accepted' ? 'default' :
                             application.status === 'rejected' ? 'destructive' : 'secondary'
                           }>
-                            {application.status === 'pending' ? 'Čaká' :
-                             application.status === 'accepted' ? 'Prijatá' :
-                             application.status === 'rejected' ? 'Zamietnutá' : application.status}
+                            {application.status === 'pending' ? t('jobs.dashboard.pending') :
+                             application.status === 'accepted' ? t('jobs.dashboard.accepted') :
+                             application.status === 'rejected' ? t('jobs.dashboard.rejected') : application.status}
                           </Badge>
                         </div>
                       </CardHeader>
@@ -578,7 +578,7 @@ export default function EmployerDashboard() {
                         <div>
                           <h4 className="font-semibold mb-2 flex items-center gap-2">
                             <Mail className="h-4 w-4" />
-                            Motivačný list
+                            {t('jobs.dashboard.coverLetter')}
                           </h4>
                           <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                             {application.cover_letter}
@@ -593,7 +593,7 @@ export default function EmployerDashboard() {
                               onClick={() => window.open(application.resume_url!, '_blank')}
                             >
                               <FileText className="mr-2 h-4 w-4" />
-                              Zobraziť životopis
+                              {t('jobs.dashboard.viewResume')}
                             </Button>
                           </div>
                         )}
@@ -604,14 +604,14 @@ export default function EmployerDashboard() {
                               size="sm"
                               onClick={() => updateApplicationStatus(application.id, 'accepted')}
                             >
-                              Prijať
+                              {t('jobs.dashboard.accept', 'Accept')}
                             </Button>
                             <Button
                               size="sm"
                               variant="destructive"
                               onClick={() => updateApplicationStatus(application.id, 'rejected')}
                             >
-                              Zamietnuť
+                              {t('jobs.dashboard.reject', 'Reject')}
                             </Button>
                           </div>
                         )}
@@ -620,12 +620,12 @@ export default function EmployerDashboard() {
                   ))}
                   {filteredApplications.length === 0 && applications.length > 0 && (
                     <div className="text-center text-muted-foreground py-8">
-                      Žiadne žiadosti nezodpovedajú zvoleným filtrom
+                      {t('jobs.dashboard.noMatchingApplications', 'No applications match the selected filters')}
                     </div>
                   )}
                   {applications.length === 0 && (
                     <div className="text-center text-muted-foreground py-8">
-                      Zatiaľ nemáte žiadne žiadosti
+                      {t('jobs.dashboard.noApplications')}
                     </div>
                   )}
                 </div>
