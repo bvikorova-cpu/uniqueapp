@@ -152,6 +152,8 @@ const NotificationBell = () => {
         return `${actorName} started following you`;
       case "job_match":
         return "New job listing matches your preferences";
+      case "job_application":
+        return `${actorName} applied for your job position`;
       default:
         return `${actorName} interacted with your content`;
     }
@@ -171,6 +173,8 @@ const NotificationBell = () => {
         return "👤";
       case "job_match":
         return "💼";
+      case "job_application":
+        return "📝";
       default:
         return "🔔";
     }
@@ -221,6 +225,8 @@ const NotificationBell = () => {
     // Navigate based on notification type
     if (notification.type === "job_match" && notification.post_id) {
       navigate(`/jobs`);
+    } else if (notification.type === "job_application") {
+      navigate(`/employer-dashboard`);
     } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);
     }
