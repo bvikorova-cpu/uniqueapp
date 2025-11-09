@@ -21,9 +21,10 @@ i18n
       es: { translation: es },
       fr: { translation: fr },
     },
+    lng: 'en', // Force English as default language
     fallbackLng: 'en',
     detection: {
-      order: ['navigator', 'htmlTag', 'path', 'subdomain'],
+      order: ['localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
       caches: ['localStorage'],
     },
     interpolation: {
