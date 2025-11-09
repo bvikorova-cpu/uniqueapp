@@ -395,6 +395,15 @@ const App = () => (
           <Route path="/video-ad-generator" element={<VideoAdGenerator />} />
           <Route path="/kids-channel" element={<KidsChannel />} />
           <Route path="/kids-channel/:showId" element={<KidsShowDetail />} />
+          <Route path="/choose-adventure" element={<ChooseAdventure />} />
+          <Route path="/kids-voice-chat" element={<KidsVoiceChat />} />
+          <Route path="/create-character" element={<CreateCharacter />} />
+          <Route path="/educational-stories" element={<EducationalStories />} />
+          <Route path="/bedtime-stories" element={<BedtimeStories />} />
+          <Route path="/story-games" element={<StoryGames />} />
+          <Route path="/kids-pricing" element={<KidsPricing />} />
+          <Route path="/story-video-demo" element={<StoryVideoDemo />} />
+          <Route path="/admin-image-editor" element={<AdminImageEditor />} />
           <Route path="/coffee" element={<Coffee />} />
           <Route path="/coffee/checkins" element={<CoffeeCheckins />} />
           <Route path="/coffee/buddy" element={<CoffeeBuddy />} />
