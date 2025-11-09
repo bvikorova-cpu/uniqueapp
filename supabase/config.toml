@@ -96,6 +96,9 @@ verify_jwt = true
 [functions.activate-job-listing]
 verify_jwt = true
 
+[functions.check-employer-payment]
+verify_jwt = true
+
 [functions.expire-job-listings]
 verify_jwt = false
 
