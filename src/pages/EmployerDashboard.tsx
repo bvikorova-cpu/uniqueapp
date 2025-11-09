@@ -26,6 +26,7 @@ import { useTranslation } from "react-i18next";
 import { CreateJobDialog } from "@/components/jobs/CreateJobDialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, AlertCircle } from "lucide-react";
+import { EmployerSubscriptionTiers } from "@/components/employer/EmployerSubscriptionTiers";
 
 interface JobWithStats {
   id: string;
@@ -67,7 +68,7 @@ export default function EmployerDashboard() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { hasPaid, loading: paymentLoading } = useEmployerPaymentStatus();
+  const { subscribed, loading: paymentLoading } = useEmployerPaymentStatus();
   const { verificationStatus, isApproved, loading: verificationLoading } = useEmployerVerification();
 
   useEffect(() => {
@@ -86,8 +87,8 @@ export default function EmployerDashboard() {
 
       setUser(currentUser);
 
-      // Check payment status before loading data
-      if (!hasPaid) {
+      // Check subscription status before loading data
+      if (!subscribed) {
         setLoading(false);
         return;
       }
@@ -383,7 +384,7 @@ export default function EmployerDashboard() {
           </Alert>
         )}
 
-        {isApproved && !hasPaid && (
+        {isApproved && !subscribed && (
           <Alert>
             <CheckCircle2 className="h-4 w-4 text-green-600" />
             <AlertDescription className="flex items-center justify-between">
@@ -393,6 +394,11 @@ export default function EmployerDashboard() {
               </div>
             </AlertDescription>
           </Alert>
+        )}
+
+        {/* Subscription Section */}
+        {isApproved && (
+          <EmployerSubscriptionTiers />
         )}
 
         <div className="grid gap-4 md:grid-cols-4">
