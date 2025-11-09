@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export function useEmployerPaymentStatus() {
-  const [hasPaid, setHasPaid] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
+  const [productId, setProductId] = useState<string | null>(null);
+  const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,41 +16,72 @@ export function useEmployerPaymentStatus() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        setHasPaid(false);
+        setSubscribed(false);
+        setProductId(null);
+        setSubscriptionEnd(null);
         setLoading(false);
         return;
       }
 
-      // Check if user is employer
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('role', 'employer')
-        .maybeSingle();
-
-      if (!roleData) {
-        setHasPaid(false);
-        setLoading(false);
-        return;
-      }
-
-      // Check payment via Stripe
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-        'check-employer-payment'
+      // Check subscription via Stripe
+      const { data: subscriptionData, error: subscriptionError } = await supabase.functions.invoke(
+        'check-employer-subscription'
       );
 
-      if (paymentError) throw paymentError;
+      if (subscriptionError) throw subscriptionError;
 
-      setHasPaid(paymentData?.hasPaid || false);
+      setSubscribed(subscriptionData?.subscribed || false);
+      setProductId(subscriptionData?.product_id || null);
+      setSubscriptionEnd(subscriptionData?.subscription_end || null);
       setLoading(false);
     } catch (err: any) {
-      console.error('Error checking payment status:', err);
+      console.error('Error checking subscription status:', err);
       setError(err.message);
-      setHasPaid(false);
+      setSubscribed(false);
+      setProductId(null);
+      setSubscriptionEnd(null);
       setLoading(false);
     }
   };
 
-  return { hasPaid, loading, error, refresh: checkPaymentStatus };
+  const createCheckout = async (priceId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-employer-subscription-checkout', {
+        body: { priceId }
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      throw error;
+    }
+  };
+
+  const manageSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('employer-customer-portal');
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error opening customer portal:', error);
+      throw error;
+    }
+  };
+
+  return {
+    subscribed,
+    productId,
+    subscriptionEnd,
+    loading,
+    error,
+    refresh: checkPaymentStatus,
+    createCheckout,
+    manageSubscription
+  };
 }
