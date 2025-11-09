@@ -4,7 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useGamification } from "@/hooks/useGamification";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import LevelUpModal from "./LevelUpModal";
+import { triggerLevelUpConfetti } from "@/utils/confetti";
 
 const calculateLevelProgress = (currentLevel: number, totalPoints: number) => {
   // XP needed for next level = current_level * 100
@@ -25,6 +27,8 @@ const calculateLevelProgress = (currentLevel: number, totalPoints: number) => {
 export const PointsDisplay = () => {
   const [userId, setUserId] = useState<string | undefined>();
   const { data } = useGamification(userId);
+  const [showLevelUpModal, setShowLevelUpModal] = useState(false);
+  const previousLevel = useRef<number>(0);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -32,13 +36,32 @@ export const PointsDisplay = () => {
     });
   }, []);
 
+  useEffect(() => {
+    // Trigger level-up celebration when level increases
+    if (data && previousLevel.current > 0 && data.points.level > previousLevel.current) {
+      triggerLevelUpConfetti();
+      setShowLevelUpModal(true);
+    }
+    if (data) {
+      previousLevel.current = data.points.level;
+    }
+  }, [data?.points.level]);
+
   if (!data) return null;
 
   const progress = calculateLevelProgress(data.points.level, data.points.total_points);
 
   return (
-    <Card className="animate-fade-in">
-      <CardContent className="pt-6">
+    <>
+      <LevelUpModal
+        open={showLevelUpModal}
+        onOpenChange={setShowLevelUpModal}
+        level={data.points.level}
+        totalXP={data.points.total_points}
+      />
+      
+      <Card className="animate-fade-in">
+        <CardContent className="pt-6">
         <div className="space-y-4">
           {/* Level and XP badges */}
           <div className="flex items-center justify-between">
@@ -81,5 +104,6 @@ export const PointsDisplay = () => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

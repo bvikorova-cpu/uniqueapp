@@ -73,3 +73,47 @@ export const triggerBadgeConfetti = () => {
     startVelocity: 45,
   });
 };
+
+export const triggerLevelUpConfetti = () => {
+  const duration = 5000;
+  const animationEnd = Date.now() + duration;
+  
+  const colors = ['#FFD700', '#FFA500', '#FF69B4', '#00CED1', '#9370DB'];
+
+  const frame = () => {
+    confetti({
+      particleCount: 5,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: colors,
+      zIndex: 9999,
+    });
+
+    confetti({
+      particleCount: 5,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: colors,
+      zIndex: 9999,
+    });
+
+    if (Date.now() < animationEnd) {
+      requestAnimationFrame(frame);
+    }
+  };
+
+  frame();
+  
+  // Big burst in the center
+  setTimeout(() => {
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: colors,
+      zIndex: 9999,
+    });
+  }, 250);
+};
