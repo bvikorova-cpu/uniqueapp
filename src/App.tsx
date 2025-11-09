@@ -191,14 +191,6 @@ import DisneyCastles from "./pages/DisneyCastles";
 import DisneyCastleTour from "./pages/DisneyCastleTour";
 import DisneyAdmin from "./pages/DisneyAdmin";
 import CertificateGallery from "./pages/CertificateGallery";
-import DinosaurQuiz from "./pages/DinosaurQuiz";
-import TravelMap from "./pages/TravelMap";
-import PuppetTheater from "./pages/PuppetTheater";
-import CircusAcademy from "./pages/CircusAcademy";
-import MasterChefJunior from "./pages/MasterChefJunior";
-import CakeDecorating from "./pages/CakeDecorating";
-import Formula1Racing from "./pages/Formula1Racing";
-import MonsterTrucks from "./pages/MonsterTrucks";
 import F1Racing from "./pages/F1Racing";
 import F1Subscription from "./pages/F1Subscription";
 import F1FantasyTeam from "./pages/F1FantasyTeam";
@@ -438,14 +430,6 @@ const App = () => (
               <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
               <Route path="/kids-channel/disney-admin" element={<DisneyAdmin />} />
               <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
-              <Route path="/kids-channel/dinosaur-quiz" element={<DinosaurQuiz />} />
-              <Route path="/kids-channel/travel-map" element={<TravelMap />} />
-              <Route path="/kids-channel/puppet-theater" element={<PuppetTheater />} />
-              <Route path="/kids-channel/circus-academy" element={<CircusAcademy />} />
-              <Route path="/kids-channel/masterchef-junior" element={<MasterChefJunior />} />
-              <Route path="/kids-channel/cake-decorating" element={<CakeDecorating />} />
-              <Route path="/kids-channel/formula1" element={<Formula1Racing />} />
-              <Route path="/kids-channel/monster-trucks" element={<MonsterTrucks />} />
               <Route path="/f1-racing" element={<F1Racing />} />
               <Route path="/f1-subscription" element={<F1Subscription />} />
               <Route path="/f1-fantasy-team" element={<F1FantasyTeam />} />
