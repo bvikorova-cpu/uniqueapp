@@ -37,6 +37,7 @@ import TikTok from "./pages/TikTok";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminTransactions from "./pages/AdminTransactions";
+import AdminCorporateInquiries from "./pages/AdminCorporateInquiries";
 import Bazaar from "./pages/Bazaar";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
@@ -304,6 +305,7 @@ const App = () => (
               <Route path="/ai-credits-store" element={<AICreditsStore />} />
               <Route path="/ai-credits" element={<AICreditsStore />} />
               <Route path="/admin/transactions" element={<AdminTransactions />} />
+              <Route path="/admin/corporate-inquiries" element={<AdminCorporateInquiries />} />
               <Route path="/earnings" element={<Earnings />} />
               <Route path="/livestream" element={<LiveStreamList />} />
               <Route path="/live/:streamId" element={<LiveStream />} />

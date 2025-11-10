@@ -13,15 +13,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { Send } from "lucide-react";
 
 const formSchema = z.object({
-  company_name: z.string().trim().min(2, "Názov firmy musí mať aspoň 2 znaky").max(100, "Názov firmy môže mať maximálne 100 znakov"),
-  contact_name: z.string().trim().min(2, "Meno musí mať aspoň 2 znaky").max(100, "Meno môže mať maximálne 100 znakov"),
-  email: z.string().trim().email("Neplatná emailová adresa").max(255, "Email môže mať maximálne 255 znakov"),
+  company_name: z.string().trim().min(2, "Company name must be at least 2 characters").max(100, "Company name can be at most 100 characters"),
+  contact_name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name can be at most 100 characters"),
+  email: z.string().trim().email("Invalid email address").max(255, "Email can be at most 255 characters"),
   phone: z.string().trim().optional(),
-  package_type: z.string().min(1, "Vyberte typ balíka"),
+  package_type: z.string().min(1, "Please select a package type"),
   event_type: z.string().trim().optional(),
   expected_attendees: z.coerce.number().int().positive().optional(),
   event_date: z.string().optional(),
-  message: z.string().trim().min(10, "Správa musí mať aspoň 10 znakov").max(1000, "Správa môže mať maximálne 1000 znakov"),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(1000, "Message can be at most 1000 characters"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -72,16 +72,16 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
       if (error) throw error;
 
       toast({
-        title: "Dopyt odoslaný!",
-        description: "Čoskoro vás budeme kontaktovať s individuálnou ponukou.",
+        title: "Inquiry sent!",
+        description: "We will contact you soon with an individual offer.",
       });
 
       form.reset();
     } catch (error: any) {
       console.error("Error submitting inquiry:", error);
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa odoslať dopyt. Skúste to prosím znova.",
+        title: "Error",
+        description: error.message || "Failed to send inquiry. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -92,9 +92,9 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Nezáväzný dopyt</CardTitle>
+        <CardTitle>Request a Quote</CardTitle>
         <CardDescription>
-          Vyplňte formulár a my vás budeme kontaktovať s individuálnou ponukou
+          Fill out the form and we will contact you with an individual offer
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -106,9 +106,9 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
                 name="company_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Názov firmy *</FormLabel>
+                    <FormLabel>Company Name *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Váš názov firmy" {...field} />
+                      <Input placeholder="Your company name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -120,9 +120,9 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
                 name="contact_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Kontaktná osoba *</FormLabel>
+                    <FormLabel>Contact Person *</FormLabel>
                     <FormControl>
-                      <Input placeholder="Meno a priezvisko" {...field} />
+                      <Input placeholder="Full name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -136,7 +136,7 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
                   <FormItem>
                     <FormLabel>Email *</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="vas@email.sk" {...field} />
+                      <Input type="email" placeholder="your@email.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,9 +148,9 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Telefón</FormLabel>
+                    <FormLabel>Phone</FormLabel>
                     <FormControl>
-                      <Input placeholder="+421 xxx xxx xxx" {...field} />
+                      <Input placeholder="+1 xxx xxx xxx" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -162,24 +162,24 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
                 name="package_type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Typ balíka *</FormLabel>
+                    <FormLabel>Package Type *</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Vyberte balík" />
+                          <SelectValue placeholder="Select package" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="startup">Startup (€15)</SelectItem>
                         <SelectItem value="business">Business (€30)</SelectItem>
                         <SelectItem value="corporate_premium">Corporate Premium (€60)</SelectItem>
-                        <SelectItem value="mini_restaurant">Mini Reštaurácia (€5/mesiac)</SelectItem>
-                        <SelectItem value="standard_restaurant">Standard Restaurant (€12/mesiac)</SelectItem>
+                        <SelectItem value="mini_restaurant">Mini Restaurant (€5/month)</SelectItem>
+                        <SelectItem value="standard_restaurant">Standard Restaurant (€12/month)</SelectItem>
                         <SelectItem value="chain_restaurant">Chain Restaurant (€25/location)</SelectItem>
                         <SelectItem value="wedding_basic">Wedding Basic (€20)</SelectItem>
                         <SelectItem value="wedding_premium">Wedding Premium (€40)</SelectItem>
                         <SelectItem value="event_organizer">Event Organizer</SelectItem>
-                        <SelectItem value="custom">Individuálne riešenie</SelectItem>
+                        <SelectItem value="custom">Custom Solution</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -192,9 +192,9 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
                 name="event_type"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Typ eventu</FormLabel>
+                    <FormLabel>Event Type</FormLabel>
                     <FormControl>
-                      <Input placeholder="Napr. svadba, firemný event..." {...field} />
+                      <Input placeholder="E.g. wedding, corporate event..." {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -206,9 +206,9 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
                 name="expected_attendees"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Počet účastníkov</FormLabel>
+                    <FormLabel>Expected Attendees</FormLabel>
                     <FormControl>
-                      <Input type="number" placeholder="Približný počet" {...field} />
+                      <Input type="number" placeholder="Approximate count" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -220,7 +220,7 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
                 name="event_date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dátum eventu</FormLabel>
+                    <FormLabel>Event Date</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -235,10 +235,10 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
               name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Správa *</FormLabel>
+                  <FormLabel>Message *</FormLabel>
                   <FormControl>
                     <Textarea 
-                      placeholder="Popíšte vaše požiadavky a potreby..."
+                      placeholder="Describe your requirements and needs..."
                       className="min-h-[120px]"
                       {...field}
                     />
@@ -250,7 +250,7 @@ export function CorporateInquiryForm({ defaultPackage, defaultCategory }: Corpor
 
             <Button type="submit" disabled={isSubmitting} className="w-full" size="lg">
               <Send className="mr-2 h-4 w-4" />
-              {isSubmitting ? "Odosielam..." : "Odoslať dopyt"}
+              {isSubmitting ? "Sending..." : "Send Inquiry"}
             </Button>
           </form>
         </Form>

@@ -881,9 +881,9 @@ const CorporateEvents = () => {
       <section id="inquiry-form" className="py-20 px-4 bg-gradient-to-b from-secondary/20 to-background">
         <div className="container mx-auto max-w-4xl">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Kontaktujte nás</h2>
+            <h2 className="text-4xl font-bold mb-4">Contact Us</h2>
             <p className="text-xl text-muted-foreground">
-              Vyplňte nezáväzný dopyt a my vás budeme kontaktovať s individuálnou ponukou
+              Fill out a non-binding inquiry and we will contact you with an individual offer
             </p>
           </div>
           <CorporateInquiryForm 
