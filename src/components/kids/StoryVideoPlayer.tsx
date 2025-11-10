@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Download, Play, Pause, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import jsPDF from 'jspdf';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 interface StoryVideoPlayerProps {
   scenes: string[];
@@ -18,6 +20,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportingPDF, setIsExportingPDF] = useState(false);
+  const [pdfLayout, setPdfLayout] = useState<'single' | 'multiple'>('single');
 
   useEffect(() => {
     if (!isPlaying) {
@@ -175,54 +178,117 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
       const margin = 15;
       const contentWidth = pageWidth - (2 * margin);
 
-      for (let i = 0; i < Math.min(scenes.length, images.length); i++) {
-        if (i > 0) {
-          pdf.addPage();
+      if (pdfLayout === 'single') {
+        // Single scene per page
+        for (let i = 0; i < Math.min(scenes.length, images.length); i++) {
+          if (i > 0) {
+            pdf.addPage();
+          }
+
+          // Add page number
+          pdf.setFontSize(10);
+          pdf.setTextColor(150);
+          pdf.text(`Page ${i + 1} of ${scenes.length}`, pageWidth / 2, margin / 2, { align: 'center' });
+
+          // Add image
+          try {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            
+            await new Promise((resolve, reject) => {
+              img.onload = resolve;
+              img.onerror = reject;
+              img.src = images[i];
+            });
+
+            const imgWidth = contentWidth;
+            const imgHeight = (img.height / img.width) * imgWidth;
+            const maxImgHeight = pageHeight * 0.5;
+            
+            const finalImgHeight = Math.min(imgHeight, maxImgHeight);
+            const finalImgWidth = (img.width / img.height) * finalImgHeight;
+            
+            const imgX = (pageWidth - finalImgWidth) / 2;
+            const imgY = margin + 10;
+
+            pdf.addImage(images[i], 'PNG', imgX, imgY, finalImgWidth, finalImgHeight);
+
+            // Add text below image
+            const textY = imgY + finalImgHeight + 15;
+            pdf.setFontSize(12);
+            pdf.setTextColor(0);
+            
+            const lines = pdf.splitTextToSize(scenes[i], contentWidth);
+            pdf.text(lines, margin, textY);
+
+          } catch (error) {
+            console.error(`Error loading image ${i}:`, error);
+            pdf.setFontSize(12);
+            pdf.setTextColor(0);
+            const lines = pdf.splitTextToSize(scenes[i], contentWidth);
+            pdf.text(lines, margin, margin + 20);
+          }
         }
+      } else {
+        // Multiple scenes per page (2 per page)
+        const scenesPerPage = 2;
+        const totalPages = Math.ceil(scenes.length / scenesPerPage);
+        
+        for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
+          if (pageIdx > 0) {
+            pdf.addPage();
+          }
 
-        // Add page number
-        pdf.setFontSize(10);
-        pdf.setTextColor(150);
-        pdf.text(`Page ${i + 1} of ${scenes.length}`, pageWidth / 2, margin / 2, { align: 'center' });
+          // Add page number
+          pdf.setFontSize(10);
+          pdf.setTextColor(150);
+          pdf.text(`Page ${pageIdx + 1} of ${totalPages}`, pageWidth / 2, margin / 2, { align: 'center' });
 
-        // Add image
-        try {
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          
-          await new Promise((resolve, reject) => {
-            img.onload = resolve;
-            img.onerror = reject;
-            img.src = images[i];
-          });
+          const scenesOnThisPage = Math.min(scenesPerPage, scenes.length - (pageIdx * scenesPerPage));
+          const sceneHeight = (pageHeight - (2 * margin) - 10) / scenesPerPage;
 
-          const imgWidth = contentWidth;
-          const imgHeight = (img.height / img.width) * imgWidth;
-          const maxImgHeight = pageHeight * 0.5;
-          
-          const finalImgHeight = Math.min(imgHeight, maxImgHeight);
-          const finalImgWidth = (img.width / img.height) * finalImgHeight;
-          
-          const imgX = (pageWidth - finalImgWidth) / 2;
-          const imgY = margin + 10;
+          for (let sceneIdx = 0; sceneIdx < scenesOnThisPage; sceneIdx++) {
+            const actualSceneIdx = (pageIdx * scenesPerPage) + sceneIdx;
+            const yOffset = margin + 10 + (sceneIdx * sceneHeight);
 
-          pdf.addImage(images[i], 'PNG', imgX, imgY, finalImgWidth, finalImgHeight);
+            try {
+              const img = new Image();
+              img.crossOrigin = 'anonymous';
+              
+              await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = images[actualSceneIdx];
+              });
 
-          // Add text below image
-          const textY = imgY + finalImgHeight + 15;
-          pdf.setFontSize(12);
-          pdf.setTextColor(0);
-          
-          const lines = pdf.splitTextToSize(scenes[i], contentWidth);
-          pdf.text(lines, margin, textY);
+              // Image dimensions for 2-per-page layout
+              const availableHeight = sceneHeight * 0.6;
+              const imgWidth = contentWidth * 0.7;
+              const imgHeight = Math.min((img.height / img.width) * imgWidth, availableHeight);
+              const finalImgWidth = (img.width / img.height) * imgHeight;
+              
+              const imgX = (pageWidth - finalImgWidth) / 2;
 
-        } catch (error) {
-          console.error(`Error loading image ${i}:`, error);
-          // Continue with text only if image fails
-          pdf.setFontSize(12);
-          pdf.setTextColor(0);
-          const lines = pdf.splitTextToSize(scenes[i], contentWidth);
-          pdf.text(lines, margin, margin + 20);
+              pdf.addImage(images[actualSceneIdx], 'PNG', imgX, yOffset, finalImgWidth, imgHeight);
+
+              // Add text below image
+              const textY = yOffset + imgHeight + 5;
+              pdf.setFontSize(10);
+              pdf.setTextColor(0);
+              
+              const lines = pdf.splitTextToSize(scenes[actualSceneIdx], contentWidth);
+              const maxLines = 3;
+              const displayLines = lines.slice(0, maxLines);
+              pdf.text(displayLines, margin, textY);
+
+            } catch (error) {
+              console.error(`Error loading image ${actualSceneIdx}:`, error);
+              pdf.setFontSize(10);
+              pdf.setTextColor(0);
+              const lines = pdf.splitTextToSize(scenes[actualSceneIdx], contentWidth);
+              pdf.text(lines.slice(0, 3), margin, yOffset + 10);
+            }
+          }
         }
       }
 
@@ -268,37 +334,61 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
         </div>
       </div>
 
-      <div className="flex gap-3 justify-center flex-wrap">
-        <Button
-          onClick={togglePlay}
-          size="lg"
-          className="gap-2"
-        >
-          {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-          {isPlaying ? 'Pause' : 'Play'}
-        </Button>
-        
-        <Button
-          onClick={handlePDFExport}
-          variant="outline"
-          size="lg"
-          disabled={isExportingPDF}
-          className="gap-2"
-        >
-          <FileText className="w-5 h-5" />
-          {isExportingPDF ? 'Creating PDF...' : 'Download PDF'}
-        </Button>
+      <div className="space-y-4">
+        {/* PDF Layout Options */}
+        <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-purple-200">
+          <Label className="text-sm font-semibold text-purple-800 mb-3 block">
+            PDF Layout
+          </Label>
+          <RadioGroup value={pdfLayout} onValueChange={(value) => setPdfLayout(value as 'single' | 'multiple')}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="single" id="single" />
+              <Label htmlFor="single" className="cursor-pointer">
+                One scene per page (detailed)
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="multiple" id="multiple" />
+              <Label htmlFor="multiple" className="cursor-pointer">
+                Two scenes per page (compact)
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
 
-        <Button
-          onClick={handleExport}
-          variant="outline"
-          size="lg"
-          disabled={isExporting}
-          className="gap-2"
-        >
-          <Download className="w-5 h-5" />
-          {isExporting ? 'Exporting...' : 'Export Video'}
-        </Button>
+        {/* Control Buttons */}
+        <div className="flex gap-3 justify-center flex-wrap">
+          <Button
+            onClick={togglePlay}
+            size="lg"
+            className="gap-2"
+          >
+            {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+            {isPlaying ? 'Pause' : 'Play'}
+          </Button>
+          
+          <Button
+            onClick={handlePDFExport}
+            variant="outline"
+            size="lg"
+            disabled={isExportingPDF}
+            className="gap-2"
+          >
+            <FileText className="w-5 h-5" />
+            {isExportingPDF ? 'Creating PDF...' : 'Download PDF'}
+          </Button>
+
+          <Button
+            onClick={handleExport}
+            variant="outline"
+            size="lg"
+            disabled={isExporting}
+            className="gap-2"
+          >
+            <Download className="w-5 h-5" />
+            {isExporting ? 'Exporting...' : 'Export Video'}
+          </Button>
+        </div>
       </div>
 
       <canvas ref={canvasRef} className="hidden" />
