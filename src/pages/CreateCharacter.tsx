@@ -77,6 +77,39 @@ export default function CreateCharacter() {
     { id: "creative", name: "Creative", emoji: "🎨" }
   ];
 
+  const playMagicalSound = () => {
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    // Create magical chime sound with multiple notes
+    const playNote = (frequency: number, startTime: number, duration: number) => {
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'sine';
+      
+      // Create fade out effect
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + startTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + startTime + duration);
+      
+      oscillator.start(audioContext.currentTime + startTime);
+      oscillator.stop(audioContext.currentTime + startTime + duration);
+    };
+
+    // Play a magical ascending arpeggio (C-E-G-C)
+    playNote(523.25, 0, 0.3);      // C5
+    playNote(659.25, 0.15, 0.35);  // E5
+    playNote(783.99, 0.3, 0.4);    // G5
+    playNote(1046.50, 0.45, 0.6);  // C6
+    
+    // Add sparkle effect with higher notes
+    playNote(1318.51, 0.6, 0.3);   // E6
+    playNote(1567.98, 0.75, 0.4);  // G6
+  };
+
   const handleCreateStory = async () => {
     if (!characterName.trim()) {
       toast({
@@ -104,6 +137,9 @@ export default function CreateCharacter() {
 
       if (data?.imageUrl) {
         setGeneratedImage(data.imageUrl);
+        
+        // Play magical celebration sound
+        playMagicalSound();
         
         // Trigger confetti celebration
         const duration = 3000;
