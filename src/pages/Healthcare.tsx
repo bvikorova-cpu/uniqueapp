@@ -1,12 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Check, Heart, Brain, Smile, Activity, Users, Stethoscope, Syringe, Eye, Ear, Baby, Sparkles, TrendingUp, Award, Target, BarChart, Tablet, Download, QrCode, Building2, GraduationCap, Shield, CheckCircle2, Star, Zap, Apple } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Check, Heart, Brain, Smile, Activity, Users, Stethoscope, Syringe, Eye, Ear, Baby, Sparkles, TrendingUp, Award, Target, BarChart, Tablet, Download, QrCode, Building2, GraduationCap, Shield, CheckCircle2, Star, Zap, Apple, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const Healthcare = () => {
   const { toast } = useToast();
+  const { 
+    subscribed, 
+    subscription_tier, 
+    subscription_end, 
+    loading: subscriptionLoading,
+    checkSubscription,
+    openCustomerPortal
+  } = useHealthcareSubscription();
 
   const handleSubscribe = async (priceId: string, planName: string) => {
     try {
@@ -508,8 +520,10 @@ const Healthcare = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
+      <Navbar />
+      
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-16">
+      <section className="container mx-auto px-4 py-24 mt-16">
         <div className="text-center max-w-3xl mx-auto">
           <Heart className="w-16 h-16 mx-auto mb-6 text-primary" />
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
@@ -521,6 +535,44 @@ const Healthcare = () => {
           </p>
         </div>
       </section>
+
+      {/* Subscription Status Section */}
+      {subscribed && !subscriptionLoading && (
+        <section className="container mx-auto px-4 py-8 mb-8">
+          <Card className="max-w-4xl mx-auto p-6 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-primary/20">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
+                  <CheckCircle2 className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    Active Subscription
+                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
+                      {subscription_tier?.replace('_', ' ').toUpperCase()}
+                    </Badge>
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {subscription_end 
+                      ? `Renews on ${new Date(subscription_end).toLocaleDateString()}`
+                      : 'Active subscription'
+                    }
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline" size="sm" onClick={checkSubscription}>
+                  Refresh Status
+                </Button>
+                <Button size="sm" onClick={openCustomerPortal}>
+                  <Settings className="w-4 h-4 mr-2" />
+                  Manage Subscription
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </section>
+      )}
 
       {/* Subscription Plans */}
       <section className="container mx-auto px-4 py-12">
@@ -571,8 +623,9 @@ const Healthcare = () => {
                       size="sm"
                       variant={plan.popular ? "default" : "outline"}
                       onClick={() => handleSubscribe(plan.priceId, plan.name)}
+                      disabled={subscription_tier === plan.id}
                     >
-                      Subscribe
+                      {subscription_tier === plan.id ? 'Current Plan' : 'Subscribe'}
                     </Button>
                   </Card>
                 );
@@ -607,8 +660,9 @@ const Healthcare = () => {
                       className="w-full"
                       size="sm"
                       onClick={() => handleSubscribe(pkg.priceId, pkg.name)}
+                      disabled={subscription_tier === pkg.id}
                     >
-                      Subscribe
+                      {subscription_tier === pkg.id ? 'Current Plan' : 'Subscribe'}
                     </Button>
                   </Card>
                 );

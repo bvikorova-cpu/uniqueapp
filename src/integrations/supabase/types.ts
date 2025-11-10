@@ -8086,6 +8086,42 @@ export type Database = {
         }
         Relationships: []
       }
+      healthcare_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          provider_logo_url: string | null
+          provider_name: string | null
+          subscription_expires_at: string | null
+          subscription_status: string | null
+          subscription_tier: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          provider_logo_url?: string | null
+          provider_name?: string | null
+          subscription_expires_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          provider_logo_url?: string | null
+          provider_name?: string | null
+          subscription_expires_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       hero_campaigns: {
         Row: {
           created_at: string | null
