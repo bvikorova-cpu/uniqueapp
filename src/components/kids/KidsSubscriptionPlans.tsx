@@ -254,12 +254,12 @@ export default function KidsSubscriptionPlans() {
                     <Icon className="h-10 w-10 text-primary" />
                   </div>
                   <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                  <CardDescription className="text-center space-y-1">
+                  <div className="text-center space-y-1">
                     <div className="text-4xl font-bold text-foreground">
                       €{plan.price}
                     </div>
                     <div className="text-sm text-muted-foreground">/{plan.interval}</div>
-                  </CardDescription>
+                  </div>
                 </CardHeader>
                 
                 <CardContent className="space-y-6">
