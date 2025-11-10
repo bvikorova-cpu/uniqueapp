@@ -13,6 +13,7 @@ const StoryVideoDemo = () => {
   const [storyData, setStoryData] = useState<{ scenes: string[], images: string[] } | null>(null);
   const [sceneCount, setSceneCount] = useState(4);
   const [sceneDuration, setSceneDuration] = useState(5);
+  const [language, setLanguage] = useState('english');
   const navigate = useNavigate();
 
   const handleGenerate = async () => {
@@ -24,7 +25,7 @@ const StoryVideoDemo = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-story-video', {
-        body: { theme, sceneCount }
+        body: { theme, sceneCount, language }
       });
 
       if (error) throw error;
@@ -46,17 +47,17 @@ const StoryVideoDemo = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 p-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex items-center gap-4 pt-8">
+        <div className="flex items-start gap-4 pt-4">
           <Button
             variant="ghost"
             onClick={() => navigate('/kids-channel')}
-            className="gap-2"
+            className="gap-2 mt-12"
           >
             <ArrowLeft className="w-5 h-5" />
             Back
           </Button>
           
-          <div className="flex-1 text-center">
+          <div className="flex-1 text-center pt-8">
             <h1 className="text-4xl md:text-5xl font-bold text-purple-800 mb-2">
               AI Story Video Generator
             </h1>
@@ -68,6 +69,28 @@ const StoryVideoDemo = () => {
 
         {!storyData ? (
           <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
+            <div className="space-y-4">
+              <label className="block text-lg font-semibold text-purple-800">
+                Language / Jazyk
+              </label>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                disabled={loading}
+                className="w-full text-lg p-4 rounded-lg border-2 border-purple-200 focus:border-purple-400 focus:outline-none bg-white"
+              >
+                <option value="english">English</option>
+                <option value="slovak">Slovenčina</option>
+                <option value="czech">Čeština</option>
+                <option value="hungarian">Magyar</option>
+                <option value="german">Deutsch</option>
+                <option value="spanish">Español</option>
+                <option value="french">Français</option>
+                <option value="italian">Italiano</option>
+                <option value="polish">Polski</option>
+              </select>
+            </div>
+
             <div className="space-y-4">
               <label className="block text-lg font-semibold text-purple-800">
                 What story would you like to create?

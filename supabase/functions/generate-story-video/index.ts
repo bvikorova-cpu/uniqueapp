@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { theme, sceneCount = 4 } = await req.json();
+    const { theme, sceneCount = 4, language = 'english' } = await req.json();
     
     if (!theme) {
       throw new Error('Theme is required');
@@ -19,23 +19,39 @@ serve(async (req) => {
 
     // Validate scene count
     const validSceneCount = Math.max(2, Math.min(20, sceneCount));
+    
+    // Language mapping
+    const languageNames: Record<string, string> = {
+      english: 'English',
+      slovak: 'Slovak',
+      czech: 'Czech',
+      hungarian: 'Hungarian',
+      german: 'German',
+      spanish: 'Spanish',
+      french: 'French',
+      italian: 'Italian',
+      polish: 'Polish'
+    };
+    
+    const targetLanguage = languageNames[language] || 'English';
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    console.log(`Generating story for theme: ${theme} with ${validSceneCount} scenes`);
+    console.log(`Generating story for theme: ${theme} with ${validSceneCount} scenes in ${targetLanguage}`);
 
     // Generate story with variable number of scenes - with consistent main characters
-    const storyPrompt = `Create a ${validSceneCount <= 6 ? 'short' : 'detailed'} bedtime story for children about ${theme}. 
+    const storyPrompt = `Create a ${validSceneCount <= 6 ? 'short' : 'detailed'} bedtime story for children about ${theme} IN ${targetLanguage} LANGUAGE. 
     The story MUST feature these two main characters throughout ALL scenes: a small white rabbit and a yellow duck.
     These two characters should appear together in every scene.
     Structure it as exactly ${validSceneCount} scenes, each scene should be ${validSceneCount <= 6 ? '1-2' : '2-3'} sentences.
-    Format: Scene 1: [text with rabbit and duck]
-    Scene 2: [text with rabbit and duck]
+    Write the ENTIRE story in ${targetLanguage}.
+    Format: Scene 1: [text with rabbit and duck in ${targetLanguage}]
+    Scene 2: [text with rabbit and duck in ${targetLanguage}]
     ...
-    Scene ${validSceneCount}: [text with rabbit and duck]`;
+    Scene ${validSceneCount}: [text with rabbit and duck in ${targetLanguage}]`;
 
     console.log('Calling AI for story generation...');
     const storyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -44,13 +60,13 @@ serve(async (req) => {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: 'You are a children\'s story writer.' },
-          { role: 'user', content: storyPrompt }
-        ],
-      }),
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: `You are a children's story writer. Write stories in the requested language.` },
+            { role: 'user', content: storyPrompt }
+          ],
+        }),
     });
 
     if (!storyResponse.ok) {
