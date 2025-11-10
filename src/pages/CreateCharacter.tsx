@@ -11,6 +11,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-blonde-magic.png";
 import confetti from "canvas-confetti";
+import { TradingCard } from "@/components/character/TradingCard";
 
 export default function CreateCharacter() {
   const navigate = useNavigate();
@@ -22,10 +23,12 @@ export default function CreateCharacter() {
   const [selectedCostumeColor, setSelectedCostumeColor] = useState("rainbow");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("kid");
   const [selectedPersonality, setSelectedPersonality] = useState("brave");
+  const [selectedGender, setSelectedGender] = useState("hero");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [generatedStory, setGeneratedStory] = useState<string | null>(null);
   const [isGeneratingStory, setIsGeneratingStory] = useState(false);
+  const [showTradingCard, setShowTradingCard] = useState(false);
 
   const hairColors = [
     { id: "brown", name: "Brown", emoji: "🟤" },
@@ -77,6 +80,12 @@ export default function CreateCharacter() {
     { id: "smart", name: "Smart", emoji: "🧠" },
     { id: "adventurous", name: "Adventurous", emoji: "🗺️" },
     { id: "creative", name: "Creative", emoji: "🎨" }
+  ];
+
+  const genders = [
+    { id: "hero", name: "Hero", emoji: "🦸" },
+    { id: "heroine", name: "Heroine", emoji: "🦸‍♀️" },
+    { id: "champion", name: "Champion", emoji: "⭐" }
   ];
 
   const playMagicalSound = () => {
@@ -233,6 +242,7 @@ export default function CreateCharacter() {
               costume_color: selectedCostumeColor,
               age_group: selectedAgeGroup,
               personality: selectedPersonality,
+              gender: selectedGender,
               image_url: data.imageUrl
             });
 
@@ -346,6 +356,24 @@ export default function CreateCharacter() {
                         </p>
                       </CardContent>
                     </Card>
+                  )}
+
+                  {/* Trading Card */}
+                  {showTradingCard && generatedImage && (
+                    <div className="mt-6 animate-fade-in">
+                      <TradingCard
+                        characterName={characterName}
+                        imageUrl={generatedImage}
+                        hairColor={hairColors.find(h => h.id === selectedHair)?.name || selectedHair}
+                        eyeColor={eyeColors.find(e => e.id === selectedEyeColor)?.name || selectedEyeColor}
+                        superpower={superPowers.find(p => p.id === selectedPower)?.name || selectedPower}
+                        costumeColor={costumeColors.find(c => c.id === selectedCostumeColor)?.name || selectedCostumeColor}
+                        ageGroup={ageGroups.find(a => a.id === selectedAgeGroup)?.name || selectedAgeGroup}
+                        personality={personalities.find(p => p.id === selectedPersonality)?.name || selectedPersonality}
+                        gender={genders.find(g => g.id === selectedGender)?.name || selectedGender}
+                        story={generatedStory || undefined}
+                      />
+                    </div>
                   )}
                   
                   <h3 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
@@ -549,6 +577,30 @@ export default function CreateCharacter() {
                 </CardContent>
               </Card>
 
+              {/* Gender Selection */}
+              <Card className="bg-white/95 border-3 border-indigo-300 shadow-lg hover-scale transition-all">
+                <CardContent className="p-6">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4 block">
+                    Choose Gender 🦸
+                  </Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {genders.map((gender) => (
+                      <Button
+                        key={gender.id}
+                        variant={selectedGender === gender.id ? "default" : "outline"}
+                        onClick={() => setSelectedGender(gender.id)}
+                        className={`h-20 flex flex-col items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                          selectedGender === gender.id ? "bg-gradient-to-br from-indigo-500 to-purple-500 border-3 border-yellow-300 scale-105 shadow-xl" : "border-2 border-gray-300 hover:border-indigo-400"
+                        }`}
+                      >
+                        <span className="text-3xl mb-1 animate-pulse">{gender.emoji}</span>
+                        <span className="text-xs text-center font-semibold">{gender.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* Create Story Button */}
               <Button
                 onClick={handleCreateStory}
@@ -587,6 +639,17 @@ export default function CreateCharacter() {
                       📖 Generate Backstory
                     </>
                   )}
+                </Button>
+              )}
+
+              {/* Generate Trading Card Button */}
+              {generatedImage && (
+                <Button
+                  onClick={() => setShowTradingCard(!showTradingCard)}
+                  className="w-full text-xl py-7 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 text-white font-bold shadow-xl hover:shadow-orange-500/50 transition-all duration-300 hover:scale-105 border-3 border-white/50 rounded-2xl relative overflow-hidden group"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 via-orange-300/20 to-red-300/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {showTradingCard ? "Hide Trading Card" : "🎴 Create Trading Card"}
                 </Button>
               )}
             </div>

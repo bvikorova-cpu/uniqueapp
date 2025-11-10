@@ -4764,6 +4764,7 @@ export type Database = {
           costume_color: string | null
           created_at: string | null
           eye_color: string | null
+          gender: string | null
           hair_color: string
           id: string
           image_url: string
@@ -4778,6 +4779,7 @@ export type Database = {
           costume_color?: string | null
           created_at?: string | null
           eye_color?: string | null
+          gender?: string | null
           hair_color: string
           id?: string
           image_url: string
@@ -4792,6 +4794,7 @@ export type Database = {
           costume_color?: string | null
           created_at?: string | null
           eye_color?: string | null
+          gender?: string | null
           hair_color?: string
           id?: string
           image_url?: string
