@@ -64,7 +64,7 @@ const subscriptionPlans = [
   {
     id: 'pro',
     name: '👑 Pro',
-    price: 50,
+    price: 120,
     interval: '12 months',
     icon: Users,
     color: 'from-purple-500 to-indigo-500',
@@ -76,7 +76,7 @@ const subscriptionPlans = [
       'All premium features',
       'No ads',
       'Disney castle tours',
-      'Save €10 per year!'
+      'Save 50% from Premium plan'
     ]
   }
 ];
