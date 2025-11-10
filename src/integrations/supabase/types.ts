@@ -8198,6 +8198,39 @@ export type Database = {
           },
         ]
       }
+      healthcare_library_items: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string
+          tier_required: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url: string
+          tier_required?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          tier_required?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       healthcare_profiles: {
         Row: {
           created_at: string

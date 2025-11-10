@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
 import { toast } from "sonner";
-import { Heart, Plus, Download, Users, BarChart, Folder, FileText, Settings, Lock } from "lucide-react";
+import { Heart, Plus, Download, Users, BarChart, Folder, FileText, Settings, Lock, Library } from "lucide-react";
 
 interface Collection {
   id: string;
@@ -154,6 +154,10 @@ export default function HealthcareProviderDashboard() {
             <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
               {subscription_tier?.replace('_', ' ').toUpperCase()}
             </Badge>
+            <Button variant="outline" onClick={() => navigate("/healthcare-library")}>
+              <Library className="w-4 h-4 mr-2" />
+              Content Library
+            </Button>
             <Button onClick={() => navigate("/healthcare")}>
               <Settings className="w-4 h-4 mr-2" />
               Manage Subscription
