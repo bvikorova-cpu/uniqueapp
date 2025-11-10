@@ -371,3 +371,9 @@ verify_jwt = true
 
 [functions.employer-customer-portal]
 verify_jwt = true
+
+[functions.create-kids-subscription-checkout]
+verify_jwt = true
+
+[functions.check-kids-subscription]
+verify_jwt = true

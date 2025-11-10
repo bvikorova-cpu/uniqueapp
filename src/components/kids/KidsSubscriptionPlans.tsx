@@ -1,80 +1,147 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, Heart, School, Users } from "lucide-react";
-import { useKidsSubscription } from "@/hooks/useKidsSubscription";
+import { Check, Sparkles, School, Users, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useState, useEffect } from "react";
+
+const PRODUCT_TIERS = {
+  basic: {
+    product_id: "prod_TOhBTCURKFnRuI",
+    price_id: "price_1SRtnN0QTWhd4oRpRKP8MB2R"
+  },
+  pro: {
+    product_id: "prod_TOhCZbP0IpK2J8",
+    price_id: "price_1SRtnfGaXSfGtYFtrf4jRN83"
+  }
+};
 
 const subscriptionPlans = [
   {
     id: 'basic',
     name: '⭐ Basic',
     price: 5,
-    interval: 'mesiac',
+    interval: 'month',
     icon: Sparkles,
     color: 'from-yellow-500 to-orange-500',
     popular: true,
     features: [
-      '20 rozprávok/mesiac',
-      'HD ilustrácie',
-      'Audio rozprávky',
-      'Vytvoriť postavu',
-      'Výukové príbehy',
-      'Rozprávky na spanie'
+      '20 stories/month',
+      'HD illustrations',
+      'Audio stories',
+      'Create your hero',
+      'Educational stories',
+      'Bedtime stories',
+      'Story games',
+      'Chat with characters'
     ]
   },
   {
     id: 'pro',
     name: '👑 Pro',
     price: 50,
-    interval: '12 mesiacov',
+    interval: '12 months',
     icon: Users,
     color: 'from-purple-500 to-indigo-500',
     features: [
-      'Neobmedzené rozprávky',
-      'Video rozprávky',
-      'AR rozprávky',
-      '3 detské profily',
-      'Všetky prémiové funkcie',
-      'Bez reklám',
-      'Ušetríte 40€ ročne!'
+      'Unlimited stories',
+      'Video stories',
+      'AR stories',
+      '3 child profiles',
+      'All premium features',
+      'No ads',
+      'Disney castle tours',
+      'Toy shop access',
+      'Save €40 per year!'
     ]
   },
   {
     id: 'school',
     name: '🏫 School',
     price: 49.99,
-    interval: 'mesiac',
+    interval: 'month',
     icon: School,
     color: 'from-green-500 to-emerald-500',
     features: [
-      '50 detských účtov',
-      'Analytics & reporty',
-      'Vlastný branding',
-      'Výukové programy',
-      'Prioritná podpora',
-      'Učiteľský dashboard'
+      '50 student accounts',
+      'Analytics & reports',
+      'Custom branding',
+      'Educational programs',
+      'Priority support',
+      'Teacher dashboard'
     ]
   }
 ];
 
 const payPerStory = [
-  { name: '📖 Základný príbeh', price: 1.50 },
-  { name: '🌟 Personalizovaný príbeh', price: 3.50 },
-  { name: '🎬 Video rozprávka', price: 7.99 },
-  { name: '🥽 AR rozprávka', price: 12.99 }
+  { name: '📖 Basic story', price: 1.50 },
+  { name: '🌟 Personalized story', price: 3.50 },
+  { name: '🎬 Video story', price: 7.99 },
+  { name: '🥽 AR story', price: 12.99 }
 ];
 
 export default function KidsSubscriptionPlans() {
-  const { subscription, upgrade } = useKidsSubscription();
+  const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const [currentSubscription, setCurrentSubscription] = useState<any>(null);
+  const [checkingSubscription, setCheckingSubscription] = useState(true);
+
+  useEffect(() => {
+    checkSubscription();
+  }, []);
+
+  const checkSubscription = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setCheckingSubscription(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-kids-subscription');
+      
+      if (error) throw error;
+      setCurrentSubscription(data);
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+    } finally {
+      setCheckingSubscription(false);
+    }
+  };
 
   const handleUpgrade = async (planId: string) => {
-    try {
-      await upgrade(planId);
-      toast.success(`🎉 Úspešne! Vitaj v ${planId} pláne!`);
-    } catch (error) {
-      toast.error('Ups! Niečo sa nepodarilo.');
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast.error('Please sign in to subscribe');
+      return;
     }
+
+    setLoading(prev => ({ ...prev, [planId]: true }));
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('create-kids-subscription-checkout', {
+        body: { tier: planId }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast.success('Opening checkout...');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setLoading(prev => ({ ...prev, [planId]: false }));
+    }
+  };
+
+  const isCurrentPlan = (planId: string) => {
+    if (!currentSubscription?.subscribed) return false;
+    const productId = PRODUCT_TIERS[planId as keyof typeof PRODUCT_TIERS]?.product_id;
+    return currentSubscription.product_id === productId;
   };
 
   return (
@@ -83,10 +150,10 @@ export default function KidsSubscriptionPlans() {
         {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Vyber si svoj plán! ✨
+            Choose Your Plan! ✨
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Neobmedzené rozprávky plné dobrodružstva a fantázie pre tvoje deti
+            Unlimited stories full of adventure and imagination for your kids
           </p>
         </div>
 
@@ -107,7 +174,7 @@ export default function KidsSubscriptionPlans() {
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
                     <Badge className="gap-1 text-base px-4 py-1 shadow-lg bg-gradient-to-r from-yellow-400 to-orange-400">
                       <Sparkles className="h-4 w-4" />
-                      Najobľúbenejší
+                      Most Popular
                     </Badge>
                   </div>
                 )}
@@ -143,14 +210,20 @@ export default function KidsSubscriptionPlans() {
 
                   <Button
                     onClick={() => handleUpgrade(plan.id)}
-                    disabled={subscription?.subscription_type === plan.id}
+                    disabled={isCurrentPlan(plan.id) || loading[plan.id] || checkingSubscription}
                     className="w-full text-lg py-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
                     variant={plan.popular ? 'default' : 'outline'}
                   >
-                    {subscription?.subscription_type === plan.id 
-                      ? '✓ Tvoj plán' 
-                      : 'Vybrať plán'
-                    }
+                    {loading[plan.id] ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Loading...
+                      </>
+                    ) : isCurrentPlan(plan.id) ? (
+                      '✓ Your Plan'
+                    ) : (
+                      'Choose Plan'
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -161,8 +234,8 @@ export default function KidsSubscriptionPlans() {
         {/* Pay Per Story */}
         <div className="space-y-6">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-2">🎨 Alebo kúp len jeden príbeh</h2>
-            <p className="text-muted-foreground">Bez mesačného predplatného</p>
+            <h2 className="text-3xl font-bold mb-2">🎨 Or buy just one story</h2>
+            <p className="text-muted-foreground">No monthly subscription required</p>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
@@ -172,7 +245,7 @@ export default function KidsSubscriptionPlans() {
                   <div className="text-xl font-semibold">{item.name}</div>
                   <div className="text-3xl font-bold text-primary">€{item.price}</div>
                   <Button variant="outline" className="w-full">
-                    Kúpiť
+                    Buy
                   </Button>
                 </CardContent>
               </Card>
@@ -183,26 +256,26 @@ export default function KidsSubscriptionPlans() {
         {/* B2B Section */}
         <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-3xl p-8 border-2 border-dashed border-purple-300 dark:border-purple-700">
           <div className="text-center space-y-4">
-            <h2 className="text-3xl font-bold">🏢 Pre škôlky, hotely a reštaurácie</h2>
+            <h2 className="text-3xl font-bold">🏢 For kindergartens, hotels & restaurants</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Špeciálne B2B riešenia s vlastným brandingom a analytics
+              Special B2B solutions with custom branding and analytics
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Badge variant="outline" className="text-base px-4 py-2">🏨 Hotely €500-2000/mes</Badge>
-              <Badge variant="outline" className="text-base px-4 py-2">🍽️ Reštaurácie €200-800/mes</Badge>
-              <Badge variant="outline" className="text-base px-4 py-2">🏥 Pediatrie €300-1500/mes</Badge>
-              <Badge variant="outline" className="text-base px-4 py-2">✈️ Letecké spoločnosti €1000-5000/mes</Badge>
+              <Badge variant="outline" className="text-base px-4 py-2">🏨 Hotels €500-2000/mo</Badge>
+              <Badge variant="outline" className="text-base px-4 py-2">🍽️ Restaurants €200-800/mo</Badge>
+              <Badge variant="outline" className="text-base px-4 py-2">🏥 Pediatrics €300-1500/mo</Badge>
+              <Badge variant="outline" className="text-base px-4 py-2">✈️ Airlines €1000-5000/mo</Badge>
             </div>
             <Button size="lg" className="mt-4">
-              Kontaktujte nás
+              Contact Us
             </Button>
           </div>
         </div>
 
         {/* Trust & Guarantee */}
         <div className="text-center text-sm text-muted-foreground space-y-2">
-          <p>✓ Žiadne skryté poplatky · ✓ Zruš kedykoľvek · ✓ 14-dňová záruka vrátenia peňazí</p>
-          <p>🔒 Bezpečné platby cez Stripe</p>
+          <p>✓ No hidden fees · ✓ Cancel anytime · ✓ 14-day money-back guarantee</p>
+          <p>🔒 Secure payments via Stripe</p>
         </div>
       </div>
     </div>
