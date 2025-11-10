@@ -4758,6 +4758,39 @@ export type Database = {
         }
         Relationships: []
       }
+      created_characters: {
+        Row: {
+          created_at: string | null
+          hair_color: string
+          id: string
+          image_url: string
+          name: string
+          superpower: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          hair_color: string
+          id?: string
+          image_url: string
+          name: string
+          superpower: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          hair_color?: string
+          id?: string
+          image_url?: string
+          name?: string
+          superpower?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       creator_chat_messages: {
         Row: {
           created_at: string | null

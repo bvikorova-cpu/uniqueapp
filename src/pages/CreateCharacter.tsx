@@ -65,6 +65,25 @@ export default function CreateCharacter() {
 
       if (data?.imageUrl) {
         setGeneratedImage(data.imageUrl);
+        
+        // Save character to database
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { error: saveError } = await supabase
+            .from('created_characters')
+            .insert({
+              user_id: user.id,
+              name: characterName,
+              hair_color: selectedHair,
+              superpower: selectedPower,
+              image_url: data.imageUrl
+            });
+
+          if (saveError) {
+            console.error('Error saving character:', saveError);
+          }
+        }
+        
         toast({
           title: "Character Created! 🎉",
           description: `${characterName} is ready for adventure!`
@@ -87,14 +106,23 @@ export default function CreateCharacter() {
       <Navbar />
       
       <div className="container mx-auto px-4 pt-24 pb-12">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("/kids-channel")}
-          className="mb-6 hover:bg-white/70 hover-scale transition-all"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Kids Channel
-        </Button>
+        <div className="flex gap-3 mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/kids-channel")}
+            className="hover:bg-white/70 hover-scale transition-all"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Kids Channel
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate("/character-gallery")}
+            className="hover:bg-white/70 hover-scale transition-all border-2 border-purple-300"
+          >
+            🖼️ My Gallery
+          </Button>
+        </div>
 
         <div className="max-w-4xl mx-auto">
           <Card className="bg-white/95 backdrop-blur-sm border-4 border-yellow-300 shadow-2xl mb-8 animate-scale-in overflow-hidden relative">
