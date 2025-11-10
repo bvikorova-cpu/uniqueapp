@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 const StoryVideoDemo = () => {
   const [theme, setTheme] = useState('');
   const [loading, setLoading] = useState(false);
-  const [storyData, setStoryData] = useState<{ scenes: string[], images: string[] } | null>(null);
+  const [storyData, setStoryData] = useState<{ scenes: string[], images: string[], audioFiles?: string[] } | null>(null);
   const [sceneCount, setSceneCount] = useState(4);
   const [sceneDuration, setSceneDuration] = useState(5);
   const [language, setLanguage] = useState('english');
@@ -71,7 +71,7 @@ const StoryVideoDemo = () => {
           <div className="bg-white rounded-2xl shadow-xl p-8 space-y-6">
             <div className="space-y-4">
               <label className="block text-lg font-semibold text-purple-800">
-                Language / Jazyk
+                Language
               </label>
               <select
                 value={language}
@@ -168,11 +168,12 @@ const StoryVideoDemo = () => {
           </div>
         ) : (
           <div className="space-y-6">
-            <StoryVideoPlayer 
-              scenes={storyData.scenes} 
-              images={storyData.images}
-              sceneDuration={sceneDuration}
-            />
+          <StoryVideoPlayer 
+            scenes={storyData.scenes} 
+            images={storyData.images}
+            audioFiles={storyData.audioFiles}
+            sceneDuration={sceneDuration}
+          />
             
             <div className="text-center">
               <Button

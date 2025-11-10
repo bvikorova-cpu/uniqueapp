@@ -193,10 +193,66 @@ serve(async (req) => {
 
     console.log(`Generated ${images.length} images`);
 
+    // Generate audio for each scene
+    console.log('Generating audio for scenes...');
+    const audioFiles: string[] = [];
+    
+    // Map language to language codes for the translate-and-generate-audio function
+    const languageCodeMap: Record<string, string> = {
+      'english': 'en-US',
+      'slovak': 'sk-SK',
+      'french': 'fr-FR',
+      'spanish': 'es-ES',
+      'czech': 'en-US', // fallback to English
+      'hungarian': 'en-US', // fallback to English
+      'german': 'en-US', // fallback to English
+      'italian': 'en-US', // fallback to English
+      'polish': 'en-US', // fallback to English
+    };
+
+    const languageCode = languageCodeMap[language] || 'en-US';
+
+    for (let i = 0; i < validSceneCount; i++) {
+      try {
+        console.log(`Generating audio for scene ${i + 1}/${validSceneCount}`);
+        
+        const audioResponse = await fetch(
+          `${Deno.env.get('SUPABASE_URL')}/functions/v1/translate-and-generate-audio`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              text: scenes[i],
+              language: languageCode
+            })
+          }
+        );
+
+        if (!audioResponse.ok) {
+          console.error(`Audio generation failed for scene ${i + 1}`);
+          audioFiles.push('');
+          continue;
+        }
+
+        const audioData = await audioResponse.json();
+        audioFiles.push(audioData.audioContent || '');
+        console.log(`Audio generated for scene ${i + 1}`);
+      } catch (error) {
+        console.error(`Error generating audio for scene ${i + 1}:`, error);
+        audioFiles.push('');
+      }
+    }
+
+    console.log('Audio generation completed');
+
     return new Response(
       JSON.stringify({ 
         scenes: scenes.slice(0, validSceneCount),
-        images: images
+        images: images,
+        audioFiles
       }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

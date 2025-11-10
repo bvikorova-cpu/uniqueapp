@@ -6,17 +6,32 @@ import { toast } from 'sonner';
 interface StoryVideoPlayerProps {
   scenes: string[];
   images: string[];
+  audioFiles?: string[];
   sceneDuration?: number;
 }
 
-export const StoryVideoPlayer = ({ scenes, images, sceneDuration = 5 }: StoryVideoPlayerProps) => {
+export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5 }: StoryVideoPlayerProps) => {
   const [currentScene, setCurrentScene] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isExporting, setIsExporting] = useState(false);
 
   useEffect(() => {
-    if (!isPlaying) return;
+    if (!isPlaying) {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      return;
+    }
+
+    // Play audio for current scene if available
+    if (audioFiles && audioFiles[currentScene]) {
+      const audio = new Audio(`data:audio/mp3;base64,${audioFiles[currentScene]}`);
+      audioRef.current = audio;
+      audio.play().catch(err => console.error('Audio playback error:', err));
+    }
 
     const interval = setInterval(() => {
       setCurrentScene((prev) => {
@@ -28,8 +43,14 @@ export const StoryVideoPlayer = ({ scenes, images, sceneDuration = 5 }: StoryVid
       });
     }, sceneDuration * 1000);
 
-    return () => clearInterval(interval);
-  }, [isPlaying, scenes.length, sceneDuration]);
+    return () => {
+      clearInterval(interval);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, [isPlaying, currentScene, scenes.length, sceneDuration, audioFiles]);
 
   const handleExport = async () => {
     setIsExporting(true);
