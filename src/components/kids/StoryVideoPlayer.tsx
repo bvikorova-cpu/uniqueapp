@@ -400,11 +400,14 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
           />
         )}
         
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-          <p className="text-white text-xl md:text-2xl font-semibold text-center animate-fade-in">
-            {scenes[currentScene]}
-          </p>
-        </div>
+        {/* Subtitles/Captions - Only show during playback */}
+        {isPlaying && (
+          <div className="absolute bottom-0 left-0 right-0 bg-black/75 backdrop-blur-sm p-6 border-t-2 border-purple-400/50">
+            <p className="text-white text-xl md:text-2xl font-semibold text-center leading-relaxed animate-fade-in drop-shadow-lg">
+              {scenes[currentScene]}
+            </p>
+          </div>
+        )}
 
         <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
           {currentScene + 1} / {scenes.length}
