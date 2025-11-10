@@ -11,6 +11,10 @@ const PRODUCT_TIERS = {
     product_id: "prod_TOhBTCURKFnRuI",
     price_id: "price_1SRtnN0QTWhd4oRpRKP8MB2R"
   },
+  premium: {
+    product_id: "prod_PREMIUM_ID", // TODO: Replace with actual product ID
+    price_id: "price_PREMIUM_ID" // TODO: Replace with actual price ID
+  },
   pro: {
     product_id: "prod_TOhCZbP0IpK2J8",
     price_id: "price_1SRtnfGaXSfGtYFtrf4jRN83"
@@ -38,39 +42,41 @@ const subscriptionPlans = [
     ]
   },
   {
+    id: 'premium',
+    name: '✨ Premium',
+    price: 20,
+    interval: 'month',
+    icon: Sparkles,
+    color: 'from-pink-500 to-purple-500',
+    popular: true,
+    features: [
+      '20 stories/month',
+      'HD illustrations',
+      'Audio stories',
+      'Create your hero',
+      'Educational stories',
+      'Bedtime stories',
+      'Story games',
+      'Chat with characters',
+      'Disney castle tours'
+    ]
+  },
+  {
     id: 'pro',
     name: '👑 Pro',
     price: 50,
     interval: '12 months',
     icon: Users,
     color: 'from-purple-500 to-indigo-500',
-    popular: true,
+    popular: false,
     features: [
       'Unlimited stories',
       'Video stories',
       'AR stories',
-      '3 child profiles',
       'All premium features',
       'No ads',
       'Disney castle tours',
-      'Toy shop access',
       'Save €10 per year!'
-    ]
-  },
-  {
-    id: 'school',
-    name: '🏫 School',
-    price: 49.99,
-    interval: 'month',
-    icon: School,
-    color: 'from-green-500 to-emerald-500',
-    features: [
-      '50 student accounts',
-      'Analytics & reports',
-      'Custom branding',
-      'Educational programs',
-      'Priority support',
-      'Teacher dashboard'
     ]
   }
 ];
@@ -239,7 +245,7 @@ export default function KidsSubscriptionPlans() {
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10">
                     <Badge className="gap-1 text-base px-4 py-2 shadow-lg bg-gradient-to-r from-yellow-400 to-orange-400 whitespace-nowrap">
                       <Sparkles className="h-4 w-4" />
                       Most Popular
@@ -330,25 +336,6 @@ export default function KidsSubscriptionPlans() {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </div>
-
-        {/* B2B Section */}
-        <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-3xl p-8 border-2 border-dashed border-purple-300 dark:border-purple-700">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl font-bold">🏢 For kindergartens, hotels & restaurants</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Special B2B solutions with custom branding and analytics
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Badge variant="outline" className="text-base px-4 py-2">🏨 Hotels €500-2000/mo</Badge>
-              <Badge variant="outline" className="text-base px-4 py-2">🍽️ Restaurants €200-800/mo</Badge>
-              <Badge variant="outline" className="text-base px-4 py-2">🏥 Pediatrics €300-1500/mo</Badge>
-              <Badge variant="outline" className="text-base px-4 py-2">✈️ Airlines €1000-5000/mo</Badge>
-            </div>
-            <Button size="lg" className="mt-4">
-              Contact Us
-            </Button>
           </div>
         </div>
 
