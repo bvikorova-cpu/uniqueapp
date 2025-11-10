@@ -29,6 +29,41 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
   const [musicTheme, setMusicTheme] = useState<'lullaby' | 'adventure' | 'fairytale'>('lullaby');
   const [voiceSpeed, setVoiceSpeed] = useState(1.0);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Prevent default for spacebar to avoid page scrolling
+      if (event.code === 'Space') {
+        event.preventDefault();
+        togglePlay();
+      }
+      
+      // Left arrow - previous scene
+      if (event.code === 'ArrowLeft') {
+        event.preventDefault();
+        setCurrentScene((prev) => Math.max(0, prev - 1));
+        if (isPlaying) {
+          setIsPlaying(false);
+        }
+      }
+      
+      // Right arrow - next scene
+      if (event.code === 'ArrowRight') {
+        event.preventDefault();
+        setCurrentScene((prev) => Math.min(scenes.length - 1, prev + 1));
+        if (isPlaying) {
+          setIsPlaying(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isPlaying, scenes.length]);
+
   // Background music effect with themes
   useEffect(() => {
     if (backgroundMusicEnabled && isPlaying) {
@@ -564,6 +599,16 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
             <Download className="w-5 h-5" />
             {isExporting ? 'Exporting...' : 'Export Video'}
           </Button>
+        </div>
+
+        {/* Keyboard Shortcuts Info */}
+        <div className="text-center space-y-2 text-sm text-purple-700 bg-purple-50/50 rounded-lg p-3 border border-purple-200">
+          <p className="font-semibold">⌨️ Keyboard Shortcuts</p>
+          <div className="flex flex-wrap justify-center gap-4 text-xs">
+            <span><kbd className="px-2 py-1 bg-white border border-purple-300 rounded shadow-sm">Space</kbd> Play/Pause</span>
+            <span><kbd className="px-2 py-1 bg-white border border-purple-300 rounded shadow-sm">←</kbd> Previous Scene</span>
+            <span><kbd className="px-2 py-1 bg-white border border-purple-300 rounded shadow-sm">→</kbd> Next Scene</span>
+          </div>
         </div>
       </div>
 
