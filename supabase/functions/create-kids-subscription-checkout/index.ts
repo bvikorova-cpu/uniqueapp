@@ -9,6 +9,7 @@ const corsHeaders = {
 
 const PRICE_IDS = {
   basic: "price_1SRtnN0QTWhd4oRpRKP8MB2R",
+  premium: "price_1SRuAzGaXSfGtYFt6pQB43Ob",
   pro: "price_1SRtnfGaXSfGtYFtrf4jRN83",
 };
 
