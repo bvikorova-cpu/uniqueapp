@@ -12,8 +12,8 @@ const PRODUCT_TIERS = {
     price_id: "price_1SRtnN0QTWhd4oRpRKP8MB2R"
   },
   premium: {
-    product_id: "prod_PREMIUM_ID", // TODO: Replace with actual product ID
-    price_id: "price_PREMIUM_ID" // TODO: Replace with actual price ID
+    product_id: "prod_TOhaMSxuZqRwsr",
+    price_id: "price_1SRuAzGaXSfGtYFt6pQB43Ob"
   },
   pro: {
     product_id: "prod_TOhCZbP0IpK2J8",
