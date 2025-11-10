@@ -76,10 +76,10 @@ const subscriptionPlans = [
 ];
 
 const payPerStory = [
-  { name: '📖 Basic story', price: 1.50 },
-  { name: '🌟 Personalized story', price: 3.50 },
-  { name: '🎬 Video story', price: 7.99 },
-  { name: '🥽 AR story', price: 12.99 }
+  { id: 'basic', name: '📖 Basic story', price: 1.50 },
+  { id: 'personalized', name: '🌟 Personalized story', price: 3.50 },
+  { id: 'video', name: '🎬 Video story', price: 7.99 },
+  { id: 'ar', name: '🥽 AR story', price: 12.99 }
 ];
 
 export default function KidsSubscriptionPlans() {
@@ -143,6 +143,35 @@ export default function KidsSubscriptionPlans() {
     if (!currentSubscription?.subscribed) return false;
     const productId = PRODUCT_TIERS[planId as keyof typeof PRODUCT_TIERS]?.product_id;
     return currentSubscription.product_id === productId;
+  };
+
+  const handleBuyStory = async (storyType: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast.error('Please sign in to purchase a story');
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [storyType]: true }));
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('create-story-payment', {
+        body: { storyType }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast.success('Opening checkout...');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setLoading(prev => ({ ...prev, [storyType]: false }));
+    }
   };
 
   const handleManageSubscription = async () => {
@@ -278,13 +307,25 @@ export default function KidsSubscriptionPlans() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            {payPerStory.map((item, idx) => (
-              <Card key={idx} className="text-center hover:border-primary transition-colors cursor-pointer">
+            {payPerStory.map((item) => (
+              <Card key={item.id} className="text-center hover:border-primary transition-colors cursor-pointer">
                 <CardContent className="pt-6 space-y-3">
                   <div className="text-xl font-semibold">{item.name}</div>
                   <div className="text-3xl font-bold text-primary">€{item.price}</div>
-                  <Button variant="outline" className="w-full">
-                    Buy
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => handleBuyStory(item.id)}
+                    disabled={loading[item.id]}
+                  >
+                    {loading[item.id] ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      'Buy'
+                    )}
                   </Button>
                 </CardContent>
               </Card>
