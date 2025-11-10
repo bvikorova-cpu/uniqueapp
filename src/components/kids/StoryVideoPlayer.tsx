@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, Play, Pause } from 'lucide-react';
+import { Download, Play, Pause, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import jsPDF from 'jspdf';
 
 interface StoryVideoPlayerProps {
   scenes: string[];
@@ -16,6 +17,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isExportingPDF, setIsExportingPDF] = useState(false);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -157,6 +159,83 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
     }
   };
 
+  const handlePDFExport = async () => {
+    setIsExportingPDF(true);
+    toast.info('Creating PDF...');
+
+    try {
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 15;
+      const contentWidth = pageWidth - (2 * margin);
+
+      for (let i = 0; i < Math.min(scenes.length, images.length); i++) {
+        if (i > 0) {
+          pdf.addPage();
+        }
+
+        // Add page number
+        pdf.setFontSize(10);
+        pdf.setTextColor(150);
+        pdf.text(`Page ${i + 1} of ${scenes.length}`, pageWidth / 2, margin / 2, { align: 'center' });
+
+        // Add image
+        try {
+          const img = new Image();
+          img.crossOrigin = 'anonymous';
+          
+          await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = images[i];
+          });
+
+          const imgWidth = contentWidth;
+          const imgHeight = (img.height / img.width) * imgWidth;
+          const maxImgHeight = pageHeight * 0.5;
+          
+          const finalImgHeight = Math.min(imgHeight, maxImgHeight);
+          const finalImgWidth = (img.width / img.height) * finalImgHeight;
+          
+          const imgX = (pageWidth - finalImgWidth) / 2;
+          const imgY = margin + 10;
+
+          pdf.addImage(images[i], 'PNG', imgX, imgY, finalImgWidth, finalImgHeight);
+
+          // Add text below image
+          const textY = imgY + finalImgHeight + 15;
+          pdf.setFontSize(12);
+          pdf.setTextColor(0);
+          
+          const lines = pdf.splitTextToSize(scenes[i], contentWidth);
+          pdf.text(lines, margin, textY);
+
+        } catch (error) {
+          console.error(`Error loading image ${i}:`, error);
+          // Continue with text only if image fails
+          pdf.setFontSize(12);
+          pdf.setTextColor(0);
+          const lines = pdf.splitTextToSize(scenes[i], contentWidth);
+          pdf.text(lines, margin, margin + 20);
+        }
+      }
+
+      pdf.save(`story-${Date.now()}.pdf`);
+      toast.success('PDF exported successfully!');
+    } catch (error) {
+      console.error('PDF export error:', error);
+      toast.error('Failed to export PDF');
+    } finally {
+      setIsExportingPDF(false);
+    }
+  };
+
   const togglePlay = () => {
     if (!isPlaying && currentScene >= scenes.length - 1) {
       setCurrentScene(0);
@@ -189,7 +268,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
         </div>
       </div>
 
-      <div className="flex gap-3 justify-center">
+      <div className="flex gap-3 justify-center flex-wrap">
         <Button
           onClick={togglePlay}
           size="lg"
@@ -199,6 +278,17 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
           {isPlaying ? 'Pause' : 'Play'}
         </Button>
         
+        <Button
+          onClick={handlePDFExport}
+          variant="outline"
+          size="lg"
+          disabled={isExportingPDF}
+          className="gap-2"
+        >
+          <FileText className="w-5 h-5" />
+          {isExportingPDF ? 'Creating PDF...' : 'Download PDF'}
+        </Button>
+
         <Button
           onClick={handleExport}
           variant="outline"
