@@ -168,6 +168,94 @@ export default function Schools() {
           </Link>
         </div>
 
+        {/* Demo Video Section */}
+        <div className="mb-16">
+          <Card className="overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-0">
+              {/* Video/Demo Side */}
+              <div className="bg-gradient-to-br from-primary/10 to-accent/10 p-8 flex items-center justify-center">
+                <div className="w-full max-w-md">
+                  <div className="aspect-video bg-background/50 rounded-lg shadow-xl flex items-center justify-center relative overflow-hidden border-4 border-primary/20">
+                    {/* Placeholder for video - you can replace with actual video embed */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
+                    <div className="relative z-10 text-center p-6">
+                      <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <svg className="w-10 h-10 text-primary-foreground" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z"/>
+                        </svg>
+                      </div>
+                      <p className="text-sm font-medium mb-2">Watch Demo</p>
+                      <p className="text-xs text-muted-foreground">See how teachers use our platform</p>
+                    </div>
+                  </div>
+                  <p className="text-center text-sm text-muted-foreground mt-4">
+                    🎓 Real classroom examples • 📊 Student engagement • ⏱️ Time-saving tips
+                  </p>
+                </div>
+              </div>
+
+              {/* Steps Side */}
+              <div className="p-8">
+                <h3 className="text-2xl font-bold mb-6">How Teachers Use It</h3>
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      1
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Choose Subject & Topic</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Select from math, science, history, or any curriculum topic
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      2
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Generate & Customize</h4>
+                      <p className="text-sm text-muted-foreground">
+                        AI creates educational coloring pages with school branding
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      3
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Download & Print</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Bulk download as PDF or ZIP, ready for classroom distribution
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+                      4
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Track & Share</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Monitor usage, share with colleagues, and organize by collection
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-8 p-4 bg-muted rounded-lg">
+                  <p className="text-sm font-medium mb-2">✨ Average time saved per teacher:</p>
+                  <p className="text-2xl font-bold text-primary">3+ hours/week</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
+
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
           {SCHOOL_TIERS.map((tier) => {
