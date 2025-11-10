@@ -264,6 +264,9 @@ verify_jwt = false
 [functions.generate-character-image]
 verify_jwt = false
 
+[functions.generate-character-story]
+verify_jwt = false
+
 [functions.create-school-subscription]
 verify_jwt = true
 
