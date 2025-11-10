@@ -2309,6 +2309,7 @@ export type Database = {
           defense: number
           description: string | null
           experience: number
+          experience_to_next_level: number | null
           hp: number
           id: string
           image_url: string | null
@@ -2335,6 +2336,7 @@ export type Database = {
           defense?: number
           description?: string | null
           experience?: number
+          experience_to_next_level?: number | null
           hp?: number
           id?: string
           image_url?: string | null
@@ -2361,6 +2363,7 @@ export type Database = {
           defense?: number
           description?: string | null
           experience?: number
+          experience_to_next_level?: number | null
           hp?: number
           id?: string
           image_url?: string | null
@@ -17668,6 +17671,10 @@ export type Database = {
       add_user_points: {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
+      }
+      calculate_exp_for_level: {
+        Args: { current_level: number }
+        Returns: number
       }
       calculate_level: { Args: { points: number }; Returns: number }
       create_notification: {

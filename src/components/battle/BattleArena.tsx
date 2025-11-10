@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Trophy, Skull, ArrowLeft } from "lucide-react";
 import confetti from "canvas-confetti";
 import { supabase } from "@/integrations/supabase/client";
+import { LevelBadge } from "@/components/character/LevelBadge";
 
 interface Character {
   id: string;
@@ -15,6 +16,9 @@ interface Character {
   defense: number;
   speed: number;
   category: string;
+  level?: number;
+  experience?: number;
+  experience_to_next_level?: number;
 }
 
 interface BattleArenaProps {
@@ -152,10 +156,19 @@ export const BattleArena = ({ character1, character2, onBattleEnd }: BattleArena
                 <div className="absolute inset-0 bg-yellow-400/30 rounded-lg animate-pulse" />
               )}
             </div>
-            <div className="mt-4">
-              <h3 className="text-3xl font-bold text-white text-center mb-2">
+            <div className="mt-4 space-y-3">
+              <h3 className="text-3xl font-bold text-white text-center">
                 {character1.name}
               </h3>
+              
+              {character1.level && (
+                <LevelBadge 
+                  level={character1.level}
+                  experience={character1.experience || 0}
+                  experienceToNextLevel={character1.experience_to_next_level || 100}
+                />
+              )}
+              
               <div className="space-y-2">
                 <div className="flex justify-between text-white mb-1">
                   <span>HP</span>
@@ -190,10 +203,19 @@ export const BattleArena = ({ character1, character2, onBattleEnd }: BattleArena
                 <div className="absolute inset-0 bg-yellow-400/30 rounded-lg animate-pulse" />
               )}
             </div>
-            <div className="mt-4">
-              <h3 className="text-3xl font-bold text-white text-center mb-2">
+            <div className="mt-4 space-y-3">
+              <h3 className="text-3xl font-bold text-white text-center">
                 {character2.name}
               </h3>
+              
+              {character2.level && (
+                <LevelBadge 
+                  level={character2.level}
+                  experience={character2.experience || 0}
+                  experienceToNextLevel={character2.experience_to_next_level || 100}
+                />
+              )}
+              
               <div className="space-y-2">
                 <div className="flex justify-between text-white mb-1">
                   <span>HP</span>

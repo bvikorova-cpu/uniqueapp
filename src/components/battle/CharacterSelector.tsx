@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, Sword, Shield, Zap } from "lucide-react";
+import { LevelBadge } from "@/components/character/LevelBadge";
 
 interface Character {
   id: string;
@@ -11,6 +12,9 @@ interface Character {
   defense: number;
   speed: number;
   category: string;
+  level?: number;
+  experience?: number;
+  experience_to_next_level?: number;
 }
 
 interface CharacterSelectorProps {
@@ -43,13 +47,23 @@ export const CharacterSelector = ({
               className="w-full h-64 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-4">
+            <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2">
               <h3 className="text-2xl font-bold text-white text-center">
                 {selectedCharacter.name}
               </h3>
               <p className="text-yellow-400 text-center text-sm">
                 {selectedCharacter.category}
               </p>
+              {selectedCharacter.level && (
+                <div className="flex justify-center">
+                  <LevelBadge 
+                    level={selectedCharacter.level}
+                    experience={selectedCharacter.experience || 0}
+                    experienceToNextLevel={selectedCharacter.experience_to_next_level || 100}
+                    showProgress={false}
+                  />
+                </div>
+              )}
             </div>
           </div>
           
@@ -109,7 +123,14 @@ export const CharacterSelector = ({
                 />
                 <div className="flex-1 text-left">
                   <div className="font-bold text-white text-lg">{character.name}</div>
-                  <div className="text-sm text-gray-400">{character.category}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-sm text-gray-400">{character.category}</div>
+                    {character.level && (
+                      <div className="text-xs bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-2 py-0.5 rounded font-bold">
+                        Lv {character.level}
+                      </div>
+                    )}
+                  </div>
                   <div className="flex gap-2 mt-1 text-xs">
                     <span className="text-red-400">❤️ {character.hp}</span>
                     <span className="text-orange-400">⚔️ {character.attack}</span>

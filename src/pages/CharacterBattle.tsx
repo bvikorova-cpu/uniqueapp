@@ -19,6 +19,9 @@ interface Character {
   defense: number;
   speed: number;
   category: string;
+  level?: number;
+  experience?: number;
+  experience_to_next_level?: number;
 }
 
 export default function CharacterBattle() {
@@ -44,7 +47,7 @@ export default function CharacterBattle() {
 
       const { data, error } = await supabase
         .from('characters')
-        .select('*')
+        .select('id, name, image_url, hp, attack, defense, speed, category, level, experience, experience_to_next_level')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 

@@ -13,6 +13,7 @@ interface LeaderboardCharacter {
   battle_wins: number;
   battle_losses: number;
   battle_rating: number;
+  level: number;
 }
 
 export const CharacterLeaderboard = () => {
@@ -27,7 +28,7 @@ export const CharacterLeaderboard = () => {
     try {
       const { data, error } = await supabase
         .from('characters')
-        .select('id, name, image_url, category, battle_wins, battle_losses, battle_rating')
+        .select('id, name, image_url, category, battle_wins, battle_losses, battle_rating, level')
         .order('battle_rating', { ascending: false })
         .limit(10);
 
@@ -114,6 +115,9 @@ export const CharacterLeaderboard = () => {
                     <div className="flex items-center gap-2 text-xs">
                       <Badge variant="secondary" className="text-xs py-0 px-1">
                         {character.category}
+                      </Badge>
+                      <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs py-0 px-1">
+                        Lv {character.level}
                       </Badge>
                       <span className="text-yellow-400 font-bold">
                         {character.battle_rating}
