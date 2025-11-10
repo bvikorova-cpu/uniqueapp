@@ -172,7 +172,6 @@ const Navbar = () => {
     { path: "/education", label: t('navbar.education'), icon: GraduationCap },
     { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
     { path: "/kids-channel", label: "Kids Channel 🎬", icon: Video },
-    { path: "/shop", label: "🧸 Hračkárstvo", icon: ShoppingBag },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/schools", label: "Schools & Kindergartens", icon: GraduationCap },
     { path: "/healthcare", label: "Healthcare & Therapy", icon: Activity },
