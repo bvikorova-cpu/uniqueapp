@@ -377,3 +377,6 @@ verify_jwt = true
 
 [functions.check-kids-subscription]
 verify_jwt = true
+
+[functions.kids-customer-portal]
+verify_jwt = true

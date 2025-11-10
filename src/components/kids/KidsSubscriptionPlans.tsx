@@ -53,7 +53,7 @@ const subscriptionPlans = [
       'No ads',
       'Disney castle tours',
       'Toy shop access',
-      'Save €40 per year!'
+      'Save €10 per year!'
     ]
   },
   {
@@ -144,17 +144,55 @@ export default function KidsSubscriptionPlans() {
     return currentSubscription.product_id === productId;
   };
 
+  const handleManageSubscription = async () => {
+    setLoading(prev => ({ ...prev, portal: true }));
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('kids-customer-portal');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast.success('Opening subscription portal...');
+      }
+    } catch (error) {
+      console.error('Portal error:', error);
+      toast.error('Failed to open portal. Please try again.');
+    } finally {
+      setLoading(prev => ({ ...prev, portal: false }));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 dark:from-purple-900 dark:via-pink-900 dark:to-blue-900 py-12 px-4">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 pt-16">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             Choose Your Plan! ✨
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Unlimited stories full of adventure and imagination for your kids
           </p>
+          
+          {currentSubscription?.subscribed && (
+            <Button 
+              onClick={handleManageSubscription}
+              disabled={loading.portal}
+              variant="outline"
+              className="mt-4"
+            >
+              {loading.portal ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                '⚙️ Manage Subscription'
+              )}
+            </Button>
+          )}
         </div>
 
         {/* Subscription Plans */}
