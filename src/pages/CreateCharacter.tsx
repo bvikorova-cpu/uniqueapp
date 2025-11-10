@@ -117,7 +117,7 @@ export default function CreateCharacter() {
           </Button>
           <Button
             variant="outline"
-            onClick={() => navigate("/character-gallery")}
+            onClick={() => navigate("/kids-stories/character-gallery")}
             className="hover:bg-white/70 hover-scale transition-all border-2 border-purple-300"
           >
             🖼️ My Gallery
