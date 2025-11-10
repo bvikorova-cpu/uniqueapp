@@ -1,122 +1,132 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Star, Swords } from "lucide-react";
+import { Trophy, Swords, Shield, Zap } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
-interface Character {
+interface LeaderboardCharacter {
   id: string;
   name: string;
   image_url: string;
+  category: string;
   battle_wins: number;
   battle_losses: number;
   battle_rating: number;
-  category: string;
 }
 
 export const CharacterLeaderboard = () => {
-  const { data: topCharacters = [], isLoading } = useQuery({
-    queryKey: ["character-leaderboard"],
-    queryFn: async () => {
+  const [leaders, setLeaders] = useState<LeaderboardCharacter[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadLeaderboard();
+  }, []);
+
+  const loadLeaderboard = async () => {
+    try {
       const { data, error } = await supabase
-        .from("characters")
-        .select("*")
-        .order("battle_rating", { ascending: false })
+        .from('characters')
+        .select('id, name, image_url, category, battle_wins, battle_losses, battle_rating')
+        .order('battle_rating', { ascending: false })
         .limit(10);
 
       if (error) throw error;
-      return data as Character[];
-    },
-    refetchInterval: 30000, // Refetch every 30 seconds
-  });
+      setLeaders(data || []);
+    } catch (error) {
+      console.error('Error loading leaderboard:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  if (isLoading) {
+  const getMedalEmoji = (index: number) => {
+    if (index === 0) return "🥇";
+    if (index === 1) return "🥈";
+    if (index === 2) return "🥉";
+    return null;
+  };
+
+  const getWinRate = (wins: number, losses: number) => {
+    const total = wins + losses;
+    if (total === 0) return 0;
+    return Math.round((wins / total) * 100);
+  };
+
+  if (loading) {
     return (
-      <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-white">
-            <Trophy className="h-5 w-5 text-yellow-500" />
-            Battle Champions
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground text-center py-4">Loading...</p>
+      <Card className="bg-black/40 backdrop-blur-lg border-yellow-500/50">
+        <CardContent className="p-8">
+          <p className="text-center text-white">Loading leaderboard...</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
+    <Card className="bg-black/40 backdrop-blur-lg border-yellow-500/50">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-white">
-          <Trophy className="h-5 w-5 text-yellow-500" />
-          Battle Champions - Top 10
+        <CardTitle className="flex items-center gap-2 text-2xl text-white">
+          <Trophy className="h-6 w-6 text-yellow-400" />
+          Battle Champions
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {topCharacters.length === 0 ? (
-          <p className="text-muted-foreground text-center py-4">
-            No battles yet. Be the first!
+        {leaders.length === 0 ? (
+          <p className="text-center text-gray-400 py-8">
+            No battles yet. Be the first to compete!
           </p>
         ) : (
           <div className="space-y-3">
-            {topCharacters.map((character, index) => {
-              const medal = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : null;
-              const winRate = character.battle_wins + character.battle_losses > 0
-                ? Math.round((character.battle_wins / (character.battle_wins + character.battle_losses)) * 100)
-                : 0;
+            {leaders.map((character, index) => {
+              const medal = getMedalEmoji(index);
+              const winRate = getWinRate(character.battle_wins, character.battle_losses);
+              const totalBattles = character.battle_wins + character.battle_losses;
 
               return (
                 <div
                   key={character.id}
                   className={`
-                    flex items-center gap-3 p-4 rounded-lg transition-all
+                    flex items-center gap-3 p-3 rounded-lg transition-all
                     ${index < 3 
-                      ? "bg-gradient-to-r from-yellow-500/20 via-orange-500/20 to-red-500/20 border-2 border-yellow-500/50" 
-                      : "bg-muted/30 hover:bg-muted/50"
+                      ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/50' 
+                      : 'bg-white/5 border border-white/10'
                     }
                   `}
                 >
-                  <div className="w-10 text-center font-bold text-2xl">
-                    {medal || `#${index + 1}`}
+                  <div className="w-8 text-center">
+                    {medal ? (
+                      <span className="text-2xl">{medal}</span>
+                    ) : (
+                      <span className="text-lg font-bold text-white">#{index + 1}</span>
+                    )}
                   </div>
 
-                  <Avatar className="h-16 w-16 border-2 border-primary">
+                  <Avatar className="h-12 w-12 border-2 border-yellow-400">
                     <AvatarImage src={character.image_url} alt={character.name} />
                     <AvatarFallback>{character.name[0]}</AvatarFallback>
                   </Avatar>
 
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-lg text-white truncate">
+                    <h3 className="font-bold text-white text-sm truncate">
                       {character.name}
-                    </p>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="secondary" className="text-xs">
+                    </h3>
+                    <div className="flex items-center gap-2 text-xs">
+                      <Badge variant="secondary" className="text-xs py-0 px-1">
                         {character.category}
                       </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        Win Rate: {winRate}%
+                      <span className="text-yellow-400 font-bold">
+                        {character.battle_rating}
                       </span>
                     </div>
                   </div>
 
-                  <div className="text-right space-y-1">
-                    <div className="flex items-center gap-1 justify-end">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      <span className="font-bold text-white text-lg">
-                        {character.battle_rating}
-                      </span>
+                  <div className="text-right text-xs">
+                    <div className="text-green-400 font-semibold">
+                      {character.battle_wins}W
                     </div>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <span className="text-green-500">
-                        {character.battle_wins}W
-                      </span>
-                      <Swords className="h-3 w-3" />
-                      <span className="text-red-500">
-                        {character.battle_losses}L
-                      </span>
+                    <div className="text-red-400">
+                      {character.battle_losses}L
                     </div>
                   </div>
                 </div>

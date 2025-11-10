@@ -139,7 +139,7 @@ export default function CharacterBattle() {
           </Card>
         ) : (
           <>
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div className="grid lg:grid-cols-3 gap-8 mb-8">
               <CharacterSelector
                 characters={characters}
                 selectedCharacter={selectedChar1}
@@ -154,9 +154,10 @@ export default function CharacterBattle() {
                 label="Fighter 2"
                 position="right"
               />
+              <CharacterLeaderboard />
             </div>
 
-            <div className="flex justify-center mb-8">
+            <div className="flex justify-center">
               <Button
                 onClick={handleStartBattle}
                 disabled={!selectedChar1 || !selectedChar2}
@@ -168,8 +169,6 @@ export default function CharacterBattle() {
                 <Swords className="ml-3 h-8 w-8" />
               </Button>
             </div>
-
-            <CharacterLeaderboard />
           </>
         )}
       </div>
