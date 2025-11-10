@@ -1,11 +1,23 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Building2, Users, Heart, Calendar, Utensils, Plane, ShoppingBag, Hotel, CheckCircle2, Sparkles, TrendingUp, Globe } from "lucide-react";
+import { CorporateInquiryForm } from "@/components/corporate/CorporateInquiryForm";
 
 const CorporateEvents = () => {
+  const [selectedPackage, setSelectedPackage] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+  const scrollToForm = (packageType: string, category: string) => {
+    setSelectedPackage(packageType);
+    setSelectedCategory(category);
+    setTimeout(() => {
+      document.getElementById("inquiry-form")?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       {/* Hero Section */}
@@ -74,7 +86,7 @@ const CorporateEvents = () => {
                         <span>1 revision</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Order</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("startup", "corporate")}>Order</Button>
                   </CardContent>
                 </Card>
 
@@ -110,7 +122,7 @@ const CorporateEvents = () => {
                         <span>3 revisions</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Order</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("business", "corporate")}>Order</Button>
                   </CardContent>
                 </Card>
 
@@ -151,7 +163,7 @@ const CorporateEvents = () => {
                         <span>Dedicated account manager</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Order</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("corporate_premium", "corporate")}>Order</Button>
                   </CardContent>
                 </Card>
 
@@ -215,7 +227,7 @@ const CorporateEvents = () => {
                         <span>PDF download</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Subscribe</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("mini_restaurant", "restaurant")}>Subscribe</Button>
                   </CardContent>
                 </Card>
 
@@ -244,7 +256,7 @@ const CorporateEvents = () => {
                         <span>Restaurant mascot</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Subscribe</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("standard_restaurant", "restaurant")}>Subscribe</Button>
                   </CardContent>
                 </Card>
 
@@ -278,7 +290,7 @@ const CorporateEvents = () => {
                         <span>Analytics dashboard</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Contact</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("chain_restaurant", "restaurant")}>Contact</Button>
                   </CardContent>
                 </Card>
 
@@ -311,7 +323,7 @@ const CorporateEvents = () => {
                         <span>White-label solution</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Contact</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("fast_food_premium", "restaurant")}>Contact</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -420,7 +432,7 @@ const CorporateEvents = () => {
                         <span>PDF download</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Order</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("wedding_basic", "wedding")}>Order</Button>
                   </CardContent>
                 </Card>
 
@@ -453,7 +465,7 @@ const CorporateEvents = () => {
                         <span>PDF + print files</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Order</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("wedding_premium", "wedding")}>Order</Button>
                   </CardContent>
                 </Card>
 
@@ -491,7 +503,7 @@ const CorporateEvents = () => {
                         <span>Personalized crayons</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Order</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("wedding_luxury", "wedding")}>Order</Button>
                   </CardContent>
                 </Card>
 
@@ -528,7 +540,7 @@ const CorporateEvents = () => {
                         <span>Photo book after wedding</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Contact</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("wedding_vip", "wedding")}>Contact</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -615,7 +627,7 @@ const CorporateEvents = () => {
                         <span>Photo booth upload to coloring page</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Order</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("event_organizer", "events")}>Order</Button>
                   </CardContent>
                 </Card>
 
@@ -657,7 +669,7 @@ const CorporateEvents = () => {
                         <span>Priority support</span>
                       </li>
                     </ul>
-                    <Button className="w-full mt-6">Contact</Button>
+                    <Button className="w-full mt-6" onClick={() => scrollToForm("custom", "events")}>Contact</Button>
                   </CardContent>
                 </Card>
               </div>
@@ -862,6 +874,22 @@ const CorporateEvents = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
+      <section id="inquiry-form" className="py-20 px-4 bg-gradient-to-b from-secondary/20 to-background">
+        <div className="container mx-auto max-w-4xl">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">Kontaktujte nás</h2>
+            <p className="text-xl text-muted-foreground">
+              Vyplňte nezáväzný dopyt a my vás budeme kontaktovať s individuálnou ponukou
+            </p>
+          </div>
+          <CorporateInquiryForm 
+            defaultPackage={selectedPackage} 
+            defaultCategory={selectedCategory}
+          />
         </div>
       </section>
 
