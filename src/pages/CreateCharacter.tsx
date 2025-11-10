@@ -9,13 +9,18 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import heroImage from "@/assets/hero-blonde-magic.png";
 
 export default function CreateCharacter() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [characterName, setCharacterName] = useState("");
-  const [selectedHair, setSelectedHair] = useState("brown");
-  const [selectedPower, setSelectedPower] = useState("flying");
+  const [selectedHair, setSelectedHair] = useState("blonde");
+  const [selectedPower, setSelectedPower] = useState("magic-spells");
+  const [selectedEyeColor, setSelectedEyeColor] = useState("blue");
+  const [selectedCostumeColor, setSelectedCostumeColor] = useState("rainbow");
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState("kid");
+  const [selectedPersonality, setSelectedPersonality] = useState("brave");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
@@ -36,6 +41,39 @@ export default function CreateCharacter() {
     { id: "talking-to-animals", name: "Talk to Animals", emoji: "🦊" },
     { id: "magic-spells", name: "Magic Spells", emoji: "✨" },
     { id: "super-speed", name: "Super Speed", emoji: "⚡" }
+  ];
+
+  const eyeColors = [
+    { id: "blue", name: "Blue", emoji: "🔵" },
+    { id: "green", name: "Green", emoji: "💚" },
+    { id: "brown", name: "Brown", emoji: "🟤" },
+    { id: "hazel", name: "Hazel", emoji: "🌰" },
+    { id: "purple", name: "Purple", emoji: "💜" },
+    { id: "rainbow", name: "Rainbow", emoji: "🌈" }
+  ];
+
+  const costumeColors = [
+    { id: "rainbow", name: "Rainbow", emoji: "🌈" },
+    { id: "pink", name: "Pink", emoji: "💗" },
+    { id: "blue", name: "Blue", emoji: "💙" },
+    { id: "purple", name: "Purple", emoji: "💜" },
+    { id: "red", name: "Red", emoji: "❤️" },
+    { id: "gold", name: "Gold", emoji: "✨" }
+  ];
+
+  const ageGroups = [
+    { id: "kid", name: "Kid", emoji: "👧" },
+    { id: "teen", name: "Teen", emoji: "🧒" },
+    { id: "young-adult", name: "Young Adult", emoji: "🙋" }
+  ];
+
+  const personalities = [
+    { id: "brave", name: "Brave", emoji: "🦁" },
+    { id: "kind", name: "Kind", emoji: "💖" },
+    { id: "funny", name: "Funny", emoji: "😄" },
+    { id: "smart", name: "Smart", emoji: "🧠" },
+    { id: "adventurous", name: "Adventurous", emoji: "🗺️" },
+    { id: "creative", name: "Creative", emoji: "🎨" }
   ];
 
   const handleCreateStory = async () => {
@@ -76,6 +114,10 @@ export default function CreateCharacter() {
               name: characterName,
               hair_color: selectedHair,
               superpower: selectedPower,
+              eye_color: selectedEyeColor,
+              costume_color: selectedCostumeColor,
+              age_group: selectedAgeGroup,
+              personality: selectedPersonality,
               image_url: data.imageUrl
             });
 
@@ -152,16 +194,12 @@ export default function CreateCharacter() {
                       />
                     </div>
                   ) : (
-                    <div className="bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-300 rounded-full w-52 h-52 mx-auto mb-6 flex items-center justify-center shadow-xl animate-scale-in relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-full" />
-                      <div className="text-9xl animate-pulse relative z-10">
-                        {selectedPower === "flying" && "🦅"}
-                        {selectedPower === "super-strength" && "💪"}
-                        {selectedPower === "invisibility" && "👻"}
-                        {selectedPower === "talking-to-animals" && "🦊"}
-                        {selectedPower === "magic-spells" && "✨"}
-                        {selectedPower === "super-speed" && "⚡"}
-                      </div>
+                    <div className="rounded-3xl overflow-hidden shadow-2xl mb-6 animate-scale-in border-4 border-yellow-300">
+                      <img 
+                        src={heroImage} 
+                        alt="Hero Preview" 
+                        className="w-full h-auto"
+                      />
                     </div>
                   )}
                   
@@ -169,7 +207,7 @@ export default function CreateCharacter() {
                     {characterName || "Your Hero"}
                   </h3>
                   
-                  <div className="space-y-3 text-lg">
+                  <div className="space-y-2 text-base">
                     <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
                       <p className="text-gray-800 font-semibold">
                         Hair: {hairColors.find(h => h.id === selectedHair)?.emoji} {hairColors.find(h => h.id === selectedHair)?.name}
@@ -178,6 +216,26 @@ export default function CreateCharacter() {
                     <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
                       <p className="text-gray-800 font-semibold">
                         Power: {superPowers.find(p => p.id === selectedPower)?.emoji} {superPowers.find(p => p.id === selectedPower)?.name}
+                      </p>
+                    </div>
+                    <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
+                      <p className="text-gray-800 font-semibold">
+                        Eyes: {eyeColors.find(e => e.id === selectedEyeColor)?.emoji} {eyeColors.find(e => e.id === selectedEyeColor)?.name}
+                      </p>
+                    </div>
+                    <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
+                      <p className="text-gray-800 font-semibold">
+                        Costume: {costumeColors.find(c => c.id === selectedCostumeColor)?.emoji} {costumeColors.find(c => c.id === selectedCostumeColor)?.name}
+                      </p>
+                    </div>
+                    <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
+                      <p className="text-gray-800 font-semibold">
+                        Age: {ageGroups.find(a => a.id === selectedAgeGroup)?.emoji} {ageGroups.find(a => a.id === selectedAgeGroup)?.name}
+                      </p>
+                    </div>
+                    <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
+                      <p className="text-gray-800 font-semibold">
+                        {personalities.find(p => p.id === selectedPersonality)?.emoji} {personalities.find(p => p.id === selectedPersonality)?.name}
                       </p>
                     </div>
                   </div>
@@ -244,6 +302,102 @@ export default function CreateCharacter() {
                       >
                         <span className="text-4xl mb-1 animate-pulse">{power.emoji}</span>
                         <span className="text-xs text-center font-semibold">{power.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Eye Color Selection */}
+              <Card className="bg-white/95 border-3 border-blue-300 shadow-lg hover-scale transition-all">
+                <CardContent className="p-6">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent mb-4 block">
+                    Choose Eye Color 👁️
+                  </Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {eyeColors.map((eye) => (
+                      <Button
+                        key={eye.id}
+                        variant={selectedEyeColor === eye.id ? "default" : "outline"}
+                        onClick={() => setSelectedEyeColor(eye.id)}
+                        className={`h-20 text-2xl flex flex-col items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                          selectedEyeColor === eye.id ? "bg-gradient-to-br from-blue-500 to-cyan-500 border-3 border-yellow-300 scale-105 shadow-xl" : "border-2 border-gray-300 hover:border-blue-400"
+                        }`}
+                      >
+                        <span className="text-3xl mb-1 animate-pulse">{eye.emoji}</span>
+                        <span className="text-xs font-semibold">{eye.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Costume Color Selection */}
+              <Card className="bg-white/95 border-3 border-purple-300 shadow-lg hover-scale transition-all">
+                <CardContent className="p-6">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4 block">
+                    Choose Costume Color 👗
+                  </Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {costumeColors.map((costume) => (
+                      <Button
+                        key={costume.id}
+                        variant={selectedCostumeColor === costume.id ? "default" : "outline"}
+                        onClick={() => setSelectedCostumeColor(costume.id)}
+                        className={`h-20 text-2xl flex flex-col items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                          selectedCostumeColor === costume.id ? "bg-gradient-to-br from-purple-500 to-pink-500 border-3 border-yellow-300 scale-105 shadow-xl" : "border-2 border-gray-300 hover:border-purple-400"
+                        }`}
+                      >
+                        <span className="text-3xl mb-1 animate-pulse">{costume.emoji}</span>
+                        <span className="text-xs font-semibold">{costume.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Age Group Selection */}
+              <Card className="bg-white/95 border-3 border-green-300 shadow-lg hover-scale transition-all">
+                <CardContent className="p-6">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-4 block">
+                    Choose Age 🎂
+                  </Label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {ageGroups.map((age) => (
+                      <Button
+                        key={age.id}
+                        variant={selectedAgeGroup === age.id ? "default" : "outline"}
+                        onClick={() => setSelectedAgeGroup(age.id)}
+                        className={`h-20 text-2xl flex flex-col items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                          selectedAgeGroup === age.id ? "bg-gradient-to-br from-green-500 to-teal-500 border-3 border-yellow-300 scale-105 shadow-xl" : "border-2 border-gray-300 hover:border-green-400"
+                        }`}
+                      >
+                        <span className="text-3xl mb-1 animate-pulse">{age.emoji}</span>
+                        <span className="text-xs font-semibold">{age.name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Personality Selection */}
+              <Card className="bg-white/95 border-3 border-orange-300 shadow-lg hover-scale transition-all">
+                <CardContent className="p-6">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-4 block">
+                    Choose Personality ⭐
+                  </Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {personalities.map((personality) => (
+                      <Button
+                        key={personality.id}
+                        variant={selectedPersonality === personality.id ? "default" : "outline"}
+                        onClick={() => setSelectedPersonality(personality.id)}
+                        className={`h-20 flex flex-col items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                          selectedPersonality === personality.id ? "bg-gradient-to-br from-orange-500 to-red-500 border-3 border-yellow-300 scale-105 shadow-xl" : "border-2 border-gray-300 hover:border-orange-400"
+                        }`}
+                      >
+                        <span className="text-3xl mb-1 animate-pulse">{personality.emoji}</span>
+                        <span className="text-xs text-center font-semibold">{personality.name}</span>
                       </Button>
                     ))}
                   </div>

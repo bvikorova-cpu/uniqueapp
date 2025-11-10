@@ -4760,31 +4760,43 @@ export type Database = {
       }
       created_characters: {
         Row: {
+          age_group: string | null
+          costume_color: string | null
           created_at: string | null
+          eye_color: string | null
           hair_color: string
           id: string
           image_url: string
           name: string
+          personality: string | null
           superpower: string
           updated_at: string | null
           user_id: string | null
         }
         Insert: {
+          age_group?: string | null
+          costume_color?: string | null
           created_at?: string | null
+          eye_color?: string | null
           hair_color: string
           id?: string
           image_url: string
           name: string
+          personality?: string | null
           superpower: string
           updated_at?: string | null
           user_id?: string | null
         }
         Update: {
+          age_group?: string | null
+          costume_color?: string | null
           created_at?: string | null
+          eye_color?: string | null
           hair_color?: string
           id?: string
           image_url?: string
           name?: string
+          personality?: string | null
           superpower?: string
           updated_at?: string | null
           user_id?: string | null
