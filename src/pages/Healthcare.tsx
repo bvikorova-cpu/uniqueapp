@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check, Heart, Brain, Smile, Activity, Users, Stethoscope, Syringe, Eye, Ear, Baby, Sparkles, TrendingUp, Award, Target, BarChart, Tablet, Download, QrCode, Building2, GraduationCap, Shield, CheckCircle2, Star, Zap, Apple, Settings } from "lucide-react";
+import { Check, Heart, Brain, Smile, Activity, Users, Stethoscope, Syringe, Eye, Ear, Baby, Sparkles, TrendingUp, Award, Target, BarChart, Tablet, Building2, GraduationCap, Shield, CheckCircle2, Star, Zap, Apple, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -478,7 +478,6 @@ const Healthcare = () => {
       title: "Pilot Programs",
       icon: Target,
       benefits: [
-        "2-month free trial",
         "Before/after surveys",
         "Case study materials",
         "Video testimonials",
@@ -917,73 +916,6 @@ const Healthcare = () => {
         </div>
       </section>
 
-      {/* Demo & Marketing */}
-      <section className="container mx-auto px-4 py-16 bg-primary/5">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Get Started Today</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="p-6 text-center">
-              <Download className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-xl font-bold mb-3">Free Demo Kit</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Download 20-page demo pack to test with your patients
-              </p>
-              <Button className="w-full">Download Demo</Button>
-            </Card>
-            
-            <Card className="p-6 text-center">
-              <QrCode className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-xl font-bold mb-3">Request Full Access</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                2-month free trial for healthcare providers
-              </p>
-              <Button className="w-full" variant="default">Start Free Trial</Button>
-            </Card>
-            
-            <Card className="p-6 text-center">
-              <Users className="w-12 h-12 mx-auto mb-4 text-primary" />
-              <h3 className="text-xl font-bold mb-3">Book Consultation</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Speak with our healthcare specialist
-              </p>
-              <Button className="w-full" variant="outline">Schedule Call</Button>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-16 text-center">
-        <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Practice?</h2>
-        <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-          Join hundreds of healthcare providers using therapeutic coloring to improve patient experiences
-        </p>
-        <div className="flex flex-wrap gap-4 justify-center">
-          <Button size="lg" onClick={() => handleSubscribe(basicPlans[4].priceId, basicPlans[4].name)}>
-            Start Free Trial
-          </Button>
-          <Button size="lg" variant="outline">
-            Request Demo Kit
-          </Button>
-          <Button size="lg" variant="outline">
-            Schedule Consultation
-          </Button>
-        </div>
-        <div className="mt-8 flex items-center justify-center gap-8 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
-            <span>No credit card required</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
-            <span>Cancel anytime</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
-            <span>24/7 support</span>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
