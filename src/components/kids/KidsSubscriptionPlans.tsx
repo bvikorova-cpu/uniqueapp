@@ -25,7 +25,7 @@ const subscriptionPlans = [
     interval: 'month',
     icon: Sparkles,
     color: 'from-yellow-500 to-orange-500',
-    popular: true,
+    popular: false,
     features: [
       '20 stories/month',
       'HD illustrations',
@@ -44,6 +44,7 @@ const subscriptionPlans = [
     interval: '12 months',
     icon: Users,
     color: 'from-purple-500 to-indigo-500',
+    popular: true,
     features: [
       'Unlimited stories',
       'Video stories',
@@ -196,7 +197,7 @@ export default function KidsSubscriptionPlans() {
         </div>
 
         {/* Subscription Plans */}
-        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl mx-auto pt-8">
           {subscriptionPlans.map((plan) => {
             const Icon = plan.icon;
             return (
@@ -209,8 +210,8 @@ export default function KidsSubscriptionPlans() {
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <Badge className="gap-1 text-base px-4 py-1 shadow-lg bg-gradient-to-r from-yellow-400 to-orange-400">
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 z-10">
+                    <Badge className="gap-1 text-base px-4 py-2 shadow-lg bg-gradient-to-r from-yellow-400 to-orange-400 whitespace-nowrap">
                       <Sparkles className="h-4 w-4" />
                       Most Popular
                     </Badge>
