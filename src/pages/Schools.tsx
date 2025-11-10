@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Check, School, Users, Download, Sparkles, BarChart, BookOpen } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -170,90 +171,267 @@ export default function Schools() {
 
         {/* Demo Video Section */}
         <div className="mb-16">
-          <Card className="overflow-hidden">
-            <div className="grid md:grid-cols-2 gap-0">
-              {/* Video/Demo Side */}
-              <div className="bg-gradient-to-br from-primary/10 to-accent/10 p-8 flex items-center justify-center">
-                <div className="w-full max-w-md">
-                  <div className="aspect-video bg-background/50 rounded-lg shadow-xl flex items-center justify-center relative overflow-hidden border-4 border-primary/20">
-                    {/* Placeholder for video - you can replace with actual video embed */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
-                    <div className="relative z-10 text-center p-6">
-                      <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                        <svg className="w-10 h-10 text-primary-foreground" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-2">See It In Action</h2>
+            <p className="text-muted-foreground">Real classroom scenarios across different grade levels</p>
+          </div>
+          
+          <Tabs defaultValue="elementary" className="w-full">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
+              <TabsTrigger value="kindergarten" className="gap-2">
+                <School className="w-4 h-4" />
+                Kindergarten
+              </TabsTrigger>
+              <TabsTrigger value="elementary" className="gap-2">
+                <BookOpen className="w-4 h-4" />
+                Elementary
+              </TabsTrigger>
+              <TabsTrigger value="highschool" className="gap-2">
+                <BarChart className="w-4 h-4" />
+                High School
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Kindergarten Scenario */}
+            <TabsContent value="kindergarten" className="animate-fade-in">
+              <Card className="overflow-hidden">
+                <div className="grid md:grid-cols-2 gap-0">
+                  <div className="bg-gradient-to-br from-yellow-500/10 to-orange-500/10 p-8 flex items-center justify-center">
+                    <div className="w-full max-w-md">
+                      <div className="aspect-video bg-background/50 rounded-lg shadow-xl flex items-center justify-center relative overflow-hidden border-4 border-yellow-500/20">
+                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/20 to-orange-500/20" />
+                        <div className="relative z-10 text-center p-6">
+                          <div className="text-6xl mb-4">🎨</div>
+                          <p className="text-sm font-medium mb-2">Kindergarten Example</p>
+                          <p className="text-xs text-muted-foreground">Simple shapes & bright colors</p>
+                        </div>
                       </div>
-                      <p className="text-sm font-medium mb-2">Watch Demo</p>
-                      <p className="text-xs text-muted-foreground">See how teachers use our platform</p>
+                      <div className="mt-4 grid grid-cols-3 gap-2">
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">🐶</div>
+                          <p className="text-xs">Animals</p>
+                        </div>
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">🔢</div>
+                          <p className="text-xs">Numbers</p>
+                        </div>
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">🌈</div>
+                          <p className="text-xs">Colors</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-center text-sm text-muted-foreground mt-4">
-                    🎓 Real classroom examples • 📊 Student engagement • ⏱️ Time-saving tips
-                  </p>
+
+                  <div className="p-8">
+                    <h3 className="text-2xl font-bold mb-6">Miss Johnson's Kindergarten Class</h3>
+                    <div className="space-y-6">
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-600 font-bold animate-scale-in">
+                          1
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Learning Colors & Shapes</h4>
+                          <p className="text-sm text-muted-foreground">
+                            "My kids love coloring circles, triangles, and squares! They learn while having fun."
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-600 font-bold animate-scale-in" style={{animationDelay: '0.1s'}}>
+                          2
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Large Print & Simple Lines</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Easy-to-follow designs perfect for little hands developing motor skills
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-600 font-bold animate-scale-in" style={{animationDelay: '0.2s'}}>
+                          3
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Daily Routine Integration</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Used during quiet time, morning activities, and reward moments
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 p-4 bg-yellow-500/10 rounded-lg">
+                      <p className="text-sm font-medium mb-2">👶 Perfect for Ages 3-5</p>
+                      <p className="text-2xl font-bold text-yellow-600">20+ pages/day</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </Card>
+            </TabsContent>
 
-              {/* Steps Side */}
-              <div className="p-8">
-                <h3 className="text-2xl font-bold mb-6">How Teachers Use It</h3>
-                <div className="space-y-6">
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                      1
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Choose Subject & Topic</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Select from math, science, history, or any curriculum topic
-                      </p>
+            {/* Elementary Scenario */}
+            <TabsContent value="elementary" className="animate-fade-in">
+              <Card className="overflow-hidden">
+                <div className="grid md:grid-cols-2 gap-0">
+                  <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-8 flex items-center justify-center">
+                    <div className="w-full max-w-md">
+                      <div className="aspect-video bg-background/50 rounded-lg shadow-xl flex items-center justify-center relative overflow-hidden border-4 border-blue-500/20">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20" />
+                        <div className="relative z-10 text-center p-6">
+                          <div className="text-6xl mb-4">📚</div>
+                          <p className="text-sm font-medium mb-2">Elementary Example</p>
+                          <p className="text-xs text-muted-foreground">Educational content & curriculum-aligned</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 grid grid-cols-3 gap-2">
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">➕</div>
+                          <p className="text-xs">Math</p>
+                        </div>
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">🔬</div>
+                          <p className="text-xs">Science</p>
+                        </div>
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">🌍</div>
+                          <p className="text-xs">Geography</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                      2
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Generate & Customize</h4>
-                      <p className="text-sm text-muted-foreground">
-                        AI creates educational coloring pages with school branding
-                      </p>
-                    </div>
-                  </div>
+                  <div className="p-8">
+                    <h3 className="text-2xl font-bold mb-6">Mr. Smith's 3rd Grade Class</h3>
+                    <div className="space-y-6">
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold animate-scale-in">
+                          1
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Curriculum Integration</h4>
+                          <p className="text-sm text-muted-foreground">
+                            "I use these for math worksheets, science diagrams, and history lessons - all in one place!"
+                          </p>
+                        </div>
+                      </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                      3
-                    </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Download & Print</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Bulk download as PDF or ZIP, ready for classroom distribution
-                      </p>
-                    </div>
-                  </div>
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold animate-scale-in" style={{animationDelay: '0.1s'}}>
+                          2
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Homework Assignments</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Create engaging take-home activities that students actually want to complete
+                          </p>
+                        </div>
+                      </div>
 
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                      4
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 font-bold animate-scale-in" style={{animationDelay: '0.2s'}}>
+                          3
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Collaborative Learning</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Share collections with other teachers and build a school-wide resource library
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="font-semibold mb-1">Track & Share</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Monitor usage, share with colleagues, and organize by collection
-                      </p>
+
+                    <div className="mt-8 p-4 bg-blue-500/10 rounded-lg">
+                      <p className="text-sm font-medium mb-2">📖 Perfect for Grades 1-6</p>
+                      <p className="text-2xl font-bold text-blue-600">5 hours saved/week</p>
                     </div>
                   </div>
                 </div>
+              </Card>
+            </TabsContent>
 
-                <div className="mt-8 p-4 bg-muted rounded-lg">
-                  <p className="text-sm font-medium mb-2">✨ Average time saved per teacher:</p>
-                  <p className="text-2xl font-bold text-primary">3+ hours/week</p>
+            {/* High School Scenario */}
+            <TabsContent value="highschool" className="animate-fade-in">
+              <Card className="overflow-hidden">
+                <div className="grid md:grid-cols-2 gap-0">
+                  <div className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 p-8 flex items-center justify-center">
+                    <div className="w-full max-w-md">
+                      <div className="aspect-video bg-background/50 rounded-lg shadow-xl flex items-center justify-center relative overflow-hidden border-4 border-purple-500/20">
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20" />
+                        <div className="relative z-10 text-center p-6">
+                          <div className="text-6xl mb-4">🎓</div>
+                          <p className="text-sm font-medium mb-2">High School Example</p>
+                          <p className="text-xs text-muted-foreground">Complex diagrams & study aids</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 grid grid-cols-3 gap-2">
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">🧪</div>
+                          <p className="text-xs">Chemistry</p>
+                        </div>
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">📐</div>
+                          <p className="text-xs">Geometry</p>
+                        </div>
+                        <div className="text-center p-2 bg-background/50 rounded">
+                          <div className="text-2xl mb-1">🗺️</div>
+                          <p className="text-xs">History</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-8">
+                    <h3 className="text-2xl font-bold mb-6">Ms. Rodriguez's Biology Class</h3>
+                    <div className="space-y-6">
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 font-bold animate-scale-in">
+                          1
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Detailed Diagrams</h4>
+                          <p className="text-sm text-muted-foreground">
+                            "Complex systems like cellular structures become easier to memorize through coloring"
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 font-bold animate-scale-in" style={{animationDelay: '0.1s'}}>
+                          2
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Exam Preparation</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Create study guides and visual learning materials for test review sessions
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-4">
+                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-600 font-bold animate-scale-in" style={{animationDelay: '0.2s'}}>
+                          3
+                        </div>
+                        <div>
+                          <h4 className="font-semibold mb-1">Alternative Learning Styles</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Engage kinesthetic learners and provide stress-relief during study breaks
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 p-4 bg-purple-500/10 rounded-lg">
+                      <p className="text-sm font-medium mb-2">🎓 Perfect for Grades 9-12</p>
+                      <p className="text-2xl font-bold text-purple-600">85% better retention</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Card>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Pricing Cards */}
