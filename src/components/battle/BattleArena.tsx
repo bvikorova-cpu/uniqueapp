@@ -85,10 +85,22 @@ export const BattleArena = ({ character1, character2, onBattleEnd }: BattleArena
   };
 
   useEffect(() => {
+    const saveBattleResult = async (winnerId: string, loserId: string) => {
+      try {
+        await supabase.rpc('update_battle_stats', {
+          winner_id: winnerId,
+          loser_id: loserId
+        });
+      } catch (error) {
+        console.error('Error saving battle result:', error);
+      }
+    };
+
     // Check for winner
     if (char1Hp <= 0 && !winner) {
       setWinner(2);
       addLog(`${character2.name} wins!`, 'victory');
+      saveBattleResult(character2.id, character1.id);
       confetti({
         particleCount: 100,
         spread: 70,
@@ -97,13 +109,14 @@ export const BattleArena = ({ character1, character2, onBattleEnd }: BattleArena
     } else if (char2Hp <= 0 && !winner) {
       setWinner(1);
       addLog(`${character1.name} wins!`, 'victory');
+      saveBattleResult(character1.id, character2.id);
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 }
       });
     }
-  }, [char1Hp, char2Hp, winner, character1.name, character2.name]);
+  }, [char1Hp, char2Hp, winner, character1.name, character2.name, character1.id, character2.id]);
 
   useEffect(() => {
     startAutoBattle();

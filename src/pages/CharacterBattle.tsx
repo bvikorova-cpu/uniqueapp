@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import { BattleArena } from "@/components/battle/BattleArena";
 import { CharacterSelector } from "@/components/battle/CharacterSelector";
+import { CharacterLeaderboard } from "@/components/battle/CharacterLeaderboard";
 
 interface Character {
   id: string;
@@ -155,7 +156,7 @@ export default function CharacterBattle() {
               />
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-8">
               <Button
                 onClick={handleStartBattle}
                 disabled={!selectedChar1 || !selectedChar2}
@@ -167,6 +168,8 @@ export default function CharacterBattle() {
                 <Swords className="ml-3 h-8 w-8" />
               </Button>
             </div>
+
+            <CharacterLeaderboard />
           </>
         )}
       </div>
