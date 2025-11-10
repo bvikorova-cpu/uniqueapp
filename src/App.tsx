@@ -111,6 +111,7 @@ import BedtimeStories from "./pages/BedtimeStories";
 import StoryGames from "./pages/StoryGames";
 import KidsPricing from "./pages/KidsPricing";
 import StoryVideoDemo from "./pages/StoryVideoDemo";
+import StoryGallery from "./pages/StoryGallery";
 import AdminImageEditor from "./pages/AdminImageEditor";
 import PhotoRestoration from "./pages/PhotoRestoration";
 import AntiqueAppraisal from "./pages/AntiqueAppraisal";
@@ -400,10 +401,11 @@ const App = () => (
           <Route path="/create-character" element={<CreateCharacter />} />
           <Route path="/educational-stories" element={<EducationalStories />} />
           <Route path="/bedtime-stories" element={<BedtimeStories />} />
-          <Route path="/story-games" element={<StoryGames />} />
-          <Route path="/kids-pricing" element={<KidsPricing />} />
-          <Route path="/story-video-demo" element={<StoryVideoDemo />} />
-          <Route path="/admin-image-editor" element={<AdminImageEditor />} />
+           <Route path="/story-games" element={<StoryGames />} />
+           <Route path="/kids-pricing" element={<KidsPricing />} />
+           <Route path="/story-video-demo" element={<StoryVideoDemo />} />
+           <Route path="/story-gallery" element={<StoryGallery />} />
+           <Route path="/admin-image-editor" element={<AdminImageEditor />} />
           <Route path="/coffee" element={<Coffee />} />
           <Route path="/coffee/checkins" element={<CoffeeCheckins />} />
           <Route path="/coffee/buddy" element={<CoffeeBuddy />} />

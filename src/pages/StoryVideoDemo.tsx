@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { StoryVideoPlayer } from '@/components/kids/StoryVideoPlayer';
-import { Sparkles, ArrowLeft } from 'lucide-react';
+import { Sparkles, ArrowLeft, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const StoryVideoDemo = () => {
@@ -35,7 +35,30 @@ const StoryVideoDemo = () => {
       }
 
       setStoryData(data);
-      toast.success('Story video generated!');
+      
+      // Save story to database
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error: saveError } = await supabase.from('stories').insert([{
+          user_id: user.id,
+          title: `Story: ${theme.substring(0, 50)}${theme.length > 50 ? '...' : ''}`,
+          theme: theme,
+          language: language,
+          scenes: data.scenes.map((text: string) => ({ text })),
+          images: data.images,
+          audio_files: data.audioFiles || null,
+          thumbnail: data.images[0] || null,
+          scene_count: sceneCount,
+          scene_duration: sceneDuration,
+        }] as any);
+        
+        if (saveError) {
+          console.error('Error saving story:', saveError);
+          toast.error('Story generated but failed to save to gallery');
+        }
+      }
+      
+      toast.success('Story video generated and saved!');
     } catch (error: any) {
       console.error('Error generating story video:', error);
       toast.error(error.message || 'Failed to generate story video');
@@ -47,7 +70,7 @@ const StoryVideoDemo = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-100 to-blue-100 p-6">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="flex items-start gap-4 pt-4">
+        <div className="flex items-start justify-between gap-4 pt-4">
           <Button
             variant="ghost"
             onClick={() => navigate('/kids-channel')}
@@ -65,6 +88,15 @@ const StoryVideoDemo = () => {
               Create magical animated bedtime stories in minutes
             </p>
           </div>
+
+          <Button
+            variant="outline"
+            onClick={() => navigate('/story-gallery')}
+            className="gap-2 mt-12"
+          >
+            <BookOpen className="w-5 h-5" />
+            My Gallery
+          </Button>
         </div>
 
         {!storyData ? (
