@@ -18,7 +18,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const prompt = `Create a cute, colorful, child-friendly animated character image of ${characterName}, a ${characterType}. The image should be vibrant, fun, and appealing to children aged 5-12. Style: Disney/Pixar animation style, bright colors, friendly expression, full character view on a simple background.`;
+    const prompt = `Create an adorable, highly expressive cartoon character image of ${characterName}, a ${characterType}. Style: Disney/Pixar 3D animated character with big expressive eyes, exaggerated proportions for cuteness, smooth rounded shapes, vibrant saturated colors, and a joyful friendly smile. The character should have a dynamic playful pose with personality, glossy cartoon shading, and be placed on a simple colorful gradient background. Make it look like a professional animated movie character - cheerful, energetic, and irresistibly cute!`;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

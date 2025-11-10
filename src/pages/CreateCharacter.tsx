@@ -60,26 +60,28 @@ export default function CreateCharacter() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-100 via-cyan-100 to-purple-100">
+    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 animate-fade-in">
       <Navbar />
       
       <div className="container mx-auto px-4 pt-24 pb-12">
         <Button
           variant="ghost"
           onClick={() => navigate("/kids-channel")}
-          className="mb-6 hover:bg-white/50"
+          className="mb-6 hover:bg-white/70 hover-scale transition-all"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Kids Channel
         </Button>
 
         <div className="max-w-4xl mx-auto">
-          <Card className="bg-white/90 backdrop-blur-sm border-4 border-white/50 shadow-2xl mb-8">
-            <CardHeader className="text-center">
-              <CardTitle className="text-4xl font-bold text-blue-600 mb-2">
-                Create Your Hero! 🦸‍♀️
+          <Card className="bg-white/95 backdrop-blur-sm border-4 border-yellow-300 shadow-2xl mb-8 animate-scale-in overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-yellow-300/30 to-transparent rounded-full -mr-16 -mt-16" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-300/30 to-transparent rounded-full -ml-12 -mb-12" />
+            <CardHeader className="text-center relative z-10">
+              <CardTitle className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2 animate-fade-in">
+                Create Your Hero! 🦸‍♀️✨
               </CardTitle>
-              <CardDescription className="text-lg text-gray-700">
+              <CardDescription className="text-xl text-gray-700 font-medium">
                 Design your own character and become the star of your story!
               </CardDescription>
             </CardHeader>
@@ -87,11 +89,12 @@ export default function CreateCharacter() {
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Character Preview */}
-            <Card className="bg-gradient-to-br from-white to-blue-50 border-4 border-blue-200 shadow-xl">
+            <Card className="bg-gradient-to-br from-white to-purple-50 border-4 border-purple-300 shadow-2xl hover-scale transition-all duration-300">
               <CardContent className="p-8">
                 <div className="text-center">
-                  <div className="bg-gradient-to-br from-blue-200 to-purple-200 rounded-full w-48 h-48 mx-auto mb-6 flex items-center justify-center shadow-lg">
-                    <div className="text-8xl">
+                  <div className="bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-300 rounded-full w-52 h-52 mx-auto mb-6 flex items-center justify-center shadow-xl animate-scale-in relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-full" />
+                    <div className="text-9xl animate-pulse relative z-10">
                       {selectedPower === "flying" && "🦅"}
                       {selectedPower === "super-strength" && "💪"}
                       {selectedPower === "invisibility" && "👻"}
@@ -101,17 +104,21 @@ export default function CreateCharacter() {
                     </div>
                   </div>
                   
-                  <h3 className="text-3xl font-bold text-blue-600 mb-2">
+                  <h3 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
                     {characterName || "Your Hero"}
                   </h3>
                   
-                  <div className="space-y-2 text-lg">
-                    <p className="text-gray-700">
-                      Hair: {hairColors.find(h => h.id === selectedHair)?.emoji} {hairColors.find(h => h.id === selectedHair)?.name}
-                    </p>
-                    <p className="text-gray-700">
-                      Power: {superPowers.find(p => p.id === selectedPower)?.emoji} {superPowers.find(p => p.id === selectedPower)?.name}
-                    </p>
+                  <div className="space-y-3 text-lg">
+                    <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
+                      <p className="text-gray-800 font-semibold">
+                        Hair: {hairColors.find(h => h.id === selectedHair)?.emoji} {hairColors.find(h => h.id === selectedHair)?.name}
+                      </p>
+                    </div>
+                    <div className="bg-white/60 rounded-full px-4 py-2 inline-block shadow-md">
+                      <p className="text-gray-800 font-semibold">
+                        Power: {superPowers.find(p => p.id === selectedPower)?.emoji} {superPowers.find(p => p.id === selectedPower)?.name}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -120,25 +127,25 @@ export default function CreateCharacter() {
             {/* Character Customization */}
             <div className="space-y-6">
               {/* Name Input */}
-              <Card className="bg-white border-2 border-blue-200">
+              <Card className="bg-white/95 border-3 border-blue-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-lg font-bold text-blue-600 mb-2">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3 block">
                     What's your hero's name? 📝
                   </Label>
                   <Input
                     value={characterName}
                     onChange={(e) => setCharacterName(e.target.value)}
                     placeholder="Enter a cool name..."
-                    className="text-lg mt-2"
+                    className="text-lg mt-2 border-2 border-blue-200 focus:border-purple-400 transition-colors"
                   />
                 </CardContent>
               </Card>
 
               {/* Hair Color Selection */}
-              <Card className="bg-white border-2 border-blue-200">
+              <Card className="bg-white/95 border-3 border-pink-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-lg font-bold text-blue-600 mb-4 block">
-                    Choose Hair Color 💇‍♀️
+                  <Label className="text-xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-4 block">
+                    Choose Hair Color 🎨
                   </Label>
                   <div className="grid grid-cols-4 gap-3">
                     {hairColors.map((hair) => (
@@ -146,10 +153,12 @@ export default function CreateCharacter() {
                         key={hair.id}
                         variant={selectedHair === hair.id ? "default" : "outline"}
                         onClick={() => setSelectedHair(hair.id)}
-                        className="h-20 text-2xl flex flex-col items-center justify-center"
+                        className={`h-20 text-2xl flex flex-col items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                          selectedHair === hair.id ? "bg-gradient-to-br from-purple-500 to-pink-500 border-3 border-yellow-300 scale-105 shadow-xl" : "border-2 border-gray-300 hover:border-purple-400"
+                        }`}
                       >
-                        <span className="text-3xl mb-1">{hair.emoji}</span>
-                        <span className="text-xs">{hair.name}</span>
+                        <span className="text-3xl mb-1 animate-pulse">{hair.emoji}</span>
+                        <span className="text-xs font-semibold">{hair.name}</span>
                       </Button>
                     ))}
                   </div>
@@ -157,9 +166,9 @@ export default function CreateCharacter() {
               </Card>
 
               {/* Superpower Selection */}
-              <Card className="bg-white border-2 border-blue-200">
+              <Card className="bg-white/95 border-3 border-yellow-300 shadow-lg hover-scale transition-all">
                 <CardContent className="p-6">
-                  <Label className="text-lg font-bold text-blue-600 mb-4 block">
+                  <Label className="text-xl font-bold bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent mb-4 block">
                     Choose Superpower 🦸‍♀️
                   </Label>
                   <div className="grid grid-cols-2 gap-3">
@@ -168,10 +177,12 @@ export default function CreateCharacter() {
                         key={power.id}
                         variant={selectedPower === power.id ? "default" : "outline"}
                         onClick={() => setSelectedPower(power.id)}
-                        className="h-20 flex flex-col items-center justify-center"
+                        className={`h-24 flex flex-col items-center justify-center transition-all duration-200 hover:scale-110 hover:shadow-lg ${
+                          selectedPower === power.id ? "bg-gradient-to-br from-blue-500 to-purple-500 border-3 border-yellow-300 scale-105 shadow-xl" : "border-2 border-gray-300 hover:border-yellow-400"
+                        }`}
                       >
-                        <span className="text-3xl mb-1">{power.emoji}</span>
-                        <span className="text-xs text-center">{power.name}</span>
+                        <span className="text-4xl mb-1 animate-pulse">{power.emoji}</span>
+                        <span className="text-xs text-center font-semibold">{power.name}</span>
                       </Button>
                     ))}
                   </div>
@@ -182,17 +193,18 @@ export default function CreateCharacter() {
               <Button
                 onClick={handleCreateStory}
                 disabled={isGenerating}
-                className="w-full text-xl py-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                className="w-full text-2xl py-9 bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 hover:from-green-500 hover:via-blue-600 hover:to-purple-600 text-white font-bold shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 border-4 border-white/50 rounded-2xl relative overflow-hidden group"
               >
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 via-pink-300/20 to-purple-300/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                 {isGenerating ? (
                   <>
-                    <Sparkles className="mr-2 h-6 w-6 animate-spin" />
+                    <Sparkles className="mr-2 h-7 w-7 animate-spin" />
                     Creating Your Adventure...
                   </>
                 ) : (
                   <>
-                    <Wand2 className="mr-2 h-6 w-6" />
-                    Start My Adventure!
+                    <Wand2 className="mr-2 h-7 w-7 animate-bounce" />
+                    Start My Adventure! 🚀
                   </>
                 )}
               </Button>
