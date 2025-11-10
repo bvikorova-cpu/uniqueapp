@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Sparkles, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -16,6 +17,7 @@ export default function CreateCharacter() {
   const [selectedHair, setSelectedHair] = useState("brown");
   const [selectedPower, setSelectedPower] = useState("flying");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
 
   const hairColors = [
     { id: "brown", name: "Brown", emoji: "🟤" },
@@ -48,15 +50,36 @@ export default function CreateCharacter() {
 
     setIsGenerating(true);
     
-    // Simulate story generation
-    setTimeout(() => {
-      toast({
-        title: "Character Created! 🎉",
-        description: `${characterName} is ready for adventure!`
+    try {
+      const powerName = superPowers.find(p => p.id === selectedPower)?.name || "superhero";
+      const hairName = hairColors.find(h => h.id === selectedHair)?.name || "brown hair";
+      
+      const { data, error } = await supabase.functions.invoke('generate-character-image', {
+        body: {
+          characterName,
+          characterType: `${powerName} character with ${hairName}`
+        }
       });
+
+      if (error) throw error;
+
+      if (data?.imageUrl) {
+        setGeneratedImage(data.imageUrl);
+        toast({
+          title: "Character Created! 🎉",
+          description: `${characterName} is ready for adventure!`
+        });
+      }
+    } catch (error) {
+      console.error('Error generating character:', error);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate character image",
+        variant: "destructive"
+      });
+    } finally {
       setIsGenerating(false);
-      // In real app, navigate to story with character
-    }, 2000);
+    }
   };
 
   return (
@@ -92,17 +115,27 @@ export default function CreateCharacter() {
             <Card className="bg-gradient-to-br from-white to-purple-50 border-4 border-purple-300 shadow-2xl hover-scale transition-all duration-300">
               <CardContent className="p-8">
                 <div className="text-center">
-                  <div className="bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-300 rounded-full w-52 h-52 mx-auto mb-6 flex items-center justify-center shadow-xl animate-scale-in relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-full" />
-                    <div className="text-9xl animate-pulse relative z-10">
-                      {selectedPower === "flying" && "🦅"}
-                      {selectedPower === "super-strength" && "💪"}
-                      {selectedPower === "invisibility" && "👻"}
-                      {selectedPower === "talking-to-animals" && "🦊"}
-                      {selectedPower === "magic-spells" && "✨"}
-                      {selectedPower === "super-speed" && "⚡"}
+                  {generatedImage ? (
+                    <div className="rounded-3xl overflow-hidden shadow-2xl mb-6 animate-scale-in border-4 border-yellow-300">
+                      <img 
+                        src={generatedImage} 
+                        alt={characterName || "Generated Hero"} 
+                        className="w-full h-auto"
+                      />
                     </div>
-                  </div>
+                  ) : (
+                    <div className="bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-300 rounded-full w-52 h-52 mx-auto mb-6 flex items-center justify-center shadow-xl animate-scale-in relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent rounded-full" />
+                      <div className="text-9xl animate-pulse relative z-10">
+                        {selectedPower === "flying" && "🦅"}
+                        {selectedPower === "super-strength" && "💪"}
+                        {selectedPower === "invisibility" && "👻"}
+                        {selectedPower === "talking-to-animals" && "🦊"}
+                        {selectedPower === "magic-spells" && "✨"}
+                        {selectedPower === "super-speed" && "⚡"}
+                      </div>
+                    </div>
+                  )}
                   
                   <h3 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
                     {characterName || "Your Hero"}
