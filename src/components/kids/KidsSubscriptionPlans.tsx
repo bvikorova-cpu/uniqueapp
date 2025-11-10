@@ -7,22 +7,9 @@ import { toast } from "sonner";
 
 const subscriptionPlans = [
   {
-    id: 'free',
-    name: '🎈 Free',
-    price: 0,
-    interval: 'forever',
-    icon: Heart,
-    color: 'from-pink-500 to-purple-500',
-    features: [
-      '3 rozprávky/mesiac',
-      'Základné ilustrácie',
-      'Mini hry'
-    ]
-  },
-  {
     id: 'basic',
     name: '⭐ Basic',
-    price: 9.99,
+    price: 5,
     interval: 'mesiac',
     icon: Sparkles,
     color: 'from-yellow-500 to-orange-500',
@@ -37,19 +24,20 @@ const subscriptionPlans = [
     ]
   },
   {
-    id: 'family',
-    name: '👨‍👩‍👧‍👦 Family',
-    price: 19.99,
-    interval: 'mesiac',
+    id: 'pro',
+    name: '👑 Pro',
+    price: 50,
+    interval: '12 mesiacov',
     icon: Users,
-    color: 'from-blue-500 to-cyan-500',
+    color: 'from-purple-500 to-indigo-500',
     features: [
       'Neobmedzené rozprávky',
       'Video rozprávky',
       'AR rozprávky',
       '3 detské profily',
       'Všetky prémiové funkcie',
-      'Bez reklám'
+      'Bez reklám',
+      'Ušetríte 40€ ročne!'
     ]
   },
   {
@@ -103,7 +91,7 @@ export default function KidsSubscriptionPlans() {
         </div>
 
         {/* Subscription Plans */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {subscriptionPlans.map((plan) => {
             const Icon = plan.icon;
             return (
@@ -161,9 +149,7 @@ export default function KidsSubscriptionPlans() {
                   >
                     {subscription?.subscription_type === plan.id 
                       ? '✓ Tvoj plán' 
-                      : plan.price === 0 
-                        ? 'Začni zadarmo' 
-                        : 'Vybrať plán'
+                      : 'Vybrať plán'
                     }
                   </Button>
                 </CardContent>
