@@ -112,6 +112,38 @@ export default function EducationalStories() {
       category: "Science",
       description: "Travel back to the time of dinosaurs!",
       difficulty: "medium"
+    },
+    {
+      id: "transportation",
+      title: "Dopravné dobrodružstvo",
+      emoji: "🚗",
+      category: "Science",
+      description: "Objavuj rôzne druhy dopravy!",
+      difficulty: "easy"
+    },
+    {
+      id: "food",
+      title: "Svet jedla",
+      emoji: "🍎",
+      category: "Health",
+      description: "Nauč sa o zdravom jedle!",
+      difficulty: "easy"
+    },
+    {
+      id: "family",
+      title: "Moja rodina",
+      emoji: "👨‍👩‍👧‍👦",
+      category: "Social",
+      description: "Spoznaj svoju rodinu!",
+      difficulty: "easy"
+    },
+    {
+      id: "emotions",
+      title: "Svet emócií",
+      emoji: "😊",
+      category: "Social",
+      description: "Nauč sa rozumieť pocitom!",
+      difficulty: "medium"
     }
   ];
 
@@ -329,7 +361,7 @@ export default function EducationalStories() {
                 </div>
                 <Progress value={totalProgress.overallProgress} className="h-4" />
                 <p className="text-sm text-gray-600 mt-2">
-                  {totalProgress.completedTopics} of 8 topics completed ({totalProgress.overallProgress}%)
+                  {totalProgress.completedTopics} of 12 topics completed ({totalProgress.overallProgress}%)
                 </p>
               </CardContent>
             </Card>

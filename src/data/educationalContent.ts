@@ -403,5 +403,197 @@ export const educationalContent: Record<string, TopicContent> = {
         explanation: "Pterodactyls could fly through the sky! 🦅"
       }
     ]
+  },
+  transportation: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Doprava na cestách",
+        content: "Autá 🚗 jazdia po cestách! Autobusy 🚌 vozia veľa ľudí! Motorky 🏍️ sú rýchle a malé!",
+        imageEmoji: "🚗",
+        funFact: "Prvé auto bolo vynájdené pred viac ako 100 rokmi!"
+      },
+      {
+        id: "lesson-2",
+        title: "Doprava vo vzduchu",
+        content: "Lietadlá ✈️ lietajú vysoko v oblakoch! Helikoptéry 🚁 môžu lietať hore a dole! Rakety 🚀 idú do vesmíru!",
+        imageEmoji: "✈️",
+        funFact: "Lietadlá môžu letieť rýchlejšie ako zvuk!"
+      },
+      {
+        id: "lesson-3",
+        title: "Doprava na vode",
+        content: "Lode 🚢 plávajú po mori! Člny ⛵ používajú vietor! Ponorky plávajú pod vodou!",
+        imageEmoji: "🚢",
+        funFact: "Titanic bol najväčšia loď svojej doby!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "Čo lieta v oblakoch?",
+        options: ["Auto", "Lietadlo", "Loď", "Autobus"],
+        correctAnswer: "Lietadlo",
+        explanation: "Lietadlá lietajú vysoko v oblakoch! ✈️"
+      },
+      {
+        id: "q2",
+        question: "Kde plávajú lode?",
+        options: ["Na ceste", "Vo vzduchu", "Na vode", "V zemi"],
+        correctAnswer: "Na vode",
+        explanation: "Lode plávajú po vode! 🚢"
+      },
+      {
+        id: "q3",
+        question: "Čo ide do vesmíru?",
+        options: ["Raketa", "Auto", "Autobus", "Loď"],
+        correctAnswer: "Raketa",
+        explanation: "Rakety idú do vesmíru! 🚀"
+      }
+    ]
+  },
+  food: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Ovocie",
+        content: "Jablká 🍎 sú chrumkavé! Banány 🍌 sú žlté a sladké! Jahody 🍓 sú červené a šťavnaté!",
+        imageEmoji: "🍎",
+        funFact: "Jablká plávajú vo vode, pretože majú vzduch vnútri!"
+      },
+      {
+        id: "lesson-2",
+        title: "Zelenina",
+        content: "Mrkva 🥕 je dobrá pre oči! Brokolica 🥦 vyzerá ako malé stromy! Paradajky 🍅 sú červené!",
+        imageEmoji: "🥕",
+        funFact: "Paradajka je vlastne ovocie, nie zelenina!"
+      },
+      {
+        id: "lesson-3",
+        title: "Jedlá z celého sveta",
+        content: "Pizza 🍕 je z Talianska! Sushi 🍣 je z Japonska! Burger 🍔 je z Ameriky!",
+        imageEmoji: "🍕",
+        funFact: "Pizza bola prvýkrát urobená pre kráľovnú!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "Akú farbu má banán?",
+        options: ["Červenú", "Žltú", "Zelenú", "Modrú"],
+        correctAnswer: "Žltú",
+        explanation: "Banány sú žlté! 🍌"
+      },
+      {
+        id: "q2",
+        question: "Ktoré jedlo je z Talianska?",
+        options: ["Sushi", "Pizza", "Burger", "Taco"],
+        correctAnswer: "Pizza",
+        explanation: "Pizza pochádza z Talianska! 🍕"
+      },
+      {
+        id: "q3",
+        question: "Čo je dobré pre oči?",
+        options: ["Mrkva", "Sladkosti", "Chipsy", "Kola"],
+        correctAnswer: "Mrkva",
+        explanation: "Mrkva je zdravá a dobrá pre tvoje oči! 🥕"
+      }
+    ]
+  },
+  family: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Moja rodina",
+        content: "Mama 👩 a Otec 👨 sa o nás starajú! Súrodenci sú bratia a sestry! Rodina je láska! ❤️",
+        imageEmoji: "👨‍👩‍👧‍👦",
+        funFact: "Rodiny môžu byť rôzne veľké - malé alebo veľké!"
+      },
+      {
+        id: "lesson-2",
+        title: "Starí rodičia",
+        content: "Babka 👵 a Dedko 👴 sú mama a otec našich rodičov! Rozprávajú nám príbehy!",
+        imageEmoji: "👵",
+        funFact: "Starí rodičia majú veľa múdrosti zo svojho života!"
+      },
+      {
+        id: "lesson-3",
+        title: "Rodinné aktivity",
+        content: "Rodiny hrajú spolu hry! Cestujú na dovolenky! Večerajú spolu! Milujú sa! 💕",
+        imageEmoji: "🏡",
+        funFact: "Spoločný čas s rodinou robí všetkých šťastnými!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "Kto je mama tvojej mamy?",
+        options: ["Sestra", "Babka", "Teta", "Bratranca"],
+        correctAnswer: "Babka",
+        explanation: "Mama tvojej mamy je tvoja babka! 👵"
+      },
+      {
+        id: "q2",
+        question: "Čo rodiny robia spolu?",
+        options: ["Hrajú hry", "Cestujú", "Večerajú", "Všetko z toho"],
+        correctAnswer: "Všetko z toho",
+        explanation: "Rodiny robia veľa vecí spolu! 👨‍👩‍👧‍👦"
+      },
+      {
+        id: "q3",
+        question: "Čo rodiny zdieľajú?",
+        options: ["Lásku", "Iba jedlo", "Iba hračky", "Nič"],
+        correctAnswer: "Lásku",
+        explanation: "Rodiny zdieľajú lásku a starostlivosť! ❤️"
+      }
+    ]
+  },
+  emotions: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Šťastie a Smútok",
+        content: "Keď sme šťastní 😊, usmievame sa! Keď sme smutní 😢, plačeme! Obe sú v poriadku!",
+        imageEmoji: "😊",
+        funFact: "Smiech nás robí zdravšími a šťastnejšími!"
+      },
+      {
+        id: "lesson-2",
+        title: "Hnev a Strach",
+        content: "Hnev 😠 je, keď sme frustrovaní! Strach 😨 nás varuje pred nebezpečenstvom! Môžeme o nich hovoriť!",
+        imageEmoji: "😠",
+        funFact: "Všetci cítime rôzne emócie každý deň!"
+      },
+      {
+        id: "lesson-3",
+        title: "Láska a Priateľstvo",
+        content: "Láska ❤️ je, keď sa staráme o niekoho! Priateľstvo je špeciálne! Objatia pomáhajú! 🤗",
+        imageEmoji: "❤️",
+        funFact: "Objatia uvoľňujú hormóny šťastia v našom mozgu!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "Čo robíme, keď sme šťastní?",
+        options: ["Plačeme", "Usmievame sa", "Spíme", "Kričíme"],
+        correctAnswer: "Usmievame sa",
+        explanation: "Keď sme šťastní, usmievame sa! 😊"
+      },
+      {
+        id: "q2",
+        question: "Je v poriadku cítiť smútok?",
+        options: ["Áno", "Nie", "Niekedy", "Neviem"],
+        correctAnswer: "Áno",
+        explanation: "Je v poriadku cítiť všetky emócie! 😢"
+      },
+      {
+        id: "q3",
+        question: "Čo nám pomáha cítiť sa lepšie?",
+        options: ["Objatia", "Kričanie", "Schovávanie", "Ignorovanie"],
+        correctAnswer: "Objatia",
+        explanation: "Objatia nás robia šťastnými! 🤗"
+      }
+    ]
   }
 };
