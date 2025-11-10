@@ -115,35 +115,59 @@ export default function EducationalStories() {
     },
     {
       id: "transportation",
-      title: "Dopravné dobrodružstvo",
+      title: "Transportation Adventure",
       emoji: "🚗",
       category: "Science",
-      description: "Objavuj rôzne druhy dopravy!",
+      description: "Discover different types of transportation!",
       difficulty: "easy"
     },
     {
       id: "food",
-      title: "Svet jedla",
+      title: "Food World",
       emoji: "🍎",
       category: "Health",
-      description: "Nauč sa o zdravom jedle!",
+      description: "Learn about healthy foods!",
       difficulty: "easy"
     },
     {
       id: "family",
-      title: "Moja rodina",
+      title: "My Family",
       emoji: "👨‍👩‍👧‍👦",
       category: "Social",
-      description: "Spoznaj svoju rodinu!",
+      description: "Learn about your family!",
       difficulty: "easy"
     },
     {
       id: "emotions",
-      title: "Svet emócií",
+      title: "World of Emotions",
       emoji: "😊",
       category: "Social",
-      description: "Nauč sa rozumieť pocitom!",
+      description: "Learn to understand feelings!",
       difficulty: "medium"
+    },
+    {
+      id: "professions",
+      title: "Cool Careers",
+      emoji: "👨‍⚕️",
+      category: "Social",
+      description: "Discover amazing jobs!",
+      difficulty: "medium"
+    },
+    {
+      id: "household",
+      title: "Home Helpers",
+      emoji: "🧹",
+      category: "Life Skills",
+      description: "Learn household activities!",
+      difficulty: "easy"
+    },
+    {
+      id: "holidays",
+      title: "Holiday Fun",
+      emoji: "🎂",
+      category: "Culture",
+      description: "Celebrate holidays and traditions!",
+      difficulty: "easy"
     }
   ];
 
@@ -361,7 +385,7 @@ export default function EducationalStories() {
                 </div>
                 <Progress value={totalProgress.overallProgress} className="h-4" />
                 <p className="text-sm text-gray-600 mt-2">
-                  {totalProgress.completedTopics} of 12 topics completed ({totalProgress.overallProgress}%)
+                  {totalProgress.completedTopics} of 15 topics completed ({totalProgress.overallProgress}%)
                 </p>
               </CardContent>
             </Card>

@@ -408,47 +408,47 @@ export const educationalContent: Record<string, TopicContent> = {
     lessons: [
       {
         id: "lesson-1",
-        title: "Doprava na cestách",
-        content: "Autá 🚗 jazdia po cestách! Autobusy 🚌 vozia veľa ľudí! Motorky 🏍️ sú rýchle a malé!",
+        title: "Transportation on Roads",
+        content: "Cars 🚗 drive on roads! Buses 🚌 carry many people! Motorcycles 🏍️ are fast and small!",
         imageEmoji: "🚗",
-        funFact: "Prvé auto bolo vynájdené pred viac ako 100 rokmi!"
+        funFact: "The first car was invented over 100 years ago!"
       },
       {
         id: "lesson-2",
-        title: "Doprava vo vzduchu",
-        content: "Lietadlá ✈️ lietajú vysoko v oblakoch! Helikoptéry 🚁 môžu lietať hore a dole! Rakety 🚀 idú do vesmíru!",
+        title: "Transportation in the Air",
+        content: "Airplanes ✈️ fly high in the clouds! Helicopters 🚁 can fly up and down! Rockets 🚀 go to space!",
         imageEmoji: "✈️",
-        funFact: "Lietadlá môžu letieť rýchlejšie ako zvuk!"
+        funFact: "Airplanes can fly faster than sound!"
       },
       {
         id: "lesson-3",
-        title: "Doprava na vode",
-        content: "Lode 🚢 plávajú po mori! Člny ⛵ používajú vietor! Ponorky plávajú pod vodou!",
+        title: "Transportation on Water",
+        content: "Ships 🚢 sail on the sea! Sailboats ⛵ use wind! Submarines swim underwater!",
         imageEmoji: "🚢",
-        funFact: "Titanic bol najväčšia loď svojej doby!"
+        funFact: "Titanic was the biggest ship of its time!"
       }
     ],
     quiz: [
       {
         id: "q1",
-        question: "Čo lieta v oblakoch?",
-        options: ["Auto", "Lietadlo", "Loď", "Autobus"],
-        correctAnswer: "Lietadlo",
-        explanation: "Lietadlá lietajú vysoko v oblakoch! ✈️"
+        question: "What flies in the clouds?",
+        options: ["Car", "Airplane", "Ship", "Bus"],
+        correctAnswer: "Airplane",
+        explanation: "Airplanes fly high in the clouds! ✈️"
       },
       {
         id: "q2",
-        question: "Kde plávajú lode?",
-        options: ["Na ceste", "Vo vzduchu", "Na vode", "V zemi"],
-        correctAnswer: "Na vode",
-        explanation: "Lode plávajú po vode! 🚢"
+        question: "Where do ships sail?",
+        options: ["On road", "In air", "On water", "Underground"],
+        correctAnswer: "On water",
+        explanation: "Ships sail on water! 🚢"
       },
       {
         id: "q3",
-        question: "Čo ide do vesmíru?",
-        options: ["Raketa", "Auto", "Autobus", "Loď"],
-        correctAnswer: "Raketa",
-        explanation: "Rakety idú do vesmíru! 🚀"
+        question: "What goes to space?",
+        options: ["Rocket", "Car", "Bus", "Ship"],
+        correctAnswer: "Rocket",
+        explanation: "Rockets go to space! 🚀"
       }
     ]
   },
@@ -456,47 +456,47 @@ export const educationalContent: Record<string, TopicContent> = {
     lessons: [
       {
         id: "lesson-1",
-        title: "Ovocie",
-        content: "Jablká 🍎 sú chrumkavé! Banány 🍌 sú žlté a sladké! Jahody 🍓 sú červené a šťavnaté!",
+        title: "Fruits",
+        content: "Apples 🍎 are crunchy! Bananas 🍌 are yellow and sweet! Strawberries 🍓 are red and juicy!",
         imageEmoji: "🍎",
-        funFact: "Jablká plávajú vo vode, pretože majú vzduch vnútri!"
+        funFact: "Apples float in water because they have air inside!"
       },
       {
         id: "lesson-2",
-        title: "Zelenina",
-        content: "Mrkva 🥕 je dobrá pre oči! Brokolica 🥦 vyzerá ako malé stromy! Paradajky 🍅 sú červené!",
+        title: "Vegetables",
+        content: "Carrots 🥕 are good for your eyes! Broccoli 🥦 looks like little trees! Tomatoes 🍅 are red!",
         imageEmoji: "🥕",
-        funFact: "Paradajka je vlastne ovocie, nie zelenina!"
+        funFact: "A tomato is actually a fruit, not a vegetable!"
       },
       {
         id: "lesson-3",
-        title: "Jedlá z celého sveta",
-        content: "Pizza 🍕 je z Talianska! Sushi 🍣 je z Japonska! Burger 🍔 je z Ameriky!",
+        title: "Foods from Around the World",
+        content: "Pizza 🍕 is from Italy! Sushi 🍣 is from Japan! Burgers 🍔 are from America!",
         imageEmoji: "🍕",
-        funFact: "Pizza bola prvýkrát urobená pre kráľovnú!"
+        funFact: "Pizza was first made for a queen!"
       }
     ],
     quiz: [
       {
         id: "q1",
-        question: "Akú farbu má banán?",
-        options: ["Červenú", "Žltú", "Zelenú", "Modrú"],
-        correctAnswer: "Žltú",
-        explanation: "Banány sú žlté! 🍌"
+        question: "What color is a banana?",
+        options: ["Red", "Yellow", "Green", "Blue"],
+        correctAnswer: "Yellow",
+        explanation: "Bananas are yellow! 🍌"
       },
       {
         id: "q2",
-        question: "Ktoré jedlo je z Talianska?",
+        question: "Which food is from Italy?",
         options: ["Sushi", "Pizza", "Burger", "Taco"],
         correctAnswer: "Pizza",
-        explanation: "Pizza pochádza z Talianska! 🍕"
+        explanation: "Pizza comes from Italy! 🍕"
       },
       {
         id: "q3",
-        question: "Čo je dobré pre oči?",
-        options: ["Mrkva", "Sladkosti", "Chipsy", "Kola"],
-        correctAnswer: "Mrkva",
-        explanation: "Mrkva je zdravá a dobrá pre tvoje oči! 🥕"
+        question: "What is good for your eyes?",
+        options: ["Carrots", "Candy", "Chips", "Soda"],
+        correctAnswer: "Carrots",
+        explanation: "Carrots are healthy and good for your eyes! 🥕"
       }
     ]
   },
@@ -504,47 +504,47 @@ export const educationalContent: Record<string, TopicContent> = {
     lessons: [
       {
         id: "lesson-1",
-        title: "Moja rodina",
-        content: "Mama 👩 a Otec 👨 sa o nás starajú! Súrodenci sú bratia a sestry! Rodina je láska! ❤️",
+        title: "My Family",
+        content: "Mom 👩 and Dad 👨 take care of us! Siblings are brothers and sisters! Family is love! ❤️",
         imageEmoji: "👨‍👩‍👧‍👦",
-        funFact: "Rodiny môžu byť rôzne veľké - malé alebo veľké!"
+        funFact: "Families can be different sizes - small or big!"
       },
       {
         id: "lesson-2",
-        title: "Starí rodičia",
-        content: "Babka 👵 a Dedko 👴 sú mama a otec našich rodičov! Rozprávajú nám príbehy!",
+        title: "Grandparents",
+        content: "Grandma 👵 and Grandpa 👴 are our parents' parents! They tell us stories!",
         imageEmoji: "👵",
-        funFact: "Starí rodičia majú veľa múdrosti zo svojho života!"
+        funFact: "Grandparents have lots of wisdom from their lives!"
       },
       {
         id: "lesson-3",
-        title: "Rodinné aktivity",
-        content: "Rodiny hrajú spolu hry! Cestujú na dovolenky! Večerajú spolu! Milujú sa! 💕",
+        title: "Family Activities",
+        content: "Families play games together! Travel on vacations! Eat dinner together! Love each other! 💕",
         imageEmoji: "🏡",
-        funFact: "Spoločný čas s rodinou robí všetkých šťastnými!"
+        funFact: "Spending time with family makes everyone happy!"
       }
     ],
     quiz: [
       {
         id: "q1",
-        question: "Kto je mama tvojej mamy?",
-        options: ["Sestra", "Babka", "Teta", "Bratranca"],
-        correctAnswer: "Babka",
-        explanation: "Mama tvojej mamy je tvoja babka! 👵"
+        question: "Who is your mom's mom?",
+        options: ["Sister", "Grandma", "Aunt", "Cousin"],
+        correctAnswer: "Grandma",
+        explanation: "Your mom's mom is your grandma! 👵"
       },
       {
         id: "q2",
-        question: "Čo rodiny robia spolu?",
-        options: ["Hrajú hry", "Cestujú", "Večerajú", "Všetko z toho"],
-        correctAnswer: "Všetko z toho",
-        explanation: "Rodiny robia veľa vecí spolu! 👨‍👩‍👧‍👦"
+        question: "What do families do together?",
+        options: ["Play games", "Travel", "Eat dinner", "All of these"],
+        correctAnswer: "All of these",
+        explanation: "Families do many things together! 👨‍👩‍👧‍👦"
       },
       {
         id: "q3",
-        question: "Čo rodiny zdieľajú?",
-        options: ["Lásku", "Iba jedlo", "Iba hračky", "Nič"],
-        correctAnswer: "Lásku",
-        explanation: "Rodiny zdieľajú lásku a starostlivosť! ❤️"
+        question: "What do families share?",
+        options: ["Love", "Only food", "Only toys", "Nothing"],
+        correctAnswer: "Love",
+        explanation: "Families share love and care! ❤️"
       }
     ]
   },
@@ -552,47 +552,191 @@ export const educationalContent: Record<string, TopicContent> = {
     lessons: [
       {
         id: "lesson-1",
-        title: "Šťastie a Smútok",
-        content: "Keď sme šťastní 😊, usmievame sa! Keď sme smutní 😢, plačeme! Obe sú v poriadku!",
+        title: "Happy and Sad",
+        content: "When we're happy 😊, we smile! When we're sad 😢, we cry! Both are okay!",
         imageEmoji: "😊",
-        funFact: "Smiech nás robí zdravšími a šťastnejšími!"
+        funFact: "Laughing makes us healthier and happier!"
       },
       {
         id: "lesson-2",
-        title: "Hnev a Strach",
-        content: "Hnev 😠 je, keď sme frustrovaní! Strach 😨 nás varuje pred nebezpečenstvom! Môžeme o nich hovoriť!",
+        title: "Anger and Fear",
+        content: "Anger 😠 is when we're frustrated! Fear 😨 warns us of danger! We can talk about them!",
         imageEmoji: "😠",
-        funFact: "Všetci cítime rôzne emócie každý deň!"
+        funFact: "Everyone feels different emotions every day!"
       },
       {
         id: "lesson-3",
-        title: "Láska a Priateľstvo",
-        content: "Láska ❤️ je, keď sa staráme o niekoho! Priateľstvo je špeciálne! Objatia pomáhajú! 🤗",
+        title: "Love and Friendship",
+        content: "Love ❤️ is when we care about someone! Friendship is special! Hugs help! 🤗",
         imageEmoji: "❤️",
-        funFact: "Objatia uvoľňujú hormóny šťastia v našom mozgu!"
+        funFact: "Hugs release happiness hormones in our brain!"
       }
     ],
     quiz: [
       {
         id: "q1",
-        question: "Čo robíme, keď sme šťastní?",
-        options: ["Plačeme", "Usmievame sa", "Spíme", "Kričíme"],
-        correctAnswer: "Usmievame sa",
-        explanation: "Keď sme šťastní, usmievame sa! 😊"
+        question: "What do we do when we're happy?",
+        options: ["Cry", "Smile", "Sleep", "Scream"],
+        correctAnswer: "Smile",
+        explanation: "When we're happy, we smile! 😊"
       },
       {
         id: "q2",
-        question: "Je v poriadku cítiť smútok?",
-        options: ["Áno", "Nie", "Niekedy", "Neviem"],
-        correctAnswer: "Áno",
-        explanation: "Je v poriadku cítiť všetky emócie! 😢"
+        question: "Is it okay to feel sad?",
+        options: ["Yes", "No", "Sometimes", "Don't know"],
+        correctAnswer: "Yes",
+        explanation: "It's okay to feel all emotions! 😢"
       },
       {
         id: "q3",
-        question: "Čo nám pomáha cítiť sa lepšie?",
-        options: ["Objatia", "Kričanie", "Schovávanie", "Ignorovanie"],
-        correctAnswer: "Objatia",
-        explanation: "Objatia nás robia šťastnými! 🤗"
+        question: "What helps us feel better?",
+        options: ["Hugs", "Yelling", "Hiding", "Ignoring"],
+        correctAnswer: "Hugs",
+        explanation: "Hugs make us happy! 🤗"
+      }
+    ]
+  },
+  professions: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Helping Professions",
+        content: "Doctors 👨‍⚕️ make us feel better! Teachers 👩‍🏫 help us learn! Firefighters 🚒 save people!",
+        imageEmoji: "👨‍⚕️",
+        funFact: "Doctors study for many years to help people!"
+      },
+      {
+        id: "lesson-2",
+        title: "Creative Professions",
+        content: "Artists 🎨 paint beautiful pictures! Musicians 🎵 make lovely music! Chefs 👨‍🍳 cook yummy food!",
+        imageEmoji: "🎨",
+        funFact: "Some artists become famous all around the world!"
+      },
+      {
+        id: "lesson-3",
+        title: "Building Professions",
+        content: "Engineers 👷 build bridges! Architects design buildings! Construction workers make our homes!",
+        imageEmoji: "👷",
+        funFact: "The tallest building in the world is over 800 meters high!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "Who helps us when we're sick?",
+        options: ["Teacher", "Doctor", "Chef", "Artist"],
+        correctAnswer: "Doctor",
+        explanation: "Doctors help us feel better! 👨‍⚕️"
+      },
+      {
+        id: "q2",
+        question: "Who cooks food in restaurants?",
+        options: ["Chef", "Firefighter", "Teacher", "Engineer"],
+        correctAnswer: "Chef",
+        explanation: "Chefs cook delicious food! 👨‍🍳"
+      },
+      {
+        id: "q3",
+        question: "Who builds bridges?",
+        options: ["Doctor", "Artist", "Engineer", "Musician"],
+        correctAnswer: "Engineer",
+        explanation: "Engineers build amazing structures! 👷"
+      }
+    ]
+  },
+  household: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Cleaning Up",
+        content: "We clean our toys 🧸 after playing! Sweep the floor 🧹! Wash the dishes 🍽️! Keep things tidy!",
+        imageEmoji: "🧹",
+        funFact: "Cleaning together makes the work faster and fun!"
+      },
+      {
+        id: "lesson-2",
+        title: "Cooking and Eating",
+        content: "We help prepare meals 🥗! Set the table 🍽️! Eat together as a family! Clean up after!",
+        imageEmoji: "🍽️",
+        funFact: "Cooking together is a great way to learn and bond!"
+      },
+      {
+        id: "lesson-3",
+        title: "Taking Care of Our Home",
+        content: "Water the plants 🌱! Make our bed 🛏️! Organize our room! Help with laundry 👕!",
+        imageEmoji: "🌱",
+        funFact: "Plants help clean the air in our homes!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "What should we do after playing with toys?",
+        options: ["Leave them", "Clean them up", "Break them", "Hide them"],
+        correctAnswer: "Clean them up",
+        explanation: "We should clean up our toys! 🧸"
+      },
+      {
+        id: "q2",
+        question: "Why do we water plants?",
+        options: ["For fun", "They need it", "It's messy", "No reason"],
+        correctAnswer: "They need it",
+        explanation: "Plants need water to grow! 🌱"
+      },
+      {
+        id: "q3",
+        question: "Who should help with household chores?",
+        options: ["Only adults", "Everyone", "Only kids", "Nobody"],
+        correctAnswer: "Everyone",
+        explanation: "Everyone can help at home! 🏡"
+      }
+    ]
+  },
+  holidays: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Birthday Celebrations",
+        content: "Birthdays 🎂 celebrate the day you were born! We have cake! Sing songs! Open presents! 🎁",
+        imageEmoji: "🎂",
+        funFact: "The birthday song is one of the most sung songs in the world!"
+      },
+      {
+        id: "lesson-2",
+        title: "Seasonal Holidays",
+        content: "Christmas 🎄 has Santa! Halloween 🎃 has costumes! Easter 🐰 has egg hunts! Fun traditions!",
+        imageEmoji: "🎄",
+        funFact: "Different countries celebrate holidays in unique ways!"
+      },
+      {
+        id: "lesson-3",
+        title: "Family Celebrations",
+        content: "We celebrate together! Special meals 🍽️! Decorations ✨! Time with loved ones! Create memories! 📸",
+        imageEmoji: "✨",
+        funFact: "Celebrations bring families closer together!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "What do we sing on birthdays?",
+        options: ["Lullaby", "Birthday song", "Alphabet", "Nothing"],
+        correctAnswer: "Birthday song",
+        explanation: "We sing the birthday song! 🎂"
+      },
+      {
+        id: "q2",
+        question: "Which holiday has costumes?",
+        options: ["Birthday", "Halloween", "Easter", "Christmas"],
+        correctAnswer: "Halloween",
+        explanation: "Halloween is when we wear costumes! 🎃"
+      },
+      {
+        id: "q3",
+        question: "Why do we celebrate holidays?",
+        options: ["To be together", "To work", "To sleep", "No reason"],
+        correctAnswer: "To be together",
+        explanation: "Holidays bring us together! ✨"
       }
     ]
   }
