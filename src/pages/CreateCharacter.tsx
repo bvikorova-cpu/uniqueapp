@@ -24,6 +24,8 @@ export default function CreateCharacter() {
   const [selectedPersonality, setSelectedPersonality] = useState("brave");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [generatedStory, setGeneratedStory] = useState<string | null>(null);
+  const [isGeneratingStory, setIsGeneratingStory] = useState(false);
 
   const hairColors = [
     { id: "brown", name: "Brown", emoji: "🟤" },
@@ -108,6 +110,52 @@ export default function CreateCharacter() {
     // Add sparkle effect with higher notes
     playNote(1318.51, 0.6, 0.3);   // E6
     playNote(1567.98, 0.75, 0.4);  // G6
+  };
+
+  const handleGenerateStory = async () => {
+    if (!characterName.trim()) {
+      toast({
+        title: "Character Required",
+        description: "Please create a character first!",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGeneratingStory(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-character-story', {
+        body: {
+          characterName,
+          hairColor: hairColors.find(h => h.id === selectedHair)?.name || selectedHair,
+          superpower: superPowers.find(p => p.id === selectedPower)?.name || selectedPower,
+          eyeColor: eyeColors.find(e => e.id === selectedEyeColor)?.name || selectedEyeColor,
+          costumeColor: costumeColors.find(c => c.id === selectedCostumeColor)?.name || selectedCostumeColor,
+          ageGroup: ageGroups.find(a => a.id === selectedAgeGroup)?.name || selectedAgeGroup,
+          personality: personalities.find(p => p.id === selectedPersonality)?.name || selectedPersonality
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.story) {
+        setGeneratedStory(data.story);
+        toast({
+          title: "Story Created! 📖",
+          description: `${characterName}'s adventure is ready!`
+        });
+      }
+    } catch (error) {
+      console.error('Error generating story:', error);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate story",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingStory(false);
+    }
   };
 
   const handleCreateStory = async () => {
@@ -282,6 +330,22 @@ export default function CreateCharacter() {
                         className="w-full h-auto"
                       />
                     </div>
+                  )}
+                  
+                  {generatedStory && (
+                    <Card className="mt-6 bg-gradient-to-br from-purple-50 to-pink-50 border-3 border-purple-300 shadow-lg animate-fade-in">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-3xl">📖</span>
+                          <h4 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                            {characterName}'s Story
+                          </h4>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                          {generatedStory}
+                        </p>
+                      </CardContent>
+                    </Card>
                   )}
                   
                   <h3 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-3">
@@ -504,6 +568,27 @@ export default function CreateCharacter() {
                   </>
                 )}
               </Button>
+
+              {/* Generate Backstory Button */}
+              {generatedImage && (
+                <Button
+                  onClick={handleGenerateStory}
+                  disabled={isGeneratingStory}
+                  className="w-full text-xl py-7 bg-gradient-to-r from-purple-400 via-pink-500 to-orange-500 hover:from-purple-500 hover:via-pink-600 hover:to-orange-600 text-white font-bold shadow-xl hover:shadow-pink-500/50 transition-all duration-300 hover:scale-105 border-3 border-white/50 rounded-2xl relative overflow-hidden group"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 via-pink-300/20 to-purple-300/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {isGeneratingStory ? (
+                    <>
+                      <Sparkles className="mr-2 h-6 w-6 animate-spin" />
+                      Writing Story...
+                    </>
+                  ) : (
+                    <>
+                      📖 Generate Backstory
+                    </>
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         </div>
