@@ -21,13 +21,6 @@ const CorporateEvents = () => {
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
             Professional coloring book solutions for companies, restaurants, weddings and events. Strengthen your brand with creativity.
           </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" className="gap-2">
-              <Calendar className="w-5 h-5" />
-              Book Demo
-            </Button>
-            <Button size="lg" variant="outline">Pricing</Button>
-          </div>
         </div>
       </section>
 
@@ -872,22 +865,6 @@ const CorporateEvents = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Start?</h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            Contact us for an individual quote or book a demo presentation.
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" className="gap-2">
-              <Calendar className="w-5 h-5" />
-              Book Demo
-            </Button>
-            <Button size="lg" variant="outline">Request Quote</Button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };
