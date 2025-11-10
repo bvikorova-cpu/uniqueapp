@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Download, Play, Pause, FileText } from 'lucide-react';
+import { Download, Play, Pause, FileText, Music, Volume2 } from 'lucide-react';
 import { toast } from 'sonner';
 import jsPDF from 'jspdf';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
 
 interface StoryVideoPlayerProps {
   scenes: string[];
@@ -18,9 +20,64 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
   const [isPlaying, setIsPlaying] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isExportingPDF, setIsExportingPDF] = useState(false);
   const [pdfLayout, setPdfLayout] = useState<'single' | 'multiple'>('single');
+  const [backgroundMusicEnabled, setBackgroundMusicEnabled] = useState(false);
+  const [musicVolume, setMusicVolume] = useState(0.3);
+
+  // Background music effect
+  useEffect(() => {
+    if (backgroundMusicEnabled && isPlaying) {
+      // Create simple background music using Web Audio API
+      if (!backgroundMusicRef.current) {
+        const audioContext = new AudioContext();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Create a gentle, soothing melody pattern
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 220; // A3 note
+        
+        gainNode.gain.value = musicVolume;
+        
+        // Store reference (though we use AudioContext API)
+        backgroundMusicRef.current = new Audio();
+        
+        oscillator.start();
+        
+        // Simple melody pattern
+        const notes = [220, 246.94, 261.63, 293.66, 329.63]; // A3, B3, C4, D4, E4
+        let noteIndex = 0;
+        
+        const melodyInterval = setInterval(() => {
+          oscillator.frequency.value = notes[noteIndex % notes.length];
+          noteIndex++;
+        }, 2000);
+        
+        // Store cleanup function
+        (backgroundMusicRef.current as any).cleanup = () => {
+          clearInterval(melodyInterval);
+          oscillator.stop();
+          audioContext.close();
+        };
+      }
+    } else if (backgroundMusicRef.current && (backgroundMusicRef.current as any).cleanup) {
+      (backgroundMusicRef.current as any).cleanup();
+      backgroundMusicRef.current = null;
+    }
+
+    return () => {
+      if (backgroundMusicRef.current && (backgroundMusicRef.current as any).cleanup) {
+        (backgroundMusicRef.current as any).cleanup();
+        backgroundMusicRef.current = null;
+      }
+    };
+  }, [backgroundMusicEnabled, isPlaying, musicVolume]);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -335,6 +392,38 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
       </div>
 
       <div className="space-y-4">
+        {/* Background Music Controls */}
+        <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-purple-200 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Music className="w-5 h-5 text-purple-600" />
+              <Label className="text-sm font-semibold text-purple-800">
+                Background Music
+              </Label>
+            </div>
+            <Switch
+              checked={backgroundMusicEnabled}
+              onCheckedChange={setBackgroundMusicEnabled}
+            />
+          </div>
+          
+          {backgroundMusicEnabled && (
+            <div className="flex items-center gap-3">
+              <Volume2 className="w-4 h-4 text-purple-600" />
+              <Slider
+                value={[musicVolume * 100]}
+                onValueChange={(value) => setMusicVolume(value[0] / 100)}
+                max={100}
+                step={1}
+                className="flex-1"
+              />
+              <span className="text-xs text-purple-700 min-w-[3rem]">
+                {Math.round(musicVolume * 100)}%
+              </span>
+            </div>
+          )}
+        </div>
+
         {/* PDF Layout Options */}
         <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-purple-200">
           <Label className="text-sm font-semibold text-purple-800 mb-3 block">
