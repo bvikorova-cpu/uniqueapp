@@ -26,11 +26,11 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
   const [pdfLayout, setPdfLayout] = useState<'single' | 'multiple'>('single');
   const [backgroundMusicEnabled, setBackgroundMusicEnabled] = useState(false);
   const [musicVolume, setMusicVolume] = useState(0.3);
+  const [musicTheme, setMusicTheme] = useState<'lullaby' | 'adventure' | 'fairytale'>('lullaby');
 
-  // Background music effect
+  // Background music effect with themes
   useEffect(() => {
     if (backgroundMusicEnabled && isPlaying) {
-      // Create simple background music using Web Audio API
       if (!backgroundMusicRef.current) {
         const audioContext = new AudioContext();
         const oscillator = audioContext.createOscillator();
@@ -39,25 +39,43 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
         
-        // Create a gentle, soothing melody pattern
-        oscillator.type = 'sine';
-        oscillator.frequency.value = 220; // A3 note
-        
         gainNode.gain.value = musicVolume;
         
-        // Store reference (though we use AudioContext API)
+        // Different music themes with unique characteristics
+        const themes = {
+          lullaby: {
+            type: 'sine' as OscillatorType,
+            notes: [261.63, 293.66, 329.63, 349.23, 392.00], // C4, D4, E4, F4, G4 (gentle)
+            tempo: 3000, // Slow
+            description: 'Gentle and soothing'
+          },
+          adventure: {
+            type: 'square' as OscillatorType,
+            notes: [440, 493.88, 523.25, 587.33, 659.25, 698.46], // A4, B4, C5, D5, E5, F5 (energetic)
+            tempo: 800, // Fast
+            description: 'Energetic and exciting'
+          },
+          fairytale: {
+            type: 'triangle' as OscillatorType,
+            notes: [349.23, 392.00, 440, 493.88, 523.25], // F4, G4, A4, B4, C5 (magical)
+            tempo: 1500, // Medium
+            description: 'Magical and whimsical'
+          }
+        };
+        
+        const currentTheme = themes[musicTheme];
+        oscillator.type = currentTheme.type;
+        oscillator.frequency.value = currentTheme.notes[0];
+        
         backgroundMusicRef.current = new Audio();
         
         oscillator.start();
         
-        // Simple melody pattern
-        const notes = [220, 246.94, 261.63, 293.66, 329.63]; // A3, B3, C4, D4, E4
         let noteIndex = 0;
-        
         const melodyInterval = setInterval(() => {
-          oscillator.frequency.value = notes[noteIndex % notes.length];
+          oscillator.frequency.value = currentTheme.notes[noteIndex % currentTheme.notes.length];
           noteIndex++;
-        }, 2000);
+        }, currentTheme.tempo);
         
         // Store cleanup function
         (backgroundMusicRef.current as any).cleanup = () => {
@@ -77,7 +95,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
         backgroundMusicRef.current = null;
       }
     };
-  }, [backgroundMusicEnabled, isPlaying, musicVolume]);
+  }, [backgroundMusicEnabled, isPlaying, musicVolume, musicTheme]);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -408,19 +426,47 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
           </div>
           
           {backgroundMusicEnabled && (
-            <div className="flex items-center gap-3">
-              <Volume2 className="w-4 h-4 text-purple-600" />
-              <Slider
-                value={[musicVolume * 100]}
-                onValueChange={(value) => setMusicVolume(value[0] / 100)}
-                max={100}
-                step={1}
-                className="flex-1"
-              />
-              <span className="text-xs text-purple-700 min-w-[3rem]">
-                {Math.round(musicVolume * 100)}%
-              </span>
-            </div>
+            <>
+              {/* Music Theme Selection */}
+              <div className="space-y-2">
+                <Label className="text-xs text-purple-700">Music Theme</Label>
+                <RadioGroup value={musicTheme} onValueChange={(value) => setMusicTheme(value as 'lullaby' | 'adventure' | 'fairytale')}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="lullaby" id="lullaby" />
+                    <Label htmlFor="lullaby" className="cursor-pointer text-sm">
+                      🌙 Lullaby (gentle & soothing)
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="adventure" id="adventure" />
+                    <Label htmlFor="adventure" className="cursor-pointer text-sm">
+                      ⚔️ Adventure (energetic & exciting)
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="fairytale" id="fairytale" />
+                    <Label htmlFor="fairytale" className="cursor-pointer text-sm">
+                      ✨ Fairy Tale (magical & whimsical)
+                    </Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {/* Volume Control */}
+              <div className="flex items-center gap-3">
+                <Volume2 className="w-4 h-4 text-purple-600" />
+                <Slider
+                  value={[musicVolume * 100]}
+                  onValueChange={(value) => setMusicVolume(value[0] / 100)}
+                  max={100}
+                  step={1}
+                  className="flex-1"
+                />
+                <span className="text-xs text-purple-700 min-w-[3rem]">
+                  {Math.round(musicVolume * 100)}%
+                </span>
+              </div>
+            </>
           )}
         </div>
 
