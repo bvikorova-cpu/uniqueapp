@@ -4446,6 +4446,57 @@ export type Database = {
         }
         Relationships: []
       }
+      corporate_inquiries: {
+        Row: {
+          company_name: string
+          contact_name: string
+          created_at: string
+          email: string
+          event_date: string | null
+          event_type: string | null
+          expected_attendees: number | null
+          id: string
+          message: string
+          package_type: string
+          phone: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          company_name: string
+          contact_name: string
+          created_at?: string
+          email: string
+          event_date?: string | null
+          event_type?: string | null
+          expected_attendees?: number | null
+          id?: string
+          message: string
+          package_type: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          company_name?: string
+          contact_name?: string
+          created_at?: string
+          email?: string
+          event_date?: string | null
+          event_type?: string | null
+          expected_attendees?: number | null
+          id?: string
+          message?: string
+          package_type?: string
+          phone?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       cosmetic_items: {
         Row: {
           created_at: string
