@@ -4637,6 +4637,7 @@ export type Database = {
       course_quizzes: {
         Row: {
           created_at: string | null
+          difficulty: string | null
           id: string
           lesson_id: string
           passing_score: number | null
@@ -4644,6 +4645,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          difficulty?: string | null
           id?: string
           lesson_id: string
           passing_score?: number | null
@@ -4651,6 +4653,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          difficulty?: string | null
           id?: string
           lesson_id?: string
           passing_score?: number | null
@@ -14781,8 +14784,10 @@ export type Database = {
           expires_at: string
           id: string
           is_active: boolean | null
+          is_shareable: boolean | null
           media_type: string
           media_url: string
+          share_code: string | null
           user_id: string
           views_count: number | null
         }
@@ -14792,8 +14797,10 @@ export type Database = {
           expires_at?: string
           id?: string
           is_active?: boolean | null
+          is_shareable?: boolean | null
           media_type: string
           media_url: string
+          share_code?: string | null
           user_id: string
           views_count?: number | null
         }
@@ -14803,8 +14810,10 @@ export type Database = {
           expires_at?: string
           id?: string
           is_active?: boolean | null
+          is_shareable?: boolean | null
           media_type?: string
           media_url?: string
+          share_code?: string | null
           user_id?: string
           views_count?: number | null
         }
@@ -17619,6 +17628,7 @@ export type Database = {
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       generate_certificate_number: { Args: never; Returns: string }
       generate_referral_code: { Args: never; Returns: string }
+      generate_story_share_code: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
       has_role: {

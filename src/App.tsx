@@ -112,6 +112,7 @@ import StoryGames from "./pages/StoryGames";
 import KidsPricing from "./pages/KidsPricing";
 import StoryVideoDemo from "./pages/StoryVideoDemo";
 import StoryGallery from "./pages/StoryGallery";
+import SharedStory from "./pages/SharedStory";
 import AdminImageEditor from "./pages/AdminImageEditor";
 import PhotoRestoration from "./pages/PhotoRestoration";
 import AntiqueAppraisal from "./pages/AntiqueAppraisal";
@@ -405,6 +406,7 @@ const App = () => (
            <Route path="/kids-pricing" element={<KidsPricing />} />
            <Route path="/story-video-demo" element={<StoryVideoDemo />} />
            <Route path="/story-gallery" element={<StoryGallery />} />
+           <Route path="/shared/:shareCode" element={<SharedStory />} />
            <Route path="/admin-image-editor" element={<AdminImageEditor />} />
           <Route path="/coffee" element={<Coffee />} />
           <Route path="/coffee/checkins" element={<CoffeeCheckins />} />

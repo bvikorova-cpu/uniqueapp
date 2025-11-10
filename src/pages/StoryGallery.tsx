@@ -4,7 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Play, Trash2, Clock, ArrowLeft, Loader2 } from 'lucide-react';
+import { Play, Trash2, Clock, ArrowLeft, Loader2, Share2, Copy, Check } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,6 +36,8 @@ interface Story {
   scene_count: number;
   scene_duration: number;
   created_at: string;
+  share_code?: string | null;
+  is_shareable?: boolean;
 }
 
 export default function StoryGallery() {
@@ -38,6 +47,9 @@ export default function StoryGallery() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
   const [playingStory, setPlayingStory] = useState<Story | null>(null);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareStory, setShareStory] = useState<Story | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     loadStories();
@@ -99,6 +111,87 @@ export default function StoryGallery() {
 
   const handlePlayStory = (story: Story) => {
     setPlayingStory(story);
+  };
+
+  const handleShareClick = async (story: Story) => {
+    setShareStory(story);
+    
+    // Generate share code if not exists
+    if (!story.share_code) {
+      try {
+        const { data: codeData, error: codeError } = await supabase
+          .rpc('generate_story_share_code');
+
+        if (codeError) throw codeError;
+
+        const shareCode = codeData;
+
+        const { error: updateError } = await supabase
+          .from('stories')
+          .update({
+            share_code: shareCode,
+            is_shareable: true
+          } as any)
+          .eq('id', story.id);
+
+        if (updateError) throw updateError;
+
+        // Update local story
+        setStories(stories.map(s => 
+          s.id === story.id 
+            ? { ...s, share_code: shareCode, is_shareable: true }
+            : s
+        ));
+        
+        setShareStory({ ...story, share_code: shareCode, is_shareable: true });
+      } catch (error) {
+        console.error('Error generating share code:', error);
+        toast.error('Failed to generate share link');
+        return;
+      }
+    }
+    
+    setShareDialogOpen(true);
+  };
+
+  const getShareUrl = (shareCode: string | null) => {
+    if (!shareCode) return '';
+    return `${window.location.origin}/shared/${shareCode}`;
+  };
+
+  const handleCopyLink = () => {
+    if (!shareStory?.share_code) return;
+    
+    navigator.clipboard.writeText(getShareUrl(shareStory.share_code));
+    setCopied(true);
+    toast.success('Link copied to clipboard!');
+    
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleStopSharing = async () => {
+    if (!shareStory) return;
+
+    try {
+      const { error } = await supabase
+        .from('stories')
+        .update({ is_shareable: false } as any)
+        .eq('id', shareStory.id);
+
+      if (error) throw error;
+
+      setStories(stories.map(s => 
+        s.id === shareStory.id 
+          ? { ...s, is_shareable: false }
+          : s
+      ));
+
+      toast.success('Story sharing stopped');
+      setShareDialogOpen(false);
+    } catch (error) {
+      console.error('Error stopping sharing:', error);
+      toast.error('Failed to stop sharing');
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -251,6 +344,14 @@ export default function StoryGallery() {
                       Play
                     </Button>
                     <Button
+                      onClick={() => handleShareClick(story)}
+                      variant="outline"
+                      size="sm"
+                      title="Share story"
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </Button>
+                    <Button
                       onClick={() => handleDeleteClick(story)}
                       variant="destructive"
                       size="sm"
@@ -280,6 +381,76 @@ export default function StoryGallery() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Share2 className="w-5 h-5 text-purple-600" />
+                Share Story
+              </DialogTitle>
+              <DialogDescription>
+                Share this magical story with friends and family!
+              </DialogDescription>
+            </DialogHeader>
+            
+            {shareStory?.is_shareable && shareStory?.share_code && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-purple-800">
+                    Share Code
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={shareStory.share_code}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-purple-50 border border-purple-200 rounded-lg font-mono text-lg text-center"
+                    />
+                    <Button
+                      onClick={handleCopyLink}
+                      variant="outline"
+                      size="icon"
+                    >
+                      {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-purple-600">
+                    Anyone with this code can view your story
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-purple-800">
+                    Share Link
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={getShareUrl(shareStory.share_code)}
+                      readOnly
+                      className="flex-1 px-3 py-2 bg-purple-50 border border-purple-200 rounded-lg text-sm"
+                    />
+                    <Button
+                      onClick={handleCopyLink}
+                      size="sm"
+                    >
+                      {copied ? 'Copied!' : 'Copy'}
+                    </Button>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleStopSharing}
+                  variant="outline"
+                  className="w-full"
+                >
+                  Stop Sharing
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
