@@ -146,9 +146,9 @@ export default function Schools() {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-12">
+      <main className="flex-1 container mx-auto px-4 py-24">
         {/* Hero Section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 mt-16">
           <Badge className="mb-4" variant="secondary">
             <School className="w-4 h-4 mr-2" />
             For Schools & Educational Institutions
@@ -305,14 +305,14 @@ export default function Schools() {
                 onClick={() => handleSubscribe("elementary")}
                 disabled={adminLoading}
               >
-                {adminLoading ? "Loading..." : "Start Free Trial"}
+                {adminLoading ? "Loading..." : "Get Started"}
               </Button>
               <Button size="lg" variant="outline">
                 Contact Sales
               </Button>
             </div>
             <p className="text-sm text-muted-foreground mt-6">
-              No credit card required • Cancel anytime • 30-day money-back guarantee
+              Cancel anytime • 30-day money-back guarantee
             </p>
           </CardContent>
         </Card>
