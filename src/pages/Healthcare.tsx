@@ -64,7 +64,7 @@ const Healthcare = () => {
         "Print-ready PDF format",
         "Email support"
       ],
-      priceId: "price_pediatric_mini"
+      priceId: "price_1SRv390QTWhd4oRpM8xbH4hm"
     },
     {
       id: "pediatric_standard",
@@ -80,7 +80,7 @@ const Healthcare = () => {
         "Monthly new additions",
         "Basic customization"
       ],
-      priceId: "price_pediatric_standard"
+      priceId: "price_1SRv3SGaXSfGtYFtIxUFVzYa"
     },
     {
       id: "dental_plus",
@@ -97,7 +97,7 @@ const Healthcare = () => {
         "Tooth fairy adventures",
         "Custom branding"
       ],
-      priceId: "price_dental_plus"
+      priceId: "price_1SRv3mGaXSfGtYFtAKPsmIuj"
     },
     {
       id: "therapy_lite",
@@ -114,7 +114,7 @@ const Healthcare = () => {
         "Client tracking (up to 20)",
         "Progress reports"
       ],
-      priceId: "price_therapy_lite"
+      priceId: "price_1SRv420QTWhd4oRpAwuVmcrG"
     },
     {
       id: "therapy_professional",
@@ -133,7 +133,7 @@ const Healthcare = () => {
         "Parent portal access",
         "Analytics dashboard"
       ],
-      priceId: "price_therapy_professional"
+      priceId: "price_1SRv4h0QTWhd4oRpv9tvXboN"
     },
     {
       id: "clinic_premium",
@@ -152,7 +152,7 @@ const Healthcare = () => {
         "Tablet licenses (5 devices)",
         "Priority support"
       ],
-      priceId: "price_clinic_premium"
+      priceId: "price_1SRvD3GaXSfGtYFtlBnIKIq8"
     },
     {
       id: "hospital_package",
@@ -171,7 +171,7 @@ const Healthcare = () => {
         "Custom training sessions",
         "Quarterly content reviews"
       ],
-      priceId: "price_hospital_package"
+      priceId: "price_1SRvDeGaXSfGtYFtCj31V4Wi"
     }
   ];
 
@@ -191,7 +191,7 @@ const Healthcare = () => {
         "Progress celebration pages",
         "Customizable for each child"
       ],
-      priceId: "price_oncology"
+      priceId: "price_1SRvDyGaXSfGtYFtlGV3f3Zs"
     },
     {
       id: "physiotherapy",
@@ -207,7 +207,7 @@ const Healthcare = () => {
         "Progress tracking",
         "Age-appropriate difficulty"
       ],
-      priceId: "price_physio"
+      priceId: "price_1SRvEH0QTWhd4oRptr7evlXq"
     },
     {
       id: "speech_therapy",
@@ -223,7 +223,7 @@ const Healthcare = () => {
         "Story-based activities",
         "Parent guidance included"
       ],
-      priceId: "price_speech"
+      priceId: "price_1SRvEaGaXSfGtYFt5QEbP47H"
     },
     {
       id: "occupational_therapy",
@@ -239,7 +239,7 @@ const Healthcare = () => {
         "Daily living skills",
         "Adaptive techniques"
       ],
-      priceId: "price_occupational"
+      priceId: "price_1SRvF7GaXSfGtYFtcg0vJI7H"
     },
     {
       id: "adhd_specialist",
@@ -255,7 +255,7 @@ const Healthcare = () => {
         "Attention span building",
         "Reward system integration"
       ],
-      priceId: "price_adhd"
+      priceId: "price_1SRvFQ0QTWhd4oRpHT6IP5tg"
     },
     {
       id: "autism_center",
@@ -271,7 +271,7 @@ const Healthcare = () => {
         "Clear instructions",
         "Social skills scenarios"
       ],
-      priceId: "price_autism"
+      priceId: "price_1SRvFjGaXSfGtYFt303VBIYt"
     }
   ];
 

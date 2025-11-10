@@ -88,15 +88,21 @@ serve(async (req) => {
       subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
       const priceId = subscription.items.data[0].price.id;
       
-      // Map price IDs to tiers - using the actual price IDs from Healthcare page
+      // Map price IDs to tiers - using the actual price IDs from Stripe
       const tierMap: Record<string, string> = {
-        "price_pediatric_mini": "pediatric_mini",
-        "price_pediatric_standard": "pediatric_standard",
-        "price_dental_plus": "dental_plus",
-        "price_therapy_lite": "therapy_lite",
-        "price_therapy_professional": "therapy_professional",
-        "price_clinic_premium": "clinic_premium",
-        "price_hospital_package": "hospital_package",
+        "price_1SRv390QTWhd4oRpM8xbH4hm": "pediatric_mini",
+        "price_1SRv3SGaXSfGtYFtIxUFVzYa": "pediatric_standard",
+        "price_1SRv3mGaXSfGtYFtAKPsmIuj": "dental_plus",
+        "price_1SRv420QTWhd4oRpAwuVmcrG": "therapy_lite",
+        "price_1SRv4h0QTWhd4oRpv9tvXboN": "therapy_professional",
+        "price_1SRvD3GaXSfGtYFtlBnIKIq8": "clinic_premium",
+        "price_1SRvDeGaXSfGtYFtCj31V4Wi": "hospital_package",
+        "price_1SRvDyGaXSfGtYFtlGV3f3Zs": "oncology_pediatric",
+        "price_1SRvEH0QTWhd4oRptr7evlXq": "physiotherapy",
+        "price_1SRvEaGaXSfGtYFt5QEbP47H": "speech_therapy",
+        "price_1SRvF7GaXSfGtYFtcg0vJI7H": "occupational_therapy",
+        "price_1SRvFQ0QTWhd4oRpHT6IP5tg": "adhd_specialist",
+        "price_1SRvFjGaXSfGtYFt303VBIYt": "autism_center",
       };
       
       subscriptionTier = tierMap[priceId] || 'none';
