@@ -27,6 +27,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
   const [backgroundMusicEnabled, setBackgroundMusicEnabled] = useState(false);
   const [musicVolume, setMusicVolume] = useState(0.3);
   const [musicTheme, setMusicTheme] = useState<'lullaby' | 'adventure' | 'fairytale'>('lullaby');
+  const [voiceSpeed, setVoiceSpeed] = useState(1.0);
 
   // Background music effect with themes
   useEffect(() => {
@@ -109,6 +110,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
     // Play audio for current scene if available
     if (audioFiles && audioFiles[currentScene]) {
       const audio = new Audio(`data:audio/mp3;base64,${audioFiles[currentScene]}`);
+      audio.playbackRate = voiceSpeed; // Apply voice speed
       audioRef.current = audio;
       audio.play().catch(err => console.error('Audio playback error:', err));
     }
@@ -130,7 +132,7 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
         audioRef.current = null;
       }
     };
-  }, [isPlaying, currentScene, scenes.length, sceneDuration, audioFiles]);
+  }, [isPlaying, currentScene, scenes.length, sceneDuration, audioFiles, voiceSpeed]);
 
   const handleExport = async () => {
     setIsExporting(true);
@@ -468,6 +470,42 @@ export const StoryVideoPlayer = ({ scenes, images, audioFiles, sceneDuration = 5
               </div>
             </>
           )}
+        </div>
+
+        {/* Voice Narration Controls */}
+        <div className="bg-white/50 backdrop-blur-sm rounded-lg p-4 border border-purple-200 space-y-3">
+          <Label className="text-sm font-semibold text-purple-800">
+            Voice Narration Speed
+          </Label>
+          
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-purple-700 min-w-[3rem]">Slow</span>
+            <Slider
+              value={[voiceSpeed * 100]}
+              onValueChange={(value) => setVoiceSpeed(value[0] / 100)}
+              min={50}
+              max={200}
+              step={10}
+              className="flex-1"
+            />
+            <span className="text-xs text-purple-700 min-w-[3rem]">Fast</span>
+          </div>
+          
+          <div className="text-center">
+            <span className="text-sm text-purple-600 font-medium">
+              {voiceSpeed}x
+            </span>
+            {voiceSpeed !== 1.0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setVoiceSpeed(1.0)}
+                className="ml-2 text-xs"
+              >
+                Reset
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* PDF Layout Options */}
