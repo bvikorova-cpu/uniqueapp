@@ -8086,6 +8086,118 @@ export type Database = {
         }
         Relationships: []
       }
+      healthcare_collections: {
+        Row: {
+          age_group: string | null
+          category: string
+          created_at: string
+          description: string | null
+          healthcare_profile_id: string | null
+          id: string
+          is_public: boolean | null
+          medical_specialty: string | null
+          name: string
+          page_count: number | null
+          provider_id: string
+          updated_at: string
+        }
+        Insert: {
+          age_group?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          healthcare_profile_id?: string | null
+          id?: string
+          is_public?: boolean | null
+          medical_specialty?: string | null
+          name: string
+          page_count?: number | null
+          provider_id: string
+          updated_at?: string
+        }
+        Update: {
+          age_group?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          healthcare_profile_id?: string | null
+          id?: string
+          is_public?: boolean | null
+          medical_specialty?: string | null
+          name?: string
+          page_count?: number | null
+          provider_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "healthcare_collections_healthcare_profile_id_fkey"
+            columns: ["healthcare_profile_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      healthcare_coloring_pages: {
+        Row: {
+          collection_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          difficulty_level: string | null
+          download_count: number | null
+          id: string
+          image_url: string | null
+          pdf_url: string | null
+          tags: string[] | null
+          therapeutic_purpose: string | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          collection_id: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          difficulty_level?: string | null
+          download_count?: number | null
+          id?: string
+          image_url?: string | null
+          pdf_url?: string | null
+          tags?: string[] | null
+          therapeutic_purpose?: string | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          collection_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          difficulty_level?: string | null
+          download_count?: number | null
+          id?: string
+          image_url?: string | null
+          pdf_url?: string | null
+          tags?: string[] | null
+          therapeutic_purpose?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "healthcare_coloring_pages_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       healthcare_profiles: {
         Row: {
           created_at: string
@@ -8121,6 +8233,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      healthcare_team_members: {
+        Row: {
+          added_by: string
+          created_at: string
+          healthcare_profile_id: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          added_by: string
+          created_at?: string
+          healthcare_profile_id: string
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          added_by?: string
+          created_at?: string
+          healthcare_profile_id?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "healthcare_team_members_healthcare_profile_id_fkey"
+            columns: ["healthcare_profile_id"]
+            isOneToOne: false
+            referencedRelation: "healthcare_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hero_campaigns: {
         Row: {
@@ -17856,6 +18003,10 @@ export type Database = {
         Returns: boolean
       }
       increment_collection_pages: {
+        Args: { p_collection_id: string }
+        Returns: undefined
+      }
+      increment_healthcare_collection_pages: {
         Args: { p_collection_id: string }
         Returns: undefined
       }

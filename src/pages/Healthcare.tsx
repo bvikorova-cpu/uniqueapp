@@ -8,9 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useHealthcareSubscription } from "@/hooks/useHealthcareSubscription";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useNavigate } from "react-router-dom";
 
 const Healthcare = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const { 
     subscribed, 
     subscription_tier, 
@@ -564,7 +566,11 @@ const Healthcare = () => {
                 <Button variant="outline" size="sm" onClick={checkSubscription}>
                   Refresh Status
                 </Button>
-                <Button size="sm" onClick={openCustomerPortal}>
+                <Button size="sm" onClick={() => navigate("/healthcare-dashboard")}>
+                  <Heart className="w-4 h-4 mr-2" />
+                  Go to Dashboard
+                </Button>
+                <Button size="sm" variant="outline" onClick={openCustomerPortal}>
                   <Settings className="w-4 h-4 mr-2" />
                   Manage Subscription
                 </Button>
