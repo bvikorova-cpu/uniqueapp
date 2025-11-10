@@ -1,4 +1,5 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { encode as base64Encode } from 'https://deno.land/std@0.168.0/encoding/base64.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -106,17 +107,10 @@ serve(async (req) => {
       throw new Error(`Failed to generate audio: ${errorText}`)
     }
 
-    // Get audio as base64 - process byte by byte to avoid stack overflow
+    // Get audio as base64 using Deno's efficient base64 encoder
     const audioArrayBuffer = await elevenLabsResponse.arrayBuffer()
     const bytes = new Uint8Array(audioArrayBuffer)
-    
-    // Build binary string character by character to prevent stack overflow
-    let binary = ''
-    for (let i = 0; i < bytes.length; i++) {
-      binary += String.fromCharCode(bytes[i])
-    }
-    
-    const base64Audio = btoa(binary)
+    const base64Audio = base64Encode(bytes)
 
     console.log('Audio generated successfully, size:', audioArrayBuffer.byteLength)
 
