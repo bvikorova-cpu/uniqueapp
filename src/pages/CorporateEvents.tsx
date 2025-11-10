@@ -52,7 +52,7 @@ const CorporateEvents = () => {
               </div>
 
               {/* Corporate Packages */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <Card className="border-2 hover:border-primary/50 transition-all">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -147,7 +147,7 @@ const CorporateEvents = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Print + delivery</span>
+                        <span>Print</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
@@ -162,45 +162,6 @@ const CorporateEvents = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="border-2 hover:border-primary/50 transition-all">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Globe className="w-5 h-5 text-primary" />
-                      Enterprise
-                    </CardTitle>
-                    <CardDescription>Individual solutions</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-3xl font-bold mb-4">€150+<span className="text-sm text-muted-foreground">/month</span></div>
-                    <ul className="space-y-2 text-sm">
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Unlimited coloring pages</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>White-label platform</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>API access</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Multi-language support</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>Analytics & ROI reporting</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
-                        <span>24/7 support</span>
-                      </li>
-                    </ul>
-                    <Button className="w-full mt-6">Contact</Button>
-                  </CardContent>
-                </Card>
               </div>
 
               {/* Use Cases */}
