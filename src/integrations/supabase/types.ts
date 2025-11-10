@@ -2301,6 +2301,9 @@ export type Database = {
         Row: {
           attack: number
           backstory: string | null
+          battle_losses: number | null
+          battle_rating: number | null
+          battle_wins: number | null
           category: string
           created_at: string
           defense: number
@@ -2324,6 +2327,9 @@ export type Database = {
         Insert: {
           attack?: number
           backstory?: string | null
+          battle_losses?: number | null
+          battle_rating?: number | null
+          battle_wins?: number | null
           category: string
           created_at?: string
           defense?: number
@@ -2347,6 +2353,9 @@ export type Database = {
         Update: {
           attack?: number
           backstory?: string | null
+          battle_losses?: number | null
+          battle_rating?: number | null
+          battle_wins?: number | null
           category?: string
           created_at?: string
           defense?: number
@@ -17695,6 +17704,10 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      update_battle_stats: {
+        Args: { loser_id: string; winner_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       accessory_type:
