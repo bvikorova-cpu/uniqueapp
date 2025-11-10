@@ -168,6 +168,38 @@ export default function EducationalStories() {
       category: "Culture",
       description: "Celebrate holidays and traditions!",
       difficulty: "easy"
+    },
+    {
+      id: "science",
+      title: "Science Lab",
+      emoji: "🧪",
+      category: "Science",
+      description: "Do cool experiments and discover!",
+      difficulty: "hard"
+    },
+    {
+      id: "music",
+      title: "Music & Instruments",
+      emoji: "🎹",
+      category: "Arts",
+      description: "Learn about music and instruments!",
+      difficulty: "medium"
+    },
+    {
+      id: "sports",
+      title: "Sports & Exercise",
+      emoji: "⚽",
+      category: "Health",
+      description: "Get active and play sports!",
+      difficulty: "medium"
+    },
+    {
+      id: "body",
+      title: "Body & Health",
+      emoji: "❤️",
+      category: "Health",
+      description: "Learn how your body works!",
+      difficulty: "hard"
     }
   ];
 
@@ -385,7 +417,7 @@ export default function EducationalStories() {
                 </div>
                 <Progress value={totalProgress.overallProgress} className="h-4" />
                 <p className="text-sm text-gray-600 mt-2">
-                  {totalProgress.completedTopics} of 15 topics completed ({totalProgress.overallProgress}%)
+                  {totalProgress.completedTopics} of 19 topics completed ({totalProgress.overallProgress}%)
                 </p>
               </CardContent>
             </Card>

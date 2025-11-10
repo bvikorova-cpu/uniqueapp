@@ -739,5 +739,197 @@ export const educationalContent: Record<string, TopicContent> = {
         explanation: "Holidays bring us together! ✨"
       }
     ]
+  },
+  science: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Simple Experiments",
+        content: "Mix baking soda and vinegar! 🧪 Watch it fizz! Make rainbows with water and sunlight! Science is magic!",
+        imageEmoji: "🧪",
+        funFact: "Scientists do experiments to discover how the world works!"
+      },
+      {
+        id: "lesson-2",
+        title: "States of Matter",
+        content: "Ice is solid! Water is liquid! Steam is gas! 💧 Things can change their form!",
+        imageEmoji: "💧",
+        funFact: "Water is the only substance that exists naturally in all three states!"
+      },
+      {
+        id: "lesson-3",
+        title: "Magnets and Electricity",
+        content: "Magnets attract metal! 🧲 Electricity powers lights! Batteries store energy! Amazing forces!",
+        imageEmoji: "🧲",
+        funFact: "Lightning is a giant spark of electricity from clouds!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "What happens when you mix baking soda and vinegar?",
+        options: ["It freezes", "It fizzes", "Nothing", "It explodes"],
+        correctAnswer: "It fizzes",
+        explanation: "It creates a fun fizzing reaction! 🧪"
+      },
+      {
+        id: "q2",
+        question: "What state of matter is ice?",
+        options: ["Solid", "Liquid", "Gas", "Plasma"],
+        correctAnswer: "Solid",
+        explanation: "Ice is solid water! 🧊"
+      },
+      {
+        id: "q3",
+        question: "What do magnets attract?",
+        options: ["Wood", "Paper", "Metal", "Water"],
+        correctAnswer: "Metal",
+        explanation: "Magnets attract metal objects! 🧲"
+      }
+    ]
+  },
+  music: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Musical Instruments",
+        content: "Piano 🎹 has keys! Guitar 🎸 has strings! Drums 🥁 make beats! Each makes different sounds!",
+        imageEmoji: "🎹",
+        funFact: "The piano has 88 keys - 52 white and 36 black!"
+      },
+      {
+        id: "lesson-2",
+        title: "Making Music",
+        content: "Rhythm is the beat! 🎵 Melody is the tune! Harmony is notes together! Music makes us happy!",
+        imageEmoji: "🎵",
+        funFact: "Music can make you feel happy, sad, excited, or calm!"
+      },
+      {
+        id: "lesson-3",
+        title: "Music Around the World",
+        content: "Every culture has music! 🌍 Different instruments! Different styles! Music is universal language!",
+        imageEmoji: "🌍",
+        funFact: "Music exists in every culture in the world!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "Which instrument has strings?",
+        options: ["Drum", "Guitar", "Piano", "Flute"],
+        correctAnswer: "Guitar",
+        explanation: "Guitars have strings you pluck or strum! 🎸"
+      },
+      {
+        id: "q2",
+        question: "What is the beat of music called?",
+        options: ["Rhythm", "Color", "Shape", "Size"],
+        correctAnswer: "Rhythm",
+        explanation: "The beat is called rhythm! 🎵"
+      },
+      {
+        id: "q3",
+        question: "How many keys does a piano have?",
+        options: ["50", "75", "88", "100"],
+        correctAnswer: "88",
+        explanation: "A piano has 88 keys! 🎹"
+      }
+    ]
+  },
+  sports: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Team Sports",
+        content: "Soccer ⚽ uses feet! Basketball 🏀 uses hands! Baseball ⚾ uses a bat! Play together!",
+        imageEmoji: "⚽",
+        funFact: "Soccer is the most popular sport in the world!"
+      },
+      {
+        id: "lesson-2",
+        title: "Exercise is Fun",
+        content: "Running 🏃 makes us strong! Jumping builds muscles! Dancing 💃 is exercise too! Move your body!",
+        imageEmoji: "🏃",
+        funFact: "Exercise makes your brain work better and makes you happier!"
+      },
+      {
+        id: "lesson-3",
+        title: "Stay Active",
+        content: "Play outside! 🌳 Ride bikes 🚲! Swim 🏊! Being active keeps us healthy and happy!",
+        imageEmoji: "🚲",
+        funFact: "Kids should be active for at least 60 minutes every day!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "Which sport uses feet to kick a ball?",
+        options: ["Basketball", "Soccer", "Baseball", "Tennis"],
+        correctAnswer: "Soccer",
+        explanation: "Soccer is played by kicking a ball! ⚽"
+      },
+      {
+        id: "q2",
+        question: "Why is exercise important?",
+        options: ["It's not", "Makes us strong", "Only for adults", "Too hard"],
+        correctAnswer: "Makes us strong",
+        explanation: "Exercise makes us strong and healthy! 🏃"
+      },
+      {
+        id: "q3",
+        question: "How long should kids be active each day?",
+        options: ["10 minutes", "30 minutes", "60 minutes", "5 hours"],
+        correctAnswer: "60 minutes",
+        explanation: "Kids should be active for 60 minutes daily! 💪"
+      }
+    ]
+  },
+  body: {
+    lessons: [
+      {
+        id: "lesson-1",
+        title: "Parts of the Body",
+        content: "We have eyes 👀 to see! Ears 👂 to hear! Nose 👃 to smell! Hands ✋ to touch! Amazing body!",
+        imageEmoji: "👀",
+        funFact: "Your eyes can see millions of different colors!"
+      },
+      {
+        id: "lesson-2",
+        title: "Taking Care of Our Body",
+        content: "Brush teeth twice a day! 🦷 Wash hands often! 🧼 Get enough sleep! 😴 Eat healthy food!",
+        imageEmoji: "🦷",
+        funFact: "Kids need 9-12 hours of sleep every night!"
+      },
+      {
+        id: "lesson-3",
+        title: "How Our Body Works",
+        content: "Heart ❤️ pumps blood! Lungs breathe air! Stomach digests food! Brain thinks! Body is amazing!",
+        imageEmoji: "❤️",
+        funFact: "Your heart beats about 100,000 times every day!"
+      }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "What do we use to see?",
+        options: ["Ears", "Eyes", "Nose", "Mouth"],
+        correctAnswer: "Eyes",
+        explanation: "We use our eyes to see! 👀"
+      },
+      {
+        id: "q2",
+        question: "How many times should we brush our teeth?",
+        options: ["Once", "Twice", "Three times", "Never"],
+        correctAnswer: "Twice",
+        explanation: "Brush teeth twice a day! 🦷"
+      },
+      {
+        id: "q3",
+        question: "What pumps blood through our body?",
+        options: ["Lungs", "Stomach", "Heart", "Brain"],
+        correctAnswer: "Heart",
+        explanation: "The heart pumps blood! ❤️"
+      }
+    ]
   }
 };
