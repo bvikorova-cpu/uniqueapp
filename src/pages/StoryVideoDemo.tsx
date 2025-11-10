@@ -11,6 +11,8 @@ const StoryVideoDemo = () => {
   const [theme, setTheme] = useState('');
   const [loading, setLoading] = useState(false);
   const [storyData, setStoryData] = useState<{ scenes: string[], images: string[] } | null>(null);
+  const [sceneCount, setSceneCount] = useState(4);
+  const [sceneDuration, setSceneDuration] = useState(5);
   const navigate = useNavigate();
 
   const handleGenerate = async () => {
@@ -22,7 +24,7 @@ const StoryVideoDemo = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('generate-story-video', {
-        body: { theme }
+        body: { theme, sceneCount }
       });
 
       if (error) throw error;
@@ -79,6 +81,40 @@ const StoryVideoDemo = () => {
               />
             </div>
 
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-purple-800">
+                  Number of Scenes: {sceneCount}
+                </label>
+                <input
+                  type="range"
+                  min="2"
+                  max="20"
+                  value={sceneCount}
+                  onChange={(e) => setSceneCount(Number(e.target.value))}
+                  disabled={loading}
+                  className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                />
+                <p className="text-xs text-purple-600">2-20 scenes</p>
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-purple-800">
+                  Scene Duration: {sceneDuration}s
+                </label>
+                <input
+                  type="range"
+                  min="3"
+                  max="10"
+                  value={sceneDuration}
+                  onChange={(e) => setSceneDuration(Number(e.target.value))}
+                  disabled={loading}
+                  className="w-full h-2 bg-pink-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                />
+                <p className="text-xs text-pink-600">3-10 seconds per scene</p>
+              </div>
+            </div>
+
             <Button
               onClick={handleGenerate}
               disabled={loading}
@@ -109,7 +145,11 @@ const StoryVideoDemo = () => {
           </div>
         ) : (
           <div className="space-y-6">
-            <StoryVideoPlayer scenes={storyData.scenes} images={storyData.images} />
+            <StoryVideoPlayer 
+              scenes={storyData.scenes} 
+              images={storyData.images}
+              sceneDuration={sceneDuration}
+            />
             
             <div className="text-center">
               <Button

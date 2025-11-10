@@ -11,28 +11,31 @@ serve(async (req) => {
   }
 
   try {
-    const { theme } = await req.json();
+    const { theme, sceneCount = 4 } = await req.json();
     
     if (!theme) {
       throw new Error('Theme is required');
     }
+
+    // Validate scene count
+    const validSceneCount = Math.max(2, Math.min(20, sceneCount));
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    console.log('Generating story for theme:', theme);
+    console.log(`Generating story for theme: ${theme} with ${validSceneCount} scenes`);
 
-    // Generate story with 4 scenes - with consistent main characters
-    const storyPrompt = `Create a very short bedtime story for children about ${theme}. 
+    // Generate story with variable number of scenes - with consistent main characters
+    const storyPrompt = `Create a ${validSceneCount <= 6 ? 'short' : 'detailed'} bedtime story for children about ${theme}. 
     The story MUST feature these two main characters throughout ALL scenes: a small white rabbit and a yellow duck.
     These two characters should appear together in every scene.
-    Structure it as exactly 4 scenes, each scene should be 1-2 sentences.
+    Structure it as exactly ${validSceneCount} scenes, each scene should be ${validSceneCount <= 6 ? '1-2' : '2-3'} sentences.
     Format: Scene 1: [text with rabbit and duck]
     Scene 2: [text with rabbit and duck]
-    Scene 3: [text with rabbit and duck]
-    Scene 4: [text with rabbit and duck]`;
+    ...
+    Scene ${validSceneCount}: [text with rabbit and duck]`;
 
     console.log('Calling AI for story generation...');
     const storyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -88,18 +91,18 @@ serve(async (req) => {
     }
     
     // If still not enough, split by newlines and take non-empty lines
-    if (scenes.length < 4) {
+    if (scenes.length < validSceneCount) {
       scenes = storyText
         .split('\n')
         .map((line: string) => line.trim())
         .filter((line: string) => line.length > 10 && !line.toLowerCase().includes('scene'))
-        .slice(0, 4);
+        .slice(0, validSceneCount);
     }
 
-    if (scenes.length < 4) {
-      console.error('Not enough scenes parsed:', scenes);
+    if (scenes.length < validSceneCount) {
+      console.error(`Not enough scenes parsed: ${scenes.length}/${validSceneCount}`, scenes);
       console.error('Original text:', storyText);
-      throw new Error('Failed to generate 4 scenes');
+      throw new Error(`Failed to generate ${validSceneCount} scenes`);
     }
 
     console.log('Parsed scenes:', scenes);
@@ -139,7 +142,7 @@ serve(async (req) => {
     const images: string[] = [];
     const baseStyle = "Children's storybook illustration, vibrant colors, friendly cartoon style, consistent character design";
     
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < validSceneCount; i++) {
       const imagePrompt = `${baseStyle}. Characters: ${characterDescription}. Scene: ${scenes[i]}`;
       
       console.log(`Generating image ${i + 1}...`);
@@ -176,7 +179,7 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ 
-        scenes: scenes.slice(0, 4),
+        scenes: scenes.slice(0, validSceneCount),
         images: images
       }),
       { 

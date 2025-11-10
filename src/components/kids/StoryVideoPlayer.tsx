@@ -6,9 +6,10 @@ import { toast } from 'sonner';
 interface StoryVideoPlayerProps {
   scenes: string[];
   images: string[];
+  sceneDuration?: number;
 }
 
-export const StoryVideoPlayer = ({ scenes, images }: StoryVideoPlayerProps) => {
+export const StoryVideoPlayer = ({ scenes, images, sceneDuration = 5 }: StoryVideoPlayerProps) => {
   const [currentScene, setCurrentScene] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -25,10 +26,10 @@ export const StoryVideoPlayer = ({ scenes, images }: StoryVideoPlayerProps) => {
         }
         return prev + 1;
       });
-    }, 8000); // 8 seconds per scene for ~1 minute total
+    }, sceneDuration * 1000);
 
     return () => clearInterval(interval);
-  }, [isPlaying, scenes.length]);
+  }, [isPlaying, scenes.length, sceneDuration]);
 
   const handleExport = async () => {
     setIsExporting(true);
@@ -47,7 +48,7 @@ export const StoryVideoPlayer = ({ scenes, images }: StoryVideoPlayerProps) => {
 
       const frames: Blob[] = [];
       const fps = 30;
-      const secondsPerScene = 8;
+      const secondsPerScene = sceneDuration;
       const framesPerScene = fps * secondsPerScene;
 
       for (let sceneIdx = 0; sceneIdx < Math.min(scenes.length, images.length); sceneIdx++) {
