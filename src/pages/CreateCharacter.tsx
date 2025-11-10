@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import heroImage from "@/assets/hero-blonde-magic.png";
+import confetti from "canvas-confetti";
 
 export default function CreateCharacter() {
   const navigate = useNavigate();
@@ -104,6 +105,36 @@ export default function CreateCharacter() {
       if (data?.imageUrl) {
         setGeneratedImage(data.imageUrl);
         
+        // Trigger confetti celebration
+        const duration = 3000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        const randomInRange = (min: number, max: number) => {
+          return Math.random() * (max - min) + min;
+        };
+
+        const interval: NodeJS.Timeout = setInterval(() => {
+          const timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          const particleCount = 50 * (timeLeft / duration);
+          
+          confetti({
+            ...defaults,
+            particleCount,
+            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+          });
+          confetti({
+            ...defaults,
+            particleCount,
+            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+          });
+        }, 250);
+        
         // Save character to database
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -186,7 +217,21 @@ export default function CreateCharacter() {
               <CardContent className="p-8">
                 <div className="text-center">
                   {generatedImage ? (
-                    <div className="rounded-3xl overflow-hidden shadow-2xl mb-6 animate-scale-in border-4 border-yellow-300">
+                    <div className="rounded-3xl overflow-hidden shadow-2xl mb-6 animate-scale-in border-4 border-yellow-300 relative">
+                      <div className="absolute inset-0 pointer-events-none">
+                        <div className="absolute top-4 left-4 animate-pulse">
+                          <Sparkles className="h-8 w-8 text-yellow-400" />
+                        </div>
+                        <div className="absolute top-8 right-6 animate-pulse" style={{ animationDelay: "0.3s" }}>
+                          <Sparkles className="h-6 w-6 text-pink-400" />
+                        </div>
+                        <div className="absolute bottom-8 left-8 animate-pulse" style={{ animationDelay: "0.6s" }}>
+                          <Sparkles className="h-7 w-7 text-purple-400" />
+                        </div>
+                        <div className="absolute bottom-4 right-4 animate-pulse" style={{ animationDelay: "0.9s" }}>
+                          <Sparkles className="h-5 w-5 text-blue-400" />
+                        </div>
+                      </div>
                       <img 
                         src={generatedImage} 
                         alt={characterName || "Generated Hero"} 
