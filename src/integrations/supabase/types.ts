@@ -6212,6 +6212,87 @@ export type Database = {
         }
         Relationships: []
       }
+      educational_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          is_completed: boolean | null
+          last_accessed_at: string | null
+          lessons_completed: number | null
+          quiz_attempts: number | null
+          quiz_score: number | null
+          stars_earned: number | null
+          topic_id: string
+          total_lessons: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          is_completed?: boolean | null
+          last_accessed_at?: string | null
+          lessons_completed?: number | null
+          quiz_attempts?: number | null
+          quiz_score?: number | null
+          stars_earned?: number | null
+          topic_id: string
+          total_lessons: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          is_completed?: boolean | null
+          last_accessed_at?: string | null
+          lessons_completed?: number | null
+          quiz_attempts?: number | null
+          quiz_score?: number | null
+          stars_earned?: number | null
+          topic_id?: string
+          total_lessons?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      educational_quiz_answers: {
+        Row: {
+          answered_at: string | null
+          created_at: string | null
+          id: string
+          is_correct: boolean
+          question_id: string
+          selected_answer: string
+          topic_id: string
+          user_id: string
+        }
+        Insert: {
+          answered_at?: string | null
+          created_at?: string | null
+          id?: string
+          is_correct: boolean
+          question_id: string
+          selected_answer: string
+          topic_id: string
+          user_id: string
+        }
+        Update: {
+          answered_at?: string | null
+          created_at?: string | null
+          id?: string
+          is_correct?: boolean
+          question_id?: string
+          selected_answer?: string
+          topic_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       emotion_drop_participants: {
         Row: {
           amount_received: number
