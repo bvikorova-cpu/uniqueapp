@@ -16,8 +16,8 @@ const PRODUCT_TIERS = {
     price_id: "price_1SRuAzGaXSfGtYFt6pQB43Ob"
   },
   pro: {
-    product_id: "prod_TOhCZbP0IpK2J8",
-    price_id: "price_1SRtnfGaXSfGtYFtrf4jRN83"
+    product_id: "prod_TOhjk0jsMVNpN3",
+    price_id: "price_1SRuKT0QTWhd4oRp44yQi9mQ"
   }
 };
 
