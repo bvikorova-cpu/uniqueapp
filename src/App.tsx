@@ -108,6 +108,7 @@ import KidsVoiceChat from "./pages/KidsVoiceChat";
 import CreateCharacter from "./pages/CreateCharacter";
 import CharacterGalleryPage from "./pages/CharacterGalleryPage";
 import CharacterGallery from "./pages/CharacterGallery";
+import CharacterBattle from "./pages/CharacterBattle";
 import EducationalStories from "./pages/EducationalStories";
 import BedtimeStories from "./pages/BedtimeStories";
 import StoryGames from "./pages/StoryGames";
@@ -476,6 +477,7 @@ const App = () => (
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
         <Route path="/kids-stories/create-character" element={<CreateCharacter />} />
         <Route path="/kids-stories/character-gallery" element={<CharacterGalleryPage />} />
+        <Route path="/kids-stories/battle" element={<CharacterBattle />} />
           <Route path="/character-gallery" element={<CharacterGallery />} />
           <Route path="/kids-stories/educational" element={<EducationalStories />} />
           <Route path="/kids-stories/bedtime" element={<BedtimeStories />} />
