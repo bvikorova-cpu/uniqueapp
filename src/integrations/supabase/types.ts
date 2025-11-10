@@ -6212,6 +6212,42 @@ export type Database = {
         }
         Relationships: []
       }
+      educational_certificates: {
+        Row: {
+          average_quiz_score: number
+          certificate_number: string
+          created_at: string
+          id: string
+          issued_at: string
+          student_name: string
+          total_stars_earned: number
+          total_topics_completed: number
+          user_id: string
+        }
+        Insert: {
+          average_quiz_score?: number
+          certificate_number?: string
+          created_at?: string
+          id?: string
+          issued_at?: string
+          student_name: string
+          total_stars_earned?: number
+          total_topics_completed?: number
+          user_id: string
+        }
+        Update: {
+          average_quiz_score?: number
+          certificate_number?: string
+          created_at?: string
+          id?: string
+          issued_at?: string
+          student_name?: string
+          total_stars_earned?: number
+          total_topics_completed?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       educational_progress: {
         Row: {
           completed_at: string | null

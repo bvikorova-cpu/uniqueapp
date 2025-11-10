@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { LessonViewer } from "@/components/educational/LessonViewer";
 import { QuizViewer } from "@/components/educational/QuizViewer";
+import { CompletionCelebration } from "@/components/educational/CompletionCelebration";
 import { educationalContent } from "@/data/educationalContent";
 import { useEducationalProgress } from "@/hooks/useEducationalProgress";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,7 +23,7 @@ interface EducationalTopic {
   difficulty: "easy" | "medium" | "hard";
 }
 
-type ViewMode = "topics" | "lessons" | "quiz" | "results";
+type ViewMode = "topics" | "lessons" | "quiz" | "results" | "certificate";
 
 export default function EducationalStories() {
   const navigate = useNavigate();
@@ -272,6 +273,11 @@ export default function EducationalStories() {
   };
 
   const totalProgress = calculateTotalProgress && calculateTotalProgress();
+  
+  const allTopicsCompleted = totalProgress && typeof totalProgress === 'object' && totalProgress.completedTopics === 19;
+  const averageQuizScore = totalProgress && typeof totalProgress === 'object' && progress 
+    ? Object.values(progress).reduce((sum, p) => sum + (p.quizScore || 0), 0) / Object.values(progress).length
+    : 0;
 
   if (!isAuthenticated) {
     return (
@@ -375,6 +381,17 @@ export default function EducationalStories() {
     );
   }
 
+  if (viewMode === "certificate" && totalProgress && typeof totalProgress === 'object') {
+    return (
+      <CompletionCelebration
+        totalTopicsCompleted={totalProgress.completedTopics}
+        totalStarsEarned={totalProgress.totalStars}
+        averageQuizScore={averageQuizScore}
+        onClose={handleBackToTopics}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-100 via-orange-100 to-red-100">
       <Navbar />
@@ -419,6 +436,29 @@ export default function EducationalStories() {
                 <p className="text-sm text-gray-600 mt-2">
                   {totalProgress.completedTopics} of 19 topics completed ({totalProgress.overallProgress}%)
                 </p>
+                
+                {/* Certificate Button - Shows when all topics completed */}
+                {allTopicsCompleted && (
+                  <div className="mt-6 pt-6 border-t-2 border-yellow-200">
+                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 p-4 rounded-lg text-center">
+                      <Trophy className="w-12 h-12 text-yellow-500 mx-auto mb-2" />
+                      <h4 className="text-xl font-bold text-orange-600 mb-2">
+                        Congratulations! 🎉
+                      </h4>
+                      <p className="text-gray-700 mb-4">
+                        You've completed all topics! Get your certificate now!
+                      </p>
+                      <Button
+                        onClick={() => setViewMode("certificate")}
+                        size="lg"
+                        className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white"
+                      >
+                        <Trophy className="mr-2 h-5 w-5" />
+                        Get Your Certificate
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
