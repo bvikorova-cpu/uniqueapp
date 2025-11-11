@@ -162,6 +162,27 @@ export default function SponsorDashboard() {
     enabled: !!sponsor,
   });
 
+  // Load category competitors
+  const { data: competitors = [] } = useQuery({
+    queryKey: ["category-competitors", sponsor?.category, sponsor?.id],
+    queryFn: async () => {
+      if (!sponsor) return [];
+      
+      const { data, error } = await supabase
+        .from("brand_sponsors")
+        .select("id, name, logo, tier, total_votes")
+        .eq("category", sponsor.category)
+        .eq("subscription_status", "active")
+        .neq("id", sponsor.id)
+        .order("total_votes", { ascending: false })
+        .limit(10);
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!sponsor,
+  });
+
   const handleCancelSubscription = async () => {
     if (!sponsor?.stripe_subscription_id) {
       toast.error("No active subscription found");
@@ -309,6 +330,10 @@ export default function SponsorDashboard() {
               <BarChart3 className="h-4 w-4 mr-2" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="comparison">
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Competitor Analysis
+            </TabsTrigger>
             <TabsTrigger value="votes">
               <Users className="h-4 w-4 mr-2" />
               Recent Votes
@@ -416,6 +441,299 @@ export default function SponsorDashboard() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Competitor Analysis Tab */}
+          <TabsContent value="comparison" className="space-y-6">
+            <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
+              <CardHeader>
+                <CardTitle className="text-white">Category Leaderboard - {sponsor.category}</CardTitle>
+                <CardDescription>
+                  See how you rank against other brands in your category
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {/* Your Position Card */}
+                <div className="mb-6 p-6 bg-gradient-to-r from-purple-900/40 to-pink-900/40 rounded-lg border border-purple-500/30">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-lg bg-white/10 flex items-center justify-center text-4xl">
+                        {sponsor.logo}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xl font-bold text-white">{sponsor.name}</span>
+                          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                            You
+                          </Badge>
+                        </div>
+                        <div className="text-sm text-gray-400">
+                          {tierInfo.name} Sponsor
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-white">
+                        #{rankingData?.rank || "-"}
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        {sponsor.total_votes} votes
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Competitors List */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-white mb-4">
+                    Top Competitors in {sponsor.category}
+                  </h3>
+                  {competitors.length > 0 ? (
+                    competitors.map((competitor, index) => {
+                      const competitorTier = TIER_INFO[competitor.tier as keyof typeof TIER_INFO];
+                      const voteDifference = competitor.total_votes - sponsor.total_votes;
+                      const isAhead = voteDifference > 0;
+                      
+                      return (
+                        <div
+                          key={competitor.id}
+                          className="flex items-center justify-between p-4 bg-black/20 rounded-lg hover:bg-black/30 transition-colors"
+                        >
+                          <div className="flex items-center gap-4 flex-1">
+                            <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-2xl">
+                              {competitor.logo}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-semibold text-white">
+                                  {competitor.name}
+                                </span>
+                                <Badge 
+                                  variant="outline"
+                                  className={`text-xs bg-gradient-to-r ${competitorTier.color} border-0 text-white`}
+                                >
+                                  {competitorTier.name}
+                                </Badge>
+                              </div>
+                              <div className="text-sm text-gray-400">
+                                {competitor.total_votes} votes
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className={`text-sm font-semibold ${isAhead ? 'text-red-400' : 'text-green-400'}`}>
+                              {isAhead ? (
+                                <>+{voteDifference} ahead</>
+                              ) : (
+                                <>{Math.abs(voteDifference)} behind</>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="text-center py-8 text-gray-400">
+                      No other active sponsors in your category yet. You're leading the pack!
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Comparison Charts */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
+                <CardHeader>
+                  <CardTitle className="text-white">Vote Comparison</CardTitle>
+                  <CardDescription>
+                    Your votes vs top 5 competitors
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {competitors.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart 
+                        data={[
+                          { name: sponsor.name.substring(0, 15), votes: sponsor.total_votes, fill: "#a855f7" },
+                          ...competitors.slice(0, 5).map(c => ({
+                            name: c.name.substring(0, 15),
+                            votes: c.total_votes,
+                            fill: "#6b7280"
+                          }))
+                        ]}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                        <XAxis dataKey="name" stroke="#9ca3af" angle={-45} textAnchor="end" height={100} />
+                        <YAxis stroke="#9ca3af" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: '#1f2937', 
+                            border: '1px solid #4b5563', 
+                            borderRadius: '0.5rem' 
+                          }}
+                          labelStyle={{ color: '#f3f4f6' }}
+                        />
+                        <Bar dataKey="votes" radius={[8, 8, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-[300px] flex items-center justify-center text-gray-400">
+                      No competitors to compare
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
+                <CardHeader>
+                  <CardTitle className="text-white">Market Share</CardTitle>
+                  <CardDescription>
+                    Your share of votes in {sponsor.category}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {competitors.length > 0 ? (
+                    <>
+                      <div className="mb-6">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-gray-400">Your Market Share</span>
+                          <span className="text-2xl font-bold text-white">
+                            {(
+                              (sponsor.total_votes / 
+                              (sponsor.total_votes + competitors.reduce((sum, c) => sum + c.total_votes, 0))) * 100
+                            ).toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-700 rounded-full h-3">
+                          <div 
+                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-3 rounded-full transition-all duration-500"
+                            style={{ 
+                              width: `${(sponsor.total_votes / 
+                                (sponsor.total_votes + competitors.reduce((sum, c) => sum + c.total_votes, 0))) * 100}%` 
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <h4 className="text-sm font-semibold text-white">Category Insights</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="p-3 bg-black/20 rounded-lg">
+                            <div className="text-xs text-gray-400 mb-1">Total Category Votes</div>
+                            <div className="text-xl font-bold text-white">
+                              {sponsor.total_votes + competitors.reduce((sum, c) => sum + c.total_votes, 0)}
+                            </div>
+                          </div>
+                          <div className="p-3 bg-black/20 rounded-lg">
+                            <div className="text-xs text-gray-400 mb-1">Active Sponsors</div>
+                            <div className="text-xl font-bold text-white">
+                              {competitors.length + 1}
+                            </div>
+                          </div>
+                          <div className="p-3 bg-black/20 rounded-lg">
+                            <div className="text-xs text-gray-400 mb-1">Your Position</div>
+                            <div className="text-xl font-bold text-white">
+                              #{rankingData?.rank || "-"}
+                            </div>
+                          </div>
+                          <div className="p-3 bg-black/20 rounded-lg">
+                            <div className="text-xs text-gray-400 mb-1">Votes to #1</div>
+                            <div className="text-xl font-bold text-white">
+                              {competitors[0] && competitors[0].total_votes > sponsor.total_votes
+                                ? competitors[0].total_votes - sponsor.total_votes + 1
+                                : rankingData?.rank === 1 ? "👑" : 0}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="h-[300px] flex flex-col items-center justify-center text-gray-400">
+                      <Trophy className="h-12 w-12 text-yellow-500 mb-4" />
+                      <p className="text-lg font-semibold text-white mb-2">
+                        You're the category leader!
+                      </p>
+                      <p className="text-sm">
+                        No other sponsors in {sponsor.category} yet
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Strategic Insights */}
+            <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
+              <CardHeader>
+                <CardTitle className="text-white">Strategic Insights</CardTitle>
+                <CardDescription>
+                  Actionable recommendations based on competitor analysis
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {competitors.length > 0 && (
+                    <>
+                      {rankingData && rankingData.rank === 1 && (
+                        <div className="flex gap-3 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+                          <Trophy className="h-5 w-5 text-green-400 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-semibold text-green-400 mb-1">
+                              Maintaining Leadership
+                            </div>
+                            <div className="text-sm text-gray-300">
+                              You're currently #1 in {sponsor.category}! Keep engaging with voters and maintain your presence to stay on top.
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {rankingData && rankingData.rank > 1 && competitors[0] && (
+                        <div className="flex gap-3 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                          <TrendingUp className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-semibold text-blue-400 mb-1">
+                              Path to Top Position
+                            </div>
+                            <div className="text-sm text-gray-300">
+                              You need {competitors[0].total_votes - sponsor.total_votes + 1} more votes to reach #1. 
+                              Consider upgrading your tier or running campaigns to boost engagement.
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {competitors.filter(c => TIER_INFO[c.tier as keyof typeof TIER_INFO].name > tierInfo.name).length > 0 && (
+                        <div className="flex gap-3 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                          <Crown className="h-5 w-5 text-purple-400 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-semibold text-purple-400 mb-1">
+                              Tier Upgrade Opportunity
+                            </div>
+                            <div className="text-sm text-gray-300">
+                              Some competitors have higher tier sponsorships. Upgrading your tier can provide better visibility and features to gain more votes.
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  <div className="flex gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+                    <Star className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <div className="font-semibold text-yellow-400 mb-1">
+                        Engagement Tips
+                      </div>
+                      <div className="text-sm text-gray-300">
+                        Share your brand profile on social media, engage with voters, and promote your unique value proposition to stand out in the {sponsor.category} category.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Recent Votes Tab */}
