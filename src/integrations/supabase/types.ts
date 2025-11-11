@@ -14915,6 +14915,47 @@ export type Database = {
           },
         ]
       }
+      sponsor_goals: {
+        Row: {
+          created_at: string
+          deadline: string
+          goal_type: string
+          id: string
+          sponsor_id: string
+          status: string
+          target_value: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deadline: string
+          goal_type: string
+          id?: string
+          sponsor_id: string
+          status?: string
+          target_value: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deadline?: string
+          goal_type?: string
+          id?: string
+          sponsor_id?: string
+          status?: string
+          target_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsor_goals_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: true
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sports_ai_subscriptions: {
         Row: {
           amount_paid: number | null
