@@ -63,14 +63,14 @@ export function GoalSettingDialog({ sponsorId, currentGoal, onGoalSet }: GoalSet
     setSubmitting(true);
     try {
       const { error } = await supabase
-        .from("sponsor_goals")
+        .from("sponsor_goals" as any)
         .upsert({
           sponsor_id: sponsorId,
           goal_type: data.goal_type,
           target_value: data.target_value,
           deadline: new Date(data.deadline).toISOString(),
           status: "active",
-        }, {
+        } as any, {
           onConflict: "sponsor_id",
         });
 

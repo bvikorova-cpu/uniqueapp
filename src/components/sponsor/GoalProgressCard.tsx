@@ -81,7 +81,7 @@ export function GoalProgressCard({
   const handleDeleteGoal = async () => {
     try {
       const { error } = await supabase
-        .from("sponsor_goals")
+        .from("sponsor_goals" as any)
         .delete()
         .eq("id", goal.id);
 

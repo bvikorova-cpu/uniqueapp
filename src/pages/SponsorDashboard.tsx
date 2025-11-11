@@ -285,7 +285,7 @@ export default function SponsorDashboard() {
       if (!sponsor) return null;
       
       const { data, error } = await supabase
-        .from("sponsor_goals")
+        .from("sponsor_goals" as any)
         .select("*")
         .eq("sponsor_id", sponsor.id)
         .eq("status", "active")
