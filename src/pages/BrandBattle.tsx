@@ -348,8 +348,12 @@ export default function BrandBattle() {
                           </li>
                         ))}
                       </ul>
-                      <Button className="w-full" variant={key === "platinum" ? "default" : "outline"}>
-                        Contact Sales
+                      <Button 
+                        className="w-full" 
+                        variant={key === "platinum" ? "default" : "outline"}
+                        onClick={() => navigate("/sponsor-registration")}
+                      >
+                        Get Started
                       </Button>
                     </CardContent>
                   </Card>

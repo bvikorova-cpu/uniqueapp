@@ -155,6 +155,7 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 import HealthcareProviderDashboard from "./pages/HealthcareProviderDashboard";
 import HealthcareContentLibrary from "./pages/HealthcareContentLibrary";
 import BrandBattle from "./pages/BrandBattle";
+import SponsorRegistration from "./pages/SponsorRegistration";
 import BrainDuel from "./pages/BrainDuel";
 import CorporatePartnerships from "./pages/CorporatePartnerships";
 import Coffee from "./pages/Coffee";
@@ -386,8 +387,9 @@ const App = () => (
           <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
           <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
           <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
-          <Route path="/brand-battle" element={<BrandBattle />} />
-          <Route path="/brain-duel" element={<BrainDuel />} />
+           <Route path="/brand-battle" element={<BrandBattle />} />
+           <Route path="/sponsor-registration" element={<SponsorRegistration />} />
+           <Route path="/brain-duel" element={<BrainDuel />} />
           <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
           <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/fashion-studio" element={<FashionStudio />} />
