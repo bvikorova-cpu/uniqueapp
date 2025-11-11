@@ -151,12 +151,9 @@ import AnalyzerPricing from "./pages/AnalyzerPricing";
 import AnalyzerHistory from "./pages/AnalyzerHistory";
 import AnalyzerCollections from "./pages/AnalyzerCollections";
 import VideoAdGenerator from "./pages/VideoAdGenerator";
-import Schools from "./pages/Schools";
 import TeacherDashboard from "./pages/TeacherDashboard";
-import Healthcare from "./pages/Healthcare";
 import HealthcareProviderDashboard from "./pages/HealthcareProviderDashboard";
 import HealthcareContentLibrary from "./pages/HealthcareContentLibrary";
-import CorporateEvents from "./pages/CorporateEvents";
 import BrandBattle from "./pages/BrandBattle";
 import BrainDuel from "./pages/BrainDuel";
 import CorporatePartnerships from "./pages/CorporatePartnerships";
@@ -383,12 +380,9 @@ const App = () => (
           <Route path="/creative-writing" element={<CreativeWriting />} />
           <Route path="/writing/:contentId" element={<GenericLearning />} />
           <Route path="/coloring-pages" element={<ColoringPages />} />
-          <Route path="/schools" element={<Schools />} />
           <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
-          <Route path="/healthcare" element={<Healthcare />} />
           <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
           <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
-          <Route path="/corporate-events" element={<CorporateEvents />} />
           <Route path="/brand-battle" element={<BrandBattle />} />
           <Route path="/brain-duel" element={<BrainDuel />} />
           <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />

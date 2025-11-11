@@ -13,6 +13,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Loader2, Image as ImageIcon, Download, Crown, Sparkles, Upload } from "lucide-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { SchoolsTab } from "@/components/coloring/SchoolsTab";
+import { HealthcareTab } from "@/components/coloring/HealthcareTab";
+import { CorporateTab } from "@/components/coloring/CorporateTab";
 
 export default function ColoringPages() {
   const navigate = useNavigate();
@@ -210,10 +213,13 @@ export default function ColoringPages() {
         </Card>
 
         <Tabs defaultValue="generate" className="space-y-6">
-          <TabsList>
+          <TabsList className="grid grid-cols-6 w-full">
             <TabsTrigger value="generate">Generate</TabsTrigger>
             <TabsTrigger value="pricing">Pricing</TabsTrigger>
             <TabsTrigger value="my-pages">My Pages</TabsTrigger>
+            <TabsTrigger value="schools">Schools</TabsTrigger>
+            <TabsTrigger value="healthcare">Healthcare</TabsTrigger>
+            <TabsTrigger value="corporate">Corporate</TabsTrigger>
           </TabsList>
 
           <TabsContent value="generate" className="space-y-6">
@@ -468,6 +474,18 @@ export default function ColoringPages() {
                 </Card>
               ))}
             </div>
+          </TabsContent>
+
+          <TabsContent value="schools">
+            <SchoolsTab />
+          </TabsContent>
+
+          <TabsContent value="healthcare">
+            <HealthcareTab />
+          </TabsContent>
+
+          <TabsContent value="corporate">
+            <CorporateTab />
           </TabsContent>
         </Tabs>
       </main>
