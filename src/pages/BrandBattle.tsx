@@ -91,7 +91,7 @@ export default function BrandBattle() {
       searchParams.delete("session_id");
       setSearchParams(searchParams);
     } else if (payment === "canceled") {
-      toast.error("Platba bola zrušená");
+      toast.error("Payment was cancelled");
       searchParams.delete("payment");
       setSearchParams(searchParams);
     }
@@ -109,12 +109,12 @@ export default function BrandBattle() {
       if (error) throw error;
 
       if (data?.success) {
-        toast.success(`Úspešne! Pridali sme ti ${data.votesAdded} hlasov.`);
+        toast.success(`Success! We've added ${data.votesAdded} votes to your account.`);
         refetchVotes();
       }
     } catch (error: any) {
       console.error("Error verifying payment:", error);
-      toast.error("Chyba pri overovaní platby");
+      toast.error("Error verifying payment");
     }
   };
 
@@ -144,7 +144,7 @@ export default function BrandBattle() {
       return data;
     },
     onSuccess: (data) => {
-      toast.success(`Hlas zaznamenaný! Ostáva ti ${data.votesRemaining} hlasov dnes.`);
+      toast.success(`Vote recorded! ${data.votesRemaining} votes remaining today.`);
       queryClient.invalidateQueries({ queryKey: ["brand-sponsors"] });
       queryClient.invalidateQueries({ queryKey: ["brand-votes"] });
       refetchVotes();
@@ -156,13 +156,13 @@ export default function BrandBattle() {
 
   const handleVote = async (brandId: string, brandName: string) => {
     if (!user) {
-      toast.error("Prihlás sa aby si mohol hlasovať");
+      toast.error("Please sign in to vote");
       navigate("/auth");
       return;
     }
 
     if ((votes?.remaining || 0) <= 0) {
-      toast.error("Nemáš dostatok hlasov. Kúp si extra hlasy!");
+      toast.error("Not enough votes. Buy extra votes!");
       return;
     }
 
@@ -198,7 +198,7 @@ export default function BrandBattle() {
             Brand Battle Arena
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Hlasuj za svoje obľúbené značky a získavaj odmeny. Top značky získajú prémiové umiestnenie.
+            Vote for your favorite brands and earn rewards. Top brands get premium placement.
           </p>
           
           {user && (
@@ -289,7 +289,7 @@ export default function BrandBattle() {
                         ) : (
                           <Vote className="h-4 w-4 mr-2" />
                         )}
-                        Hlasovať
+                        Vote Now
                       </Button>
                     </CardContent>
                   </Card>
@@ -332,7 +332,7 @@ export default function BrandBattle() {
                           ) : (
                             <Vote className="h-4 w-4 mr-2" />
                           )}
-                          Hlasovať
+                          Vote
                         </Button>
                       </CardContent>
                     </Card>

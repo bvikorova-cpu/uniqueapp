@@ -38,7 +38,7 @@ const VOTE_PACKAGES = [
     price: "10€",
     priceId: "price_1SSDadGaXSfGtYFthJDJ0sYd",
     popular: false,
-    badge: "Najlepšia hodnota",
+    badge: "Best Value",
   },
 ];
 
@@ -52,8 +52,8 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
-          title: "Musíš sa prihlásiť",
-          description: "Pre nákup hlasov sa musíš prihlásiť do účtu.",
+          title: "Please sign in",
+          description: "You need to be signed in to purchase votes.",
           variant: "destructive",
         });
         return;
@@ -71,14 +71,14 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
       if (data?.url) {
         window.open(data.url, "_blank");
         toast({
-          title: "Platba vytvorená",
-          description: `Otvorili sme platobnú bránu pre ${votes} hlasov.`,
+          title: "Payment created",
+          description: `We've opened the payment gateway for ${votes} votes.`,
         });
       }
     } catch (error: any) {
       console.error("Error creating payment:", error);
       toast({
-        title: "Chyba pri vytváraní platby",
+        title: "Error creating payment",
         description: error.message,
         variant: "destructive",
       });
@@ -91,9 +91,9 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Kúp si extra hlasy</DialogTitle>
+          <DialogTitle>Buy Extra Votes</DialogTitle>
           <DialogDescription>
-            Vyber si balík hlasov ktoré chceš kúpiť. Hlasy môžeš použiť dnes na hlasovanie.
+            Choose a vote package to purchase. Votes can be used today for voting.
           </DialogDescription>
         </DialogHeader>
 
@@ -107,7 +107,7 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
             >
               {pkg.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                  Populárne
+                  Popular
                 </div>
               )}
               {pkg.badge && (
@@ -118,21 +118,21 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
 
               <div className="text-center mb-4">
                 <div className="text-4xl font-bold mb-2">{pkg.votes}</div>
-                <div className="text-sm text-muted-foreground mb-1">hlasov</div>
+                <div className="text-sm text-muted-foreground mb-1">votes</div>
                 <div className="text-2xl font-bold text-primary">{pkg.price}</div>
                 <div className="text-xs text-muted-foreground mt-2">
-                  {(parseFloat(pkg.price) / pkg.votes).toFixed(2)}€ za hlas
+                  {(parseFloat(pkg.price) / pkg.votes).toFixed(2)}€ per vote
                 </div>
               </div>
 
               <ul className="space-y-2 mb-4">
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-green-600" />
-                  <span>Okamžitá aktivácia</span>
+                  <span>Instant activation</span>
                 </li>
                 <li className="flex items-center gap-2 text-sm">
                   <Check className="h-4 w-4 text-green-600" />
-                  <span>Platnosť dnes</span>
+                  <span>Valid today</span>
                 </li>
               </ul>
 
@@ -145,10 +145,10 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
                 {loading === pkg.priceId ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Spracovávam...
+                    Processing...
                   </>
                 ) : (
-                  "Kúpiť teraz"
+                  "Buy Now"
                 )}
               </Button>
             </Card>
@@ -157,7 +157,7 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
 
         <div className="mt-4 p-4 bg-muted rounded-lg">
           <p className="text-sm text-muted-foreground">
-            ℹ️ Zakúpené hlasy platia len pre dnešný deň. Zajtra dostaneš znovu 1 bezplatný hlas.
+            ℹ️ Purchased votes are valid for today only. Tomorrow you'll receive 1 free vote again.
           </p>
         </div>
       </DialogContent>

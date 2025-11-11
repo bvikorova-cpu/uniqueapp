@@ -18,13 +18,13 @@ export const BrandVotesDisplay = () => {
           <div className="flex items-center gap-2">
             <Vote className="h-5 w-5 text-primary" />
             <div>
-              <p className="text-sm text-muted-foreground">Dostupné hlasy dnes</p>
+              <p className="text-sm text-muted-foreground">Available votes today</p>
               <p className="text-2xl font-bold">
                 {votes?.remaining || 0} / {votes?.total || 1}
               </p>
               {votes && votes.purchased > 0 && (
                 <p className="text-xs text-muted-foreground">
-                  (vrátane {votes.purchased} zakúpených)
+                  (including {votes.purchased} purchased)
                 </p>
               )}
             </div>
@@ -36,13 +36,13 @@ export const BrandVotesDisplay = () => {
             className="gap-2"
           >
             <ShoppingCart className="h-4 w-4" />
-            Kúpiť hlasy
+            Buy Votes
           </Button>
         </div>
         
         {votes && votes.remaining === 0 && (
           <p className="mt-2 text-xs text-muted-foreground">
-            Použil si všetky hlasy. Kúp si extra hlasy alebo počkaj do zajtra.
+            You've used all your votes. Buy extra votes or wait until tomorrow.
           </p>
         )}
       </Card>
