@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
@@ -380,6 +380,9 @@ const App = () => (
           <Route path="/creative-writing" element={<CreativeWriting />} />
           <Route path="/writing/:contentId" element={<GenericLearning />} />
           <Route path="/coloring-pages" element={<ColoringPages />} />
+          <Route path="/schools" element={<Navigate to="/coloring-pages" replace />} />
+          <Route path="/healthcare" element={<Navigate to="/coloring-pages" replace />} />
+          <Route path="/corporate-events" element={<Navigate to="/coloring-pages" replace />} />
           <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
           <Route path="/healthcare-dashboard" element={<HealthcareProviderDashboard />} />
           <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
