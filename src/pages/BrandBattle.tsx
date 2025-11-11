@@ -177,14 +177,25 @@ export default function BrandBattle() {
           </p>
           
           {user && (
-            <div className="inline-flex items-center gap-4 bg-card border rounded-lg px-6 py-3">
-              <div className="flex items-center gap-2">
-                <Vote className="h-5 w-5 text-primary" />
-                <span className="font-semibold">{voteData?.votesRemaining || 0} votes today</span>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="inline-flex items-center gap-4 bg-card border rounded-lg px-6 py-3">
+                <div className="flex items-center gap-2">
+                  <Vote className="h-5 w-5 text-primary" />
+                  <span className="font-semibold">{voteData?.votesRemaining || 0} votes today</span>
+                </div>
+                <div className="h-6 w-px bg-border"></div>
+                <Button variant="outline" size="sm">
+                  Get Extra Votes (5 credits/vote)
+                </Button>
               </div>
-              <div className="h-6 w-px bg-border"></div>
-              <Button variant="outline" size="sm">
-                Get Extra Votes (5 credits/vote)
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/sponsor-dashboard")}
+                className="border-purple-500/30 hover:bg-purple-500/10"
+              >
+                <Building2 className="h-4 w-4 mr-2" />
+                Sponsor Dashboard
               </Button>
             </div>
           )}
