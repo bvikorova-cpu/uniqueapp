@@ -8,11 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Trophy, TrendingUp, Star, Award, Crown, Zap, ArrowLeft, 
   Calendar, Users, BarChart3, Settings, ExternalLink, Loader2,
-  AlertCircle, CheckCircle2, XCircle
+  AlertCircle, CheckCircle2, XCircle, Target
 } from "lucide-react";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
+import { GoalSettingDialog } from "@/components/sponsor/GoalSettingDialog";
+import { GoalProgressCard } from "@/components/sponsor/GoalProgressCard";
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, 
   Tooltip, Legend, ResponsiveContainer, Area, AreaChart 
@@ -276,6 +278,29 @@ export default function SponsorDashboard() {
     enabled: !!sponsor,
   });
 
+  // Load sponsor goals
+  const { data: sponsorGoal, refetch: refetchGoal } = useQuery({
+    queryKey: ["sponsor-goal", sponsor?.id],
+    queryFn: async () => {
+      if (!sponsor) return null;
+      
+      const { data, error } = await supabase
+        .from("sponsor_goals")
+        .select("*")
+        .eq("sponsor_id", sponsor.id)
+        .eq("status", "active")
+        .single();
+      
+      if (error) {
+        if (error.code === "PGRST116") return null; // No goal found
+        throw error;
+      }
+      
+      return data;
+    },
+    enabled: !!sponsor,
+  });
+
   const handleCancelSubscription = async () => {
     if (!sponsor?.stripe_subscription_id) {
       toast.error("No active subscription found");
@@ -415,6 +440,43 @@ export default function SponsorDashboard() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Goals Section */}
+        <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50 mb-8">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Your Goals
+                </CardTitle>
+                <CardDescription>Track your progress toward your targets</CardDescription>
+              </div>
+              <GoalSettingDialog 
+                sponsorId={sponsor.id} 
+                currentGoal={sponsorGoal}
+                onGoalSet={() => refetchGoal()}
+              />
+            </div>
+          </CardHeader>
+          <CardContent>
+            {sponsorGoal ? (
+              <GoalProgressCard
+                goal={sponsorGoal}
+                currentValue={sponsor.total_votes}
+                categoryRank={rankingData?.rank}
+                dailyAverage={categoryBenchmarks?.sponsorDailyAvg}
+                onGoalDeleted={() => refetchGoal()}
+              />
+            ) : (
+              <div className="text-center py-12 text-gray-400">
+                <Target className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p className="text-lg font-semibold text-white mb-2">No Active Goal</p>
+                <p className="mb-4">Set a goal to track your progress and stay motivated</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Tabs Section */}
         <Tabs defaultValue="analytics" className="space-y-6">
