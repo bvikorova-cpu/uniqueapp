@@ -5,8 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trophy, TrendingUp, Star, Award, Crown, Vote, Building2, Zap } from "lucide-react";
+import { Trophy, TrendingUp, Star, Award, Crown, Vote, Building2, Zap, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -16,7 +17,7 @@ interface BrandSponsor {
   logo: string;
   tier: "bronze" | "silver" | "gold" | "platinum";
   category: string;
-  votes: number;
+  total_votes: number;
   description: string;
   website: string;
 }
@@ -56,78 +57,82 @@ const CATEGORIES = ["Tech", "Fashion", "Food", "Services", "Healthcare", "Educat
 
 export default function BrandBattle() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [userVotes, setUserVotes] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
 
-  // Mock data - in production, this would come from Supabase
-  const [sponsors] = useState<BrandSponsor[]>([
-    {
-      id: "1",
-      name: "TechCorp Solutions",
-      logo: "🚀",
-      tier: "platinum",
-      category: "Tech",
-      votes: 1247,
-      description: "Leading AI & Machine Learning Platform",
-      website: "https://example.com",
-    },
-    {
-      id: "2",
-      name: "FashionHub",
-      logo: "👗",
-      tier: "gold",
-      category: "Fashion",
-      votes: 892,
-      description: "Sustainable Fashion Marketplace",
-      website: "https://example.com",
-    },
-    {
-      id: "3",
-      name: "HealthPlus",
-      logo: "🏥",
-      tier: "gold",
-      category: "Healthcare",
-      votes: 756,
-      description: "Digital Health Solutions",
-      website: "https://example.com",
-    },
-    {
-      id: "4",
-      name: "EduMaster",
-      logo: "📚",
-      tier: "silver",
-      category: "Education",
-      votes: 634,
-      description: "Online Learning Platform",
-      website: "https://example.com",
-    },
-    {
-      id: "5",
-      name: "FoodDelight",
-      logo: "🍕",
-      tier: "silver",
-      category: "Food",
-      votes: 521,
-      description: "Premium Food Delivery",
-      website: "https://example.com",
-    },
-  ]);
-
+  // Load user auth
   useEffect(() => {
-    checkAuth();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUser(user);
-    if (user) {
-      // Load user's daily votes (mock)
-      setUserVotes(5);
-    }
-    setLoading(false);
-  };
+  // Load brand sponsors
+  const { data: sponsors = [], isLoading: sponsorsLoading } = useQuery({
+    queryKey: ["brand-sponsors"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("brand_sponsors")
+        .select("*")
+        .eq("subscription_status", "active")
+        .order("total_votes", { ascending: false });
+      
+      if (error) throw error;
+      return data as BrandSponsor[];
+    },
+  });
+
+  // Load user's daily votes
+  const { data: voteData, refetch: refetchVotes } = useQuery({
+    queryKey: ["user-daily-votes", user?.id],
+    queryFn: async () => {
+      if (!user) return { votesRemaining: 0 };
+      
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from("user_daily_votes")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("date", today)
+        .single();
+
+      const DAILY_FREE_VOTES = 5;
+      const totalVotes = DAILY_FREE_VOTES + (data?.votes_purchased || 0);
+      const votesRemaining = totalVotes - (data?.votes_used || 0);
+
+      return { votesRemaining };
+    },
+    enabled: !!user,
+  });
+
+  // Vote mutation
+  const voteMutation = useMutation({
+    mutationFn: async (brandId: string) => {
+      const { data, error } = await supabase.functions.invoke("vote-for-brand", {
+        body: { brandId },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      toast.success(`Vote recorded! ${data.votesRemaining} votes remaining today.`);
+      queryClient.invalidateQueries({ queryKey: ["brand-sponsors"] });
+      queryClient.invalidateQueries({ queryKey: ["user-daily-votes"] });
+      refetchVotes();
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Failed to vote");
+    },
+  });
 
   const handleVote = async (brandId: string, brandName: string) => {
     if (!user) {
@@ -136,26 +141,19 @@ export default function BrandBattle() {
       return;
     }
 
-    if (userVotes <= 0) {
-      toast.error("No votes remaining today. Get extra votes with credits!");
-      return;
-    }
-
-    // In production: call Supabase function to record vote
-    setUserVotes(prev => prev - 1);
-    toast.success(`Voted for ${brandName}! ${userVotes - 1} votes remaining today.`);
+    voteMutation.mutate(brandId);
   };
 
   const filteredSponsors = selectedCategory === "All" 
     ? sponsors 
     : sponsors.filter(s => s.category === selectedCategory);
 
-  const sortedSponsors = [...filteredSponsors].sort((a, b) => b.votes - a.votes);
+  const sortedSponsors = [...filteredSponsors].sort((a, b) => b.total_votes - a.total_votes);
 
-  if (loading) {
+  if (sponsorsLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <Loader2 className="h-12 w-12 animate-spin" />
       </div>
     );
   }
@@ -182,7 +180,7 @@ export default function BrandBattle() {
             <div className="inline-flex items-center gap-4 bg-card border rounded-lg px-6 py-3">
               <div className="flex items-center gap-2">
                 <Vote className="h-5 w-5 text-primary" />
-                <span className="font-semibold">{userVotes} votes today</span>
+                <span className="font-semibold">{voteData?.votesRemaining || 0} votes today</span>
               </div>
               <div className="h-6 w-px bg-border"></div>
               <Button variant="outline" size="sm">
@@ -251,15 +249,19 @@ export default function BrandBattle() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-primary">{sponsor.votes}</div>
+                        <div className="text-3xl font-bold text-primary">{sponsor.total_votes}</div>
                         <div className="text-sm text-muted-foreground">votes</div>
                       </div>
                       <Button 
                         onClick={() => handleVote(sponsor.id, sponsor.name)}
                         className="w-full"
-                        disabled={!user || userVotes <= 0}
+                        disabled={!user || voteMutation.isPending || (voteData?.votesRemaining || 0) <= 0}
                       >
-                        <Vote className="h-4 w-4 mr-2" />
+                        {voteMutation.isPending ? (
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                          <Vote className="h-4 w-4 mr-2" />
+                        )}
                         Vote Now
                       </Button>
                     </CardContent>
@@ -291,14 +293,18 @@ export default function BrandBattle() {
                           </Badge>
                         </div>
                         <div className="text-center px-4">
-                          <div className="text-2xl font-bold text-primary">{sponsor.votes}</div>
+                          <div className="text-2xl font-bold text-primary">{sponsor.total_votes}</div>
                           <div className="text-xs text-muted-foreground">votes</div>
                         </div>
                         <Button 
                           onClick={() => handleVote(sponsor.id, sponsor.name)}
-                          disabled={!user || userVotes <= 0}
+                          disabled={!user || voteMutation.isPending || (voteData?.votesRemaining || 0) <= 0}
                         >
-                          <Vote className="h-4 w-4 mr-2" />
+                          {voteMutation.isPending ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          ) : (
+                            <Vote className="h-4 w-4 mr-2" />
+                          )}
                           Vote
                         </Button>
                       </CardContent>
