@@ -67,26 +67,7 @@ serve(async (req) => {
       });
     }
 
-    // Check if user already voted for this brand today
-    const { data: existingVote } = await supabaseClient
-      .from("brand_votes")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("brand_id", brandId)
-      .eq("vote_date", today)
-      .single();
-
-    if (existingVote) {
-      return new Response(JSON.stringify({ 
-        error: "Already voted for this brand today",
-        votesRemaining: votesRemaining
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      });
-    }
-
-    // Record vote
+    // Record vote (allow multiple votes for same brand)
     const { error: voteError } = await supabaseClient
       .from("brand_votes")
       .insert({
