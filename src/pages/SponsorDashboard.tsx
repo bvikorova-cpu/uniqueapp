@@ -42,6 +42,7 @@ interface BrandSponsor {
   subscription_start: string;
   subscription_end: string;
   stripe_subscription_id: string;
+  created_at?: string;
 }
 
 const TIER_INFO = {
@@ -170,7 +171,7 @@ export default function SponsorDashboard() {
       
       const { data, error } = await supabase
         .from("brand_sponsors")
-        .select("id, name, logo, tier, total_votes")
+        .select("id, name, logo, tier, total_votes, created_at")
         .eq("category", sponsor.category)
         .eq("subscription_status", "active")
         .neq("id", sponsor.id)
@@ -179,6 +180,98 @@ export default function SponsorDashboard() {
       
       if (error) throw error;
       return data;
+    },
+    enabled: !!sponsor,
+  });
+
+  // Load category benchmarks
+  const { data: categoryBenchmarks } = useQuery({
+    queryKey: ["category-benchmarks", sponsor?.category],
+    queryFn: async () => {
+      if (!sponsor) return null;
+      
+      // Get all active sponsors in category
+      const { data: allSponsors, error } = await supabase
+        .from("brand_sponsors")
+        .select("id, total_votes, created_at")
+        .eq("category", sponsor.category)
+        .eq("subscription_status", "active");
+      
+      if (error) throw error;
+      
+      // Calculate averages
+      const totalVotes = allSponsors.reduce((sum, s) => sum + s.total_votes, 0);
+      const avgVotes = totalVotes / allSponsors.length;
+      
+      // Calculate days active and daily average
+      const sponsorDaysActive = Math.max(1, Math.ceil(
+        (Date.now() - new Date(sponsor.created_at || sponsor.subscription_start).getTime()) / (1000 * 60 * 60 * 24)
+      ));
+      const sponsorDailyAvg = sponsor.total_votes / sponsorDaysActive;
+      
+      const categoryDailyAvgs = allSponsors.map(s => {
+        const daysActive = Math.max(1, Math.ceil(
+          (Date.now() - new Date(s.created_at || Date.now()).getTime()) / (1000 * 60 * 60 * 24)
+        ));
+        return s.total_votes / daysActive;
+      });
+      const avgDailyVotes = categoryDailyAvgs.reduce((sum, v) => sum + v, 0) / categoryDailyAvgs.length;
+      
+      return {
+        totalSponsors: allSponsors.length,
+        avgVotes,
+        avgDailyVotes,
+        totalCategoryVotes: totalVotes,
+        sponsorDailyAvg,
+        sponsorDaysActive,
+      };
+    },
+    enabled: !!sponsor,
+  });
+
+  // Load vote growth trend (last 7 days)
+  const { data: growthMetrics } = useQuery({
+    queryKey: ["growth-metrics", sponsor?.id],
+    queryFn: async () => {
+      if (!sponsor) return null;
+      
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      
+      const { data, error } = await supabase
+        .from("brand_votes")
+        .select("created_at")
+        .eq("brand_id", sponsor.id)
+        .gte("created_at", sevenDaysAgo.toISOString());
+      
+      if (error) throw error;
+      
+      const votesLast7Days = data.length;
+      
+      // Get previous 7 days for comparison
+      const fourteenDaysAgo = new Date();
+      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+      
+      const { data: prevData, error: prevError } = await supabase
+        .from("brand_votes")
+        .select("created_at")
+        .eq("brand_id", sponsor.id)
+        .gte("created_at", fourteenDaysAgo.toISOString())
+        .lt("created_at", sevenDaysAgo.toISOString());
+      
+      if (prevError) throw prevError;
+      
+      const votesPrev7Days = prevData.length;
+      const growthRate = votesPrev7Days > 0 
+        ? ((votesLast7Days - votesPrev7Days) / votesPrev7Days) * 100 
+        : votesLast7Days > 0 ? 100 : 0;
+      
+      return {
+        votesLast7Days,
+        votesPrev7Days,
+        growthRate,
+        dailyAverage: votesLast7Days / 7,
+      };
     },
     enabled: !!sponsor,
   });
@@ -662,6 +755,241 @@ export default function SponsorDashboard() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Category Benchmarks */}
+            <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
+              <CardHeader>
+                <CardTitle className="text-white">Category Benchmarks</CardTitle>
+                <CardDescription>
+                  How your performance compares to category averages
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {categoryBenchmarks && growthMetrics ? (
+                  <div className="space-y-6">
+                    {/* Performance Metrics Grid */}
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="p-4 bg-black/20 rounded-lg border border-purple-500/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm text-gray-400">Total Votes</span>
+                          <Trophy className="h-4 w-4 text-purple-400" />
+                        </div>
+                        <div className="flex items-end justify-between">
+                          <div>
+                            <div className="text-2xl font-bold text-white mb-1">
+                              {sponsor.total_votes}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              Avg: {categoryBenchmarks.avgVotes.toFixed(0)}
+                            </div>
+                          </div>
+                          <div className={`text-sm font-semibold ${
+                            sponsor.total_votes > categoryBenchmarks.avgVotes ? 'text-green-400' : 'text-orange-400'
+                          }`}>
+                            {sponsor.total_votes > categoryBenchmarks.avgVotes ? '+' : ''}
+                            {((sponsor.total_votes / categoryBenchmarks.avgVotes - 1) * 100).toFixed(0)}%
+                          </div>
+                        </div>
+                        <div className="mt-3 w-full bg-gray-700 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full ${
+                              sponsor.total_votes > categoryBenchmarks.avgVotes 
+                                ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
+                                : 'bg-gradient-to-r from-orange-500 to-yellow-500'
+                            }`}
+                            style={{ 
+                              width: `${Math.min(100, (sponsor.total_votes / categoryBenchmarks.avgVotes) * 100)}%` 
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-black/20 rounded-lg border border-blue-500/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm text-gray-400">Daily Average</span>
+                          <BarChart3 className="h-4 w-4 text-blue-400" />
+                        </div>
+                        <div className="flex items-end justify-between">
+                          <div>
+                            <div className="text-2xl font-bold text-white mb-1">
+                              {categoryBenchmarks.sponsorDailyAvg.toFixed(1)}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              Avg: {categoryBenchmarks.avgDailyVotes.toFixed(1)}
+                            </div>
+                          </div>
+                          <div className={`text-sm font-semibold ${
+                            categoryBenchmarks.sponsorDailyAvg > categoryBenchmarks.avgDailyVotes 
+                              ? 'text-green-400' : 'text-orange-400'
+                          }`}>
+                            {categoryBenchmarks.sponsorDailyAvg > categoryBenchmarks.avgDailyVotes ? '+' : ''}
+                            {((categoryBenchmarks.sponsorDailyAvg / categoryBenchmarks.avgDailyVotes - 1) * 100).toFixed(0)}%
+                          </div>
+                        </div>
+                        <div className="mt-3 w-full bg-gray-700 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full ${
+                              categoryBenchmarks.sponsorDailyAvg > categoryBenchmarks.avgDailyVotes 
+                                ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
+                                : 'bg-gradient-to-r from-orange-500 to-yellow-500'
+                            }`}
+                            style={{ 
+                              width: `${Math.min(100, (categoryBenchmarks.sponsorDailyAvg / categoryBenchmarks.avgDailyVotes) * 100)}%` 
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-black/20 rounded-lg border border-green-500/20">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm text-gray-400">7-Day Growth</span>
+                          <TrendingUp className="h-4 w-4 text-green-400" />
+                        </div>
+                        <div className="flex items-end justify-between">
+                          <div>
+                            <div className="text-2xl font-bold text-white mb-1">
+                              {growthMetrics.growthRate > 0 ? '+' : ''}
+                              {growthMetrics.growthRate.toFixed(0)}%
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {growthMetrics.votesLast7Days} votes this week
+                            </div>
+                          </div>
+                          <div className={`text-sm font-semibold ${
+                            growthMetrics.growthRate > 0 ? 'text-green-400' : 'text-red-400'
+                          }`}>
+                            {growthMetrics.growthRate > 0 ? '↗' : '↘'}
+                          </div>
+                        </div>
+                        <div className="mt-3 text-xs text-gray-500">
+                          vs {growthMetrics.votesPrev7Days} previous week
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Detailed Comparison */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-black/20 rounded-lg">
+                        <h4 className="text-sm font-semibold text-white mb-4">Performance Breakdown</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-400">Days Active</span>
+                            <span className="text-sm font-semibold text-white">
+                              {categoryBenchmarks.sponsorDaysActive} days
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-400">Votes per Day</span>
+                            <span className="text-sm font-semibold text-white">
+                              {categoryBenchmarks.sponsorDailyAvg.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-400">Category Rank</span>
+                            <span className="text-sm font-semibold text-white">
+                              #{rankingData?.rank || "-"} of {categoryBenchmarks.totalSponsors}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-400">Market Share</span>
+                            <span className="text-sm font-semibold text-white">
+                              {((sponsor.total_votes / categoryBenchmarks.totalCategoryVotes) * 100).toFixed(1)}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-black/20 rounded-lg">
+                        <h4 className="text-sm font-semibold text-white mb-4">Engagement Metrics</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-400">Weekly Votes</span>
+                            <span className="text-sm font-semibold text-white">
+                              {growthMetrics.votesLast7Days}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-400">Daily Average (7d)</span>
+                            <span className="text-sm font-semibold text-white">
+                              {growthMetrics.dailyAverage.toFixed(1)}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-400">Growth Trend</span>
+                            <span className={`text-sm font-semibold ${
+                              growthMetrics.growthRate > 0 ? 'text-green-400' : 'text-red-400'
+                            }`}>
+                              {growthMetrics.growthRate > 0 ? 'Growing' : 'Declining'}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-400">vs Category Avg</span>
+                            <span className={`text-sm font-semibold ${
+                              categoryBenchmarks.sponsorDailyAvg > categoryBenchmarks.avgDailyVotes 
+                                ? 'text-green-400' : 'text-orange-400'
+                            }`}>
+                              {categoryBenchmarks.sponsorDailyAvg > categoryBenchmarks.avgDailyVotes 
+                                ? 'Above Average' : 'Below Average'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Performance Summary */}
+                    <div className="p-4 bg-gradient-to-r from-purple-900/20 to-pink-900/20 rounded-lg border border-purple-500/30">
+                      <h4 className="text-sm font-semibold text-white mb-3">Performance Summary</h4>
+                      <div className="space-y-2 text-sm text-gray-300">
+                        {sponsor.total_votes > categoryBenchmarks.avgVotes ? (
+                          <p>
+                            ✅ Your brand is performing <strong className="text-green-400">
+                            {((sponsor.total_votes / categoryBenchmarks.avgVotes - 1) * 100).toFixed(0)}% above</strong> the category average for total votes.
+                          </p>
+                        ) : (
+                          <p>
+                            📊 Your brand is currently <strong className="text-orange-400">
+                            {((1 - sponsor.total_votes / categoryBenchmarks.avgVotes) * 100).toFixed(0)}% below</strong> the category average. Focus on increasing engagement.
+                          </p>
+                        )}
+                        
+                        {categoryBenchmarks.sponsorDailyAvg > categoryBenchmarks.avgDailyVotes ? (
+                          <p>
+                            ✅ Your daily vote rate is <strong className="text-green-400">
+                            {((categoryBenchmarks.sponsorDailyAvg / categoryBenchmarks.avgDailyVotes - 1) * 100).toFixed(0)}% higher</strong> than the category average.
+                          </p>
+                        ) : (
+                          <p>
+                            📈 Aim to increase your daily vote rate by <strong className="text-orange-400">
+                            {((categoryBenchmarks.avgDailyVotes / categoryBenchmarks.sponsorDailyAvg - 1) * 100).toFixed(0)}%</strong> to match the category average.
+                          </p>
+                        )}
+                        
+                        {growthMetrics.growthRate > 0 ? (
+                          <p>
+                            🚀 Great momentum! Your votes increased by <strong className="text-green-400">
+                            {growthMetrics.growthRate.toFixed(0)}%</strong> in the last 7 days.
+                          </p>
+                        ) : growthMetrics.growthRate < 0 ? (
+                          <p>
+                            ⚠️ Your votes decreased by <strong className="text-red-400">
+                            {Math.abs(growthMetrics.growthRate).toFixed(0)}%</strong> this week. Consider new engagement strategies.
+                          </p>
+                        ) : (
+                          <p>
+                            📊 Your vote count remained stable this week. Focus on growth strategies to improve rankings.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-400">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                    <p>Loading category benchmarks...</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
             {/* Strategic Insights */}
             <Card className="bg-black/40 backdrop-blur-lg border-purple-500/50">
