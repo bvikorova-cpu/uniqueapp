@@ -9,9 +9,10 @@ const corsHeaders = {
 
 // Map price IDs to vote amounts
 const VOTE_PACKAGES: Record<string, number> = {
-  "price_1SSDabGaXSfGtYFtjBhb6kVr": 5,   // 2€ = 5 hlasov
-  "price_1SSDacGaXSfGtYFtYnW8omLQ": 10,  // 3€ = 10 hlasov
-  "price_1SSDadGaXSfGtYFthJDJ0sYd": 50,  // 10€ = 50 hlasov
+  "price_1SSDabGaXSfGtYFtjBhb6kVr": 5,   // 2€ = 5 votes
+  "price_1SSDacGaXSfGtYFtYnW8omLQ": 10,  // 3€ = 10 votes
+  "price_1SSDadGaXSfGtYFthJDJ0sYd": 50,  // 10€ = 50 votes
+  "price_1SSDmg0QTWhd4oRp8S8VrIeM": 100, // 20€ = 100 votes (bulk discount)
 };
 
 serve(async (req) => {

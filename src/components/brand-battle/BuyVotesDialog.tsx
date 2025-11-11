@@ -40,6 +40,14 @@ const VOTE_PACKAGES = [
     popular: false,
     badge: "Best Value",
   },
+  {
+    id: "100-votes",
+    votes: 100,
+    price: "20€",
+    priceId: "price_1SSDmg0QTWhd4oRp8S8VrIeM",
+    popular: false,
+    badge: "Bulk Discount",
+  },
 ];
 
 export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
@@ -97,7 +105,7 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
           {VOTE_PACKAGES.map((pkg) => (
             <Card
               key={pkg.id}
