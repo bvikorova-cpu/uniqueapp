@@ -1,0 +1,166 @@
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Check, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+
+interface BuyVotesDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const VOTE_PACKAGES = [
+  {
+    id: "5-votes",
+    votes: 5,
+    price: "2€",
+    priceId: "price_1SSDabGaXSfGtYFtjBhb6kVr",
+    popular: false,
+  },
+  {
+    id: "10-votes",
+    votes: 10,
+    price: "3€",
+    priceId: "price_1SSDacGaXSfGtYFtYnW8omLQ",
+    popular: true,
+  },
+  {
+    id: "50-votes",
+    votes: 50,
+    price: "10€",
+    priceId: "price_1SSDadGaXSfGtYFthJDJ0sYd",
+    popular: false,
+    badge: "Najlepšia hodnota",
+  },
+];
+
+export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
+  const [loading, setLoading] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handleBuyVotes = async (priceId: string, votes: number) => {
+    setLoading(priceId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Musíš sa prihlásiť",
+          description: "Pre nákup hlasov sa musíš prihlásiť do účtu.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke(
+        "create-brand-votes-payment",
+        {
+          body: { priceId },
+        }
+      );
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, "_blank");
+        toast({
+          title: "Platba vytvorená",
+          description: `Otvorili sme platobnú bránu pre ${votes} hlasov.`,
+        });
+      }
+    } catch (error: any) {
+      console.error("Error creating payment:", error);
+      toast({
+        title: "Chyba pri vytváraní platby",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Kúp si extra hlasy</DialogTitle>
+          <DialogDescription>
+            Vyber si balík hlasov ktoré chceš kúpiť. Hlasy môžeš použiť dnes na hlasovanie.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          {VOTE_PACKAGES.map((pkg) => (
+            <Card
+              key={pkg.id}
+              className={`p-6 relative ${
+                pkg.popular ? "border-primary border-2" : ""
+              }`}
+            >
+              {pkg.popular && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
+                  Populárne
+                </div>
+              )}
+              {pkg.badge && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                  {pkg.badge}
+                </div>
+              )}
+
+              <div className="text-center mb-4">
+                <div className="text-4xl font-bold mb-2">{pkg.votes}</div>
+                <div className="text-sm text-muted-foreground mb-1">hlasov</div>
+                <div className="text-2xl font-bold text-primary">{pkg.price}</div>
+                <div className="text-xs text-muted-foreground mt-2">
+                  {(parseFloat(pkg.price) / pkg.votes).toFixed(2)}€ za hlas
+                </div>
+              </div>
+
+              <ul className="space-y-2 mb-4">
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>Okamžitá aktivácia</span>
+                </li>
+                <li className="flex items-center gap-2 text-sm">
+                  <Check className="h-4 w-4 text-green-600" />
+                  <span>Platnosť dnes</span>
+                </li>
+              </ul>
+
+              <Button
+                onClick={() => handleBuyVotes(pkg.priceId, pkg.votes)}
+                disabled={loading !== null}
+                className="w-full"
+                variant={pkg.popular ? "default" : "outline"}
+              >
+                {loading === pkg.priceId ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Spracovávam...
+                  </>
+                ) : (
+                  "Kúpiť teraz"
+                )}
+              </Button>
+            </Card>
+          ))}
+        </div>
+
+        <div className="mt-4 p-4 bg-muted rounded-lg">
+          <p className="text-sm text-muted-foreground">
+            ℹ️ Zakúpené hlasy platia len pre dnešný deň. Zajtra dostaneš znovu 1 bezplatný hlas.
+          </p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

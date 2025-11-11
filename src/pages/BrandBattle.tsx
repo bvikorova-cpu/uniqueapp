@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { BrandVotesDisplay } from "@/components/brand-battle/BrandVotesDisplay";
+import { useBrandVotes } from "@/hooks/useBrandVotes";
 
 interface BrandSponsor {
   id: string;
@@ -60,6 +62,8 @@ export default function BrandBattle() {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { data: votes, refetch: refetchVotes } = useBrandVotes();
 
   // Load user auth
   useEffect(() => {
@@ -76,6 +80,44 @@ export default function BrandBattle() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Handle payment success/cancel
+  useEffect(() => {
+    const payment = searchParams.get("payment");
+    const sessionId = searchParams.get("session_id");
+
+    if (payment === "success" && sessionId) {
+      handlePaymentSuccess(sessionId);
+      searchParams.delete("payment");
+      searchParams.delete("session_id");
+      setSearchParams(searchParams);
+    } else if (payment === "canceled") {
+      toast.error("Platba bola zrušená");
+      searchParams.delete("payment");
+      setSearchParams(searchParams);
+    }
+  }, [searchParams]);
+
+  const handlePaymentSuccess = async (sessionId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke(
+        "verify-brand-votes-payment",
+        {
+          body: { sessionId },
+        }
+      );
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success(`Úspešne! Pridali sme ti ${data.votesAdded} hlasov.`);
+        refetchVotes();
+      }
+    } catch (error: any) {
+      console.error("Error verifying payment:", error);
+      toast.error("Chyba pri overovaní platby");
+    }
+  };
+
   // Load brand sponsors
   const { data: sponsors = [], isLoading: sponsorsLoading } = useQuery({
     queryKey: ["brand-sponsors"],
@@ -91,28 +133,6 @@ export default function BrandBattle() {
     },
   });
 
-  // Load user's daily votes
-  const { data: voteData, refetch: refetchVotes } = useQuery({
-    queryKey: ["user-daily-votes", user?.id],
-    queryFn: async () => {
-      if (!user) return { votesRemaining: 0 };
-      
-      const today = new Date().toISOString().split('T')[0];
-      const { data, error } = await supabase
-        .from("user_daily_votes")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("date", today)
-        .single();
-
-      const DAILY_FREE_VOTES = 5;
-      const totalVotes = DAILY_FREE_VOTES + (data?.votes_purchased || 0);
-      const votesRemaining = totalVotes - (data?.votes_used || 0);
-
-      return { votesRemaining };
-    },
-    enabled: !!user,
-  });
 
   // Vote mutation
   const voteMutation = useMutation({
@@ -124,9 +144,9 @@ export default function BrandBattle() {
       return data;
     },
     onSuccess: (data) => {
-      toast.success(`Vote recorded! ${data.votesRemaining} votes remaining today.`);
+      toast.success(`Hlas zaznamenaný! Ostáva ti ${data.votesRemaining} hlasov dnes.`);
       queryClient.invalidateQueries({ queryKey: ["brand-sponsors"] });
-      queryClient.invalidateQueries({ queryKey: ["user-daily-votes"] });
+      queryClient.invalidateQueries({ queryKey: ["brand-votes"] });
       refetchVotes();
     },
     onError: (error: any) => {
@@ -136,8 +156,13 @@ export default function BrandBattle() {
 
   const handleVote = async (brandId: string, brandName: string) => {
     if (!user) {
-      toast.error("Please sign in to vote");
+      toast.error("Prihlás sa aby si mohol hlasovať");
       navigate("/auth");
+      return;
+    }
+
+    if ((votes?.remaining || 0) <= 0) {
+      toast.error("Nemáš dostatok hlasov. Kúp si extra hlasy!");
       return;
     }
 
@@ -173,21 +198,12 @@ export default function BrandBattle() {
             Brand Battle Arena
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Vote for your favorite brands and earn rewards. Top brands get featured placement and exclusive benefits.
+            Hlasuj za svoje obľúbené značky a získavaj odmeny. Top značky získajú prémiové umiestnenie.
           </p>
           
           {user && (
-            <div className="flex flex-col sm:flex-row items-center gap-4">
-              <div className="inline-flex items-center gap-4 bg-card border rounded-lg px-6 py-3">
-                <div className="flex items-center gap-2">
-                  <Vote className="h-5 w-5 text-primary" />
-                  <span className="font-semibold">{voteData?.votesRemaining || 0} votes today</span>
-                </div>
-                <div className="h-6 w-px bg-border"></div>
-                <Button variant="outline" size="sm">
-                  Get Extra Votes (5 credits/vote)
-                </Button>
-              </div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+              <BrandVotesDisplay />
               <Button 
                 variant="outline" 
                 size="sm"
@@ -266,14 +282,14 @@ export default function BrandBattle() {
                       <Button 
                         onClick={() => handleVote(sponsor.id, sponsor.name)}
                         className="w-full"
-                        disabled={!user || voteMutation.isPending || (voteData?.votesRemaining || 0) <= 0}
+                        disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
                       >
                         {voteMutation.isPending ? (
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                         ) : (
                           <Vote className="h-4 w-4 mr-2" />
                         )}
-                        Vote Now
+                        Hlasovať
                       </Button>
                     </CardContent>
                   </Card>
@@ -309,14 +325,14 @@ export default function BrandBattle() {
                         </div>
                         <Button 
                           onClick={() => handleVote(sponsor.id, sponsor.name)}
-                          disabled={!user || voteMutation.isPending || (voteData?.votesRemaining || 0) <= 0}
+                          disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
                         >
                           {voteMutation.isPending ? (
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           ) : (
                             <Vote className="h-4 w-4 mr-2" />
                           )}
-                          Vote
+                          Hlasovať
                         </Button>
                       </CardContent>
                     </Card>
