@@ -6,7 +6,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const DAILY_FREE_VOTES = 5;
+const DAILY_FREE_VOTES = 1;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
