@@ -1395,6 +1395,95 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_sponsors: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string
+          id: string
+          logo: string
+          name: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_end: string | null
+          subscription_start: string | null
+          subscription_status: string | null
+          tier: string
+          total_votes: number | null
+          updated_at: string | null
+          user_id: string
+          website: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description: string
+          id?: string
+          logo: string
+          name: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_end?: string | null
+          subscription_start?: string | null
+          subscription_status?: string | null
+          tier: string
+          total_votes?: number | null
+          updated_at?: string | null
+          user_id: string
+          website: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          logo?: string
+          name?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_end?: string | null
+          subscription_start?: string | null
+          subscription_status?: string | null
+          tier?: string
+          total_votes?: number | null
+          updated_at?: string | null
+          user_id?: string
+          website?: string
+        }
+        Relationships: []
+      }
+      brand_votes: {
+        Row: {
+          brand_id: string
+          created_at: string | null
+          id: string
+          user_id: string
+          vote_date: string
+        }
+        Insert: {
+          brand_id: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+          vote_date?: string
+        }
+        Update: {
+          brand_id?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+          vote_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_votes_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brand_sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       breeding_records: {
         Row: {
           bred_at: string
@@ -16755,6 +16844,33 @@ export type Database = {
           total_gems_purchased?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_daily_votes: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          user_id: string
+          votes_purchased: number | null
+          votes_used: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          user_id: string
+          votes_purchased?: number | null
+          votes_used?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          user_id?: string
+          votes_purchased?: number | null
+          votes_used?: number | null
         }
         Relationships: []
       }
