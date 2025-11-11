@@ -133,6 +133,30 @@ export default function BrandBattle() {
     },
   });
 
+  // Real-time subscription for live vote updates
+  useEffect(() => {
+    const channel = supabase
+      .channel('brand-votes-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'brand_votes'
+        },
+        (payload) => {
+          console.log('New vote received:', payload);
+          // Refetch sponsors to get updated vote counts
+          queryClient.invalidateQueries({ queryKey: ["brand-sponsors"] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
+
 
   // Vote mutation
   const voteMutation = useMutation({
