@@ -7,86 +7,74 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
 const PRODUCT_TIERS = {
-  basic: {
-    product_id: "prod_TOhBTCURKFnRuI",
-    price_id: "price_1SRtnN0QTWhd4oRpRKP8MB2R"
+  monthly: {
+    product_id: "prod_TPWmSQy8vJrtpe",
+    price_id: "price_1SShj2GaXSfGtYFtcKlTJYGa"
   },
-  premium: {
-    product_id: "prod_TOhaMSxuZqRwsr",
-    price_id: "price_1SRuAzGaXSfGtYFt6pQB43Ob"
-  },
-  pro: {
-    product_id: "prod_TOhjk0jsMVNpN3",
-    price_id: "price_1SRuKT0QTWhd4oRp44yQi9mQ"
+  annual: {
+    product_id: "prod_TPWmNY3AZcnjUH",
+    price_id: "price_1SShj3GaXSfGtYFtGEneXVhs"
   }
 };
 
 const subscriptionPlans = [
   {
-    id: 'basic',
-    name: '⭐ Basic',
-    price: 5,
-    interval: 'month',
-    icon: Sparkles,
-    color: 'from-yellow-500 to-orange-500',
+    id: 'free',
+    name: '📚 Free',
+    price: 0,
+    interval: 'forever',
+    icon: School,
+    color: 'from-gray-500 to-gray-600',
     popular: false,
     features: [
-      '20 stories/month',
-      'HD illustrations',
-      'Audio stories',
-      'Create your hero',
-      'Educational stories',
-      'Bedtime stories',
-      'Story games',
-      'Chat with characters'
+      '1 homework question per day',
+      'AI-powered explanations',
+      'Fun facts included',
+      'Kid-friendly guidance',
+      'All subjects covered'
     ]
   },
   {
-    id: 'premium',
-    name: '✨ Premium',
-    price: 20,
+    id: 'monthly',
+    name: '✨ Premium Monthly',
+    price: 5,
     interval: 'month',
     icon: Sparkles,
     color: 'from-pink-500 to-purple-500',
     popular: true,
     features: [
-      '20 stories/month',
-      'HD illustrations',
-      'Audio stories',
-      'Create your hero',
-      'Educational stories',
-      'Bedtime stories',
-      'Story games',
-      'Chat with characters',
-      'Disney castle tours'
+      'Unlimited homework questions',
+      'AI-powered explanations',
+      'Fun facts included',
+      'Kid-friendly guidance',
+      'All subjects covered',
+      'Track progress & achievements',
+      'Daily challenges with bonus points',
+      'Priority support'
     ]
   },
   {
-    id: 'pro',
-    name: '👑 Pro',
-    price: 120,
-    interval: '12 months',
+    id: 'annual',
+    name: '👑 Premium Annual',
+    price: 50,
+    interval: 'year',
     icon: Users,
     color: 'from-purple-500 to-indigo-500',
     popular: false,
     features: [
-      'Unlimited stories',
-      'Video stories',
-      'AR stories',
-      'All premium features',
-      'No ads',
-      'Disney castle tours',
-      'Save 50% from Premium plan'
+      'Unlimited homework questions',
+      'AI-powered explanations',
+      'Fun facts included',
+      'Kid-friendly guidance',
+      'All subjects covered',
+      'Track progress & achievements',
+      'Daily challenges with bonus points',
+      'Priority support',
+      '💰 Save €10 (2 months free!)'
     ]
   }
 ];
 
-const payPerStory = [
-  { id: 'basic', name: '📖 Basic story', price: 1.50 },
-  { id: 'personalized', name: '🌟 Personalized story', price: 3.50 },
-  { id: 'video', name: '🎬 Video story', price: 7.99 },
-  { id: 'ar', name: '🥽 AR story', price: 12.99 }
-];
 
 export default function KidsSubscriptionPlans() {
   const [loading, setLoading] = useState<Record<string, boolean>>({});
@@ -206,10 +194,10 @@ export default function KidsSubscriptionPlans() {
         {/* Header */}
         <div className="text-center space-y-4 pt-16">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Choose Your Plan! ✨
+            Kids Homework Helper Pricing 📚
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Unlimited stories full of adventure and imagination for your kids
+            Get unlimited AI-powered homework help for your kids
           </p>
           
           {currentSubscription?.subscribed && (
@@ -283,12 +271,14 @@ export default function KidsSubscriptionPlans() {
                   </div>
 
                   <Button
-                    onClick={() => handleUpgrade(plan.id)}
-                    disabled={isCurrentPlan(plan.id) || loading[plan.id] || checkingSubscription}
+                    onClick={() => plan.id === 'free' ? null : handleUpgrade(plan.id)}
+                    disabled={plan.id === 'free' || isCurrentPlan(plan.id) || loading[plan.id] || checkingSubscription}
                     className="w-full text-lg py-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
                     variant={plan.popular ? 'default' : 'outline'}
                   >
-                    {loading[plan.id] ? (
+                    {plan.id === 'free' ? (
+                      'Current Plan'
+                    ) : loading[plan.id] ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Loading...
@@ -305,39 +295,6 @@ export default function KidsSubscriptionPlans() {
           })}
         </div>
 
-        {/* Pay Per Story */}
-        <div className="space-y-6">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold mb-2">🎨 Or buy just one story</h2>
-            <p className="text-muted-foreground">No monthly subscription required</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            {payPerStory.map((item) => (
-              <Card key={item.id} className="text-center hover:border-primary transition-colors cursor-pointer">
-                <CardContent className="pt-6 space-y-3">
-                  <div className="text-xl font-semibold">{item.name}</div>
-                  <div className="text-3xl font-bold text-primary">€{item.price}</div>
-                  <Button 
-                    variant="outline" 
-                    className="w-full"
-                    onClick={() => handleBuyStory(item.id)}
-                    disabled={loading[item.id]}
-                  >
-                    {loading[item.id] ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Loading...
-                      </>
-                    ) : (
-                      'Buy'
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
 
         {/* Trust & Guarantee */}
         <div className="text-center text-sm text-muted-foreground space-y-2">

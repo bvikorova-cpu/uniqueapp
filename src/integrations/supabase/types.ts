@@ -10232,6 +10232,33 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_homework_usage: {
+        Row: {
+          created_at: string
+          id: string
+          last_reset_date: string
+          questions_asked_today: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_reset_date?: string
+          questions_asked_today?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_reset_date?: string
+          questions_asked_today?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_homework_user_achievements: {
         Row: {
           achievement_id: string

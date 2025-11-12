@@ -12,9 +12,11 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsHomeworkProgress } from "@/hooks/useKidsHomeworkProgress";
 import { useKidsDailyChallenge } from "@/hooks/useKidsDailyChallenge";
+import { useKidsHomework } from "@/hooks/useKidsHomework";
 import { ProgressCard } from "@/components/kids-homework/ProgressCard";
 import { AchievementsGrid } from "@/components/kids-homework/AchievementsGrid";
 import { DailyChallengeCard } from "@/components/kids-homework/DailyChallengeCard";
+import { HomeworkLimitBanner } from "@/components/kids-homework/HomeworkLimitBanner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -23,6 +25,7 @@ const KidsHomework = () => {
   const queryClient = useQueryClient();
   const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
   const { challenge, progress, isCompleted, isLoading: challengeLoading } = useKidsDailyChallenge();
+  const { questionsUsed, questionsLimit, isPremium, loading: usageLoading, refreshUsage } = useKidsHomework();
   const [subject, setSubject] = useState("");
   const [question, setQuestion] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -43,9 +46,20 @@ const KidsHomework = () => {
         body: { subject, question, difficulty }
       });
 
-      if (error) throw error;
+      if (error) {
+        // Check if it's a limit error
+        if (error.message?.includes('Daily limit reached')) {
+          toast.error('Daily limit reached! Upgrade to Premium for unlimited questions.', {
+            duration: 5000,
+          });
+          refreshUsage();
+          return;
+        }
+        throw error;
+      }
       
       setResult(data);
+      refreshUsage();
       
       // Invalidate queries to refresh progress and challenges
       if (user) {
@@ -78,6 +92,16 @@ const KidsHomework = () => {
               Get fun and easy help with your homework! {user && "Earn points and unlock achievements!"}
             </p>
           </div>
+
+          {!usageLoading && (
+            <div className="mb-6">
+              <HomeworkLimitBanner
+                questionsUsed={questionsUsed}
+                questionsLimit={questionsLimit}
+                isPremium={isPremium}
+              />
+            </div>
+          )}
 
           {user && !progressLoading && (
             <div className="mb-8 grid md:grid-cols-2 gap-4">
@@ -152,12 +176,18 @@ const KidsHomework = () => {
                   />
                 </div>
 
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button 
+                  type="submit" 
+                  className="w-full" 
+                  disabled={loading || (!isPremium && questionsUsed >= questionsLimit)}
+                >
                   {loading ? (
                     <>
                       <Sparkles className="w-4 h-4 mr-2 animate-spin" />
                       AI is thinking...
                     </>
+                  ) : (!isPremium && questionsUsed >= questionsLimit) ? (
+                    'Daily Limit Reached - Upgrade to Premium'
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4 mr-2" />

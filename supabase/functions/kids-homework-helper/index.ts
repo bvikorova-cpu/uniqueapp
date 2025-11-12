@@ -20,9 +20,91 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     let userId = null;
+    let isPremium = false;
+    
     if (token) {
       const { data: { user } } = await supabase.auth.getUser(token);
       userId = user?.id;
+      
+      // Check subscription status
+      if (userId) {
+        const { data: subData } = await supabase.functions.invoke('check-kids-subscription', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        isPremium = subData?.subscribed || false;
+      }
+    }
+
+    // For authenticated users, check daily limit if not premium
+    if (userId && !isPremium) {
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Get or create usage record
+      let { data: usage, error: usageError } = await supabase
+        .from('kids_homework_usage')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (usageError && usageError.code !== 'PGRST116') {
+        throw usageError;
+      }
+
+      if (!usage) {
+        // Create new usage record
+        const { data: newUsage, error: createError } = await supabase
+          .from('kids_homework_usage')
+          .insert({
+            user_id: userId,
+            questions_asked_today: 0,
+            last_reset_date: today
+          })
+          .select()
+          .single();
+        
+        if (createError) throw createError;
+        usage = newUsage;
+      }
+
+      // Check if we need to reset the counter (new day)
+      if (usage.last_reset_date !== today) {
+        const { data: resetUsage, error: resetError } = await supabase
+          .from('kids_homework_usage')
+          .update({
+            questions_asked_today: 0,
+            last_reset_date: today
+          })
+          .eq('user_id', userId)
+          .select()
+          .single();
+        
+        if (resetError) throw resetError;
+        usage = resetUsage;
+      }
+
+      // Check daily limit (1 question for free users)
+      if (usage.questions_asked_today >= 1) {
+        return new Response(
+          JSON.stringify({ 
+            error: "Daily limit reached. Upgrade to Premium for unlimited questions!",
+            limitReached: true,
+            questionsUsed: usage.questions_asked_today,
+            questionsLimit: 1
+          }),
+          { 
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            status: 429
+          }
+        );
+      }
+
+      // Increment usage counter
+      await supabase
+        .from('kids_homework_usage')
+        .update({
+          questions_asked_today: usage.questions_asked_today + 1
+        })
+        .eq('user_id', userId);
     }
 
     const { subject, question, difficulty } = await req.json();
