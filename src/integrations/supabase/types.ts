@@ -10098,6 +10098,107 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_homework_challenge_completions: {
+        Row: {
+          bonus_earned: number
+          challenge_id: string
+          completed_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          bonus_earned: number
+          challenge_id: string
+          completed_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          bonus_earned?: number
+          challenge_id?: string
+          completed_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_homework_challenge_completions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "kids_homework_daily_challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kids_homework_daily_challenges: {
+        Row: {
+          bonus_points: number
+          challenge_date: string
+          challenge_description: string
+          challenge_title: string
+          challenge_type: string
+          created_at: string
+          icon: string
+          id: string
+          requirement_value: number
+        }
+        Insert: {
+          bonus_points: number
+          challenge_date: string
+          challenge_description: string
+          challenge_title: string
+          challenge_type: string
+          created_at?: string
+          icon: string
+          id?: string
+          requirement_value: number
+        }
+        Update: {
+          bonus_points?: number
+          challenge_date?: string
+          challenge_description?: string
+          challenge_title?: string
+          challenge_type?: string
+          created_at?: string
+          icon?: string
+          id?: string
+          requirement_value?: number
+        }
+        Relationships: []
+      }
+      kids_homework_daily_progress: {
+        Row: {
+          challenge_date: string
+          created_at: string
+          id: string
+          perfect_answers: number
+          questions_today: number
+          subjects_today: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_date: string
+          created_at?: string
+          id?: string
+          perfect_answers?: number
+          questions_today?: number
+          subjects_today?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_date?: string
+          created_at?: string
+          id?: string
+          perfect_answers?: number
+          questions_today?: number
+          subjects_today?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_homework_points: {
         Row: {
           created_at: string
@@ -18590,6 +18691,7 @@ export type Database = {
       expire_featured_listings: { Args: never; Returns: undefined }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       generate_certificate_number: { Args: never; Returns: string }
+      generate_daily_homework_challenge: { Args: never; Returns: undefined }
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }

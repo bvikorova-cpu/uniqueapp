@@ -401,3 +401,6 @@ verify_jwt = true
 
 [functions.vote-for-brand]
 verify_jwt = true
+
+[functions.generate-daily-challenge]
+verify_jwt = false

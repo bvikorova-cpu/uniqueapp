@@ -89,9 +89,11 @@ Please help me understand this homework question!`;
     const content = data.choices[0].message.content;
     const result = JSON.parse(content);
 
-    // Award points if user is authenticated
+    // Award points and track challenges if user is authenticated
     if (userId) {
       await awardPoints(supabase, userId, subject);
+      await trackDailyProgress(supabase, userId, subject);
+      await checkDailyChallenges(supabase, userId);
     }
 
     return new Response(JSON.stringify(result), {
@@ -241,5 +243,131 @@ async function checkAchievements(
     }
   } catch (error) {
     console.error('Error in checkAchievements:', error);
+  }
+}
+
+async function trackDailyProgress(supabase: any, userId: string, subject: string) {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Get or create daily progress
+    const { data: progress, error: fetchError } = await supabase
+      .from('kids_homework_daily_progress')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('challenge_date', today)
+      .maybeSingle();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      console.error('Error fetching daily progress:', fetchError);
+      return;
+    }
+
+    if (!progress) {
+      // Create new progress record
+      await supabase
+        .from('kids_homework_daily_progress')
+        .insert({
+          user_id: userId,
+          challenge_date: today,
+          questions_today: 1,
+          subjects_today: [subject],
+        });
+    } else {
+      // Update existing progress
+      const newSubjects = progress.subjects_today.includes(subject)
+        ? progress.subjects_today
+        : [...progress.subjects_today, subject];
+      
+      await supabase
+        .from('kids_homework_daily_progress')
+        .update({
+          questions_today: progress.questions_today + 1,
+          subjects_today: newSubjects,
+        })
+        .eq('user_id', userId)
+        .eq('challenge_date', today);
+    }
+  } catch (error) {
+    console.error('Error in trackDailyProgress:', error);
+  }
+}
+
+async function checkDailyChallenges(supabase: any, userId: string) {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Get today's challenge
+    const { data: challenge } = await supabase
+      .from('kids_homework_daily_challenges')
+      .select('*')
+      .eq('challenge_date', today)
+      .maybeSingle();
+
+    if (!challenge) return;
+
+    // Check if user already completed this challenge
+    const { data: existing } = await supabase
+      .from('kids_homework_challenge_completions')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('challenge_id', challenge.id)
+      .maybeSingle();
+
+    if (existing) return; // Already completed
+
+    // Get user's daily progress
+    const { data: progress } = await supabase
+      .from('kids_homework_daily_progress')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('challenge_date', today)
+      .maybeSingle();
+
+    if (!progress) return;
+
+    let challengeCompleted = false;
+
+    // Check if challenge is completed based on type
+    switch (challenge.challenge_type) {
+      case 'questions_count':
+        challengeCompleted = progress.questions_today >= challenge.requirement_value;
+        break;
+      case 'diverse_subjects':
+        challengeCompleted = progress.subjects_today.length >= challenge.requirement_value;
+        break;
+      case 'subject_focus':
+        // Check if any subject has been done X times
+        const subjectCounts: { [key: string]: number } = {};
+        for (const subject of progress.subjects_today) {
+          subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
+        }
+        challengeCompleted = Object.values(subjectCounts).some(
+          count => count >= challenge.requirement_value
+        );
+        break;
+    }
+
+    // If completed, record it and award bonus points
+    if (challengeCompleted) {
+      // Record completion
+      await supabase
+        .from('kids_homework_challenge_completions')
+        .insert({
+          user_id: userId,
+          challenge_id: challenge.id,
+          bonus_earned: challenge.bonus_points,
+        });
+
+      // Award bonus points
+      await supabase
+        .from('kids_homework_points')
+        .update({
+          total_points: supabase.rpc('increment', { value: challenge.bonus_points }),
+        })
+        .eq('user_id', userId);
+    }
+  } catch (error) {
+    console.error('Error in checkDailyChallenges:', error);
   }
 }

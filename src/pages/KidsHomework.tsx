@@ -11,13 +11,18 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useKidsHomeworkProgress } from "@/hooks/useKidsHomeworkProgress";
+import { useKidsDailyChallenge } from "@/hooks/useKidsDailyChallenge";
 import { ProgressCard } from "@/components/kids-homework/ProgressCard";
 import { AchievementsGrid } from "@/components/kids-homework/AchievementsGrid";
+import { DailyChallengeCard } from "@/components/kids-homework/DailyChallengeCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQueryClient } from "@tanstack/react-query";
 
 const KidsHomework = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
+  const { challenge, progress, isCompleted, isLoading: challengeLoading } = useKidsDailyChallenge();
   const [subject, setSubject] = useState("");
   const [question, setQuestion] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -42,7 +47,12 @@ const KidsHomework = () => {
       
       setResult(data);
       
+      // Invalidate queries to refresh progress and challenges
       if (user) {
+        const today = new Date().toISOString().split('T')[0];
+        queryClient.invalidateQueries({ queryKey: ['kids-homework-points', user.id] });
+        queryClient.invalidateQueries({ queryKey: ['daily-progress', user.id, today] });
+        queryClient.invalidateQueries({ queryKey: ['challenge-completion', user.id] });
         toast.success("Homework help ready! You earned 10 points! 🎉");
       } else {
         toast.success("Homework help ready! 🎉");
@@ -70,8 +80,15 @@ const KidsHomework = () => {
           </div>
 
           {user && !progressLoading && (
-            <div className="mb-8">
+            <div className="mb-8 grid md:grid-cols-2 gap-4">
               <ProgressCard points={points} />
+              {!challengeLoading && (
+                <DailyChallengeCard 
+                  challenge={challenge} 
+                  progress={progress}
+                  isCompleted={isCompleted}
+                />
+              )}
             </div>
           )}
 
