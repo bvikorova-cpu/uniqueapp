@@ -15,6 +15,7 @@ import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCredit
 import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
 import { BrainDuelLeaderboard } from "@/components/brain-duel/BrainDuelLeaderboard";
 import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
+import FriendChallengesLeaderboard from "@/components/brain-duel/FriendChallengesLeaderboard";
 import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
 import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
 import { supabase } from "@/integrations/supabase/client";
@@ -287,7 +288,10 @@ const BrainDuel = () => {
         {/* Leaderboard and Friend Challenges */}
         <div className="max-w-6xl mx-auto mb-8 grid md:grid-cols-1 lg:grid-cols-2 gap-6">
           <BrainDuelLeaderboard />
-          <FriendChallenges />
+          <div className="space-y-6">
+            <FriendChallenges />
+            <FriendChallengesLeaderboard />
+          </div>
         </div>
 
         <Tabs defaultValue="play" className="w-full">
