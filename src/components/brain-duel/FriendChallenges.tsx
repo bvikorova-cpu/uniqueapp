@@ -5,14 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { UserPlus, Swords, Trophy, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { UserPlus, Swords, Trophy, Clock, CheckCircle, XCircle, Coins, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
+import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
+import { useNavigate } from 'react-router-dom';
 
 const categories = [
   'General Knowledge',
@@ -30,11 +32,14 @@ const categories = [
 export const FriendChallenges = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { credits } = useBrainDuelCredits();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const [stakeCredits, setStakeCredits] = useState<number>(10);
   const [userId, setUserId] = useState<string | null>(null);
+  const [acceptingChallenge, setAcceptingChallenge] = useState<string | null>(null);
 
   // Get current user
   useEffect(() => {
@@ -112,6 +117,11 @@ export const FriendChallenges = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      // Check if user has enough credits
+      if (credits < stakeCredits) {
+        throw new Error('Insufficient credits');
+      }
+
       const { error } = await supabase
         .from('brain_duel_friend_challenges')
         .insert({
@@ -130,14 +140,16 @@ export const FriendChallenges = () => {
       setCategory('');
       setStakeCredits(10);
       toast({
-        title: 'Challenge sent!',
+        title: 'Challenge sent! 🎯',
         description: 'Your friend has been challenged',
       });
     },
     onError: (error: Error) => {
       toast({
         title: 'Failed to create challenge',
-        description: error.message,
+        description: error.message === 'Insufficient credits' 
+          ? `You need at least ${stakeCredits} credits to create this challenge`
+          : error.message,
         variant: 'destructive',
       });
     },
@@ -146,21 +158,36 @@ export const FriendChallenges = () => {
   // Accept challenge mutation
   const acceptChallenge = useMutation({
     mutationFn: async (challengeId: string) => {
-      const { error } = await supabase
-        .from('brain_duel_friend_challenges')
-        .update({ status: 'accepted' })
-        .eq('id', challengeId);
+      setAcceptingChallenge(challengeId);
+      
+      const { data, error } = await supabase.functions.invoke('brain-duel-friend-match', {
+        body: { challenge_id: challengeId },
+      });
 
       if (error) throw error;
-
-      // TODO: Start match
-      toast({
-        title: 'Challenge accepted!',
-        description: 'Match starting...',
-      });
+      return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      
+      toast({
+        title: 'Challenge accepted! ⚔️',
+        description: `Match starting with ${data.stake_amount} credits at stake!`,
+      });
+
+      // Navigate to game after a short delay
+      setTimeout(() => {
+        window.location.href = '/brain-duel?match_id=' + data.match.id;
+      }, 1500);
+    },
+    onError: (error: Error) => {
+      setAcceptingChallenge(null);
+      toast({
+        title: 'Failed to accept challenge',
+        description: error.message,
+        variant: 'destructive',
+      });
     },
   });
 
@@ -197,31 +224,64 @@ export const FriendChallenges = () => {
                 Challenge Friend
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-md">
               <DialogHeader>
-                <DialogTitle>Challenge a Friend</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  <Swords className="h-5 w-5 text-primary" />
+                  Challenge a Friend
+                </DialogTitle>
+                <DialogDescription>
+                  Set up a private Brain Duel match with custom rules
+                </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <div>
-                  <Label>Select Friend</Label>
+                <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Your Credits:</span>
+                    <span className="font-bold flex items-center gap-1">
+                      <Coins className="h-4 w-4 text-yellow-500" />
+                      {credits}
+                    </span>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2">
+                  <Label htmlFor="friend-select">Select Friend</Label>
                   <Select value={selectedFriend} onValueChange={setSelectedFriend}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose a friend" />
+                    <SelectTrigger id="friend-select">
+                      <SelectValue placeholder="Choose a friend to challenge" />
                     </SelectTrigger>
                     <SelectContent>
-                      {friends?.map((friend) => (
-                        <SelectItem key={friend.id} value={friend.id}>
-                          {friend.full_name || 'Anonymous'}
+                      {friends && friends.length > 0 ? (
+                        friends.map((friend) => (
+                          <SelectItem key={friend.id} value={friend.id}>
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-6 w-6">
+                                <AvatarImage src={friend.avatar_url || undefined} />
+                                <AvatarFallback className="text-xs">
+                                  {friend.full_name?.[0]?.toUpperCase() || 'U'}
+                                </AvatarFallback>
+                              </Avatar>
+                              {friend.full_name || 'Anonymous'}
+                            </div>
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem value="none" disabled>
+                          No friends available
                         </SelectItem>
-                      ))}
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label>Category</Label>
+
+                <div className="space-y-2">
+                  <Label htmlFor="category-select">Category</Label>
                   <Select value={category} onValueChange={setCategory}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Choose category" />
+                    <SelectTrigger id="category-select">
+                      <SelectValue placeholder="Choose battle category" />
                     </SelectTrigger>
                     <SelectContent>
                       {categories.map((cat) => (
@@ -232,22 +292,56 @@ export const FriendChallenges = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label>Stake Credits</Label>
-                  <Input
-                    type="number"
-                    min="10"
-                    step="10"
-                    value={stakeCredits}
-                    onChange={(e) => setStakeCredits(parseInt(e.target.value))}
-                  />
+
+                <div className="space-y-2">
+                  <Label htmlFor="stake-input">Stake Credits</Label>
+                  <div className="relative">
+                    <Input
+                      id="stake-input"
+                      type="number"
+                      min="10"
+                      max={credits}
+                      step="10"
+                      value={stakeCredits}
+                      onChange={(e) => setStakeCredits(Math.max(10, Math.min(credits, parseInt(e.target.value) || 10)))}
+                      className="pr-20"
+                    />
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground flex items-center gap-1">
+                      <Coins className="h-3 w-3" />
+                      credits
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Winner takes all! Both players stake {stakeCredits} credits.
+                  </p>
                 </div>
+
+                <Separator />
+
+                <div className="p-3 bg-accent/50 rounded-lg space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Your stake:</span>
+                    <span className="font-semibold">{stakeCredits} credits</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Potential win:</span>
+                    <span className="font-bold text-green-500">{stakeCredits * 2} credits</span>
+                  </div>
+                </div>
+
                 <Button
                   className="w-full"
                   onClick={() => createChallenge.mutate()}
-                  disabled={!selectedFriend || !category || createChallenge.isPending}
+                  disabled={!selectedFriend || !category || createChallenge.isPending || credits < stakeCredits}
                 >
-                  Send Challenge
+                  {createChallenge.isPending ? (
+                    <>Sending Challenge...</>
+                  ) : (
+                    <>
+                      <Zap className="h-4 w-4 mr-2" />
+                      Send Challenge
+                    </>
+                  )}
                 </Button>
               </div>
             </DialogContent>
@@ -264,39 +358,70 @@ export const FriendChallenges = () => {
                 : challenge.challenger_profile;
 
               return (
-                <div key={challenge.id} className="p-4 rounded-lg border">
-                  <div className="flex items-center justify-between mb-2">
+                <div 
+                  key={challenge.id} 
+                  className={`p-4 rounded-lg border transition-all ${
+                    challenge.status === 'pending' && !isChallenger 
+                      ? 'border-primary bg-primary/5 animate-pulse' 
+                      : 'border-border'
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10">
+                      <Avatar className="h-12 w-12 ring-2 ring-primary/20">
                         <AvatarImage src={opponent?.avatar_url || undefined} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-primary/10">
                           {opponent?.full_name?.[0]?.toUpperCase() || 'U'}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-semibold">
-                          {isChallenger ? 'Challenge to' : 'Challenge from'}{' '}
+                        <p className="font-semibold text-lg">
+                          {isChallenger ? '⚔️ Challenge to' : '🎯 Challenge from'}{' '}
                           {opponent?.full_name || 'Anonymous'}
                         </p>
-                        <p className="text-sm text-muted-foreground">
-                          {challenge.category} • {challenge.stake_credits} credits
-                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="secondary" className="text-xs">
+                            {challenge.category}
+                          </Badge>
+                          <span className="text-sm text-muted-foreground flex items-center gap-1">
+                            <Coins className="h-3 w-3 text-yellow-500" />
+                            {challenge.stake_credits} credits
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <Badge
                       variant={
                         challenge.status === 'pending'
                           ? 'secondary'
-                          : challenge.status === 'accepted'
+                          : challenge.status === 'accepted' || challenge.status === 'active'
                           ? 'default'
                           : 'outline'
                       }
+                      className="capitalize"
                     >
                       {challenge.status}
                     </Badge>
                   </div>
+
+                  {!isChallenger && challenge.status === 'pending' && (
+                    <div className="p-3 mb-3 bg-accent/50 rounded-lg">
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="text-muted-foreground">You'll stake:</span>
+                        <span className="font-semibold">{challenge.stake_credits} credits</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Potential win:</span>
+                        <span className="font-bold text-green-500">
+                          {challenge.stake_credits * 2} credits
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex items-center justify-between">
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
                       {formatDistanceToNow(new Date(challenge.created_at), {
                         addSuffix: true,
                       })}
@@ -307,19 +432,33 @@ export const FriendChallenges = () => {
                           size="sm"
                           variant="default"
                           onClick={() => acceptChallenge.mutate(challenge.id)}
+                          disabled={acceptingChallenge === challenge.id}
+                          className="animate-fade-in"
                         >
-                          <CheckCircle className="h-4 w-4 mr-1" />
-                          Accept
+                          {acceptingChallenge === challenge.id ? (
+                            <>Starting...</>
+                          ) : (
+                            <>
+                              <CheckCircle className="h-4 w-4 mr-1" />
+                              Accept
+                            </>
+                          )}
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => declineChallenge.mutate(challenge.id)}
+                          disabled={acceptingChallenge === challenge.id}
                         >
                           <XCircle className="h-4 w-4 mr-1" />
                           Decline
                         </Button>
                       </div>
+                    )}
+                    {isChallenger && challenge.status === 'pending' && (
+                      <Badge variant="secondary" className="text-xs">
+                        Waiting for response...
+                      </Badge>
                     )}
                   </div>
                 </div>
