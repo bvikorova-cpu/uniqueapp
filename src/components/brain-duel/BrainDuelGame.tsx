@@ -113,14 +113,11 @@ export const BrainDuelGame = () => {
     setGamePhase('searching');
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Not authenticated');
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
 
       const { data, error } = await supabase.functions.invoke('brain-duel-matchmaking', {
         body: { category: selectedCategory },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
       });
 
       if (error) throw error;
@@ -146,14 +143,8 @@ export const BrainDuelGame = () => {
     if (!match) return;
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Not authenticated');
-
       const { data, error } = await supabase.functions.invoke('brain-duel-get-questions', {
         body: { match_id: match.id, category },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
       });
 
       if (error) throw error;
@@ -177,17 +168,11 @@ export const BrainDuelGame = () => {
     setSelectedAnswer(answer);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Not authenticated');
-
       const { data, error } = await supabase.functions.invoke('brain-duel-submit-answer', {
         body: {
           match_id: match.id,
           question_id: questions[currentQuestionIndex].id,
           answer: answer || 'timeout',
-        },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
         },
       });
 
@@ -226,14 +211,8 @@ export const BrainDuelGame = () => {
     if (!match) return;
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error('Not authenticated');
-
       await supabase.functions.invoke('brain-duel-finish-match', {
         body: { match_id: match.id },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
       });
     } catch (error) {
       console.error('Error finishing match:', error);
