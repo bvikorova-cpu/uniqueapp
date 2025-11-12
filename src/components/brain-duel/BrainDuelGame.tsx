@@ -37,6 +37,12 @@ export const BrainDuelGame = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15);
   const [gamePhase, setGamePhase] = useState<'category' | 'searching' | 'playing' | 'results'>('category');
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  // Get current user
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setCurrentUser(user));
+  }, []);
 
   const categories = [
     'General Knowledge',
@@ -258,13 +264,7 @@ export const BrainDuelGame = () => {
 
   if (gamePhase === 'playing' && questions.length > 0) {
     const currentQuestion = questions[currentQuestionIndex];
-    const [user, setUser] = useState(null);
-    
-    useEffect(() => {
-      supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
-    }, []);
-    
-    const isPlayer1 = match?.player1_id === user?.id;
+    const isPlayer1 = match?.player1_id === currentUser?.id;
     const myScore = isPlayer1 ? match?.player1_score : match?.player2_score;
     const opponentScore = isPlayer1 ? match?.player2_score : match?.player1_score;
 
@@ -317,13 +317,7 @@ export const BrainDuelGame = () => {
   }
 
   if (gamePhase === 'results' && match) {
-    const [user, setUser] = useState(null);
-    
-    useEffect(() => {
-      supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
-    }, []);
-    
-    const isWinner = match.winner_id === user?.id;
+    const isWinner = match.winner_id === currentUser?.id;
     const isDraw = match.winner_id === null;
 
     return (

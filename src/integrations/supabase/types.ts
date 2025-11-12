@@ -18415,6 +18415,10 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      spend_brain_duel_credits: {
+        Args: { p_amount: number; p_user_id: string }
+        Returns: undefined
+      }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
         Returns: undefined
