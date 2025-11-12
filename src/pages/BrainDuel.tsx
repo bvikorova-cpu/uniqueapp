@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,13 +9,53 @@ import {
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
   TrendingUp, Heart, Sparkles, Gift
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCreditsDisplay";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 const BrainDuel = () => {
   const navigate = useNavigate();
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryClient = useQueryClient();
+
+  // Handle payment success
+  useEffect(() => {
+    const payment = searchParams.get('payment');
+    const sessionId = searchParams.get('session_id');
+
+    if (payment === 'success' && sessionId) {
+      handlePaymentSuccess(sessionId);
+      // Clean up URL
+      searchParams.delete('payment');
+      searchParams.delete('session_id');
+      setSearchParams(searchParams);
+    } else if (payment === 'cancelled') {
+      toast.error('Platba bola zrušená');
+      searchParams.delete('payment');
+      setSearchParams(searchParams);
+    }
+  }, [searchParams, setSearchParams]);
+
+  const handlePaymentSuccess = async (sessionId: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('verify-brain-duel-payment', {
+        body: { sessionId },
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success(`Úspešne! Pridaných ${data.added} kreditov. Celkom: ${data.credits}`);
+        queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
+      }
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      toast.error('Chyba pri overovaní platby');
+    }
+  };
 
   const gameModes = [
     {
