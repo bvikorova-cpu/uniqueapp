@@ -8,8 +8,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
+import { useKidsStoryCreator } from "@/hooks/useKidsStoryCreator";
+import { StoryLimitBanner } from "@/components/kids-story/StoryLimitBanner";
+import { StoryLibrary } from "@/components/kids-story/StoryLibrary";
+import { StorySubscriptionManagement } from "@/components/kids-story/StorySubscriptionManagement";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const KidsStoryCreator = () => {
+  const { user } = useAuth();
+  const { storiesCreatedThisMonth, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsStoryCreator();
   const [title, setTitle] = useState("");
   const [characters, setCharacters] = useState("");
   const [theme, setTheme] = useState("");
@@ -28,9 +36,19 @@ const KidsStoryCreator = () => {
         body: { title, characters, theme }
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('Monthly limit reached')) {
+          toast.error('Monthly limit reached! Upgrade to Premium for unlimited stories.', {
+            duration: 5000,
+          });
+          refreshUsage();
+          return;
+        }
+        throw error;
+      }
       
       setStory(data);
+      refreshUsage();
       toast.success("Your story is ready! 📖");
     } catch (error: any) {
       console.error('Error:', error);
@@ -60,7 +78,7 @@ const KidsStoryCreator = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               AI Story Creator ✨
@@ -69,6 +87,29 @@ const KidsStoryCreator = () => {
               Create your own magical stories with AI illustrations!
             </p>
           </div>
+
+          {user && !usageLoading && (
+            <div className="mb-6 space-y-4">
+              <StoryLimitBanner
+                storiesCreatedThisMonth={storiesCreatedThisMonth}
+                isPremium={isPremium}
+              />
+              {isPremium && (
+                <StorySubscriptionManagement
+                  subscribed={isPremium}
+                  onManageSubscription={manageSubscription}
+                />
+              )}
+            </div>
+          )}
+
+          <Tabs defaultValue="create" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="create">Create Story</TabsTrigger>
+              <TabsTrigger value="library">My Library</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="create" className="space-y-6">
 
           <Card className="mb-6">
             <CardHeader>
@@ -109,12 +150,14 @@ const KidsStoryCreator = () => {
                 />
               </div>
 
-              <Button onClick={handleGenerate} className="w-full" disabled={loading}>
+              <Button onClick={handleGenerate} className="w-full" disabled={loading || (!isPremium && storiesCreatedThisMonth >= 1)}>
                 {loading ? (
                   <>
                     <Wand2 className="w-4 h-4 mr-2 animate-spin" />
                     Creating your story...
                   </>
+                ) : (!isPremium && storiesCreatedThisMonth >= 1) ? (
+                  'Monthly Limit Reached - Upgrade to Premium'
                 ) : (
                   <>
                     <Wand2 className="w-4 h-4 mr-2" />
@@ -157,6 +200,20 @@ const KidsStoryCreator = () => {
               </CardContent>
             </Card>
           )}
+            </TabsContent>
+
+            <TabsContent value="library">
+              {user ? (
+                <StoryLibrary />
+              ) : (
+                <Card>
+                  <CardContent className="py-8 text-center">
+                    <p className="text-muted-foreground">Sign in to access your story library</p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <Footer />

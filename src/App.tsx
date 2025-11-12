@@ -95,6 +95,7 @@ import PlantCare from "./pages/PlantCare";
 import AITattoo from "./pages/AITattoo";
 import KidsHomework from "./pages/KidsHomework";
 import KidsStoryCreator from "./pages/KidsStoryCreator";
+import KidsStoryPricing from "./pages/KidsStoryPricing";
 import KidsMathGames from "./pages/KidsMathGames";
 import KidsScienceLab from "./pages/KidsScienceLab";
 import KidsDrawingBuddy from "./pages/KidsDrawingBuddy";
@@ -345,6 +346,7 @@ const App = () => (
           <Route path="/ai-tattoo" element={<AITattoo />} />
           <Route path="/kids-homework" element={<KidsHomework />} />
           <Route path="/kids-story-creator" element={<KidsStoryCreator />} />
+          <Route path="/kids-story-pricing" element={<KidsStoryPricing />} />
           <Route path="/kids-math-games" element={<KidsMathGames />} />
           <Route path="/kids-science-lab" element={<KidsScienceLab />} />
           <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />

@@ -10477,6 +10477,33 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_story_usage: {
+        Row: {
+          created_at: string
+          id: string
+          last_reset_date: string
+          stories_created_this_month: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_reset_date?: string
+          stories_created_this_month?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_reset_date?: string
+          stories_created_this_month?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_watch_history: {
         Row: {
           completed: boolean | null
