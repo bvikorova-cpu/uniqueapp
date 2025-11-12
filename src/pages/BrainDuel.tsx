@@ -16,6 +16,7 @@ import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
 import { BrainDuelLeaderboard } from "@/components/brain-duel/BrainDuelLeaderboard";
 import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
 import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
+import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -26,6 +27,7 @@ const BrainDuel = () => {
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState<string | null>(null);
   const { purchasePowerup, isPurchasing } = useBrainDuelPowerups();
+  const { onlineCount } = useBrainDuelOnlinePlayers();
 
   // Get current user
   useEffect(() => {
@@ -48,7 +50,7 @@ const BrainDuel = () => {
       searchParams.delete('session_id');
       setSearchParams(searchParams);
     } else if (payment === 'cancelled') {
-      toast.error('Platba bola zrušená');
+      toast.error('Payment was cancelled');
       searchParams.delete('payment');
       setSearchParams(searchParams);
     }
@@ -63,12 +65,12 @@ const BrainDuel = () => {
       if (error) throw error;
 
       if (data?.success) {
-        toast.success(`Úspešne! Pridaných ${data.added} kreditov. Celkom: ${data.credits}`);
+        toast.success(`Success! Added ${data.added} credits. Total: ${data.credits}`);
         queryClient.invalidateQueries({ queryKey: ['brain-duel-credits'] });
       }
     } catch (error) {
       console.error('Error verifying payment:', error);
-      toast.error('Chyba pri overovaní platby');
+      toast.error('Error verifying payment');
     }
   };
 
@@ -248,7 +250,7 @@ const BrainDuel = () => {
               <Badge variant="secondary" className="text-sm">Live Now</Badge>
               <Badge variant="outline" className="text-sm">
                 <Flame className="w-3 h-3 mr-1 text-orange-500" />
-                1,234 players online
+                {onlineCount} {onlineCount === 1 ? 'player' : 'players'} online
               </Badge>
             </div>
             <div className="flex-1 flex justify-end">

@@ -29,14 +29,14 @@ const CREDIT_PACKAGES = [
     price: '€9.99',
     priceId: 'price_1SSd4jGaXSfGtYFtrF2pSCnX',
     popular: true,
-    savings: 'Šetríte 33%',
+    savings: 'Save 33%',
   },
   {
     credits: 2000,
     price: '€29.99',
     priceId: 'price_1SSd4kGaXSfGtYFtNZwDEepN',
     popular: false,
-    savings: 'Šetríte 50%',
+    savings: 'Save 50%',
   },
 ];
 
@@ -54,12 +54,12 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
 
       if (data?.url) {
         window.open(data.url, '_blank');
-        toast.success('Presmerovaný na platbu');
+        toast.success('Redirected to payment');
         onOpenChange(false);
       }
     } catch (error) {
       console.error('Error creating payment:', error);
-      toast.error('Chyba pri vytváraní platby');
+      toast.error('Error creating payment');
     } finally {
       setLoading(null);
     }
@@ -71,10 +71,10 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <Coins className="h-6 w-6 text-primary" />
-            Kúpiť Kredity
+            Buy Credits
           </DialogTitle>
           <DialogDescription>
-            Vyberte si balíček kreditov pre zábavu na BrainDuel. Kredity majú len zábavnú hodnotu.
+            Choose a credit package for fun on BrainDuel. Credits are for entertainment only.
           </DialogDescription>
         </DialogHeader>
 
@@ -88,14 +88,14 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
             >
               {pkg.popular && (
                 <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-bold">
-                  NAJPOPULÁRNEJŠÍ
+                  MOST POPULAR
                 </div>
               )}
               
               <div className="text-center space-y-4">
                 <div>
                   <p className="text-4xl font-bold text-primary">{pkg.credits}</p>
-                  <p className="text-sm text-muted-foreground">kreditov</p>
+                  <p className="text-sm text-muted-foreground">credits</p>
                 </div>
 
                 <div>
@@ -108,15 +108,15 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
                 <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-primary" />
-                    <span>Virtuálne kredity</span>
+                    <span>Virtual credits</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-primary" />
-                    <span>Bez expirácíe</span>
+                    <span>Never expires</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-primary" />
-                    <span>Okamžité pripísanie</span>
+                    <span>Instant delivery</span>
                   </div>
                 </div>
 
@@ -129,10 +129,10 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
                   {loading === pkg.priceId ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Spracováva sa...
+                      Processing...
                     </>
                   ) : (
-                    'Kúpiť teraz'
+                    'Buy Now'
                   )}
                 </Button>
               </div>
@@ -141,8 +141,8 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
         </div>
 
         <div className="text-xs text-muted-foreground text-center mt-4">
-          ℹ️ Kredity sú iba virtuálna mena pre zábavu a nemajú reálnu peňažnú hodnotu. 
-          Nemôžu byť vymenené za peniaze.
+          ℹ️ Credits are virtual currency for entertainment only and have no real monetary value. 
+          They cannot be exchanged for money.
         </div>
       </DialogContent>
     </Dialog>
