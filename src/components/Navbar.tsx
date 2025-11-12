@@ -175,7 +175,7 @@ const Navbar = () => {
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
-    { path: "/corporate-partnerships", label: "B2B Partnerships", icon: Building2 },
+    
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "Story Creator (6-12y)", icon: BookOpen },
     { path: "/kids-math-games", label: "Math Games (6-12y)", icon: Calculator },

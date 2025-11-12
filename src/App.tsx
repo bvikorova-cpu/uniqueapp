@@ -158,7 +158,7 @@ import BrandBattle from "./pages/BrandBattle";
 import SponsorRegistration from "./pages/SponsorRegistration";
 import SponsorDashboard from "./pages/SponsorDashboard";
 import BrainDuel from "./pages/BrainDuel";
-import CorporatePartnerships from "./pages/CorporatePartnerships";
+
 import Coffee from "./pages/Coffee";
 import CoffeeCheckins from "./pages/CoffeeCheckins";
 import CoffeeBuddy from "./pages/CoffeeBuddy";
@@ -396,7 +396,7 @@ const App = () => (
                <BrainDuel />
              </ProtectedRoute>
            } />
-          <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
+          
           <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/fashion-studio" element={<FashionStudio />} />
           <Route path="/nutrition-hub" element={<NutritionHub />} />
