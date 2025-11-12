@@ -48,6 +48,71 @@ export const FriendChallenges = () => {
     });
   }, []);
 
+  // Real-time subscriptions for challenge notifications
+  useEffect(() => {
+    if (!userId) return;
+
+    const channel = supabase
+      .channel('friend-challenges-notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'brain_duel_friend_challenges',
+          filter: `challenged_id=eq.${userId}`,
+        },
+        async (payload) => {
+          // Fetch challenger profile for notification
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name')
+            .eq('id', payload.new.challenger_id)
+            .single();
+
+          toast({
+            title: '⚔️ New Challenge!',
+            description: `${profile?.full_name || 'Someone'} challenged you to ${payload.new.category}!`,
+          });
+
+          // Refresh challenges list
+          queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'brain_duel_friend_challenges',
+          filter: `challenger_id=eq.${userId}`,
+        },
+        async (payload) => {
+          // Only notify if status changed to accepted
+          if (payload.new.status === 'accepted' && payload.old.status === 'pending') {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', payload.new.challenged_id)
+              .single();
+
+            toast({
+              title: '🎉 Challenge Accepted!',
+              description: `${profile?.full_name || 'Your friend'} accepted your challenge!`,
+            });
+
+            // Refresh challenges list
+            queryClient.invalidateQueries({ queryKey: ['friend-challenges'] });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId, toast, queryClient]);
+
   // Fetch friends
   const { data: friends } = useQuery({
     queryKey: ['friends'],
