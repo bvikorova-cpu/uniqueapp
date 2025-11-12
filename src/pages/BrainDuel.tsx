@@ -18,6 +18,7 @@ import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
 import FriendChallengesLeaderboard from "@/components/brain-duel/FriendChallengesLeaderboard";
 import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
 import { useBrainDuelOnlinePlayers } from "@/hooks/useBrainDuelOnlinePlayers";
+import { useBrainDuelRealTimeNotifications } from "@/hooks/useBrainDuelRealTimeNotifications";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -29,6 +30,9 @@ const BrainDuel = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const { purchasePowerup, isPurchasing } = useBrainDuelPowerups();
   const { onlineCount } = useBrainDuelOnlinePlayers();
+  
+  // Enable real-time notifications
+  useBrainDuelRealTimeNotifications();
 
   // Get current user
   useEffect(() => {
