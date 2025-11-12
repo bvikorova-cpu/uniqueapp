@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 interface HomeworkUsage {
   questionsUsed: number;
@@ -86,8 +87,24 @@ export const useKidsHomework = () => {
     }
   };
 
+  const manageSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('kids-customer-portal');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (err) {
+      console.error('Error opening customer portal:', err);
+      toast.error("Failed to open subscription management portal");
+    }
+  };
+
   return {
     ...usage,
     refreshUsage,
+    manageSubscription,
   };
 };

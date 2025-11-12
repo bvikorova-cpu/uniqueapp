@@ -17,6 +17,7 @@ import { ProgressCard } from "@/components/kids-homework/ProgressCard";
 import { AchievementsGrid } from "@/components/kids-homework/AchievementsGrid";
 import { DailyChallengeCard } from "@/components/kids-homework/DailyChallengeCard";
 import { HomeworkLimitBanner } from "@/components/kids-homework/HomeworkLimitBanner";
+import { SubscriptionManagement } from "@/components/kids-homework/SubscriptionManagement";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -25,7 +26,7 @@ const KidsHomework = () => {
   const queryClient = useQueryClient();
   const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
   const { challenge, progress, isCompleted, isLoading: challengeLoading } = useKidsDailyChallenge();
-  const { questionsUsed, questionsLimit, isPremium, loading: usageLoading, refreshUsage } = useKidsHomework();
+  const { questionsUsed, questionsLimit, isPremium, loading: usageLoading, refreshUsage, manageSubscription } = useKidsHomework();
   const [subject, setSubject] = useState("");
   const [question, setQuestion] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -94,12 +95,18 @@ const KidsHomework = () => {
           </div>
 
           {!usageLoading && (
-            <div className="mb-6">
+            <div className="mb-6 space-y-4">
               <HomeworkLimitBanner
                 questionsUsed={questionsUsed}
                 questionsLimit={questionsLimit}
                 isPremium={isPremium}
               />
+              {isPremium && (
+                <SubscriptionManagement
+                  subscribed={isPremium}
+                  onManageSubscription={manageSubscription}
+                />
+              )}
             </div>
           )}
 
