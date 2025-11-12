@@ -391,7 +391,11 @@ const App = () => (
            <Route path="/brand-battle" element={<BrandBattle />} />
            <Route path="/sponsor-registration" element={<SponsorRegistration />} />
            <Route path="/sponsor-dashboard" element={<SponsorDashboard />} />
-           <Route path="/brain-duel" element={<BrainDuel />} />
+           <Route path="/brain-duel" element={
+             <ProtectedRoute>
+               <BrainDuel />
+             </ProtectedRoute>
+           } />
           <Route path="/corporate-partnerships" element={<CorporatePartnerships />} />
           <Route path="/collectibles" element={<Collectibles />} />
           <Route path="/fashion-studio" element={<FashionStudio />} />
