@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Download, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,16 +13,30 @@ interface Story {
   title: string;
   characters: string;
   theme: string;
+  category: string;
   story_text: string;
   illustration_url: string | null;
   created_at: string;
   updated_at: string;
 }
 
+const CATEGORIES = [
+  { value: "all", label: "All Stories", emoji: "📚" },
+  { value: "adventure", label: "Adventure", emoji: "🗺️" },
+  { value: "fantasy", label: "Fantasy", emoji: "✨" },
+  { value: "educational", label: "Educational", emoji: "📚" },
+  { value: "mystery", label: "Mystery", emoji: "🔍" },
+  { value: "friendship", label: "Friendship", emoji: "🤝" },
+  { value: "animal", label: "Animal", emoji: "🐾" },
+  { value: "space", label: "Space", emoji: "🚀" },
+  { value: "fairy-tale", label: "Fairy Tale", emoji: "👑" },
+];
+
 export const StoryLibrary = () => {
   const { user } = useAuth();
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   useEffect(() => {
     if (user) {
@@ -121,6 +136,10 @@ export const StoryLibrary = () => {
     return <div className="text-center py-8">Loading your stories...</div>;
   }
 
+  const filteredStories = selectedCategory === "all" 
+    ? stories 
+    : stories.filter(story => story.category === selectedCategory);
+
   if (stories.length === 0) {
     return (
       <Card>
@@ -133,10 +152,36 @@ export const StoryLibrary = () => {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Your Story Library</h2>
-      <div className="grid gap-4 md:grid-cols-2">
-        {stories.map((story) => (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold mb-4">Your Story Library</h2>
+        
+        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 h-auto">
+            {CATEGORIES.map((cat) => (
+              <TabsTrigger 
+                key={cat.value} 
+                value={cat.value}
+                className="text-xs sm:text-sm"
+              >
+                <span className="mr-1">{cat.emoji}</span>
+                <span className="hidden sm:inline">{cat.label}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {filteredStories.length === 0 ? (
+        <Card>
+          <CardContent className="py-8 text-center">
+            <BookOpen className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">No stories in this category yet.</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2">
+        {filteredStories.map((story) => (
           <Card key={story.id} className="overflow-hidden">
             {story.illustration_url && (
               <div className="h-48 overflow-hidden bg-muted">
@@ -148,7 +193,12 @@ export const StoryLibrary = () => {
               </div>
             )}
             <CardHeader>
-              <CardTitle className="text-lg">{story.title}</CardTitle>
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <CardTitle className="text-lg flex-1">{story.title}</CardTitle>
+                <span className="text-xl">
+                  {CATEGORIES.find(c => c.value === story.category)?.emoji || "📖"}
+                </span>
+              </div>
               <CardDescription>
                 {new Date(story.created_at).toLocaleDateString()}
               </CardDescription>
@@ -179,7 +229,8 @@ export const StoryLibrary = () => {
             </CardContent>
           </Card>
         ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

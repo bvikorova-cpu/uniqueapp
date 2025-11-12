@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BookOpen, Wand2, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -21,6 +22,7 @@ const KidsStoryCreator = () => {
   const [title, setTitle] = useState("");
   const [characters, setCharacters] = useState("");
   const [theme, setTheme] = useState("");
+  const [category, setCategory] = useState("adventure");
   const [loading, setLoading] = useState(false);
   const [story, setStory] = useState<any>(null);
 
@@ -33,7 +35,7 @@ const KidsStoryCreator = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('kids-story-creator', {
-        body: { title, characters, theme }
+        body: { title, characters, theme, category }
       });
 
       if (error) {
@@ -129,6 +131,25 @@ const KidsStoryCreator = () => {
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., The Magic Dragon's Adventure"
                 />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium mb-2 block">Category</label>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="adventure">🗺️ Adventure</SelectItem>
+                    <SelectItem value="fantasy">✨ Fantasy</SelectItem>
+                    <SelectItem value="educational">📚 Educational</SelectItem>
+                    <SelectItem value="mystery">🔍 Mystery</SelectItem>
+                    <SelectItem value="friendship">🤝 Friendship</SelectItem>
+                    <SelectItem value="animal">🐾 Animal</SelectItem>
+                    <SelectItem value="space">🚀 Space</SelectItem>
+                    <SelectItem value="fairy-tale">👑 Fairy Tale</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>

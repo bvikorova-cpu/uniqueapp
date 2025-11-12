@@ -28,7 +28,7 @@ serve(async (req) => {
     const user = userData.user;
     if (!user?.email) throw new Error("User not authenticated");
 
-    const { title, characters, theme } = await req.json();
+    const { title, characters, theme, category = "adventure" } = await req.json();
     
     if (!title || !characters || !theme) {
       throw new Error("Missing required fields");
@@ -156,6 +156,7 @@ Format your response as JSON:
         title,
         characters,
         theme,
+        category,
         story_text: storyContent.story,
         illustration_url: illustrationUrl
       });

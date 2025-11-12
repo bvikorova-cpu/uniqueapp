@@ -10446,6 +10446,7 @@ export type Database = {
       }
       kids_stories: {
         Row: {
+          category: string | null
           characters: Json | null
           created_at: string | null
           id: string
@@ -10456,6 +10457,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          category?: string | null
           characters?: Json | null
           created_at?: string | null
           id?: string
@@ -10466,6 +10468,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          category?: string | null
           characters?: Json | null
           created_at?: string | null
           id?: string
