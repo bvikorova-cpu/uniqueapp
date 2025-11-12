@@ -359,13 +359,21 @@ async function checkDailyChallenges(supabase: any, userId: string) {
           bonus_earned: challenge.bonus_points,
         });
 
-      // Award bonus points
-      await supabase
+      // Award bonus points - fetch current points and add bonus
+      const { data: currentPoints } = await supabase
         .from('kids_homework_points')
-        .update({
-          total_points: supabase.rpc('increment', { value: challenge.bonus_points }),
-        })
-        .eq('user_id', userId);
+        .select('total_points')
+        .eq('user_id', userId)
+        .single();
+
+      if (currentPoints) {
+        await supabase
+          .from('kids_homework_points')
+          .update({
+            total_points: currentPoints.total_points + challenge.bonus_points,
+          })
+          .eq('user_id', userId);
+      }
     }
   } catch (error) {
     console.error('Error in checkDailyChallenges:', error);
