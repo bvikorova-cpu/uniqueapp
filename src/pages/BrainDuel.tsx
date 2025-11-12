@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCreditsDisplay";
 
 const BrainDuel = () => {
   const navigate = useNavigate();
@@ -23,8 +24,8 @@ const BrainDuel = () => {
       duration: "5 minutes",
       questions: 10,
       timePerQuestion: "30s",
-      entry: "€0.50",
-      reward: "5 credits",
+      entry: 10,
+      reward: 20,
       icon: Zap,
       color: "text-yellow-500"
     },
@@ -34,8 +35,8 @@ const BrainDuel = () => {
       duration: "10 minutes",
       questions: 20,
       timePerQuestion: "30s",
-      entry: "€1.00",
-      reward: "10 credits + achievement",
+      entry: 20,
+      reward: 50,
       icon: Trophy,
       color: "text-blue-500"
     },
@@ -45,8 +46,8 @@ const BrainDuel = () => {
       duration: "20 minutes",
       questions: 50,
       timePerQuestion: "24s",
-      entry: "€3.00",
-      reward: "50 credits + trophy",
+      entry: 50,
+      reward: 150,
       icon: Crown,
       color: "text-purple-500",
       featured: true
@@ -57,7 +58,7 @@ const BrainDuel = () => {
     {
       id: "bronze",
       name: "Bronze League",
-      entry: "€0.50",
+      entry: 10,
       description: "Beginners",
       color: "bg-amber-700",
       icon: "🥉"
@@ -65,7 +66,7 @@ const BrainDuel = () => {
     {
       id: "silver",
       name: "Silver League",
-      entry: "€1.00",
+      entry: 20,
       description: "Advanced",
       color: "bg-slate-400",
       icon: "🥈"
@@ -73,7 +74,7 @@ const BrainDuel = () => {
     {
       id: "gold",
       name: "Gold League",
-      entry: "€3.00",
+      entry: 50,
       description: "Experts",
       color: "bg-yellow-500",
       icon: "🥇"
@@ -81,7 +82,7 @@ const BrainDuel = () => {
     {
       id: "diamond",
       name: "Diamond League",
-      entry: "€10.00",
+      entry: 100,
       description: "Professionals",
       color: "bg-cyan-400",
       icon: "💎",
@@ -107,7 +108,7 @@ const BrainDuel = () => {
       id: "fifty-fifty",
       name: "50:50",
       description: "Remove 2 wrong answers",
-      price: "€0.50",
+      price: 5,
       icon: Target,
       color: "text-yellow-500"
     },
@@ -115,7 +116,7 @@ const BrainDuel = () => {
       id: "ask-ai",
       name: "Ask AI",
       description: "AI hint for the answer",
-      price: "€0.30",
+      price: 3,
       icon: Brain,
       color: "text-blue-500"
     },
@@ -123,7 +124,7 @@ const BrainDuel = () => {
       id: "extra-time",
       name: "Extra Time",
       description: "+15 seconds bonus",
-      price: "€0.20",
+      price: 2,
       icon: Clock,
       color: "text-green-500"
     },
@@ -131,7 +132,7 @@ const BrainDuel = () => {
       id: "double-points",
       name: "Double Points",
       description: "2× credits from this question",
-      price: "€1.00",
+      price: 10,
       icon: TrendingUp,
       color: "text-purple-500"
     }
@@ -142,28 +143,28 @@ const BrainDuel = () => {
       id: "celebrity",
       name: "Celebrity Pack",
       questions: 100,
-      price: "€2.99",
+      price: 30,
       category: "Entertainment"
     },
     {
       id: "history",
       name: "History Bundle",
       questions: 200,
-      price: "€4.99",
+      price: 50,
       category: "History"
     },
     {
       id: "science",
       name: "Science Mega Pack",
       questions: 300,
-      price: "€7.99",
+      price: 80,
       category: "Science"
     },
     {
       id: "custom",
       name: "Create Custom Pack",
       questions: "Unlimited",
-      price: "€0.10/question",
+      price: "1 credit/question",
       category: "Custom",
       custom: true
     }
@@ -197,11 +198,16 @@ const BrainDuel = () => {
             BrainDuel
           </h1>
           <p className="text-xl text-muted-foreground mb-2">
-            Battle of Knowledge • Winner Takes All
+            Knowledge Battle Arena • Virtual Competition
           </p>
           <p className="text-sm text-muted-foreground">
-            QuizArena • Knowledge Battle • SmartShowdown
+            Test Your Knowledge • Compete for Virtual Credits
           </p>
+        </div>
+
+        {/* Credits Display */}
+        <div className="max-w-md mx-auto mb-8">
+          <BrainDuelCreditsDisplay />
         </div>
 
         <Tabs defaultValue="play" className="w-full">
@@ -230,20 +236,21 @@ const BrainDuel = () => {
 
           {/* Play Now Tab */}
           <TabsContent value="play" className="space-y-6">
-            {/* Betting System Info */}
+            {/* Virtual Game Info */}
             <Card className="border-primary/50 bg-gradient-to-br from-primary/5 to-purple-500/5">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Trophy className="h-5 w-5 text-primary" />
-                  Betting System
+                  Virtual Competition System
                 </CardTitle>
                 <CardDescription>
-                  Winner takes all • Platform takes 10% commission
+                  Play for fun • Win virtual credits • No real money involved
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Players bet against each other in real-time duels. The winner takes the entire prize pool minus a 10% platform fee.
+                  Compete against other players in knowledge battles. Winners earn virtual credits that can be used within the game. 
+                  All credits are for entertainment purposes only and have no real-world monetary value.
                 </p>
               </CardContent>
             </Card>
@@ -280,12 +287,12 @@ const BrainDuel = () => {
                           <span className="font-medium">{mode.timePerQuestion}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-muted-foreground">Entry fee:</span>
-                          <span className="font-bold text-primary">{mode.entry}</span>
+                          <span className="text-muted-foreground">Entry cost:</span>
+                          <span className="font-bold text-primary">{mode.entry} credits</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Win reward:</span>
-                          <span className="font-bold text-green-500">{mode.reward}</span>
+                          <span className="font-bold text-green-500">{mode.reward} credits</span>
                         </div>
                       </div>
                       <Button 
@@ -367,8 +374,8 @@ const BrainDuel = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-muted-foreground">Entry fee:</span>
-                      <span className="text-2xl font-bold text-primary">{tournament.entry}</span>
+                      <span className="text-muted-foreground">Entry cost:</span>
+                      <span className="text-2xl font-bold text-primary">{tournament.entry} credits</span>
                     </div>
                     <Button className="w-full" onClick={() => handleJoinTournament(tournament.id)}>
                       Join Tournament
@@ -404,7 +411,7 @@ const BrainDuel = () => {
                     <CardContent className="space-y-3">
                       <p className="text-sm text-muted-foreground">{powerUp.description}</p>
                       <div className="flex justify-between items-center">
-                        <span className="text-2xl font-bold text-primary">{powerUp.price}</span>
+                        <span className="text-2xl font-bold text-primary">{powerUp.price} credits</span>
                         <Button size="sm">Buy</Button>
                       </div>
                     </CardContent>
@@ -444,7 +451,9 @@ const BrainDuel = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-primary">{pack.price}</span>
+                      <span className="text-2xl font-bold text-primary">
+                        {typeof pack.price === 'number' ? `${pack.price} credits` : pack.price}
+                      </span>
                       <Button>
                         {pack.custom ? 'Create Pack' : 'Purchase'}
                       </Button>
@@ -461,46 +470,42 @@ const BrainDuel = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-primary" />
-                  Live Audience Mode
+                  Live Spectator Mode
                 </CardTitle>
                 <CardDescription>
-                  Watch live battles and bet on your favorite players
+                  Watch live battles and support your favorite players
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-background rounded-lg">
-                    <span className="text-sm text-muted-foreground">Bet range:</span>
-                    <span className="font-bold">€0.10 - €5.00</span>
+                    <span className="text-sm text-muted-foreground">Live battles:</span>
+                    <span className="font-bold">Watch for free</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-background rounded-lg">
-                    <span className="text-sm text-muted-foreground">Winner payout:</span>
-                    <span className="font-bold text-green-500">70%</span>
+                    <span className="text-sm text-muted-foreground">Chat access:</span>
+                    <span className="font-bold text-green-500">Free</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-background rounded-lg">
-                    <span className="text-sm text-muted-foreground">Loser payout:</span>
-                    <span className="font-bold text-orange-500">10%</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-background rounded-lg">
-                    <span className="text-sm text-muted-foreground">Platform fee:</span>
-                    <span className="font-bold">20%</span>
+                    <span className="text-sm text-muted-foreground">Reactions:</span>
+                    <span className="font-bold text-purple-500">Unlimited</span>
                   </div>
                 </div>
 
                 <div className="border-t pt-4 mt-4">
                   <h4 className="font-semibold mb-3 flex items-center gap-2">
                     <Heart className="h-4 w-4 text-red-500" />
-                    Live Chat Gifts
+                    Virtual Gifts
                   </h4>
                   <p className="text-sm text-muted-foreground mb-3">
-                    Send virtual gifts to players during live battles
+                    Send virtual gifts to players during battles (costs virtual credits)
                   </p>
                   <div className="flex gap-2 flex-wrap">
-                    <Badge variant="outline">❤️ €0.50</Badge>
-                    <Badge variant="outline">🎁 €1.00</Badge>
-                    <Badge variant="outline">🏆 €2.00</Badge>
-                    <Badge variant="outline">👑 €5.00</Badge>
-                    <Badge variant="outline">💎 €10.00</Badge>
+                    <Badge variant="outline">❤️ 5 credits</Badge>
+                    <Badge variant="outline">🎁 10 credits</Badge>
+                    <Badge variant="outline">🏆 20 credits</Badge>
+                    <Badge variant="outline">👑 50 credits</Badge>
+                    <Badge variant="outline">💎 100 credits</Badge>
                   </div>
                 </div>
 
