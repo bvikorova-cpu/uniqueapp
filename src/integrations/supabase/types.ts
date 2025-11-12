@@ -1409,6 +1409,7 @@ export type Database = {
       }
       brain_duel_friend_challenges: {
         Row: {
+          accepted_at: string | null
           category: string
           challenged_id: string
           challenger_id: string
@@ -1422,6 +1423,7 @@ export type Database = {
           winner_id: string | null
         }
         Insert: {
+          accepted_at?: string | null
           category: string
           challenged_id: string
           challenger_id: string
@@ -1435,6 +1437,7 @@ export type Database = {
           winner_id?: string | null
         }
         Update: {
+          accepted_at?: string | null
           category?: string
           challenged_id?: string
           challenger_id?: string
