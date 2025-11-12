@@ -1407,6 +1407,56 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_friend_challenges: {
+        Row: {
+          category: string
+          challenged_id: string
+          challenger_id: string
+          completed_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          match_id: string | null
+          stake_credits: number
+          status: string
+          winner_id: string | null
+        }
+        Insert: {
+          category: string
+          challenged_id: string
+          challenger_id: string
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          match_id?: string | null
+          stake_credits?: number
+          status?: string
+          winner_id?: string | null
+        }
+        Update: {
+          category?: string
+          challenged_id?: string
+          challenger_id?: string
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          match_id?: string | null
+          stake_credits?: number
+          status?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_duel_friend_challenges_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brain_duel_matches: {
         Row: {
           category: string
@@ -1455,6 +1505,33 @@ export type Database = {
           total_questions?: number
           updated_at?: string
           winner_id?: string | null
+        }
+        Relationships: []
+      }
+      brain_duel_powerups: {
+        Row: {
+          created_at: string
+          id: string
+          powerup_type: string
+          quantity: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          powerup_type: string
+          quantity?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          powerup_type?: string
+          quantity?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -18415,6 +18492,10 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      purchase_brain_duel_powerup: {
+        Args: { p_powerup_type: string; p_price: number }
+        Returns: undefined
+      }
       spend_brain_duel_credits: {
         Args: { p_amount: number; p_user_id: string }
         Returns: undefined

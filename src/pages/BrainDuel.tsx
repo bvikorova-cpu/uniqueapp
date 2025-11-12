@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCreditsDisplay";
 import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
 import { BrainDuelLeaderboard } from "@/components/brain-duel/BrainDuelLeaderboard";
+import { FriendChallenges } from "@/components/brain-duel/FriendChallenges";
+import { useBrainDuelPowerups } from "@/hooks/useBrainDuelPowerups";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -23,6 +25,7 @@ const BrainDuel = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [userId, setUserId] = useState<string | null>(null);
+  const { purchasePowerup, isPurchasing } = useBrainDuelPowerups();
 
   // Get current user
   useEffect(() => {
@@ -279,13 +282,14 @@ const BrainDuel = () => {
           <BrainDuelGame />
         </div>
 
-        {/* Leaderboard */}
-        <div className="max-w-3xl mx-auto mb-8">
+        {/* Leaderboard and Friend Challenges */}
+        <div className="max-w-6xl mx-auto mb-8 grid md:grid-cols-1 lg:grid-cols-2 gap-6">
           <BrainDuelLeaderboard />
+          <FriendChallenges />
         </div>
 
         <Tabs defaultValue="play" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 gap-2 h-auto bg-muted p-2 mb-6">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 gap-2 h-auto bg-muted p-2 mb-6">
             <TabsTrigger value="play" className="gap-2">
               <Zap className="h-4 w-4" />
               Play Now
@@ -293,6 +297,10 @@ const BrainDuel = () => {
             <TabsTrigger value="tournaments" className="gap-2">
               <Trophy className="h-4 w-4" />
               Tournaments
+            </TabsTrigger>
+            <TabsTrigger value="challenges" className="gap-2">
+              <Users className="h-4 w-4" />
+              Challenges
             </TabsTrigger>
             <TabsTrigger value="powerups" className="gap-2">
               <Sparkles className="h-4 w-4" />
@@ -460,6 +468,11 @@ const BrainDuel = () => {
             </div>
           </TabsContent>
 
+          {/* Friend Challenges Tab */}
+          <TabsContent value="challenges" className="space-y-6">
+            <FriendChallenges />
+          </TabsContent>
+
           {/* Power-ups Tab */}
           <TabsContent value="powerups" className="space-y-6">
             <Card>
@@ -486,7 +499,13 @@ const BrainDuel = () => {
                       <p className="text-sm text-muted-foreground">{powerUp.description}</p>
                       <div className="flex justify-between items-center">
                         <span className="text-2xl font-bold text-primary">{powerUp.price} credits</span>
-                        <Button size="sm">Buy</Button>
+                        <Button 
+                          size="sm"
+                          onClick={() => purchasePowerup({ type: powerUp.id, price: powerUp.price })}
+                          disabled={isPurchasing}
+                        >
+                          Buy
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
