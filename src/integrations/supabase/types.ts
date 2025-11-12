@@ -1338,6 +1338,51 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_answers: {
+        Row: {
+          answer: string
+          answered_at: string
+          id: string
+          is_correct: boolean
+          match_id: string
+          player_id: string
+          question_id: string
+        }
+        Insert: {
+          answer: string
+          answered_at?: string
+          id?: string
+          is_correct: boolean
+          match_id: string
+          player_id: string
+          question_id: string
+        }
+        Update: {
+          answer?: string
+          answered_at?: string
+          id?: string
+          is_correct?: boolean
+          match_id?: string
+          player_id?: string
+          question_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brain_duel_answers_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "brain_duel_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "brain_duel_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brain_duel_credits: {
         Row: {
           created_at: string
@@ -1359,6 +1404,96 @@ export type Database = {
           id?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      brain_duel_matches: {
+        Row: {
+          category: string
+          created_at: string
+          current_question_index: number
+          finished_at: string | null
+          id: string
+          player1_id: string
+          player1_score: number
+          player2_id: string | null
+          player2_score: number
+          started_at: string | null
+          status: string
+          total_questions: number
+          updated_at: string
+          winner_id: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          current_question_index?: number
+          finished_at?: string | null
+          id?: string
+          player1_id: string
+          player1_score?: number
+          player2_id?: string | null
+          player2_score?: number
+          started_at?: string | null
+          status?: string
+          total_questions?: number
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          current_question_index?: number
+          finished_at?: string | null
+          id?: string
+          player1_id?: string
+          player1_score?: number
+          player2_id?: string | null
+          player2_score?: number
+          started_at?: string | null
+          status?: string
+          total_questions?: number
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
+      brain_duel_questions: {
+        Row: {
+          category: string
+          correct_answer: string
+          created_at: string
+          difficulty: string
+          id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+        }
+        Insert: {
+          category: string
+          correct_answer: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+        }
+        Update: {
+          category?: string
+          correct_answer?: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question?: string
         }
         Relationships: []
       }

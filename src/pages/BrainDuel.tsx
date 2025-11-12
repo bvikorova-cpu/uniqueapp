@@ -12,6 +12,7 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCreditsDisplay";
+import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -246,8 +247,9 @@ const BrainDuel = () => {
         </div>
 
         {/* Credits Display */}
-        <div className="max-w-md mx-auto mb-8">
+        <div className="max-w-3xl mx-auto mb-8 space-y-6">
           <BrainDuelCreditsDisplay />
+          <BrainDuelGame />
         </div>
 
         <Tabs defaultValue="play" className="w-full">
