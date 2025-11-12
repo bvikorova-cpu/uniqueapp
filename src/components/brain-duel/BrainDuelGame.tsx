@@ -3,8 +3,9 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Brain, Trophy, Clock, Target } from 'lucide-react';
+import { Brain, Trophy, Clock, Target, Zap, Timer, Lightbulb, SkipForward, Sparkles } from 'lucide-react';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
+import { useBrainDuelPowerups } from '@/hooks/useBrainDuelPowerups';
 
 interface Question {
   id: string;
@@ -29,6 +30,7 @@ interface Match {
 export const BrainDuelGame = () => {
   const { toast } = useToast();
   const { credits } = useBrainDuelCredits();
+  const { powerups, usePowerup: usePowerupHook } = useBrainDuelPowerups();
   const [category, setCategory] = useState<string>('');
   const [match, setMatch] = useState<Match | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -38,6 +40,9 @@ export const BrainDuelGame = () => {
   const [timeLeft, setTimeLeft] = useState(15);
   const [gamePhase, setGamePhase] = useState<'category' | 'searching' | 'playing' | 'results'>('category');
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [hiddenOptions, setHiddenOptions] = useState<string[]>([]);
+  const [showHint, setShowHint] = useState(false);
+  const [activePowerup, setActivePowerup] = useState<string | null>(null);
 
   // Get current user
   useEffect(() => {
@@ -192,6 +197,8 @@ export const BrainDuelGame = () => {
           setCurrentQuestionIndex(currentQuestionIndex + 1);
           setSelectedAnswer(null);
           setTimeLeft(15);
+          setHiddenOptions([]);
+          setShowHint(false);
         } else {
           finishMatch();
         }
@@ -219,6 +226,96 @@ export const BrainDuelGame = () => {
     }
   };
 
+  const usePowerup = async (powerupType: string) => {
+    const powerup = powerups.find(p => p.powerup_type === powerupType && p.quantity > 0);
+    if (!powerup) {
+      toast({
+        title: 'Power-up not available',
+        description: 'You don\'t have this power-up',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setActivePowerup(powerupType);
+    
+    try {
+      switch (powerupType) {
+        case 'fifty_fifty':
+          // Remove 2 wrong answers
+          const correctAnswer = await getCorrectAnswer();
+          const allOptions = ['a', 'b', 'c', 'd'];
+          const wrongOptions = allOptions.filter(opt => opt !== correctAnswer);
+          const toHide = wrongOptions.slice(0, 2);
+          setHiddenOptions(toHide);
+          break;
+          
+        case 'extra_time':
+          // Add 10 seconds
+          setTimeLeft(prev => Math.min(prev + 10, 30));
+          break;
+          
+        case 'hint':
+          // Show hint
+          setShowHint(true);
+          break;
+          
+        case 'skip':
+          // Skip to next question
+          if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setSelectedAnswer(null);
+            setTimeLeft(15);
+            setHiddenOptions([]);
+            setShowHint(false);
+          }
+          break;
+      }
+
+      // Deduct powerup from user's inventory using the hook
+      await usePowerupHook({ powerupId: powerup.id, quantity: powerup.quantity });
+
+      toast({
+        title: 'Power-up activated! ⚡',
+        description: getPowerupDescription(powerupType),
+      });
+
+      // Reset active powerup animation after 1 second
+      setTimeout(() => setActivePowerup(null), 1000);
+    } catch (error) {
+      console.error('Error using powerup:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to activate power-up',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const getCorrectAnswer = async (): Promise<string> => {
+    const { data } = await supabase
+      .from('brain_duel_questions')
+      .select('correct_answer')
+      .eq('id', questions[currentQuestionIndex].id)
+      .single();
+    return data?.correct_answer || 'a';
+  };
+
+  const getPowerupDescription = (type: string): string => {
+    switch (type) {
+      case 'fifty_fifty':
+        return '2 wrong answers removed!';
+      case 'extra_time':
+        return '+10 seconds added!';
+      case 'hint':
+        return 'Hint revealed!';
+      case 'skip':
+        return 'Question skipped!';
+      default:
+        return 'Power-up activated!';
+    }
+  };
+
   const resetGame = () => {
     setMatch(null);
     setQuestions([]);
@@ -226,6 +323,8 @@ export const BrainDuelGame = () => {
     setSelectedAnswer(null);
     setGamePhase('category');
     setTimeLeft(15);
+    setHiddenOptions([]);
+    setShowHint(false);
   };
 
   if (gamePhase === 'category') {
@@ -268,6 +367,13 @@ export const BrainDuelGame = () => {
     const myScore = isPlayer1 ? match?.player1_score : match?.player2_score;
     const opponentScore = isPlayer1 ? match?.player2_score : match?.player1_score;
 
+    const availablePowerups = [
+      { type: 'fifty_fifty', icon: Zap, label: '50/50', color: 'text-yellow-500' },
+      { type: 'extra_time', icon: Timer, label: '+Time', color: 'text-blue-500' },
+      { type: 'hint', icon: Lightbulb, label: 'Hint', color: 'text-purple-500' },
+      { type: 'skip', icon: SkipForward, label: 'Skip', color: 'text-green-500' },
+    ];
+
     return (
       <div className="space-y-4">
         <Card className="p-4 bg-gradient-to-r from-primary/10 to-primary/5">
@@ -291,25 +397,84 @@ export const BrainDuelGame = () => {
           </div>
         </Card>
 
+        {/* Power-ups Panel */}
+        <Card className="p-3 bg-gradient-to-r from-primary/5 to-accent/5">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-sm font-semibold">Power-ups</span>
+          </div>
+          <div className="flex gap-2">
+            {availablePowerups.map((powerup) => {
+              const userPowerup = powerups.find(p => p.powerup_type === powerup.type);
+              const quantity = userPowerup?.quantity || 0;
+              const isActive = activePowerup === powerup.type;
+              
+              return (
+                <Button
+                  key={powerup.type}
+                  onClick={() => usePowerup(powerup.type)}
+                  disabled={quantity === 0 || selectedAnswer !== null}
+                  variant="outline"
+                  size="sm"
+                  className={`relative flex-1 transition-all ${
+                    isActive ? 'animate-pulse scale-110 bg-primary text-primary-foreground' : ''
+                  } ${quantity === 0 ? 'opacity-50' : 'hover-scale'}`}
+                >
+                  <powerup.icon className={`h-4 w-4 mr-1 ${powerup.color}`} />
+                  <span className="text-xs">{powerup.label}</span>
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {quantity}
+                  </span>
+                </Button>
+              );
+            })}
+          </div>
+        </Card>
+
         <Card className="p-6">
           <p className="text-sm text-muted-foreground mb-2">
             Question {currentQuestionIndex + 1} of {questions.length}
           </p>
           <h3 className="text-xl font-bold mb-6">{currentQuestion.question}</h3>
 
+          {showHint && (
+            <div className="mb-4 p-3 bg-purple-500/10 border border-purple-500/20 rounded-lg animate-fade-in">
+              <div className="flex items-center gap-2 text-purple-500">
+                <Lightbulb className="h-4 w-4" />
+                <span className="text-sm font-semibold">Hint: The correct answer starts with the first letter of the correct option!</span>
+              </div>
+            </div>
+          )}
+
           <div className="grid gap-3">
-            {['a', 'b', 'c', 'd'].map((option) => (
-              <Button
-                key={option}
-                onClick={() => handleAnswer(option)}
-                variant={selectedAnswer === option ? 'default' : 'outline'}
-                disabled={selectedAnswer !== null}
-                className="h-auto py-4 px-6 text-left justify-start"
-              >
-                <span className="font-bold mr-3">{option.toUpperCase()}.</span>
-                {currentQuestion[`option_${option}` as keyof Question]}
-              </Button>
-            ))}
+            {['a', 'b', 'c', 'd'].map((option) => {
+              const isHidden = hiddenOptions.includes(option);
+              
+              if (isHidden) {
+                return (
+                  <div
+                    key={option}
+                    className="h-auto py-4 px-6 border border-dashed border-muted-foreground/30 rounded-md opacity-30 animate-fade-out"
+                  >
+                    <span className="font-bold mr-3">{option.toUpperCase()}.</span>
+                    <span className="text-muted-foreground">Eliminated</span>
+                  </div>
+                );
+              }
+              
+              return (
+                <Button
+                  key={option}
+                  onClick={() => handleAnswer(option)}
+                  variant={selectedAnswer === option ? 'default' : 'outline'}
+                  disabled={selectedAnswer !== null}
+                  className="h-auto py-4 px-6 text-left justify-start hover-scale transition-all"
+                >
+                  <span className="font-bold mr-3">{option.toUpperCase()}.</span>
+                  {currentQuestion[`option_${option}` as keyof Question]}
+                </Button>
+              );
+            })}
           </div>
         </Card>
       </div>

@@ -50,10 +50,28 @@ export const useBrainDuelPowerups = () => {
     },
   });
 
+  const usePowerupMutation = useMutation({
+    mutationFn: async ({ powerupId, quantity }: { powerupId: string; quantity: number }) => {
+      const { error } = await supabase
+        .from('brain_duel_powerups')
+        .update({ 
+          quantity: quantity - 1,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', powerupId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['brain-duel-powerups'] });
+    },
+  });
+
   return {
     powerups: powerups || [],
     isLoading,
     purchasePowerup: purchasePowerup.mutate,
     isPurchasing: purchasePowerup.isPending,
+    usePowerup: usePowerupMutation.mutateAsync,
   };
 };
