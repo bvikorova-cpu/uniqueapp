@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,6 +12,19 @@ serve(async (req) => {
   }
 
   try {
+    const authHeader = req.headers.get('Authorization');
+    const token = authHeader?.replace('Bearer ', '');
+    
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    let userId = null;
+    if (token) {
+      const { data: { user } } = await supabase.auth.getUser(token);
+      userId = user?.id;
+    }
+
     const { subject, question, difficulty } = await req.json();
     
     if (!question || !subject || !difficulty) {
@@ -75,6 +89,11 @@ Please help me understand this homework question!`;
     const content = data.choices[0].message.content;
     const result = JSON.parse(content);
 
+    // Award points if user is authenticated
+    if (userId) {
+      await awardPoints(supabase, userId, subject);
+    }
+
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
@@ -88,3 +107,139 @@ Please help me understand this homework question!`;
     });
   }
 });
+
+async function awardPoints(supabase: any, userId: string, subject: string) {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Get or create user points record
+    let { data: userPoints, error: fetchError } = await supabase
+      .from('kids_homework_points')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (fetchError && fetchError.code !== 'PGRST116') {
+      console.error('Error fetching points:', fetchError);
+      return;
+    }
+
+    const pointsToAward = 10; // Base points per question
+    
+    if (!userPoints) {
+      // Create new points record
+      const { error: insertError } = await supabase
+        .from('kids_homework_points')
+        .insert({
+          user_id: userId,
+          total_points: pointsToAward,
+          questions_answered: 1,
+          streak_days: 1,
+          last_activity_date: today,
+        });
+      
+      if (insertError) console.error('Error creating points:', insertError);
+    } else {
+      // Update existing points record
+      const newTotalPoints = userPoints.total_points + pointsToAward;
+      const newQuestionsAnswered = userPoints.questions_answered + 1;
+      
+      // Calculate streak
+      let newStreak = userPoints.streak_days;
+      const lastActivity = new Date(userPoints.last_activity_date);
+      const todayDate = new Date(today);
+      const daysDiff = Math.floor((todayDate.getTime() - lastActivity.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (daysDiff === 1) {
+        newStreak += 1; // Consecutive day
+      } else if (daysDiff > 1) {
+        newStreak = 1; // Streak broken, restart
+      }
+      // If same day, keep the same streak
+      
+      const { error: updateError } = await supabase
+        .from('kids_homework_points')
+        .update({
+          total_points: newTotalPoints,
+          questions_answered: newQuestionsAnswered,
+          streak_days: newStreak,
+          last_activity_date: today,
+        })
+        .eq('user_id', userId);
+      
+      if (updateError) console.error('Error updating points:', updateError);
+      
+      // Check for new achievements
+      await checkAchievements(supabase, userId, {
+        totalPoints: newTotalPoints,
+        questionsAnswered: newQuestionsAnswered,
+        streakDays: newStreak,
+        subject,
+      });
+    }
+  } catch (error) {
+    console.error('Error in awardPoints:', error);
+  }
+}
+
+async function checkAchievements(
+  supabase: any,
+  userId: string,
+  stats: { totalPoints: number; questionsAnswered: number; streakDays: number; subject: string }
+) {
+  try {
+    // Get all achievements
+    const { data: allAchievements } = await supabase
+      .from('kids_homework_achievements')
+      .select('*');
+
+    // Get user's unlocked achievements
+    const { data: userAchievements } = await supabase
+      .from('kids_homework_user_achievements')
+      .select('achievement_id')
+      .eq('user_id', userId);
+
+    const unlockedIds = new Set(userAchievements?.map((a: any) => a.achievement_id) || []);
+
+    // Check which achievements to unlock
+    const newAchievements = [];
+    
+    for (const achievement of allAchievements || []) {
+      if (unlockedIds.has(achievement.id)) continue;
+
+      let shouldUnlock = false;
+
+      if (achievement.achievement_type === 'questions' && stats.questionsAnswered >= achievement.points_required / 10) {
+        shouldUnlock = true;
+      } else if (achievement.achievement_type === 'points' && stats.totalPoints >= achievement.points_required) {
+        shouldUnlock = true;
+      } else if (achievement.achievement_type === 'streak' && stats.streakDays >= achievement.points_required / 10) {
+        shouldUnlock = true;
+      } else if (achievement.achievement_type.startsWith('subject_')) {
+        const subjectType = achievement.achievement_type.replace('subject_', '');
+        if (stats.subject.toLowerCase() === subjectType) {
+          // Would need to track subject-specific counts, simplified for now
+          shouldUnlock = stats.questionsAnswered >= 5;
+        }
+      }
+
+      if (shouldUnlock) {
+        newAchievements.push({
+          user_id: userId,
+          achievement_id: achievement.id,
+        });
+      }
+    }
+
+    // Insert new achievements
+    if (newAchievements.length > 0) {
+      const { error } = await supabase
+        .from('kids_homework_user_achievements')
+        .insert(newAchievements);
+      
+      if (error) console.error('Error unlocking achievements:', error);
+    }
+  } catch (error) {
+    console.error('Error in checkAchievements:', error);
+  }
+}

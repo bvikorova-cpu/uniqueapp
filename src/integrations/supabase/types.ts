@@ -10068,6 +10068,98 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_homework_achievements: {
+        Row: {
+          achievement_type: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          name: string
+          points_required: number
+        }
+        Insert: {
+          achievement_type: string
+          created_at?: string
+          description: string
+          icon: string
+          id?: string
+          name: string
+          points_required: number
+        }
+        Update: {
+          achievement_type?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          points_required?: number
+        }
+        Relationships: []
+      }
+      kids_homework_points: {
+        Row: {
+          created_at: string
+          id: string
+          last_activity_date: string | null
+          questions_answered: number
+          streak_days: number
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_activity_date?: string | null
+          questions_answered?: number
+          streak_days?: number
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_activity_date?: string | null
+          questions_answered?: number
+          streak_days?: number
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      kids_homework_user_achievements: {
+        Row: {
+          achievement_id: string
+          id: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          id?: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          id?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kids_homework_user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "kids_homework_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kids_math_progress: {
         Row: {
           accuracy_percentage: number | null

@@ -9,8 +9,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
+import { useKidsHomeworkProgress } from "@/hooks/useKidsHomeworkProgress";
+import { ProgressCard } from "@/components/kids-homework/ProgressCard";
+import { AchievementsGrid } from "@/components/kids-homework/AchievementsGrid";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const KidsHomework = () => {
+  const { user } = useAuth();
+  const { points, achievements, unlockedAchievements, isLoading: progressLoading } = useKidsHomeworkProgress();
   const [subject, setSubject] = useState("");
   const [question, setQuestion] = useState("");
   const [difficulty, setDifficulty] = useState("");
@@ -34,7 +41,12 @@ const KidsHomework = () => {
       if (error) throw error;
       
       setResult(data);
-      toast.success("Homework help ready! 🎉");
+      
+      if (user) {
+        toast.success("Homework help ready! You earned 10 points! 🎉");
+      } else {
+        toast.success("Homework help ready! 🎉");
+      }
     } catch (error: any) {
       console.error('Error:', error);
       toast.error(error.message || "Failed to get homework help");
@@ -47,15 +59,29 @@ const KidsHomework = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
       <Navbar />
       <main className="container mx-auto px-4 py-8 mt-16">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               AI Homework Helper 📚
             </h1>
             <p className="text-muted-foreground">
-              Get fun and easy help with your homework!
+              Get fun and easy help with your homework! {user && "Earn points and unlock achievements!"}
             </p>
           </div>
+
+          {user && !progressLoading && (
+            <div className="mb-8">
+              <ProgressCard points={points} />
+            </div>
+          )}
+
+          <Tabs defaultValue="homework" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="homework">Ask Question</TabsTrigger>
+              <TabsTrigger value="achievements">Achievements</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="homework" className="space-y-6">
 
           <Card className="mb-6">
             <CardHeader>
@@ -156,6 +182,23 @@ const KidsHomework = () => {
               </CardContent>
             </Card>
           )}
+            </TabsContent>
+
+            <TabsContent value="achievements">
+              {user ? (
+                <AchievementsGrid 
+                  achievements={achievements} 
+                  unlockedAchievements={unlockedAchievements} 
+                />
+              ) : (
+                <Card>
+                  <CardContent className="py-8 text-center">
+                    <p className="text-muted-foreground">Sign in to track your achievements and earn badges!</p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       <Footer />
