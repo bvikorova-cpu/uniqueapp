@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, Target } from "lucide-react";
+import confetti from "canvas-confetti";
+import { useEffect, useRef } from "react";
 
 interface Challenge {
   id: string;
@@ -25,6 +27,48 @@ interface DailyChallengeCardProps {
 }
 
 export const DailyChallengeCard = ({ challenge, progress, isCompleted }: DailyChallengeCardProps) => {
+  const prevIsCompleted = useRef(isCompleted);
+
+  // Trigger confetti when challenge is completed
+  useEffect(() => {
+    if (isCompleted && !prevIsCompleted.current) {
+      // Trigger multiple confetti bursts for celebration
+      const duration = 3000;
+      const end = Date.now() + duration;
+
+      const frame = () => {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'],
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'],
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      };
+      frame();
+
+      // Also trigger a bigger burst
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#10b981', '#f59e0b', '#3b82f6', '#ec4899'],
+      });
+    }
+    prevIsCompleted.current = isCompleted;
+  }, [isCompleted]);
+
   if (!challenge) {
     return (
       <Card className="bg-gradient-to-br from-orange-500/10 to-yellow-500/10 border-orange-300/50">
