@@ -178,7 +178,6 @@ const Navbar = () => {
     
     { path: "/kids-homework", label: "Homework Helper (6-12y)", icon: BookOpen },
     { path: "/kids-story-creator", label: "Story Creator (6-12y)", icon: BookOpen },
-    { path: "/kids-math-games", label: "Math Games (6-12y)", icon: Calculator },
     { path: "/kids-science-lab", label: "Science Lab (6-12y)", icon: FlaskConical },
     { path: "/kids-drawing-buddy", label: "Drawing Buddy (6-12y)", icon: Palette },
     { path: "/kids-reading-companion", label: "Reading Companion (6-12y)", icon: BookOpen },
