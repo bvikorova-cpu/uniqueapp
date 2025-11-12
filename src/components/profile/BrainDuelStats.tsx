@@ -6,6 +6,7 @@ import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { Trophy, Target, TrendingUp, Coins, Brain, Calendar } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import BadgesDisplay from '@/components/gamification/BadgesDisplay';
+import AchievementsShowcase from '@/components/brain-duel/AchievementsShowcase';
 import { formatDistanceToNow } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -165,6 +166,9 @@ export const BrainDuelStats = ({ userId }: BrainDuelStatsProps) => {
           </CardContent>
         </Card>
       )}
+
+      {/* Friend Challenge Achievements */}
+      <AchievementsShowcase userId={userId} />
 
       {/* Badges & Achievements */}
       <BadgesDisplay userId={userId} />

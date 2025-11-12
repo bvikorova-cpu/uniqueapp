@@ -1,21 +1,37 @@
 import { useFriendChallengeStats } from "@/hooks/useFriendChallengeStats";
+import { useFriendChallengeAchievements } from "@/hooks/useFriendChallengeAchievements";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Users, TrendingUp, TrendingDown } from "lucide-react";
+import AchievementBadge from "./AchievementBadge";
 
 export default function FriendChallengesLeaderboard() {
   const { user } = useAuth();
   const { data: friendStats = [], isLoading } = useFriendChallengeStats(user?.id);
+  const { achievements } = useFriendChallengeAchievements(user?.id);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-primary" />
-          Friends Leaderboard
-        </CardTitle>
+        <div className="space-y-3">
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-primary" />
+            Friends Leaderboard
+          </CardTitle>
+          {achievements.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {achievements.slice(0, 5).map((achievement) => (
+                <AchievementBadge
+                  key={achievement.id}
+                  achievementType={achievement.achievement_type}
+                  size="sm"
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         {isLoading ? (

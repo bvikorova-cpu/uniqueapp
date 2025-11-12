@@ -1407,6 +1407,33 @@ export type Database = {
         }
         Relationships: []
       }
+      brain_duel_friend_achievements: {
+        Row: {
+          achieved_at: string | null
+          achievement_type: string
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string | null
+          achievement_type: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string | null
+          achievement_type?: string
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       brain_duel_friend_challenges: {
         Row: {
           accepted_at: string | null
