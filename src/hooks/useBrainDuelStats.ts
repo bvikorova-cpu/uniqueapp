@@ -56,11 +56,12 @@ export const useBrainDuelStats = (userId?: string) => {
       const winRate = (wins / matches.length) * 100;
 
       // Calculate total points and average score
-      const scores = matches.map((m) =>
-        m.player1_id === userId ? m.player1_score : m.player2_score
-      );
+      const scores = matches.map((m) => {
+        const score = m.player1_id === userId ? m.player1_score : m.player2_score;
+        return score || 0;
+      });
       const totalPoints = scores.reduce((sum, score) => sum + score, 0);
-      const averageScore = totalPoints / matches.length;
+      const averageScore = matches.length > 0 ? totalPoints / matches.length : 0;
 
       // Find favorite category
       const categoryCounts: Record<string, number> = {};

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -58,6 +58,7 @@ interface Post {
 const Profile = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -68,6 +69,7 @@ const Profile = () => {
   const [followersModalOpen, setFollowersModalOpen] = useState(false);
   const [followersModalTab, setFollowersModalTab] = useState<"followers" | "following">("followers");
   const { data: followCounts } = useFollowCounts(userId);
+  const [defaultTab, setDefaultTab] = useState("posts");
   const [stats, setStats] = useState({
     postsCount: 0,
     likesGiven: 0,
@@ -84,6 +86,13 @@ const Profile = () => {
       setCurrentUserId(session?.user?.id || null);
     });
   }, []);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab && currentUserId === userId) {
+      setDefaultTab(tab);
+    }
+  }, [searchParams, currentUserId, userId]);
 
   useEffect(() => {
     const fetchProfileAndPosts = async () => {
@@ -575,7 +584,7 @@ const Profile = () => {
           </div>
         </Card>
 
-        <Tabs defaultValue="posts" className="w-full">
+        <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="videos">Videos</TabsTrigger>

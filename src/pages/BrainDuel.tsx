@@ -7,12 +7,13 @@ import {
   Trophy, Zap, Users, ShoppingCart, Crown, Flame, Clock, 
   Globe, BookOpen, FlaskConical, Film, Dumbbell, Music, 
   Pizza, Briefcase, Palette, Gamepad2, Target, Brain,
-  TrendingUp, Heart, Sparkles, Gift
+  TrendingUp, Heart, Sparkles, Gift, User
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { BrainDuelCreditsDisplay } from "@/components/brain-duel/BrainDuelCreditsDisplay";
 import { BrainDuelGame } from "@/components/brain-duel/BrainDuelGame";
+import { BrainDuelLeaderboard } from "@/components/brain-duel/BrainDuelLeaderboard";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -21,6 +22,16 @@ const BrainDuel = () => {
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Get current user
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id || null);
+    };
+    getCurrentUser();
+  }, []);
 
   // Handle payment success
   useEffect(() => {
@@ -228,12 +239,28 @@ const BrainDuel = () => {
       <div className="container mx-auto max-w-7xl pt-20">
         {/* Hero Section */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <Badge variant="secondary" className="text-sm">Live Now</Badge>
-            <Badge variant="outline" className="text-sm">
-              <Flame className="w-3 h-3 mr-1 text-orange-500" />
-              1,234 players online
-            </Badge>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex-1" />
+            <div className="inline-flex items-center gap-2">
+              <Badge variant="secondary" className="text-sm">Live Now</Badge>
+              <Badge variant="outline" className="text-sm">
+                <Flame className="w-3 h-3 mr-1 text-orange-500" />
+                1,234 players online
+              </Badge>
+            </div>
+            <div className="flex-1 flex justify-end">
+              {userId && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/profile/${userId}?tab=brain-duel`)}
+                  className="gap-2"
+                >
+                  <User className="h-4 w-4" />
+                  My Stats
+                </Button>
+              )}
+            </div>
           </div>
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
             BrainDuel
@@ -250,6 +277,11 @@ const BrainDuel = () => {
         <div className="max-w-3xl mx-auto mb-8 space-y-6">
           <BrainDuelCreditsDisplay />
           <BrainDuelGame />
+        </div>
+
+        {/* Leaderboard */}
+        <div className="max-w-3xl mx-auto mb-8">
+          <BrainDuelLeaderboard />
         </div>
 
         <Tabs defaultValue="play" className="w-full">

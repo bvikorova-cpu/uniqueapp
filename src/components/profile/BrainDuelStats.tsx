@@ -7,6 +7,8 @@ import { Trophy, Target, TrendingUp, Coins, Brain, Calendar } from 'lucide-react
 import { Separator } from '@/components/ui/separator';
 import BadgesDisplay from '@/components/gamification/BadgesDisplay';
 import { formatDistanceToNow } from 'date-fns';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface BrainDuelStatsProps {
   userId: string;
@@ -15,6 +17,17 @@ interface BrainDuelStatsProps {
 export const BrainDuelStats = ({ userId }: BrainDuelStatsProps) => {
   const { data: stats, isLoading } = useBrainDuelStats(userId);
   const { credits } = useBrainDuelCredits();
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setCurrentUserId(user?.id || null);
+      setIsOwnProfile(user?.id === userId);
+    };
+    getCurrentUser();
+  }, [userId]);
 
   if (isLoading) {
     return (
@@ -29,7 +42,7 @@ export const BrainDuelStats = ({ userId }: BrainDuelStatsProps) => {
   return (
     <div className="space-y-6">
       {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${isOwnProfile ? 'lg:grid-cols-4' : 'lg:grid-cols-3'}`}>
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -71,18 +84,20 @@ export const BrainDuelStats = ({ userId }: BrainDuelStatsProps) => {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
-              <Coins className="h-4 w-4 text-amber-500" />
-              Credits
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{credits}</div>
-            <p className="text-xs text-muted-foreground mt-1">available</p>
-          </CardContent>
-        </Card>
+        {isOwnProfile && (
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <Coins className="h-4 w-4 text-amber-500" />
+                Credits
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold">{credits}</div>
+              <p className="text-xs text-muted-foreground mt-1">available</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Favorite Category */}
