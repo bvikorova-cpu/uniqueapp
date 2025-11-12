@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp, Video, Bookmark, Trophy, GraduationCap } from "lucide-react";
+import { Loader2, Mail, ArrowLeft, MapPin, Phone, Globe, Briefcase, Building2, Calendar, Edit, UserPlus, UserCheck, Users, TrendingUp, Video, Bookmark, Trophy, GraduationCap, Brain } from "lucide-react";
+import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
 import { CourseHistory } from "@/components/profile/CourseHistory";
@@ -575,12 +576,16 @@ const Profile = () => {
         </Card>
 
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="posts">Posts</TabsTrigger>
             <TabsTrigger value="videos">Videos</TabsTrigger>
             <TabsTrigger value="saved">Saved</TabsTrigger>
             <TabsTrigger value="contests">Contests</TabsTrigger>
             <TabsTrigger value="education">Courses</TabsTrigger>
+            <TabsTrigger value="brain-duel">
+              <Brain className="h-4 w-4 mr-2" />
+              Brain Duel
+            </TabsTrigger>
             <TabsTrigger value="friends">Friends</TabsTrigger>
           </TabsList>
           
@@ -614,6 +619,10 @@ const Profile = () => {
 
           <TabsContent value="education" className="mt-4">
             <CourseHistory />
+          </TabsContent>
+
+          <TabsContent value="brain-duel" className="mt-4">
+            <BrainDuelStats userId={userId!} />
           </TabsContent>
 
           <TabsContent value="friends" className="mt-4">
