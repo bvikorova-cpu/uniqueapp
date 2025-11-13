@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { BookOpen, HelpCircle, Award } from "lucide-react";
+import { BookOpen, HelpCircle, Award, Sparkles, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { useKidsReadingSubscription } from "@/hooks/useKidsReadingSubscription";
+import { Progress } from "@/components/ui/progress";
 
 const KidsReadingCompanion = () => {
   const { t } = useTranslation();
@@ -17,10 +19,36 @@ const KidsReadingCompanion = () => {
   const [showQuiz, setShowQuiz] = useState(false);
   const [quiz, setQuiz] = useState<any>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { subscription, createCheckout, incrementAnalysisUsage, incrementQuizUsage } = useKidsReadingSubscription();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+
+    const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => {
+      authSubscription.unsubscribe();
+    };
+  }, []);
 
   const analyzeText = async () => {
     if (!bookText.trim()) {
       toast.error("Please paste some text to read");
+      return;
+    }
+
+    if (!isAuthenticated) {
+      toast.error("Please sign in to use this feature");
+      return;
+    }
+
+    if (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) {
+      toast.error("You've reached your free limit. Subscribe for unlimited access!");
       return;
     }
 
@@ -33,6 +61,7 @@ const KidsReadingCompanion = () => {
       if (error) throw error;
       
       setAnalysis(data);
+      await incrementAnalysisUsage();
       toast.success("Text analyzed! 📖");
     } catch (error: any) {
       console.error('Error:', error);
@@ -43,6 +72,16 @@ const KidsReadingCompanion = () => {
   };
 
   const generateQuiz = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please sign in to use this feature");
+      return;
+    }
+
+    if (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) {
+      toast.error("You've reached your free limit. Subscribe for unlimited access!");
+      return;
+    }
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('kids-reading-companion', {
@@ -53,6 +92,7 @@ const KidsReadingCompanion = () => {
       
       setQuiz(data);
       setShowQuiz(true);
+      await incrementQuizUsage();
       toast.success("Quiz ready! 🎯");
     } catch (error: any) {
       console.error('Error:', error);
@@ -80,39 +120,94 @@ const KidsReadingCompanion = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              {t('kidsReading.title')}
+              Kids Reading Companion
             </h1>
-            <p className="text-muted-foreground">
-              {t('kidsReading.subtitle')}
+            <p className="text-muted-foreground mb-4">
+              AI-powered reading assistant that helps children understand texts better through simplified explanations and interactive quizzes
             </p>
+            
+            {!subscription.loading && (
+              <Card className="mb-6">
+                <CardContent className="pt-6">
+                  {subscription.subscribed ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-center gap-2 text-green-600">
+                        <Sparkles className="w-5 h-5" />
+                        <span className="font-semibold">Premium Active - Unlimited Access</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Active until: {subscription.subscription_end ? new Date(subscription.subscription_end).toLocaleDateString() : 'N/A'}
+                      </p>
+                    </div>
+                  ) : isAuthenticated ? (
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span>Text Analyses: {subscription.analyses_used}/{subscription.analyses_limit}</span>
+                          <span>Quizzes: {subscription.quizzes_used}/{subscription.quizzes_limit}</span>
+                        </div>
+                        <Progress value={(subscription.analyses_used / subscription.analyses_limit) * 100} className="h-2" />
+                      </div>
+                      <div className="flex items-center justify-center gap-4 pt-2">
+                        <Button onClick={createCheckout} size="lg" className="gap-2">
+                          <Sparkles className="w-4 h-4" />
+                          Get Premium - €5/month
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        ✨ First month FREE trial • Unlimited analyses & quizzes • Cancel anytime
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <p className="text-muted-foreground">Sign in to start your free trial</p>
+                      <Button size="lg" variant="outline">Sign In</Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BookOpen className="w-5 h-5" />
-                {t('kidsReading.pasteTitle')}
+                Paste Your Text
               </CardTitle>
               <CardDescription>
-                {t('kidsReading.pasteDescription')}
+                Copy and paste any text from your book, article, or homework assignment
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Textarea
                 value={bookText}
                 onChange={(e) => setBookText(e.target.value)}
-                placeholder={t('kidsReading.placeholder')}
+                placeholder="Paste your text here... (e.g., a paragraph from your book, a story, or any text you want to understand better)"
                 className="min-h-[200px]"
               />
 
               <div className="grid grid-cols-2 gap-2">
-                <Button onClick={analyzeText} disabled={loading || !bookText.trim()}>
-                  <HelpCircle className="w-4 h-4 mr-2" />
-                  {t('kidsReading.getExplanations')}
+                <Button 
+                  onClick={analyzeText} 
+                  disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit)}
+                >
+                  {(!subscription.subscribed && subscription.analyses_used >= subscription.analyses_limit) ? (
+                    <><Lock className="w-4 h-4 mr-2" />Premium Only</>
+                  ) : (
+                    <><HelpCircle className="w-4 h-4 mr-2" />Get Explanations</>
+                  )}
                 </Button>
-                <Button onClick={generateQuiz} disabled={loading || !bookText.trim()} variant="outline">
-                  <Award className="w-4 h-4 mr-2" />
-                  {t('kidsReading.takeQuiz')}
+                <Button 
+                  onClick={generateQuiz} 
+                  disabled={loading || !bookText.trim() || (!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit)} 
+                  variant="outline"
+                >
+                  {(!subscription.subscribed && subscription.quizzes_used >= subscription.quizzes_limit) ? (
+                    <><Lock className="w-4 h-4 mr-2" />Premium Only</>
+                  ) : (
+                    <><Award className="w-4 h-4 mr-2" />Take Quiz</>
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -121,17 +216,17 @@ const KidsReadingCompanion = () => {
           {analysis && !showQuiz && (
             <Card className="bg-gradient-to-br from-primary/5 to-secondary/10">
               <CardHeader>
-                <CardTitle>{t('kidsReading.understandingTitle')}</CardTitle>
+                <CardTitle>Understanding Your Text</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h3 className="font-semibold mb-2">{t('kidsReading.summary')}</h3>
+                  <h3 className="font-semibold mb-2">Summary</h3>
                   <p className="text-muted-foreground">{analysis.summary}</p>
                 </div>
 
                 {analysis.vocabulary && analysis.vocabulary.length > 0 && (
                   <div>
-                    <h3 className="font-semibold mb-2">{t('kidsReading.newWords')}</h3>
+                    <h3 className="font-semibold mb-2">New Words to Learn</h3>
                     <div className="space-y-2">
                       {analysis.vocabulary.map((word: any, index: number) => (
                         <div key={index} className="bg-background/50 p-3 rounded-lg">
@@ -151,7 +246,7 @@ const KidsReadingCompanion = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Award className="w-5 h-5 text-primary" />
-                  {t('kidsReading.quizTitle')}
+                  Reading Comprehension Quiz
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -176,10 +271,10 @@ const KidsReadingCompanion = () => {
 
                 <div className="grid grid-cols-2 gap-2">
                   <Button onClick={checkAnswer} disabled={!selectedAnswer}>
-                    {t('kidsReading.checkAnswer')}
+                    Check Answer
                   </Button>
                   <Button variant="outline" onClick={() => setShowQuiz(false)}>
-                    {t('kidsReading.backToReading')}
+                    Back to Reading
                   </Button>
                 </div>
               </CardContent>

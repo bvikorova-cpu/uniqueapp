@@ -10429,6 +10429,45 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_reading_usage: {
+        Row: {
+          analyses_limit: number
+          analyses_used: number
+          created_at: string
+          id: string
+          quizzes_limit: number
+          quizzes_used: number
+          subscription_end: string | null
+          subscription_start: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analyses_limit?: number
+          analyses_used?: number
+          created_at?: string
+          id?: string
+          quizzes_limit?: number
+          quizzes_used?: number
+          subscription_end?: string | null
+          subscription_start?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analyses_limit?: number
+          analyses_used?: number
+          created_at?: string
+          id?: string
+          quizzes_limit?: number
+          quizzes_used?: number
+          subscription_end?: string | null
+          subscription_start?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_science_experiments: {
         Row: {
           ai_insights: Json | null

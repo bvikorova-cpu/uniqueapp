@@ -195,6 +195,12 @@ verify_jwt = true
 [functions.kids-reading-companion]
 verify_jwt = false
 
+[functions.check-kids-reading-subscription]
+verify_jwt = true
+
+[functions.create-kids-reading-checkout]
+verify_jwt = true
+
 [functions.teen-study-planner]
 verify_jwt = false
 
