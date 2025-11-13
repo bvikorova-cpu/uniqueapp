@@ -51,15 +51,15 @@ serve(async (req) => {
       .single();
 
     if (usageError && usageError.code === 'PGRST116') {
-      // No record exists, create one with free tier limits (10 per month)
+      // No record exists, create one with free tier limits (1 per month)
       const { data: newUsage, error: insertError } = await supabaseClient
         .from('kids_reading_usage')
         .insert({
           user_id: user.id,
           analyses_used: 0,
-          analyses_limit: 10, // 10 free per month
+          analyses_limit: 1, // 1 free per month
           quizzes_used: 0,
-          quizzes_limit: 10, // 10 free per month
+          quizzes_limit: 1, // 1 free per month
           subscription_start: null,
           subscription_end: null
         })
@@ -68,7 +68,7 @@ serve(async (req) => {
 
       if (insertError) throw insertError;
       usageData = newUsage;
-      logStep("Created new usage record with free tier limits (10 per month)");
+      logStep("Created new usage record with free tier limits (1 per month)");
     } else if (usageError) {
       throw usageError;
     }
@@ -123,16 +123,16 @@ serve(async (req) => {
         await supabaseClient
           .from('kids_reading_usage')
           .update({
-            analyses_limit: 10,
-            quizzes_limit: 10,
+            analyses_limit: 1,
+            quizzes_limit: 1,
             subscription_start: null,
             subscription_end: null
           })
           .eq('user_id', user.id);
 
         // Update local data to reflect changes
-        usageData.analyses_limit = 10;
-        usageData.quizzes_limit = 10;
+        usageData.analyses_limit = 1;
+        usageData.quizzes_limit = 1;
         usageData.subscription_end = null;
       }
     } else {
