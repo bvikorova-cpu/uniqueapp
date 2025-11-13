@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Briefcase, Heart, TrendingUp, Lightbulb, Download } from "lucide-react";
+import { Briefcase, Heart, TrendingUp, Lightbulb, Download, CreditCard, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import jsPDF from "jspdf";
+import { useNavigate } from "react-router-dom";
 
 export default function TeenCareerCounselor() {
   const [interests, setInterests] = useState("");
@@ -16,7 +17,95 @@ export default function TeenCareerCounselor() {
   const [goals, setGoals] = useState("");
   const [guidance, setGuidance] = useState("");
   const [loading, setLoading] = useState(false);
+  const [usageData, setUsageData] = useState<{
+    canGenerate: boolean;
+    hasFreeTrial: boolean;
+    freeGenerationsUsed: number;
+    paidGenerations: number;
+  } | null>(null);
+  const [checkingUsage, setCheckingUsage] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkUsage();
+    
+    // Check for payment success in URL
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      handlePaymentSuccess(params.get('session_id'));
+      // Clean URL
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  const checkUsage = async () => {
+    setCheckingUsage(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to use Career Counselor",
+          variant: "destructive",
+        });
+        navigate("/auth");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-teen-career-usage');
+      if (error) throw error;
+      setUsageData(data);
+    } catch (error) {
+      console.error('Error checking usage:', error);
+      toast({
+        title: "Error",
+        description: "Failed to check usage status",
+        variant: "destructive",
+      });
+    } finally {
+      setCheckingUsage(false);
+    }
+  };
+
+  const handlePaymentSuccess = async (sessionId: string | null) => {
+    if (!sessionId) return;
+    
+    try {
+      const { error } = await supabase.functions.invoke('add-teen-career-generation', {
+        body: { session_id: sessionId }
+      });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Payment Successful!",
+        description: "Your career guidance session has been added",
+      });
+      
+      await checkUsage();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handlePurchase = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-teen-career-payment');
+      if (error) throw error;
+      
+      if (data.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to initiate payment",
+        variant: "destructive",
+      });
+    }
+  };
 
   const getCareerGuidance = async () => {
     if (!interests || !strengths) {
@@ -28,14 +117,35 @@ export default function TeenCareerCounselor() {
       return;
     }
 
+    if (usageData && !usageData.canGenerate) {
+      toast({
+        title: "No Sessions Available",
+        description: "Please purchase additional career guidance sessions",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('teen-career-counselor', {
         body: { interests, strengths, goals }
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message?.includes('requiresPayment')) {
+          toast({
+            title: "Payment Required",
+            description: "You've used your free session. Purchase more to continue.",
+            variant: "destructive",
+          });
+          return;
+        }
+        throw error;
+      }
+      
       setGuidance(data.guidance);
+      await checkUsage();
       toast({
         title: "Career Guidance Ready!",
         description: "Check out your personalized career path recommendations",
@@ -222,6 +332,35 @@ export default function TeenCareerCounselor() {
             Discover career paths that match your interests, strengths, and goals
           </p>
         </div>
+
+        {/* Usage Status Card */}
+        {!checkingUsage && usageData && (
+          <Card className="mb-6 border-primary/20">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-semibold">Your Sessions</p>
+                    <p className="text-sm text-muted-foreground">
+                      {usageData.hasFreeTrial ? (
+                        "1 free session available"
+                      ) : (
+                        `${usageData.paidGenerations} paid session${usageData.paidGenerations !== 1 ? 's' : ''} remaining`
+                      )}
+                    </p>
+                  </div>
+                </div>
+                {!usageData.canGenerate && (
+                  <Button onClick={handlePurchase} className="gap-2">
+                    <CreditCard className="h-4 w-4" />
+                    Buy Session (€5)
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid gap-6 mb-8">
           <Card>
