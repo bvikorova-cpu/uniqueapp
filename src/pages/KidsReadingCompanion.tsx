@@ -155,7 +155,7 @@ const KidsReadingCompanion = () => {
                         </Button>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        ✨ First month FREE trial • Unlimited analyses & quizzes • Cancel anytime
+                        Unlimited analyses & quizzes • Cancel anytime
                       </p>
                     </div>
                   ) : (
