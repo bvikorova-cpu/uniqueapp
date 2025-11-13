@@ -51,91 +51,86 @@ serve(async (req) => {
       .single();
 
     if (usageError && usageError.code === 'PGRST116') {
-      // No record exists, create one with 1 month free trial
-      const trialEnd = new Date();
-      trialEnd.setMonth(trialEnd.getMonth() + 1);
-      
+      // No record exists, create one with free tier limits (10 per month)
       const { data: newUsage, error: insertError } = await supabaseClient
         .from('kids_reading_usage')
         .insert({
           user_id: user.id,
           analyses_used: 0,
-          analyses_limit: 999999, // Unlimited during trial
+          analyses_limit: 10, // 10 free per month
           quizzes_used: 0,
-          quizzes_limit: 999999, // Unlimited during trial
-          subscription_start: new Date().toISOString().split('T')[0],
-          subscription_end: trialEnd.toISOString().split('T')[0]
+          quizzes_limit: 10, // 10 free per month
+          subscription_start: null,
+          subscription_end: null
         })
         .select()
         .single();
 
       if (insertError) throw insertError;
       usageData = newUsage;
-      logStep("Created new usage record with 1 month free trial", { trialEnd: trialEnd.toISOString() });
+      logStep("Created new usage record with free tier limits (10 per month)");
     } else if (usageError) {
       throw usageError;
     }
 
     logStep("Usage data retrieved", usageData);
 
-    // Check if trial/subscription is still active
-    const now = new Date();
-    const subscriptionEnd = usageData.subscription_end ? new Date(usageData.subscription_end) : null;
-    const isTrialOrSubActive = subscriptionEnd && subscriptionEnd > now;
-
-    logStep("Trial/subscription check", { 
-      subscriptionEnd: subscriptionEnd?.toISOString(), 
-      isActive: isTrialOrSubActive 
-    });
-
-    // If subscription expired, check Stripe for active subscription
+    // Check Stripe for active subscription
     let hasActiveSub = false;
     let productId = null;
 
-    if (!isTrialOrSubActive) {
-      const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    
+    if (customers.data.length > 0) {
+      const customerId = customers.data[0].id;
+      logStep("Found Stripe customer", { customerId });
+
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customerId,
+        status: "active",
+        limit: 1,
+      });
       
-      if (customers.data.length > 0) {
-        const customerId = customers.data[0].id;
-        logStep("Found Stripe customer", { customerId });
+      hasActiveSub = subscriptions.data.length > 0;
 
-        const subscriptions = await stripe.subscriptions.list({
-          customer: customerId,
-          status: "active",
-          limit: 1,
-        });
+      if (hasActiveSub) {
+        const subscription = subscriptions.data[0];
+        const subscriptionEndDate = new Date(subscription.current_period_end * 1000).toISOString().split('T')[0];
+        productId = subscription.items.data[0].price.product as string;
         
-        hasActiveSub = subscriptions.data.length > 0;
+        logStep("Active Stripe subscription found", { subscriptionId: subscription.id, endDate: subscriptionEndDate });
 
-        if (hasActiveSub) {
-          const subscription = subscriptions.data[0];
-          const subscriptionEndDate = new Date(subscription.current_period_end * 1000).toISOString().split('T')[0];
-          productId = subscription.items.data[0].price.product as string;
-          
-          logStep("Active Stripe subscription found", { subscriptionId: subscription.id, endDate: subscriptionEndDate });
+        // Update usage record with unlimited limits
+        await supabaseClient
+          .from('kids_reading_usage')
+          .update({
+            analyses_limit: 999999,
+            quizzes_limit: 999999,
+            subscription_end: subscriptionEndDate
+          })
+          .eq('user_id', user.id);
 
-          // Update usage record with unlimited limits
-          await supabaseClient
-            .from('kids_reading_usage')
-            .update({
-              analyses_limit: 999999,
-              quizzes_limit: 999999,
-              subscription_end: subscriptionEndDate
-            })
-            .eq('user_id', user.id);
-
-          logStep("Updated usage limits to unlimited");
-        }
+        logStep("Updated usage limits to unlimited");
       } else {
-        logStep("No Stripe customer found");
+        // No active subscription, ensure limits are set to free tier
+        logStep("No active subscription, setting free tier limits");
+        await supabaseClient
+          .from('kids_reading_usage')
+          .update({
+            analyses_limit: 10,
+            quizzes_limit: 10,
+            subscription_start: null,
+            subscription_end: null
+          })
+          .eq('user_id', user.id);
       }
+    } else {
+      logStep("No Stripe customer found");
     }
 
-    const isSubscribed = isTrialOrSubActive || hasActiveSub;
-
     return new Response(JSON.stringify({
-      subscribed: isSubscribed,
+      subscribed: hasActiveSub,
       product_id: productId,
       subscription_end: usageData.subscription_end,
       analyses_used: usageData.analyses_used,
