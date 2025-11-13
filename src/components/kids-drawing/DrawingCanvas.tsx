@@ -1,0 +1,204 @@
+import { useEffect, useRef, useState } from "react";
+import { Canvas as FabricCanvas, PencilBrush } from "fabric";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Eraser, Paintbrush, Trash2, Eye, EyeOff } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
+
+interface DrawingCanvasProps {
+  tutorialImage?: string;
+  stepNumber: number;
+}
+
+const COLORS = [
+  "#000000", // Black
+  "#FF0000", // Red
+  "#00FF00", // Green
+  "#0000FF", // Blue
+  "#FFFF00", // Yellow
+  "#FF00FF", // Magenta
+  "#00FFFF", // Cyan
+  "#FFA500", // Orange
+  "#800080", // Purple
+  "#FFC0CB", // Pink
+];
+
+export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
+  const [activeColor, setActiveColor] = useState("#000000");
+  const [brushSize, setBrushSize] = useState(3);
+  const [activeTool, setActiveTool] = useState<"draw" | "erase">("draw");
+  const [showReference, setShowReference] = useState(true);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    const canvas = new FabricCanvas(canvasRef.current, {
+      width: 600,
+      height: 450,
+      backgroundColor: "#ffffff",
+      isDrawingMode: true,
+    });
+
+    // Initialize brush
+    const brush = new PencilBrush(canvas);
+    brush.color = activeColor;
+    brush.width = brushSize;
+    canvas.freeDrawingBrush = brush;
+
+    setFabricCanvas(canvas);
+
+    return () => {
+      canvas.dispose();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!fabricCanvas) return;
+
+    if (activeTool === "draw") {
+      const brush = new PencilBrush(fabricCanvas);
+      brush.color = activeColor;
+      brush.width = brushSize;
+      fabricCanvas.freeDrawingBrush = brush;
+      fabricCanvas.isDrawingMode = true;
+    } else if (activeTool === "erase") {
+      const eraser = new PencilBrush(fabricCanvas);
+      eraser.color = "#ffffff";
+      eraser.width = brushSize * 2;
+      fabricCanvas.freeDrawingBrush = eraser;
+      fabricCanvas.isDrawingMode = true;
+    }
+  }, [activeTool, activeColor, brushSize, fabricCanvas]);
+
+  const handleClear = () => {
+    if (!fabricCanvas) return;
+    fabricCanvas.clear();
+    fabricCanvas.backgroundColor = "#ffffff";
+    fabricCanvas.renderAll();
+    toast.success("Canvas cleared! 🎨");
+  };
+
+  const handleDownload = () => {
+    if (!fabricCanvas) return;
+    const dataURL = fabricCanvas.toDataURL({
+      format: "png",
+      quality: 1,
+      multiplier: 2,
+    });
+    const link = document.createElement("a");
+    link.download = `drawing-step-${stepNumber}.png`;
+    link.href = dataURL;
+    link.click();
+    toast.success("Drawing downloaded! 📥");
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Tools */}
+      <Card>
+        <CardContent className="pt-6 space-y-4">
+          {/* Tool Selection */}
+          <div className="flex gap-2">
+            <Button
+              variant={activeTool === "draw" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveTool("draw")}
+            >
+              <Paintbrush className="w-4 h-4 mr-2" />
+              Draw
+            </Button>
+            <Button
+              variant={activeTool === "erase" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setActiveTool("erase")}
+            >
+              <Eraser className="w-4 h-4 mr-2" />
+              Erase
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleClear}>
+              <Trash2 className="w-4 h-4 mr-2" />
+              Clear
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleDownload}>
+              Download
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowReference(!showReference)}
+            >
+              {showReference ? (
+                <EyeOff className="w-4 h-4 mr-2" />
+              ) : (
+                <Eye className="w-4 h-4 mr-2" />
+              )}
+              {showReference ? "Hide" : "Show"} Reference
+            </Button>
+          </div>
+
+          {/* Color Picker */}
+          {activeTool === "draw" && (
+            <div>
+              <label className="text-sm font-medium mb-2 block">Color</label>
+              <div className="flex gap-2 flex-wrap">
+                {COLORS.map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setActiveColor(color)}
+                    className={`w-8 h-8 rounded-full border-2 transition-transform hover:scale-110 ${
+                      activeColor === color ? "border-primary scale-110" : "border-border"
+                    }`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Brush Size */}
+          <div>
+            <label className="text-sm font-medium mb-2 block">
+              Brush Size: {brushSize}px
+            </label>
+            <Slider
+              value={[brushSize]}
+              onValueChange={(value) => setBrushSize(value[0])}
+              min={1}
+              max={20}
+              step={1}
+              className="w-full"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Canvas and Reference */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Drawing Canvas */}
+        <div className="border-2 border-border rounded-lg overflow-hidden bg-white">
+          <div className="bg-muted px-3 py-2 text-sm font-medium">Your Drawing</div>
+          <canvas ref={canvasRef} className="w-full" />
+        </div>
+
+        {/* Reference Image */}
+        {showReference && tutorialImage && (
+          <div className="border-2 border-border rounded-lg overflow-hidden bg-white">
+            <div className="bg-muted px-3 py-2 text-sm font-medium">
+              Reference (Step {stepNumber})
+            </div>
+            <div className="aspect-[4/3] flex items-center justify-center p-4">
+              <img
+                src={tutorialImage}
+                alt={`Step ${stepNumber} reference`}
+                className="max-w-full max-h-full object-contain"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

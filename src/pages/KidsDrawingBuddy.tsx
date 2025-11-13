@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { DrawingCanvas } from "@/components/kids-drawing/DrawingCanvas";
 
 const KidsDrawingBuddy = () => {
   const [topic, setTopic] = useState("");
@@ -111,21 +112,15 @@ const KidsDrawingBuddy = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="aspect-video bg-secondary/20 rounded-lg flex items-center justify-center">
-                    {tutorial.steps[currentStep].image ? (
-                      <img 
-                        src={tutorial.steps[currentStep].image} 
-                        alt={`Step ${currentStep + 1}`}
-                        className="max-w-full max-h-full"
-                      />
-                    ) : (
-                      <p className="text-muted-foreground">Drawing area</p>
-                    )}
+                  <div className="bg-background/50 p-4 rounded-lg">
+                    <p className="font-medium text-lg">{tutorial.steps[currentStep].instruction}</p>
                   </div>
 
-                  <div className="bg-background/50 p-4 rounded-lg">
-                    <p className="font-medium">{tutorial.steps[currentStep].instruction}</p>
-                  </div>
+                  {/* Drawing Canvas */}
+                  <DrawingCanvas 
+                    tutorialImage={tutorial.steps[currentStep].image}
+                    stepNumber={currentStep + 1}
+                  />
 
                   <div className="flex gap-2">
                     <Button
