@@ -237,7 +237,6 @@ const KidsReadingCompanion = () => {
               </Card>
             )}
           </div>
-          </div>
 
           <Card className="mb-6">
             <CardHeader>
