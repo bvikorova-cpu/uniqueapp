@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Wind, Droplets } from "lucide-react";
 
 const NATURE_SOUNDS = [
   {
@@ -25,6 +25,34 @@ const NATURE_SOUNDS = [
     icon: Trees,
     url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_13d711e6c6.mp3",
     description: "Peaceful nature sounds with birds"
+  },
+  {
+    id: "thunderstorm",
+    name: "Thunderstorm",
+    icon: Zap,
+    url: "https://cdn.pixabay.com/download/audio/2022/03/24/audio_4a656f830e.mp3",
+    description: "Powerful thunder and rain for deep relaxation"
+  },
+  {
+    id: "campfire",
+    name: "Campfire",
+    icon: Flame,
+    url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a4cb2d5c7.mp3",
+    description: "Crackling fire sounds for cozy atmosphere"
+  },
+  {
+    id: "wind",
+    name: "Wind",
+    icon: Wind,
+    url: "https://cdn.pixabay.com/download/audio/2022/03/20/audio_c6c4c67fff.mp3",
+    description: "Gentle wind blowing through trees"
+  },
+  {
+    id: "waterfall",
+    name: "Waterfall",
+    icon: Droplets,
+    url: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3",
+    description: "Flowing water for meditation and focus"
   }
 ];
 
