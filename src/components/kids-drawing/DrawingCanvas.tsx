@@ -2,9 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star } from "lucide-react";
+import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star, Save } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { useKidsDrawingGallery } from "@/hooks/useKidsDrawingGallery";
 
 interface DrawingCanvasProps {
   tutorialImage?: string;
@@ -33,6 +36,9 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
   const [showReference, setShowReference] = useState(true);
   const [canvasHistory, setCanvasHistory] = useState<string[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [drawingTitle, setDrawingTitle] = useState("");
+  const { saveDrawing, isSaving } = useKidsDrawingGallery();
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -236,6 +242,25 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
     toast.success("Drawing downloaded! 📥");
   };
 
+  const handleSaveToGallery = () => {
+    if (!fabricCanvas) return;
+    const dataURL = fabricCanvas.toDataURL({
+      format: "png",
+      quality: 1,
+      multiplier: 2,
+    });
+    
+    const title = drawingTitle.trim() || `Drawing Step ${stepNumber}`;
+    saveDrawing({
+      imageDataURL: dataURL,
+      title,
+      stepNumber,
+    });
+    
+    setShowSaveDialog(false);
+    setDrawingTitle("");
+  };
+
   return (
     <div className="space-y-4">
       {/* Tools */}
@@ -308,6 +333,41 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
             <Button variant="outline" size="sm" onClick={handleDownload}>
               Download
             </Button>
+            <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save to Gallery
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Save Drawing to Gallery</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div>
+                    <label htmlFor="title" className="text-sm font-medium">
+                      Drawing Title
+                    </label>
+                    <Input
+                      id="title"
+                      placeholder={`Drawing Step ${stepNumber}`}
+                      value={drawingTitle}
+                      onChange={(e) => setDrawingTitle(e.target.value)}
+                      className="mt-1.5"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowSaveDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSaveToGallery} disabled={isSaving}>
+                    {isSaving ? "Saving..." : "Save"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
             <Button
               variant="outline"
               size="sm"

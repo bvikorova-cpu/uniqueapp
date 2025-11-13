@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { DrawingCanvas } from "@/components/kids-drawing/DrawingCanvas";
+import { DrawingGallery } from "@/components/kids-drawing/DrawingGallery";
 import { useKidsDrawingSubscription, useCreateDrawingCheckout, useIncrementDrawingUsage } from "@/hooks/useKidsDrawingSubscription";
 import { useNavigate } from "react-router-dom";
 
@@ -301,6 +302,9 @@ const KidsDrawingBuddy = () => {
               </Card>
             </div>
           )}
+
+          {/* Drawing Gallery - show when logged in */}
+          {isAuthenticated && <DrawingGallery />}
         </div>
       </main>
       <Footer />
