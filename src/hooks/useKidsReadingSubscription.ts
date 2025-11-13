@@ -20,9 +20,9 @@ export const useKidsReadingSubscription = () => {
     product_id: null,
     subscription_end: null,
     analyses_used: 0,
-    analyses_limit: 10,
+    analyses_limit: 1,
     quizzes_used: 0,
-    quizzes_limit: 10,
+    quizzes_limit: 1,
     loading: true,
   });
 
@@ -58,9 +58,9 @@ export const useKidsReadingSubscription = () => {
         product_id: data.product_id || null,
         subscription_end: data.subscription_end || null,
         analyses_used: data.analyses_used || 0,
-        analyses_limit: data.analyses_limit || 10,
+        analyses_limit: data.analyses_limit || 1,
         quizzes_used: data.quizzes_used || 0,
-        quizzes_limit: data.quizzes_limit || 10,
+        quizzes_limit: data.quizzes_limit || 1,
         loading: false,
       });
     } catch (error: any) {
