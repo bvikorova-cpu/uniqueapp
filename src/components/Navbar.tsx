@@ -181,10 +181,7 @@ const Navbar = () => {
     { path: "/kids-science-lab", label: "Science Lab (6-12y)", icon: FlaskConical },
     { path: "/kids-drawing-buddy", label: "Drawing Buddy (6-12y)", icon: Palette },
     { path: "/kids-reading-companion", label: "Reading Companion (6-12y)", icon: BookOpen },
-    { path: "/teen-study-planner", label: "Study Planner (13-18y)", icon: Calendar },
     { path: "/teen-career-counselor", label: "Career Counselor (13-18y)", icon: Briefcase },
-    { path: "/teen-debate-partner", label: "Debate Partner (13-18y)", icon: MessageSquare },
-    { path: "/teen-college-prep", label: "College Prep (13-18y)", icon: GraduationCap },
   ];
 
   const exclusiveLearning = [
