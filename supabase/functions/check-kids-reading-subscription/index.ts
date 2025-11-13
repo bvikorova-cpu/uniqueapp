@@ -111,6 +111,11 @@ serve(async (req) => {
           })
           .eq('user_id', user.id);
 
+        // Update local data to reflect changes
+        usageData.analyses_limit = 999999;
+        usageData.quizzes_limit = 999999;
+        usageData.subscription_end = subscriptionEndDate;
+
         logStep("Updated usage limits to unlimited");
       } else {
         // No active subscription, ensure limits are set to free tier
@@ -124,6 +129,11 @@ serve(async (req) => {
             subscription_end: null
           })
           .eq('user_id', user.id);
+
+        // Update local data to reflect changes
+        usageData.analyses_limit = 10;
+        usageData.quizzes_limit = 10;
+        usageData.subscription_end = null;
       }
     } else {
       logStep("No Stripe customer found");
