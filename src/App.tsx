@@ -102,7 +102,6 @@ import KidsScienceAdmin from "./pages/KidsScienceAdmin";
 import KidsDrawingBuddy from "./pages/KidsDrawingBuddy";
 import KidsReadingCompanion from "./pages/KidsReadingCompanion";
 import ColoringPages from "./pages/ColoringPages";
-import TeenStudyPlanner from "./pages/TeenStudyPlanner";
 import TeenCareerCounselor from "./pages/TeenCareerCounselor";
 import KidsChannel from "./pages/KidsChannel";
 import KidsShowDetail from "./pages/KidsShowDetail";
@@ -122,8 +121,6 @@ import SharedStory from "./pages/SharedStory";
 import AdminImageEditor from "./pages/AdminImageEditor";
 import PhotoRestoration from "./pages/PhotoRestoration";
 import AntiqueAppraisal from "./pages/AntiqueAppraisal";
-import TeenDebatePartner from "./pages/TeenDebatePartner";
-import TeenCollegePrep from "./pages/TeenCollegePrep";
 import PremiumCourses from "./pages/PremiumCourses";
 import Masterclasses from "./pages/Masterclasses";
 import MasterclassLearning from "./pages/MasterclassLearning";
@@ -353,12 +350,9 @@ const App = () => (
           <Route path="/kids-science-admin" element={<KidsScienceAdmin />} />
           <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
           <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
-          <Route path="/teen-study-planner" element={<TeenStudyPlanner />} />
           <Route path="/photo-restoration" element={<PhotoRestoration />} />
           <Route path="/antique-appraisal" element={<AntiqueAppraisal />} />
           <Route path="/teen-career-counselor" element={<TeenCareerCounselor />} />
-          <Route path="/teen-debate-partner" element={<TeenDebatePartner />} />
-          <Route path="/teen-college-prep" element={<TeenCollegePrep />} />
           <Route path="/premium-courses" element={<PremiumCourses />} />
           <Route path="/masterclasses" element={<Masterclasses />} />
           <Route path="/masterclass/:masterclassId" element={<MasterclassLearning />} />
