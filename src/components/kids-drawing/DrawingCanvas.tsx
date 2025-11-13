@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Canvas as FabricCanvas, PencilBrush } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Eraser, Paintbrush, Trash2, Eye, EyeOff } from "lucide-react";
+import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
@@ -31,6 +31,8 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
   const [brushSize, setBrushSize] = useState(3);
   const [activeTool, setActiveTool] = useState<"draw" | "erase">("draw");
   const [showReference, setShowReference] = useState(true);
+  const [canvasHistory, setCanvasHistory] = useState<string[]>([]);
+  const [historyStep, setHistoryStep] = useState(-1);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -48,9 +50,32 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
     brush.width = brushSize;
     canvas.freeDrawingBrush = brush;
 
+    // Save initial state
+    const initialState = JSON.stringify(canvas.toJSON());
+    setCanvasHistory([initialState]);
+    setHistoryStep(0);
+
+    // Listen for drawing events to save history
+    const saveState = () => {
+      const json = JSON.stringify(canvas.toJSON());
+      setCanvasHistory((prev) => {
+        const newHistory = prev.slice(0, historyStep + 1);
+        newHistory.push(json);
+        return newHistory;
+      });
+      setHistoryStep((prev) => prev + 1);
+    };
+
+    canvas.on("path:created", saveState);
+    canvas.on("object:modified", saveState);
+    canvas.on("object:removed", saveState);
+
     setFabricCanvas(canvas);
 
     return () => {
+      canvas.off("path:created", saveState);
+      canvas.off("object:modified", saveState);
+      canvas.off("object:removed", saveState);
       canvas.dispose();
     };
   }, []);
@@ -78,7 +103,43 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
     fabricCanvas.clear();
     fabricCanvas.backgroundColor = "#ffffff";
     fabricCanvas.renderAll();
+    
+    // Save cleared state to history
+    const json = JSON.stringify(fabricCanvas.toJSON());
+    setCanvasHistory((prev) => {
+      const newHistory = prev.slice(0, historyStep + 1);
+      newHistory.push(json);
+      return newHistory;
+    });
+    setHistoryStep((prev) => prev + 1);
+    
     toast.success("Canvas cleared! 🎨");
+  };
+
+  const handleUndo = () => {
+    if (!fabricCanvas || historyStep <= 0) return;
+    
+    const newStep = historyStep - 1;
+    setHistoryStep(newStep);
+    
+    const state = JSON.parse(canvasHistory[newStep]);
+    fabricCanvas.loadFromJSON(state, () => {
+      fabricCanvas.renderAll();
+      toast.success("Undo! ↶");
+    });
+  };
+
+  const handleRedo = () => {
+    if (!fabricCanvas || historyStep >= canvasHistory.length - 1) return;
+    
+    const newStep = historyStep + 1;
+    setHistoryStep(newStep);
+    
+    const state = JSON.parse(canvasHistory[newStep]);
+    fabricCanvas.loadFromJSON(state, () => {
+      fabricCanvas.renderAll();
+      toast.success("Redo! ↷");
+    });
   };
 
   const handleDownload = () => {
@@ -101,7 +162,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
       <Card>
         <CardContent className="pt-6 space-y-4">
           {/* Tool Selection */}
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button
               variant={activeTool === "draw" ? "default" : "outline"}
               size="sm"
@@ -117,6 +178,24 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
             >
               <Eraser className="w-4 h-4 mr-2" />
               Erase
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleUndo}
+              disabled={historyStep <= 0}
+            >
+              <Undo className="w-4 h-4 mr-2" />
+              Undo
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleRedo}
+              disabled={historyStep >= canvasHistory.length - 1}
+            >
+              <Redo className="w-4 h-4 mr-2" />
+              Redo
             </Button>
             <Button variant="outline" size="sm" onClick={handleClear}>
               <Trash2 className="w-4 h-4 mr-2" />
