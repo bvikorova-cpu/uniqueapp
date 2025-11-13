@@ -80,13 +80,59 @@ Please create a step-by-step tutorial that's appropriate for the ${difficulty} l
     const content = data.choices[0].message.content;
     const result = JSON.parse(content);
 
-    // Generate a simple placeholder image URL for each step
+    // Generate images for each step using AI
+    console.log("Generating images for", result.steps.length, "steps...");
+    const stepsWithImages = await Promise.all(
+      result.steps.map(async (step: any, index: number) => {
+        try {
+          const imagePrompt = `Simple, kid-friendly line drawing showing step ${index + 1} of drawing a ${topic}. ${step.instruction}. Clean, clear lines on white background, suitable for children aged 6-12 to copy. Style: educational illustration, simple cartoon style.`;
+          
+          const imageResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "google/gemini-2.5-flash-image-preview",
+              messages: [
+                {
+                  role: "user",
+                  content: imagePrompt
+                }
+              ],
+              modalities: ["image", "text"]
+            }),
+          });
+
+          if (!imageResponse.ok) {
+            console.error(`Failed to generate image for step ${index + 1}`);
+            return {
+              ...step,
+              image: `https://placehold.co/400x300/5b21b6/white?text=Step+${index + 1}`
+            };
+          }
+
+          const imageData = await imageResponse.json();
+          const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+
+          return {
+            ...step,
+            image: imageUrl || `https://placehold.co/400x300/5b21b6/white?text=Step+${index + 1}`
+          };
+        } catch (error) {
+          console.error(`Error generating image for step ${index + 1}:`, error);
+          return {
+            ...step,
+            image: `https://placehold.co/400x300/5b21b6/white?text=Step+${index + 1}`
+          };
+        }
+      })
+    );
+
     const tutorialWithImages = {
       ...result,
-      steps: result.steps.map((step: any, index: number) => ({
-        ...step,
-        image: `https://placehold.co/400x300/5b21b6/white?text=Step+${index + 1}`
-      }))
+      steps: stepsWithImages
     };
 
     return new Response(JSON.stringify(tutorialWithImages), {
