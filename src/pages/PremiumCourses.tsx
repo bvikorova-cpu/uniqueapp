@@ -48,14 +48,14 @@ const PremiumCourses = () => {
 
   const fetchCourses = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('premium_courses')
         .select('*')
         .eq('is_published', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setCourses(data as any || []);
+      setCourses(data || []);
     } catch (error) {
       console.error('Error fetching courses:', error);
       toast({
@@ -72,13 +72,13 @@ const PremiumCourses = () => {
     if (!user) return;
     
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('user_course_enrollments')
         .select('course_id')
         .eq('user_id', user.id);
 
       if (error) throw error;
-      setEnrolledCourses(new Set((data as any || []).map((e: any) => e.course_id)));
+      setEnrolledCourses(new Set((data || []).map((e: any) => e.course_id)));
     } catch (error) {
       console.error('Error fetching enrollments:', error);
     }
@@ -188,8 +188,7 @@ const PremiumCourses = () => {
                       <img 
                         src={course.image_url} 
                         alt={course.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                   )}
