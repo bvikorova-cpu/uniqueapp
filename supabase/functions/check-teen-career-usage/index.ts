@@ -12,16 +12,23 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
+    // First authenticate with anon key
+    const supabaseAuth = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data } = await supabaseAuth.auth.getUser(token);
     const user = data.user;
     if (!user) throw new Error("Unauthorized");
+
+    // Use service role for database operations to bypass RLS
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
     // Get or create usage record
     let { data: usage, error } = await supabaseClient
