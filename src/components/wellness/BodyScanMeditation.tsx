@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { useWellnessProgress } from "@/hooks/useWellnessProgress";
 
 interface BodyPart {
   id: string;
@@ -69,8 +70,10 @@ export function BodyScanMeditation() {
   const [currentPartIndex, setCurrentPartIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(bodyParts[0].duration);
   const [totalElapsed, setTotalElapsed] = useState(0);
+  const [sessionStartTime, setSessionStartTime] = useState<number>(0);
   const intervalRef = useRef<number | null>(null);
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const { logSession, updateStats } = useWellnessProgress();
 
   const currentPart = bodyParts[currentPartIndex];
   const totalDuration = bodyParts.reduce((acc, part) => acc + part.duration, 0);
@@ -90,7 +93,10 @@ export function BodyScanMeditation() {
 
   const startMeditation = () => {
     setIsPlaying(true);
+    setSessionStartTime(Date.now());
     speak(currentPart.instructions);
+    // Track start of activity
+    updateStats({ activityType: "body_scan" }).catch(console.error);
   };
 
   const pauseMeditation = () => {
@@ -124,6 +130,15 @@ export function BodyScanMeditation() {
               // Meditation complete
               setIsPlaying(false);
               speak("Body scan meditation is complete. Slowly open your eyes and return to the present moment.");
+              
+              // Log completed session
+              const durationSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
+              logSession({
+                sessionType: "body_scan",
+                durationSeconds,
+                completed: true,
+              }).catch(console.error);
+              
               return 0;
             }
           }
