@@ -10405,6 +10405,42 @@ export type Database = {
         }
         Relationships: []
       }
+      kids_science_usage: {
+        Row: {
+          created_at: string
+          experiments_this_month: number
+          id: string
+          last_reset_date: string
+          product_id: string | null
+          subscription_end: string | null
+          subscription_status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          experiments_this_month?: number
+          id?: string
+          last_reset_date?: string
+          product_id?: string | null
+          subscription_end?: string | null
+          subscription_status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          experiments_this_month?: number
+          id?: string
+          last_reset_date?: string
+          product_id?: string | null
+          subscription_end?: string | null
+          subscription_status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_shows: {
         Row: {
           age_rating: string | null

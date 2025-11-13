@@ -97,6 +97,7 @@ import KidsHomework from "./pages/KidsHomework";
 import KidsStoryCreator from "./pages/KidsStoryCreator";
 import KidsStoryPricing from "./pages/KidsStoryPricing";
 import KidsScienceLab from "./pages/KidsScienceLab";
+import KidsSciencePricing from "./pages/KidsSciencePricing";
 import KidsDrawingBuddy from "./pages/KidsDrawingBuddy";
 import KidsReadingCompanion from "./pages/KidsReadingCompanion";
 import ColoringPages from "./pages/ColoringPages";
@@ -347,6 +348,7 @@ const App = () => (
           <Route path="/kids-story-creator" element={<KidsStoryCreator />} />
           <Route path="/kids-story-pricing" element={<KidsStoryPricing />} />
           <Route path="/kids-science-lab" element={<KidsScienceLab />} />
+          <Route path="/kids-science-pricing" element={<KidsSciencePricing />} />
           <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
           <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
           <Route path="/teen-study-planner" element={<TeenStudyPlanner />} />

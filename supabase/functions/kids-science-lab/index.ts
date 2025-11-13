@@ -10,8 +10,27 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabaseClient = Deno.env.get("SUPABASE_URL") && Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")
+    ? await import("https://esm.sh/@supabase/supabase-js@2.57.2").then(mod => 
+        mod.createClient(
+          Deno.env.get("SUPABASE_URL")!,
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+        )
+      )
+    : null;
+
   try {
     const { category, hypothesis, observations } = await req.json();
+    
+    // Get user from auth header
+    const authHeader = req.headers.get("Authorization");
+    let userId: string | null = null;
+    
+    if (authHeader && supabaseClient) {
+      const token = authHeader.replace("Bearer ", "");
+      const { data: userData } = await supabaseClient.auth.getUser(token);
+      userId = userData.user?.id || null;
+    }
     
     if (!category || !hypothesis || !observations) {
       throw new Error("Missing required fields");
@@ -75,6 +94,28 @@ Please analyze this science experiment and help me understand what happened!`;
     const data = await response.json();
     const content = data.choices[0].message.content;
     const result = JSON.parse(content);
+
+    // Increment usage counter if user is authenticated
+    if (userId && supabaseClient) {
+      try {
+        const { data: currentUsage } = await supabaseClient
+          .from('kids_science_usage')
+          .select('experiments_this_month')
+          .eq('user_id', userId)
+          .maybeSingle();
+
+        await supabaseClient
+          .from('kids_science_usage')
+          .upsert({
+            user_id: userId,
+            experiments_this_month: (currentUsage?.experiments_this_month || 0) + 1,
+            last_reset_date: new Date().toISOString().split('T')[0]
+          }, { onConflict: 'user_id' });
+      } catch (usageError) {
+        console.error("Error updating usage:", usageError);
+        // Don't fail the request if usage update fails
+      }
+    }
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
