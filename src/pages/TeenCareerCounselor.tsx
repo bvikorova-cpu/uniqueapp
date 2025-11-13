@@ -328,9 +328,13 @@ export default function TeenCareerCounselor() {
           <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Career Counselor (13-18y)
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-muted-foreground mb-3">
             Discover career paths that match your interests, strengths, and goals
           </p>
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
+            <Sparkles className="h-4 w-4" />
+            <span>1st Career Guidance FREE • Additional sessions €5 each</span>
+          </div>
         </div>
 
         {/* Usage Status Card */}
