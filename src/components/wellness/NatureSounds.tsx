@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Wind, Droplets } from "lucide-react";
+import { Cloud, Waves, Trees, Play, Pause, Volume2, VolumeX, Zap, Flame, Wind, Droplets, Clock, X } from "lucide-react";
 
 const NATURE_SOUNDS = [
   {
@@ -56,18 +56,55 @@ const NATURE_SOUNDS = [
   }
 ];
 
+const TIMER_PRESETS = [
+  { label: "15 min", minutes: 15 },
+  { label: "30 min", minutes: 30 },
+  { label: "1 hour", minutes: 60 }
+];
+
 export function NatureSounds() {
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(70);
   const [isMuted, setIsMuted] = useState(false);
+  const [timerMinutes, setTimerMinutes] = useState<number | null>(null);
+  const [remainingSeconds, setRemainingSeconds] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume / 100;
     }
   }, [volume, isMuted]);
+
+  useEffect(() => {
+    if (remainingSeconds !== null && remainingSeconds > 0 && isPlaying) {
+      timerRef.current = setInterval(() => {
+        setRemainingSeconds(prev => {
+          if (prev === null || prev <= 1) {
+            if (audioRef.current) {
+              audioRef.current.pause();
+              setIsPlaying(false);
+            }
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+            }
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => {
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+        }
+      };
+    } else if (!isPlaying && timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  }, [remainingSeconds, isPlaying]);
 
   const handleSoundSelect = (soundId: string) => {
     const sound = NATURE_SOUNDS.find(s => s.id === soundId);
@@ -111,11 +148,33 @@ export function NatureSounds() {
     setIsMuted(!isMuted);
   };
 
+  const setTimer = (minutes: number) => {
+    setTimerMinutes(minutes);
+    setRemainingSeconds(minutes * 60);
+  };
+
+  const clearTimer = () => {
+    setTimerMinutes(null);
+    setRemainingSeconds(null);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
+      }
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
       }
     };
   }, []);
@@ -165,7 +224,49 @@ export function NatureSounds() {
           {selectedSound && (
             <Card className="bg-muted/50">
               <CardContent className="pt-6">
-                <div className="flex items-center gap-4 mb-4">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 pb-4 border-b">
+                    <Clock className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm font-medium">Timer</span>
+                  </div>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {TIMER_PRESETS.map((preset) => (
+                      <Button
+                        key={preset.minutes}
+                        variant={timerMinutes === preset.minutes ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setTimer(preset.minutes)}
+                        disabled={!isPlaying}
+                      >
+                        {preset.label}
+                      </Button>
+                    ))}
+                    {remainingSeconds !== null && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearTimer}
+                      >
+                        <X className="w-4 h-4 mr-1" />
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+
+                  {remainingSeconds !== null && (
+                    <div className="text-center py-2">
+                      <p className="text-2xl font-bold text-primary">
+                        {formatTime(remainingSeconds)}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Sound will stop automatically
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-4 mt-4 pt-4 border-t">
                   <Button
                     variant="outline"
                     size="icon"
