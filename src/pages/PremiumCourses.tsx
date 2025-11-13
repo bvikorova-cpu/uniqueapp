@@ -1,191 +1,284 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Clock, Star, Users, CheckCircle } from "lucide-react";
+import { BookOpen, Clock, CheckCircle, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  instructor_name: string;
+  price: number;
+  duration_hours: number;
+  level: string;
+  image_url: string | null;
+  topics: string[];
+  learning_outcomes: string[];
+}
 
 const PremiumCourses = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const { user } = useAuth();
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [purchasing, setPurchasing] = useState<string | null>(null);
 
-  const courses = [
-    {
-      id: "web-dev-mastery",
-      title: "Complete Web Development Mastery",
-      description: "Master modern web development with React, TypeScript, and Node.js",
-      price: 99,
-      duration: "40 hours",
-      students: 2847,
-      rating: 4.9,
-      level: "Intermediate",
-      topics: ["React", "TypeScript", "Node.js", "Database Design", "API Development"],
-      instructor: "John Martinez",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=400"
-    },
-    {
-      id: "data-science-pro",
-      title: "Data Science Professional Certificate",
-      description: "Learn Python, machine learning, and data visualization",
-      price: 149,
-      duration: "60 hours",
-      students: 1923,
-      rating: 4.8,
-      level: "Advanced",
-      topics: ["Python", "Machine Learning", "Data Visualization", "Statistics", "AI"],
-      instructor: "Dr. Sarah Chen",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400"
-    },
-    {
-      id: "ui-ux-design",
-      title: "UI/UX Design Fundamentals",
-      description: "Create stunning user interfaces and experiences",
-      price: 79,
-      duration: "30 hours",
-      students: 3421,
-      rating: 4.9,
-      level: "Beginner",
-      topics: ["Figma", "Design Principles", "Prototyping", "User Research", "Wireframing"],
-      instructor: "Emma Williams",
-      image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400"
-    },
-    {
-      id: "digital-marketing",
-      title: "Digital Marketing Master Class",
-      description: "Master SEO, social media, and content marketing strategies",
-      price: 89,
-      duration: "35 hours",
-      students: 2156,
-      rating: 4.7,
-      level: "Intermediate",
-      topics: ["SEO", "Social Media", "Content Marketing", "Analytics", "Email Marketing"],
-      instructor: "Michael Brown",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400"
+  useEffect(() => {
+    fetchCourses();
+    if (user) {
+      fetchEnrollments();
     }
-  ];
+    
+    // Handle payment success
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      handlePaymentSuccess(params.get('session_id'));
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [user]);
 
-  const handlePurchase = (courseId: string, price: number) => {
-    setSelectedCourse(courseId);
-    toast({
-      title: "Processing Purchase",
-      description: `Redirecting to payment for $${price}...`,
-    });
-    // Here you would integrate with Stripe
-    setTimeout(() => {
+  const fetchCourses = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('premium_courses')
+        .select('*')
+        .eq('is_published', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setCourses(data as any || []);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
       toast({
-        title: "Course Unlocked!",
-        description: "You now have lifetime access to this course.",
+        title: "Error",
+        description: "Failed to load courses",
+        variant: "destructive",
       });
-      setSelectedCourse(null);
-    }, 2000);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const fetchEnrollments = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('user_course_enrollments')
+        .select('course_id')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      setEnrolledCourses(new Set((data as any || []).map((e: any) => e.course_id)));
+    } catch (error) {
+      console.error('Error fetching enrollments:', error);
+    }
+  };
+
+  const handlePaymentSuccess = async (sessionId: string | null) => {
+    if (!sessionId) return;
+    
+    try {
+      const { error } = await supabase.functions.invoke('enroll-premium-course', {
+        body: { sessionId }
+      });
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Enrollment Successful!",
+        description: "You now have access to this course",
+      });
+      
+      fetchEnrollments();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handlePurchase = async (course: Course) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to purchase courses",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+
+    setPurchasing(course.id);
+    try {
+      const { data, error } = await supabase.functions.invoke('purchase-premium-course', {
+        body: { 
+          courseId: course.id,
+          priceInCents: Math.round(course.price * 100)
+        }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error: any) {
+      console.error('Error:', error);
+      toast({
+        title: "Purchase Failed",
+        description: error.message || "Failed to initiate purchase",
+        variant: "destructive",
+      });
+    } finally {
+      setPurchasing(null);
+    }
+  };
+
+  const goToCourse = (courseId: string) => {
+    navigate(`/course/${courseId}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
-      <div className="max-w-7xl mx-auto">
-      <div className="text-center mb-12 mt-16">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-          Premium Courses
-        </h1>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
+      <Navbar />
+      <main className="flex-1 container mx-auto px-4 pt-24 pb-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Premium Courses
+          </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Invest in your future with our comprehensive courses. One-time purchase, lifetime access.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {courses.map((course) => (
-            <Card key={course.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src={course.image} 
-                  alt={course.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <Badge variant="secondary">{course.level}</Badge>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold">{course.rating}</span>
-                  </div>
-                </div>
-
-                <h3 className="text-2xl font-bold mb-2">{course.title}</h3>
-                <p className="text-muted-foreground mb-4">{course.description}</p>
-
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    <span>{course.duration}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
-                    <span>{course.students.toLocaleString()} students</span>
-                  </div>
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-sm font-semibold mb-2">What you'll learn:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {course.topics.map((topic, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
-                        {topic}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">Instructor</p>
-                    <p className="text-xs text-muted-foreground">{course.instructor}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t">
-                  <div>
-                    <p className="text-3xl font-bold text-primary">€{course.price}</p>
-                    <p className="text-xs text-muted-foreground">One-time payment</p>
-                  </div>
-                  <Button
-                    onClick={() => handlePurchase(course.id, course.price)}
-                    disabled={selectedCourse === course.id}
-                    size="lg"
-                  >
-                    {selectedCourse === course.id ? "Processing..." : "Purchase Course"}
-                  </Button>
-                </div>
-
-                <div className="mt-4 p-3 bg-primary/5 rounded-lg">
-                  <div className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="w-4 h-4 text-primary" />
-                    <span className="font-semibold">Lifetime access • Certificate of completion</span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        <div className="mt-12 text-center">
-          <Card className="p-8 bg-gradient-to-r from-primary/10 to-primary/5">
-            <h3 className="text-2xl font-bold mb-4">Not sure which course to choose?</h3>
-            <p className="text-muted-foreground mb-6">
-              Our learning advisors can help you find the perfect course for your goals.
-            </p>
-            <Button size="lg" variant="outline">
-              Get Free Consultation
-            </Button>
+        {courses.length === 0 ? (
+          <Card className="p-12 text-center">
+            <p className="text-muted-foreground">No courses available at the moment.</p>
           </Card>
-        </div>
-      </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {courses.map((course) => {
+              const isEnrolled = enrolledCourses.has(course.id);
+              const isPurchasing = purchasing === course.id;
+              
+              return (
+                <Card key={course.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2">
+                  {course.image_url && (
+                    <div className="h-48 overflow-hidden">
+                      <img 
+                        src={course.image_url} 
+                        alt={course.title}
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <Badge variant="secondary">{course.level}</Badge>
+                      {isEnrolled && (
+                        <Badge className="bg-green-500">Enrolled</Badge>
+                      )}
+                    </div>
+
+                    <h3 className="text-2xl font-bold mb-2">{course.title}</h3>
+                    <p className="text-muted-foreground mb-4">{course.description}</p>
+
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        <span>{course.duration_hours} hours</span>
+                      </div>
+                    </div>
+
+                    {course.topics.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-sm font-semibold mb-2">What you'll learn:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {course.topics.map((topic, idx) => (
+                            <Badge key={idx} variant="outline" className="text-xs">
+                              {topic}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <BookOpen className="w-5 h-5 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold">Instructor</p>
+                        <p className="text-xs text-muted-foreground">{course.instructor_name}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-4 border-t">
+                      <div>
+                        <p className="text-3xl font-bold text-primary">€{course.price}</p>
+                        <p className="text-xs text-muted-foreground">One-time payment</p>
+                      </div>
+                      {isEnrolled ? (
+                        <Button
+                          onClick={() => goToCourse(course.id)}
+                          size="lg"
+                        >
+                          Go to Course
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => handlePurchase(course)}
+                          disabled={isPurchasing}
+                          size="lg"
+                        >
+                          {isPurchasing ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Processing...
+                            </>
+                          ) : (
+                            "Purchase Course"
+                          )}
+                        </Button>
+                      )}
+                    </div>
+
+                    <div className="mt-4 p-3 bg-primary/5 rounded-lg">
+                      <div className="flex items-center gap-2 text-sm">
+                        <CheckCircle className="w-4 h-4 text-primary" />
+                        <span className="font-semibold">Lifetime access • Certificate of completion</span>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </main>
+      <Footer />
     </div>
   );
 };
