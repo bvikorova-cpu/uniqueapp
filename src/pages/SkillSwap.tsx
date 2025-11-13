@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
 import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
 import { SkillMatches } from "@/components/skill-swap/SkillMatches";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X } from "lucide-react";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface SkillOffering {
@@ -37,6 +37,7 @@ export default function SkillSwap() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("date_desc");
+  const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     category: "all",
     minRating: "0",
@@ -108,6 +109,15 @@ export default function SkillSwap() {
       );
     }
 
+    // Apply search query filter
+    if (searchQuery.trim()) {
+      const queryLower = searchQuery.toLowerCase();
+      offeringsWithProfiles = offeringsWithProfiles.filter(
+        o => o.title.toLowerCase().includes(queryLower) || 
+             o.description.toLowerCase().includes(queryLower)
+      );
+    }
+
     // Apply sorting
     switch (sortBy) {
       case "rating_desc":
@@ -146,7 +156,7 @@ export default function SkillSwap() {
 
   useEffect(() => {
     fetchOfferings();
-  }, [filters, sortBy]);
+  }, [filters, sortBy, searchQuery]);
 
   const handleSubscribe = async () => {
     const url = await createCheckout();
@@ -403,6 +413,15 @@ export default function SkillSwap() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                 <h2 className="text-2xl font-bold">Available Skills</h2>
                 <div className="flex items-center gap-3 flex-wrap">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search skills..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9 w-[200px]"
+                    />
+                  </div>
                   <div className="flex items-center gap-2">
                     <label className="text-sm font-medium whitespace-nowrap">Sort by:</label>
                     <Select value={sortBy} onValueChange={setSortBy}>
