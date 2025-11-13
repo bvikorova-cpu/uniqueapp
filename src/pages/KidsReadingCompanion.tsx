@@ -125,7 +125,76 @@ const KidsReadingCompanion = () => {
             <p className="text-muted-foreground mb-4">
               AI-powered reading assistant that helps children understand texts better through simplified explanations and interactive quizzes
             </p>
-            
+          </div>
+
+          {/* How to Use Section */}
+          <Card className="mb-6 border-2 border-primary/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <HelpCircle className="w-5 h-5 text-primary" />
+                How to Use This Tool
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                    1
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Copy Your Text</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Copy any text from your book, article, homework, or any reading material you want to understand better.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                    2
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Paste & Analyze</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Paste the text in the box below and click "Analyze Text". Our AI will create a simple summary and explain difficult words in a kid-friendly way.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                    3
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Test Your Understanding</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Click "Take Quiz" to answer a fun question about the text. This helps you check if you really understood what you read!
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
+                    4
+                  </div>
+                  <div>
+                    <h4 className="font-semibold mb-1">Learn & Grow</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Free users get 1 analysis and 1 quiz per month. Premium members enjoy unlimited access to help with all their reading!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-primary/5 p-4 rounded-lg border border-primary/10">
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">💡 Pro Tip:</span> The longer and more detailed your text, the better the AI can help you understand it. Try pasting a full paragraph or several sentences for best results!
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="text-center">            
             {!subscription.loading && (
               <Card className="mb-6">
                 <CardContent className="pt-6">
@@ -167,6 +236,7 @@ const KidsReadingCompanion = () => {
                 </CardContent>
               </Card>
             )}
+          </div>
           </div>
 
           <Card className="mb-6">
