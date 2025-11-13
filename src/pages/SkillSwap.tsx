@@ -36,6 +36,7 @@ export default function SkillSwap() {
   const [offerings, setOfferings] = useState<SkillOffering[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState("date_desc");
   const [filters, setFilters] = useState({
     category: "all",
     minRating: "0",
@@ -107,12 +108,45 @@ export default function SkillSwap() {
       );
     }
 
+    // Apply sorting
+    switch (sortBy) {
+      case "rating_desc":
+        offeringsWithProfiles.sort((a, b) => 
+          (b.profiles?.rating_average || 0) - (a.profiles?.rating_average || 0)
+        );
+        break;
+      case "rating_asc":
+        offeringsWithProfiles.sort((a, b) => 
+          (a.profiles?.rating_average || 0) - (b.profiles?.rating_average || 0)
+        );
+        break;
+      case "exchanges_desc":
+        offeringsWithProfiles.sort((a, b) => 
+          (b.profiles?.completed_exchanges || 0) - (a.profiles?.completed_exchanges || 0)
+        );
+        break;
+      case "exchanges_asc":
+        offeringsWithProfiles.sort((a, b) => 
+          (a.profiles?.completed_exchanges || 0) - (b.profiles?.completed_exchanges || 0)
+        );
+        break;
+      case "date_asc":
+        offeringsWithProfiles.sort((a, b) => 
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        );
+        break;
+      case "date_desc":
+      default:
+        // Already sorted by created_at desc from query
+        break;
+    }
+
     setOfferings(offeringsWithProfiles);
   };
 
   useEffect(() => {
     fetchOfferings();
-  }, [filters]);
+  }, [filters, sortBy]);
 
   const handleSubscribe = async () => {
     const url = await createCheckout();
@@ -366,9 +400,25 @@ export default function SkillSwap() {
 
             {/* Skill Offerings Grid */}
             <div>
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                 <h2 className="text-2xl font-bold">Available Skills</h2>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium whitespace-nowrap">Sort by:</label>
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="date_desc">Newest First</SelectItem>
+                        <SelectItem value="date_asc">Oldest First</SelectItem>
+                        <SelectItem value="rating_desc">Highest Rated</SelectItem>
+                        <SelectItem value="rating_asc">Lowest Rated</SelectItem>
+                        <SelectItem value="exchanges_desc">Most Exchanges</SelectItem>
+                        <SelectItem value="exchanges_asc">Least Exchanges</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   {hasActiveFilters && (
                     <Button
                       variant="outline"
