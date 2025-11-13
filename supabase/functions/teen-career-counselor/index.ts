@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +12,56 @@ serve(async (req) => {
   }
 
   try {
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    const authHeader = req.headers.get("Authorization")!;
+    const token = authHeader.replace("Bearer ", "");
+    const { data } = await supabaseClient.auth.getUser(token);
+    const user = data.user;
+    if (!user) throw new Error("Unauthorized");
+
     const { interests, strengths, goals } = await req.json();
+
+    // Check usage limits
+    let { data: usage, error: usageError } = await supabaseClient
+      .from("teen_career_counselor_usage")
+      .select("*")
+      .eq("user_id", user.id)
+      .single();
+
+    if (usageError && usageError.code === "PGRST116") {
+      // Create new usage record
+      const { data: newUsage, error: insertError } = await supabaseClient
+        .from("teen_career_counselor_usage")
+        .insert({ user_id: user.id })
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
+      usage = newUsage;
+    } else if (usageError) {
+      throw usageError;
+    }
+
+    // Check if user can generate
+    const hasFreeTrial = usage.free_generations_used < 1;
+    const hasPaidGenerations = usage.paid_generations > 0;
+
+    if (!hasFreeTrial && !hasPaidGenerations) {
+      return new Response(
+        JSON.stringify({ 
+          error: "No generations available. Please purchase more to continue.",
+          requiresPayment: true 
+        }),
+        {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 403
+        }
+      );
+    }
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
@@ -62,6 +112,19 @@ Please provide comprehensive career guidance tailored to their profile.`;
 
     const data = await response.json();
     const guidance = data.choices[0].message.content;
+
+    // Deduct usage after successful generation
+    if (hasFreeTrial) {
+      await supabaseClient
+        .from("teen_career_counselor_usage")
+        .update({ free_generations_used: usage.free_generations_used + 1 })
+        .eq("user_id", user.id);
+    } else {
+      await supabaseClient
+        .from("teen_career_counselor_usage")
+        .update({ paid_generations: usage.paid_generations - 1 })
+        .eq("user_id", user.id);
+    }
 
     return new Response(
       JSON.stringify({ guidance }),
