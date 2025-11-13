@@ -423,9 +423,6 @@ verify_jwt = true
 [functions.generate-daily-challenge]
 verify_jwt = false
 
-[functions.wellness-mindfulness-chat]
-verify_jwt = false
-
 [functions.check-wellness-subscription]
 verify_jwt = true
 
