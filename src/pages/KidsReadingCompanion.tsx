@@ -143,10 +143,10 @@ const KidsReadingCompanion = () => {
                     <div className="space-y-4">
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span>Text Analyses: {subscription.analyses_used}/{subscription.analyses_limit}</span>
-                          <span>Quizzes: {subscription.quizzes_used}/{subscription.quizzes_limit}</span>
+                          <span>Text Analyses: {subscription.analyses_used}/{subscription.analyses_limit === 999999 ? 'Unlimited' : subscription.analyses_limit}</span>
+                          <span>Quizzes: {subscription.quizzes_used}/{subscription.quizzes_limit === 999999 ? 'Unlimited' : subscription.quizzes_limit}</span>
                         </div>
-                        <Progress value={(subscription.analyses_used / subscription.analyses_limit) * 100} className="h-2" />
+                        <Progress value={subscription.analyses_limit === 999999 ? 0 : (subscription.analyses_used / subscription.analyses_limit) * 100} className="h-2" />
                       </div>
                       <div className="flex items-center justify-center gap-4 pt-2">
                         <Button onClick={createCheckout} size="lg" className="gap-2">
