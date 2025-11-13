@@ -11,7 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
 import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
 import { SkillMatches } from "@/components/skill-swap/SkillMatches";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles } from "lucide-react";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface SkillOffering {
   id: string;
@@ -25,6 +26,7 @@ interface SkillOffering {
     rating_average: number;
     total_reviews: number;
     completed_exchanges: number;
+    location?: string;
   };
 }
 
@@ -33,23 +35,42 @@ export default function SkillSwap() {
   const { subscription, loading, createCheckout } = useSkillSwap();
   const [offerings, setOfferings] = useState<SkillOffering[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    category: "all",
+    minRating: "0",
+    location: "",
+  });
   const [newOffering, setNewOffering] = useState({
     title: "",
     description: "",
     category: "teaching",
   });
 
-  useEffect(() => {
-    fetchOfferings();
-  }, []);
+  const clearFilters = () => {
+    setFilters({
+      category: "all",
+      minRating: "0",
+      location: "",
+    });
+  };
+
+  const hasActiveFilters = filters.category !== "all" || filters.minRating !== "0" || filters.location !== "";
 
   const fetchOfferings = async () => {
-    const { data, error } = await supabase
+    let query = supabase
       .from('skill_offerings')
       .select('*')
-      .eq('is_active', true)
+      .eq('is_active', true);
+
+    // Apply category filter
+    if (filters.category !== "all") {
+      query = query.eq('category', filters.category as any);
+    }
+
+    const { data, error } = await query
       .order('created_at', { ascending: false })
-      .limit(20);
+      .limit(100);
 
     if (error) {
       console.error('Error fetching offerings:', error);
@@ -61,18 +82,37 @@ export default function SkillSwap() {
     const userIds = data?.map(o => o.user_id) || [];
     const { data: profilesData } = await supabase
       .from('profiles')
-      .select('id, full_name, rating_average, total_reviews, completed_exchanges')
+      .select('id, full_name, rating_average, total_reviews, completed_exchanges, location')
       .in('id', userIds);
 
     const profilesMap = new Map(profilesData?.map(p => [p.id, p]) || []);
 
-    const offeringsWithProfiles = (data || []).map(offering => ({
+    let offeringsWithProfiles = (data || []).map(offering => ({
       ...offering,
       profiles: profilesMap.get(offering.user_id) || undefined
     }));
 
+    // Apply client-side filters
+    const minRating = parseFloat(filters.minRating);
+    if (minRating > 0) {
+      offeringsWithProfiles = offeringsWithProfiles.filter(
+        o => (o.profiles?.rating_average || 0) >= minRating
+      );
+    }
+
+    if (filters.location) {
+      const locationLower = filters.location.toLowerCase();
+      offeringsWithProfiles = offeringsWithProfiles.filter(
+        o => o.profiles?.location?.toLowerCase().includes(locationLower)
+      );
+    }
+
     setOfferings(offeringsWithProfiles);
   };
+
+  useEffect(() => {
+    fetchOfferings();
+  }, [filters]);
 
   const handleSubscribe = async () => {
     const url = await createCheckout();
@@ -326,7 +366,97 @@ export default function SkillSwap() {
 
             {/* Skill Offerings Grid */}
             <div>
-              <h2 className="text-2xl font-bold mb-6">Available Skills</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold">Available Skills</h2>
+                <div className="flex items-center gap-3">
+                  {hasActiveFilters && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="flex items-center gap-2"
+                    >
+                      <X className="w-4 h-4" />
+                      Clear Filters
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="flex items-center gap-2"
+                  >
+                    <Filter className="w-4 h-4" />
+                    Filters
+                    {hasActiveFilters && (
+                      <Badge variant="secondary" className="ml-1">
+                        Active
+                      </Badge>
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Filter Panel */}
+              {showFilters && (
+                <Card className="p-6 mb-6 border-primary/20">
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Category</label>
+                      <Select
+                        value={filters.category}
+                        onValueChange={(value) => setFilters({ ...filters, category: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="All Categories" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Categories</SelectItem>
+                          <SelectItem value="teaching">Teaching</SelectItem>
+                          <SelectItem value="technology">Technology</SelectItem>
+                          <SelectItem value="creative">Creative</SelectItem>
+                          <SelectItem value="repairs">Repairs</SelectItem>
+                          <SelectItem value="construction">Construction</SelectItem>
+                          <SelectItem value="gardening">Gardening</SelectItem>
+                          <SelectItem value="cleaning">Cleaning</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Minimum Rating</label>
+                      <Select
+                        value={filters.minRating}
+                        onValueChange={(value) => setFilters({ ...filters, minRating: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Any Rating" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">Any Rating</SelectItem>
+                          <SelectItem value="3">3+ Stars</SelectItem>
+                          <SelectItem value="4">4+ Stars</SelectItem>
+                          <SelectItem value="4.5">4.5+ Stars</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Location</label>
+                      <Input
+                        placeholder="Search by location..."
+                        value={filters.location}
+                        onChange={(e) => setFilters({ ...filters, location: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-4 text-sm text-muted-foreground">
+                    Showing {offerings.length} skill offering{offerings.length !== 1 ? 's' : ''}
+                  </div>
+                </Card>
+              )}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {offerings.map((offering) => (
                   <Card key={offering.id} className="p-6 hover:shadow-lg transition-shadow">
@@ -346,16 +476,24 @@ export default function SkillSwap() {
                           {offering.profiles?.full_name || 'User'}
                         </button>
                         {offering.profiles && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <div className="flex items-center gap-1">
-                              <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                              <span className="font-medium">{offering.profiles.rating_average.toFixed(1)}</span>
-                              <span className="text-muted-foreground">({offering.profiles.total_reviews})</span>
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 text-sm">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                                <span className="font-medium">{offering.profiles.rating_average.toFixed(1)}</span>
+                                <span className="text-muted-foreground">({offering.profiles.total_reviews})</span>
+                              </div>
+                              <span className="text-muted-foreground">•</span>
+                              <span className="text-muted-foreground">
+                                {offering.profiles.completed_exchanges} exchanges
+                              </span>
                             </div>
-                            <span className="text-muted-foreground">•</span>
-                            <span className="text-muted-foreground">
-                              {offering.profiles.completed_exchanges} exchanges
-                            </span>
+                            {offering.profiles.location && (
+                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Globe className="w-3 h-3" />
+                                <span>{offering.profiles.location}</span>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
