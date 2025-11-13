@@ -2,14 +2,17 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, Save } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useWellnessProgress } from "@/hooks/useWellnessProgress";
 
 export function GratitudeJournal() {
   const [entry, setEntry] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [moodRating, setMoodRating] = useState<number>(3);
   const { toast } = useToast();
+  const { saveJournalEntry, updateStats, isSavingJournal } = useWellnessProgress();
 
   const analyzeEntry = async () => {
     if (!entry.trim()) {
@@ -89,6 +92,18 @@ export function GratitudeJournal() {
         title: "Analysis complete",
         description: "Your entry has been analyzed",
       });
+
+      // Save journal entry with AI insights
+      await saveJournalEntry({
+        entryText: entry,
+        moodRating,
+        aiInsights: result,
+        tags: ["gratitude"],
+      });
+
+      // Update statistics
+      await updateStats({ activityType: "journal" });
+      
     } catch (error) {
       console.error("Analysis error:", error);
       toast({
@@ -110,6 +125,23 @@ export function GratitudeJournal() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div>
+          <label className="text-sm font-medium mb-2 block">How are you feeling today?</label>
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <Button
+                key={rating}
+                variant={moodRating === rating ? "default" : "outline"}
+                size="sm"
+                onClick={() => setMoodRating(rating)}
+                className="text-lg"
+              >
+                {"😊".repeat(rating)}
+              </Button>
+            ))}
+          </div>
+        </div>
+
         <Textarea
           value={entry}
           onChange={(e) => setEntry(e.target.value)}
@@ -117,7 +149,7 @@ export function GratitudeJournal() {
           className="min-h-[150px]"
         />
 
-        <Button onClick={analyzeEntry} disabled={isAnalyzing || !entry.trim()}>
+        <Button onClick={analyzeEntry} disabled={isAnalyzing || isSavingJournal || !entry.trim()}>
           {isAnalyzing ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -126,7 +158,7 @@ export function GratitudeJournal() {
           ) : (
             <>
               <Sparkles className="w-4 h-4 mr-2" />
-              Get AI Insights
+              Get AI Insights & Save
             </>
           )}
         </Button>

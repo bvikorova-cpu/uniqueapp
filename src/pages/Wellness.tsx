@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check, Volume2 } from "lucide-react";
+import { Loader2, Sparkles, Heart, Brain, Wind, Palette, BookOpen, Check, Volume2, TrendingUp } from "lucide-react";
 import { MindfulnessChat } from "@/components/wellness/MindfulnessChat";
 import { BreathingExercises } from "@/components/wellness/BreathingExercises";
 import { GratitudeJournal } from "@/components/wellness/GratitudeJournal";
@@ -13,6 +13,7 @@ import { GroundingExercise } from "@/components/wellness/GroundingExercise";
 import { DigitalMandala } from "@/components/wellness/DigitalMandala";
 import { NatureSounds } from "@/components/wellness/NatureSounds";
 import { BodyScanMeditation } from "@/components/wellness/BodyScanMeditation";
+import { WellnessProgressDashboard } from "@/components/wellness/WellnessProgressDashboard";
 
 const WELLNESS_PLANS = {
   basicMonthly: {
@@ -328,7 +329,11 @@ export default function Wellness() {
       )}
 
       <Tabs defaultValue="breathing" className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
+          <TabsTrigger value="progress" disabled={!hasBasicAccess}>
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Progress
+          </TabsTrigger>
           <TabsTrigger value="breathing" disabled={!hasBasicAccess}>
             <Wind className="w-4 h-4 mr-2" />
             Breathing
@@ -358,6 +363,10 @@ export default function Wellness() {
             Mandala
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="progress">
+          {hasBasicAccess ? <WellnessProgressDashboard /> : <PremiumRequired />}
+        </TabsContent>
 
         <TabsContent value="breathing">
           {hasBasicAccess ? <BreathingExercises /> : <PremiumRequired />}
