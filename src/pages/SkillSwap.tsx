@@ -34,6 +34,7 @@ export default function SkillSwap() {
   const navigate = useNavigate();
   const { subscription, loading, createCheckout } = useSkillSwap();
   const [offerings, setOfferings] = useState<SkillOffering[]>([]);
+  const [totalOfferings, setTotalOfferings] = useState(0);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("date_desc");
@@ -93,6 +94,9 @@ export default function SkillSwap() {
       ...offering,
       profiles: profilesMap.get(offering.user_id) || undefined
     }));
+
+    // Store total count before filtering
+    setTotalOfferings(offeringsWithProfiles.length);
 
     // Apply client-side filters
     const minRating = parseFloat(filters.minRating);
@@ -411,7 +415,12 @@ export default function SkillSwap() {
             {/* Skill Offerings Grid */}
             <div>
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                <h2 className="text-2xl font-bold">Available Skills</h2>
+                <div>
+                  <h2 className="text-2xl font-bold">Available Skills</h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Showing {offerings.length} of {totalOfferings} skills
+                  </p>
+                </div>
                 <div className="flex items-center gap-3 flex-wrap">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
