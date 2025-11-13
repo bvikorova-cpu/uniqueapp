@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Canvas as FabricCanvas, PencilBrush } from "fabric";
+import { Canvas as FabricCanvas, PencilBrush, Circle, Rect, Polygon } from "fabric";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo } from "lucide-react";
+import { Eraser, Paintbrush, Trash2, Eye, EyeOff, Undo, Redo, Circle as CircleIcon, Square, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
@@ -29,7 +29,7 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
   const [fabricCanvas, setFabricCanvas] = useState<FabricCanvas | null>(null);
   const [activeColor, setActiveColor] = useState("#000000");
   const [brushSize, setBrushSize] = useState(3);
-  const [activeTool, setActiveTool] = useState<"draw" | "erase">("draw");
+  const [activeTool, setActiveTool] = useState<"draw" | "erase" | "circle" | "square" | "star">("draw");
   const [showReference, setShowReference] = useState(true);
   const [canvasHistory, setCanvasHistory] = useState<string[]>([]);
   const [historyStep, setHistoryStep] = useState(-1);
@@ -95,6 +95,9 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
       eraser.width = brushSize * 2;
       fabricCanvas.freeDrawingBrush = eraser;
       fabricCanvas.isDrawingMode = true;
+    } else {
+      // For shape tools, disable drawing mode
+      fabricCanvas.isDrawingMode = false;
     }
   }, [activeTool, activeColor, brushSize, fabricCanvas]);
 
@@ -142,6 +145,83 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
     });
   };
 
+  const saveStateToHistory = () => {
+    if (!fabricCanvas) return;
+    const json = JSON.stringify(fabricCanvas.toJSON());
+    setCanvasHistory((prev) => {
+      const newHistory = prev.slice(0, historyStep + 1);
+      newHistory.push(json);
+      return newHistory;
+    });
+    setHistoryStep((prev) => prev + 1);
+  };
+
+  const handleAddShape = (shapeType: "circle" | "square" | "star") => {
+    if (!fabricCanvas) return;
+
+    setActiveTool(shapeType);
+
+    if (shapeType === "circle") {
+      const circle = new Circle({
+        left: 100,
+        top: 100,
+        radius: 50,
+        fill: activeColor,
+        stroke: activeColor,
+        strokeWidth: 2,
+      });
+      fabricCanvas.add(circle);
+      fabricCanvas.setActiveObject(circle);
+      saveStateToHistory();
+      toast.success("Circle added! ⭕");
+    } else if (shapeType === "square") {
+      const square = new Rect({
+        left: 100,
+        top: 100,
+        width: 100,
+        height: 100,
+        fill: activeColor,
+        stroke: activeColor,
+        strokeWidth: 2,
+      });
+      fabricCanvas.add(square);
+      fabricCanvas.setActiveObject(square);
+      saveStateToHistory();
+      toast.success("Square added! ◻️");
+    } else if (shapeType === "star") {
+      // Create a 5-pointed star
+      const points = [];
+      const outerRadius = 50;
+      const innerRadius = 25;
+      const numPoints = 5;
+      
+      for (let i = 0; i < numPoints * 2; i++) {
+        const radius = i % 2 === 0 ? outerRadius : innerRadius;
+        const angle = (Math.PI * i) / numPoints;
+        points.push({
+          x: Math.cos(angle - Math.PI / 2) * radius,
+          y: Math.sin(angle - Math.PI / 2) * radius,
+        });
+      }
+
+      const star = new Polygon(points, {
+        left: 150,
+        top: 150,
+        fill: activeColor,
+        stroke: activeColor,
+        strokeWidth: 2,
+      });
+      fabricCanvas.add(star);
+      fabricCanvas.setActiveObject(star);
+      saveStateToHistory();
+      toast.success("Star added! ⭐");
+    }
+
+    fabricCanvas.renderAll();
+    // Switch back to draw mode after adding shape
+    setTimeout(() => setActiveTool("draw"), 100);
+  };
+
   const handleDownload = () => {
     if (!fabricCanvas) return;
     const dataURL = fabricCanvas.toDataURL({
@@ -178,6 +258,30 @@ export const DrawingCanvas = ({ tutorialImage, stepNumber }: DrawingCanvasProps)
             >
               <Eraser className="w-4 h-4 mr-2" />
               Erase
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleAddShape("circle")}
+            >
+              <CircleIcon className="w-4 h-4 mr-2" />
+              Circle
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleAddShape("square")}
+            >
+              <Square className="w-4 h-4 mr-2" />
+              Square
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handleAddShape("star")}
+            >
+              <Star className="w-4 h-4 mr-2" />
+              Star
             </Button>
             <Button 
               variant="outline" 
