@@ -366,6 +366,32 @@ export default function TeenCareerCounselor() {
           </Card>
         )}
 
+        {/* Purchase Prompt for No Sessions */}
+        {!checkingUsage && usageData && !usageData.canGenerate && (
+          <Card className="mb-6 bg-gradient-to-r from-primary/10 via-primary/5 to-background border-primary/30">
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-1">
+                    Need More Career Guidance?
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    You've used your free session. Get personalized career advice for just €5 per session.
+                  </p>
+                </div>
+                <Button 
+                  onClick={handlePurchase} 
+                  size="lg"
+                  className="gap-2 shrink-0 w-full sm:w-auto"
+                >
+                  <CreditCard className="h-4 w-4" />
+                  Purchase Session (€5)
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <div className="grid gap-6 mb-8">
           <Card>
             <CardHeader>
