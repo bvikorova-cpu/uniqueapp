@@ -79,6 +79,7 @@ import AncestorTwin from "./pages/AncestorTwin";
 import AncestorTwinUpload from "./pages/AncestorTwinUpload";
 import AncestorTwinHistory from "./pages/AncestorTwinHistory";
 import AncestorTwinGallery from "./pages/AncestorTwinGallery";
+import AncestorTwinComparison from "./pages/AncestorTwinComparison";
 import SkillSwap from "./pages/SkillSwap";
 import SkillSwapProfile from "./pages/SkillSwapProfile";
 import SkillSwapSettings from "./pages/SkillSwapSettings";

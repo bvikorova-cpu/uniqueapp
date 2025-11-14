@@ -41,7 +41,7 @@ export default function AncestorTwinGallery() {
 
   const fetchPublicMatches = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('historical_matches')
         .select('*')
         .eq('is_public', true)
@@ -61,7 +61,7 @@ export default function AncestorTwinGallery() {
 
   const fetchFeaturedMatch = async (id: string) => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('historical_matches')
         .select('*')
         .eq('id', id)
