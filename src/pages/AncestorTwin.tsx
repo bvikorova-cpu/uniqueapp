@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Sparkles, Users, Dna, Image as ImageIcon, Crown, Calendar, Check, CreditCard, Upload } from "lucide-react";
+import { Sparkles, Users, Dna, Image as ImageIcon, Crown, Calendar, Check, CreditCard, Upload, History, ImagePlus } from "lucide-react";
 import { useAncestorTwin } from "@/hooks/useAncestorTwin";
 
 const AncestorTwin = () => {
@@ -126,8 +126,9 @@ const AncestorTwin = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Discover your celebrity double from history! Find your lookalike among historical figures, celebrities, and famous artworks.
           </p>
-          {subscription?.hasSubscription && (
-            <div className="pt-2">
+          
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+            {subscription?.hasSubscription && (
               <Button
                 variant="outline"
                 size="sm"
@@ -137,8 +138,26 @@ const AncestorTwin = () => {
                 <CreditCard className="h-4 w-4" />
                 Spravovať predplatné
               </Button>
-            </div>
-          )}
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/ancestor-twin/history")}
+              className="gap-2"
+            >
+              <History className="h-4 w-4" />
+              My Match History
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/ancestor-twin/gallery")}
+              className="gap-2"
+            >
+              <ImagePlus className="h-4 w-4" />
+              Public Gallery
+            </Button>
+          </div>
         </div>
 
         {/* Pricing Section */}
