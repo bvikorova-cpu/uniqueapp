@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
 import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
 import { SkillMatches } from "@/components/skill-swap/SkillMatches";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search, Upload, Image as ImageIcon, Edit, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search, Upload, Image as ImageIcon, Edit, Trash2, ChevronLeft, ChevronRight, LayoutDashboard } from "lucide-react";
 import { 
   Pagination, 
   PaginationContent, 
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/pagination";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { NotificationBell } from "@/components/skill-swap/NotificationBell";
 
 interface SkillOffering {
   id: string;
@@ -492,7 +493,21 @@ export default function SkillSwap() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-16 max-w-7xl">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 relative">
+          {/* Notification Bell and Dashboard Link - Top Right */}
+          <div className="absolute top-0 right-0 flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate('/skill-swap/dashboard')}
+              className="flex items-center gap-2"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </Button>
+            <NotificationBell />
+          </div>
+
           <div className="flex items-center justify-center gap-3 mb-6">
             <ArrowLeftRight className="w-12 h-12 text-primary" />
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
