@@ -23,6 +23,8 @@ interface WithdrawalRequest {
   admin_notes: string | null;
   created_at: string;
   processed_at: string | null;
+  scheduled_payout_date: string | null;
+  payout_batch_id: string | null;
 }
 
 interface PayoutHistoryProps {
@@ -122,6 +124,11 @@ export function PayoutHistory({ instructorId }: PayoutHistoryProps) {
                       {request.payment_method && (
                         <p className="text-xs text-muted-foreground capitalize">
                           via {request.payment_method.replace("_", " ")}
+                        </p>
+                      )}
+                      {request.scheduled_payout_date && (
+                        <p className="text-xs text-muted-foreground">
+                          Scheduled for: {format(new Date(request.scheduled_payout_date), "MMM d, yyyy")}
                         </p>
                       )}
                       {request.admin_notes && (

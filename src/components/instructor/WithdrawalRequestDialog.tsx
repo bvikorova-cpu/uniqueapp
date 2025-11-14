@@ -47,6 +47,27 @@ export function WithdrawalRequestDialog({
     bankName: "",
   });
 
+  // Calculate next payout date
+  const getNextPayoutDate = () => {
+    const today = new Date();
+    const day = today.getDate();
+    
+    if (day < 15) {
+      // Next payout is 15th of current month
+      return new Date(today.getFullYear(), today.getMonth(), 15);
+    } else {
+      // Next payout is 1st of next month
+      return new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    }
+  };
+
+  const nextPayoutDate = getNextPayoutDate();
+  const formattedPayoutDate = nextPayoutDate.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -139,6 +160,10 @@ export function WithdrawalRequestDialog({
           <DialogTitle>Request Withdrawal</DialogTitle>
           <DialogDescription>
             Available balance: {formatCurrency(availableBalance)}
+            <br />
+            <span className="text-xs mt-1 inline-block">
+              Scheduled payout date: {formattedPayoutDate}
+            </span>
           </DialogDescription>
         </DialogHeader>
 
