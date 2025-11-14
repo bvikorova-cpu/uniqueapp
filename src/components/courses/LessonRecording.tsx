@@ -18,9 +18,9 @@ export const LessonRecording = ({ lessonId, recordingUrl, isInstructor }: Lesson
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { mediaSource: "screen" },
+        video: true,
         audio: true,
-      });
+      } as any);
 
       const recorder = new MediaRecorder(stream, {
         mimeType: "video/webm;codecs=vp9",
