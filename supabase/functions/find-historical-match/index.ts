@@ -96,7 +96,10 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    console.log("Step 1: Analyzing facial features with AI...");
+
+    // Step 1: Analyze facial features
+    const analysisResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${LOVABLE_API_KEY}`,
@@ -106,15 +109,11 @@ serve(async (req) => {
         model: "google/gemini-2.5-flash",
         messages: [
           {
-            role: "system",
-            content: "You are an expert at analyzing facial features and finding historical lookalikes. Analyze the face and suggest which historical figures they resemble most based on facial structure, features, and proportions."
-          },
-          {
             role: "user",
             content: [
               {
                 type: "text",
-                text: `Analyze this face and suggest the top ${numMatches} historical figures or celebrities they resemble. Consider facial structure, features, and overall appearance. Return a JSON array of matches with 'name' and 'similarity' (0-100) fields.`
+                text: "Analyze this face in detail. Describe: face shape, eye shape and color, nose structure, jawline, cheekbones, lips, skin tone, hair color/style, and any distinctive features. Be specific and detailed."
               },
               {
                 type: "image_url",
@@ -128,46 +127,106 @@ serve(async (req) => {
       }),
     });
 
-    if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error("AI Gateway error:", errorText);
-      throw new Error("AI analysis failed");
+    if (!analysisResponse.ok) {
+      const errorText = await analysisResponse.text();
+      console.error("AI analysis error:", analysisResponse.status, errorText);
+      throw new Error("Facial analysis failed");
     }
 
-    const aiData = await aiResponse.json();
-    const aiAnalysis = aiData.choices?.[0]?.message?.content || "";
+    const analysisData = await analysisResponse.json();
+    const facialAnalysis = analysisData.choices?.[0]?.message?.content || "";
+    console.log("Facial analysis:", facialAnalysis);
 
-    // Generate matches based on AI analysis and tier
-    const matches = [];
-    const allPossibleMatches = [
-      ...historicalFigures,
-      ...celebrities,
-      ...(includeArtworks ? famousArtworks : [])
-    ];
+    // Step 2: Match with historical figures based on the analysis
+    console.log("Step 2: Finding historical matches...");
+    
+    const historicalList = historicalFigures.map(f => `${f.name} - ${f.era} (${f.category})`).join('\n');
+    const celebrityList = celebrities.map(c => `${c.name} - ${c.era}`).join('\n');
+    const artworkList = includeArtworks ? famousArtworks.map(a => `${a.name} by ${a.artist} - ${a.era}`).join('\n') : '';
 
-    // Shuffle and select random matches
-    const shuffled = allPossibleMatches.sort(() => 0.5 - Math.random());
-    const selected = shuffled.slice(0, numMatches);
+    const matchingPrompt = `Based on this facial analysis:
+"${facialAnalysis}"
 
-    for (const match of selected) {
-      const similarity = Math.floor(Math.random() * (95 - 70) + 70); // 70-95% similarity
-      
+Find the ${numMatches} best matches from these historical figures and celebrities:
+
+HISTORICAL FIGURES:
+${historicalList}
+
+CELEBRITIES:
+${celebrityList}
+
+${includeArtworks ? `FAMOUS ARTWORKS:\n${artworkList}` : ''}
+
+For each match, provide:
+1. name - exact name from the list
+2. similarity - realistic score 65-92 (higher for better matches)
+3. reason - specific facial features that match (2-3 sentences)
+
+Return ONLY a valid JSON array with these exact fields. Example:
+[{"name":"Leonardo da Vinci","similarity":87,"reason":"Similar facial structure..."}]`;
+
+    const matchResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "user",
+            content: matchingPrompt
+          }
+        ],
+      }),
+    });
+
+    if (!matchResponse.ok) {
+      const errorText = await matchResponse.text();
+      console.error("AI matching error:", matchResponse.status, errorText);
+      throw new Error("Historical matching failed");
+    }
+
+    const matchData = await matchResponse.json();
+    let matchesText = matchData.choices?.[0]?.message?.content || "[]";
+    
+    // Clean up JSON response
+    matchesText = matchesText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    let aiMatches;
+    try {
+      aiMatches = JSON.parse(matchesText);
+    } catch (e) {
+      console.error("Failed to parse AI response:", matchesText);
+      // Fallback to random matches if AI fails
+      aiMatches = historicalFigures.slice(0, numMatches).map(f => ({
+        name: f.name,
+        similarity: Math.floor(Math.random() * 20 + 70),
+        reason: `Shares similar facial characteristics with ${f.name}.`
+      }));
+    }
+
+    console.log("AI generated matches:", aiMatches);
+
+    // Build final matches with enhanced data
+    const matches = aiMatches.slice(0, numMatches).map((match: any) => {
       const matchResult: any = {
         name: match.name,
-        era: match.era,
-        similarity: similarity,
+        era: match.era || historicalFigures.find(f => f.name === match.name)?.era || 
+             celebrities.find(c => c.name === match.name)?.era || "Unknown",
+        similarity: Math.min(92, Math.max(65, match.similarity)),
       };
 
       if (includeBio) {
-        matchResult.bio = `A remarkable historical figure from ${match.era}. Known for their distinctive features and lasting legacy in history.`;
+        matchResult.bio = match.reason || `Remarkable similarities in facial structure and features with ${match.name}.`;
       }
 
-      if ('artist' in match) {
-        matchResult.artist = match.artist;
-      }
+      // Add placeholder image
+      matchResult.imageUrl = `https://picsum.photos/seed/${match.name.replace(/\s/g, '')}/400/500`;
 
-      matches.push(matchResult);
-    }
+      return matchResult;
+    });
 
     // Sort by similarity
     matches.sort((a, b) => b.similarity - a.similarity);
