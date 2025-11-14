@@ -11,7 +11,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
 import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
 import { SkillMatches } from "@/components/skill-swap/SkillMatches";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search, Upload, Image as ImageIcon } from "lucide-react";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search, Upload, Image as ImageIcon, Edit, Trash2 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface SkillOffering {
@@ -21,6 +22,7 @@ interface SkillOffering {
   description: string;
   category: string;
   is_active: boolean;
+  image_url?: string;
   profiles?: {
     full_name: string;
     rating_average: number;
@@ -36,9 +38,11 @@ export default function SkillSwap() {
   const [offerings, setOfferings] = useState<SkillOffering[]>([]);
   const [totalOfferings, setTotalOfferings] = useState(0);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState("date_desc");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [filters, setFilters] = useState({
     category: "all",
     minRating: "0",
@@ -49,9 +53,17 @@ export default function SkillSwap() {
     description: "",
     category: "teaching",
   });
+  const [editOffering, setEditOffering] = useState<{
+    id: string;
+    title: string;
+    description: string;
+    category: string;
+    image_url?: string;
+  } | null>(null);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [mediaPreview, setMediaPreview] = useState<string>("");
   const [uploading, setUploading] = useState(false);
+  const [removeMedia, setRemoveMedia] = useState(false);
 
   const clearFilters = () => {
     setFilters({
@@ -314,6 +326,122 @@ export default function SkillSwap() {
     }
 
     toast.success("Conversation started! Check the Messages tab.");
+  };
+
+  const handleEditClick = (offering: SkillOffering) => {
+    setEditOffering({
+      id: offering.id,
+      title: offering.title,
+      description: offering.description,
+      category: offering.category,
+      image_url: offering.image_url,
+    });
+    setMediaPreview(offering.image_url || "");
+    setRemoveMedia(false);
+    setShowEditDialog(true);
+  };
+
+  const handleUpdateOffering = async () => {
+    if (!editOffering || !editOffering.title || !editOffering.description) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast.error("Please sign in first");
+      return;
+    }
+
+    setUploading(true);
+    let mediaUrl = editOffering.image_url;
+
+    try {
+      // Handle media removal
+      if (removeMedia && editOffering.image_url) {
+        const urlParts = editOffering.image_url.split('/');
+        const fileName = urlParts.slice(-2).join('/');
+        await supabase.storage.from('media').remove([fileName]);
+        mediaUrl = null;
+      }
+
+      // Upload new media if provided
+      if (mediaFile) {
+        // Remove old media if exists
+        if (editOffering.image_url) {
+          const urlParts = editOffering.image_url.split('/');
+          const fileName = urlParts.slice(-2).join('/');
+          await supabase.storage.from('media').remove([fileName]);
+        }
+
+        const fileExt = mediaFile.name.split('.').pop();
+        const fileName = `${session.user.id}/${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('media')
+          .upload(fileName, mediaFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('media')
+          .getPublicUrl(fileName);
+        
+        mediaUrl = publicUrl;
+      }
+
+      // Update offering
+      const { error } = await supabase
+        .from('skill_offerings')
+        .update({
+          title: editOffering.title,
+          description: editOffering.description,
+          category: editOffering.category as any,
+          image_url: mediaUrl,
+        })
+        .eq('id', editOffering.id);
+
+      if (error) throw error;
+
+      toast.success("Skill offering updated successfully!");
+      setShowEditDialog(false);
+      setEditOffering(null);
+      setMediaFile(null);
+      setMediaPreview("");
+      setRemoveMedia(false);
+      fetchOfferings();
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Failed to update skill offering");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteOffering = async (offeringId: string, imageUrl?: string) => {
+    if (!confirm("Are you sure you want to delete this offering?")) return;
+
+    try {
+      // Delete media if exists
+      if (imageUrl) {
+        const urlParts = imageUrl.split('/');
+        const fileName = urlParts.slice(-2).join('/');
+        await supabase.storage.from('media').remove([fileName]);
+      }
+
+      const { error } = await supabase
+        .from('skill_offerings')
+        .delete()
+        .eq('id', offeringId);
+
+      if (error) throw error;
+
+      toast.success("Skill offering deleted successfully!");
+      fetchOfferings();
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Failed to delete skill offering");
+    }
   };
 
   if (loading) {
@@ -654,51 +782,91 @@ export default function SkillSwap() {
               )}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {offerings.map((offering) => (
-                  <Card key={offering.id} className="p-6 hover:shadow-lg transition-shadow">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-xl font-semibold">{offering.title}</h3>
-                      <Badge variant="secondary">{offering.category}</Badge>
-                    </div>
-                    <p className="text-muted-foreground mb-4 line-clamp-3">
-                      {offering.description}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <button
-                          onClick={() => navigate(`/skill-swap/profile/${offering.user_id}`)}
-                          className="text-sm text-primary hover:underline mb-1"
-                        >
-                          {offering.profiles?.full_name || 'User'}
-                        </button>
-                        {offering.profiles && (
-                          <div className="space-y-1">
-                            <div className="flex items-center gap-2 text-sm">
-                              <div className="flex items-center gap-1">
-                                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                                <span className="font-medium">{offering.profiles.rating_average.toFixed(1)}</span>
-                                <span className="text-muted-foreground">({offering.profiles.total_reviews})</span>
-                              </div>
-                              <span className="text-muted-foreground">•</span>
-                              <span className="text-muted-foreground">
-                                {offering.profiles.completed_exchanges} exchanges
-                              </span>
-                            </div>
-                            {offering.profiles.location && (
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Globe className="w-3 h-3" />
-                                <span>{offering.profiles.location}</span>
-                              </div>
-                            )}
-                          </div>
+                  <Card key={offering.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    {offering.image_url && (
+                      <div className="relative w-full h-48">
+                        {offering.image_url.match(/\.(mp4|webm|ogg)$/i) ? (
+                          <video
+                            src={offering.image_url}
+                            className="w-full h-full object-cover"
+                            controls
+                          />
+                        ) : (
+                          <img
+                            src={offering.image_url}
+                            alt={offering.title}
+                            className="w-full h-full object-cover"
+                          />
                         )}
                       </div>
-                      <Button
-                        size="sm"
-                        onClick={() => handleRequestExchange(offering.id)}
-                        disabled={!subscription.hasSubscription}
-                      >
-                        Request Exchange
-                      </Button>
+                    )}
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-3">
+                        <h3 className="text-xl font-semibold">{offering.title}</h3>
+                        <Badge variant="secondary">{offering.category}</Badge>
+                      </div>
+                      <p className="text-muted-foreground mb-4 line-clamp-3">
+                        {offering.description}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <button
+                            onClick={() => navigate(`/skill-swap/profile/${offering.user_id}`)}
+                            className="text-sm text-primary hover:underline mb-1"
+                          >
+                            {offering.profiles?.full_name || 'User'}
+                          </button>
+                          {offering.profiles && (
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 text-sm">
+                                <div className="flex items-center gap-1">
+                                  <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                                  <span className="font-medium">{offering.profiles.rating_average.toFixed(1)}</span>
+                                  <span className="text-muted-foreground">({offering.profiles.total_reviews})</span>
+                                </div>
+                                <span className="text-muted-foreground">•</span>
+                                <span className="text-muted-foreground">
+                                  {offering.profiles.completed_exchanges} exchanges
+                                </span>
+                              </div>
+                              {offering.profiles.location && (
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Globe className="w-3 h-3" />
+                                  <span>{offering.profiles.location}</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex gap-2">
+                          {currentUserId === offering.user_id ? (
+                            <>
+                              <Button
+                                onClick={() => handleEditClick(offering)}
+                                size="sm"
+                                variant="outline"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                onClick={() => handleDeleteOffering(offering.id, offering.image_url)}
+                                size="sm"
+                                variant="destructive"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </>
+                          ) : (
+                            <Button
+                              size="sm"
+                              onClick={() => handleRequestExchange(offering.id)}
+                              disabled={!subscription.hasSubscription}
+                            >
+                              Request Exchange
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </Card>
                 ))}
@@ -715,6 +883,115 @@ export default function SkillSwap() {
             <SkillSwapMessages />
           </TabsContent>
         </Tabs>
+
+        {/* Edit Dialog */}
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Edit Skill Offering</DialogTitle>
+            </DialogHeader>
+            {editOffering && (
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Title</label>
+                  <Input
+                    placeholder="e.g., Web Development Lessons"
+                    value={editOffering.title}
+                    onChange={(e) => setEditOffering({ ...editOffering, title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Description</label>
+                  <Textarea
+                    placeholder="Describe what you can teach or help with..."
+                    value={editOffering.description}
+                    onChange={(e) => setEditOffering({ ...editOffering, description: e.target.value })}
+                    rows={4}
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Category</label>
+                  <Select
+                    value={editOffering.category}
+                    onValueChange={(value) => setEditOffering({ ...editOffering, category: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="teaching">Teaching</SelectItem>
+                      <SelectItem value="technology">Technology</SelectItem>
+                      <SelectItem value="creative">Creative</SelectItem>
+                      <SelectItem value="repairs">Repairs</SelectItem>
+                      <SelectItem value="construction">Construction</SelectItem>
+                      <SelectItem value="gardening">Gardening</SelectItem>
+                      <SelectItem value="cleaning">Cleaning</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Media (Image or Video)</label>
+                  <div className="space-y-2">
+                    <Input
+                      type="file"
+                      accept="image/*,video/*"
+                      onChange={handleMediaChange}
+                      className="cursor-pointer"
+                    />
+                    {(mediaPreview || editOffering.image_url) && !removeMedia && (
+                      <div className="relative">
+                        {mediaPreview.match(/\.(mp4|webm|ogg)$/i) || editOffering.image_url?.match(/\.(mp4|webm|ogg)$/i) ? (
+                          <video
+                            src={mediaPreview || editOffering.image_url}
+                            className="w-full max-h-64 rounded-lg object-cover"
+                            controls
+                          />
+                        ) : (
+                          <img
+                            src={mediaPreview || editOffering.image_url}
+                            alt="Preview"
+                            className="w-full max-h-64 rounded-lg object-cover"
+                          />
+                        )}
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={() => {
+                            setMediaFile(null);
+                            setMediaPreview("");
+                            setRemoveMedia(true);
+                          }}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Button onClick={handleUpdateOffering} disabled={uploading}>
+                    {uploading ? "Updating..." : "Update Offering"}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setShowEditDialog(false);
+                      setEditOffering(null);
+                      setMediaFile(null);
+                      setMediaPreview("");
+                      setRemoveMedia(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
