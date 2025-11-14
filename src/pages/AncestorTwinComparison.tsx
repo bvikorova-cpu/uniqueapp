@@ -50,7 +50,7 @@ export default function AncestorTwinComparison() {
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('historical_matches')
         .select('*')
         .eq('id', id)

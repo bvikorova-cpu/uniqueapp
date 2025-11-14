@@ -48,7 +48,7 @@ export default function AncestorTwinHistory() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('historical_matches')
         .select('*')
         .eq('user_id', session.user.id)
@@ -67,7 +67,7 @@ export default function AncestorTwinHistory() {
 
   const togglePrivacy = async (recordId: string, currentPrivacy: boolean) => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('historical_matches')
         .update({ is_public: !currentPrivacy })
         .eq('id', recordId);
@@ -91,7 +91,7 @@ export default function AncestorTwinHistory() {
     if (!confirm('Are you sure you want to delete this match record?')) return;
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('historical_matches')
         .delete()
         .eq('id', recordId);
@@ -198,22 +198,14 @@ export default function AncestorTwinHistory() {
                         />
                       </div>
                       {record.is_public && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate(`/ancestor-twin/comparison?id=${record.id}&index=${idx}`)}
-                      >
-                        <ScanFace className="w-4 h-4 mr-2" />
-                        Compare
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => shareMatch(record)}
-                      >
-                        <Share2 className="w-4 h-4 mr-2" />
-                        Share
-                      </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => shareMatch(record)}
+                        >
+                          <Share2 className="w-4 h-4 mr-2" />
+                          Share
+                        </Button>
                       )}
                       <Button
                         variant="outline"
@@ -252,6 +244,15 @@ export default function AncestorTwinHistory() {
                             </div>
                             <span className="text-sm font-medium">{match.similarity}%</span>
                           </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full mb-2"
+                            onClick={() => navigate(`/ancestor-twin/comparison?id=${record.id}&index=${index}`)}
+                          >
+                            <ScanFace className="w-4 h-4 mr-2" />
+                            Compare
+                          </Button>
                           {match.reason && (
                             <p className="text-xs text-muted-foreground">{match.reason}</p>
                           )}
