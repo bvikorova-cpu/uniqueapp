@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminWithdrawalManagement } from "@/components/instructor/AdminWithdrawalManagement";
+import { PayoutBatchesView } from "@/components/instructor/PayoutBatchesView";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export default function AdminWithdrawals() {
@@ -33,7 +35,21 @@ export default function AdminWithdrawals() {
           Review and process instructor withdrawal requests
         </p>
       </div>
-      <AdminWithdrawalManagement />
+
+      <Tabs defaultValue="requests" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 max-w-md">
+          <TabsTrigger value="requests">Requests</TabsTrigger>
+          <TabsTrigger value="batches">Payout Batches</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="requests" className="mt-6">
+          <AdminWithdrawalManagement />
+        </TabsContent>
+
+        <TabsContent value="batches" className="mt-6">
+          <PayoutBatchesView />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

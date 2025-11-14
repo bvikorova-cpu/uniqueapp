@@ -9741,8 +9741,10 @@ export type Database = {
           instructor_id: string
           payment_details: Json | null
           payment_method: string
+          payout_batch_id: string | null
           processed_at: string | null
           processed_by: string | null
+          scheduled_payout_date: string | null
           status: string
           updated_at: string | null
         }
@@ -9754,8 +9756,10 @@ export type Database = {
           instructor_id: string
           payment_details?: Json | null
           payment_method?: string
+          payout_batch_id?: string | null
           processed_at?: string | null
           processed_by?: string | null
+          scheduled_payout_date?: string | null
           status?: string
           updated_at?: string | null
         }
@@ -9767,8 +9771,10 @@ export type Database = {
           instructor_id?: string
           payment_details?: Json | null
           payment_method?: string
+          payout_batch_id?: string | null
           processed_at?: string | null
           processed_by?: string | null
+          scheduled_payout_date?: string | null
           status?: string
           updated_at?: string | null
         }
@@ -13291,6 +13297,45 @@ export type Database = {
           status?: string
           tier?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      payout_batches: {
+        Row: {
+          batch_date: string
+          completed_at: string | null
+          created_at: string | null
+          error_message: string | null
+          id: string
+          processed_count: number | null
+          started_at: string | null
+          status: string
+          total_amount: number | null
+          total_requests: number | null
+        }
+        Insert: {
+          batch_date: string
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id: string
+          processed_count?: number | null
+          started_at?: string | null
+          status?: string
+          total_amount?: number | null
+          total_requests?: number | null
+        }
+        Update: {
+          batch_date?: string
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          processed_count?: number | null
+          started_at?: string | null
+          status?: string
+          total_amount?: number | null
+          total_requests?: number | null
         }
         Relationships: []
       }
@@ -19568,6 +19613,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      create_payout_batch: { Args: { p_batch_date: string }; Returns: string }
       expire_featured_listings: { Args: never; Returns: undefined }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       generate_certificate_number: { Args: never; Returns: string }
@@ -19596,6 +19642,7 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      process_scheduled_payouts: { Args: { p_batch_id: string }; Returns: Json }
       process_withdrawal_request: {
         Args: {
           p_admin_id: string
