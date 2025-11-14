@@ -9620,17 +9620,81 @@ export type Database = {
           },
         ]
       }
+      instructor_payout_history: {
+        Row: {
+          amount: number
+          balance_after: number | null
+          balance_before: number | null
+          created_at: string | null
+          description: string | null
+          id: string
+          instructor_id: string
+          related_enrollment_id: string | null
+          transaction_type: string
+          withdrawal_request_id: string | null
+        }
+        Insert: {
+          amount: number
+          balance_after?: number | null
+          balance_before?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          instructor_id: string
+          related_enrollment_id?: string | null
+          transaction_type: string
+          withdrawal_request_id?: string | null
+        }
+        Update: {
+          amount?: number
+          balance_after?: number | null
+          balance_before?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          instructor_id?: string
+          related_enrollment_id?: string | null
+          transaction_type?: string
+          withdrawal_request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "instructor_payout_history_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "instructor_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "instructor_payout_history_related_enrollment_id_fkey"
+            columns: ["related_enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "course_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "instructor_payout_history_withdrawal_request_id_fkey"
+            columns: ["withdrawal_request_id"]
+            isOneToOne: false
+            referencedRelation: "instructor_withdrawal_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       instructor_profiles: {
         Row: {
           bio: string | null
           created_at: string
           expertise: string[] | null
           id: string
+          lifetime_earnings: number | null
+          pending_balance: number | null
           profile_image_url: string | null
           stripe_account_id: string | null
           stripe_onboarding_complete: boolean | null
           total_revenue: number | null
           total_students: number | null
+          total_withdrawn: number | null
           updated_at: string
           user_id: string
         }
@@ -9639,11 +9703,14 @@ export type Database = {
           created_at?: string
           expertise?: string[] | null
           id?: string
+          lifetime_earnings?: number | null
+          pending_balance?: number | null
           profile_image_url?: string | null
           stripe_account_id?: string | null
           stripe_onboarding_complete?: boolean | null
           total_revenue?: number | null
           total_students?: number | null
+          total_withdrawn?: number | null
           updated_at?: string
           user_id: string
         }
@@ -9652,15 +9719,68 @@ export type Database = {
           created_at?: string
           expertise?: string[] | null
           id?: string
+          lifetime_earnings?: number | null
+          pending_balance?: number | null
           profile_image_url?: string | null
           stripe_account_id?: string | null
           stripe_onboarding_complete?: boolean | null
           total_revenue?: number | null
           total_students?: number | null
+          total_withdrawn?: number | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      instructor_withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string | null
+          id: string
+          instructor_id: string
+          payment_details: Json | null
+          payment_method: string
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string | null
+          id?: string
+          instructor_id: string
+          payment_details?: Json | null
+          payment_method?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string | null
+          id?: string
+          instructor_id?: string
+          payment_details?: Json | null
+          payment_method?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "instructor_withdrawal_requests_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "instructor_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       interview_sessions: {
         Row: {
@@ -19476,6 +19596,15 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      process_withdrawal_request: {
+        Args: {
+          p_admin_id: string
+          p_admin_notes?: string
+          p_request_id: string
+          p_status: string
+        }
+        Returns: undefined
+      }
       purchase_brain_duel_powerup: {
         Args: { p_powerup_type: string; p_price: number }
         Returns: undefined
