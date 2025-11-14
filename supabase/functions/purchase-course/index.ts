@@ -47,11 +47,6 @@ serve(async (req) => {
       throw new Error("Already enrolled in this course");
     }
 
-    // Calculate fees (20% platform fee)
-    const amountPaid = Number(course.price);
-    const platformFee = amountPaid * 0.20;
-    const creatorEarning = amountPaid - platformFee;
-
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
@@ -62,9 +57,8 @@ serve(async (req) => {
       customerId = customers.data[0].id;
     }
 
-    // Create checkout session
     // Calculate amounts (70% to instructor, 30% platform fee)
-    const totalAmount = course.price;
+    const totalAmount = Number(course.price);
     const instructorAmount = totalAmount * 0.70;
     const platformFee = totalAmount * 0.30;
 
@@ -75,7 +69,7 @@ serve(async (req) => {
         {
           price_data: {
             currency: "eur",
-            unit_amount: Math.round(amountPaid * 100), // Convert to cents
+            unit_amount: Math.round(totalAmount * 100),
             product_data: {
               name: course.title,
               description: `Lifetime access to ${course.title}`,
@@ -88,10 +82,10 @@ serve(async (req) => {
       success_url: `${req.headers.get("origin")}/course/${courseId}?enrolled=true`,
       cancel_url: `${req.headers.get("origin")}/course/${courseId}`,
       metadata: {
-        course_id: courseId,
-        user_id: user.id,
-        platform_fee: platformFee.toFixed(2),
-        creator_earning: creatorEarning.toFixed(2),
+        courseId: courseId,
+        userId: user.id,
+        instructorAmount: instructorAmount.toFixed(2),
+        platformFee: platformFee.toFixed(2),
       },
     });
 

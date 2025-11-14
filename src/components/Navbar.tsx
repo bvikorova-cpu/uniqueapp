@@ -170,6 +170,9 @@ const Navbar = () => {
 
   const learningServices = [
     { path: "/education", label: t('navbar.education'), icon: GraduationCap },
+    { path: "/courses", label: "Browse Courses", icon: BookOpen },
+    { path: "/course-creator", label: "Become Creator", icon: GraduationCap },
+    { path: "/how-it-works", label: "How It Works", icon: BookOpen },
     { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
     { path: "/kids-channel", label: "Kids Channel 🎬", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
