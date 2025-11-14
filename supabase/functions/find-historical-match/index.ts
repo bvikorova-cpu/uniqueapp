@@ -63,7 +63,7 @@ serve(async (req) => {
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError || !user) throw new Error("Unauthorized");
 
-    const { imageBase64, tier } = await req.json();
+    const { imageBase64, tier, userImageUrl } = await req.json();
     
     if (!imageBase64) {
       throw new Error("Image is required");
@@ -244,13 +244,15 @@ Return ONLY a valid JSON array with these exact fields. Example:
         .insert({
           user_id: user.id,
           tier,
-          user_image_url: null,
+          user_image_url: userImageUrl || null,
           matches: matches,
           is_public: false,
         });
 
       if (insertError) {
         console.error('Error saving match to database:', insertError);
+      } else {
+        console.log('Successfully saved match with image URL:', userImageUrl);
       }
     } catch (dbError) {
       console.error('Database save error:', dbError);

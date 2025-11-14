@@ -85,7 +85,28 @@ export const useAncestorTwin = () => {
         return null;
       }
 
-      // Convert image to base64
+      // Upload image to storage first
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${session.user.id}/${Date.now()}.${fileExt}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('ancestor-twin-photos')
+        .upload(fileName, imageFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        throw new Error('Failed to upload image');
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('ancestor-twin-photos')
+        .getPublicUrl(fileName);
+
+      // Convert image to base64 for AI analysis
       const reader = new FileReader();
       const base64Promise = new Promise<string>((resolve) => {
         reader.onloadend = () => {
@@ -97,7 +118,7 @@ export const useAncestorTwin = () => {
       const imageBase64 = await base64Promise;
 
       const { data, error } = await supabase.functions.invoke('find-historical-match', {
-        body: { imageBase64, tier },
+        body: { imageBase64, tier, userImageUrl: publicUrl },
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
