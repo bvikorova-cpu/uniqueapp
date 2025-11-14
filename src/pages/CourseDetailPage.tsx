@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import { CourseReviews } from "@/components/courses/CourseReviews";
+import { CourseDiscussion } from "@/components/courses/CourseDiscussion";
+import { CourseLeaderboard } from "@/components/courses/CourseLeaderboard";
 import {
   Play,
   Clock,
@@ -51,6 +53,7 @@ export default function CourseDetailPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isInstructor, setIsInstructor] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
 
@@ -91,6 +94,9 @@ export default function CourseDetailPage() {
           .maybeSingle();
 
         setIsEnrolled(!!enrollment);
+        
+        // Check if user is the course creator
+        setIsInstructor(courseData.creator_id === user.id);
       }
     } catch (error: any) {
       toast({
@@ -280,10 +286,12 @@ export default function CourseDetailPage() {
       {/* Course Content */}
       <section className="container mx-auto px-4 py-16">
         <Tabs defaultValue="curriculum">
-          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-3">
+          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-5">
             <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
             <TabsTrigger value="reviews">Reviews</TabsTrigger>
+            <TabsTrigger value="discussion">Discussion</TabsTrigger>
+            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
           </TabsList>
 
           <TabsContent value="curriculum" className="mt-6">
@@ -359,6 +367,18 @@ export default function CourseDetailPage() {
 
           <TabsContent value="reviews" className="mt-6">
             <CourseReviews courseId={courseId!} userHasAccess={isEnrolled} />
+          </TabsContent>
+
+          <TabsContent value="discussion" className="mt-6">
+            <CourseDiscussion 
+              courseId={courseId!} 
+              userHasAccess={isEnrolled}
+              isInstructor={isInstructor}
+            />
+          </TabsContent>
+
+          <TabsContent value="leaderboard" className="mt-6">
+            <CourseLeaderboard courseId={courseId!} />
           </TabsContent>
         </Tabs>
       </section>
