@@ -11,7 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
 import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
 import { SkillMatches } from "@/components/skill-swap/SkillMatches";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search } from "lucide-react";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search, Upload, Image as ImageIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface SkillOffering {
@@ -49,6 +49,9 @@ export default function SkillSwap() {
     description: "",
     category: "teaching",
   });
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaPreview, setMediaPreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   const clearFilters = () => {
     setFilters({
@@ -169,6 +172,33 @@ export default function SkillSwap() {
     }
   };
 
+  const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/quicktime'];
+    if (!validTypes.includes(file.type)) {
+      toast.error("Please upload a valid image or video file");
+      return;
+    }
+
+    // Validate file size (max 20MB)
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("File size must be less than 20MB");
+      return;
+    }
+
+    setMediaFile(file);
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setMediaPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleAddOffering = async () => {
     if (!newOffering.title || !newOffering.description) {
       toast.error("Please fill in all required fields");
@@ -182,20 +212,46 @@ export default function SkillSwap() {
       return;
     }
 
-    const { error } = await supabase.from('skill_offerings').insert([
-      {
-        user_id: session.user.id,
-        title: newOffering.title,
-        description: newOffering.description,
-        category: newOffering.category as any,
-        is_active: true,
-      },
-    ]);
+    setUploading(true);
+    let mediaUrl = null;
 
-    if (error) {
-      toast.error("Failed to add skill offering");
-      console.error(error);
-    } else {
+    try {
+      // Upload media if provided
+      if (mediaFile) {
+        const fileExt = mediaFile.name.split('.').pop();
+        const fileName = `${session.user.id}/${Date.now()}.${fileExt}`;
+        
+        const { error: uploadError, data: uploadData } = await supabase.storage
+          .from('media')
+          .upload(fileName, mediaFile);
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('media')
+          .getPublicUrl(fileName);
+        
+        mediaUrl = publicUrl;
+      }
+
+      // Insert offering
+      const { error } = await supabase.from('skill_offerings').insert([
+        {
+          user_id: session.user.id,
+          title: newOffering.title,
+          description: newOffering.description,
+          category: newOffering.category as any,
+          is_active: true,
+          image_url: mediaUrl,
+        },
+      ]);
+
+      if (error) {
+        throw error;
+      }
+
       toast.success("Skill offering added successfully!");
       setShowAddForm(false);
       setNewOffering({
@@ -203,7 +259,14 @@ export default function SkillSwap() {
         description: "",
         category: "teaching",
       });
+      setMediaFile(null);
+      setMediaPreview("");
       fetchOfferings();
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Failed to add skill offering");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -403,8 +466,62 @@ export default function SkillSwap() {
                     <option value="other">Other</option>
                   </select>
                 </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Media (Optional)</label>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => document.getElementById('media-upload')?.click()}
+                        className="flex items-center gap-2"
+                      >
+                        <Upload className="w-4 h-4" />
+                        Upload Image or Video
+                      </Button>
+                      <input
+                        id="media-upload"
+                        type="file"
+                        accept="image/*,video/*"
+                        className="hidden"
+                        onChange={handleMediaChange}
+                      />
+                    </div>
+                    {mediaPreview && (
+                      <div className="relative">
+                        {mediaFile?.type.startsWith('video/') ? (
+                          <video
+                            src={mediaPreview}
+                            className="w-full max-h-64 rounded-lg object-cover"
+                            controls
+                          />
+                        ) : (
+                          <img
+                            src={mediaPreview}
+                            alt="Preview"
+                            className="w-full max-h-64 rounded-lg object-cover"
+                          />
+                        )}
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={() => {
+                            setMediaFile(null);
+                            setMediaPreview("");
+                          }}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <div className="flex gap-3">
-                  <Button onClick={handleAddOffering}>Add Offering</Button>
+                  <Button onClick={handleAddOffering} disabled={uploading}>
+                    {uploading ? "Uploading..." : "Add Offering"}
+                  </Button>
                   <Button variant="outline" onClick={() => setShowAddForm(false)}>Cancel</Button>
                 </div>
               </div>
