@@ -334,6 +334,7 @@ const App = () => (
           <Route path="/ancestor-twin/upload" element={<AncestorTwinUpload />} />
           <Route path="/ancestor-twin/history" element={<AncestorTwinHistory />} />
           <Route path="/ancestor-twin/gallery" element={<AncestorTwinGallery />} />
+          <Route path="/ancestor-twin/comparison" element={<AncestorTwinComparison />} />
            <Route path="/skill-swap" element={<SkillSwap />} />
            <Route path="/skill-swap/dashboard" element={<SkillSwapDashboard />} />
            <Route path="/skill-swap/profile/:userId" element={<SkillSwapProfile />} />

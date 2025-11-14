@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Share2, Eye, EyeOff, Trash2, Clock } from "lucide-react";
+import { Share2, Eye, EyeOff, Trash2, Clock, ScanFace } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -198,14 +198,22 @@ export default function AncestorTwinHistory() {
                         />
                       </div>
                       {record.is_public && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => shareMatch(record)}
-                        >
-                          <Share2 className="w-4 h-4 mr-2" />
-                          Share
-                        </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/ancestor-twin/comparison?id=${record.id}&index=${idx}`)}
+                      >
+                        <ScanFace className="w-4 h-4 mr-2" />
+                        Compare
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => shareMatch(record)}
+                      >
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Share
+                      </Button>
                       )}
                       <Button
                         variant="outline"

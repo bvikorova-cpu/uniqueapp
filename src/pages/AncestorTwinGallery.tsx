@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Share2, Users } from "lucide-react";
+import { Share2, Users, ScanFace } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
