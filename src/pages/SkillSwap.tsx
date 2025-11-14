@@ -11,7 +11,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSkillSwap } from "@/hooks/useSkillSwap";
 import { SkillSwapMessages } from "@/components/skill-swap/SkillSwapMessages";
 import { SkillMatches } from "@/components/skill-swap/SkillMatches";
-import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search, Upload, Image as ImageIcon, Edit, Trash2 } from "lucide-react";
+import { ArrowLeftRight, Globe, Video, Users, CheckCircle, MessageSquare, Star, Sparkles, Filter, X, Search, Upload, Image as ImageIcon, Edit, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { 
+  Pagination, 
+  PaginationContent, 
+  PaginationItem, 
+  PaginationLink, 
+  PaginationNext, 
+  PaginationPrevious,
+  PaginationEllipsis 
+} from "@/components/ui/pagination";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -47,7 +56,10 @@ export default function SkillSwap() {
     category: "all",
     minRating: "0",
     location: "",
+    ownership: "all", // "all", "mine", "others"
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(12);
   const [newOffering, setNewOffering] = useState({
     title: "",
     description: "",
@@ -70,10 +82,12 @@ export default function SkillSwap() {
       category: "all",
       minRating: "0",
       location: "",
+      ownership: "all",
     });
+    setCurrentPage(1);
   };
 
-  const hasActiveFilters = filters.category !== "all" || filters.minRating !== "0" || filters.location !== "";
+  const hasActiveFilters = filters.category !== "all" || filters.minRating !== "0" || filters.location !== "" || filters.ownership !== "all";
 
   const fetchOfferings = async () => {
     let query = supabase
@@ -137,6 +151,19 @@ export default function SkillSwap() {
       );
     }
 
+    // Apply ownership filter
+    if (filters.ownership !== "all" && currentUserId) {
+      if (filters.ownership === "mine") {
+        offeringsWithProfiles = offeringsWithProfiles.filter(
+          o => o.user_id === currentUserId
+        );
+      } else if (filters.ownership === "others") {
+        offeringsWithProfiles = offeringsWithProfiles.filter(
+          o => o.user_id !== currentUserId
+        );
+      }
+    }
+
     // Apply sorting
     switch (sortBy) {
       case "rating_desc":
@@ -175,7 +202,16 @@ export default function SkillSwap() {
 
   useEffect(() => {
     fetchOfferings();
+    setCurrentPage(1); // Reset to first page when filters change
   }, [filters, sortBy, searchQuery]);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setCurrentUserId(session?.user?.id || null);
+    };
+    checkUser();
+  }, []);
 
   const handleSubscribe = async () => {
     const url = await createCheckout();
@@ -723,7 +759,24 @@ export default function SkillSwap() {
               {/* Filter Panel */}
               {showFilters && (
                 <Card className="p-6 mb-6 border-primary/20">
-                  <div className="grid md:grid-cols-3 gap-4">
+                  <div className="grid md:grid-cols-4 gap-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Ownership</label>
+                      <Select
+                        value={filters.ownership}
+                        onValueChange={(value) => setFilters({ ...filters, ownership: value })}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="All Offerings" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Offerings</SelectItem>
+                          <SelectItem value="mine">My Offerings</SelectItem>
+                          <SelectItem value="others">Others' Offerings</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
                     <div>
                       <label className="text-sm font-medium mb-2 block">Category</label>
                       <Select
@@ -781,7 +834,9 @@ export default function SkillSwap() {
                 </Card>
               )}
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {offerings.map((offering) => (
+                {offerings
+                  .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                  .map((offering) => (
                   <Card key={offering.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                     {offering.image_url && (
                       <div className="relative w-full h-48">
@@ -871,9 +926,73 @@ export default function SkillSwap() {
                   </Card>
                 ))}
               </div>
+              
               {offerings.length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
                   <p>No skill offerings yet. Be the first to add one!</p>
+                </div>
+              )}
+
+              {/* Pagination */}
+              {offerings.length > itemsPerPage && (
+                <div className="mt-8 flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious 
+                          onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                          className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                        />
+                      </PaginationItem>
+                      
+                      {Array.from({ length: Math.ceil(offerings.length / itemsPerPage) }, (_, i) => i + 1)
+                        .filter(page => {
+                          const totalPages = Math.ceil(offerings.length / itemsPerPage);
+                          if (totalPages <= 7) return true;
+                          if (page === 1 || page === totalPages) return true;
+                          if (Math.abs(page - currentPage) <= 1) return true;
+                          return false;
+                        })
+                        .map((page, index, array) => {
+                          if (index > 0 && array[index - 1] !== page - 1) {
+                            return (
+                              <>
+                                <PaginationItem key={`ellipsis-${page}`}>
+                                  <PaginationEllipsis />
+                                </PaginationItem>
+                                <PaginationItem key={page}>
+                                  <PaginationLink
+                                    onClick={() => setCurrentPage(page)}
+                                    isActive={currentPage === page}
+                                    className="cursor-pointer"
+                                  >
+                                    {page}
+                                  </PaginationLink>
+                                </PaginationItem>
+                              </>
+                            );
+                          }
+                          return (
+                            <PaginationItem key={page}>
+                              <PaginationLink
+                                onClick={() => setCurrentPage(page)}
+                                isActive={currentPage === page}
+                                className="cursor-pointer"
+                              >
+                                {page}
+                              </PaginationLink>
+                            </PaginationItem>
+                          );
+                        })}
+                      
+                      <PaginationItem>
+                        <PaginationNext 
+                          onClick={() => setCurrentPage(Math.min(Math.ceil(offerings.length / itemsPerPage), currentPage + 1))}
+                          className={currentPage === Math.ceil(offerings.length / itemsPerPage) ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
                 </div>
               )}
             </div>
