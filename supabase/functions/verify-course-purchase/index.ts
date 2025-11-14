@@ -34,7 +34,12 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
     if (session.payment_status === "paid") {
-      const { courseId, userId, instructorAmount, platformFee } = session.metadata!;
+      const { courseId, userId, instructorAmount, platformFee } = session.metadata as {
+        courseId: string;
+        userId: string;
+        instructorAmount: string;
+        platformFee: string;
+      };
 
       // Get course details
       const { data: course } = await supabaseClient
