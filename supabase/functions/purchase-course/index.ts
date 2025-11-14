@@ -63,6 +63,11 @@ serve(async (req) => {
     }
 
     // Create checkout session
+    // Calculate amounts (70% to instructor, 30% platform fee)
+    const totalAmount = course.price;
+    const instructorAmount = totalAmount * 0.70;
+    const platformFee = totalAmount * 0.30;
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,

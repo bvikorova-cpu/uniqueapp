@@ -178,6 +178,8 @@ import CreatorProfile from "./pages/CreatorProfile";
 import CoursesHub from "./pages/CoursesHub";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CourseLearnPage from "./pages/CourseLearnPage";
+import BecomeCreator from "./pages/BecomeCreator";
+import HowItWorks from "./pages/HowItWorks";
 import MyLearning from "./pages/MyLearning";
 import LotteryAI from "./pages/LotteryAI";
 import LotteryHistory from "./pages/LotteryHistory";
