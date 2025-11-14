@@ -446,7 +446,7 @@ const App = () => (
           <Route path="/creator-dashboard" element={<CreatorDashboard />} />
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
           <Route path="/courses" element={<CoursesHub />} />
-          <Route path="/my-learning" element={<MyLearning />} />
+          <Route path="/my-learning" element={<Navigate to="/courses?tab=learning" replace />} />
           <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
           <Route path="/lottery-ai" element={<LotteryAI />} />
