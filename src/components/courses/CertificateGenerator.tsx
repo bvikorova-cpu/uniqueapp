@@ -41,8 +41,8 @@ export const CertificateGenerator = ({
       .eq('user_id', user.id)
       .maybeSingle();
 
-    if (data?.certificate_url) {
-      setCertificateUrl(data.certificate_url);
+    if (data && (data as any).certificate_url) {
+      setCertificateUrl((data as any).certificate_url);
     }
   };
 
