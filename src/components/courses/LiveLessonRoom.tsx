@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Video, VideoOff, Mic, MicOff, Monitor, Users, MessageSquare, Phone } from "lucide-react";
 import { Whiteboard } from "./Whiteboard";
 import { BreakoutRooms } from "./BreakoutRooms";
+import { LessonRecording } from "./LessonRecording";
 
 interface LiveLessonRoomProps {
   lessonId: string;
