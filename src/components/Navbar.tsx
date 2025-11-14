@@ -189,6 +189,7 @@ const Navbar = () => {
     { path: "/skill-swap", label: "🔄 Global Skill Swap", icon: Globe },
     { path: "/ancestor-twin", label: "👥 Ancestor Twin Finder", icon: Users },
     { path: "/courses", label: "Courses Hub", icon: GraduationCap },
+    { path: "/my-learning", label: "My Learning", icon: BookOpen },
     { path: "/lottery-ai", label: "Lottery Numbers - AI Predictions", icon: Sparkles },
     { path: "/sports-predictor", label: "⚽ Sports Match Predictions", icon: Trophy },
     { path: "/property-marketplace", label: "🏠 Property Marketplace", icon: Building2 },

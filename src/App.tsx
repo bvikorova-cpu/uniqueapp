@@ -178,6 +178,7 @@ import CreatorProfile from "./pages/CreatorProfile";
 import CoursesHub from "./pages/CoursesHub";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CourseLearnPage from "./pages/CourseLearnPage";
+import MyLearning from "./pages/MyLearning";
 import LotteryAI from "./pages/LotteryAI";
 import LotteryHistory from "./pages/LotteryHistory";
 import SportsPredictor from "./pages/SportsPredictor";
@@ -443,6 +444,7 @@ const App = () => (
           <Route path="/creator-dashboard" element={<CreatorDashboard />} />
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
           <Route path="/courses" element={<CoursesHub />} />
+          <Route path="/my-learning" element={<MyLearning />} />
           <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
           <Route path="/lottery-ai" element={<LotteryAI />} />

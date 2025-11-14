@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
+import { CourseReviews } from "@/components/courses/CourseReviews";
 import {
   Play,
   Clock,
@@ -279,9 +280,10 @@ export default function CourseDetailPage() {
       {/* Course Content */}
       <section className="container mx-auto px-4 py-16">
         <Tabs defaultValue="curriculum">
-          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-2">
+          <TabsList className="grid w-full md:w-auto md:inline-grid grid-cols-3">
             <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
+            <TabsTrigger value="reviews">Reviews</TabsTrigger>
           </TabsList>
 
           <TabsContent value="curriculum" className="mt-6">
@@ -353,6 +355,10 @@ export default function CourseDetailPage() {
                 <p className="text-muted-foreground">{course.description}</p>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="reviews" className="mt-6">
+            <CourseReviews courseId={courseId!} userHasAccess={isEnrolled} />
           </TabsContent>
         </Tabs>
       </section>
