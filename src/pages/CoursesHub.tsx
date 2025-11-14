@@ -407,27 +407,128 @@ export default function CoursesHub() {
             </div>
           </section>
 
-          {/* CTA Section */}
+          {/* Creator Benefits Section */}
           <section className="py-20 px-4 bg-gradient-to-br from-primary/10 to-secondary/10">
-            <div className="container mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                Ready to Share Your Knowledge?
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Join thousands of instructors teaching millions of students worldwide
-              </p>
-              <Button
-                size="lg"
-                onClick={() => {
-                  const tabsTrigger = document.querySelector('[value="creator"]');
-                  if (tabsTrigger instanceof HTMLElement) {
-                    tabsTrigger.click();
-                  }
-                }}
-              >
-                <GraduationCap className="mr-2 h-5 w-5" />
-                Become a Course Creator
-              </Button>
+            <div className="container mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Ready to Share Your Knowledge?
+                </h2>
+                <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+                  Join thousands of instructors teaching millions of students worldwide
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-8 mb-12">
+                <Card>
+                  <CardHeader>
+                    <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <DollarSign className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>Keep 70% of Revenue</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Earn 70% from every course sale. We only take 30% as platform fee to maintain and improve the platform.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <TrendingUp className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>Unlimited Sales</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Your courses can be sold unlimited times. Create once, earn forever with lifetime access for students.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                      <Award className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle>Full Creative Control</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Set your own prices, create your curriculum, and maintain complete control over your content.
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="bg-card border rounded-lg p-8 mb-8">
+                <h3 className="text-2xl font-bold mb-4">How It Works</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <div className="flex gap-3 mb-4">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm font-bold text-primary">1</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Create Your Course</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Upload videos, add lessons, quizzes, and resources. Our platform supports rich multimedia content.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 mb-4">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm font-bold text-primary">2</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Set Your Price</h4>
+                        <p className="text-sm text-muted-foreground">
+                          You decide the value of your knowledge. Price your courses competitively and adjust anytime.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="flex gap-3 mb-4">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm font-bold text-primary">3</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Publish & Earn</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Once published, your course is instantly available to millions of learners worldwide.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 mb-4">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <span className="text-sm font-bold text-primary">4</span>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-1">Track & Grow</h4>
+                        <p className="text-sm text-muted-foreground">
+                          Monitor your earnings, student engagement, and course performance through our creator dashboard.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <Button
+                  size="lg"
+                  onClick={() => navigate("/become-creator")}
+                >
+                  <GraduationCap className="mr-2 h-5 w-5" />
+                  Become a Course Creator
+                </Button>
+                <p className="text-sm text-muted-foreground mt-4">
+                  No subscription fees • No upfront costs • Start earning today
+                </p>
+              </div>
             </div>
           </section>
         </TabsContent>
@@ -451,9 +552,9 @@ export default function CoursesHub() {
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">10%</div>
+                  <div className="text-2xl font-bold">30%</div>
                   <p className="text-xs text-muted-foreground">
-                    On all course sales
+                    You keep 70% of all sales
                   </p>
                 </CardContent>
               </Card>
