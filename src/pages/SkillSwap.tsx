@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/pagination";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { NotificationBell } from "@/components/skill-swap/NotificationBell";
 
 interface SkillOffering {
   id: string;
@@ -505,7 +504,6 @@ export default function SkillSwap() {
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
             </Button>
-            <NotificationBell />
           </div>
 
           <div className="flex items-center justify-center gap-3 mb-6">
