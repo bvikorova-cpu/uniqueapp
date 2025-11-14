@@ -24,7 +24,10 @@ import {
   PlusCircle,
   DollarSign,
   Award,
+  Download,
+  Clock,
 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { CourseForm } from "@/components/course-creator/CourseForm";
 import { CoursesList } from "@/components/course-creator/CoursesList";
 import { CreatorEarnings } from "@/components/course-creator/CreatorEarnings";
@@ -78,9 +81,15 @@ export default function CoursesHub() {
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  // My Learning states
+  const [enrolledCourses, setEnrolledCourses] = useState<any[]>([]);
+  const [completedCourses, setCompletedCourses] = useState<any[]>([]);
+  const [certificates, setCertificates] = useState<any[]>([]);
+
   useEffect(() => {
     checkAuthentication();
     loadCourses();
+    loadMyLearning();
   }, []);
 
   useEffect(() => {
@@ -128,6 +137,37 @@ export default function CoursesHub() {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMyLearning = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const [enrolledData, completedData, certsData] = await Promise.all([
+        supabase
+          .from("course_enrollments")
+          .select(`*, courses (title, description, thumbnail_url)`)
+          .eq("user_id", user.id)
+          .order("enrolled_at", { ascending: false }),
+        supabase
+          .from("completed_courses")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("completion_date", { ascending: false }),
+        supabase
+          .from("course_certificates")
+          .select(`*, courses (title)`)
+          .eq("user_id", user.id)
+          .order("issued_at", { ascending: false })
+      ]);
+
+      setEnrolledCourses(enrolledData.data || []);
+      setCompletedCourses(completedData.data || []);
+      setCertificates(certsData.data || []);
+    } catch (error) {
+      console.error("Error loading my learning:", error);
     }
   };
 
@@ -192,10 +232,14 @@ export default function CoursesHub() {
       <Tabs defaultValue="marketplace" className="w-full">
         <div className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
           <div className="container mx-auto px-4 py-4">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+            <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3">
               <TabsTrigger value="marketplace" className="gap-2">
                 <BookOpen className="h-4 w-4" />
-                Course Marketplace
+                Browse Courses
+              </TabsTrigger>
+              <TabsTrigger value="learning" className="gap-2">
+                <Award className="h-4 w-4" />
+                My Learning
               </TabsTrigger>
               <TabsTrigger value="creator" className="gap-2">
                 <GraduationCap className="h-4 w-4" />
@@ -478,6 +522,204 @@ export default function CoursesHub() {
             )}
           </div>
         </TabsContent>
+
+        {/* My Learning Tab */}
+        <TabsContent value="learning" className="mt-0">
+          <div className="container mx-auto px-4 py-8">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold mb-2">My Learning</h1>
+              <p className="text-muted-foreground">Track your progress and achievements</p>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-primary/10 rounded-lg">
+                      <BookOpen className="h-6 w-6 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{enrolledCourses.length}</p>
+                      <p className="text-sm text-muted-foreground">In Progress</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-green-500/10 rounded-lg">
+                      <Award className="h-6 w-6 text-green-500" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{completedCourses.length}</p>
+                      <p className="text-sm text-muted-foreground">Completed</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-blue-500/10 rounded-lg">
+                      <Award className="h-6 w-6 text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">{certificates.length}</p>
+                      <p className="text-sm text-muted-foreground">Certificates</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-purple-500/10 rounded-lg">
+                      <TrendingUp className="h-6 w-6 text-purple-500" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold">
+                        {enrolledCourses.length > 0
+                          ? Math.round(enrolledCourses.reduce((acc: number, c: any) => acc + (c.progress_percentage || 0), 0) / enrolledCourses.length)
+                          : 0}%
+                      </p>
+                      <p className="text-sm text-muted-foreground">Avg Progress</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Content Tabs */}
+            <Tabs defaultValue="in-progress" className="w-full">
+              <TabsList className="grid w-full max-w-md grid-cols-3">
+                <TabsTrigger value="in-progress">In Progress</TabsTrigger>
+                <TabsTrigger value="completed">Completed</TabsTrigger>
+                <TabsTrigger value="certificates">Certificates</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="in-progress" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {enrolledCourses.length === 0 ? (
+                    <div className="col-span-full text-center py-12">
+                      <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-lg font-medium">No courses in progress</p>
+                      <p className="text-muted-foreground mb-4">Browse our marketplace to get started</p>
+                      <Button onClick={() => document.querySelector('[value="marketplace"]')?.dispatchEvent(new Event('click', { bubbles: true }))}>
+                        Browse Courses
+                      </Button>
+                    </div>
+                  ) : (
+                    enrolledCourses.map((enrollment: any) => (
+                      <Card key={enrollment.id} className="hover:shadow-lg transition-shadow">
+                        <CardHeader>
+                          <CardTitle className="line-clamp-2">{enrollment.courses?.title}</CardTitle>
+                          <CardDescription className="line-clamp-2">
+                            {enrollment.courses?.description}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div>
+                            <div className="flex justify-between text-sm mb-2">
+                              <span className="text-muted-foreground">Progress</span>
+                              <span className="font-medium">{enrollment.progress_percentage || 0}%</span>
+                            </div>
+                            <Progress value={enrollment.progress_percentage || 0} className="h-2" />
+                          </div>
+                          <Button 
+                            onClick={() => navigate(`/course/${enrollment.course_id}/learn`)} 
+                            className="w-full"
+                          >
+                            Continue Learning
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="completed" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {completedCourses.length === 0 ? (
+                    <div className="col-span-full text-center py-12">
+                      <Award className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-lg font-medium">No completed courses yet</p>
+                      <p className="text-muted-foreground">Complete your first course to see it here</p>
+                    </div>
+                  ) : (
+                    completedCourses.map((completed: any) => (
+                      <Card key={completed.id}>
+                        <CardHeader>
+                          <CardTitle>{completed.course_name}</CardTitle>
+                          <CardDescription>
+                            Completed on {new Date(completed.completion_date).toLocaleDateString()}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          {completed.test_score && (
+                            <div className="mb-4">
+                              <p className="text-sm text-muted-foreground">Test Score</p>
+                              <p className="text-2xl font-bold">{completed.test_score}%</p>
+                            </div>
+                          )}
+                          <Badge variant="default" className="w-full justify-center py-2">
+                            <Award className="mr-2 h-4 w-4" />
+                            Completed
+                          </Badge>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="certificates" className="mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {certificates.length === 0 ? (
+                    <div className="col-span-full text-center py-12">
+                      <Award className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-lg font-medium">No certificates yet</p>
+                      <p className="text-muted-foreground">Complete courses to earn certificates</p>
+                    </div>
+                  ) : (
+                    certificates.map((cert: any) => (
+                      <Card key={cert.id}>
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Award className="h-5 w-5 text-yellow-500" />
+                            {cert.courses?.title}
+                          </CardTitle>
+                          <CardDescription>
+                            Issued on {new Date(cert.issued_at).toLocaleDateString()}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm mb-4">Student: {cert.student_name}</p>
+                          <Button variant="outline" className="w-full" onClick={() => {
+                            toast({
+                              title: "Certificate",
+                              description: "Certificate download feature coming soon!",
+                            });
+                          }}>
+                            <Download className="mr-2 h-4 w-4" />
+                            Download Certificate
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </TabsContent>
+
+        {/* Creator Dashboard Tab */}
       </Tabs>
     </div>
   );
