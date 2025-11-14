@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LessonPlayer } from "@/components/course-creator/LessonPlayer";
 import { QuizTaker } from "@/components/student-learning/QuizTaker";
-import { CertificateGenerator } from "@/components/student-learning/CertificateGenerator";
+import { useCertificate } from "@/hooks/useCertificate";
 import {
   BookOpen,
   CheckCircle,
@@ -19,6 +19,7 @@ import {
   Award,
   ChevronRight,
   PlayCircle,
+  Download,
 } from "lucide-react";
 
 interface Course {
@@ -72,6 +73,8 @@ export default function CourseLearnPage() {
   const [showCertificate, setShowCertificate] = useState(false);
   const [showNamePrompt, setShowNamePrompt] = useState(false);
   const [nameInput, setNameInput] = useState("");
+  const [certificateHtml, setCertificateHtml] = useState<string | null>(null);
+  const { generateCertificate, isGenerating } = useCertificate();
 
   useEffect(() => {
     loadCourseData();
@@ -263,11 +266,16 @@ export default function CourseLearnPage() {
     }
   };
 
-  const handleNameSubmit = () => {
-    if (nameInput.trim()) {
+  const handleNameSubmit = async () => {
+    if (nameInput.trim() && course) {
       setStudentName(nameInput.trim());
       setShowNamePrompt(false);
-      setShowCertificate(true);
+      
+      const result = await generateCertificate(courseId!, course.title, nameInput.trim());
+      if (result?.certificateHtml) {
+        setCertificateHtml(result.certificateHtml);
+        setShowCertificate(true);
+      }
     }
   };
 
@@ -495,14 +503,52 @@ export default function CourseLearnPage() {
                   }
 
                   if (overallProgress === 100) {
-                    return showCertificate ? (
-                      <CertificateGenerator
-                        courseTitle={course.title}
-                        studentName={studentName}
-                        completionDate={new Date().toISOString()}
-                        userId={userId}
-                        courseId={courseId!}
-                      />
+                    return showCertificate && certificateHtml ? (
+                      <Card className="bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
+                        <CardContent className="py-8">
+                          <div className="text-center space-y-6">
+                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-4">
+                              <Award className="h-10 w-10 text-primary" />
+                            </div>
+                            <h3 className="text-3xl font-bold">Certificate Earned! 🎉</h3>
+                            <p className="text-muted-foreground">
+                              Congratulations on completing {course.title}
+                            </p>
+                            
+                            {/* Certificate Preview */}
+                            <div className="max-w-4xl mx-auto border rounded-lg overflow-hidden shadow-lg">
+                              <div 
+                                dangerouslySetInnerHTML={{ __html: certificateHtml }}
+                                className="w-full"
+                              />
+                            </div>
+                            
+                            <div className="flex gap-4 justify-center">
+                              <Button
+                                onClick={() => {
+                                  const printWindow = window.open('', '_blank');
+                                  if (printWindow) {
+                                    printWindow.document.write(certificateHtml);
+                                    printWindow.document.close();
+                                    printWindow.print();
+                                  }
+                                }}
+                                size="lg"
+                              >
+                                <Download className="mr-2 h-5 w-5" />
+                                Download Certificate
+                              </Button>
+                              <Button
+                                variant="outline"
+                                onClick={() => navigate("/my-learning")}
+                                size="lg"
+                              >
+                                View My Courses
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     ) : showNamePrompt ? (
                       <Card className="bg-primary/5 border-primary/20">
                         <CardContent className="py-8">
@@ -529,12 +575,12 @@ export default function CourseLearnPage() {
                             </div>
                             <Button
                               onClick={handleNameSubmit}
-                              disabled={!nameInput.trim()}
+                              disabled={!nameInput.trim() || isGenerating}
                               className="w-full"
                               size="lg"
                             >
                               <Award className="mr-2 h-5 w-5" />
-                              Generate Certificate
+                              {isGenerating ? "Generating..." : "Generate Certificate"}
                             </Button>
                           </div>
                         </CardContent>
