@@ -179,6 +179,8 @@ import CoursesHub from "./pages/CoursesHub";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CourseLearnPage from "./pages/CourseLearnPage";
 import BecomeCreator from "./pages/BecomeCreator";
+import InstructorEarnings from "./pages/InstructorEarnings";
+import AdminWithdrawals from "./pages/AdminWithdrawals";
 import HowItWorks from "./pages/HowItWorks";
 import MyLearning from "./pages/MyLearning";
 import LotteryAI from "./pages/LotteryAI";
@@ -447,6 +449,8 @@ const App = () => (
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
           <Route path="/courses" element={<CoursesHub />} />
           <Route path="/become-creator" element={<BecomeCreator />} />
+          <Route path="/instructor-earnings" element={<InstructorEarnings />} />
+          <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
           <Route path="/my-learning" element={<Navigate to="/courses?tab=learning" replace />} />
           <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
