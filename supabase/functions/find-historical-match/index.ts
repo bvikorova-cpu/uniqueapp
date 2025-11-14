@@ -237,6 +237,25 @@ Return ONLY a valid JSON array with these exact fields. Example:
       aiAnalysis: tier === 'heritage' ? aiAnalysis : undefined,
     };
 
+    // Save matches to database
+    try {
+      const { error: insertError } = await supabaseClient
+        .from('historical_matches')
+        .insert({
+          user_id: user.id,
+          tier,
+          user_image_url: null,
+          matches: matches,
+          is_public: false,
+        });
+
+      if (insertError) {
+        console.error('Error saving match to database:', insertError);
+      }
+    } catch (dbError) {
+      console.error('Database save error:', dbError);
+    }
+
     return new Response(JSON.stringify(response), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,

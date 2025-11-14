@@ -77,6 +77,8 @@ import PetTranslatorPricing from "./pages/PetTranslatorPricing";
 import FutureFace from "./pages/FutureFace";
 import AncestorTwin from "./pages/AncestorTwin";
 import AncestorTwinUpload from "./pages/AncestorTwinUpload";
+import AncestorTwinHistory from "./pages/AncestorTwinHistory";
+import AncestorTwinGallery from "./pages/AncestorTwinGallery";
 import SkillSwap from "./pages/SkillSwap";
 import SkillSwapProfile from "./pages/SkillSwapProfile";
 import SkillSwapSettings from "./pages/SkillSwapSettings";
@@ -330,6 +332,8 @@ const App = () => (
           <Route path="/future-face" element={<FutureFace />} />
           <Route path="/ancestor-twin" element={<AncestorTwin />} />
           <Route path="/ancestor-twin/upload" element={<AncestorTwinUpload />} />
+          <Route path="/ancestor-twin/history" element={<AncestorTwinHistory />} />
+          <Route path="/ancestor-twin/gallery" element={<AncestorTwinGallery />} />
            <Route path="/skill-swap" element={<SkillSwap />} />
            <Route path="/skill-swap/dashboard" element={<SkillSwapDashboard />} />
            <Route path="/skill-swap/profile/:userId" element={<SkillSwapProfile />} />
