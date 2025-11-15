@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSportsSubscription } from "@/hooks/useSportsSubscription";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { TipsterRegistrationDialog } from "@/components/sports/TipsterRegistrationDialog";
 import {
   Trophy,
   TrendingUp,
@@ -129,6 +130,7 @@ export default function SportsPredictor() {
   const [matches, setMatches] = useState<Match[]>([]);
   const [loadingMatches, setLoadingMatches] = useState(true);
   const [generatingPrediction, setGeneratingPrediction] = useState<string | null>(null);
+  const [showTipsterDialog, setShowTipsterDialog] = useState(false);
 
   useEffect(() => {
     fetchMatches();
@@ -662,12 +664,17 @@ export default function SportsPredictor() {
               <div className="text-sm text-muted-foreground">Subscription Price</div>
             </div>
           </div>
-          <Button size="lg" onClick={() => navigate("/auth")}>
+          <Button size="lg" onClick={() => setShowTipsterDialog(true)}>
             <Award className="mr-2 h-5 w-5" />
             Apply as Tipster
           </Button>
         </div>
       </section>
+
+      <TipsterRegistrationDialog
+        open={showTipsterDialog}
+        onOpenChange={setShowTipsterDialog}
+      />
     </div>
   );
 }
