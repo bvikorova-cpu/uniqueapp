@@ -39,12 +39,12 @@ const LOTTERY_TYPES = [
 
 const SUBSCRIPTION_TIERS = {
   basic: {
-    price_id: "price_1STrHy0QTWhd4oRp2ArACwnP",
-    product_id: "prod_TQijaAE9gN6Q2w",
+    price_id: "price_1STrLuGaXSfGtYFtgA9rNDxL",
+    product_id: "prod_TQinlyjGo50cTk",
   },
   pro: {
-    price_id: "price_1STrI00QTWhd4oRpKkCPUIac",
-    product_id: "prod_TQijU0fquNLG7D",
+    price_id: "price_1STrLwGaXSfGtYFtdbmjAGKA",
+    product_id: "prod_TQinw9pUYC81T8",
   },
 };
 
