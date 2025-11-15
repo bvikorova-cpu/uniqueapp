@@ -98,6 +98,8 @@ export default function LotteryAI() {
   const [generatedNumbers, setGeneratedNumbers] = useState<number[]>([]);
   const [bonusNumbers, setBonusNumbers] = useState<number[]>([]);
   const [savedCombinations, setSavedCombinations] = useState<any[]>([]);
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Check authentication on mount
   useEffect(() => {
@@ -251,30 +253,43 @@ export default function LotteryAI() {
       }
     }
 
-    // Generate random main numbers
-    const numbers: number[] = [];
-    while (numbers.length < selectedLottery.mainBalls) {
-      const num = Math.floor(Math.random() * selectedLottery.maxNumber) + 1;
-      if (!numbers.includes(num)) {
-        numbers.push(num);
-      }
-    }
-    numbers.sort((a, b) => a - b);
-    setGeneratedNumbers(numbers);
-
-    // Generate bonus numbers if applicable
-    if (selectedLottery.bonusCount > 0) {
-      const bonus: number[] = [];
-      while (bonus.length < selectedLottery.bonusCount) {
-        const num = Math.floor(Math.random() * selectedLottery.bonusBalls) + 1;
-        if (!bonus.includes(num)) {
-          bonus.push(num);
+    setIsGenerating(true);
+    let generatedData: any = null;
+    
+    try {
+      // Call AI edge function for real predictions
+      const { data: aiResult, error: aiError } = await supabase.functions.invoke(
+        'generate-lottery-numbers',
+        {
+          body: {
+            lotteryType: selectedLottery.id,
+            preferences: {} // Can be extended with user preferences
+          }
         }
-      }
-      bonus.sort((a, b) => a - b);
-      setBonusNumbers(bonus);
-    } else {
-      setBonusNumbers([]);
+      );
+
+      if (aiError) throw aiError;
+      generatedData = aiResult;
+
+      console.log('AI generated numbers:', aiResult);
+      
+      setGeneratedNumbers(aiResult.numbers);
+      setBonusNumbers(aiResult.bonusNumbers || []);
+      setAiAnalysis(aiResult.analysis);
+
+      toast({
+        title: "AI Analysis Complete! 🤖",
+        description: aiResult.analysis.reasoning,
+      });
+    } catch (error: any) {
+      console.error('Error generating numbers:', error);
+      toast({
+        title: "Generation Error",
+        description: error.message || "Failed to generate numbers. Please try again.",
+        variant: "destructive",
+      });
+      setIsGenerating(false);
+      return;
     }
 
     // Save to database
@@ -282,25 +297,39 @@ export default function LotteryAI() {
       await supabase.from("lottery_generations").insert({
         user_id: user.id,
         lottery_type: selectedLottery.name,
-        main_numbers: numbers,
-        bonus_numbers: bonusNumbers.length > 0 ? bonusNumbers : null,
+        main_numbers: generatedData.numbers,
+        bonus_numbers: generatedData.bonusNumbers && generatedData.bonusNumbers.length > 0 ? generatedData.bonusNumbers : null,
       });
 
       // Update generation count
-      await supabase
+      const { data: subData } = await supabase
         .from("user_subscriptions")
-        .update({ generations_used: (await supabase.from("user_subscriptions").select("generations_used").eq("user_id", user.id).single()).data.generations_used + 1 })
-        .eq("user_id", user.id);
+        .select("generations_used")
+        .eq("user_id", user.id)
+        .single();
+
+      if (subData) {
+        await supabase
+          .from("user_subscriptions")
+          .update({ generations_used: subData.generations_used + 1 })
+          .eq("user_id", user.id);
+      }
 
       await loadHistory();
+      
+      setIsGenerating(false);
+      toast({
+        title: "Numbers Generated! 🎰",
+        description: "Your AI-predicted lucky numbers are ready!",
+      });
     } catch (error) {
       console.error("Error saving generation:", error);
+      setIsGenerating(false);
+      toast({
+        title: "Saved with warnings",
+        description: "Numbers generated but may not be saved to history.",
+      });
     }
-
-    toast({
-      title: "Numbers Generated! 🎰",
-      description: "Your AI-predicted lucky numbers are ready!",
-    });
   };
 
   const saveCombination = async () => {
@@ -527,9 +556,9 @@ export default function LotteryAI() {
                           <p className="text-muted-foreground mb-4">
                             Click "Generate Lucky Numbers" to get your AI predictions
                           </p>
-                          <Button onClick={generateNumbers} size="lg">
+                          <Button onClick={generateNumbers} size="lg" disabled={isGenerating}>
                             <Sparkles className="mr-2 h-5 w-5" />
-                            Generate Now
+                            {isGenerating ? "Analyzing..." : "Generate Now"}
                           </Button>
                         </div>
                       ) : (
@@ -566,11 +595,34 @@ export default function LotteryAI() {
                             </div>
                           )}
 
+                          {/* AI Analysis Section */}
+                          {aiAnalysis && (
+                            <div className="border-t pt-4 space-y-3">
+                              <h4 className="font-semibold flex items-center gap-2">
+                                <BarChart3 className="h-4 w-4 text-primary" />
+                                AI Analysis & Insights
+                              </h4>
+                              <div className="space-y-2 text-sm">
+                                <p><strong>Confidence:</strong> <Badge variant={aiAnalysis.confidence === 'high' ? 'default' : 'secondary'}>{aiAnalysis.confidence}</Badge></p>
+                                <p><strong>Strategy:</strong> {aiAnalysis.reasoning}</p>
+                                <div>
+                                  <strong>Statistics:</strong>
+                                  <div className="grid grid-cols-2 gap-2 mt-1 text-xs">
+                                    <div>Even: {aiAnalysis.statistics?.evenCount || 0}</div>
+                                    <div>Odd: {aiAnalysis.statistics?.oddCount || 0}</div>
+                                    <div>High: {aiAnalysis.statistics?.highCount || 0}</div>
+                                    <div>Low: {aiAnalysis.statistics?.lowCount || 0}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
                           {/* Actions */}
                           <div className="flex gap-3 pt-4">
-                            <Button onClick={generateNumbers} className="flex-1">
+                            <Button onClick={generateNumbers} className="flex-1" disabled={isGenerating}>
                               <Sparkles className="mr-2 h-4 w-4" />
-                              Generate New
+                              {isGenerating ? "Analyzing..." : "Generate New"}
                             </Button>
                             <Button onClick={saveCombination} variant="outline">
                               <Save className="mr-2 h-4 w-4" />
