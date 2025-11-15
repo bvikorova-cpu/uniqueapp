@@ -142,8 +142,9 @@ Format: 360-degree equirectangular projection for VR/panorama viewers.`;
     );
   } catch (error) {
     console.error('Error in generate-room-panorama function:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
