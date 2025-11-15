@@ -430,4 +430,7 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.generate-lottery-numbers]
-verify_jwt = false
+verify_jwt = true
+
+[functions.create-lottery-subscription]
+verify_jwt = true
