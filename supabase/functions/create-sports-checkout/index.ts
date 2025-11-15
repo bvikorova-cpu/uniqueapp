@@ -8,8 +8,8 @@ const corsHeaders = {
 };
 
 const PRICE_IDS = {
-  ai_premium: "price_1STrI00QTWhd4oRpKkCPUIac",
-  expert_tipster: "price_1STs7E0QTWhd4oRpt2pihD7S",
+  ai_premium: "price_1STrLuGaXSfGtYFtgA9rNDxL",
+  expert_tipster: "price_1STrLwGaXSfGtYFtdbmjAGKA",
 };
 
 const logStep = (step: string, details?: any) => {
