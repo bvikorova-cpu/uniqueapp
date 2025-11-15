@@ -170,6 +170,7 @@ const Navbar = () => {
 
   const learningServices = [
     { path: "/education", label: t('navbar.education'), icon: GraduationCap },
+    { path: "/courses", label: "Courses Hub", icon: GraduationCap },
     { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
     { path: "/kids-channel", label: "Kids Channel 🎬", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
@@ -188,7 +189,6 @@ const Navbar = () => {
     { path: "/wellness", label: "🧘 Wellness & Relaxation", icon: Heart },
     { path: "/skill-swap", label: "🔄 Global Skill Swap", icon: Globe },
     { path: "/ancestor-twin", label: "👥 Ancestor Twin Finder", icon: Users },
-    { path: "/courses", label: "Courses Hub", icon: GraduationCap },
     { path: "/lottery-ai", label: "Lottery Numbers - AI Predictions", icon: Sparkles },
     { path: "/sports-predictor", label: "⚽ Sports Match Predictions", icon: Trophy },
     { path: "/property-marketplace", label: "🏠 Property Marketplace", icon: Building2 },
