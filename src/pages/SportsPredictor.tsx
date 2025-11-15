@@ -32,6 +32,7 @@ const PRICING_TIERS = [
   {
     name: "AI Premium",
     price: "9.99",
+    currency: "€",
     period: "month",
     description: "Advanced AI-powered predictions",
     features: [
@@ -49,6 +50,7 @@ const PRICING_TIERS = [
   {
     name: "Expert Tipster",
     price: "19.99",
+    currency: "$",
     period: "month",
     description: "Follow top-rated expert tipsters",
     features: [
@@ -595,7 +597,7 @@ export default function SportsPredictor() {
                   <CardTitle className="text-2xl mb-2">{pricingTier.name}</CardTitle>
                   <CardDescription>{pricingTier.description}</CardDescription>
                   <div className="mt-4">
-                    <span className="text-4xl font-bold">${pricingTier.price}</span>
+                    <span className="text-4xl font-bold">{pricingTier.currency}{pricingTier.price}</span>
                     <span className="text-muted-foreground">/{pricingTier.period}</span>
                   </div>
                 </CardHeader>
