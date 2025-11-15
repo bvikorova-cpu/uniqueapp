@@ -308,7 +308,19 @@ export default function SportsPredictor() {
               <h2 className="text-3xl font-bold mb-2">Top Tipsters Leaderboard</h2>
               <p className="text-muted-foreground">Follow the best performers</p>
             </div>
-            <Button variant="outline">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                if (!user) {
+                  navigate('/auth');
+                  return;
+                }
+                toast({
+                  title: "Coming Soon",
+                  description: "Tipster registration will be available soon",
+                });
+              }}
+            >
               <Award className="mr-2 h-4 w-4" />
               Become a Tipster
             </Button>
@@ -353,7 +365,26 @@ export default function SportsPredictor() {
                         <div className="text-xs text-muted-foreground">Followers</div>
                       </div>
                     </div>
-                    <Button>
+                    <Button
+                      onClick={() => {
+                        if (!user) {
+                          navigate('/auth');
+                          return;
+                        }
+                        if (!subscribed || tier !== 'expert_tipster') {
+                          toast({
+                            title: "Upgrade Required",
+                            description: "Expert Tipster subscription needed to follow tipsters",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        toast({
+                          title: "Success",
+                          description: `Now following ${tipster.name}`,
+                        });
+                      }}
+                    >
                       <Users className="mr-2 h-4 w-4" />
                       Follow
                     </Button>
@@ -588,7 +619,7 @@ export default function SportsPredictor() {
                     {checkoutLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Načítavam...
+                        Loading...
                       </>
                     ) : subscribed && ((pricingTier.name === "AI Premium" && tier === 'ai_premium') || (pricingTier.name === "Expert Tipster" && tier === 'expert_tipster')) ? (
                       <>
