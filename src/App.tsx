@@ -186,6 +186,7 @@ import MyLearning from "./pages/MyLearning";
 import LotteryAI from "./pages/LotteryAI";
 import LotteryHistory from "./pages/LotteryHistory";
 import SportsPredictor from "./pages/SportsPredictor";
+import SportsAdmin from "./pages/SportsAdmin";
 import AdminSportsMatches from "./pages/AdminSportsMatches";
 import PropertyMarketplace from "./pages/PropertyMarketplace";
 import PropertySubmission from "./pages/PropertySubmission";
@@ -456,6 +457,7 @@ const App = () => (
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
           <Route path="/lottery-ai" element={<LotteryAI />} />
           <Route path="/sports-predictor" element={<SportsPredictor />} />
+          <Route path="/sports-admin" element={<SportsAdmin />} />
           <Route path="/admin/sports-matches" element={<AdminSportsMatches />} />
           <Route path="/print-on-demand" element={<PrintOnDemand />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
