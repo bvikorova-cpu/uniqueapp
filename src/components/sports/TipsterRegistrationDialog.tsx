@@ -88,25 +88,43 @@ export function TipsterRegistrationDialog({
         return;
       }
 
-      // Create tipster profile
-      const { error } = await supabase.from("sports_tipsters").insert({
+      // Create pending tipster profile first
+      const { error: insertError } = await supabase.from("sports_tipsters").insert({
         user_id: user.id,
         display_name: formData.displayName,
         sport_specialization: formData.sport,
         bio: formData.bio || null,
         tip_price: parseFloat(formData.tipPrice),
         status: "pending",
-        subscription_price: 19.99, // Default subscription price
+        subscription_price: 19.99,
       });
 
-      if (error) throw error;
+      if (insertError) throw insertError;
+
+      // Create checkout session for tipster subscription
+      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
+        "create-tipster-checkout",
+        {
+          body: {
+            displayName: formData.displayName,
+            sport: formData.sport,
+            bio: formData.bio,
+            tipPrice: formData.tipPrice,
+          },
+        }
+      );
+
+      if (checkoutError) throw checkoutError;
 
       toast({
-        title: "Application submitted!",
-        description: "Your tipster application has been submitted for review. You'll be notified once approved.",
+        title: "Redirecting to payment...",
+        description: "Complete your subscription to start publishing tips",
       });
 
+      // Redirect to Stripe checkout
+      window.open(checkoutData.url, "_blank");
       onOpenChange(false);
+      
       setFormData({
         displayName: "",
         sport: "",
@@ -214,12 +232,13 @@ export function TipsterRegistrationDialog({
           </div>
 
           <div className="bg-muted p-4 rounded-lg">
-            <h4 className="font-semibold mb-2">What happens next?</h4>
+            <h4 className="font-semibold mb-2">Tipster Subscription - €19.99/month</h4>
             <ul className="text-sm space-y-1 text-muted-foreground">
-              <li>• Your application will be reviewed by our team</li>
-              <li>• We'll verify your experience and credentials</li>
-              <li>• Once approved, you can start publishing predictions</li>
-              <li>• You'll earn 75% from every tip sold</li>
+              <li>• Subscribe for €19.99/month to publish predictions</li>
+              <li>• Set your own tip price (€1-€50 per tip)</li>
+              <li>• Earn 75% from every tip sold</li>
+              <li>• Platform keeps 25% commission</li>
+              <li>• Cancel anytime from your dashboard</li>
             </ul>
           </div>
 
