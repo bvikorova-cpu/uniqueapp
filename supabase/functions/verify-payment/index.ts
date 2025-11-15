@@ -211,27 +211,19 @@ serve(async (req) => {
         throw ticketError;
       }
 
-      // Update ticket sold count
-      await supabase.rpc('increment', {
-        table_name: 'concert_ticket_types',
-        row_id: ticketTypeId,
-        column_name: 'sold_count'
-      }).catch(() => {
-        // If RPC doesn't exist, use direct update
-        supabase
+      // Update ticket sold count - simplified approach
+      const { data: ticketData } = await supabase
+        .from("concert_ticket_types")
+        .select("sold_count")
+        .eq("id", ticketTypeId)
+        .single();
+
+      if (ticketData) {
+        await supabase
           .from("concert_ticket_types")
-          .select("sold_count")
-          .eq("id", ticketTypeId)
-          .single()
-          .then(({ data }) => {
-            if (data) {
-              supabase
-                .from("concert_ticket_types")
-                .update({ sold_count: data.sold_count + 1 })
-                .eq("id", ticketTypeId);
-            }
-          });
-      });
+          .update({ sold_count: ticketData.sold_count + 1 })
+          .eq("id", ticketTypeId);
+      }
 
       console.log(`[Verify Payment] Concert ticket recorded with 20% commission`);
     } else if (itemType === "concert_gift") {

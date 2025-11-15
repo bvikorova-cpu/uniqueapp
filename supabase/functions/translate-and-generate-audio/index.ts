@@ -110,7 +110,7 @@ serve(async (req) => {
     // Get audio as base64 using Deno's efficient base64 encoder
     const audioArrayBuffer = await elevenLabsResponse.arrayBuffer()
     const bytes = new Uint8Array(audioArrayBuffer)
-    const base64Audio = base64Encode(bytes)
+    const base64Audio = btoa(String.fromCharCode(...bytes))
 
     console.log('Audio generated successfully, size:', audioArrayBuffer.byteLength)
 

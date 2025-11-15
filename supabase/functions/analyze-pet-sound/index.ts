@@ -92,9 +92,10 @@ Examples:
 
   } catch (error) {
     console.error('Error analyzing pet sound:', error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(
       JSON.stringify({ 
-        error: error.message,
+        error: errorMessage,
         emotion: 'Unknown',
         message: 'Could not analyze the sound',
         confidence: 0
