@@ -113,6 +113,7 @@ interface Match {
     prediction_type: string;
     confidence: number;
     odds: number;
+    analysis?: string;
   };
 }
 
@@ -125,6 +126,7 @@ export default function SportsPredictor() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [matches, setMatches] = useState<Match[]>([]);
   const [loadingMatches, setLoadingMatches] = useState(true);
+  const [generatingPrediction, setGeneratingPrediction] = useState<string | null>(null);
 
   useEffect(() => {
     fetchMatches();
@@ -157,6 +159,7 @@ export default function SportsPredictor() {
             prediction_type: prediction.prediction_type,
             confidence: prediction.confidence,
             odds: prediction.odds,
+            analysis: prediction.analysis_text,
           } : undefined,
         };
       });
@@ -194,6 +197,48 @@ export default function SportsPredictor() {
     }
   };
 
+  const handleGeneratePrediction = async (matchId: string) => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+
+    if (!canViewPredictions) {
+      toast({
+        title: "Predplatné vyžadované",
+        description: "Pre generovanie predikcií potrebujete aktívne predplatné",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setGeneratingPrediction(matchId);
+      const { data, error } = await supabase.functions.invoke('generate-sports-prediction', {
+        body: { matchId },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Predikcia vygenerovaná! 🎯",
+        description: "AI úspešne analyzovala zápas",
+      });
+
+      // Refresh matches to show new prediction
+      await fetchMatches();
+    } catch (error: any) {
+      console.error('Error generating prediction:', error);
+      toast({
+        title: "Chyba",
+        description: error.message || "Nepodarilo sa vygenerovať predikciu",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingPrediction(null);
+    }
+  };
+
   const canViewPredictions = subscribed && (tier === 'ai_premium' || tier === 'expert_tipster');
 
   return (
@@ -202,6 +247,14 @@ export default function SportsPredictor() {
       <section className="relative py-20 px-4 bg-gradient-to-br from-primary/20 via-background to-secondary/20 overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]" />
         <div className="container mx-auto text-center relative z-10 max-w-4xl">
+          <div className="flex justify-end mb-4">
+            {user && (
+              <Button onClick={() => navigate('/sports-admin')} variant="outline">
+                ⚙️ Pridať zápasy
+              </Button>
+            )}
+          </div>
+          
           <Badge className="mb-4 animate-pulse" variant="secondary">
             <Trophy className="h-3 w-3 mr-1" />
             Expert + AI Sports Predictions
@@ -339,7 +392,7 @@ export default function SportsPredictor() {
                   {matches.map((match) => (
                     <Card key={match.id} className="hover:shadow-lg transition-all">
                       <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between mb-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-2">
                               <Badge variant="outline">{match.sport}</Badge>
@@ -355,7 +408,7 @@ export default function SportsPredictor() {
                             </div>
                           </div>
 
-                          {/* Paywall overlay for non-subscribers */}
+                          {/* Prediction or Generate Button */}
                           {match.prediction ? (
                             <div className="flex items-center gap-6 relative">
                               {!canViewPredictions && (
@@ -369,7 +422,10 @@ export default function SportsPredictor() {
                               
                               <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
                                 <div className="text-sm text-muted-foreground mb-1">Predikcia</div>
-                                <Badge className="bg-green-500">{match.prediction.prediction_type}</Badge>
+                                <Badge className="bg-green-500 text-white">
+                                  {match.prediction.prediction_type === 'home_win' ? 'Domáci' : 
+                                   match.prediction.prediction_type === 'away_win' ? 'Hostia' : 'Remíza'}
+                                </Badge>
                               </div>
                               <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
                                 <div className="text-sm text-muted-foreground mb-1">Istota</div>
@@ -382,18 +438,44 @@ export default function SportsPredictor() {
                                 </div>
                               )}
                               {canViewPredictions && (
-                                <Button>
+                                <Button variant="outline">
                                   <Bell className="mr-2 h-4 w-4" />
-                                  Upozornenie
+                                  Upozorniť
                                 </Button>
                               )}
                             </div>
                           ) : (
-                            <div className="text-sm text-muted-foreground">
-                              Predikcia ešte nebola pridaná
-                            </div>
+                            <Button 
+                              onClick={() => handleGeneratePrediction(match.id)}
+                              disabled={generatingPrediction === match.id || !canViewPredictions}
+                            >
+                              {generatingPrediction === match.id ? (
+                                <>
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                  Generujem...
+                                </>
+                              ) : (
+                                <>
+                                  <Zap className="mr-2 h-4 w-4" />
+                                  {canViewPredictions ? 'Vygenerovať AI predikciu' : 'Predplatné vyžadované'}
+                                </>
+                              )}
+                            </Button>
                           )}
                         </div>
+
+                        {/* Analysis section - only show if prediction exists and user can view */}
+                        {match.prediction && canViewPredictions && (
+                          <div className="mt-4 pt-4 border-t">
+                            <div className="flex items-start gap-2">
+                              <BarChart3 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                              <div>
+                                <p className="text-sm font-semibold mb-1">AI Analýza:</p>
+                                <p className="text-sm text-muted-foreground">{(match.prediction as any).analysis || 'Analýza nie je k dispozícii'}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   ))}
