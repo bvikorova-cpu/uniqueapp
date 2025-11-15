@@ -428,3 +428,6 @@ verify_jwt = true
 
 [functions.create-wellness-checkout]
 verify_jwt = true
+
+[functions.generate-lottery-numbers]
+verify_jwt = false
