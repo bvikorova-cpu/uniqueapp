@@ -106,27 +106,27 @@ const quizCategories = [
   { id: "flags", name: "Flags & Countries", icon: "🏁" },
 ];
 
-export default function Education() {
+const Education = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { toast } = useToast();
-
-  // Authentication and loading states
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get("tab") || "courses";
+  
   const [loading, setLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(true);
-
+  
   // Tutoring states
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  // Marketplace states (moved to Learning tab)
+  
+  // Marketplace states
   const [courses, setCourses] = useState<Course[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedDifficulty, setSelectedDifficulty] = useState("all");
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
-
+  
   // Creator dashboard states
   const [showCourseForm, setShowCourseForm] = useState(false);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
@@ -137,9 +137,6 @@ export default function Education() {
   const [completedCourses, setCompletedCourses] = useState<any[]>([]);
   const [certificates, setCertificates] = useState<any[]>([]);
 
-  // Current tab state, default to 'tutoring' or from query param
-  const [currentTab, setCurrentTab] = useState<string>(searchParams.get("tab") || "tutoring");
-
   useEffect(() => {
     checkAuthentication();
     loadCourses();
@@ -149,12 +146,6 @@ export default function Education() {
   useEffect(() => {
     filterCourses();
   }, [searchTerm, selectedCategory, selectedDifficulty, courses]);
-
-  useEffect(() => {
-    // Update current tab if URL param changes
-    const tab = searchParams.get("tab");
-    if (tab) setCurrentTab(tab);
-  }, [searchParams]);
 
   const checkAuthentication = async () => {
     try {
@@ -282,19 +273,18 @@ export default function Education() {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("tutoring-chat", {
-        body: { message: userMessage, history: chatHistory }
+      const { data, error } = await supabase.functions.invoke("chat-tutor", {
+        body: { message: userMessage, chatHistory },
       });
 
       if (error) throw error;
 
       setChatHistory(prev => [...prev, { role: "assistant", content: data.response }]);
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to send message",
-        variant: "destructive"
+        description: error.message || "An error occurred",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -315,32 +305,73 @@ export default function Education() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
-        <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-5">
-          <TabsTrigger value="courses" className="gap-2">
-            <BookOpen className="h-4 w-4" />
-            Courses
-          </TabsTrigger>
-          <TabsTrigger value="learning" className="gap-2">
-            <Award className="h-4 w-4" />
-            My Learning
-          </TabsTrigger>
-          <TabsTrigger value="creator" className="gap-2">
-            <GraduationCap className="h-4 w-4" />
-            Creator Dashboard
-          </TabsTrigger>
-          <TabsTrigger value="tutoring" className="gap-2">
-            <Brain className="h-4 w-4" />
-            Tutoring
-          </TabsTrigger>
-          <TabsTrigger value="quiz" className="gap-2">
-            <BookOpen className="h-4 w-4" />
-            Quiz
-          </TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue={defaultTab} className="w-full">
+        <div className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+          <div className="container mx-auto px-4 py-4">
+            <TabsList className="grid w-full max-w-3xl mx-auto grid-cols-5">
+              <TabsTrigger value="courses" className="gap-2">
+                <BookOpen className="h-4 w-4" />
+                Courses
+              </TabsTrigger>
+              <TabsTrigger value="learning" className="gap-2">
+                <Award className="h-4 w-4" />
+                My Learning
+              </TabsTrigger>
+              <TabsTrigger value="creator" className="gap-2">
+                <GraduationCap className="h-4 w-4" />
+                Creator
+              </TabsTrigger>
+              <TabsTrigger value="tutoring" className="gap-2">
+                <Brain className="h-4 w-4" />
+                Tutoring
+              </TabsTrigger>
+              <TabsTrigger value="quiz" className="gap-2">
+                <BookOpen className="h-4 w-4" />
+                Quiz
+              </TabsTrigger>
+            </TabsList>
+          </div>
+        </div>
 
         {/* Courses Tab */}
-        <TabsContent value="courses" className="mt-6">
+        <TabsContent value="courses" className="mt-0">
+          <section className="relative py-20 px-4 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
+            <div className="container mx-auto text-center">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Learn Anything, Anytime
+              </h1>
+              <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+                Discover world-class courses from expert instructors
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
+                <Card>
+                  <CardContent className="pt-6">
+                    <Users className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold">{courses.length}</p>
+                    <p className="text-sm text-muted-foreground">Available Courses</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6">
+                    <GraduationCap className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold">
+                      {courses.reduce((sum, c) => sum + (c.total_enrollments || 0), 0)}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Students Enrolled</p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-6">
+                    <Star className="h-8 w-8 text-primary mx-auto mb-2" />
+                    <p className="text-2xl font-bold">4.8</p>
+                    <p className="text-sm text-muted-foreground">Average Rating</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </section>
+
           <section className="py-8 px-4 bg-card/50">
             <div className="container mx-auto">
               <div className="flex flex-col md:flex-row gap-4">
@@ -392,9 +423,7 @@ export default function Education() {
                   <CardContent className="pt-6 text-center">
                     <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <p className="text-lg font-medium mb-2">No courses found</p>
-                    <p className="text-sm text-muted-foreground">
-                      Try adjusting your filters
-                    </p>
+                    <p className="text-sm text-muted-foreground">Try adjusting your filters</p>
                   </CardContent>
                 </Card>
               ) : (
@@ -459,100 +488,35 @@ export default function Education() {
         </TabsContent>
 
         {/* My Learning Tab */}
-        <TabsContent value="learning" className="mt-6">
-          <div className="container mx-auto px-4 py-8">
+        <TabsContent value="learning" className="mt-0">
+          <div className="container mx-auto px-4 py-12">
             <div className="mb-8">
               <h1 className="text-4xl font-bold mb-2">My Learning</h1>
-              <p className="text-muted-foreground">Track your progress and achievements</p>
+              <p className="text-muted-foreground">Track your progress and access your courses</p>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-primary/10 rounded-lg">
-                      <BookOpen className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold">{enrolledCourses.length}</p>
-                      <p className="text-sm text-muted-foreground">In Progress</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-green-500/10 rounded-lg">
-                      <Award className="h-6 w-6 text-green-500" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold">{completedCourses.length}</p>
-                      <p className="text-sm text-muted-foreground">Completed</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-500/10 rounded-lg">
-                      <Award className="h-6 w-6 text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold">{certificates.length}</p>
-                      <p className="text-sm text-muted-foreground">Certificates</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-purple-500/10 rounded-lg">
-                      <TrendingUp className="h-6 w-6 text-purple-500" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold">
-                        {enrolledCourses.length > 0
-                          ? Math.round(enrolledCourses.reduce((acc: number, c: any) => acc + (c.progress_percentage || 0), 0) / enrolledCourses.length)
-                          : 0}%
-                      </p>
-                      <p className="text-sm text-muted-foreground">Avg Progress</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Content Tabs */}
-            <Tabs defaultValue="in-progress" className="w-full">
-              <TabsList className="grid w-full max-w-md grid-cols-3">
-                <TabsTrigger value="in-progress">In Progress</TabsTrigger>
-                <TabsTrigger value="completed">Completed</TabsTrigger>
-                <TabsTrigger value="certificates">Certificates</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="in-progress" className="mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {enrolledCourses.length === 0 ? (
-                    <div className="col-span-full text-center py-12">
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Enrolled Courses</h2>
+                {enrolledCourses.length === 0 ? (
+                  <Card>
+                    <CardContent className="pt-6 text-center">
                       <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-lg font-medium">No courses in progress</p>
-                    </div>
-                  ) : (
-                    enrolledCourses.map((enrollment) => (
-                      <Card
-                        key={enrollment.id}
-                        className="cursor-pointer"
-                        onClick={() => navigate(`/course/${enrollment.course_id}/learn`)}
-                      >
+                      <p className="text-lg font-medium mb-2">No enrolled courses</p>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Browse our catalog and start learning today
+                      </p>
+                      <Button onClick={() => navigate("/education?tab=courses")}>
+                        Browse Courses
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {enrolledCourses.map((enrollment: any) => (
+                      <Card key={enrollment.id} className="hover:shadow-lg transition-shadow">
                         <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 relative overflow-hidden">
-                          {enrollment.courses.thumbnail_url ? (
+                          {enrollment.courses?.thumbnail_url ? (
                             <img
                               src={enrollment.courses.thumbnail_url}
                               alt={enrollment.courses.title}
@@ -565,302 +529,233 @@ export default function Education() {
                           )}
                         </div>
                         <CardHeader>
-                          <CardTitle className="line-clamp-2">{enrollment.courses.title}</CardTitle>
+                          <CardTitle className="line-clamp-2">{enrollment.courses?.title}</CardTitle>
                           <CardDescription className="line-clamp-2">
-                            {enrollment.courses.description}
+                            {enrollment.courses?.description}
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
-                          <Progress value={enrollment.progress_percentage || 0} />
-                          <p className="text-sm mt-2 text-muted-foreground">
-                            Progress: {enrollment.progress_percentage || 0}%
-                          </p>
+                          <div className="space-y-2 mb-4">
+                            <div className="flex items-center justify-between text-sm">
+                              <span>Progress</span>
+                              <span>{enrollment.progress_percentage || 0}%</span>
+                            </div>
+                            <Progress value={enrollment.progress_percentage || 0} />
+                          </div>
+                          <Button 
+                            className="w-full" 
+                            onClick={() => navigate(`/course/${enrollment.course_id}/learn`)}
+                          >
+                            Continue Learning
+                          </Button>
                         </CardContent>
                       </Card>
-                    ))
-                  )}
-                </div>
-              </TabsContent>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-              <TabsContent value="completed" className="mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {completedCourses.length === 0 ? (
-                    <div className="col-span-full text-center py-12">
-                      <BookOpen className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-lg font-medium">No completed courses</p>
-                    </div>
-                  ) : (
-                    completedCourses.map((completed) => (
-                      <Card
-                        key={completed.id}
-                        className="cursor-pointer"
-                        onClick={() => navigate(`/course/${completed.course_id}/learn`)}
-                      >
-                        <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 relative overflow-hidden">
-                          {completed.thumbnail_url ? (
-                            <img
-                              src={completed.thumbnail_url}
-                              alt={completed.title}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="flex items-center justify-center h-full">
-                              <GraduationCap className="h-16 w-16 text-primary/50" />
-                            </div>
-                          )}
-                        </div>
+              {certificates.length > 0 && (
+                <div>
+                  <h2 className="text-2xl font-bold mb-4">My Certificates</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {certificates.map((cert: any) => (
+                      <Card key={cert.id} className="hover:shadow-lg transition-shadow">
                         <CardHeader>
-                          <CardTitle className="line-clamp-2">{completed.title}</CardTitle>
-                          <CardDescription className="line-clamp-2">
-                            Completed on {new Date(completed.completion_date).toLocaleDateString()}
-                          </CardDescription>
-                        </CardHeader>
-                      </Card>
-                    ))
-                  )}
-                </div>
-              </TabsContent>
-
-              <TabsContent value="certificates" className="mt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {certificates.length === 0 ? (
-                    <div className="col-span-full text-center py-12">
-                      <Award className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-lg font-medium">No certificates earned</p>
-                    </div>
-                  ) : (
-                    certificates.map((cert) => (
-                      <Card key={cert.id}>
-                        <CardHeader>
-                          <CardTitle>{cert.courses.title}</CardTitle>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Award className="h-5 w-5 text-primary" />
+                            <Badge>Completed</Badge>
+                          </div>
+                          <CardTitle className="line-clamp-2">{cert.courses?.title}</CardTitle>
                           <CardDescription>
-                            Issued on {new Date(cert.issued_at).toLocaleDateString()}
+                            Issued: {new Date(cert.issued_at).toLocaleDateString()}
                           </CardDescription>
                         </CardHeader>
                         <CardContent>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              // Download certificate logic here
-                              window.open(cert.certificate_url, "_blank");
-                            }}
+                          <Button 
+                            className="w-full gap-2"
+                            onClick={() => window.open(cert.certificate_url, '_blank')}
                           >
-                            <Download className="mr-2 h-4 w-4" />
+                            <Download className="h-4 w-4" />
                             Download Certificate
                           </Button>
                         </CardContent>
                       </Card>
-                    ))
-                  )}
+                    ))}
+                  </div>
                 </div>
-              </TabsContent>
-            </Tabs>
+              )}
+            </div>
           </div>
         </TabsContent>
 
         {/* Creator Dashboard Tab */}
-        <TabsContent value="creator" className="mt-6">
-          <div className="container mx-auto px-4 py-8">
+        <TabsContent value="creator" className="mt-0">
+          <div className="container mx-auto px-4 py-12">
             <div className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">Creator Dashboard</h1>
-              <p className="text-muted-foreground">
-                Create and manage your courses, track earnings, and grow your student base
-              </p>
+              <h1 className="text-4xl font-bold mb-2">Creator Dashboard</h1>
+              <p className="text-muted-foreground">Manage your courses and track your earnings</p>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Platform Fee</CardTitle>
-                  <GraduationCap className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">30%</div>
-                  <p className="text-xs text-muted-foreground">
-                    You keep 70% of all sales
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Your Earnings</CardTitle>
-                  <Star className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">90%</div>
-                  <p className="text-xs text-muted-foreground">
-                    You keep the majority
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Support</CardTitle>
-                  <Award className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">24/7</div>
-                  <p className="text-xs text-muted-foreground">
-                    Creator support available
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Create Course Button */}
-            {!showCourseForm && (
-              <div className="mb-6">
-                <Button onClick={() => setShowCourseForm(true)} size="lg">
-                  <PlusCircle className="mr-2 h-5 w-5" />
-                  Create New Course
-                </Button>
-              </div>
-            )}
-
-            {/* Course Form or Courses Management */}
             {showCourseForm ? (
-              <CourseForm
-                courseId={selectedCourseId}
-                onSuccess={handleCourseCreated}
-                onCancel={() => {
-                  setShowCourseForm(false);
-                  setSelectedCourseId(null);
-                }}
-              />
+              <div className="mb-8">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowCourseForm(false);
+                    setSelectedCourseId(null);
+                  }}
+                  className="mb-4"
+                >
+                  ← Back to Courses
+                </Button>
+                <CourseForm 
+                  courseId={selectedCourseId} 
+                  onSuccess={handleCourseCreated}
+                  onCancel={() => {
+                    setShowCourseForm(false);
+                    setSelectedCourseId(null);
+                  }}
+                />
+              </div>
             ) : (
-              <Tabs defaultValue="courses" className="w-full">
-                <TabsList className="grid w-full max-w-md grid-cols-2">
-                  <TabsTrigger value="courses">My Courses</TabsTrigger>
-                  <TabsTrigger value="earnings">Earnings</TabsTrigger>
-                </TabsList>
-                <TabsContent value="courses" className="mt-6">
-                  <CoursesList
-                    key={refreshKey}
-                    onEditCourse={handleEditCourse}
-                  />
-                </TabsContent>
-                <TabsContent value="earnings" className="mt-6">
-                  <CreatorEarnings />
-                </TabsContent>
-              </Tabs>
+              <div className="space-y-8">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">My Courses</h2>
+                  <Button onClick={() => setShowCourseForm(true)} className="gap-2">
+                    <PlusCircle className="h-4 w-4" />
+                    Create Course
+                  </Button>
+                </div>
+
+                <CreatorEarnings />
+                
+                <CoursesList 
+                  key={refreshKey}
+                  onEditCourse={handleEditCourse}
+                />
+              </div>
             )}
           </div>
         </TabsContent>
 
         {/* Tutoring Tab */}
-        <TabsContent value="tutoring" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Online Tutoring</CardTitle>
-              <CardDescription>
-                Ask anything and get an instant answer
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="min-h-[300px] max-h-[500px] overflow-y-auto space-y-4 p-4 bg-muted/50 rounded-lg">
-                {chatHistory.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-12">
-                    <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                    <p>Start a conversation by asking a question</p>
-                  </div>
-                ) : (
-                  chatHistory.map((msg, idx) => (
-                    <div
-                      key={idx}
-                      className={`p-4 rounded-lg ${
-                        msg.role === "user"
-                          ? "bg-primary text-primary-foreground ml-12"
-                          : "bg-background mr-12"
-                      }`}
-                    >
-                      {msg.role === "assistant" ? (
-                        <div className="prose prose-sm dark:prose-invert max-w-none">
-                          <ReactMarkdown
-                            remarkPlugins={[remarkMath]}
-                            rehypePlugins={[rehypeKatex]}
-                          >
-                            {msg.content}
-                          </ReactMarkdown>
-                        </div>
-                      ) : (
-                        <p className="whitespace-pre-wrap">{msg.content}</p>
-                      )}
-                    </div>
-                  ))
-                )}
-                {isLoading && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <p>Teacher is thinking...</p>
-                  </div>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <Textarea
-                  placeholder="Write your question..."
-                  value={chatMessage}
-                  onChange={(e) => setChatMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendMessage();
-                    }
-                  }}
-                  className="min-h-[80px]"
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={isLoading || !chatMessage.trim()}
-                  size="icon"
-                  className="h-[80px] w-[80px]"
-                >
-                  <Send className="h-5 w-5" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Quiz Tab */}
-        <TabsContent value="quiz" className="mt-6">
-          <div className="space-y-8">
-            {/* Custom Quizzes Section */}
-            <QuizList />
-            
-            {/* Original Quiz Categories Section */}
+        <TabsContent value="tutoring" className="mt-0">
+          <div className="container mx-auto px-4 py-12">
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">AI-Generated Quizzes by Category</CardTitle>
-                <CardDescription>20 questions with instant AI feedback</CardDescription>
+                <CardTitle>Online Tutoring</CardTitle>
+                <CardDescription>
+                  Ask anything and get an instant answer
+                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {quizCategories.map((category) => (
-                    <Card key={category.id} className="hover:shadow-lg transition-shadow hover-scale">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-base">
-                          <span className="text-3xl">{category.icon}</span>
-                          {category.name}
-                        </CardTitle>
-                        <CardDescription>20 questions</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button
-                          onClick={() => handleStartQuiz(category.id)}
-                          className="w-full"
-                        >
-                          Start
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
+              <CardContent className="space-y-4">
+                <div className="min-h-[300px] max-h-[500px] overflow-y-auto space-y-4 p-4 bg-muted/50 rounded-lg">
+                  {chatHistory.length === 0 ? (
+                    <div className="text-center text-muted-foreground py-12">
+                      <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                      <p>Start a conversation by asking a question</p>
+                    </div>
+                  ) : (
+                    chatHistory.map((msg, idx) => (
+                      <div
+                        key={idx}
+                        className={`p-4 rounded-lg ${
+                          msg.role === "user"
+                            ? "bg-primary text-primary-foreground ml-12"
+                            : "bg-background mr-12"
+                        }`}
+                      >
+                        {msg.role === "assistant" ? (
+                          <div className="prose prose-sm dark:prose-invert max-w-none">
+                            <ReactMarkdown
+                              remarkPlugins={[remarkMath]}
+                              rehypePlugins={[rehypeKatex]}
+                            >
+                              {msg.content}
+                            </ReactMarkdown>
+                          </div>
+                        ) : (
+                          <p className="whitespace-pre-wrap">{msg.content}</p>
+                        )}
+                      </div>
+                    ))
+                  )}
+                  {isLoading && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <p>Teacher is thinking...</p>
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Textarea
+                    placeholder="Write your question..."
+                    value={chatMessage}
+                    onChange={(e) => setChatMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                    className="min-h-[80px]"
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={isLoading || !chatMessage.trim()}
+                    size="icon"
+                    className="h-[80px] w-[80px]"
+                  >
+                    <Send className="h-5 w-5" />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
+
+        {/* Quiz Tab */}
+        <TabsContent value="quiz" className="mt-0">
+          <div className="container mx-auto px-4 py-12">
+            <div className="space-y-8">
+              <QuizList />
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-2xl">AI-Generated Quizzes by Category</CardTitle>
+                  <CardDescription>20 questions with instant AI feedback</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {quizCategories.map((category) => (
+                      <Card key={category.id} className="hover:shadow-lg transition-shadow hover-scale">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2 text-base">
+                            <span className="text-3xl">{category.icon}</span>
+                            {category.name}
+                          </CardTitle>
+                          <CardDescription>20 questions</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Button
+                            onClick={() => handleStartQuiz(category.id)}
+                            className="w-full"
+                          >
+                            Start
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );
-}
+};
+
+export default Education;
