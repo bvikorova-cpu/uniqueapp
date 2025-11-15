@@ -50,7 +50,7 @@ serve(async (req) => {
     });
 
     const paidJobListingSessions = sessions.data.filter(
-      session => 
+      (session: Stripe.Checkout.Session) => 
         session.payment_status === "paid" &&
         session.metadata?.type === "job_listing"
     );

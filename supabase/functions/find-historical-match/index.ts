@@ -229,12 +229,12 @@ Return ONLY a valid JSON array with these exact fields. Example:
     });
 
     // Sort by similarity
-    matches.sort((a, b) => b.similarity - a.similarity);
+    matches.sort((a: any, b: any) => b.similarity - a.similarity);
 
     const response = {
       matches,
       tier,
-      aiAnalysis: tier === 'heritage' ? aiAnalysis : undefined,
+      aiAnalysis: tier === 'heritage' ? facialAnalysis : undefined,
     };
 
     // Save matches to database
@@ -264,8 +264,9 @@ Return ONLY a valid JSON array with these exact fields. Example:
     });
   } catch (error) {
     console.error("Error:", error);
+    const errorMessage = error instanceof Error ? error.message : String(error);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: errorMessage }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,

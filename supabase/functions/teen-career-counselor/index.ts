@@ -20,8 +20,8 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseAuth.auth.getUser(token);
-    const user = data.user;
+    const { data: userData } = await supabaseAuth.auth.getUser(token);
+    const user = userData.user;
     if (!user) throw new Error("Unauthorized");
 
     // Use service role for database operations to bypass RLS
@@ -117,8 +117,8 @@ Please provide comprehensive career guidance tailored to their profile.`;
       throw new Error(`AI gateway error: ${response.status}`);
     }
 
-    const data = await response.json();
-    const guidance = data.choices[0].message.content;
+    const aiData = await response.json();
+    const guidance = aiData.choices[0].message.content;
 
     // Deduct usage after successful generation
     if (hasFreeTrial) {
