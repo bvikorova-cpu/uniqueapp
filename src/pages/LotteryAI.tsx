@@ -181,7 +181,7 @@ export default function LotteryAI() {
 
     try {
       const priceId = SUBSCRIPTION_TIERS[tier].price_id;
-      const { data, error } = await supabase.functions.invoke("create-checkout", {
+      const { data, error } = await supabase.functions.invoke("create-lottery-subscription", {
         body: { priceId },
       });
 
