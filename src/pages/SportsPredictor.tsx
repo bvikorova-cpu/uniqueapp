@@ -168,8 +168,8 @@ export default function SportsPredictor() {
     } catch (error) {
       console.error('Error fetching matches:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa načítať zápasy",
+        title: "Error",
+        description: "Failed to load matches",
         variant: "destructive",
       });
     } finally {
@@ -188,8 +188,8 @@ export default function SportsPredictor() {
       await createCheckout(selectedTier);
     } catch (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa vytvoriť platbu. Skúste to znova.",
+        title: "Error",
+        description: "Failed to create payment. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -205,8 +205,8 @@ export default function SportsPredictor() {
 
     if (!canViewPredictions) {
       toast({
-        title: "Predplatné vyžadované",
-        description: "Pre generovanie predikcií potrebujete aktívne predplatné",
+        title: "Subscription Required",
+        description: "Active subscription required to generate predictions",
         variant: "destructive",
       });
       return;
@@ -221,8 +221,8 @@ export default function SportsPredictor() {
       if (error) throw error;
 
       toast({
-        title: "Predikcia vygenerovaná! 🎯",
-        description: "AI úspešne analyzovala zápas",
+        title: "Prediction Generated! 🎯",
+        description: "AI successfully analyzed the match",
       });
 
       // Refresh matches to show new prediction
@@ -230,8 +230,8 @@ export default function SportsPredictor() {
     } catch (error: any) {
       console.error('Error generating prediction:', error);
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa vygenerovať predikciu",
+        title: "Error",
+        description: error.message || "Failed to generate prediction",
         variant: "destructive",
       });
     } finally {
@@ -250,7 +250,7 @@ export default function SportsPredictor() {
           <div className="flex justify-end mb-4">
             {user && (
               <Button onClick={() => navigate('/sports-admin')} variant="outline">
-                ⚙️ Pridať zápasy
+                ⚙️ Add Matches
               </Button>
             )}
           </div>
@@ -272,7 +272,7 @@ export default function SportsPredictor() {
           <div className="flex flex-wrap gap-4 justify-center mb-8">
             <Button size="lg" onClick={() => user ? handleSubscribe('ai_premium') : navigate("/auth")}>
               <Trophy className="mr-2 h-5 w-5" />
-              {user ? "Predplatiť" : "Prihlásiť sa"}
+              {user ? "Subscribe" : "Sign In"}
             </Button>
             <Button size="lg" variant="outline">
               <BarChart3 className="mr-2 h-5 w-5" />
@@ -281,7 +281,7 @@ export default function SportsPredictor() {
             {user && (
               <Button size="lg" variant="secondary" onClick={() => navigate("/admin/sports-matches")}>
                 <Activity className="mr-2 h-5 w-5" />
-                Pridať zápas
+                Add Match
               </Button>
             )}
           </div>
@@ -415,7 +415,7 @@ export default function SportsPredictor() {
                                 <div className="absolute inset-0 bg-background/80 backdrop-blur-sm rounded-lg flex items-center justify-center z-10">
                                   <div className="text-center">
                                     <Lock className="h-8 w-8 text-primary mx-auto mb-2" />
-                                    <p className="text-sm font-semibold">Predplatné vyžadované</p>
+                                    <p className="text-sm font-semibold">Subscription Required</p>
                                   </div>
                                 </div>
                               )}
@@ -457,7 +457,7 @@ export default function SportsPredictor() {
                               ) : (
                                 <>
                                   <Zap className="mr-2 h-4 w-4" />
-                                  {canViewPredictions ? 'Vygenerovať AI predikciu' : 'Predplatné vyžadované'}
+                                  {canViewPredictions ? 'Generate AI Prediction' : 'Subscription Required'}
                                 </>
                               )}
                             </Button>
@@ -593,10 +593,10 @@ export default function SportsPredictor() {
                     ) : subscribed && ((pricingTier.name === "AI Premium" && tier === 'ai_premium') || (pricingTier.name === "Expert Tipster" && tier === 'expert_tipster')) ? (
                       <>
                         <CheckCircle2 className="mr-2 h-4 w-4" />
-                        Aktívne
+                        Active
                       </>
                     ) : (
-                      "Predplatiť"
+                      "Subscribe"
                     )}
                   </Button>
                 </CardContent>

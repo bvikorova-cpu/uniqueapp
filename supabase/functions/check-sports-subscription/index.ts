@@ -8,8 +8,8 @@ const corsHeaders = {
 };
 
 const TIER_MAPPING = {
-  "price_ai_premium_sports": "ai_premium",
-  "price_expert_tipster_sports": "expert_tipster",
+  "price_1STrI00QTWhd4oRpKkCPUIac": "ai_premium",
+  "price_1STs7E0QTWhd4oRpt2pihD7S": "expert_tipster",
 };
 
 const logStep = (step: string, details?: any) => {
