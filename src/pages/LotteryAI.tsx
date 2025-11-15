@@ -148,7 +148,7 @@ export default function LotteryAI() {
     
     setCheckingSubscription(true);
     try {
-      const { data, error } = await supabase.functions.invoke("check-subscription");
+      const { data, error } = await supabase.functions.invoke("check-lottery-subscription");
       if (error) throw error;
       setSubscription(data);
     } catch (error) {
@@ -235,18 +235,24 @@ export default function LotteryAI() {
       return;
     }
 
-    // Check generation limits for Basic tier
-    if (subscription.tier === "basic") {
-      const { data: subData } = await supabase
-        .from("user_subscriptions")
-        .select("generations_used, generations_limit")
-        .eq("user_id", user.id)
-        .single();
+    // Check generation limits for Basic tier (10 generations per month)
+    if (subscription.isBasic && !subscription.isPro) {
+      // Get the start of the current month
+      const now = new Date();
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
       
-      if (subData && subData.generations_used >= subData.generations_limit) {
+      const { count, error: countError } = await supabase
+        .from("lottery_generations")
+        .select("*", { count: 'exact', head: true })
+        .eq("user_id", user.id)
+        .gte("created_at", monthStart);
+      
+      if (countError) {
+        console.error("Error checking generation count:", countError);
+      } else if (count !== null && count >= 10) {
         toast({
           title: "Generation Limit Reached",
-          description: "Upgrade to Pro for unlimited generations",
+          description: "You've used all 10 generations this month. Upgrade to Pro for unlimited generations!",
           variant: "destructive",
         });
         return;
@@ -300,20 +306,6 @@ export default function LotteryAI() {
         main_numbers: generatedData.numbers,
         bonus_numbers: generatedData.bonusNumbers && generatedData.bonusNumbers.length > 0 ? generatedData.bonusNumbers : null,
       });
-
-      // Update generation count
-      const { data: subData } = await supabase
-        .from("user_subscriptions")
-        .select("generations_used")
-        .eq("user_id", user.id)
-        .single();
-
-      if (subData) {
-        await supabase
-          .from("user_subscriptions")
-          .update({ generations_used: subData.generations_used + 1 })
-          .eq("user_id", user.id);
-      }
 
       await loadHistory();
       
