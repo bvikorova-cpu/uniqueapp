@@ -434,3 +434,6 @@ verify_jwt = true
 
 [functions.create-lottery-subscription]
 verify_jwt = true
+
+[functions.check-lottery-subscription]
+verify_jwt = true
