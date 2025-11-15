@@ -27,7 +27,9 @@ serve(async (req) => {
 
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-    logStep("Stripe key verified");
+    const keyPrefix = stripeKey.substring(0, 8);
+    const isTestMode = keyPrefix.includes('test');
+    logStep("Stripe key verified", { keyPrefix, isTestMode });
 
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -70,6 +72,9 @@ serve(async (req) => {
     }
 
     // Create checkout session
+    const priceId = PRICE_IDS[tier as keyof typeof PRICE_IDS];
+    logStep("Creating checkout session", { tier, priceId, PRICE_IDS });
+    
     const origin = req.headers.get("origin") || "http://localhost:3000";
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
