@@ -4,6 +4,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Dna, Users, Heart, Baby, Sparkles, Shield, Award } from "lucide-react";
+import { DNAUploadSection } from "@/components/dna/DNAUploadSection";
+import { AncestralMemoryViewer } from "@/components/dna/AncestralMemoryViewer";
+import { GeneticDatingSection } from "@/components/dna/GeneticDatingSection";
+import { DigitalOffspringChat } from "@/components/dna/DigitalOffspringChat";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Service {
   id: string;
