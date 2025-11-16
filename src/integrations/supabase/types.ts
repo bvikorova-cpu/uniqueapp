@@ -529,6 +529,59 @@ export type Database = {
         }
         Relationships: []
       }
+      ancestral_memories: {
+        Row: {
+          ancestor_era: string | null
+          ancestor_location: string | null
+          ancestor_name: string | null
+          created_at: string | null
+          dna_analysis_id: string | null
+          historical_context: string | null
+          id: string
+          memory_story: string | null
+          memory_type: string | null
+          restored_photo_url: string | null
+          user_id: string
+          voice_synthesis_url: string | null
+        }
+        Insert: {
+          ancestor_era?: string | null
+          ancestor_location?: string | null
+          ancestor_name?: string | null
+          created_at?: string | null
+          dna_analysis_id?: string | null
+          historical_context?: string | null
+          id?: string
+          memory_story?: string | null
+          memory_type?: string | null
+          restored_photo_url?: string | null
+          user_id: string
+          voice_synthesis_url?: string | null
+        }
+        Update: {
+          ancestor_era?: string | null
+          ancestor_location?: string | null
+          ancestor_name?: string | null
+          created_at?: string | null
+          dna_analysis_id?: string | null
+          historical_context?: string | null
+          id?: string
+          memory_story?: string | null
+          memory_type?: string | null
+          restored_photo_url?: string | null
+          user_id?: string
+          voice_synthesis_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ancestral_memories_dna_analysis_id_fkey"
+            columns: ["dna_analysis_id"]
+            isOneToOne: false
+            referencedRelation: "dna_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       antique_collections: {
         Row: {
           created_at: string | null
@@ -6861,6 +6914,100 @@ export type Database = {
         }
         Relationships: []
       }
+      digital_offspring: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          dna_analysis_id: string | null
+          genetic_traits: Json | null
+          id: string
+          is_active: boolean | null
+          last_interaction_at: string | null
+          learning_progress: Json | null
+          memory_data: Json | null
+          name: string
+          personality_data: Json | null
+          system_prompt: string | null
+          user_id: string
+          voice_profile_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          dna_analysis_id?: string | null
+          genetic_traits?: Json | null
+          id?: string
+          is_active?: boolean | null
+          last_interaction_at?: string | null
+          learning_progress?: Json | null
+          memory_data?: Json | null
+          name: string
+          personality_data?: Json | null
+          system_prompt?: string | null
+          user_id: string
+          voice_profile_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          dna_analysis_id?: string | null
+          genetic_traits?: Json | null
+          id?: string
+          is_active?: boolean | null
+          last_interaction_at?: string | null
+          learning_progress?: Json | null
+          memory_data?: Json | null
+          name?: string
+          personality_data?: Json | null
+          system_prompt?: string | null
+          user_id?: string
+          voice_profile_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_offspring_dna_analysis_id_fkey"
+            columns: ["dna_analysis_id"]
+            isOneToOne: false
+            referencedRelation: "dna_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      digital_offspring_conversations: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          offspring_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          offspring_id: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          offspring_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "digital_offspring_conversations_offspring_id_fkey"
+            columns: ["offspring_id"]
+            isOneToOne: false
+            referencedRelation: "digital_offspring"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       discussion_replies: {
         Row: {
           content: string
@@ -7021,6 +7168,48 @@ export type Database = {
           name?: string
           points?: number | null
           rarity?: string | null
+        }
+        Relationships: []
+      }
+      dna_analyses: {
+        Row: {
+          analysis_data: Json | null
+          completed_at: string | null
+          created_at: string | null
+          family_tree_data: Json | null
+          genetic_traits: Json | null
+          health_markers: Json | null
+          heritage_breakdown: Json | null
+          id: string
+          sample_id: string
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          analysis_data?: Json | null
+          completed_at?: string | null
+          created_at?: string | null
+          family_tree_data?: Json | null
+          genetic_traits?: Json | null
+          health_markers?: Json | null
+          heritage_breakdown?: Json | null
+          id?: string
+          sample_id: string
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          analysis_data?: Json | null
+          completed_at?: string | null
+          created_at?: string | null
+          family_tree_data?: Json | null
+          genetic_traits?: Json | null
+          health_markers?: Json | null
+          heritage_breakdown?: Json | null
+          id?: string
+          sample_id?: string
+          status?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -9024,6 +9213,113 @@ export type Database = {
           unhealthy_image_url?: string | null
           user_id?: string
           years_forward?: number
+        }
+        Relationships: []
+      }
+      genetic_dating_profiles: {
+        Row: {
+          age: number | null
+          bio: string | null
+          created_at: string | null
+          display_name: string | null
+          dna_analysis_id: string | null
+          genetic_traits: Json | null
+          health_compatibility: Json | null
+          id: string
+          is_active: boolean | null
+          location: string | null
+          personality_dna: Json | null
+          photo_url: string | null
+          preferences: Json | null
+          subscription_active: boolean | null
+          subscription_expires_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          dna_analysis_id?: string | null
+          genetic_traits?: Json | null
+          health_compatibility?: Json | null
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          personality_dna?: Json | null
+          photo_url?: string | null
+          preferences?: Json | null
+          subscription_active?: boolean | null
+          subscription_expires_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          dna_analysis_id?: string | null
+          genetic_traits?: Json | null
+          health_compatibility?: Json | null
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          personality_dna?: Json | null
+          photo_url?: string | null
+          preferences?: Json | null
+          subscription_active?: boolean | null
+          subscription_expires_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "genetic_dating_profiles_dna_analysis_id_fkey"
+            columns: ["dna_analysis_id"]
+            isOneToOne: false
+            referencedRelation: "dna_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      genetic_matches: {
+        Row: {
+          compatibility_score: number | null
+          genetic_compatibility: Json | null
+          health_compatibility: Json | null
+          id: string
+          match_status: string | null
+          matched_at: string | null
+          offspring_predictions: Json | null
+          personality_compatibility: Json | null
+          user1_id: string
+          user2_id: string
+        }
+        Insert: {
+          compatibility_score?: number | null
+          genetic_compatibility?: Json | null
+          health_compatibility?: Json | null
+          id?: string
+          match_status?: string | null
+          matched_at?: string | null
+          offspring_predictions?: Json | null
+          personality_compatibility?: Json | null
+          user1_id: string
+          user2_id: string
+        }
+        Update: {
+          compatibility_score?: number | null
+          genetic_compatibility?: Json | null
+          health_compatibility?: Json | null
+          id?: string
+          match_status?: string | null
+          matched_at?: string | null
+          offspring_predictions?: Json | null
+          personality_compatibility?: Json | null
+          user1_id?: string
+          user2_id?: string
         }
         Relationships: []
       }
