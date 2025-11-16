@@ -3,40 +3,28 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SubscriptionTiers } from "@/components/creator/SubscriptionTiers";
 import { ExclusivePostsList } from "@/components/creator/ExclusivePostsList";
 import { CreatorMessaging } from "@/components/creator/CreatorMessaging";
 import { CreatorMediaUpload } from "@/components/creator/CreatorMediaUpload";
-import {
-  Users,
-  CheckCircle2,
-  Gift,
-  Heart,
-  DollarSign,
-  Crown,
-  ShieldAlert,
-} from "lucide-react";
+import { CreatorContentPackForm } from "@/components/creator/CreatorContentPackForm";
+import { CreatorContentPacks } from "@/components/creator/CreatorContentPacks";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter } from "lucide-react";
 
 interface Creator {
   id: string;
+  user_id: string;
   display_name: string;
   bio: string;
+  avatar_url: string | null;
+  cover_image_url: string | null;
   total_subscribers: number;
   is_verified: boolean;
   is_adult_content: boolean;
-}
-
-interface VirtualGift {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image_url: string;
+  social_links: any;
 }
 
 interface SubscriptionTier {
@@ -54,63 +42,64 @@ export default function CreatorProfile() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [creator, setCreator] = useState<Creator | null>(null);
-  const [gifts, setGifts] = useState<VirtualGift[]>([]);
-  const [selectedGift, setSelectedGift] = useState<VirtualGift | null>(null);
-  const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
   const [tiers, setTiers] = useState<SubscriptionTier[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [userSubscription, setUserSubscription] = useState<{
     subscribed: boolean;
     tier_id?: string;
     subscription_end?: string;
   }>({ subscribed: false });
-  const [checkingSubscription, setCheckingSubscription] = useState(false);
 
   useEffect(() => {
     loadCreatorProfile();
-    loadGifts();
     loadTiers();
     checkSubscription();
+    getCurrentUser();
   }, [creatorId]);
 
   useEffect(() => {
     const subscription = searchParams.get('subscription');
-    const sessionId = searchParams.get('session_id');
+    const purchase = searchParams.get('purchase');
 
-    if (subscription === 'success' && sessionId && creatorId) {
+    if (subscription === 'success') {
       checkSubscription();
       toast({
         title: "Subscription Activated!",
         description: "Welcome to the creator's community!",
       });
       window.history.replaceState({}, '', `/creator/${creatorId}`);
-    } else if (subscription === 'cancelled') {
+    } else if (purchase === 'success') {
       toast({
-        variant: "destructive",
-        title: "Subscription Cancelled",
-        description: "Your subscription was cancelled.",
+        title: "Purchase Complete!",
+        description: "Content pack purchased successfully!",
       });
       window.history.replaceState({}, '', `/creator/${creatorId}`);
     }
   }, [searchParams, creatorId, toast]);
 
+  const getCurrentUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setCurrentUserId(user?.id || null);
+  };
+
   const loadCreatorProfile = async () => {
     try {
       const { data, error } = await supabase
-        .from("creator_profiles")
-        .select("*")
-        .eq("id", creatorId)
+        .from('creator_profiles')
+        .select('*')
+        .eq('user_id', creatorId)
         .single();
 
       if (error) throw error;
       setCreator(data);
     } catch (error: any) {
+      console.error('Error loading creator:', error);
       toast({
-        title: "Error",
-        description: error.message,
         variant: "destructive",
+        title: "Error",
+        description: "Failed to load creator profile",
       });
-      navigate("/browse-creators");
+      navigate('/discover-creators');
     } finally {
       setLoading(false);
     }
@@ -118,13 +107,10 @@ export default function CreatorProfile() {
 
   const loadTiers = async () => {
     try {
-      if (!creatorId) return;
-
       const { data, error } = await supabase
         .from('creator_subscription_tiers')
         .select('*')
         .eq('creator_id', creatorId)
-        .eq('is_active', true)
         .order('price', { ascending: true });
 
       if (error) throw error;
@@ -136,99 +122,26 @@ export default function CreatorProfile() {
 
   const checkSubscription = async () => {
     try {
-      if (!creatorId) return;
-      
-      setCheckingSubscription(true);
       const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        setUserSubscription({ subscribed: false });
-        return;
-      }
+      if (!user) return;
 
       const { data, error } = await supabase.functions.invoke('check-creator-subscription', {
-        body: { creatorId }
+        body: { creatorId },
       });
 
       if (error) throw error;
 
-      setUserSubscription(data || { subscribed: false });
+      setUserSubscription({
+        subscribed: data?.subscribed || false,
+        tier_id: data?.tier_id,
+        subscription_end: data?.subscription_end,
+      });
     } catch (error: any) {
       console.error('Error checking subscription:', error);
-      setUserSubscription({ subscribed: false });
-    } finally {
-      setCheckingSubscription(false);
     }
   };
 
-  const loadGifts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("virtual_gifts")
-        .select("*")
-        .eq("is_active", true)
-        .order("price", { ascending: true });
-
-      if (error) throw error;
-      setGifts(data || []);
-    } catch (error: any) {
-      console.error("Error loading gifts:", error);
-    }
-  };
-
-  const handleSendGift = async () => {
-    if (!selectedGift) return;
-
-    setSending(true);
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication Required",
-          description: "Please sign in to send gifts",
-          variant: "destructive",
-        });
-        navigate("/auth");
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke("send-gift-payment", {
-        body: {
-          giftId: selectedGift.id,
-          creatorId: creatorId,
-          message: message || null,
-        },
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Gift Sent!",
-        description: `You sent ${selectedGift.name} to ${creator?.display_name}`,
-      });
-
-      setSelectedGift(null);
-      setMessage("");
-      loadCreatorProfile();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setSending(false);
-    }
-  };
-
-  const groupedGifts = gifts.reduce((acc, gift) => {
-    if (!acc[gift.category]) {
-      acc[gift.category] = [];
-    }
-    acc[gift.category].push(gift);
-    return acc;
-  }, {} as Record<string, VirtualGift[]>);
+  const isOwnProfile = currentUserId === creatorId;
 
   if (loading) {
     return (
@@ -241,158 +154,154 @@ export default function CreatorProfile() {
     );
   }
 
+  if (!creator) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        {/* Creator Header */}
-        <Card className="mb-8">
-          <CardHeader>
-            <div className="flex items-start gap-6">
-              <div className="h-24 w-24 rounded-full bg-gradient-to-r from-primary to-purple-500 flex items-center justify-center text-white font-bold text-4xl">
-                {creator?.display_name.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <CardTitle className="text-3xl">{creator?.display_name}</CardTitle>
-                  {creator?.is_verified && (
-                    <CheckCircle2 className="h-6 w-6 text-primary" />
+      {/* Cover Image */}
+      {creator.cover_image_url && (
+        <div className="h-64 w-full relative">
+          <img
+            src={creator.cover_image_url}
+            alt="Cover"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+        </div>
+      )}
+
+      <div className="container mx-auto px-4 relative">
+        {/* Profile Header */}
+        <div className={creator.cover_image_url ? "-mt-20" : "pt-8"}>
+          <Card className="mb-8">
+            <CardHeader>
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                {/* Avatar */}
+                <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
+                  <AvatarImage src={creator.avatar_url || undefined} />
+                  <AvatarFallback className="text-4xl bg-gradient-to-br from-primary to-purple-500 text-white">
+                    {creator.display_name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+
+                {/* Info */}
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CardTitle className="text-3xl">{creator.display_name}</CardTitle>
+                    {creator.is_verified && (
+                      <CheckCircle2 className="h-6 w-6 text-primary" />
+                    )}
+                    {creator.is_adult_content && (
+                      <Badge variant="destructive">
+                        <ShieldAlert className="h-3 w-3 mr-1" />
+                        18+
+                      </Badge>
+                    )}
+                  </div>
+                  <CardDescription className="text-lg mb-4">
+                    {creator.bio}
+                  </CardDescription>
+                  
+                  <div className="flex items-center gap-4 text-muted-foreground mb-4">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      <span className="font-semibold">{creator.total_subscribers}</span>
+                      <span>subscribers</span>
+                    </div>
+                  </div>
+
+                  {/* Social Links */}
+                  {creator.social_links && Object.values(creator.social_links).some(link => link) && (
+                    <div className="flex gap-2">
+                      {creator.social_links.instagram && (
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={creator.social_links.instagram} target="_blank" rel="noopener noreferrer">
+                            <Instagram className="h-4 w-4 mr-1" />
+                            Instagram
+                          </a>
+                        </Button>
+                      )}
+                      {creator.social_links.twitter && (
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={creator.social_links.twitter} target="_blank" rel="noopener noreferrer">
+                            <Twitter className="h-4 w-4 mr-1" />
+                            Twitter
+                          </a>
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
-                <CardDescription className="text-lg mb-4">
-                  {creator?.bio || "No bio yet"}
-                </CardDescription>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Users className="h-5 w-5" />
-                  <span>{creator?.total_subscribers || 0} subscribers</span>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                {userSubscription.subscribed && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    <Crown className="h-4 w-4" />
+
+                {/* Subscribe Badge */}
+                {userSubscription.subscribed && !isOwnProfile && (
+                  <Badge variant="secondary" className="flex items-center gap-1 text-lg px-4 py-2">
+                    <Crown className="h-5 w-5" />
                     Subscribed
                   </Badge>
                 )}
               </div>
-            </div>
-          </CardHeader>
-        </Card>
-
-        {/* Subscription Tiers */}
-        <div className="mb-8">
-          <SubscriptionTiers
-            creatorId={creatorId!}
-            tiers={tiers}
-            currentTierId={userSubscription.tier_id}
-            onSubscribe={checkSubscription}
-          />
+            </CardHeader>
+          </Card>
         </div>
 
-        {/* Exclusive Content */}
-        <div className="mb-8">
+        <div className="space-y-8 pb-12">
+          {/* Subscription Tiers - Only show if not subscribed and not own profile */}
+          {!userSubscription.subscribed && !isOwnProfile && (
+            <SubscriptionTiers
+              creatorId={creatorId!}
+              tiers={tiers}
+              currentTierId={userSubscription.tier_id}
+              onSubscribe={() => {
+                checkSubscription();
+              }}
+            />
+          )}
+
+          {/* Content Packs */}
+          {!isOwnProfile && (
+            <CreatorContentPacks
+              creatorId={creatorId!}
+              canPurchase={true}
+            />
+          )}
+
+          {/* Creator's Content Pack Management */}
+          {isOwnProfile && (
+            <CreatorContentPackForm
+              creatorId={creatorId!}
+              onSuccess={() => window.location.reload()}
+            />
+          )}
+
+          {/* Messaging - Only for subscribers */}
+          {userSubscription.subscribed && !isOwnProfile && (
+            <CreatorMessaging
+              creatorId={creatorId!}
+              creatorName={creator.display_name}
+              canMessage={userSubscription.subscribed}
+            />
+          )}
+
+          {/* Creator's Media Upload */}
+          {isOwnProfile && (
+            <CreatorMediaUpload
+              creatorId={creatorId!}
+              onUploadComplete={() => {
+                loadCreatorProfile();
+              }}
+            />
+          )}
+
+          {/* Exclusive Content */}
           <ExclusivePostsList
             creatorId={creatorId!}
             userTierId={userSubscription.tier_id}
-            isSubscribed={userSubscription.subscribed}
+            isSubscribed={userSubscription.subscribed || isOwnProfile}
           />
         </div>
-
-        {/* Messaging Section */}
-        {userSubscription.subscribed && (
-          <CreatorMessaging
-            creatorId={creatorId!}
-            creatorName={creator.display_name}
-            canMessage={userSubscription.subscribed}
-          />
-        )}
-
-        {/* Creator's own dashboard */}
-        {creator.id === creatorId && (
-          <CreatorMediaUpload
-            creatorId={creatorId!}
-            onUploadComplete={loadCreatorProfile}
-          />
-        )}
-
-        {/* Exclusive Content */}
-        <ExclusivePostsList
-          creatorId={creatorId!}
-          userTierId={userSubscription.tier_id}
-          isSubscribed={userSubscription.subscribed}
-        />
-
-        {/* Send Gift Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Gift className="h-6 w-6 text-primary" />
-              Send a Virtual Gift
-            </CardTitle>
-            <CardDescription>
-              Show your support by sending a virtual gift (20% platform fee, 80% goes to creator)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {Object.entries(groupedGifts).map(([category, categoryGifts]) => (
-                <div key={category}>
-                  <h3 className="text-lg font-semibold mb-3 capitalize">{category}</h3>
-                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    {categoryGifts.map((gift) => (
-                      <Dialog key={gift.id}>
-                        <DialogTrigger asChild>
-                          <button
-                            onClick={() => setSelectedGift(gift)}
-                            className="flex flex-col items-center p-4 border-2 rounded-lg hover:border-primary transition-all cursor-pointer"
-                          >
-                            <div className="text-4xl mb-2">🎁</div>
-                            <p className="font-semibold text-sm text-center">{gift.name}</p>
-                            <p className="text-xs text-primary font-bold">${gift.price}</p>
-                          </button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Send {gift.name}</DialogTitle>
-                            <DialogDescription>{gift.description}</DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                              <div>
-                                <p className="text-sm text-muted-foreground">Gift Price</p>
-                                <p className="text-2xl font-bold">${gift.price}</p>
-                              </div>
-                              <div className="text-right">
-                                <p className="text-sm text-muted-foreground">Creator Gets</p>
-                                <p className="text-xl font-bold text-primary">
-                                  ${(gift.price * 0.8).toFixed(2)}
-                                </p>
-                                <p className="text-xs text-muted-foreground">(80%)</p>
-                              </div>
-                            </div>
-                            <Textarea
-                              placeholder="Add a message (optional)"
-                              value={message}
-                              onChange={(e) => setMessage(e.target.value)}
-                              rows={3}
-                            />
-                            <Button
-                              onClick={handleSendGift}
-                              disabled={sending}
-                              className="w-full"
-                              size="lg"
-                            >
-                              {sending ? "Processing..." : `Send Gift - $${gift.price}`}
-                            </Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

@@ -5458,6 +5458,95 @@ export type Database = {
           },
         ]
       }
+      creator_content_packs: {
+        Row: {
+          content_count: number
+          content_type: string
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          preview_urls: string[] | null
+          price: number
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          content_count: number
+          content_type: string
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          preview_urls?: string[] | null
+          price: number
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          content_count?: number
+          content_type?: string
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          preview_urls?: string[] | null
+          price?: number
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      creator_content_purchases: {
+        Row: {
+          amount_paid: number
+          buyer_id: string
+          creator_earning: number
+          creator_id: string
+          id: string
+          pack_id: string
+          platform_commission: number
+          purchased_at: string | null
+          status: string | null
+          stripe_payment_intent_id: string | null
+        }
+        Insert: {
+          amount_paid: number
+          buyer_id: string
+          creator_earning: number
+          creator_id: string
+          id?: string
+          pack_id: string
+          platform_commission: number
+          purchased_at?: string | null
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+        }
+        Update: {
+          amount_paid?: number
+          buyer_id?: string
+          creator_earning?: number
+          creator_id?: string
+          id?: string
+          pack_id?: string
+          platform_commission?: number
+          purchased_at?: string | null
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_content_purchases_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "creator_content_packs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creator_exclusive_posts: {
         Row: {
           comments_count: number | null
@@ -5683,6 +5772,7 @@ export type Database = {
           is_adult_content: boolean | null
           is_verified: boolean | null
           platform_commission_rate: number | null
+          social_links: Json | null
           total_earnings: number | null
           total_subscribers: number | null
           updated_at: string | null
@@ -5698,6 +5788,7 @@ export type Database = {
           is_adult_content?: boolean | null
           is_verified?: boolean | null
           platform_commission_rate?: number | null
+          social_links?: Json | null
           total_earnings?: number | null
           total_subscribers?: number | null
           updated_at?: string | null
@@ -5713,6 +5804,7 @@ export type Database = {
           is_adult_content?: boolean | null
           is_verified?: boolean | null
           platform_commission_rate?: number | null
+          social_links?: Json | null
           total_earnings?: number | null
           total_subscribers?: number | null
           updated_at?: string | null
