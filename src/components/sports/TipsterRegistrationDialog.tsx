@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Dialog,
@@ -48,12 +48,110 @@ export function TipsterRegistrationDialog({
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [hasPaid, setHasPaid] = useState(false);
+  const [checkingSubscription, setCheckingSubscription] = useState(false);
   const [formData, setFormData] = useState({
     displayName: "",
     sport: "",
     bio: "",
     tipPrice: "5",
   });
+
+  // Check if user has active tipster subscription on dialog open
+  const checkSubscription = async () => {
+    setCheckingSubscription(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase.functions.invoke("check-tipster-subscription");
+      if (error) throw error;
+
+      if (data?.has_tipster_subscription) {
+        setHasPaid(true);
+      }
+    } catch (error) {
+      console.error("Error checking subscription:", error);
+    } finally {
+      setCheckingSubscription(false);
+    }
+  };
+
+  // Check subscription when dialog opens
+  useEffect(() => {
+    if (open) {
+      checkSubscription();
+    }
+  }, [open]);
+
+  const handlePayment = async () => {
+    setLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication required",
+          description: "Please sign in to become a tipster",
+          variant: "destructive",
+        });
+        navigate("/auth");
+        return;
+      }
+
+      // Check if user already has subscription
+      const { data: subData } = await supabase.functions.invoke("check-tipster-subscription");
+      if (subData?.has_tipster_subscription) {
+        setHasPaid(true);
+        toast({
+          title: "Subscription active",
+          description: "Please fill in your tipster details",
+        });
+        return;
+      }
+
+      // Create checkout session
+      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
+        "create-tipster-checkout"
+      );
+
+      if (checkoutError) throw checkoutError;
+
+      toast({
+        title: "Redirecting to payment...",
+        description: "Pay 19.99 EUR to become a tipster",
+      });
+
+      // Redirect to Stripe checkout
+      window.open(checkoutData.url, "_blank");
+      
+      // Start checking for successful payment
+      const checkInterval = setInterval(async () => {
+        const { data } = await supabase.functions.invoke("check-tipster-subscription");
+        if (data?.has_tipster_subscription) {
+          clearInterval(checkInterval);
+          setHasPaid(true);
+          toast({
+            title: "Payment successful!",
+            description: "Now fill in your tipster details",
+          });
+        }
+      }, 3000);
+
+      // Clear interval after 5 minutes
+      setTimeout(() => clearInterval(checkInterval), 300000);
+      
+    } catch (error) {
+      console.error("Error creating checkout:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create payment session. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +163,7 @@ export function TipsterRegistrationDialog({
       if (!user) {
         toast({
           title: "Authentication required",
-          description: "Please sign in to apply as a tipster",
+          description: "Please sign in to become a tipster",
           variant: "destructive",
         });
         navigate("/auth");
@@ -88,42 +186,26 @@ export function TipsterRegistrationDialog({
         return;
       }
 
-      // Create pending tipster profile first
+      // Create active tipster profile (no approval needed since they paid)
       const { error: insertError } = await supabase.from("sports_tipsters").insert({
         user_id: user.id,
         display_name: formData.displayName,
         sport_specialization: formData.sport,
         bio: formData.bio || null,
         tip_price: parseFloat(formData.tipPrice),
-        status: "pending",
+        status: "active",
         subscription_price: 19.99,
       });
 
       if (insertError) throw insertError;
 
-      // Create checkout session for tipster subscription
-      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
-        "create-tipster-checkout",
-        {
-          body: {
-            displayName: formData.displayName,
-            sport: formData.sport,
-            bio: formData.bio,
-            tipPrice: formData.tipPrice,
-          },
-        }
-      );
-
-      if (checkoutError) throw checkoutError;
-
       toast({
-        title: "Redirecting to payment...",
-        description: "Complete your subscription to start publishing tips",
+        title: "Success!",
+        description: "You are now a tipster. Start creating and selling tips!",
       });
 
-      // Redirect to Stripe checkout
-      window.open(checkoutData.url, "_blank");
       onOpenChange(false);
+      navigate("/sports-predictor");
       
       setFormData({
         displayName: "",
@@ -131,11 +213,12 @@ export function TipsterRegistrationDialog({
         bio: "",
         tipPrice: "5",
       });
+      setHasPaid(false);
     } catch (error) {
-      console.error("Error submitting tipster application:", error);
+      console.error("Error creating tipster profile:", error);
       toast({
         title: "Error",
-        description: "Failed to submit application. Please try again.",
+        description: "Failed to create profile. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -145,125 +228,144 @@ export function TipsterRegistrationDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Apply as Professional Tipster</DialogTitle>
+          <DialogTitle>Become a Professional Tipster</DialogTitle>
           <DialogDescription>
-            Join our platform and share your expertise with subscribers. Fill out the form below to apply.
+            {!hasPaid 
+              ? "First, subscribe to start your tipster journey" 
+              : "Complete your tipster profile"}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="displayName">
-              Display Name <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="displayName"
-              placeholder="Your professional name"
-              value={formData.displayName}
-              onChange={(e) =>
-                setFormData({ ...formData, displayName: e.target.value })
-              }
-              required
-            />
+        {checkingSubscription ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
+        ) : !hasPaid ? (
+          <div className="space-y-4">
+            <div className="bg-muted p-4 rounded-lg space-y-2">
+              <p className="font-semibold text-lg">Tipster Subscription</p>
+              <p className="text-2xl font-bold text-primary">19.99 EUR/month</p>
+              <div className="space-y-1 text-sm mt-4">
+                <p>✓ Publish unlimited tips</p>
+                <p>✓ Set your own tip prices (5-30 EUR)</p>
+                <p>✓ Earn 75% per tip sold</p>
+                <p>✓ Platform fee: 25%</p>
+              </div>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="sport">
-              Sport Specialization <span className="text-destructive">*</span>
-            </Label>
-            <Select
-              value={formData.sport}
-              onValueChange={(value) =>
-                setFormData({ ...formData, sport: value })
-              }
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select your sport" />
-              </SelectTrigger>
-              <SelectContent>
-                {SPORTS.map((sport) => (
-                  <SelectItem key={sport} value={sport}>
-                    {sport}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handlePayment} 
+                disabled={loading} 
+                className="flex-1"
+              >
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Pay & Continue
+              </Button>
+            </div>
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="displayName">Display Name *</Label>
+              <Input
+                id="displayName"
+                value={formData.displayName}
+                onChange={(e) =>
+                  setFormData({ ...formData, displayName: e.target.value })
+                }
+                placeholder="Your professional name"
+                required
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="bio">Bio / Experience</Label>
-            <Textarea
-              id="bio"
-              placeholder="Tell us about your experience, expertise, and why you'd be a great tipster..."
-              value={formData.bio}
-              onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-              rows={4}
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="sport">Sport Specialization *</Label>
+              <Select
+                value={formData.sport}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, sport: value })
+                }
+                required
+              >
+                <SelectTrigger id="sport">
+                  <SelectValue placeholder="Select your main sport" />
+                </SelectTrigger>
+                <SelectContent>
+                  {SPORTS.map((sport) => (
+                    <SelectItem key={sport} value={sport}>
+                      {sport}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="tipPrice">
-              Price per Tip (€) <span className="text-destructive">*</span>
-            </Label>
-            <Select
-              value={formData.tipPrice}
-              onValueChange={(value) =>
-                setFormData({ ...formData, tipPrice: value })
-              }
-              required
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {[1, 2, 3, 5, 7, 10, 15, 20, 25, 30, 40, 50].map((price) => (
-                  <SelectItem key={price} value={price.toString()}>
-                    €{price}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-sm text-muted-foreground">
-              You'll earn 75% of each tip sold
-            </p>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="bio">Professional Bio (Optional)</Label>
+              <Textarea
+                id="bio"
+                value={formData.bio}
+                onChange={(e) =>
+                  setFormData({ ...formData, bio: e.target.value })
+                }
+                placeholder="Tell users about your expertise and track record..."
+                rows={4}
+              />
+            </div>
 
-          <div className="bg-muted p-4 rounded-lg">
-            <h4 className="font-semibold mb-2">Tipster Subscription - €19.99/month</h4>
-            <ul className="text-sm space-y-1 text-muted-foreground">
-              <li>• Subscribe for €19.99/month to publish predictions</li>
-              <li>• Set your own tip price (€1-€50 per tip)</li>
-              <li>• Earn 75% from every tip sold</li>
-              <li>• Platform keeps 25% commission</li>
-              <li>• Cancel anytime from your dashboard</li>
-            </ul>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="tipPrice">Tip Price (EUR) *</Label>
+              <Select
+                value={formData.tipPrice}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, tipPrice: value })
+                }
+                required
+              >
+                <SelectTrigger id="tipPrice">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5 EUR</SelectItem>
+                  <SelectItem value="10">10 EUR</SelectItem>
+                  <SelectItem value="15">15 EUR</SelectItem>
+                  <SelectItem value="20">20 EUR</SelectItem>
+                  <SelectItem value="25">25 EUR</SelectItem>
+                  <SelectItem value="30">30 EUR</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="flex gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1"
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="flex-1" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                "Submit Application"
-              )}
-            </Button>
-          </div>
-        </form>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setHasPaid(false);
+                  onOpenChange(false);
+                }}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={loading} className="flex-1">
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Complete Registration
+              </Button>
+            </div>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
