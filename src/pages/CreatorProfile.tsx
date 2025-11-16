@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +16,7 @@ import {
   Heart,
   DollarSign,
   Crown,
+  ShieldAlert,
 } from "lucide-react";
 
 interface Creator {
@@ -23,6 +25,7 @@ interface Creator {
   bio: string;
   total_subscribers: number;
   is_verified: boolean;
+  is_adult_content: boolean;
 }
 
 interface VirtualGift {

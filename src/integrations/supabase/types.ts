@@ -5465,6 +5465,7 @@ export type Database = {
           created_at: string | null
           creator_id: string
           id: string
+          is_adult_content: boolean | null
           is_published: boolean | null
           likes_count: number | null
           media_urls: string[] | null
@@ -5479,6 +5480,7 @@ export type Database = {
           created_at?: string | null
           creator_id: string
           id?: string
+          is_adult_content?: boolean | null
           is_published?: boolean | null
           likes_count?: number | null
           media_urls?: string[] | null
@@ -5493,6 +5495,7 @@ export type Database = {
           created_at?: string | null
           creator_id?: string
           id?: string
+          is_adult_content?: boolean | null
           is_published?: boolean | null
           likes_count?: number | null
           media_urls?: string[] | null
@@ -5650,7 +5653,9 @@ export type Database = {
           created_at: string | null
           display_name: string
           id: string
+          is_adult_content: boolean | null
           is_verified: boolean | null
+          platform_commission_rate: number | null
           total_earnings: number | null
           total_subscribers: number | null
           updated_at: string | null
@@ -5663,7 +5668,9 @@ export type Database = {
           created_at?: string | null
           display_name: string
           id?: string
+          is_adult_content?: boolean | null
           is_verified?: boolean | null
+          platform_commission_rate?: number | null
           total_earnings?: number | null
           total_subscribers?: number | null
           updated_at?: string | null
@@ -5676,7 +5683,9 @@ export type Database = {
           created_at?: string | null
           display_name?: string
           id?: string
+          is_adult_content?: boolean | null
           is_verified?: boolean | null
+          platform_commission_rate?: number | null
           total_earnings?: number | null
           total_subscribers?: number | null
           updated_at?: string | null

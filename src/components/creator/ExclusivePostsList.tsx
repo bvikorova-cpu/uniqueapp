@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, MessageCircle, Lock, Image as ImageIcon } from "lucide-react";
+import { Heart, MessageCircle, Lock, Image as ImageIcon, ShieldAlert } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 interface ExclusivePost {
@@ -16,6 +16,7 @@ interface ExclusivePost {
   comments_count: number;
   created_at: string;
   tier_ids: string[];
+  is_adult_content: boolean;
 }
 
 interface ExclusivePostsListProps {
@@ -130,6 +131,12 @@ export function ExclusivePostsList({ creatorId, userTierId, isSubscribed }: Excl
                     <CardTitle className="flex items-center gap-2">
                       {post.title}
                       {!canView && <Lock className="h-4 w-4 text-muted-foreground" />}
+                      {post.is_adult_content && (
+                        <Badge variant="destructive" className="text-xs ml-2">
+                          <ShieldAlert className="h-3 w-3 mr-1" />
+                          18+
+                        </Badge>
+                      )}
                     </CardTitle>
                     <CardDescription>
                       {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
