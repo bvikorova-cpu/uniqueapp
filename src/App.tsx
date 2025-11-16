@@ -227,6 +227,7 @@ import VoiceMemorial from "./pages/VoiceMemorial";
 import VoiceMemorialPricing from "./pages/VoiceMemorialPricing";
 import HolographicAvatars from "./pages/HolographicAvatars";
 import CrystalEnergyNetwork from "./pages/CrystalEnergyNetwork";
+import CrystalMarketplace from "./pages/CrystalMarketplace";
 import DNAMemoryNetwork from "./pages/DNAMemoryNetwork";
 import ReincarnationSocial from "./pages/ReincarnationSocial";
 import BlockchainConfessions from "./pages/BlockchainConfessions";
@@ -515,6 +516,7 @@ const App = () => (
           <Route path="/holographic-avatars" element={<HolographicAvatars />} />
           
           <Route path="/crystal-energy-network" element={<CrystalEnergyNetwork />} />
+          <Route path="/crystal-marketplace" element={<CrystalMarketplace />} />
           <Route path="/dna-memory-network" element={<DNAMemoryNetwork />} />
           <Route path="/reincarnation-social" element={<ReincarnationSocial />} />
           <Route path="/blockchain-confessions" element={<BlockchainConfessions />} />

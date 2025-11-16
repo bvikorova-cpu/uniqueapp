@@ -204,8 +204,12 @@ export default function CrystalEnergyNetwork() {
               <p className="text-muted-foreground mb-4">
                 Connect with verified crystal sellers worldwide. Each crystal comes with an AI-verified authenticity certificate and energy profile.
               </p>
-              <Button variant="outline" size="lg">
-                Coming Soon
+              <Button 
+                variant="default" 
+                size="lg"
+                onClick={() => navigate("/crystal-marketplace")}
+              >
+                Explore Marketplace
               </Button>
             </CardContent>
           </Card>
