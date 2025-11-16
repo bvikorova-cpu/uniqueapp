@@ -83,26 +83,42 @@ export default function CrisisRelief() {
             🆘 Crisis Relief Platform
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Rýchla pomoc v kritických situáciách - každá minúta sa ráta
+            Rapid help in critical situations - every minute counts
           </p>
+          
+          <Alert className="mb-6 max-w-3xl mx-auto text-left">
+            <Info className="h-5 w-5" />
+            <AlertDescription className="mt-2">
+              <strong className="block mb-2">How Crisis Relief Works:</strong>
+              <ul className="space-y-2 text-sm">
+                <li>• <strong>Urgent Response:</strong> Submit verified emergency cases requiring immediate financial help (fires, floods, accidents, natural disasters)</li>
+                <li>• <strong>Fast Verification:</strong> All campaigns are verified within 24 hours to ensure authenticity</li>
+                <li>• <strong>Time-Limited:</strong> Emergency campaigns have expiration dates to create urgency</li>
+                <li>• <strong>Platform Fee:</strong> 8% platform fee (higher than other categories due to urgent verification and processing costs)</li>
+                <li>• <strong>Direct Impact:</strong> Funds are released quickly to help those in immediate need</li>
+                <li>• <strong>Transparency:</strong> All verified campaigns show location, urgency level, and supporter count</li>
+              </ul>
+            </AlertDescription>
+          </Alert>
+
           <Button 
             size="lg" 
             onClick={() => navigate('/fundraising/crisis/create')}
             variant="destructive"
           >
             <AlertTriangle className="mr-2 h-5 w-5" />
-            Vytvoriť urgentný prípad
+            Create Emergency Case
           </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Načítavam kampane...</p>
+              <p className="text-muted-foreground">Loading campaigns...</p>
             </div>
           ) : campaigns.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Žiadne aktívne kampane</p>
+              <p className="text-muted-foreground">No active campaigns</p>
             </div>
           ) : (
             campaigns.map((campaign) => (
@@ -122,7 +138,7 @@ export default function CrisisRelief() {
                       {campaign.verified && (
                         <Badge variant="default">
                           <CheckCircle className="h-3 w-3 mr-1" />
-                          Overené
+                          Verified
                         </Badge>
                       )}
                     </div>
@@ -167,7 +183,7 @@ export default function CrisisRelief() {
 
                   <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2 border-t">
                     <Users className="h-4 w-4" />
-                    <span>{campaign.supporters_count} ľudí pomohlo</span>
+                    <span>{campaign.supporters_count} people helped</span>
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -177,7 +193,7 @@ export default function CrisisRelief() {
                     onClick={() => navigate(`/fundraising/crisis/${campaign.id}`)}
                   >
                     <AlertTriangle className="mr-2 h-4 w-4" />
-                    Pomôcť teraz
+                    Help Now
                   </Button>
                 </CardFooter>
               </Card>
