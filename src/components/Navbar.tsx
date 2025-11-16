@@ -193,7 +193,6 @@ const Navbar = () => {
     { path: "/sports-predictor", label: "⚽ Sports Match Predictions", icon: Trophy },
     { path: "/property-marketplace", label: "🏠 Property Marketplace", icon: Building2 },
     { path: "/membership-community", label: "Membership Community", icon: Users },
-    { path: "/superhero-universe", label: "🦸 SuperHero Universe", icon: Zap },
     { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
     { path: "/fundraising/dream", label: "✨ Dream Maker", icon: Sparkles },
     { path: "/fundraising/hero", label: "🦸 Community Hero", icon: Shield },
