@@ -74,7 +74,7 @@ export default function DreamMaker() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5 py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5 pt-24 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-secondary to-secondary/60 bg-clip-text text-transparent">
