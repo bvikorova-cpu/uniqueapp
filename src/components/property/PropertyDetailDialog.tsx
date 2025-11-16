@@ -5,6 +5,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { MapPin, Maximize2, BedDouble, Eye, Heart, Calendar, Video, Phone, Mail, Share2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ContactSellerDialog } from "./ContactSellerDialog";
 
 interface PropertyDetailDialogProps {
   property: any;
@@ -14,9 +15,12 @@ interface PropertyDetailDialogProps {
 
 export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyDetailDialogProps) {
   const [isFavorite, setIsFavorite] = useState(false);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [inquiryType, setInquiryType] = useState<"contact" | "viewing">("contact");
 
-  const handleContact = () => {
-    toast.success("Contact request sent to property owner");
+  const handleContact = (type: "contact" | "viewing" = "contact") => {
+    setInquiryType(type);
+    setContactDialogOpen(true);
   };
 
   const handleShare = () => {
@@ -192,15 +196,23 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
 
         {/* Contact Buttons */}
         <div className="flex gap-3 pt-4 border-t">
-          <Button onClick={handleContact} className="flex-1" size="lg">
+          <Button onClick={() => handleContact("contact")} className="flex-1" size="lg">
             <Mail className="h-4 w-4 mr-2" />
             Contact Owner
           </Button>
-          <Button onClick={handleContact} variant="outline" className="flex-1" size="lg">
+          <Button onClick={() => handleContact("viewing")} variant="outline" className="flex-1" size="lg">
             <Phone className="h-4 w-4 mr-2" />
             Request Viewing
           </Button>
         </div>
+
+        <ContactSellerDialog 
+          open={contactDialogOpen}
+          onOpenChange={setContactDialogOpen}
+          propertyId={property.id}
+          propertyTitle={property.title}
+          inquiryType={inquiryType}
+        />
       </DialogContent>
     </Dialog>
   );

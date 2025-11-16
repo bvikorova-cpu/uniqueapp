@@ -14616,37 +14616,43 @@ export type Database = {
       }
       property_inquiries: {
         Row: {
-          created_at: string | null
-          email: string
+          created_at: string
           id: string
+          inquiry_type: string
           message: string
-          name: string
-          phone: string | null
           property_id: string
-          status: string | null
-          user_id: string | null
+          sender_email: string
+          sender_id: string
+          sender_name: string
+          sender_phone: string | null
+          status: string
+          updated_at: string
         }
         Insert: {
-          created_at?: string | null
-          email: string
+          created_at?: string
           id?: string
+          inquiry_type: string
           message: string
-          name: string
-          phone?: string | null
           property_id: string
-          status?: string | null
-          user_id?: string | null
+          sender_email: string
+          sender_id: string
+          sender_name: string
+          sender_phone?: string | null
+          status?: string
+          updated_at?: string
         }
         Update: {
-          created_at?: string | null
-          email?: string
+          created_at?: string
           id?: string
+          inquiry_type?: string
           message?: string
-          name?: string
-          phone?: string | null
           property_id?: string
-          status?: string | null
-          user_id?: string | null
+          sender_email?: string
+          sender_id?: string
+          sender_name?: string
+          sender_phone?: string | null
+          status?: string
+          updated_at?: string
         }
         Relationships: [
           {
