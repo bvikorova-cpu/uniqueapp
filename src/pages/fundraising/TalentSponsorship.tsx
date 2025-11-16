@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Star, Users, Award, ExternalLink, Crown } from 'lucide-react';
+import { Star, Users, Award, ExternalLink, Crown, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface TalentCampaign {
   id: string;
@@ -25,11 +26,11 @@ interface TalentCampaign {
 }
 
 const talentTypeLabels: Record<string, string> = {
-  music: '🎵 Hudba',
-  sports: '⚽ Šport',
-  art: '🎨 Umenie',
-  dance: '💃 Tanec',
-  other: '⭐ Iné',
+  music: '🎵 Music',
+  sports: '⚽ Sports',
+  art: '🎨 Art',
+  dance: '💃 Dance',
+  other: '⭐ Other',
 };
 
 export default function TalentSponsorship() {
@@ -62,8 +63,8 @@ export default function TalentSponsorship() {
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať kampane',
+        title: 'Error',
+        description: 'Failed to load campaigns',
         variant: 'destructive',
       });
     } finally {
@@ -83,15 +84,32 @@ export default function TalentSponsorship() {
             🎭 Talent Sponsorship Hub
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Podporte mladých talentov na ich ceste k úspechu
+            Support young talents on their journey to success
           </p>
+          
+          <Alert className="mb-6 max-w-3xl mx-auto text-left">
+            <Info className="h-5 w-5" />
+            <AlertDescription className="mt-2">
+              <strong className="block mb-2">How Talent Sponsorship Works:</strong>
+              <ul className="space-y-2 text-sm">
+                <li>• <strong>Showcase Your Talent:</strong> Young artists, athletes, musicians, dancers, and creators can present their portfolios and goals</li>
+                <li>• <strong>Build Your Story:</strong> Share achievements, training goals, competition plans, and equipment needs</li>
+                <li>• <strong>Premium Visibility:</strong> Premium subscribers get featured placement with special badges and priority visibility</li>
+                <li>• <strong>Platform Fee:</strong> 10% platform fee (highest rate due to marketing support and premium features)</li>
+                <li>• <strong>Ongoing Support:</strong> Sponsors can provide monthly recurring support or one-time donations</li>
+                <li>• <strong>Portfolio Integration:</strong> Link to your portfolio, social media, and showcase your work with images and videos</li>
+                <li>• <strong>Growth Tracking:</strong> Track sponsor count and funding progress toward your goals</li>
+              </ul>
+            </AlertDescription>
+          </Alert>
+
           <Button 
             size="lg" 
             onClick={() => navigate('/fundraising/talent/create')}
             className="bg-gradient-to-r from-accent to-accent/80"
           >
             <Star className="mr-2 h-5 w-5" />
-            Predstaviť svoj talent
+            Showcase Your Talent
           </Button>
         </div>
 
@@ -100,7 +118,7 @@ export default function TalentSponsorship() {
             variant={filter === 'all' ? 'default' : 'outline'}
             onClick={() => setFilter('all')}
           >
-            Všetky talenty
+            All Talents
           </Button>
           {Object.entries(talentTypeLabels).map(([key, label]) => (
             <Button
@@ -116,11 +134,11 @@ export default function TalentSponsorship() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Načítavam talenty...</p>
+              <p className="text-muted-foreground">Loading talents...</p>
             </div>
           ) : campaigns.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Žiadne aktívne kampane</p>
+              <p className="text-muted-foreground">No active campaigns</p>
             </div>
           ) : (
             campaigns.map((campaign) => (
@@ -168,7 +186,7 @@ export default function TalentSponsorship() {
                     <div className="pt-2 border-t">
                       <p className="text-sm font-medium mb-1 flex items-center gap-1">
                         <Award className="h-4 w-4" />
-                        Úspechy:
+                        Achievements:
                       </p>
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {campaign.achievements.slice(0, 2).join(', ')}
@@ -179,7 +197,7 @@ export default function TalentSponsorship() {
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <Users className="h-4 w-4" />
-                      <span>{campaign.sponsors_count} sponzorov</span>
+                      <span>{campaign.sponsors_count} sponsors</span>
                     </div>
                     {campaign.portfolio_url && (
                       <a 
@@ -189,7 +207,7 @@ export default function TalentSponsorship() {
                         className="flex items-center gap-1 text-primary hover:underline"
                       >
                         <ExternalLink className="h-4 w-4" />
-                        Portfólio
+                        Portfolio
                       </a>
                     )}
                   </div>
@@ -200,7 +218,7 @@ export default function TalentSponsorship() {
                     onClick={() => navigate(`/fundraising/talent/${campaign.id}`)}
                   >
                     <Star className="mr-2 h-4 w-4" />
-                    Stať sa sponzorom
+                    Become a Sponsor
                   </Button>
                 </CardFooter>
               </Card>
