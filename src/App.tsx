@@ -246,12 +246,22 @@ import CreateMedicalCampaign from "./pages/fundraising/CreateMedicalCampaign";
 import FundraisingDashboard from "./pages/fundraising/FundraisingDashboard";
 import DreamMaker from "./pages/fundraising/DreamMaker";
 import CreateDreamCampaign from "./pages/fundraising/CreateDreamCampaign";
+import DreamDetail from "./pages/fundraising/DreamDetail";
 import CommunityHero from "./pages/fundraising/CommunityHero";
 import CreateHeroCampaign from "./pages/fundraising/CreateHeroCampaign";
+import HeroDetail from "./pages/fundraising/HeroDetail";
 import PetRescue from "./pages/fundraising/PetRescue";
+import CreatePetCampaign from "./pages/fundraising/CreatePetCampaign";
+import PetDetail from "./pages/fundraising/PetDetail";
 import StudentSupport from "./pages/fundraising/StudentSupport";
+import CreateStudentCampaign from "./pages/fundraising/CreateStudentCampaign";
+import StudentDetail from "./pages/fundraising/StudentDetail";
 import CrisisRelief from "./pages/fundraising/CrisisRelief";
+import CreateCrisisCampaign from "./pages/fundraising/CreateCrisisCampaign";
+import CrisisDetail from "./pages/fundraising/CrisisDetail";
 import TalentSponsorship from "./pages/fundraising/TalentSponsorship";
+import CreateTalentCampaign from "./pages/fundraising/CreateTalentCampaign";
+import TalentDetail from "./pages/fundraising/TalentDetail";
 import CampaignApprovals from "./pages/admin/CampaignApprovals";
 import Wellness from "./pages/Wellness";
 import PostDetail from "./pages/PostDetail";
@@ -536,12 +546,22 @@ const App = () => (
               <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
               <Route path="/fundraising/dream" element={<DreamMaker />} />
               <Route path="/fundraising/dream/create" element={<CreateDreamCampaign />} />
+              <Route path="/fundraising/dream/:id" element={<DreamDetail />} />
               <Route path="/fundraising/hero" element={<CommunityHero />} />
               <Route path="/fundraising/hero/create" element={<CreateHeroCampaign />} />
+              <Route path="/fundraising/hero/:id" element={<HeroDetail />} />
               <Route path="/fundraising/pet" element={<PetRescue />} />
+              <Route path="/fundraising/pet/create" element={<CreatePetCampaign />} />
+              <Route path="/fundraising/pet/:id" element={<PetDetail />} />
               <Route path="/fundraising/student" element={<StudentSupport />} />
+              <Route path="/fundraising/student/create" element={<CreateStudentCampaign />} />
+              <Route path="/fundraising/student/:id" element={<StudentDetail />} />
               <Route path="/fundraising/crisis" element={<CrisisRelief />} />
+              <Route path="/fundraising/crisis/create" element={<CreateCrisisCampaign />} />
+              <Route path="/fundraising/crisis/:id" element={<CrisisDetail />} />
               <Route path="/fundraising/talent" element={<TalentSponsorship />} />
+              <Route path="/fundraising/talent/create" element={<CreateTalentCampaign />} />
+              <Route path="/fundraising/talent/:id" element={<TalentDetail />} />
               <Route path="/admin/campaign-approvals" element={<CampaignApprovals />} />
               <Route path="/property-marketplace" element={<PropertyMarketplace />} />
               <Route path="/property-submission" element={<PropertySubmission />} />
