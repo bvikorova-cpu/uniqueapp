@@ -87,10 +87,21 @@ export default function CreatorProfile() {
       const { data, error } = await supabase
         .from('creator_profiles')
         .select('*')
-        .eq('user_id', creatorId)
-        .single();
+        .eq('id', creatorId)
+        .maybeSingle();
 
       if (error) throw error;
+      
+      if (!data) {
+        toast({
+          variant: "destructive",
+          title: "Creator Not Found",
+          description: "This creator profile doesn't exist.",
+        });
+        navigate('/discover-creators');
+        return;
+      }
+      
       setCreator(data);
     } catch (error: any) {
       console.error('Error loading creator:', error);
