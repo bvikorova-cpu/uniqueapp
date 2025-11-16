@@ -39,10 +39,6 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    // Get tipster registration data from request
-    const { displayName, sport, bio, tipPrice } = await req.json();
-    logStep("Registration data received", { displayName, sport, tipPrice });
-
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     
     // Find or create customer
@@ -53,7 +49,7 @@ serve(async (req) => {
       logStep("Found existing customer", { customerId });
     }
 
-    // Create checkout session with metadata for tipster registration
+    // Create checkout session for tipster subscription
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -68,10 +64,6 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/sports-predictor?tipster_cancel=true`,
       metadata: {
         user_id: user.id,
-        display_name: displayName,
-        sport_specialization: sport,
-        bio: bio || "",
-        tip_price: tipPrice,
         type: "tipster_subscription"
       }
     });
