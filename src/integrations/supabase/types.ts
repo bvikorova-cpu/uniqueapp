@@ -14462,6 +14462,7 @@ export type Database = {
           id: string
           is_featured: boolean | null
           latitude: number | null
+          listing_expires_at: string | null
           listing_type: string
           location: string
           longitude: number | null
@@ -14489,6 +14490,7 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           latitude?: number | null
+          listing_expires_at?: string | null
           listing_type?: string
           location: string
           longitude?: number | null
@@ -14516,6 +14518,7 @@ export type Database = {
           id?: string
           is_featured?: boolean | null
           latitude?: number | null
+          listing_expires_at?: string | null
           listing_type?: string
           location?: string
           longitude?: number | null
@@ -19791,6 +19794,7 @@ export type Database = {
         Returns: undefined
       }
       create_payout_batch: { Args: { p_batch_date: string }; Returns: string }
+      deactivate_expired_listings: { Args: never; Returns: undefined }
       expire_featured_listings: { Args: never; Returns: undefined }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       generate_certificate_number: { Args: never; Returns: string }

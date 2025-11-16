@@ -47,21 +47,21 @@ serve(async (req) => {
         credits = parseInt(session.metadata?.credits || "0");
         metadata = session.metadata || {};
 
-        // Handle property listing payments
-        if (paymentStatus === "paid" && metadata.type === "property_listing") {
-          console.log("Processing property listing payment", { sessionId: session.id });
-          
-          const { error: packageError } = await supabaseAdmin
-            .from("property_listing_packages")
-            .update({ payment_status: "completed" })
-            .eq("stripe_session_id", session.id);
+      // Handle property listing payments
+      if (paymentStatus === "paid" && metadata.type === "property_listing") {
+        console.log("Processing property listing payment", { sessionId: session.id });
+        
+        const { error: packageError } = await supabaseAdmin
+          .from("property_listing_packages")
+          .update({ payment_status: "completed" })
+          .eq("stripe_session_id", session.id);
 
-          if (packageError) {
-            console.error("Error updating property listing package:", packageError);
-          } else {
-            console.log("Property listing package activated");
-          }
+        if (packageError) {
+          console.error("Error updating property listing package:", packageError);
+        } else {
+          console.log("Property listing package activated - trigger will activate property");
         }
+      }
 
         // Handle MasterChef gift payments
         if (paymentStatus === "paid" && metadata.type === "masterchef_gift") {
