@@ -161,9 +161,55 @@ const DNAMemoryNetwork = () => {
         </div>
       </section>
 
+      {/* Interactive Features Section */}
+      <section className="py-12 px-4 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Experience Your DNA Journey</h2>
+            <p className="text-muted-foreground text-lg">Interactive tools to explore your genetic heritage</p>
+          </div>
+          <Tabs defaultValue="analysis" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
+              <TabsTrigger value="analysis" className="flex items-center gap-2">
+                <Dna className="h-4 w-4" />
+                <span className="hidden sm:inline">DNA Analysis</span>
+              </TabsTrigger>
+              <TabsTrigger value="memories" className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                <span className="hidden sm:inline">Memories</span>
+              </TabsTrigger>
+              <TabsTrigger value="dating" className="flex items-center gap-2">
+                <Heart className="h-4 w-4" />
+                <span className="hidden sm:inline">Dating</span>
+              </TabsTrigger>
+              <TabsTrigger value="offspring" className="flex items-center gap-2">
+                <Baby className="h-4 w-4" />
+                <span className="hidden sm:inline">Offspring</span>
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="analysis" className="mt-6">
+              <DNAUploadSection />
+            </TabsContent>
+            <TabsContent value="memories" className="mt-6">
+              <AncestralMemoryViewer />
+            </TabsContent>
+            <TabsContent value="dating" className="mt-6">
+              <GeneticDatingSection />
+            </TabsContent>
+            <TabsContent value="offspring" className="mt-6">
+              <DigitalOffspringChat />
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
+
       {/* Services Grid */}
       <section className="py-20 px-4">
         <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your DNA Service</h2>
+            <p className="text-muted-foreground text-lg">Unlock the power of your genetic code</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service) => {
               const Icon = service.icon;
