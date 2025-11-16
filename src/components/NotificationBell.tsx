@@ -67,13 +67,16 @@ export function NotificationBell() {
         .from("notifications")
         .select("*")
         .eq("user_id", user.id)
+        .eq("type", "tipster_application")
         .order("created_at", { ascending: false })
         .limit(20);
 
       if (error) throw error;
 
-      setNotifications(data || []);
-      setUnreadCount(data?.filter(n => !n.is_read).length || 0);
+      // Cast to our interface since tipster_application notifications have the right structure
+      const typedNotifications = (data || []) as Notification[];
+      setNotifications(typedNotifications);
+      setUnreadCount(typedNotifications.filter(n => !n.is_read).length);
     } catch (error) {
       console.error("Error loading notifications:", error);
     }
