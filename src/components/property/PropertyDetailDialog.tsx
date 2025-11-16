@@ -170,6 +170,25 @@ export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyD
           </div>
         )}
 
+        {/* Virtual Tour */}
+        {property.virtual_tour_url && (
+          <div className="py-4">
+            <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <Video className="h-5 w-5" />
+              3D Virtual Tour
+            </h3>
+            <div className="aspect-video rounded-lg overflow-hidden bg-muted">
+              <iframe
+                src={property.virtual_tour_url}
+                className="w-full h-full border-0"
+                allow="xr-spatial-tracking; gyroscope; accelerometer"
+                allowFullScreen
+                title="Virtual Tour"
+              />
+            </div>
+          </div>
+        )}
+
         {/* Videos */}
         {property.property_videos && property.property_videos.length > 0 && (
           <div className="py-4">

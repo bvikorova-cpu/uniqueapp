@@ -66,8 +66,9 @@ const ADDITIONAL_SERVICES = [
     id: "virtual_tour",
     name: "Virtual Tour Hosting",
     price: 99,
-    description: "Upload and host unlimited 3D tours for your property",
-    icon: Video
+    description: "Add interactive 3D virtual tours to your property listings",
+    icon: Video,
+    active: true
   },
   {
     id: "lead_boost",
@@ -255,6 +256,16 @@ export default function PropertyMarketplace() {
       navigate(link);
       return;
     }
+    
+    if (serviceId === "virtual_tour") {
+      // Virtual Tour Hosting is now active
+      toast({
+        title: "Virtual Tour Hosting",
+        description: `After purchasing a property listing package, you can add 3D virtual tours to your properties from your dashboard.`,
+      });
+      return;
+    }
+    
     toast({
       title: "Coming Soon",
       description: `This service (€${price}) will be available soon!`,
@@ -462,11 +473,11 @@ export default function PropertyMarketplace() {
                   </CardHeader>
                   <CardContent>
                     <Button 
-                      onClick={() => handlePurchaseService(service.name, service.price, service.link)}
+                      onClick={() => handlePurchaseService(service.id, service.price, service.link)}
                       className="w-full"
                       variant="outline"
                     >
-                      {service.link ? "Explore" : "Add Service"}
+                      {service.link ? "Explore" : service.active ? "Learn More" : "Coming Soon"}
                     </Button>
                   </CardContent>
                 </Card>
