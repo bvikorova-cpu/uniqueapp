@@ -5,6 +5,7 @@ import { Check, Sparkles, Heart, Gem, BookOpen, Store } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import CrystalEnergyUpload from "@/components/crystal/CrystalEnergyUpload";
 
 const FEATURES = {
   aiEnergyReading: {
@@ -213,6 +214,19 @@ export default function CrystalEnergyNetwork() {
               </Button>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Crystal Photo Upload Section */}
+        <div className="mt-16 bg-gradient-to-r from-purple-500/10 to-blue-500/10 p-8 rounded-lg border border-primary/20">
+          <div className="max-w-3xl mx-auto space-y-6">
+            <div className="text-center space-y-4">
+              <h2 className="text-3xl font-bold">Upload Your Crystal Photo</h2>
+              <p className="text-lg text-muted-foreground">
+                Get instant AI-powered energy readings and authenticity verification
+              </p>
+            </div>
+            <CrystalEnergyUpload />
+          </div>
         </div>
 
         <div className="mt-20 text-center">
