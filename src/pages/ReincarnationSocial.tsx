@@ -122,7 +122,7 @@ const ReincarnationSocial = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-purple-950/10 to-background">
-      {/* Hero Section with mystical design */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden py-24 px-4">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-purple-500/10 animate-gradient" />
         <div className="absolute inset-0 opacity-20">
