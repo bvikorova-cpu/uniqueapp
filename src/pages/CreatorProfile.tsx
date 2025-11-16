@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { SubscriptionTiers } from "@/components/creator/SubscriptionTiers";
+import { ExclusivePostsList } from "@/components/creator/ExclusivePostsList";
 import {
   Users,
   CheckCircle2,
   Gift,
   Heart,
   DollarSign,
+  Crown,
 } from "lucide-react";
 
 interface Creator {
@@ -31,9 +34,18 @@ interface VirtualGift {
   image_url: string;
 }
 
+interface SubscriptionTier {
+  id: string;
+  name: string;
+  price: number;
+  description: string | null;
+  benefits: string[] | null;
+}
+
 export default function CreatorProfile() {
   const { creatorId } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [creator, setCreator] = useState<Creator | null>(null);
@@ -41,11 +53,41 @@ export default function CreatorProfile() {
   const [selectedGift, setSelectedGift] = useState<VirtualGift | null>(null);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [tiers, setTiers] = useState<SubscriptionTier[]>([]);
+  const [userSubscription, setUserSubscription] = useState<{
+    subscribed: boolean;
+    tier_id?: string;
+    subscription_end?: string;
+  }>({ subscribed: false });
+  const [checkingSubscription, setCheckingSubscription] = useState(false);
 
   useEffect(() => {
     loadCreatorProfile();
     loadGifts();
+    loadTiers();
+    checkSubscription();
   }, [creatorId]);
+
+  useEffect(() => {
+    const subscription = searchParams.get('subscription');
+    const sessionId = searchParams.get('session_id');
+
+    if (subscription === 'success' && sessionId && creatorId) {
+      checkSubscription();
+      toast({
+        title: "Subscription Activated!",
+        description: "Welcome to the creator's community!",
+      });
+      window.history.replaceState({}, '', `/creator/${creatorId}`);
+    } else if (subscription === 'cancelled') {
+      toast({
+        variant: "destructive",
+        title: "Subscription Cancelled",
+        description: "Your subscription was cancelled.",
+      });
+      window.history.replaceState({}, '', `/creator/${creatorId}`);
+    }
+  }, [searchParams, creatorId, toast]);
 
   const loadCreatorProfile = async () => {
     try {
@@ -66,6 +108,51 @@ export default function CreatorProfile() {
       navigate("/browse-creators");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadTiers = async () => {
+    try {
+      if (!creatorId) return;
+
+      const { data, error } = await supabase
+        .from('creator_subscription_tiers')
+        .select('*')
+        .eq('creator_id', creatorId)
+        .eq('is_active', true)
+        .order('price', { ascending: true });
+
+      if (error) throw error;
+      setTiers(data || []);
+    } catch (error: any) {
+      console.error('Error loading tiers:', error);
+    }
+  };
+
+  const checkSubscription = async () => {
+    try {
+      if (!creatorId) return;
+      
+      setCheckingSubscription(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        setUserSubscription({ subscribed: false });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-creator-subscription', {
+        body: { creatorId }
+      });
+
+      if (error) throw error;
+
+      setUserSubscription(data || { subscribed: false });
+    } catch (error: any) {
+      console.error('Error checking subscription:', error);
+      setUserSubscription({ subscribed: false });
+    } finally {
+      setCheckingSubscription(false);
     }
   };
 
@@ -175,14 +262,35 @@ export default function CreatorProfile() {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button size="lg">
-                  <Heart className="mr-2 h-5 w-5" />
-                  Subscribe
-                </Button>
+                {userSubscription.subscribed && (
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    <Crown className="h-4 w-4" />
+                    Subscribed
+                  </Badge>
+                )}
               </div>
             </div>
           </CardHeader>
         </Card>
+
+        {/* Subscription Tiers */}
+        <div className="mb-8">
+          <SubscriptionTiers
+            creatorId={creatorId!}
+            tiers={tiers}
+            currentTierId={userSubscription.tier_id}
+            onSubscribe={checkSubscription}
+          />
+        </div>
+
+        {/* Exclusive Content */}
+        <div className="mb-8">
+          <ExclusivePostsList
+            creatorId={creatorId!}
+            userTierId={userSubscription.tier_id}
+            isSubscribed={userSubscription.subscribed}
+          />
+        </div>
 
         {/* Send Gift Section */}
         <Card>
