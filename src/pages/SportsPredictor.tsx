@@ -285,10 +285,20 @@ export default function SportsPredictor() {
               View Top Tipsters
             </Button>
             {user && (
-              <Button size="lg" variant="secondary" onClick={() => navigate("/admin/sports-matches")}>
-                <Activity className="mr-2 h-5 w-5" />
-                Add Match
-              </Button>
+              <>
+                <Button size="lg" variant="secondary" onClick={() => navigate("/my-purchased-tips")}>
+                  <CheckCircle2 className="mr-2 h-5 w-5" />
+                  My Purchased Tips
+                </Button>
+                <Button size="lg" variant="secondary" onClick={() => navigate("/tipster-dashboard")}>
+                  <Trophy className="mr-2 h-5 w-5" />
+                  Tipster Dashboard
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => navigate("/admin/sports-matches")}>
+                  <Activity className="mr-2 h-5 w-5" />
+                  Add Match
+                </Button>
+              </>
             )}
           </div>
 
