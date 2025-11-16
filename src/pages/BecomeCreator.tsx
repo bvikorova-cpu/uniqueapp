@@ -22,12 +22,6 @@ export default function BecomeCreator() {
     bio: "",
     cover_image_url: "",
     avatar_url: "",
-    social_links: {
-      instagram: "",
-      twitter: "",
-      youtube: "",
-      tiktok: ""
-    },
     is_adult_content: false
   });
 
@@ -91,7 +85,6 @@ export default function BecomeCreator() {
         return;
       }
 
-      // Create creator profile
       const { error: profileError } = await supabase
         .from('creator_profiles')
         .insert({
@@ -106,28 +99,27 @@ export default function BecomeCreator() {
 
       if (profileError) throw profileError;
 
-      // Create default subscription tiers
       const defaultTiers = [
         {
           creator_id: user.id,
           name: 'Basic',
           price: 4.99,
           description: 'Access to basic exclusive content',
-          benefits: ['Access to exclusive posts', 'Community chat', 'Monthly updates']
+          benefits: ['Exclusive posts', 'Community chat', 'Monthly updates']
         },
         {
           creator_id: user.id,
           name: 'Premium',
           price: 9.99,
-          description: 'Get premium content and early access',
-          benefits: ['All Basic benefits', 'Early access to content', 'Behind the scenes', 'Priority support']
+          description: 'Enhanced access with more perks',
+          benefits: ['All Basic benefits', 'Priority responses', 'Behind-the-scenes', 'Weekly Q&A']
         },
         {
           creator_id: user.id,
           name: 'VIP',
           price: 19.99,
-          description: 'Ultimate VIP experience with all perks',
-          benefits: ['All Premium benefits', 'Private chat access', 'Exclusive live streams', 'Monthly Q&A sessions', 'Personalized content']
+          description: 'Ultimate creator experience',
+          benefits: ['All Premium benefits', 'Direct messaging', '1-on-1 calls', 'Custom content', 'Early access']
         }
       ];
 
@@ -143,12 +135,12 @@ export default function BecomeCreator() {
       });
 
       navigate(`/creator/${user.id}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating creator profile:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to create creator profile. Please try again.",
+        description: error.message || "Failed to create creator profile",
       });
     } finally {
       setLoading(false);
@@ -156,153 +148,111 @@ export default function BecomeCreator() {
   };
 
   return (
-    <div className="container max-w-4xl mx-auto py-8 px-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-3xl">Become a Creator</CardTitle>
-          <CardDescription>
-            Set up your creator profile and start earning from your content
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="display_name">Display Name *</Label>
-              <Input
-                id="display_name"
-                required
-                value={formData.display_name}
-                onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
-                placeholder="Enter your creator name"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio *</Label>
-              <Textarea
-                id="bio"
-                required
-                value={formData.bio}
-                onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                placeholder="Tell your audience about yourself..."
-                rows={4}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label>Cover Image</Label>
-              <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-background py-12">
+      <div className="container mx-auto px-4 max-w-2xl">
+        <Card>
+          <CardHeader>
+            <CardTitle>Become a Creator</CardTitle>
+            <CardDescription>
+              Start sharing exclusive content with your subscribers. Platform takes 10% commission, you keep 90%.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="display_name">Creator Name *</Label>
                 <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleImageUpload(file, 'cover');
-                  }}
-                  disabled={uploadingCover}
-                />
-                {uploadingCover && <Loader2 className="h-4 w-4 animate-spin" />}
-              </div>
-              {formData.cover_image_url && (
-                <img src={formData.cover_image_url} alt="Cover preview" className="w-full h-48 object-cover rounded-lg mt-2" />
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label>Avatar</Label>
-              <div className="flex items-center gap-4">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) handleImageUpload(file, 'avatar');
-                  }}
-                  disabled={uploadingAvatar}
-                />
-                {uploadingAvatar && <Loader2 className="h-4 w-4 animate-spin" />}
-              </div>
-              {formData.avatar_url && (
-                <img src={formData.avatar_url} alt="Avatar preview" className="w-24 h-24 object-cover rounded-full mt-2" />
-              )}
-            </div>
-
-            <div className="space-y-4">
-              <Label>Social Media Links (Optional)</Label>
-              <div className="grid gap-4">
-                <Input
-                  placeholder="Instagram URL"
-                  value={formData.social_links.instagram}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    social_links: { ...prev.social_links, instagram: e.target.value }
-                  }))}
-                />
-                <Input
-                  placeholder="Twitter URL"
-                  value={formData.social_links.twitter}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    social_links: { ...prev.social_links, twitter: e.target.value }
-                  }))}
-                />
-                <Input
-                  placeholder="YouTube URL"
-                  value={formData.social_links.youtube}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    social_links: { ...prev.social_links, youtube: e.target.value }
-                  }))}
-                />
-                <Input
-                  placeholder="TikTok URL"
-                  value={formData.social_links.tiktok}
-                  onChange={(e) => setFormData(prev => ({
-                    ...prev,
-                    social_links: { ...prev.social_links, tiktok: e.target.value }
-                  }))}
+                  id="display_name"
+                  required
+                  value={formData.display_name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
+                  placeholder="Enter your creator name"
                 />
               </div>
-            </div>
 
-            <div className="flex items-center justify-between p-4 border rounded-lg">
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <ShieldAlert className="h-5 w-5 text-destructive" />
-                  <Label htmlFor="adult-content" className="text-base font-medium">
-                    18+ Adult Content
-                  </Label>
+              <div className="space-y-2">
+                <Label htmlFor="bio">Bio *</Label>
+                <Textarea
+                  id="bio"
+                  required
+                  value={formData.bio}
+                  onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                  placeholder="Tell your audience about yourself..."
+                  rows={4}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Cover Image</Label>
+                <div className="flex items-center gap-4">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file, 'cover');
+                    }}
+                    disabled={uploadingCover}
+                  />
+                  {uploadingCover && <Loader2 className="h-4 w-4 animate-spin" />}
                 </div>
+                {formData.cover_image_url && (
+                  <img src={formData.cover_image_url} alt="Cover preview" className="w-full h-48 object-cover rounded-lg mt-2" />
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label>Avatar</Label>
+                <div className="flex items-center gap-4">
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleImageUpload(file, 'avatar');
+                    }}
+                    disabled={uploadingAvatar}
+                  />
+                  {uploadingAvatar && <Loader2 className="h-4 w-4 animate-spin" />}
+                </div>
+                {formData.avatar_url && (
+                  <img src={formData.avatar_url} alt="Avatar preview" className="w-24 h-24 object-cover rounded-full mt-2" />
+                )}
+              </div>
+
+              <div className="bg-muted/50 p-4 rounded-lg border border-border">
+                <h3 className="font-semibold mb-2">Commission Structure</h3>
                 <p className="text-sm text-muted-foreground">
-                  Enable if your content is intended for adults only
+                  Platform commission: 10% • You keep: 90% of all earnings
                 </p>
               </div>
-              <Switch
-                id="adult-content"
-                checked={formData.is_adult_content}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_adult_content: checked }))}
-              />
-            </div>
 
-            <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                <strong>Platform Commission:</strong> We take only 10% commission. You keep 90% of all earnings from memberships and tips.
-              </p>
-            </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="adult-content"
+                  checked={formData.is_adult_content}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_adult_content: checked })}
+                />
+                <Label htmlFor="adult-content" className="text-sm flex items-center gap-2">
+                  <ShieldAlert className="h-4 w-4" />
+                  My content is suitable for 18+ audiences only
+                </Label>
+              </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating Profile...
-                </>
-              ) : (
-                "Create Creator Profile"
-              )}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              <Button type="submit" disabled={loading} className="w-full">
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating Profile...
+                  </>
+                ) : (
+                  "Create Creator Profile"
+                )}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

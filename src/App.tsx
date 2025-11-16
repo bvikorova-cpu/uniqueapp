@@ -176,6 +176,7 @@ import AIContentMarketplace from "./pages/AIContentMarketplace";
 import MembershipCommunity from "./pages/MembershipCommunity";
 import CreatorDashboard from "./pages/CreatorDashboard";
 import CreatorProfile from "./pages/CreatorProfile";
+import DiscoverCreators from "./pages/DiscoverCreators";
 import CoursesHub from "./pages/CoursesHub";
 import CourseDetailPage from "./pages/CourseDetailPage";
 import CourseLearnPage from "./pages/CourseLearnPage";
@@ -451,9 +452,9 @@ const App = () => (
           <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
           <Route path="/ai-content-marketplace" element={<AIContentMarketplace />} />
           <Route path="/membership-community" element={<MembershipCommunity />} />
+          <Route path="/discover-creators" element={<DiscoverCreators />} />
           <Route path="/creator-dashboard" element={<CreatorDashboard />} />
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
-          <Route path="/courses" element={<CoursesHub />} />
           <Route path="/become-creator" element={<BecomeCreator />} />
           <Route path="/instructor-earnings" element={<InstructorEarnings />} />
           <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
