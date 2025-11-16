@@ -225,6 +225,7 @@ export default function BecomeCreator() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="display_name">Creator Name *</Label>
+                <p className="text-sm text-muted-foreground">This is the name users will see on your profile</p>
                 <Input
                   id="display_name"
                   required

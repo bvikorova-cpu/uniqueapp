@@ -52,10 +52,15 @@ export default function CreatorProfile() {
 
   useEffect(() => {
     loadCreatorProfile();
-    loadTiers();
-    checkSubscription();
     getCurrentUser();
   }, [creatorId]);
+
+  useEffect(() => {
+    if (creator?.id) {
+      loadTiers();
+      checkSubscription();
+    }
+  }, [creator?.id]);
 
   useEffect(() => {
     const subscription = searchParams.get('subscription');
@@ -87,7 +92,7 @@ export default function CreatorProfile() {
       const { data, error } = await supabase
         .from('creator_profiles')
         .select('*')
-        .eq('id', creatorId)
+        .eq('user_id', creatorId)
         .maybeSingle();
 
       if (error) throw error;
@@ -117,11 +122,12 @@ export default function CreatorProfile() {
   };
 
   const loadTiers = async () => {
+    if (!creator?.id) return;
     try {
       const { data, error } = await supabase
         .from('creator_subscription_tiers')
         .select('*')
-        .eq('creator_id', creatorId)
+        .eq('creator_id', creator.id)
         .order('price', { ascending: true });
 
       if (error) throw error;
@@ -132,12 +138,13 @@ export default function CreatorProfile() {
   };
 
   const checkSubscription = async () => {
+    if (!creator?.id) return;
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data, error } = await supabase.functions.invoke('check-creator-subscription', {
-        body: { creatorId },
+        body: { creatorId: creator.id },
       });
 
       if (error) throw error;
