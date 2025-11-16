@@ -135,28 +135,30 @@ export default function PropertySubmissionForm() {
           });
       }
 
-      // Create payment session
-      const selectedPkg = LISTING_PACKAGES.find(pkg => pkg.id === selectedPackage);
-      if (!selectedPkg) throw new Error("Balík nenájdený");
-
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke(
-        "create-property-listing-payment",
+      // Proceed to payment
+      toast.success("Property submitted! Proceeding to payment...");
+      
+      // Create checkout session
+      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
+        'create-property-listing-checkout',
         {
           body: {
             propertyId: property.id,
-            packageType: selectedPackage,
-            durationDays: selectedPkg.duration,
-            price: selectedPkg.price,
-          },
+            packageType: selectedPackage
+          }
         }
       );
 
-      if (paymentError) throw paymentError;
+      if (checkoutError) throw checkoutError;
 
       // Redirect to Stripe checkout
-      window.open(paymentData.url, '_blank');
-      toast.success("Property created! Complete payment.");
-      navigate("/property-marketplace");
+      if (checkoutData?.url) {
+        window.open(checkoutData.url, '_blank');
+        toast.success("Opening payment page...");
+        setTimeout(() => {
+          navigate("/property-marketplace");
+        }, 1000);
+      }
 
     } catch (error: any) {
       console.error("Error:", error);

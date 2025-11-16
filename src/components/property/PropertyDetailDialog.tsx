@@ -1,0 +1,207 @@
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { MapPin, Maximize2, BedDouble, Eye, Heart, Calendar, Video, Phone, Mail, Share2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
+interface PropertyDetailDialogProps {
+  property: any;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function PropertyDetailDialog({ property, open, onOpenChange }: PropertyDetailDialogProps) {
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const handleContact = () => {
+    toast.success("Contact request sent to property owner");
+  };
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: property.title,
+        text: property.description,
+        url: window.location.href,
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Link copied to clipboard");
+    }
+  };
+
+  const handleToggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    toast.success(isFavorite ? "Removed from favorites" : "Added to favorites");
+  };
+
+  if (!property) return null;
+
+  const images = property.property_images?.map((img: any) => img.image_url) || [
+    'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800'
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <div className="flex items-start justify-between">
+            <div>
+              <DialogTitle className="text-3xl font-bold">{property.title}</DialogTitle>
+              <div className="flex items-center gap-2 mt-2 text-muted-foreground">
+                <MapPin className="h-4 w-4" />
+                <span>{property.city}</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="icon" onClick={handleToggleFavorite}>
+                <Heart className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+              </Button>
+              <Button variant="outline" size="icon" onClick={handleShare}>
+                <Share2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </DialogHeader>
+
+        {/* Image Carousel */}
+        <div className="relative rounded-lg overflow-hidden mt-4">
+          <Carousel className="w-full">
+            <CarouselContent>
+              {images.map((image: string, index: number) => (
+                <CarouselItem key={index}>
+                  <img
+                    src={image}
+                    alt={`${property.title} - ${index + 1}`}
+                    className="w-full h-[400px] object-cover"
+                  />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
+          
+          {property.is_featured && (
+            <Badge className="absolute top-4 left-4 bg-gradient-to-r from-primary to-purple-600">
+              Featured
+            </Badge>
+          )}
+          
+          <div className="absolute bottom-4 right-4 bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1 text-white text-sm">
+            <Eye className="h-3 w-3" />
+            <span>{property.views_count}</span>
+          </div>
+        </div>
+
+        {/* Price and Type */}
+        <div className="flex items-center justify-between py-4 border-y">
+          <div>
+            <div className="text-3xl font-bold text-primary">
+              €{property.price.toLocaleString()}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              €{Math.round(property.price / property.area_sqm)}/m²
+            </div>
+          </div>
+          <Badge variant="secondary" className="text-lg px-4 py-2">
+            {property.property_type}
+          </Badge>
+        </div>
+
+        {/* Property Details */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 py-4">
+          <div className="flex flex-col items-center p-4 bg-secondary/50 rounded-lg">
+            <Maximize2 className="h-6 w-6 mb-2 text-primary" />
+            <span className="text-sm text-muted-foreground">Area</span>
+            <span className="font-semibold">{property.area_sqm} m²</span>
+          </div>
+          
+          {property.rooms && (
+            <div className="flex flex-col items-center p-4 bg-secondary/50 rounded-lg">
+              <BedDouble className="h-6 w-6 mb-2 text-primary" />
+              <span className="text-sm text-muted-foreground">Rooms</span>
+              <span className="font-semibold">{property.rooms}</span>
+            </div>
+          )}
+          
+          {property.bedrooms && (
+            <div className="flex flex-col items-center p-4 bg-secondary/50 rounded-lg">
+              <BedDouble className="h-6 w-6 mb-2 text-primary" />
+              <span className="text-sm text-muted-foreground">Bedrooms</span>
+              <span className="font-semibold">{property.bedrooms}</span>
+            </div>
+          )}
+          
+          <div className="flex flex-col items-center p-4 bg-secondary/50 rounded-lg">
+            <Calendar className="h-6 w-6 mb-2 text-primary" />
+            <span className="text-sm text-muted-foreground">Listed</span>
+            <span className="font-semibold">
+              {new Date(property.created_at).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="py-4">
+          <h3 className="text-xl font-semibold mb-3">Description</h3>
+          <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+            {property.description}
+          </p>
+        </div>
+
+        {/* Features */}
+        {property.features && property.features.length > 0 && (
+          <div className="py-4">
+            <h3 className="text-xl font-semibold mb-3">Features</h3>
+            <div className="flex flex-wrap gap-2">
+              {property.features.map((feature: string, index: number) => (
+                <Badge key={index} variant="outline">
+                  {feature}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Videos */}
+        {property.property_videos && property.property_videos.length > 0 && (
+          <div className="py-4">
+            <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
+              <Video className="h-5 w-5" />
+              Video Tour
+            </h3>
+            <video
+              src={property.property_videos[0].video_url}
+              controls
+              className="w-full rounded-lg"
+            />
+          </div>
+        )}
+
+        {/* Location */}
+        <div className="py-4">
+          <h3 className="text-xl font-semibold mb-3">Location</h3>
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <MapPin className="h-4 w-4" />
+            <span>{property.address || property.location}</span>
+          </div>
+        </div>
+
+        {/* Contact Buttons */}
+        <div className="flex gap-3 pt-4 border-t">
+          <Button onClick={handleContact} className="flex-1" size="lg">
+            <Mail className="h-4 w-4 mr-2" />
+            Contact Owner
+          </Button>
+          <Button onClick={handleContact} variant="outline" className="flex-1" size="lg">
+            <Phone className="h-4 w-4 mr-2" />
+            Request Viewing
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
