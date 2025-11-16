@@ -17452,6 +17452,298 @@ export type Database = {
         }
         Relationships: []
       }
+      superhero_age_verification: {
+        Row: {
+          birth_date: string
+          created_at: string
+          id: string
+          is_verified: boolean | null
+          user_id: string
+          verified_at: string | null
+        }
+        Insert: {
+          birth_date: string
+          created_at?: string
+          id?: string
+          is_verified?: boolean | null
+          user_id: string
+          verified_at?: string | null
+        }
+        Update: {
+          birth_date?: string
+          created_at?: string
+          id?: string
+          is_verified?: boolean | null
+          user_id?: string
+          verified_at?: string | null
+        }
+        Relationships: []
+      }
+      superhero_battles: {
+        Row: {
+          battle_log: Json | null
+          battle_type: string | null
+          created_at: string
+          hero1_damage: number | null
+          hero1_id: string
+          hero2_damage: number | null
+          hero2_id: string
+          id: string
+          tournament_id: string | null
+          winner_id: string | null
+        }
+        Insert: {
+          battle_log?: Json | null
+          battle_type?: string | null
+          created_at?: string
+          hero1_damage?: number | null
+          hero1_id: string
+          hero2_damage?: number | null
+          hero2_id: string
+          id?: string
+          tournament_id?: string | null
+          winner_id?: string | null
+        }
+        Update: {
+          battle_log?: Json | null
+          battle_type?: string | null
+          created_at?: string
+          hero1_damage?: number | null
+          hero1_id?: string
+          hero2_damage?: number | null
+          hero2_id?: string
+          id?: string
+          tournament_id?: string | null
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "superhero_battles_hero1_id_fkey"
+            columns: ["hero1_id"]
+            isOneToOne: false
+            referencedRelation: "superhero_heroes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "superhero_battles_hero2_id_fkey"
+            columns: ["hero2_id"]
+            isOneToOne: false
+            referencedRelation: "superhero_heroes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "superhero_battles_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "superhero_tournaments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "superhero_battles_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "superhero_heroes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      superhero_credits: {
+        Row: {
+          created_at: string
+          credits: number
+          id: string
+          total_earned: number | null
+          total_spent: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits?: number
+          id?: string
+          total_earned?: number | null
+          total_spent?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          id?: string
+          total_earned?: number | null
+          total_spent?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      superhero_heroes: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          defense: number
+          experience: number | null
+          id: string
+          intelligence: number
+          is_active: boolean | null
+          level: number | null
+          name: string
+          power_level: number
+          power_type: string
+          rarity: string
+          speed: number
+          strength: number
+          total_battles: number | null
+          total_losses: number | null
+          total_wins: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          defense?: number
+          experience?: number | null
+          id?: string
+          intelligence?: number
+          is_active?: boolean | null
+          level?: number | null
+          name: string
+          power_level?: number
+          power_type: string
+          rarity: string
+          speed?: number
+          strength?: number
+          total_battles?: number | null
+          total_losses?: number | null
+          total_wins?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          defense?: number
+          experience?: number | null
+          id?: string
+          intelligence?: number
+          is_active?: boolean | null
+          level?: number | null
+          name?: string
+          power_level?: number
+          power_type?: string
+          rarity?: string
+          speed?: number
+          strength?: number
+          total_battles?: number | null
+          total_losses?: number | null
+          total_wins?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      superhero_tournament_participants: {
+        Row: {
+          hero_id: string
+          id: string
+          placement: number | null
+          prize_won: number | null
+          registered_at: string
+          tournament_id: string
+          user_id: string
+        }
+        Insert: {
+          hero_id: string
+          id?: string
+          placement?: number | null
+          prize_won?: number | null
+          registered_at?: string
+          tournament_id: string
+          user_id: string
+        }
+        Update: {
+          hero_id?: string
+          id?: string
+          placement?: number | null
+          prize_won?: number | null
+          registered_at?: string
+          tournament_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "superhero_tournament_participants_hero_id_fkey"
+            columns: ["hero_id"]
+            isOneToOne: false
+            referencedRelation: "superhero_heroes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "superhero_tournament_participants_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "superhero_tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      superhero_tournaments: {
+        Row: {
+          created_at: string
+          current_teams: number | null
+          description: string | null
+          ends_at: string
+          entry_fee: number
+          id: string
+          max_teams: number
+          name: string
+          prize_pool: number
+          starts_at: string
+          status: string
+          updated_at: string
+          winner_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_teams?: number | null
+          description?: string | null
+          ends_at: string
+          entry_fee?: number
+          id?: string
+          max_teams: number
+          name: string
+          prize_pool: number
+          starts_at: string
+          status?: string
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_teams?: number | null
+          description?: string | null
+          ends_at?: string
+          entry_fee?: number
+          id?: string
+          max_teams?: number
+          name?: string
+          prize_pool?: number
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          winner_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "superhero_tournaments_winner_id_fkey"
+            columns: ["winner_id"]
+            isOneToOne: false
+            referencedRelation: "superhero_heroes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       talent_campaigns: {
         Row: {
           achievements: string[] | null
@@ -20081,6 +20373,7 @@ export type Database = {
         Args: { p_collection_id: string }
         Returns: undefined
       }
+      is_age_verified: { Args: { p_user_id: string }; Returns: boolean }
       is_conversation_participant: {
         Args: { conversation_id: string; user_id: string }
         Returns: boolean
@@ -20106,6 +20399,10 @@ export type Database = {
       }
       update_battle_stats: {
         Args: { loser_id: string; winner_id: string }
+        Returns: undefined
+      }
+      update_hero_battle_stats: {
+        Args: { p_exp_gained: number; p_hero_id: string; p_won: boolean }
         Returns: undefined
       }
     }
