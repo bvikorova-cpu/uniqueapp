@@ -72,15 +72,17 @@ export default function PropertySubmissionForm() {
       const { data: property, error: propertyError } = await supabase
         .from("properties")
         .insert({
-          user_id: user.id,
           title: formData.title,
           description: formData.description,
           price: parseFloat(formData.price),
           location: formData.location,
+          address: formData.location,
+          city: formData.location,
           property_type: formData.propertyType,
-          area_sqm: formData.area ? parseFloat(formData.area) : undefined,
+          area_sqm: formData.area ? parseInt(formData.area) : 50,
           rooms: formData.rooms ? parseInt(formData.rooms) : undefined,
-        })
+          status: 'draft',
+        } as any)
         .select()
         .single();
 

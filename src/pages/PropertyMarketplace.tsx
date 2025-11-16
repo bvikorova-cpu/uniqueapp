@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus, Sparkles } from "lucide-react";
+import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Megaphone, TrendingUp, Calculator, MessageSquare, Check, Plus, Sparkles, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { PropertyCard } from "@/components/property/PropertyCard";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const LISTING_PACKAGES = [
   {
@@ -88,6 +90,9 @@ export default function PropertyMarketplace() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [properties, setProperties] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [searchFilters, setSearchFilters] = useState({
     priceMin: "",
     priceMax: "",
@@ -98,17 +103,17 @@ export default function PropertyMarketplace() {
 
   useEffect(() => {
     checkAuth();
+    fetchProperties();
     
     // Handle payment success/cancel
-    const success = searchParams.get('success');
-    const canceled = searchParams.get('canceled');
+    const payment = searchParams.get('payment');
     
-    if (success === 'true') {
+    if (payment === 'success') {
       toast({
         title: "Payment Successful!",
         description: "Your listing has been activated.",
       });
-    } else if (canceled === 'true') {
+    } else if (payment === 'cancelled') {
       toast({
         title: "Payment Canceled",
         description: "You can complete the payment later.",
@@ -120,6 +125,79 @@ export default function PropertyMarketplace() {
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     setIsAuthenticated(!!session);
+  };
+
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('properties')
+        .select(`
+          *,
+          property_images(image_url, is_primary)
+        `)
+        .eq('status', 'active')
+        .order('is_featured', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+      setProperties(data || []);
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load properties",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = async () => {
+    try {
+      setLoading(true);
+      let query = supabase
+        .from('properties')
+        .select(`
+          *,
+          property_images(image_url, is_primary)
+        `)
+        .eq('status', 'active');
+
+      if (searchFilters.location) {
+        query = query.or(`city.ilike.%${searchFilters.location}%,location.ilike.%${searchFilters.location}%`);
+      }
+      if (searchFilters.priceMin) {
+        query = query.gte('price', parseFloat(searchFilters.priceMin));
+      }
+      if (searchFilters.priceMax) {
+        query = query.lte('price', parseFloat(searchFilters.priceMax));
+      }
+      if (searchFilters.area) {
+        query = query.gte('area_sqm', parseInt(searchFilters.area));
+      }
+      if (searchFilters.rooms) {
+        query = query.gte('rooms', parseInt(searchFilters.rooms));
+      }
+
+      const { data, error } = await query
+        .order('is_featured', { ascending: false })
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProperties(data || []);
+    } catch (error) {
+      console.error('Error searching properties:', error);
+      toast({
+        title: "Error",
+        description: "Failed to search properties",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCreateListing = () => {
@@ -243,7 +321,7 @@ export default function PropertyMarketplace() {
 
               <div className="space-y-2 lg:col-span-2">
                 <label className="text-sm font-medium invisible">Search</label>
-                <Button className="w-full">
+                <Button className="w-full" onClick={handleSearch}>
                   Search Properties
                 </Button>
               </div>
@@ -251,7 +329,31 @@ export default function PropertyMarketplace() {
           </CardContent>
         </Card>
 
-        {/* Listing Packages */}
+        {/* Properties Grid */}
+        <div className="mb-12">
+          <h2 className="text-3xl font-bold mb-8">Available Properties</h2>
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            </div>
+          ) : properties.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {properties.map((property) => (
+                <PropertyCard
+                  key={property.id}
+                  property={property}
+                  onViewDetails={setSelectedProperty}
+                />
+              ))}
+            </div>
+          ) : (
+            <Card className="p-12 text-center">
+              <Building2 className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+              <p className="text-xl text-muted-foreground">No properties found</p>
+              <p className="text-sm text-muted-foreground mt-2">Try adjusting your search filters</p>
+            </Card>
+          )}
+        </div>
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-center mb-8">Listing Packages</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
