@@ -1,82 +1,49 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { toast } from '@/hooks/use-toast';
-import { DollarSign, Check, X } from 'lucide-react';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CampaignWithdrawalManagement } from "@/components/fundraising/CampaignWithdrawalManagement";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export default function WithdrawalRequests() {
-  const [requests, setRequests] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { isAdmin, loading } = useIsAdmin();
 
   useEffect(() => {
-    fetchRequests();
-  }, []);
-
-  const fetchRequests = async () => {
-    const { data } = await supabase
-      .from('withdrawal_requests')
-      .select('*')
-      .order('created_at', { ascending: false }) as any;
-    
-    setRequests(data || []);
-    setLoading(false);
-  };
-
-  const processRequest = async (id: string, action: string) => {
-    const { error } = await supabase.functions.invoke('process-withdrawal-request', {
-      body: { withdrawalId: id, action }
-    });
-
-    if (error) {
-      toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    } else {
-      toast({ title: 'Success', description: `Request ${action}d` });
-      fetchRequests();
+    if (!loading && !isAdmin) {
+      navigate("/");
     }
-  };
+  }, [isAdmin, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Withdrawal Requests</h1>
-        
-        <div className="space-y-4">
-          {requests.map((req) => (
-            <Card key={req.id}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span>€{req.amount.toFixed(2)}</span>
-                  <Badge>{req.status}</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p><strong>Campaign:</strong> {req.campaign_type} - {req.campaign_id}</p>
-                <p><strong>Bank:</strong> {req.bank_name}</p>
-                <p><strong>Account:</strong> {req.bank_account_number}</p>
-                
-                {req.status === 'pending' && (
-                  <div className="flex gap-2 mt-4">
-                    <Button onClick={() => processRequest(req.id, 'approve')}>
-                      <Check className="mr-2 h-4 w-4" />Approve
-                    </Button>
-                    <Button variant="destructive" onClick={() => processRequest(req.id, 'reject')}>
-                      <X className="mr-2 h-4 w-4" />Reject
-                    </Button>
-                  </div>
-                )}
-                
-                {req.status === 'approved' && (
-                  <Button onClick={() => processRequest(req.id, 'complete')} className="mt-4">
-                    <DollarSign className="mr-2 h-4 w-4" />Mark as Paid
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+    <div className="container mx-auto p-6 max-w-7xl">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Campaign Withdrawal Management</h1>
+        <p className="text-muted-foreground mt-2">
+          Review and process campaign withdrawal requests
+        </p>
       </div>
+
+      <Tabs defaultValue="requests" className="w-full">
+        <TabsList className="grid w-full grid-cols-1 max-w-md">
+          <TabsTrigger value="requests">Withdrawal Requests</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="requests" className="mt-6">
+          <CampaignWithdrawalManagement />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
