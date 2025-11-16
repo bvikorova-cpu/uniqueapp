@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, Maximize2, BedDouble, Eye, Heart } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PropertyExpirationBadge } from "./PropertyExpirationBadge";
 
 interface Property {
   id: string;
@@ -17,6 +18,8 @@ interface Property {
   property_type: string;
   is_featured: boolean;
   views_count: number;
+  status: string;
+  listing_expires_at: string | null;
   property_images: Array<{
     image_url: string;
     is_primary: boolean;
@@ -77,9 +80,15 @@ export function PropertyCard({ property, onViewDetails }: PropertyCardProps) {
       <CardHeader>
         <div className="flex justify-between items-start mb-2">
           <Badge variant="secondary">{property.property_type}</Badge>
-          <Button variant="ghost" size="icon" className="h-8 w-8">
-            <Heart className="h-4 w-4" />
-          </Button>
+          <div className="flex gap-2 items-center">
+            <PropertyExpirationBadge 
+              expiresAt={property.listing_expires_at} 
+              status={property.status}
+            />
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Heart className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         <CardTitle className="text-xl">{property.title}</CardTitle>
         <CardDescription className="flex items-center gap-1">

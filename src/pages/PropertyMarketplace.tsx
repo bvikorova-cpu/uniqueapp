@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { PropertyDetailDialog } from "@/components/property/PropertyDetailDialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 
 const LISTING_PACKAGES = [
   {
@@ -102,6 +103,9 @@ export default function PropertyMarketplace() {
     area: "",
     rooms: ""
   });
+
+  // Hook for checking expired listings
+  usePropertyExpiration();
 
   useEffect(() => {
     checkAuth();
