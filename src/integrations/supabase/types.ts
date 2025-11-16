@@ -14475,6 +14475,7 @@ export type Database = {
           updated_at: string | null
           user_id: string
           views_count: number | null
+          virtual_tour_url: string | null
           year_built: number | null
         }
         Insert: {
@@ -14503,6 +14504,7 @@ export type Database = {
           updated_at?: string | null
           user_id: string
           views_count?: number | null
+          virtual_tour_url?: string | null
           year_built?: number | null
         }
         Update: {
@@ -14531,6 +14533,7 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           views_count?: number | null
+          virtual_tour_url?: string | null
           year_built?: number | null
         }
         Relationships: []
@@ -14839,6 +14842,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "property_videos_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_virtual_tour_purchases: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          expires_at: string
+          id: string
+          property_id: string
+          purchased_at: string
+          status: string
+          stripe_payment_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          property_id: string
+          purchased_at?: string
+          status?: string
+          stripe_payment_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          expires_at?: string
+          id?: string
+          property_id?: string
+          purchased_at?: string
+          status?: string
+          stripe_payment_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_virtual_tour_purchases_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"

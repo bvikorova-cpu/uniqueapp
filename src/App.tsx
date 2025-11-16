@@ -193,6 +193,7 @@ import MyPurchasedTips from "./pages/MyPurchasedTips";
 import TipsterDashboard from "./pages/TipsterDashboard";
 import PropertyMarketplace from "./pages/PropertyMarketplace";
 import PropertySubmission from "./pages/PropertySubmission";
+import MyProperties from "./pages/MyProperties";
 import HomeDecorMarketplace from "./pages/HomeDecorMarketplace";
 import HomeDecorSubscription from "./pages/HomeDecorSubscription";
 import PrintOnDemand from "./pages/PrintOnDemand";
@@ -537,6 +538,7 @@ const App = () => (
               <Route path="/fundraising/talent" element={<TalentSponsorship />} />
               <Route path="/property-marketplace" element={<PropertyMarketplace />} />
               <Route path="/property-submission" element={<PropertySubmission />} />
+              <Route path="/my-properties" element={<MyProperties />} />
               <Route path="/home-decor" element={<HomeDecorMarketplace />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
