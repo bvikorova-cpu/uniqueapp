@@ -2116,6 +2116,42 @@ export type Database = {
         }
         Relationships: []
       }
+      campaign_approvals: {
+        Row: {
+          campaign_id: string
+          campaign_type: string
+          created_at: string | null
+          id: string
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          campaign_id: string
+          campaign_type: string
+          created_at?: string | null
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          campaign_id?: string
+          campaign_type?: string
+          created_at?: string | null
+          id?: string
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       campaign_donations: {
         Row: {
           amount: number

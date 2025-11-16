@@ -245,11 +245,14 @@ import MedicalDetail from "./pages/fundraising/MedicalDetail";
 import CreateMedicalCampaign from "./pages/fundraising/CreateMedicalCampaign";
 import FundraisingDashboard from "./pages/fundraising/FundraisingDashboard";
 import DreamMaker from "./pages/fundraising/DreamMaker";
+import CreateDreamCampaign from "./pages/fundraising/CreateDreamCampaign";
 import CommunityHero from "./pages/fundraising/CommunityHero";
+import CreateHeroCampaign from "./pages/fundraising/CreateHeroCampaign";
 import PetRescue from "./pages/fundraising/PetRescue";
 import StudentSupport from "./pages/fundraising/StudentSupport";
 import CrisisRelief from "./pages/fundraising/CrisisRelief";
 import TalentSponsorship from "./pages/fundraising/TalentSponsorship";
+import CampaignApprovals from "./pages/admin/CampaignApprovals";
 import Wellness from "./pages/Wellness";
 import PostDetail from "./pages/PostDetail";
 import Navbar from "./components/Navbar";
@@ -532,11 +535,14 @@ const App = () => (
               <Route path="/fundraising/medical/create" element={<CreateMedicalCampaign />} />
               <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
               <Route path="/fundraising/dream" element={<DreamMaker />} />
+              <Route path="/fundraising/dream/create" element={<CreateDreamCampaign />} />
               <Route path="/fundraising/hero" element={<CommunityHero />} />
+              <Route path="/fundraising/hero/create" element={<CreateHeroCampaign />} />
               <Route path="/fundraising/pet" element={<PetRescue />} />
               <Route path="/fundraising/student" element={<StudentSupport />} />
               <Route path="/fundraising/crisis" element={<CrisisRelief />} />
               <Route path="/fundraising/talent" element={<TalentSponsorship />} />
+              <Route path="/admin/campaign-approvals" element={<CampaignApprovals />} />
               <Route path="/property-marketplace" element={<PropertyMarketplace />} />
               <Route path="/property-submission" element={<PropertySubmission />} />
               <Route path="/my-properties" element={<MyProperties />} />
