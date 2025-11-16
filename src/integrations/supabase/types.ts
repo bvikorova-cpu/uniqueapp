@@ -14678,6 +14678,7 @@ export type Database = {
           purchased_at: string
           status: string
           stripe_payment_id: string | null
+          stripe_session_id: string | null
           target_emails: number | null
           user_id: string
         }
@@ -14691,6 +14692,7 @@ export type Database = {
           purchased_at?: string
           status?: string
           stripe_payment_id?: string | null
+          stripe_session_id?: string | null
           target_emails?: number | null
           user_id: string
         }
@@ -14704,6 +14706,7 @@ export type Database = {
           purchased_at?: string
           status?: string
           stripe_payment_id?: string | null
+          stripe_session_id?: string | null
           target_emails?: number | null
           user_id?: string
         }

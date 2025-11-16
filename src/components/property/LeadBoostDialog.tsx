@@ -70,41 +70,29 @@ export function LeadBoostDialog({ open, onOpenChange }: LeadBoostDialogProps) {
 
       if (purchaseError) throw purchaseError;
 
-      // In production, integrate with Stripe for payment
-      // For now, we'll simulate the purchase and start the campaign
-      
-      toast({
-        title: "Payment Processing",
-        description: "Processing your payment... This would integrate with Stripe in production.",
-      });
-
-      // Simulate payment success and trigger campaign
-      setTimeout(async () => {
-        try {
-          const { error: functionError } = await supabase.functions.invoke('process-lead-boost', {
-            body: { 
-              propertyId: selectedProperty,
-              purchaseId: purchase.id
-            }
-          });
-
-          if (functionError) throw functionError;
-
-          toast({
-            title: "Lead Boost Activated!",
-            description: "Your property is being promoted to 1000+ potential buyers via email.",
-          });
-
-          onOpenChange(false);
-        } catch (error) {
-          console.error('Error starting campaign:', error);
-          toast({
-            variant: "destructive",
-            title: "Campaign Error",
-            description: "Failed to start lead boost campaign.",
-          });
+      // Create Stripe checkout session
+      const { data: checkoutData, error: checkoutError } = await supabase.functions.invoke(
+        'create-lead-boost-payment',
+        {
+          body: { propertyId: selectedProperty }
         }
-      }, 2000);
+      );
+
+      if (checkoutError) throw checkoutError;
+
+      if (checkoutData?.url) {
+        // Redirect to Stripe checkout
+        window.open(checkoutData.url, '_blank');
+        
+        toast({
+          title: "Redirecting to Payment",
+          description: "Complete your payment to activate Lead Boost.",
+        });
+
+        onOpenChange(false);
+      } else {
+        throw new Error("No checkout URL received");
+      }
 
     } catch (error) {
       console.error('Error purchasing lead boost:', error);
