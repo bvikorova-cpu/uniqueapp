@@ -11,6 +11,8 @@ import { useSportsSubscription } from "@/hooks/useSportsSubscription";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { TipsterRegistrationDialog } from "@/components/sports/TipsterRegistrationDialog";
+import { ExpertTips } from "@/components/sports/ExpertTips";
+import { TipstersLeaderboard } from "@/components/sports/TipstersLeaderboard";
 import {
   Trophy,
   TrendingUp,
@@ -319,10 +321,7 @@ export default function SportsPredictor() {
                   navigate('/auth');
                   return;
                 }
-                toast({
-                  title: "Coming Soon",
-                  description: "Tipster registration will be available soon",
-                });
+                setShowTipsterDialog(true);
               }}
             >
               <Award className="mr-2 h-4 w-4" />
@@ -330,73 +329,7 @@ export default function SportsPredictor() {
             </Button>
           </div>
 
-          <div className="grid gap-4">
-            {TOP_TIPSTERS.map((tipster, index) => (
-              <Card key={tipster.id} className="hover:shadow-lg transition-all">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-4">
-                    <div className="text-3xl font-bold text-muted-foreground w-12">
-                      #{index + 1}
-                    </div>
-                    <Avatar className="h-16 w-16">
-                      <AvatarImage src={tipster.avatar} />
-                      <AvatarFallback>{tipster.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-lg">{tipster.name}</h3>
-                        <Badge className={tipster.badge === "Elite" ? "bg-gradient-to-r from-yellow-500 to-orange-500" : ""}>
-                          {tipster.badge}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground">{tipster.sport} Specialist</p>
-                    </div>
-                    <div className="grid grid-cols-4 gap-6 text-center">
-                      <div>
-                        <div className="text-2xl font-bold text-green-500">{tipster.winRate}%</div>
-                        <div className="text-xs text-muted-foreground">Win Rate</div>
-                      </div>
-                      <div>
-                        <div className="text-2xl font-bold">{tipster.totalTips}</div>
-                        <div className="text-xs text-muted-foreground">Tips</div>
-                      </div>
-                      <div>
-                        <div className="text-2xl font-bold">{tipster.roi}</div>
-                        <div className="text-xs text-muted-foreground">ROI</div>
-                      </div>
-                      <div>
-                        <div className="text-2xl font-bold">{(tipster.followers / 1000).toFixed(1)}k</div>
-                        <div className="text-xs text-muted-foreground">Followers</div>
-                      </div>
-                    </div>
-                    <Button
-                      onClick={() => {
-                        if (!user) {
-                          navigate('/auth');
-                          return;
-                        }
-                        if (!subscribed || tier !== 'expert_tipster') {
-                          toast({
-                            title: "Upgrade Required",
-                            description: "Expert Tipster subscription needed to follow tipsters",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        toast({
-                          title: "Success",
-                          description: `Now following ${tipster.name}`,
-                        });
-                      }}
-                    >
-                      <Users className="mr-2 h-4 w-4" />
-                      Follow
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <TipstersLeaderboard />
         </div>
       </section>
 
@@ -518,6 +451,17 @@ export default function SportsPredictor() {
               )}
             </TabsContent>
           </Tabs>
+        </div>
+      </section>
+
+      {/* Expert Tips Section */}
+      <section className="py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold mb-2">Premium Expert Tips</h2>
+            <p className="text-muted-foreground">Purchase individual tips from top-performing tipsters</p>
+          </div>
+          <ExpertTips />
         </div>
       </section>
 
