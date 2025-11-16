@@ -185,6 +185,16 @@ const Navbar = () => {
     { path: "/teen-career-counselor", label: "Career Counselor (13-18y)", icon: Briefcase },
   ];
 
+  const fundraisingServices = [
+    { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
+    { path: "/fundraising/dream", label: "✨ Dream Maker", icon: Sparkles },
+    { path: "/fundraising/hero", label: "🦸 Community Hero", icon: Shield },
+    { path: "/fundraising/pet", label: "🐾 Pet Rescue", icon: PawPrint },
+    { path: "/fundraising/student", label: "🎓 Student Support", icon: GraduationCap },
+    { path: "/fundraising/crisis", label: "🆘 Crisis Relief", icon: AlertTriangle },
+    { path: "/fundraising/talent", label: "🎭 Talent Sponsorship", icon: Star },
+  ];
+
   const otherServices = [
     { path: "/wellness", label: "🧘 Wellness & Relaxation", icon: Heart },
     { path: "/skill-swap", label: "🔄 Global Skill Swap", icon: Globe },
@@ -193,13 +203,6 @@ const Navbar = () => {
     { path: "/sports-predictor", label: "⚽ Sports Match Predictions", icon: Trophy },
     { path: "/property-marketplace", label: "🏠 Property Marketplace", icon: Building2 },
     { path: "/membership-community", label: "Membership Community", icon: Users },
-    { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
-    { path: "/fundraising/dream", label: "✨ Dream Maker", icon: Sparkles },
-    { path: "/fundraising/hero", label: "🦸 Community Hero", icon: Shield },
-    { path: "/fundraising/pet", label: "🐾 Pet Rescue", icon: PawPrint },
-    { path: "/fundraising/student", label: "🎓 Student Support", icon: GraduationCap },
-    { path: "/fundraising/crisis", label: "🆘 Crisis Relief", icon: AlertTriangle },
-    { path: "/fundraising/talent", label: "🎭 Talent Sponsorship", icon: Star },
     { path: "/crystal-energy-network", label: "💎 Crystal & Energy Network", icon: Gem },
     { path: "/dna-memory-network", label: "🧬 DNA Social Memory Network", icon: Dna },
     { path: "/reincarnation-social", label: "♾️ Reincarnation Social", icon: Sparkles },
@@ -284,7 +287,7 @@ const Navbar = () => {
   ];
 
   const isLearningServiceActive = learningServices.some(item => location.pathname === item.path);
-
+  const isFundraisingServiceActive = fundraisingServices.some(item => location.pathname === item.path);
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
@@ -333,6 +336,30 @@ const Navbar = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto">
                 {learningServices.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path;
+                  
+                  return (
+                    <DropdownMenuItem key={item.path} asChild>
+                      <Link to={item.path} className="w-full cursor-pointer">
+                        <Icon className="h-4 w-4 mr-2" />
+                        {item.label}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={isFundraisingServiceActive ? "premium" : "ghost"}>
+                  <Heart className="h-4 w-4" />
+                  Fundraising
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 max-h-96 overflow-y-auto">
+                {fundraisingServices.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path;
                   
@@ -573,6 +600,29 @@ const Navbar = () => {
                 Learning
               </div>
               {learningServices.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
+                    <Button
+                      variant={isActive ? "premium" : "ghost"}
+                      className="w-full justify-start"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
+            
+            {/* Fundraising Section */}
+            <div className="pt-2 pb-2">
+              <div className="px-4 py-2 text-sm font-semibold text-muted-foreground">
+                Fundraising
+              </div>
+              {fundraisingServices.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
                 
