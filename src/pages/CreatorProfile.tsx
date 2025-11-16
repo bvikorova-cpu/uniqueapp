@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SubscriptionTiers } from "@/components/creator/SubscriptionTiers";
 import { ExclusivePostsList } from "@/components/creator/ExclusivePostsList";
+import { CreatorMessaging } from "@/components/creator/CreatorMessaging";
+import { CreatorMediaUpload } from "@/components/creator/CreatorMediaUpload";
 import {
   Users,
   CheckCircle2,
@@ -294,6 +296,30 @@ export default function CreatorProfile() {
             isSubscribed={userSubscription.subscribed}
           />
         </div>
+
+        {/* Messaging Section */}
+        {userSubscription.subscribed && (
+          <CreatorMessaging
+            creatorId={creatorId!}
+            creatorName={creator.display_name}
+            canMessage={userSubscription.subscribed}
+          />
+        )}
+
+        {/* Creator's own dashboard */}
+        {creator.id === creatorId && (
+          <CreatorMediaUpload
+            creatorId={creatorId!}
+            onUploadComplete={loadCreatorProfile}
+          />
+        )}
+
+        {/* Exclusive Content */}
+        <ExclusivePostsList
+          creatorId={creatorId!}
+          userTierId={userSubscription.tier_id}
+          isSubscribed={userSubscription.subscribed}
+        />
 
         {/* Send Gift Section */}
         <Card>
