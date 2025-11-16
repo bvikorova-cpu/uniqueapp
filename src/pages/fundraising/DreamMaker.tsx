@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Users, Target } from 'lucide-react';
+import { Sparkles, Users, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface DreamCampaign {
   id: string;
@@ -23,11 +24,11 @@ interface DreamCampaign {
 }
 
 const dreamTypeLabels: Record<string, string> = {
-  education: '🎓 Vzdelávanie',
-  travel: '✈️ Cestovanie',
+  education: '🎓 Education',
+  travel: '✈️ Travel',
   startup: '🚀 Startup',
-  creative: '🎨 Kreatívne',
-  other: '✨ Iné',
+  creative: '🎨 Creative',
+  other: '✨ Other',
 };
 
 export default function DreamMaker() {
@@ -59,8 +60,8 @@ export default function DreamMaker() {
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať kampane',
+        title: 'Error',
+        description: 'Failed to load campaigns',
         variant: 'destructive',
       });
     } finally {
@@ -75,12 +76,12 @@ export default function DreamMaker() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-secondary to-secondary/60 bg-clip-text text-transparent">
             ✨ Dream Maker Platform
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Zdieľajte svoj sen a nechajte komunitu pomôcť vám ho splniť
+            Share your dream and let the community help you make it happen
           </p>
           <Button 
             size="lg" 
@@ -88,16 +89,33 @@ export default function DreamMaker() {
             className="bg-gradient-to-r from-secondary to-secondary/80"
           >
             <Sparkles className="mr-2 h-5 w-5" />
-            Zdieľať svoj sen
+            Share Your Dream
           </Button>
         </div>
+
+        <Alert className="mb-8 border-secondary/20 bg-secondary/5">
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-sm">
+            <div className="space-y-2">
+              <p className="font-semibold">How Dream Maker Works:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Share Your Dream:</strong> Create a campaign describing your dream - starting a business, pursuing education, traveling, or any creative project. Include your story, goals, and milestones.</li>
+                <li><strong>Admin Review:</strong> Campaign reviewed within 24 hours for quality and authenticity before going live.</li>
+                <li><strong>Community Support:</strong> Once approved, supporters can contribute any amount to help make your dream reality.</li>
+                <li><strong>Milestone Tracking:</strong> Set achievable milestones and update supporters on progress.</li>
+                <li><strong>Platform Fee:</strong> 7% fee covers operations and secure Stripe payment processing. You receive 93% of donations.</li>
+                <li><strong>Flexible Funding:</strong> Keep what you raise even if you don't reach your full goal.</li>
+              </ul>
+            </div>
+          </AlertDescription>
+        </Alert>
 
         <div className="flex gap-2 mb-8 justify-center flex-wrap">
           <Button
             variant={filter === 'all' ? 'default' : 'outline'}
             onClick={() => setFilter('all')}
           >
-            Všetky
+            All Dreams
           </Button>
           {Object.entries(dreamTypeLabels).map(([key, label]) => (
             <Button
@@ -113,11 +131,11 @@ export default function DreamMaker() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Načítavam sny...</p>
+              <p className="text-muted-foreground">Loading dreams...</p>
             </div>
           ) : campaigns.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Žiadne aktívne kampane</p>
+              <p className="text-muted-foreground">No active campaigns</p>
             </div>
           ) : (
             campaigns.map((campaign) => (
@@ -155,15 +173,9 @@ export default function DreamMaker() {
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />
                   </div>
                   
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      <span>{campaign.supporters_count} podporovateľov</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Target className="h-4 w-4" />
-                      <span>{Array.isArray(campaign.milestones) ? campaign.milestones.length : 0} míľnikov</span>
-                    </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Users className="w-4 h-4 text-muted-foreground" />
+                    <span>{campaign.supporters_count} supporters</span>
                   </div>
                 </CardContent>
                 <CardFooter>
