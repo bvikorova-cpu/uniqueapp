@@ -155,9 +155,9 @@ export default function PropertyMarketplace() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/10">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-24">
         {/* Hero Section */}
-        <div className="text-center mb-12 space-y-6">
+        <div className="text-center mb-12 space-y-6 pt-12">
           <div className="inline-block p-3 bg-primary/10 rounded-full mb-4">
             <Building2 className="h-12 w-12 text-primary" />
           </div>
