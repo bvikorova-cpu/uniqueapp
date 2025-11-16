@@ -189,6 +189,8 @@ import LotteryHistory from "./pages/LotteryHistory";
 import SportsPredictor from "./pages/SportsPredictor";
 import SportsAdmin from "./pages/SportsAdmin";
 import AdminSportsMatches from "./pages/AdminSportsMatches";
+import MyPurchasedTips from "./pages/MyPurchasedTips";
+import TipsterDashboard from "./pages/TipsterDashboard";
 import PropertyMarketplace from "./pages/PropertyMarketplace";
 import PropertySubmission from "./pages/PropertySubmission";
 import HomeDecorMarketplace from "./pages/HomeDecorMarketplace";
@@ -459,6 +461,8 @@ const App = () => (
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
           <Route path="/lottery-ai" element={<LotteryAI />} />
           <Route path="/sports-predictor" element={<SportsPredictor />} />
+          <Route path="/my-purchased-tips" element={<MyPurchasedTips />} />
+          <Route path="/tipster-dashboard" element={<TipsterDashboard />} />
           <Route path="/sports-admin" element={<SportsAdmin />} />
           <Route path="/admin/sports-matches" element={<AdminSportsMatches />} />
           <Route path="/print-on-demand" element={<PrintOnDemand />} />

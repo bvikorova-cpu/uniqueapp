@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { usePurchaseVerification } from "@/hooks/usePurchaseVerification";
 
 interface Tipster {
   id: string;
@@ -48,6 +49,9 @@ export function ExpertTips() {
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [purchasedTips, setPurchasedTips] = useState<Set<string>>(new Set());
   const [purchasing, setPurchasing] = useState<string | null>(null);
+  
+  // Handle payment verification
+  usePurchaseVerification();
 
   useEffect(() => {
     fetchPredictions();
