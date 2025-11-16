@@ -10943,6 +10943,51 @@ export type Database = {
         }
         Relationships: []
       }
+      karmic_debts: {
+        Row: {
+          balance_score: number | null
+          created_at: string | null
+          current_status: string | null
+          debt_type: string
+          description: string
+          id: string
+          origin_life: string | null
+          resolution_steps: Json | null
+          resolved_at: string | null
+          severity: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          balance_score?: number | null
+          created_at?: string | null
+          current_status?: string | null
+          debt_type: string
+          description: string
+          id?: string
+          origin_life?: string | null
+          resolution_steps?: Json | null
+          resolved_at?: string | null
+          severity?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          balance_score?: number | null
+          created_at?: string | null
+          current_status?: string | null
+          debt_type?: string
+          description?: string
+          id?: string
+          origin_life?: string | null
+          resolution_steps?: Json | null
+          resolved_at?: string | null
+          severity?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       kids_drawing_subscriptions: {
         Row: {
           created_at: string | null
@@ -13926,6 +13971,60 @@ export type Database = {
         }
         Relationships: []
       }
+      past_life_regressions: {
+        Row: {
+          created_at: string | null
+          emotional_themes: string[] | null
+          historical_context: string | null
+          id: string
+          key_events: Json | null
+          lessons_learned: string[] | null
+          life_era: string
+          life_location: string
+          life_name: string | null
+          life_role: string
+          life_story: string
+          relationships: Json | null
+          session_date: string | null
+          user_id: string
+          verification_score: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          emotional_themes?: string[] | null
+          historical_context?: string | null
+          id?: string
+          key_events?: Json | null
+          lessons_learned?: string[] | null
+          life_era: string
+          life_location: string
+          life_name?: string | null
+          life_role: string
+          life_story: string
+          relationships?: Json | null
+          session_date?: string | null
+          user_id: string
+          verification_score?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          emotional_themes?: string[] | null
+          historical_context?: string | null
+          id?: string
+          key_events?: Json | null
+          lessons_learned?: string[] | null
+          life_era?: string
+          life_location?: string
+          life_name?: string | null
+          life_role?: string
+          life_story?: string
+          relationships?: Json | null
+          session_date?: string | null
+          user_id?: string
+          verification_score?: number | null
+        }
+        Relationships: []
+      }
       payout_batches: {
         Row: {
           batch_date: string
@@ -16394,6 +16493,57 @@ export type Database = {
         }
         Relationships: []
       }
+      reincarnation_plans: {
+        Row: {
+          created_at: string | null
+          desired_era: string | null
+          desired_location: string | null
+          desired_role: string | null
+          destiny_mapping: Json | null
+          id: string
+          karmic_lessons_to_complete: string[] | null
+          next_life_goal: string
+          plan_name: string
+          plan_status: string | null
+          preservation_protocol: Json | null
+          soul_missions: Json | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          desired_era?: string | null
+          desired_location?: string | null
+          desired_role?: string | null
+          destiny_mapping?: Json | null
+          id?: string
+          karmic_lessons_to_complete?: string[] | null
+          next_life_goal: string
+          plan_name: string
+          plan_status?: string | null
+          preservation_protocol?: Json | null
+          soul_missions?: Json | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          desired_era?: string | null
+          desired_location?: string | null
+          desired_role?: string | null
+          destiny_mapping?: Json | null
+          id?: string
+          karmic_lessons_to_complete?: string[] | null
+          next_life_goal?: string
+          plan_name?: string
+          plan_status?: string | null
+          preservation_protocol?: Json | null
+          soul_missions?: Json | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       reposts: {
         Row: {
           comment: string | null
@@ -17055,6 +17205,102 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      soul_matches: {
+        Row: {
+          compatibility_score: number | null
+          connection_type: string
+          created_at: string | null
+          id: string
+          karmic_lessons: Json | null
+          match_status: string | null
+          past_lives_together: number | null
+          relationship_history: Json | null
+          reunion_probability: number | null
+          soul_contract: string | null
+          user1_id: string
+          user2_id: string
+        }
+        Insert: {
+          compatibility_score?: number | null
+          connection_type: string
+          created_at?: string | null
+          id?: string
+          karmic_lessons?: Json | null
+          match_status?: string | null
+          past_lives_together?: number | null
+          relationship_history?: Json | null
+          reunion_probability?: number | null
+          soul_contract?: string | null
+          user1_id: string
+          user2_id: string
+        }
+        Update: {
+          compatibility_score?: number | null
+          connection_type?: string
+          created_at?: string | null
+          id?: string
+          karmic_lessons?: Json | null
+          match_status?: string | null
+          past_lives_together?: number | null
+          relationship_history?: Json | null
+          reunion_probability?: number | null
+          soul_contract?: string | null
+          user1_id?: string
+          user2_id?: string
+        }
+        Relationships: []
+      }
+      soul_profiles: {
+        Row: {
+          age: number | null
+          bio: string | null
+          created_at: string | null
+          display_name: string
+          id: string
+          is_active: boolean | null
+          karma_balance: number | null
+          location: string | null
+          past_lives_count: number | null
+          seeking_connection_types: string[] | null
+          soul_age: string | null
+          spiritual_level: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          age?: number | null
+          bio?: string | null
+          created_at?: string | null
+          display_name: string
+          id?: string
+          is_active?: boolean | null
+          karma_balance?: number | null
+          location?: string | null
+          past_lives_count?: number | null
+          seeking_connection_types?: string[] | null
+          soul_age?: string | null
+          spiritual_level?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          age?: number | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string
+          id?: string
+          is_active?: boolean | null
+          karma_balance?: number | null
+          location?: string | null
+          past_lives_count?: number | null
+          seeking_connection_types?: string[] | null
+          soul_age?: string | null
+          spiritual_level?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       sponsor_goals: {
         Row: {
