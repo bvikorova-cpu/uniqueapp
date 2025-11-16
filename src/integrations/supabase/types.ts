@@ -14667,6 +14667,56 @@ export type Database = {
           },
         ]
       }
+      property_lead_boost_purchases: {
+        Row: {
+          amount_paid: number
+          completed_at: string | null
+          created_at: string
+          emails_sent: number | null
+          id: string
+          property_id: string
+          purchased_at: string
+          status: string
+          stripe_payment_id: string | null
+          target_emails: number | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          completed_at?: string | null
+          created_at?: string
+          emails_sent?: number | null
+          id?: string
+          property_id: string
+          purchased_at?: string
+          status?: string
+          stripe_payment_id?: string | null
+          target_emails?: number | null
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          completed_at?: string | null
+          created_at?: string
+          emails_sent?: number | null
+          id?: string
+          property_id?: string
+          purchased_at?: string
+          status?: string
+          stripe_payment_id?: string | null
+          target_emails?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_lead_boost_purchases_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       property_listing_packages: {
         Row: {
           created_at: string | null

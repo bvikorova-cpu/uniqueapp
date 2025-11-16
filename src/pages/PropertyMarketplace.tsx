@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { PropertyDetailDialog } from "@/components/property/PropertyDetailDialog";
+import { LeadBoostDialog } from "@/components/property/LeadBoostDialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { usePropertyExpiration } from "@/hooks/usePropertyExpiration";
 
@@ -75,7 +76,8 @@ const ADDITIONAL_SERVICES = [
     name: "Lead Boost",
     price: 19,
     description: "Push listing to 1000+ potential buyers via email",
-    icon: TrendingUp
+    icon: TrendingUp,
+    active: true
   },
   {
     id: "home_decor",
@@ -97,6 +99,7 @@ export default function PropertyMarketplace() {
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
+  const [leadBoostDialogOpen, setLeadBoostDialogOpen] = useState(false);
   const [searchFilters, setSearchFilters] = useState({
     priceMin: "",
     priceMax: "",
@@ -263,6 +266,11 @@ export default function PropertyMarketplace() {
         title: "Virtual Tour Hosting",
         description: `After purchasing a property listing package, you can add 3D virtual tours to your properties from your dashboard.`,
       });
+      return;
+    }
+
+    if (serviceId === "lead_boost") {
+      setLeadBoostDialogOpen(true);
       return;
     }
     
@@ -593,6 +601,12 @@ export default function PropertyMarketplace() {
         property={selectedProperty}
         open={showDetailDialog}
         onOpenChange={setShowDetailDialog}
+      />
+
+      {/* Lead Boost Dialog */}
+      <LeadBoostDialog
+        open={leadBoostDialogOpen}
+        onOpenChange={setLeadBoostDialogOpen}
       />
     </div>
   );
