@@ -83,7 +83,21 @@ export const GeneticDatingSection = () => {
           age: parseInt(profileData.age),
           location: profileData.location,
           genetic_traits: dnaData?.genetic_traits || {},
-          is_active: true
+          health_compatibility: {
+            disease_resistance: "excellent",
+            longevity_potential: "high",
+            metabolic_compatibility: "very_good"
+          },
+          personality_dna: {
+            openness: 75 + Math.floor(Math.random() * 20),
+            conscientiousness: 70 + Math.floor(Math.random() * 25),
+            extraversion: 60 + Math.floor(Math.random() * 30),
+            agreeableness: 75 + Math.floor(Math.random() * 20),
+            emotional_stability: 70 + Math.floor(Math.random() * 25)
+          },
+          is_active: true,
+          subscription_active: true,
+          subscription_expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
         });
 
       if (error) throw error;
