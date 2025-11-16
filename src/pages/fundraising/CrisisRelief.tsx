@@ -4,11 +4,11 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, Users, MapPin, Clock, CheckCircle } from 'lucide-react';
+import { AlertTriangle, Users, MapPin, Clock, CheckCircle, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
-import { sk } from 'date-fns/locale';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface CrisisCampaign {
   id: string;
@@ -27,11 +27,11 @@ interface CrisisCampaign {
 }
 
 const crisisTypeLabels: Record<string, string> = {
-  fire: '🔥 Požiar',
-  flood: '🌊 Povodeň',
-  accident: '⚠️ Nehoda',
-  natural_disaster: '🌪️ Prírodná katastrofa',
-  other: '🆘 Iné',
+  fire: '🔥 Fire',
+  flood: '🌊 Flood',
+  accident: '⚠️ Accident',
+  natural_disaster: '🌪️ Natural Disaster',
+  other: '🆘 Other',
 };
 
 export default function CrisisRelief() {
@@ -58,8 +58,8 @@ export default function CrisisRelief() {
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať kampane',
+        title: 'Error',
+        description: 'Failed to load campaigns',
         variant: 'destructive',
       });
     } finally {
@@ -72,7 +72,7 @@ export default function CrisisRelief() {
   };
 
   const getTimeLeft = (expiresAt: string) => {
-    return formatDistanceToNow(new Date(expiresAt), { addSuffix: true, locale: sk });
+    return formatDistanceToNow(new Date(expiresAt), { addSuffix: true });
   };
 
   return (

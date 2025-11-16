@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Heart, AlertCircle, Users, Building } from 'lucide-react';
+import { Heart, AlertCircle, Users, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface PetCampaign {
   id: string;
@@ -26,11 +27,11 @@ interface PetCampaign {
 }
 
 const petTypeLabels: Record<string, string> = {
-  dog: '🐕 Pes',
-  cat: '🐈 Mačka',
-  bird: '🐦 Vták',
-  rabbit: '🐰 Králik',
-  other: '🐾 Iné',
+  dog: '🐕 Dog',
+  cat: '🐈 Cat',
+  bird: '🐦 Bird',
+  rabbit: '🐰 Rabbit',
+  other: '🐾 Other',
 };
 
 export default function PetRescue() {
@@ -65,8 +66,8 @@ export default function PetRescue() {
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať kampane',
+        title: 'Error',
+        description: 'Failed to load campaigns',
         variant: 'destructive',
       });
     } finally {
@@ -81,12 +82,12 @@ export default function PetRescue() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             🐾 Pet Rescue Network
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Pomôžte zvieratám v núdzi získať potrebnú liečbu a domov
+            Help animals in need get the medical treatment and homes they deserve
           </p>
           <Button 
             size="lg" 
@@ -94,23 +95,40 @@ export default function PetRescue() {
             className="bg-gradient-to-r from-primary to-primary/80"
           >
             <Heart className="mr-2 h-5 w-5" />
-            Pomôcť zvieraťu
+            Help an Animal
           </Button>
         </div>
+
+        <Alert className="mb-8 border-primary/20 bg-primary/5">
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-sm">
+            <div className="space-y-2">
+              <p className="font-semibold">How Pet Rescue Network Works:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Create a Campaign:</strong> Animal shelters, rescue organizations, or individuals caring for animals can create campaigns. Include pet's story, medical condition, and shelter information.</li>
+                <li><strong>Urgent Cases Priority:</strong> Mark campaigns as urgent for critical medical situations. Urgent cases receive priority visibility for immediate support.</li>
+                <li><strong>Verified Organizations:</strong> Campaigns from registered shelters and rescues undergo verification to ensure legitimacy.</li>
+                <li><strong>Photo & Video Support:</strong> Upload multiple images and videos to help supporters connect with the animals.</li>
+                <li><strong>Platform Fee:</strong> 6% fee covers operations and secure payment processing. 94% goes directly to pet's care.</li>
+                <li><strong>Success Stories:</strong> Share updates and photos of recovered animals to show impact and inspire more support.</li>
+              </ul>
+            </div>
+          </AlertDescription>
+        </Alert>
 
         <div className="flex gap-2 mb-8 justify-center flex-wrap">
           <Button
             variant={filter === 'all' ? 'default' : 'outline'}
             onClick={() => setFilter('all')}
           >
-            Všetky
+            All Animals
           </Button>
           <Button
             variant={filter === 'urgent' ? 'default' : 'outline'}
             onClick={() => setFilter('urgent')}
           >
             <AlertCircle className="mr-2 h-4 w-4" />
-            Urgentné
+            Urgent Cases
           </Button>
           {Object.entries(petTypeLabels).map(([key, label]) => (
             <Button
@@ -126,11 +144,11 @@ export default function PetRescue() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Načítavam kampane...</p>
+              <p className="text-muted-foreground">Loading campaigns...</p>
             </div>
           ) : campaigns.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Žiadne aktívne kampane</p>
+              <p className="text-muted-foreground">No active campaigns</p>
             </div>
           ) : (
             campaigns.map((campaign) => (
@@ -174,24 +192,13 @@ export default function PetRescue() {
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />
                   </div>
                   
-                  {campaign.medical_condition && (
-                    <div className="pt-2 border-t">
-                      <p className="text-sm">
-                        <strong>Zdravotný stav:</strong> {campaign.medical_condition}
-                      </p>
+                  <div className="space-y-1 text-sm pt-2 border-t">
+                    <p><strong>Condition:</strong> {campaign.medical_condition}</p>
+                    <p><strong>Shelter:</strong> {campaign.shelter_name}</p>
+                    <div className="flex items-center gap-2 pt-2">
+                      <Users className="w-4 h-4 text-muted-foreground" />
+                      <span>{campaign.supporters_count} supporters</span>
                     </div>
-                  )}
-
-                  {campaign.shelter_name && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Building className="h-4 w-4" />
-                      <span>{campaign.shelter_name}</span>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>{campaign.supporters_count} podporovateľov</span>
                   </div>
                 </CardContent>
                 <CardFooter>

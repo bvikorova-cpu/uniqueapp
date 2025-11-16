@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Users, CheckCircle, Building } from 'lucide-react';
+import { Shield, Users, CheckCircle, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface HeroCampaign {
   id: string;
@@ -24,11 +25,11 @@ interface HeroCampaign {
 }
 
 const heroTypeLabels: Record<string, string> = {
-  firefighter: '🚒 Hasiči',
-  paramedic: '🚑 Záchranári',
-  teacher: '👨‍🏫 Učitelia',
-  volunteer: '🤝 Dobrovoľníci',
-  other: '🦸 Iní hrdinovia',
+  firefighter: '🚒 Firefighters',
+  paramedic: '🚑 Paramedics',
+  teacher: '👨‍🏫 Teachers',
+  volunteer: '🤝 Volunteers',
+  other: '🦸 Other Heroes',
 };
 
 export default function CommunityHero() {
@@ -60,8 +61,8 @@ export default function CommunityHero() {
     } catch (error) {
       console.error('Error fetching campaigns:', error);
       toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať kampane',
+        title: 'Error',
+        description: 'Failed to load campaigns',
         variant: 'destructive',
       });
     } finally {
@@ -76,12 +77,12 @@ export default function CommunityHero() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-accent to-accent/60 bg-clip-text text-transparent">
             🦸 Community Hero Fund
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Podporte lokálnych hrdinov a ich projekty pre komunitu
+            Support local heroes and their projects for the community
           </p>
           <Button 
             size="lg" 
@@ -89,16 +90,33 @@ export default function CommunityHero() {
             className="bg-gradient-to-r from-accent to-accent/80"
           >
             <Shield className="mr-2 h-5 w-5" />
-            Vytvoriť projekt
+            Create Project
           </Button>
         </div>
+
+        <Alert className="mb-8 border-accent/20 bg-accent/5">
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-sm">
+            <div className="space-y-2">
+              <p className="font-semibold">How Community Hero Fund Works:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Honor Local Heroes:</strong> Create campaigns for firefighters, paramedics, teachers, volunteers, and community heroes. Fund equipment, training, or community projects.</li>
+                <li><strong>Organization-Based:</strong> Campaigns must represent registered organizations. Include official details for verification.</li>
+                <li><strong>Verification Process:</strong> Admin review to verify organization legitimacy (typically within 24 hours).</li>
+                <li><strong>Corporate Sponsorship:</strong> Attract individual donations and corporate sponsors supporting community initiatives.</li>
+                <li><strong>Platform Fee:</strong> Only 5% fee - lowest across all categories. 95% goes directly to the project.</li>
+                <li><strong>Full Transparency:</strong> Track donations, view sponsors, share project updates with supporters.</li>
+              </ul>
+            </div>
+          </AlertDescription>
+        </Alert>
 
         <div className="flex gap-2 mb-8 justify-center flex-wrap">
           <Button
             variant={filter === 'all' ? 'default' : 'outline'}
             onClick={() => setFilter('all')}
           >
-            Všetci hrdinovia
+            All Heroes
           </Button>
           {Object.entries(heroTypeLabels).map(([key, label]) => (
             <Button
@@ -114,11 +132,11 @@ export default function CommunityHero() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Načítavam kampane...</p>
+              <p className="text-muted-foreground">Loading campaigns...</p>
             </div>
           ) : campaigns.length === 0 ? (
             <div className="col-span-full text-center py-12">
-              <p className="text-muted-foreground">Žiadne aktívne kampane</p>
+              <p className="text-muted-foreground">No active campaigns</p>
             </div>
           ) : (
             campaigns.map((campaign) => (
@@ -164,26 +182,16 @@ export default function CommunityHero() {
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />
                   </div>
                   
-                  {campaign.organization_name && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Building className="h-4 w-4" />
-                      <span>{campaign.organization_name}</span>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium">{campaign.organization_name}</span>
                     </div>
-                  )}
-
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span>{campaign.supporters_count} podporovateľov</span>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4 text-muted-foreground" />
+                      <span>{campaign.supporters_count} supporters</span>
+                    </div>
                   </div>
-
-                  {campaign.sponsors && Array.isArray(campaign.sponsors) && campaign.sponsors.length > 0 && (
-                    <div className="pt-2 border-t">
-                      <p className="text-sm font-medium mb-1">Sponzori:</p>
-                      <p className="text-sm text-muted-foreground">
-                        {campaign.sponsors.length} firemných partnerov
-                      </p>
-                    </div>
-                  )}
                 </CardContent>
                 <CardFooter>
                   <Button 
