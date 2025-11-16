@@ -14450,54 +14450,131 @@ export type Database = {
       }
       properties: {
         Row: {
+          address: string
           area_sqm: number | null
           bathrooms: number | null
           bedrooms: number | null
+          city: string
           created_at: string | null
           description: string | null
+          features: string[] | null
+          floor: number | null
           id: string
+          is_featured: boolean | null
+          latitude: number | null
+          listing_type: string
           location: string
+          longitude: number | null
           price: number
           property_type: string | null
           rooms: number | null
           status: string | null
           title: string
+          total_floors: number | null
           updated_at: string | null
           user_id: string
+          views_count: number | null
+          year_built: number | null
         }
         Insert: {
+          address: string
           area_sqm?: number | null
           bathrooms?: number | null
           bedrooms?: number | null
+          city: string
           created_at?: string | null
           description?: string | null
+          features?: string[] | null
+          floor?: number | null
           id?: string
+          is_featured?: boolean | null
+          latitude?: number | null
+          listing_type?: string
           location: string
+          longitude?: number | null
           price: number
           property_type?: string | null
           rooms?: number | null
           status?: string | null
           title: string
+          total_floors?: number | null
           updated_at?: string | null
           user_id: string
+          views_count?: number | null
+          year_built?: number | null
         }
         Update: {
+          address?: string
           area_sqm?: number | null
           bathrooms?: number | null
           bedrooms?: number | null
+          city?: string
           created_at?: string | null
           description?: string | null
+          features?: string[] | null
+          floor?: number | null
           id?: string
+          is_featured?: boolean | null
+          latitude?: number | null
+          listing_type?: string
           location?: string
+          longitude?: number | null
           price?: number
           property_type?: string | null
           rooms?: number | null
           status?: string | null
           title?: string
+          total_floors?: number | null
           updated_at?: string | null
           user_id?: string
+          views_count?: number | null
+          year_built?: number | null
         }
         Relationships: []
+      }
+      property_additional_services: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          payment_status: string | null
+          price: number
+          property_id: string
+          service_type: string
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          payment_status?: string | null
+          price: number
+          property_id: string
+          service_type: string
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          payment_status?: string | null
+          price?: number
+          property_id?: string
+          service_type?: string
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_additional_services_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       property_images: {
         Row: {
@@ -14527,6 +14604,106 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "property_images_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_inquiries: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          message: string
+          name: string
+          phone: string | null
+          property_id: string
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          message: string
+          name: string
+          phone?: string | null
+          property_id: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          phone?: string | null
+          property_id?: string
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_inquiries_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      property_listing_packages: {
+        Row: {
+          created_at: string | null
+          duration_days: number
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          package_type: string
+          payment_status: string | null
+          price: number
+          property_id: string
+          starts_at: string | null
+          stripe_session_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          duration_days: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          package_type: string
+          payment_status?: string | null
+          price: number
+          property_id: string
+          starts_at?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          duration_days?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          package_type?: string
+          payment_status?: string | null
+          price?: number
+          property_id?: string
+          starts_at?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_listing_packages_property_id_fkey"
             columns: ["property_id"]
             isOneToOne: false
             referencedRelation: "properties"
