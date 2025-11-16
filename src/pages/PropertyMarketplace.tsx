@@ -9,6 +9,7 @@ import { Building2, MapPin, Maximize2, BedDouble, DollarSign, Camera, Video, Meg
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { PropertyCard } from "@/components/property/PropertyCard";
+import { PropertyDetailDialog } from "@/components/property/PropertyDetailDialog";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const LISTING_PACKAGES = [
@@ -93,6 +94,7 @@ export default function PropertyMarketplace() {
   const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProperty, setSelectedProperty] = useState<any>(null);
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [searchFilters, setSearchFilters] = useState({
     priceMin: "",
     priceMax: "",
@@ -153,6 +155,30 @@ export default function PropertyMarketplace() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewProperty = async (id: string) => {
+    const { data, error } = await supabase
+      .from('properties')
+      .select(`
+        *,
+        property_images (image_url, is_primary),
+        property_videos (video_url)
+      `)
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load property details",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setSelectedProperty(data);
+    setShowDetailDialog(true);
   };
 
   const handleSearch = async () => {
@@ -342,7 +368,7 @@ export default function PropertyMarketplace() {
                 <PropertyCard
                   key={property.id}
                   property={property}
-                  onViewDetails={setSelectedProperty}
+                  onViewDetails={handleViewProperty}
                 />
               ))}
             </div>
@@ -546,6 +572,13 @@ export default function PropertyMarketplace() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Property Detail Dialog */}
+      <PropertyDetailDialog
+        property={selectedProperty}
+        open={showDetailDialog}
+        onOpenChange={setShowDetailDialog}
+      />
     </div>
   );
 }
