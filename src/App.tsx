@@ -244,6 +244,7 @@ import MedicalFundraising from "./pages/fundraising/MedicalFundraising";
 import MedicalDetail from "./pages/fundraising/MedicalDetail";
 import CreateMedicalCampaign from "./pages/fundraising/CreateMedicalCampaign";
 import FundraisingDashboard from "./pages/fundraising/FundraisingDashboard";
+import CampaignDashboard from "./pages/fundraising/CampaignDashboard";
 import DreamMaker from "./pages/fundraising/DreamMaker";
 import CreateDreamCampaign from "./pages/fundraising/CreateDreamCampaign";
 import DreamDetail from "./pages/fundraising/DreamDetail";
@@ -263,6 +264,7 @@ import TalentSponsorship from "./pages/fundraising/TalentSponsorship";
 import CreateTalentCampaign from "./pages/fundraising/CreateTalentCampaign";
 import TalentDetail from "./pages/fundraising/TalentDetail";
 import CampaignApprovals from "./pages/admin/CampaignApprovals";
+import WithdrawalRequests from "./pages/admin/WithdrawalRequests";
 import Wellness from "./pages/Wellness";
 import PostDetail from "./pages/PostDetail";
 import Navbar from "./components/Navbar";
@@ -541,6 +543,7 @@ const App = () => (
               {/* Fundraising Routes */}
               <Route path="/fundraising" element={<FundraisingHub />} />
               <Route path="/fundraising/dashboard" element={<FundraisingDashboard />} />
+              <Route path="/fundraising/:campaignType/:campaignId/dashboard" element={<CampaignDashboard />} />
               <Route path="/fundraising/medical" element={<MedicalFundraising />} />
               <Route path="/fundraising/medical/create" element={<CreateMedicalCampaign />} />
               <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
@@ -563,6 +566,7 @@ const App = () => (
               <Route path="/fundraising/talent/create" element={<CreateTalentCampaign />} />
               <Route path="/fundraising/talent/:id" element={<TalentDetail />} />
               <Route path="/admin/campaign-approvals" element={<CampaignApprovals />} />
+              <Route path="/admin/campaign-withdrawals" element={<WithdrawalRequests />} />
               <Route path="/property-marketplace" element={<PropertyMarketplace />} />
               <Route path="/property-submission" element={<PropertySubmission />} />
               <Route path="/my-properties" element={<MyProperties />} />
