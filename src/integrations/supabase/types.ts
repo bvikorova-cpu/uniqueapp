@@ -6003,6 +6003,143 @@ export type Database = {
           },
         ]
       }
+      crystal_energy_readings: {
+        Row: {
+          created_at: string | null
+          energy_analysis: Json | null
+          energy_level: number | null
+          id: string
+          image_url: string
+          recommended_crystals: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          energy_analysis?: Json | null
+          energy_level?: number | null
+          id?: string
+          image_url: string
+          recommended_crystals?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          energy_analysis?: Json | null
+          energy_level?: number | null
+          id?: string
+          image_url?: string
+          recommended_crystals?: Json | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crystal_marketplace_items: {
+        Row: {
+          authenticity_certificate: string | null
+          created_at: string | null
+          crystal_type: string
+          description: string
+          energy_profile: Json | null
+          id: string
+          image_url: string | null
+          is_available: boolean | null
+          price: number
+          seller_id: string
+          title: string
+          updated_at: string | null
+          views_count: number | null
+          weight_grams: number | null
+        }
+        Insert: {
+          authenticity_certificate?: string | null
+          created_at?: string | null
+          crystal_type: string
+          description: string
+          energy_profile?: Json | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          price: number
+          seller_id: string
+          title: string
+          updated_at?: string | null
+          views_count?: number | null
+          weight_grams?: number | null
+        }
+        Update: {
+          authenticity_certificate?: string | null
+          created_at?: string | null
+          crystal_type?: string
+          description?: string
+          energy_profile?: Json | null
+          id?: string
+          image_url?: string | null
+          is_available?: boolean | null
+          price?: number
+          seller_id?: string
+          title?: string
+          updated_at?: string | null
+          views_count?: number | null
+          weight_grams?: number | null
+        }
+        Relationships: []
+      }
+      crystal_marketplace_orders: {
+        Row: {
+          amount: number
+          buyer_id: string
+          created_at: string | null
+          id: string
+          item_id: string
+          platform_commission: number
+          seller_amount: number
+          seller_id: string
+          shipping_address: Json | null
+          status: string | null
+          stripe_payment_id: string | null
+          tracking_number: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          created_at?: string | null
+          id?: string
+          item_id: string
+          platform_commission: number
+          seller_amount: number
+          seller_id: string
+          shipping_address?: Json | null
+          status?: string | null
+          stripe_payment_id?: string | null
+          tracking_number?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          created_at?: string | null
+          id?: string
+          item_id?: string
+          platform_commission?: number
+          seller_amount?: number
+          seller_id?: string
+          shipping_address?: Json | null
+          status?: string | null
+          stripe_payment_id?: string | null
+          tracking_number?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crystal_marketplace_orders_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "crystal_marketplace_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cv_documents: {
         Row: {
           ai_suggestions: Json | null
