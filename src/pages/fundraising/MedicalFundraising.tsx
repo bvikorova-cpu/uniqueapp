@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { Heart, CheckCircle, Clock, TrendingUp } from 'lucide-react';
+import { Heart, CheckCircle, Clock, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface MedicalCampaign {
   id: string;
@@ -80,31 +81,38 @@ export default function MedicalFundraising() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             🏥 Medical Fundraising Hub
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Help people with serious health issues get the treatment they need
           </p>
-          <div className="flex gap-4 justify-center">
-            <Button 
-              size="lg" 
-              onClick={() => navigate('/fundraising/medical/create')}
-              className="bg-gradient-to-r from-primary to-primary/80"
-            >
-              <Heart className="mr-2 h-5 w-5" />
-              Create Campaign
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              onClick={() => navigate('/fundraising/dashboard')}
-            >
-              My Campaigns
-            </Button>
-          </div>
+          <Button 
+            size="lg" 
+            onClick={() => navigate('/fundraising/medical/create')}
+            className="bg-gradient-to-r from-primary to-primary/80"
+          >
+            <Heart className="mr-2 h-5 w-5" />
+            Create Campaign
+          </Button>
         </div>
+
+        <Alert className="mb-8 border-primary/20 bg-primary/5">
+          <Info className="h-4 w-4" />
+          <AlertDescription className="text-sm">
+            <div className="space-y-2">
+              <p className="font-semibold">How Medical Fundraising Works:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Create Campaign:</strong> Submit medical information with diagnosis, hospital, and funding goal. Admin reviews within 24 hours.</li>
+                <li><strong>Verified & Secure:</strong> Only verified campaigns appear publicly with verification badge.</li>
+                <li><strong>Support Options:</strong> One-time or monthly donations via secure Stripe payments.</li>
+                <li><strong>Platform Fee:</strong> 6% fee covers operations and processing. 94% goes to the campaign.</li>
+                <li><strong>Transparency:</strong> Real-time progress tracking with donor count and updates.</li>
+              </ul>
+            </div>
+          </AlertDescription>
+        </Alert>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
@@ -156,7 +164,7 @@ export default function MedicalFundraising() {
                   
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div className="flex items-center gap-1 text-muted-foreground">
-                      <TrendingUp className="h-4 w-4" />
+                      <Heart className="h-4 w-4" />
                       <span>{campaign.monthly_donors_count} monthly donors</span>
                     </div>
                     {getDaysLeft(campaign.ends_at) !== null && (
