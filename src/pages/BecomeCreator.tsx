@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -13,9 +13,10 @@ import { Loader2, ShieldAlert } from "lucide-react";
 export default function BecomeCreator() {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [existingProfile, setExistingProfile] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     display_name: "",
@@ -24,6 +25,36 @@ export default function BecomeCreator() {
     avatar_url: "",
     is_adult_content: false
   });
+
+  useEffect(() => {
+    checkExistingProfile();
+  }, []);
+
+  const checkExistingProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('creator_profiles')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        setExistingProfile(data.user_id);
+      }
+    } catch (error) {
+      console.error('Error checking profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleImageUpload = async (file: File, type: 'cover' | 'avatar') => {
     try {
@@ -146,6 +177,39 @@ export default function BecomeCreator() {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background py-12 flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (existingProfile) {
+    return (
+      <div className="min-h-screen bg-background py-12">
+        <div className="container mx-auto px-4 max-w-2xl">
+          <Card>
+            <CardHeader>
+              <CardTitle>You're Already a Creator!</CardTitle>
+              <CardDescription>
+                You already have a creator profile. Visit your profile to manage your content and subscribers.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Button onClick={() => navigate(`/creator/${existingProfile}`)} className="w-full">
+                Go to My Creator Profile
+              </Button>
+              <Button onClick={() => navigate('/membership-community')} variant="outline" className="w-full">
+                Back to Membership Community
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background py-12">
