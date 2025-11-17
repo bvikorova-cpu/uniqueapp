@@ -97,27 +97,35 @@ const ConcertPlayer = ({ concert, open, onClose }: ConcertPlayerProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl p-0 bg-black border-purple-500/30">
-        <DialogHeader className="p-4 pb-0">
+      <DialogContent className="max-w-6xl p-0 bg-black border-purple-500/30">
+        <DialogHeader className="p-6 pb-0">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl text-white">
-              {concert.title} - {concert.artist_name}
-            </DialogTitle>
+            <div className="space-y-1">
+              <DialogTitle className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 animate-gradient">
+                {concert.title}
+              </DialogTitle>
+              <p className="text-lg text-purple-300">{concert.artist_name}</p>
+            </div>
             <Button
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="text-white hover:bg-white/10"
+              className="text-white hover:bg-purple-500/20 transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-6 h-6" />
             </Button>
           </div>
         </DialogHeader>
 
-        <div className="relative aspect-video bg-black">
+        <div className="relative aspect-video bg-black holographic-container">
+          {/* Holographic Effect Overlays */}
+          <div className="holographic-effect"></div>
+          <div className="holographic-scanlines"></div>
+          <div className="holographic-glow"></div>
+          
           <video
             ref={videoRef}
-            className="w-full h-full"
+            className="w-full h-full relative z-10 holographic-video"
             playsInline
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
