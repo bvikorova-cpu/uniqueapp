@@ -308,7 +308,7 @@ export default function MasterChefCompetitionsGallery() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500/5 via-background to-red-500/5 pt-52 pb-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-500/5 via-background to-red-500/5 pt-64 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">

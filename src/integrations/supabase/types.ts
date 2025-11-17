@@ -12826,32 +12826,38 @@ export type Database = {
       }
       masterchef_platform_earnings: {
         Row: {
+          admin_notes: string | null
           chef_amount: number
           commission_amount: number
           commission_rate: number
           created_at: string | null
           gift_id: string
           id: string
+          paid_at: string | null
           status: string | null
           total_amount: number
         }
         Insert: {
+          admin_notes?: string | null
           chef_amount: number
           commission_amount: number
           commission_rate: number
           created_at?: string | null
           gift_id: string
           id?: string
+          paid_at?: string | null
           status?: string | null
           total_amount: number
         }
         Update: {
+          admin_notes?: string | null
           chef_amount?: number
           commission_amount?: number
           commission_rate?: number
           created_at?: string | null
           gift_id?: string
           id?: string
+          paid_at?: string | null
           status?: string | null
           total_amount?: number
         }
