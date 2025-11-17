@@ -482,3 +482,21 @@ verify_jwt = true
 
 [functions.get-user-phobias]
 verify_jwt = true
+
+[functions.verify-multiverse-payment]
+verify_jwt = false
+
+[functions.create-universe]
+verify_jwt = true
+
+[functions.reality-jump]
+verify_jwt = true
+
+[functions.merge-timelines]
+verify_jwt = true
+
+[functions.find-best-self]
+verify_jwt = true
+
+[functions.get-user-universes]
+verify_jwt = true

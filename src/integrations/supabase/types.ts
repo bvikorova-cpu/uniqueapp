@@ -1405,6 +1405,47 @@ export type Database = {
         }
         Relationships: []
       }
+      best_self_versions: {
+        Row: {
+          achievements: string[] | null
+          created_at: string | null
+          id: string
+          ranking: number | null
+          success_metrics: Json | null
+          traits: Json | null
+          universe_id: string | null
+          user_id: string
+        }
+        Insert: {
+          achievements?: string[] | null
+          created_at?: string | null
+          id?: string
+          ranking?: number | null
+          success_metrics?: Json | null
+          traits?: Json | null
+          universe_id?: string | null
+          user_id: string
+        }
+        Update: {
+          achievements?: string[] | null
+          created_at?: string | null
+          id?: string
+          ranking?: number | null
+          success_metrics?: Json | null
+          traits?: Json | null
+          universe_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "best_self_versions_universe_id_fkey"
+            columns: ["universe_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_universes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       birth_charts: {
         Row: {
           birth_date: string
@@ -13476,6 +13517,45 @@ export type Database = {
         }
         Relationships: []
       }
+      multiverse_purchases: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          service_type: string
+          started_at: string | null
+          status: string | null
+          stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          service_type: string
+          started_at?: string | null
+          status?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          service_type?: string
+          started_at?: string | null
+          status?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       musician_profiles: {
         Row: {
           avatar_url: string | null
@@ -14116,6 +14196,42 @@ export type Database = {
           started_at?: string
           status?: string
           tier?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      parallel_universes: {
+        Row: {
+          created_at: string | null
+          divergence_point: string | null
+          id: string
+          parameters: Json | null
+          success_score: number | null
+          universe_description: string | null
+          universe_name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          divergence_point?: string | null
+          id?: string
+          parameters?: Json | null
+          success_score?: number | null
+          universe_description?: string | null
+          universe_name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          divergence_point?: string | null
+          id?: string
+          parameters?: Json | null
+          success_score?: number | null
+          universe_description?: string | null
+          universe_name?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -16595,6 +16711,51 @@ export type Database = {
           weather?: string
         }
         Relationships: []
+      }
+      reality_jumps: {
+        Row: {
+          decision_data: Json | null
+          from_universe_id: string | null
+          id: string
+          jump_reason: string | null
+          jumped_at: string | null
+          to_universe_id: string | null
+          user_id: string
+        }
+        Insert: {
+          decision_data?: Json | null
+          from_universe_id?: string | null
+          id?: string
+          jump_reason?: string | null
+          jumped_at?: string | null
+          to_universe_id?: string | null
+          user_id: string
+        }
+        Update: {
+          decision_data?: Json | null
+          from_universe_id?: string | null
+          id?: string
+          jump_reason?: string | null
+          jumped_at?: string | null
+          to_universe_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reality_jumps_from_universe_id_fkey"
+            columns: ["from_universe_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_universes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reality_jumps_to_universe_id_fkey"
+            columns: ["to_universe_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_universes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reality_merges: {
         Row: {
@@ -19172,6 +19333,41 @@ export type Database = {
         }
         Relationships: []
       }
+      timeline_merges: {
+        Row: {
+          id: string
+          merged_at: string | null
+          merged_universe_ids: string[] | null
+          optimization_data: Json | null
+          result_universe_id: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          merged_at?: string | null
+          merged_universe_ids?: string[] | null
+          optimization_data?: Json | null
+          result_universe_id?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          merged_at?: string | null
+          merged_universe_ids?: string[] | null
+          optimization_data?: Json | null
+          result_universe_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "timeline_merges_result_universe_id_fkey"
+            columns: ["result_universe_id"]
+            isOneToOne: false
+            referencedRelation: "parallel_universes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tournament_participants: {
         Row: {
           character_id: string
@@ -21233,6 +21429,10 @@ export type Database = {
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
       has_confession_access: {
+        Args: { service_type_param: string; user_id_param: string }
+        Returns: boolean
+      }
+      has_multiverse_access: {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean
       }
