@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Music, Calendar, Clock, Play, Loader2, Ticket } from "lucide-react";
 import { format } from "date-fns";
 import ConcertPlayer from "./ConcertPlayer";
-import GenerateArtistImages from "./GenerateArtistImages";
 
 const MyConcerts = () => {
   const [concerts, setConcerts] = useState<any[]>([]);
@@ -84,7 +83,6 @@ const MyConcerts = () => {
       />
       
     <div className="space-y-8">
-      <GenerateArtistImages />
       <Card className="border-purple-500/20 bg-gradient-to-br from-purple-950/10 to-background">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-2xl">
