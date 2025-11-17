@@ -90,13 +90,13 @@ export default function MasterChefCompetitionsGallery() {
             .in('id', userIds);
 
           const profilesMap = new Map(
-            (profilesData || []).map(p => [p.id, p.full_name || 'Šéfkuchár'])
+            (profilesData || []).map(p => [p.id, p.full_name || 'Chef'])
           );
 
           const entries: CompetitionEntry[] = (entriesData || []).map(entry => ({
             ...entry,
             hasVoted: userVotes.includes(entry.id),
-            chef_name: profilesMap.get(entry.user_id) || 'Šéfkuchár'
+            chef_name: profilesMap.get(entry.user_id) || 'Chef'
           }));
 
           const totalVotes = entries.reduce((sum, e) => sum + (e.votes_count || 0), 0);
@@ -114,8 +114,8 @@ export default function MasterChefCompetitionsGallery() {
     } catch (error) {
       console.error("Error loading competitions:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa načítať súťaže",
+        title: "Error",
+        description: "Failed to load competitions",
         variant: "destructive",
       });
     } finally {
@@ -130,8 +130,8 @@ export default function MasterChefCompetitionsGallery() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         toast({
-          title: "Vyžaduje sa prihlásenie",
-          description: "Pre hlasovanie sa musíte prihlásiť",
+          title: "Login Required",
+          description: "You must be logged in to vote",
           variant: "destructive",
         });
         navigate("/auth");
@@ -154,8 +154,8 @@ export default function MasterChefCompetitionsGallery() {
         if (error) throw error;
 
         toast({
-          title: "Hlas odstránený",
-          description: "Váš hlas bol úspešne odstránený",
+          title: "Vote Removed",
+          description: "Your vote has been successfully removed",
         });
       } else {
         const { error } = await supabase
@@ -168,8 +168,8 @@ export default function MasterChefCompetitionsGallery() {
         if (error) throw error;
 
         toast({
-          title: "Hlas odoslaný!",
-          description: "Ďakujeme za hlasovanie!",
+          title: "Vote Cast!",
+          description: "Thank you for voting!",
         });
       }
 
@@ -178,8 +178,8 @@ export default function MasterChefCompetitionsGallery() {
     } catch (error) {
       console.error("Voting error:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odoslať hlas. Skúste to znova.",
+        title: "Error",
+        description: "Failed to cast vote. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -196,31 +196,128 @@ export default function MasterChefCompetitionsGallery() {
     }
   };
 
-  const activeCompetitions = competitions.filter(c => c.status === "active");
-  const upcomingCompetitions = competitions.filter(c => c.status === "upcoming");
+  const filteredCompetitions = {
+    active: competitions.filter(c => c.status === "active"),
+    upcoming: competitions.filter(c => c.status === "upcoming"),
+    completed: competitions.filter(c => c.status === "completed")
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Načítavam súťaže...</p>
+          <p className="text-muted-foreground">Loading competitions...</p>
         </div>
       </div>
     );
   }
 
+  const CompetitionCard = ({ competition }: { competition: Competition }) => (
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+      <CardHeader className="bg-gradient-to-r from-orange-500/10 to-red-500/10">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <CardTitle className="text-2xl">{competition.title}</CardTitle>
+              <Badge variant={competition.status === 'active' ? 'default' : 'secondary'}>
+                {competition.status === 'active' ? 'Active' : competition.status === 'upcoming' ? 'Upcoming' : 'Completed'}
+              </Badge>
+            </div>
+            <p className="text-muted-foreground">{competition.description}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between text-sm text-muted-foreground mt-4">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1">
+              <Clock className="w-4 h-4" />
+              Ends {new Date(competition.end_date).toLocaleDateString('en-US')}
+            </span>
+            <span className="flex items-center gap-1">
+              <Users className="w-4 h-4" />
+              {competition.participantsCount} participants
+            </span>
+            <span className="flex items-center gap-1">
+              <Heart className="w-4 h-4" />
+              {competition.totalVotes} votes
+            </span>
+          </div>
+          {competition.prize_amount && (
+            <div className="flex items-center gap-1 text-orange-600 font-semibold">
+              <Trophy className="w-4 h-4" />
+              €{competition.prize_amount}
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      
+      <CardContent className="p-6">
+        {competition.entries.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <ChefHat className="w-12 h-12 mx-auto mb-2 opacity-50" />
+            <p>No entries yet</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {competition.entries.map((entry) => (
+              <Card 
+                key={entry.id} 
+                className="overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => handleEntryClick(entry)}
+              >
+                <div className="aspect-video relative overflow-hidden">
+                  <img 
+                    src={entry.dish_image_url} 
+                    alt={entry.dish_name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                    <Heart className="w-3 h-3" />
+                    {entry.votes_count}
+                  </div>
+                </div>
+                <div className="p-4">
+                  <h4 className="font-semibold mb-1">{entry.dish_name}</h4>
+                  <p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+                    {entry.dish_description}
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    by {entry.chef_name}
+                  </p>
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    variant={entry.hasVoted ? "secondary" : "default"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleVote(entry.id);
+                    }}
+                    disabled={competition.status !== 'active' || votingLoading === entry.id}
+                  >
+                    <Heart className={`w-4 h-4 mr-2 ${entry.hasVoted ? 'fill-current' : ''}`} />
+                    {entry.hasVoted ? 'Remove Vote' : 'Vote'}
+                  </Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-500/5 via-background to-red-500/5 pt-32 pb-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-orange-500/5 via-background to-red-500/5 pt-40 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
-                MasterChef Súťaže
+                MasterChef Competitions
               </h1>
               <p className="text-muted-foreground text-lg">
-                Hlasujte za vaše obľúbené jedlá a podporujte talentovaných kuchárov
+                Vote for your favorite dishes and support talented chefs
               </p>
             </div>
             <Button 
@@ -228,212 +325,89 @@ export default function MasterChefCompetitionsGallery() {
               onClick={() => navigate("/masterchef-subscription")}
             >
               <ChefHat className="mr-2 h-4 w-4" />
-              Staň sa šéfkuchárom
+              Become a Chef
             </Button>
           </div>
 
           <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-center gap-3">
             <Trophy className="h-6 w-6 text-primary" />
             <div>
-              <h3 className="font-semibold">Bezplatné hlasovanie!</h3>
+              <h3 className="font-semibold">Free Voting!</h3>
               <p className="text-sm text-muted-foreground">
-                Prihláste sa a hlasujte za vaše obľúbené jedlá. Všetky hlasy sú zadarmo!
+                Support your favorite chefs by voting for their dishes
               </p>
             </div>
           </div>
         </div>
 
-        <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
-            <TabsTrigger value="active">
-              Aktívne ({activeCompetitions.length})
-            </TabsTrigger>
-            <TabsTrigger value="upcoming">
-              Pripravované ({upcomingCompetitions.length})
-            </TabsTrigger>
+        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
+            <TabsTrigger value="active">Active</TabsTrigger>
+            <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+            <TabsTrigger value="completed">Completed</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="active" className="space-y-8">
-            {activeCompetitions.length === 0 ? (
-              <Card className="p-12 text-center">
-                <ChefHat className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Žiadne aktívne súťaže</h3>
-                <p className="text-muted-foreground">
-                  Momentálne nie sú žiadne aktívne súťaže. Skontrolujte neskôr!
-                </p>
+          <TabsContent value="active" className="mt-0">
+            {filteredCompetitions.active.length === 0 ? (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <ChefHat className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-lg text-muted-foreground">No active competitions at the moment</p>
+                </CardContent>
               </Card>
             ) : (
-              activeCompetitions.map((competition) => (
-                <Card key={competition.id} className="overflow-hidden">
-                  <CardHeader className="bg-gradient-to-r from-orange-500/10 to-red-500/10">
-                    <div className="flex justify-between items-start flex-wrap gap-4">
-                      <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <CardTitle className="text-2xl">{competition.title}</CardTitle>
-                          <Badge className="bg-green-500">Prebieha</Badge>
-                        </div>
-                        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <ChefHat className="h-4 w-4" />
-                            {competition.category}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {competition.participantsCount} súťažiacich
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Heart className="h-4 w-4" />
-                            {competition.totalVotes} hlasov
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />
-                            Končí {new Date(competition.end_date).toLocaleDateString('sk-SK')}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardHeader>
-
-                  <CardContent className="p-6">
-                    {competition.entries.length === 0 ? (
-                      <div className="text-center py-8 text-muted-foreground">
-                        Zatiaľ žiadne prihlášky do tejto súťaže
-                      </div>
-                    ) : (
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {competition.entries.map((entry) => (
-                          <Card 
-                            key={entry.id} 
-                            className="overflow-hidden hover:shadow-lg transition-all cursor-pointer group"
-                            onClick={() => handleEntryClick(entry)}
-                          >
-                            <div className="relative h-48 overflow-hidden bg-muted">
-                              <img
-                                src={entry.dish_image_url}
-                                alt={entry.dish_name}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                              <div className="absolute top-2 right-2 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
-                                <Heart className={`h-3 w-3 ${entry.hasVoted ? 'fill-red-500 text-red-500' : ''}`} />
-                                <span className="text-sm font-semibold">{entry.votes_count}</span>
-                              </div>
-                            </div>
-                            <CardContent className="p-4">
-                              <div className="mb-3">
-                                <h3 className="font-bold text-lg mb-1">{entry.dish_name}</h3>
-                                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                                  <ChefHat className="h-3 w-3" />
-                                  {entry.chef_name}
-                                </p>
-                              </div>
-                              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                                {entry.dish_description}
-                              </p>
-                              {entry.cooking_time && (
-                                <p className="text-xs text-muted-foreground mb-4 flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  {entry.cooking_time} minút
-                                </p>
-                              )}
-                              <Button
-                                className="w-full"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleVote(entry.id);
-                                }}
-                                disabled={votingLoading === entry.id}
-                                variant={entry.hasVoted ? "secondary" : "default"}
-                              >
-                                {votingLoading === entry.id ? (
-                                  "Hlasujem..."
-                                ) : entry.hasVoted ? (
-                                  <>
-                                    <Heart className="mr-2 h-4 w-4 fill-current" />
-                                    Zrušiť hlas
-                                  </>
-                                ) : (
-                                  <>
-                                    <Heart className="mr-2 h-4 w-4" />
-                                    Hlasovať
-                                  </>
-                                )}
-                              </Button>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))
+              <div className="space-y-6">
+                {filteredCompetitions.active.map((competition) => (
+                  <CompetitionCard key={competition.id} competition={competition} />
+                ))}
+              </div>
             )}
           </TabsContent>
 
-          <TabsContent value="upcoming">
-            {upcomingCompetitions.length === 0 ? (
-              <div className="text-center py-12">
-                <Clock className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Pripravujeme nové súťaže</h3>
-                <p className="text-muted-foreground">
-                  Nové vzrušujúce súťaže sa pripravujú. Skontrolujte neskôr!
-                </p>
-              </div>
+          <TabsContent value="upcoming" className="mt-0">
+            {filteredCompetitions.upcoming.length === 0 ? (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <Clock className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-lg text-muted-foreground">No upcoming competitions</p>
+                </CardContent>
+              </Card>
             ) : (
               <div className="space-y-6">
-                {upcomingCompetitions.map((competition) => (
-                  <Card key={competition.id}>
-                    <CardHeader>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <CardTitle className="text-xl">{competition.title}</CardTitle>
-                            <Badge variant="outline">Čoskoro</Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {competition.description || "Pripravuje sa vzrušujúca súťaž!"}
-                          </p>
-                          <div className="flex gap-4 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <ChefHat className="h-4 w-4" />
-                              {competition.category}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="h-4 w-4" />
-                              Začína {new Date(competition.start_date).toLocaleDateString('sk-SK')}
-                            </span>
-                            {competition.prize_amount && (
-                              <span className="flex items-center gap-1">
-                                <Trophy className="h-4 w-4" />
-                                Cena: €{competition.prize_amount}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
+                {filteredCompetitions.upcoming.map((competition) => (
+                  <CompetitionCard key={competition.id} competition={competition} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="completed" className="mt-0">
+            {filteredCompetitions.completed.length === 0 ? (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <Trophy className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-lg text-muted-foreground">No completed competitions</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-6">
+                {filteredCompetitions.completed.map((competition) => (
+                  <CompetitionCard key={competition.id} competition={competition} />
                 ))}
               </div>
             )}
           </TabsContent>
         </Tabs>
 
-        <Card className="mt-12 bg-gradient-to-br from-orange-500/10 to-red-500/10 border-orange-500/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-6 w-6 text-orange-500" />
-              Chcete súťažiť?
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">
-              Pridajte sa ako šéfkuchár a zúčastnite sa vzrušujúcich kuchárskych súťaží. Vyhrajte ceny, získajte uznanie a predveďte svoje kulinárske schopnosti!
-            </p>
-            <Button onClick={() => navigate("/masterchef-subscription")}>
-              Zobraziť predplatné pre šéfkuchárov
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="text-center mt-12">
+          <Button
+            onClick={() => navigate("/masterchef")}
+            size="lg"
+            className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+          >
+            Back to Dashboard
+          </Button>
+        </div>
       </div>
     </div>
   );
