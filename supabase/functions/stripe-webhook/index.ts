@@ -33,8 +33,8 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Handle both checkout.session.completed and payment_intent.succeeded
-    if (event.type === "checkout.session.completed" || event.type === "payment_intent.succeeded") {
+    // Handle checkout.session.completed
+    if (event.type === "checkout.session.completed") {
       let userId: string | null = null;
       let credits = 0;
       let paymentStatus = "";
@@ -48,6 +48,79 @@ serve(async (req) => {
         metadata = session.metadata || {};
 
       // Handle property listing payments
+      // Handle concert ticket purchases
+      if (paymentStatus === "paid" && metadata.type === "concert_ticket") {
+        console.log("Processing concert ticket", { sessionId: session.id });
+        
+        const ticketPrice = session.amount_total ? session.amount_total / 100 : 0;
+        const musicianAmount = ticketPrice * 0.80; // 80% to musician
+        const platformCommission = ticketPrice * 0.20; // 20% platform fee
+        
+        // Create ticket purchase record
+        const { error: ticketError } = await supabaseAdmin
+          .from("concert_ticket_purchases")
+          .insert({
+            user_id: metadata.user_id,
+            concert_id: metadata.concert_id,
+            ticket_type_id: metadata.ticket_type_id,
+            amount_paid: ticketPrice,
+            payment_status: "completed",
+            stripe_session_id: session.id
+          });
+
+        if (ticketError) {
+          console.error("Error creating ticket:", ticketError);
+        } else {
+          // Record musician earnings
+          await supabaseAdmin
+            .from("musician_earnings")
+            .insert({
+              musician_id: metadata.musician_id,
+              transaction_type: "ticket_sale",
+              total_amount: ticketPrice,
+              musician_amount: musicianAmount,
+              platform_commission: platformCommission,
+              commission_rate: 20.00,
+              related_id: metadata.concert_id
+            });
+        }
+      }
+
+      // Handle concert gifts
+      if (paymentStatus === "paid" && metadata.type === "concert_gift") {
+        console.log("Processing concert gift", { sessionId: session.id });
+        
+        const giftPrice = session.amount_total ? session.amount_total / 100 : 0;
+        const musicianAmount = giftPrice * 0.80;
+        const platformCommission = giftPrice * 0.20;
+        
+        const { error: giftError } = await supabaseAdmin
+          .from("concert_gifts")
+          .insert({
+            sender_id: metadata.sender_id,
+            musician_id: metadata.musician_id,
+            concert_id: metadata.concert_id,
+            gift_id: metadata.gift_id,
+            amount: giftPrice,
+            message: metadata.message,
+            stripe_session_id: session.id
+          });
+
+        if (!giftError) {
+          await supabaseAdmin
+            .from("musician_earnings")
+            .insert({
+              musician_id: metadata.musician_id,
+              transaction_type: "gift",
+              total_amount: giftPrice,
+              musician_amount: musicianAmount,
+              platform_commission: platformCommission,
+              commission_rate: 20.00,
+              related_id: metadata.concert_id
+            });
+        }
+      }
+
       if (paymentStatus === "paid" && metadata.type === "property_listing") {
         console.log("Processing property listing payment", { sessionId: session.id });
         
@@ -84,12 +157,6 @@ serve(async (req) => {
             console.log("MasterChef gift marked as completed");
           }
         }
-      } else if (event.type === "payment_intent.succeeded") {
-        const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        paymentStatus = "paid";
-        userId = paymentIntent.metadata?.user_id || null;
-        credits = parseInt(paymentIntent.metadata?.credits || "0");
-        metadata = paymentIntent.metadata || {};
       }
 
       if (paymentStatus === "paid" && userId && credits > 0) {

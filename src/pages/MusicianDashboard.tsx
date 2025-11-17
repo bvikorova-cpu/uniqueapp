@@ -18,11 +18,14 @@ import {
 import { Calendar, DollarSign, Music, Users, Video, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { TicketPricingManager } from "@/components/musician/TicketPricingManager";
 
 const MusicianDashboard = () => {
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [concertDialogOpen, setConcertDialogOpen] = useState(false);
+  const [pricingDialogOpen, setPricingDialogOpen] = useState(false);
+  const [selectedConcertId, setSelectedConcertId] = useState<string | null>(null);
   const [concertForm, setConcertForm] = useState({
     title: "",
     description: "",
@@ -53,7 +56,7 @@ const MusicianDashboard = () => {
       if (error) throw error;
 
       if (!musicianProfile) {
-        toast.error("Nemáte profil interpreta");
+        toast.error("You don't have a musician profile");
         navigate("/live-concerts");
         return;
       }
@@ -71,14 +74,14 @@ const MusicianDashboard = () => {
     e.preventDefault();
     
     if (!concertForm.title || !concertForm.scheduled_at) {
-      toast.error("Vyplňte povinné polia");
+      toast.error("Fill in required fields");
       return;
     }
 
     try {
       setLoading(true);
       
-      const { error } = await supabase
+      const { data: newConcert, error } = await supabase
         .from("live_concert_streams")
         .insert({
           musician_id: profile.id,
@@ -87,12 +90,16 @@ const MusicianDashboard = () => {
           scheduled_at: concertForm.scheduled_at,
           stream_key: concertForm.stream_key || `stream-${Date.now()}`,
           status: "scheduled",
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
-      toast.success("Koncert bol naplánovaný!");
+      toast.success("Concert scheduled! Now set ticket prices.");
       setConcertDialogOpen(false);
+      setSelectedConcertId(newConcert.id);
+      setPricingDialogOpen(true);
       setConcertForm({
         title: "",
         description: "",
@@ -102,7 +109,7 @@ const MusicianDashboard = () => {
       window.location.reload();
     } catch (error: any) {
       console.error("Error creating concert:", error);
-      toast.error("Chyba pri vytváraní koncertu");
+      toast.error("Error creating concert");
     } finally {
       setLoading(false);
     }
@@ -121,25 +128,26 @@ const MusicianDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Dashboard Interpreta</h1>
-          <p className="text-muted-foreground">Vitajte späť, {profile?.stage_name}!</p>
+          <h1 className="text-4xl font-bold mb-2">Musician Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back, {profile?.stage_name}!</p>
         </div>
 
         {/* Stats */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Celkové zisky</CardTitle>
+              <CardTitle className="text-sm font-medium">Available Balance</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">€{profile?.total_earnings?.toFixed(2) || "0.00"}</div>
+              <div className="text-2xl font-bold">€{profile?.pending_balance?.toFixed(2) || "0.00"}</div>
+              <p className="text-xs text-muted-foreground mt-1">Lifetime: €{profile?.lifetime_earnings?.toFixed(2) || "0.00"}</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Počet koncertov</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Concerts</CardTitle>
               <Music className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -149,7 +157,7 @@ const MusicianDashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Sledujúci</CardTitle>
+              <CardTitle className="text-sm font-medium">Followers</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -159,7 +167,7 @@ const MusicianDashboard = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Hodnotenie</CardTitle>
+              <CardTitle className="text-sm font-medium">Rating</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -174,24 +182,24 @@ const MusicianDashboard = () => {
             <DialogTrigger asChild>
               <Button size="lg" className="gap-2">
                 <Video className="h-5 w-5" />
-                Naplánovať nový koncert
+                Schedule New Concert
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Nový koncert</DialogTitle>
+                <DialogTitle>New Concert</DialogTitle>
                 <DialogDescription>
-                  Naplánujte si ďalší živý koncert pre vašich fanúšikov
+                  Schedule your next live concert for fans
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleCreateConcert} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">
-                    Názov koncertu <span className="text-destructive">*</span>
+                    Concert Title <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="title"
-                    placeholder="Napr. Letný Open Air"
+                    placeholder="e.g. Summer Open Air"
                     value={concertForm.title}
                     onChange={(e) => setConcertForm({ ...concertForm, title: e.target.value })}
                     required
@@ -199,10 +207,10 @@ const MusicianDashboard = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Popis</Label>
+                  <Label htmlFor="description">Description</Label>
                   <Textarea
                     id="description"
-                    placeholder="Čo môžu fanúšikovia očakávať..."
+                    placeholder="What fans can expect..."
                     value={concertForm.description}
                     onChange={(e) => setConcertForm({ ...concertForm, description: e.target.value })}
                     rows={3}
@@ -211,7 +219,7 @@ const MusicianDashboard = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="scheduled_at">
-                    Dátum a čas <span className="text-destructive">*</span>
+                    Date & Time <span className="text-destructive">*</span>
                   </Label>
                   <Input
                     id="scheduled_at"

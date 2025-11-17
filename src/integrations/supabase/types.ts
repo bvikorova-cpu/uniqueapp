@@ -13824,6 +13824,50 @@ export type Database = {
         }
         Relationships: []
       }
+      musician_earnings: {
+        Row: {
+          commission_rate: number
+          created_at: string | null
+          id: string
+          musician_amount: number
+          musician_id: string
+          platform_commission: number
+          related_id: string | null
+          total_amount: number
+          transaction_type: string
+        }
+        Insert: {
+          commission_rate?: number
+          created_at?: string | null
+          id?: string
+          musician_amount: number
+          musician_id: string
+          platform_commission: number
+          related_id?: string | null
+          total_amount: number
+          transaction_type: string
+        }
+        Update: {
+          commission_rate?: number
+          created_at?: string | null
+          id?: string
+          musician_amount?: number
+          musician_id?: string
+          platform_commission?: number
+          related_id?: string | null
+          total_amount?: number
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musician_earnings_musician_id_fkey"
+            columns: ["musician_id"]
+            isOneToOne: false
+            referencedRelation: "musician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       musician_profiles: {
         Row: {
           avatar_url: string | null
@@ -13831,9 +13875,12 @@ export type Database = {
           created_at: string | null
           genre: string | null
           id: string
+          lifetime_earnings: number | null
+          pending_balance: number | null
           stage_name: string
           total_concerts: number | null
           total_earnings: number | null
+          total_withdrawn: number | null
           updated_at: string | null
           user_id: string
         }
@@ -13843,9 +13890,12 @@ export type Database = {
           created_at?: string | null
           genre?: string | null
           id?: string
+          lifetime_earnings?: number | null
+          pending_balance?: number | null
           stage_name: string
           total_concerts?: number | null
           total_earnings?: number | null
+          total_withdrawn?: number | null
           updated_at?: string | null
           user_id: string
         }
@@ -13855,13 +13905,66 @@ export type Database = {
           created_at?: string | null
           genre?: string | null
           id?: string
+          lifetime_earnings?: number | null
+          pending_balance?: number | null
           stage_name?: string
           total_concerts?: number | null
           total_earnings?: number | null
+          total_withdrawn?: number | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      musician_withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string | null
+          id: string
+          musician_id: string
+          payment_details: Json | null
+          payment_method: string | null
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string | null
+          id?: string
+          musician_id: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string | null
+          id?: string
+          musician_id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musician_withdrawal_requests_musician_id_fkey"
+            columns: ["musician_id"]
+            isOneToOne: false
+            referencedRelation: "musician_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mystery_box_items: {
         Row: {
@@ -21737,6 +21840,15 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      process_musician_withdrawal: {
+        Args: {
+          p_admin_id: string
+          p_admin_notes?: string
+          p_request_id: string
+          p_status: string
+        }
+        Returns: undefined
+      }
       process_scheduled_payouts: { Args: { p_batch_id: string }; Returns: Json }
       process_withdrawal_request: {
         Args: {
