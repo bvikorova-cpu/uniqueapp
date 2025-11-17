@@ -65,6 +65,7 @@ serve(async (req) => {
       cancel_url: `${req.headers.get("origin")}/holographic-avatars?canceled=true`,
       metadata: {
         user_id: user.id,
+        type: "holographic_avatar",
         feature: featureName,
       },
     });

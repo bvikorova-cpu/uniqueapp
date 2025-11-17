@@ -121,6 +121,77 @@ serve(async (req) => {
         }
       }
 
+      // Handle holographic avatar purchases
+      if (paymentStatus === "paid" && metadata.type === "holographic_avatar") {
+        console.log("Processing holographic avatar purchase", { sessionId: session.id });
+        
+        const serviceType = metadata.feature || "unknown";
+        const isSubscription = session.mode === "subscription";
+        
+        const purchaseData: any = {
+          user_id: metadata.user_id,
+          service_type: serviceType,
+          status: "active",
+          stripe_session_id: session.id,
+        };
+
+        if (isSubscription && session.subscription) {
+          purchaseData.stripe_subscription_id = session.subscription;
+          // Subscriptions don't expire (managed by Stripe)
+        } else {
+          // One-time purchases expire after 1 year
+          const expiresAt = new Date();
+          expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+          purchaseData.expires_at = expiresAt.toISOString();
+        }
+
+        const { error: purchaseError } = await supabaseAdmin
+          .from("holographic_purchases")
+          .insert(purchaseData);
+
+        if (purchaseError) {
+          console.error("Error creating holographic purchase:", purchaseError);
+        } else {
+          console.log("Holographic avatar purchase recorded");
+        }
+      }
+
+      // Handle time capsule purchases
+      if (paymentStatus === "paid" && (metadata.type === "time_capsule" || metadata.type === "time_capsule_premium")) {
+        console.log("Processing time capsule purchase", { sessionId: session.id });
+        
+        const isSubscription = metadata.type === "time_capsule_premium";
+        const durationYears = metadata.duration_years ? parseInt(metadata.duration_years) : null;
+        
+        const purchaseData: any = {
+          user_id: metadata.user_id,
+          service_type: isSubscription ? "premium_subscription" : `${durationYears}_year`,
+          status: "active",
+          stripe_session_id: session.id,
+          duration_years: durationYears,
+        };
+
+        if (isSubscription && session.subscription) {
+          purchaseData.stripe_subscription_id = session.subscription;
+          // Premium subscription doesn't expire (managed by Stripe)
+        } else if (durationYears) {
+          // Calculate expiration date based on duration
+          const expiresAt = new Date();
+          expiresAt.setFullYear(expiresAt.getFullYear() + durationYears);
+          purchaseData.expires_at = expiresAt.toISOString();
+        }
+
+        const { error: purchaseError } = await supabaseAdmin
+          .from("time_capsule_purchases")
+          .insert(purchaseData);
+
+        if (purchaseError) {
+          console.error("Error creating time capsule purchase:", purchaseError);
+        } else {
+          console.log("Time capsule purchase recorded");
+        }
+      }
+
       if (paymentStatus === "paid" && metadata.type === "property_listing") {
         console.log("Processing property listing payment", { sessionId: session.id });
         
