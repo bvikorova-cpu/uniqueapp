@@ -12956,6 +12956,48 @@ export type Database = {
           },
         ]
       }
+      masterchef_withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          chef_id: string
+          created_at: string | null
+          id: string
+          payment_details: Json | null
+          payment_method: string | null
+          processed_at: string | null
+          processed_by: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          chef_id: string
+          created_at?: string | null
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          chef_id?: string
+          created_at?: string | null
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       meal_plans: {
         Row: {
           allergens: string[] | null
@@ -22016,6 +22058,15 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      process_masterchef_withdrawal: {
+        Args: {
+          p_admin_id: string
+          p_admin_notes?: string
+          p_request_id: string
+          p_status: string
+        }
+        Returns: undefined
+      }
       process_musician_withdrawal: {
         Args: {
           p_admin_id: string

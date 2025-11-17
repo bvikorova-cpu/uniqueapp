@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CampaignWithdrawalManagement } from "@/components/fundraising/CampaignWithdrawalManagement";
 import { MusicianWithdrawalManagement } from "@/components/musician/MusicianWithdrawalManagement";
+import { ChefWithdrawalManagement } from "@/components/masterchef/ChefWithdrawalManagement";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export default function WithdrawalRequests() {
@@ -37,13 +38,18 @@ export default function WithdrawalRequests() {
       </div>
 
       <Tabs defaultValue="musicians" className="w-full">
-        <TabsList className="grid w-full grid-cols-2 max-w-md">
+        <TabsList className="grid w-full grid-cols-3 max-w-2xl">
           <TabsTrigger value="musicians">Musicians</TabsTrigger>
+          <TabsTrigger value="chefs">MasterChefs</TabsTrigger>
           <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
         </TabsList>
 
         <TabsContent value="musicians" className="mt-6">
           <MusicianWithdrawalManagement />
+        </TabsContent>
+
+        <TabsContent value="chefs" className="mt-6">
+          <ChefWithdrawalManagement />
         </TabsContent>
 
         <TabsContent value="campaigns" className="mt-6">
