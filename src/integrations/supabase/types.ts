@@ -9958,6 +9958,7 @@ export type Database = {
           stream_url: string | null
           thumbnail_url: string | null
           title: string
+          video_url: string | null
         }
         Insert: {
           artist_name: string
@@ -9970,6 +9971,7 @@ export type Database = {
           stream_url?: string | null
           thumbnail_url?: string | null
           title: string
+          video_url?: string | null
         }
         Update: {
           artist_name?: string
@@ -9982,6 +9984,7 @@ export type Database = {
           stream_url?: string | null
           thumbnail_url?: string | null
           title?: string
+          video_url?: string | null
         }
         Relationships: []
       }

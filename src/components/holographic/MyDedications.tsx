@@ -37,7 +37,17 @@ const MyDedications = () => {
   }
 
   if (dedications.length === 0) {
-    return null;
+    return (
+      <Card className="border-purple-500/20 bg-gradient-to-br from-purple-950/10 to-background">
+        <CardContent className="py-12 text-center space-y-4">
+          <MessageSquare className="w-16 h-16 text-purple-400 mx-auto" />
+          <h3 className="text-xl font-semibold">No Dedications Yet</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Generate your first AI dedication from the Dedication tab!
+          </p>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -77,8 +87,8 @@ const MyDedications = () => {
                 </div>
 
                 {dedication.dedication_text && (
-                  <div className="p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
-                    <p className="text-sm italic">"{dedication.dedication_text}"</p>
+                  <div className="p-4 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/30">
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{dedication.dedication_text}</p>
                   </div>
                 )}
 
