@@ -223,8 +223,6 @@ import TimeReversalSubscription from "./pages/TimeReversalSubscription";
 import TimeReversalTimeline from "./pages/TimeReversalTimeline";
 import TimeCapsuleSubscription from "./pages/TimeCapsuleSubscription";
 import TimeCapsule from "./pages/TimeCapsule";
-import VoiceMemorial from "./pages/VoiceMemorial";
-import VoiceMemorialPricing from "./pages/VoiceMemorialPricing";
 import HolographicAvatars from "./pages/HolographicAvatars";
 import CrystalEnergyNetwork from "./pages/CrystalEnergyNetwork";
 import CrystalMarketplace from "./pages/CrystalMarketplace";
@@ -509,8 +507,6 @@ const App = () => (
               <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
               <Route path="/time-capsule-subscription" element={<TimeCapsuleSubscription />} />
               <Route path="/time-capsule" element={<TimeCapsule />} />
-              <Route path="/voice-memorial" element={<VoiceMemorial />} />
-              <Route path="/voice-memorial-pricing" element={<VoiceMemorialPricing />} />
               <Route path="/home-decor-marketplace" element={<HomeDecorMarketplace />} />
               <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
           <Route path="/holographic-avatars" element={<HolographicAvatars />} />
