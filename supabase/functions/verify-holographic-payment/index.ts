@@ -32,13 +32,13 @@ serve(async (req) => {
         feature: string;
       };
 
-      // Map feature names to service types
+      // Map feature names to service types (Holographic Avatars)
       const serviceTypeMap: Record<string, string> = {
-        'Premium Concert Ticket': 'premium_ticket',
-        'VIP Holographic Meet & Greet': 'vip_meet_greet',
-        'Concert Recording - HD': 'concert_recording',
-        'AI Personalized Dedication': 'ai_dedication',
-        'Exclusive Merch Collection': 'merch_collection'
+        'Premium AI Avatar': 'premium_ai_avatar',
+        'Basic Customization': 'basic_customization',
+        'Advanced Customization': 'advanced_customization',
+        'Avatar Battle Entry': 'battle_entry',
+        'Avatar Breeding': 'breeding'
       };
 
       const serviceType = serviceTypeMap[feature] || feature.toLowerCase().replace(/\s+/g, '_');
