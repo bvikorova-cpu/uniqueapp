@@ -467,3 +467,18 @@ verify_jwt = false
 
 [functions.generate-redemption-plan]
 verify_jwt = true
+
+[functions.verify-phobia-payment]
+verify_jwt = false
+
+[functions.detect-phobia]
+verify_jwt = true
+
+[functions.generate-phobia-cure]
+verify_jwt = true
+
+[functions.trade-phobia]
+verify_jwt = true
+
+[functions.get-user-phobias]
+verify_jwt = true
