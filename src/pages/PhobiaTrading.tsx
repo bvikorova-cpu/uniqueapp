@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ShoppingCart, HeartPulse, Brain, TrendingUp, AlertCircle, Shield, Zap, ArrowRightLeft, Star } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import PhobiaDetector from "@/components/phobia/PhobiaDetector";
+import PhobiaMarketplace from "@/components/phobia/PhobiaMarketplace";
+import PhobiaCureDashboard from "@/components/phobia/PhobiaCureDashboard";
 
 interface Service {
   id: string;
@@ -19,6 +24,43 @@ interface Service {
 const PhobiaTrading = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const [verifying, setVerifying] = useState(false);
+
+  useEffect(() => {
+    const sessionId = searchParams.get('session_id');
+    if (sessionId && searchParams.get('payment') === 'success') {
+      verifyPayment(sessionId);
+    }
+  }, [searchParams]);
+
+  const verifyPayment = async (sessionId: string) => {
+    try {
+      setVerifying(true);
+      const { data, error } = await supabase.functions.invoke('verify-phobia-payment', {
+        body: { sessionId }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Payment Successful",
+          description: `Access to ${data.serviceType} activated!`,
+        });
+        window.history.replaceState({}, '', '/phobia-trading');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Verification Failed",
+        description: "Please contact support",
+        variant: "destructive",
+      });
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const services: Service[] = [
     {

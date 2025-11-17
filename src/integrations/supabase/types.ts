@@ -14685,6 +14685,177 @@ export type Database = {
           },
         ]
       }
+      phobia_progress: {
+        Row: {
+          ai_feedback: Json | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          session_number: number
+          severity_after: number | null
+          severity_before: number | null
+          treatment_id: string
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: Json | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          session_number: number
+          severity_after?: number | null
+          severity_before?: number | null
+          treatment_id: string
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: Json | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          session_number?: number
+          severity_after?: number | null
+          severity_before?: number | null
+          treatment_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "phobia_progress_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "phobia_treatments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      phobia_purchases: {
+        Row: {
+          amount: number
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          service_type: string
+          status: string | null
+          stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          service_type: string
+          status?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          service_type?: string
+          status?: string | null
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      phobia_trades: {
+        Row: {
+          buyer_id: string | null
+          created_at: string | null
+          id: string
+          phobia_id: string
+          price: number
+          seller_id: string
+          status: string | null
+          transaction_date: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          buyer_id?: string | null
+          created_at?: string | null
+          id?: string
+          phobia_id: string
+          price: number
+          seller_id: string
+          status?: string | null
+          transaction_date?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          buyer_id?: string | null
+          created_at?: string | null
+          id?: string
+          phobia_id?: string
+          price?: number
+          seller_id?: string
+          status?: string | null
+          transaction_date?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "phobia_trades_phobia_id_fkey"
+            columns: ["phobia_id"]
+            isOneToOne: false
+            referencedRelation: "user_phobias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      phobia_treatments: {
+        Row: {
+          created_at: string | null
+          id: string
+          phobia_id: string
+          sessions_completed: number | null
+          status: string | null
+          total_sessions: number | null
+          treatment_plan: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          phobia_id: string
+          sessions_completed?: number | null
+          status?: string | null
+          total_sessions?: number | null
+          treatment_plan: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          phobia_id?: string
+          sessions_completed?: number | null
+          status?: string | null
+          total_sessions?: number | null
+          treatment_plan?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "phobia_treatments_phobia_id_fkey"
+            columns: ["phobia_id"]
+            isOneToOne: false
+            referencedRelation: "user_phobias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       photo_credits: {
         Row: {
           created_at: string | null
@@ -19827,6 +19998,48 @@ export type Database = {
           },
         ]
       }
+      user_phobias: {
+        Row: {
+          ai_analysis: Json | null
+          created_at: string | null
+          description: string | null
+          id: string
+          phobia_name: string
+          phobia_type: string
+          severity: number | null
+          source: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          phobia_name: string
+          phobia_type: string
+          severity?: number | null
+          source?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          phobia_name?: string
+          phobia_type?: string
+          severity?: number | null
+          source?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_points: {
         Row: {
           created_at: string | null
@@ -21020,6 +21233,10 @@ export type Database = {
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
       has_confession_access: {
+        Args: { service_type_param: string; user_id_param: string }
+        Returns: boolean
+      }
+      has_phobia_access: {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean
       }
