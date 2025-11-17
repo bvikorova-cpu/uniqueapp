@@ -213,7 +213,6 @@ const Navbar = () => {
     { path: "/live-concerts", label: "🎵 Live Concerts", icon: Music },
     { path: "/holographic-avatars", label: "🎭 Holographic Avatars", icon: Sparkles },
     { path: "/time-capsule-subscription", label: "⏰ Time Capsule Network", icon: Clock },
-    { path: "/voice-memorial", label: "🎤 Voice Clone Memorial", icon: Mic2 },
     { path: "/time-reversal-subscription", label: "⏮️ Time Reversal Social", icon: Clock },
     { path: "/masterchef-subscription", label: "👨‍🍳 MasterChef Competition", icon: ChefHat },
     { path: "/f1-racing", label: "🏎️ F1 Fantasy Racing", icon: Car },
