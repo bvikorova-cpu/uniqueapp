@@ -40,7 +40,7 @@ export default function MasterChefDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-12 pt-8">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
             MasterChef Dashboard
           </h1>
