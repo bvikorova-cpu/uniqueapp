@@ -108,7 +108,7 @@ const HolographicConcerts = () => {
   };
 
   const features = [
-    { icon: Music, title: "Premium Concert Ticket", price: "€150", description: "Experience legendary musicians brought back to life", priceId: PRICE_IDS.premiumTicket },
+    { icon: Music, title: "Premium Concert Ticket", price: "€150", description: "Experience legendary holographic concerts with lifelike AI recreations", priceId: PRICE_IDS.premiumTicket },
     { icon: Users, title: "VIP Holographic Meet & Greet", price: "€500", description: "Exclusive VIP experience with AI-powered holographic interaction", priceId: PRICE_IDS.vipMeetGreet },
     { icon: Video, title: "Concert Recording - HD", price: "€20", description: "High-quality recording of the full holographic concert", priceId: PRICE_IDS.concertRecording },
     { icon: MessageSquare, title: "AI Personalized Dedication", price: "€100", description: "Unique AI-personalized dedication from your favorite artist", priceId: PRICE_IDS.aiDedication },

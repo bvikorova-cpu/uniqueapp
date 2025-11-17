@@ -93,6 +93,98 @@
   .animate-float {
     animation: float 4s ease-in-out infinite;
   }
+
+  /* Holographic Concert Effects */
+  .holographic-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .holographic-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      rgba(168, 85, 247, 0.1) 50%,
+      transparent 70%
+    );
+    animation: holographic-sweep 3s linear infinite;
+    pointer-events: none;
+    z-index: 20;
+  }
+
+  @keyframes holographic-sweep {
+    0% {
+      transform: translateX(-100%) translateY(-100%);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%);
+    }
+  }
+
+  .holographic-scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(168, 85, 247, 0.03) 0px,
+      rgba(168, 85, 247, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    pointer-events: none;
+    z-index: 20;
+    animation: scanlines-move 8s linear infinite;
+  }
+
+  @keyframes scanlines-move {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(4px);
+    }
+  }
+
+  .holographic-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    background: radial-gradient(
+      circle,
+      rgba(168, 85, 247, 0.15) 0%,
+      rgba(236, 72, 153, 0.1) 25%,
+      transparent 50%
+    );
+    animation: glow-pulse 4s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 15;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  .holographic-video {
+    filter: saturate(1.2) contrast(1.1);
+    mix-blend-mode: screen;
+  }
 }
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 

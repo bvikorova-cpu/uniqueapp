@@ -112,22 +112,26 @@ const MyConcerts = () => {
                     </div>
                   )}
                   <CardContent className="p-4 space-y-3">
-                    <h3 className="font-bold text-lg text-purple-400">{concert.title}</h3>
-                    <p className="text-sm text-muted-foreground">{concert.artist_name}</p>
+                    {concert.is_live && (
+                      <Badge className="bg-red-500 text-white mb-2 animate-pulse">
+                        🔴 LIVE NOW
+                      </Badge>
+                    )}
+
+                    <h3 className="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                      {concert.title}
+                    </h3>
+                    <p className="text-sm font-medium text-purple-300">{concert.artist_name}</p>
                     
-                    <div className="flex items-center gap-2 text-sm">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4 text-purple-400" />
-                      <span>{format(new Date(concert.concert_date), 'PPP')}</span>
+                      <span>{format(new Date(concert.concert_date), 'MMMM d, yyyy')}</span>
                     </div>
                     
-                    <div className="flex items-center gap-2 text-sm">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Clock className="w-4 h-4 text-purple-400" />
                       <span>{concert.duration_minutes} minutes</span>
                     </div>
-
-                    {concert.is_live && (
-                      <Badge className="bg-red-500">LIVE NOW</Badge>
-                    )}
 
                     <Button 
                       className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
