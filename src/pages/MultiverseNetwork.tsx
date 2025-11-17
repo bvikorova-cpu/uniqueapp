@@ -1,9 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Globe, Layers, Shuffle, Crown, Sparkles, Shield, Zap, Infinity, Users } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { Globe, Layers, Shuffle, Crown, Sparkles, Shield, Zap, Infinity, Users, Loader2 } from "lucide-react";
+import UniverseCreator from "@/components/multiverse/UniverseCreator";
+import MyUniverses from "@/components/multiverse/MyUniverses";
+import TimelineMerger from "@/components/multiverse/TimelineMerger";
+import BestSelfFinder from "@/components/multiverse/BestSelfFinder";
 
 interface Service {
   id: string;
@@ -19,6 +25,66 @@ interface Service {
 const MultiverseNetwork = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const [verifying, setVerifying] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    const sessionId = searchParams.get('session_id');
+    if (sessionId && searchParams.get('payment') === 'success') {
+      verifyPayment(sessionId);
+    }
+  }, [searchParams]);
+
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+      
+      if (!session) {
+        window.location.href = '/auth';
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+    } finally {
+      setCheckingAuth(false);
+    }
+  };
+
+  const verifyPayment = async (sessionId: string) => {
+    try {
+      setVerifying(true);
+      const { data, error } = await supabase.functions.invoke('verify-multiverse-payment', {
+        body: { sessionId }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Payment Successful",
+          description: `Access to ${data.serviceType} activated!`,
+        });
+        window.history.replaceState({}, '', '/multiverse-network');
+        setRefreshKey(prev => prev + 1);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Verification Failed",
+        description: "Please contact support",
+        variant: "destructive",
+      });
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const services: Service[] = [
     {
@@ -120,8 +186,30 @@ const MultiverseNetwork = () => {
     }
   };
 
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-violet-400" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-violet-950/10 to-background overflow-hidden">
+      {verifying && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <Card className="p-6">
+            <div className="flex items-center gap-3">
+              <Loader2 className="w-6 h-6 animate-spin text-violet-400" />
+              <p>Verifying payment...</p>
+            </div>
+          </Card>
+        </div>
+      )}
       {/* Hero Section with cosmic design */}
       <section className="relative py-24 px-4">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-900/30 via-background to-background" />
