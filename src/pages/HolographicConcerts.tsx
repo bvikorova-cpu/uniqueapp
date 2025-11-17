@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Music, Users, Video, MessageSquare, ShoppingBag, Sparkles, CheckCircle2 } from "lucide-react";
+import { Music, Users, Video, MessageSquare, ShoppingBag, Sparkles, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import MyConcerts from "@/components/holographic/MyConcerts";
+import DedicationGenerator from "@/components/holographic/DedicationGenerator";
+import MeetGreetScheduler from "@/components/holographic/MeetGreetScheduler";
+import MyRecordings from "@/components/holographic/MyRecordings";
+import MyDedications from "@/components/holographic/MyDedications";
 
 const PRICE_IDS = {
   premiumTicket: "price_1SPkF8GaXSfGtYFtktFJm4ZO",
@@ -15,7 +22,55 @@ const PRICE_IDS = {
 
 const HolographicConcerts = () => {
   const [loading, setLoading] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    checkAuth();
+    verifyPaymentIfNeeded();
+  }, []);
+
+  const checkAuth = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setIsAuthenticated(!!session);
+    setCheckingAuth(false);
+  };
+
+  const verifyPaymentIfNeeded = async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get('session_id');
+    
+    if (sessionId) {
+      setVerifyingPayment(true);
+      try {
+        const { data, error } = await supabase.functions.invoke('verify-holographic-payment', {
+          body: { sessionId }
+        });
+
+        if (error) throw error;
+
+        if (data?.success) {
+          toast({
+            title: "Payment Successful! 🎉",
+            description: "Your holographic concert access has been activated",
+          });
+          window.history.replaceState({}, '', '/holographic-concerts');
+        }
+      } catch (error) {
+        console.error('Payment verification error:', error);
+        toast({
+          title: "Payment Verification Failed",
+          description: "Please contact support if payment was deducted",
+          variant: "destructive",
+        });
+      } finally {
+        setVerifyingPayment(false);
+      }
+    }
+  };
 
   const handlePurchase = async (priceId: string, featureName: string) => {
     try {
@@ -28,6 +83,7 @@ const HolographicConcerts = () => {
           description: "Please sign in to purchase",
           variant: "destructive",
         });
+        navigate('/auth');
         return;
       }
 
@@ -37,7 +93,7 @@ const HolographicConcerts = () => {
 
       if (error) throw error;
       if (data?.url) {
-        window.open(data.url, '_blank');
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error('Purchase error:', error);
@@ -52,211 +108,79 @@ const HolographicConcerts = () => {
   };
 
   const features = [
-    {
-      icon: Music,
-      title: "Premium Concert Ticket",
-      price: "€150",
-      description: "Experience legendary musicians brought back to life through cutting-edge holographic AI technology",
-      highlights: [
-        "Premium seating with optimal view",
-        "Immersive 360° audio-visual experience",
-        "Access to exclusive pre-show content",
-        "Digital commemorative ticket"
-      ],
-      priceId: PRICE_IDS.premiumTicket,
-      gradient: "from-purple-600/20 via-pink-600/20 to-blue-600/20"
-    },
-    {
-      icon: Users,
-      title: "VIP Holographic Meet & Greet",
-      price: "€500",
-      description: "Exclusive VIP experience with AI-powered holographic interaction with legendary musicians",
-      highlights: [
-        "15-minute private holographic session",
-        "AI-powered personalized conversation",
-        "Professional photo opportunities",
-        "Exclusive VIP lounge access",
-        "Premium gift package"
-      ],
-      priceId: PRICE_IDS.vipMeetGreet,
-      gradient: "from-amber-600/20 via-orange-600/20 to-red-600/20",
-      featured: true
-    },
-    {
-      icon: Video,
-      title: "Concert Recording - HD",
-      price: "€20",
-      description: "High-quality recording of the full holographic concert experience",
-      highlights: [
-        "4K Ultra HD video quality",
-        "Spatial audio technology",
-        "Unlimited streaming access",
-        "Download for offline viewing"
-      ],
-      priceId: PRICE_IDS.concertRecording,
-      gradient: "from-blue-600/20 via-cyan-600/20 to-teal-600/20"
-    },
-    {
-      icon: MessageSquare,
-      title: "AI Personalized Dedication",
-      price: "€100",
-      description: "Receive a unique, AI-personalized dedication from your favorite holographic artist",
-      highlights: [
-        "Custom message in artist's voice",
-        "Personalized to your story",
-        "High-quality video format",
-        "Digital certificate of authenticity"
-      ],
-      priceId: PRICE_IDS.aiDedication,
-      gradient: "from-green-600/20 via-emerald-600/20 to-teal-600/20"
-    },
-    {
-      icon: ShoppingBag,
-      title: "AI Signature Merch Collection",
-      price: "€75",
-      description: "Exclusive merchandise featuring AI-generated signatures and holographic designs",
-      highlights: [
-        "Limited edition collectibles",
-        "AI-generated artist signature",
-        "Holographic authentication",
-        "Premium quality materials"
-      ],
-      priceId: PRICE_IDS.merchCollection,
-      gradient: "from-indigo-600/20 via-purple-600/20 to-pink-600/20"
-    }
+    { icon: Music, title: "Premium Concert Ticket", price: "€150", description: "Experience legendary musicians brought back to life", priceId: PRICE_IDS.premiumTicket },
+    { icon: Users, title: "VIP Holographic Meet & Greet", price: "€500", description: "Exclusive VIP experience with AI-powered holographic interaction", priceId: PRICE_IDS.vipMeetGreet },
+    { icon: Video, title: "Concert Recording - HD", price: "€20", description: "High-quality recording of the full holographic concert", priceId: PRICE_IDS.concertRecording },
+    { icon: MessageSquare, title: "AI Personalized Dedication", price: "€100", description: "Unique AI-personalized dedication from your favorite artist", priceId: PRICE_IDS.aiDedication },
+    { icon: ShoppingBag, title: "Exclusive Merch Collection", price: "€200", description: "Limited edition holographic concert merchandise", priceId: PRICE_IDS.merchCollection }
   ];
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background"></div>
-        <div className="container mx-auto px-4 py-16 relative">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium">Revolutionary Holographic Technology</span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Holographic Concerts
+  if (checkingAuth || verifyingPayment) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-950 via-background to-blue-950 flex items-center justify-center">
+        <Loader2 className="w-12 h-12 animate-spin text-purple-400" />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-950 via-background to-blue-950">
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center mb-12">
+            <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+              Holographic Concerts Dashboard
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Witness legendary musicians return to the stage through cutting-edge AI and holographic technology. 
-              An unforgettable experience that transcends time and reality.
-            </p>
+            <p className="text-xl text-muted-foreground">Manage your holographic concert experiences</p>
           </div>
+
+          <Tabs defaultValue="concerts" className="space-y-8">
+            <TabsList className="grid w-full grid-cols-5 lg:w-[600px] mx-auto">
+              <TabsTrigger value="concerts">Concerts</TabsTrigger>
+              <TabsTrigger value="dedication">Dedication</TabsTrigger>
+              <TabsTrigger value="meetgreet">Meet & Greet</TabsTrigger>
+              <TabsTrigger value="recordings">Recordings</TabsTrigger>
+              <TabsTrigger value="mydedications">Dedications</TabsTrigger>
+            </TabsList>
+            <TabsContent value="concerts"><MyConcerts /></TabsContent>
+            <TabsContent value="dedication"><DedicationGenerator /></TabsContent>
+            <TabsContent value="meetgreet"><MeetGreetScheduler /></TabsContent>
+            <TabsContent value="recordings"><MyRecordings /></TabsContent>
+            <TabsContent value="mydedications"><MyDedications /></TabsContent>
+          </Tabs>
         </div>
       </div>
+    );
+  }
 
-      {/* Featured Artists Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Featured Artists</h2>
-            <p className="text-muted-foreground">Experience performances from music legends</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-            {["Elvis Presley", "Freddie Mercury", "Michael Jackson", "Whitney Houston"].map((artist) => (
-              <Card key={artist} className="border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg hover:shadow-primary/10">
-                <CardContent className="pt-6 text-center">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 mx-auto mb-3 flex items-center justify-center">
-                    <Music className="w-8 h-8 text-primary" />
-                  </div>
-                  <p className="font-semibold">{artist}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-950 via-background to-blue-950">
+      <div className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+            Holographic AI Concerts
+          </h1>
+          <p className="text-xl text-muted-foreground">Experience legendary musicians through holographic AI</p>
         </div>
-      </div>
-
-      {/* Offerings Section */}
-      <div className="container mx-auto px-4 py-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Experience Packages</h2>
-            <p className="text-muted-foreground">Choose your perfect holographic concert experience</p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <Card 
-                key={index} 
-                className={`relative overflow-hidden border-2 transition-all hover:shadow-xl hover:shadow-primary/20 ${
-                  feature.featured ? 'border-primary lg:scale-105' : 'border-border hover:border-primary/50'
-                }`}
-              >
-                {feature.featured && (
-                  <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-3 py-1 text-xs font-bold rounded-bl-lg">
-                    MOST POPULAR
-                  </div>
-                )}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-50`}></div>
-                <CardHeader className="relative">
-                  <div className="flex items-center justify-between mb-2">
-                    <feature.icon className="w-8 h-8 text-primary" />
-                    <span className="text-2xl font-bold text-primary">{feature.price}</span>
-                  </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
-                  <CardDescription className="text-foreground/70">
-                    {feature.description}
-                  </CardDescription>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <Card key={index} className="border-purple-500/30">
+                <CardHeader>
+                  <Icon className="w-8 h-8 text-purple-400 mb-2" />
+                  <CardTitle>{feature.title}</CardTitle>
+                  <div className="text-2xl font-bold text-purple-400">{feature.price}</div>
                 </CardHeader>
-                <CardContent className="relative space-y-4">
-                  <div className="space-y-2">
-                    {feature.highlights.map((highlight, idx) => (
-                      <div key={idx} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{highlight}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <Button 
-                    onClick={() => handlePurchase(feature.priceId, feature.title)}
-                    disabled={loading === feature.title}
-                    className="w-full"
-                    variant={feature.featured ? "default" : "outline"}
-                  >
-                    {loading === feature.title ? "Processing..." : "Purchase Now"}
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">{feature.description}</p>
+                  <Button onClick={() => handlePurchase(feature.priceId, feature.title)} disabled={loading === feature.title} className="w-full bg-gradient-to-r from-purple-500 to-pink-500">
+                    {loading === feature.title ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Sparkles className="w-4 h-4 mr-2" />Purchase</>}
                   </Button>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Technology Section */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <h2 className="text-3xl font-bold">Powered by Advanced AI Technology</h2>
-          <p className="text-muted-foreground text-lg">
-            Our revolutionary holographic system combines cutting-edge AI, motion capture, and advanced projection 
-            technology to create lifelike performances that honor the legacy of legendary artists.
-          </p>
-          <div className="grid md:grid-cols-3 gap-8 mt-12">
-            <div className="space-y-2">
-              <div className="w-12 h-12 rounded-full bg-primary/20 mx-auto flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">AI Voice Recreation</h3>
-              <p className="text-sm text-muted-foreground">Authentic vocal performances powered by advanced AI</p>
-            </div>
-            <div className="space-y-2">
-              <div className="w-12 h-12 rounded-full bg-primary/20 mx-auto flex items-center justify-center">
-                <Video className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">Holographic Projection</h3>
-              <p className="text-sm text-muted-foreground">Ultra-high definition 3D holographic technology</p>
-            </div>
-            <div className="space-y-2">
-              <div className="w-12 h-12 rounded-full bg-primary/20 mx-auto flex items-center justify-center">
-                <Music className="w-6 h-6 text-primary" />
-              </div>
-              <h3 className="font-semibold">Live Performance</h3>
-              <p className="text-sm text-muted-foreground">Real-time interaction and dynamic stage presence</p>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
     </div>
