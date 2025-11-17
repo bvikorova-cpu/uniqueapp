@@ -3,12 +3,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Globe, Loader2, TrendingUp, Shuffle } from "lucide-react";
+import { Globe, Loader2, TrendingUp, Shuffle, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const MyUniverses = () => {
   const [universes, setUniverses] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedUniverse, setSelectedUniverse] = useState<any>(null);
+  const [jumping, setJumping] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -31,6 +40,40 @@ const MyUniverses = () => {
       console.error('Error:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleJump = async (universe: any) => {
+    try {
+      setJumping(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data, error } = await supabase.functions.invoke('reality-jump', {
+        body: {
+          action: 'jump',
+          toUniverseId: universe.id,
+          jumpReason: `Jumping to ${universe.universe_name}`
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Reality Jump Successful! 🌌",
+        description: `You've jumped to ${universe.universe_name}`,
+      });
+
+      setSelectedUniverse(universe);
+    } catch (error) {
+      console.error('Error jumping:', error);
+      toast({
+        title: "Jump Failed",
+        description: "Could not complete reality jump",
+        variant: "destructive",
+      });
+    } finally {
+      setJumping(false);
     }
   };
 
@@ -109,8 +152,14 @@ const MyUniverses = () => {
                   size="sm"
                   variant="outline"
                   className="border-violet-500/30"
+                  onClick={() => handleJump(universe)}
+                  disabled={jumping}
                 >
-                  <Shuffle className="w-4 h-4 mr-1" />
+                  {jumping ? (
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  ) : (
+                    <Shuffle className="w-4 h-4 mr-1" />
+                  )}
                   Jump
                 </Button>
               </div>
@@ -118,6 +167,33 @@ const MyUniverses = () => {
           </Card>
         ))}
       </div>
+
+      <Dialog open={!!selectedUniverse} onOpenChange={() => setSelectedUniverse(null)}>
+        <DialogContent className="border-violet-500/20">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-violet-400">
+              <Zap className="w-5 h-5" />
+              Reality Jump Complete
+            </DialogTitle>
+            <DialogDescription>
+              You are now in: {selectedUniverse?.universe_name}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              {selectedUniverse?.universe_description}
+            </p>
+            <div className="flex items-center justify-between pt-4">
+              <Badge variant="secondary" className="bg-violet-500/20 text-violet-300">
+                Success Score: {selectedUniverse?.success_score}/100
+              </Badge>
+              <Button onClick={() => setSelectedUniverse(null)}>
+                Explore Universe
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
