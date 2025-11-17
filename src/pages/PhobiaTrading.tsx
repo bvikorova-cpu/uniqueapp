@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { ShoppingCart, HeartPulse, Brain, TrendingUp, AlertCircle, Shield, Zap, ArrowRightLeft, Star } from "lucide-react";
+import { ShoppingCart, HeartPulse, Brain, TrendingUp, AlertCircle, Shield, Zap, ArrowRightLeft, Star, Loader2 } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import PhobiaDetector from "@/components/phobia/PhobiaDetector";
 import PhobiaMarketplace from "@/components/phobia/PhobiaMarketplace";
@@ -27,6 +27,27 @@ const PhobiaTrading = () => {
   const [loading, setLoading] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const [verifying, setVerifying] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+      
+      if (!session) {
+        window.location.href = '/auth';
+      }
+    } catch (error) {
+      console.error('Auth check error:', error);
+    } finally {
+      setCheckingAuth(false);
+    }
+  };
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');
@@ -162,6 +183,18 @@ const PhobiaTrading = () => {
       setLoading(null);
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-cyan-950/10 to-background">

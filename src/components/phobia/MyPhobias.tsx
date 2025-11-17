@@ -26,7 +26,36 @@ const MyPhobias = ({ onPhobiaListed }: MyPhobiasProps) => {
   const [price, setPrice] = useState<number>(0);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedPhobia, setSelectedPhobia] = useState<any>(null);
+  const [hasAccess, setHasAccess] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    checkAccess();
+  }, []);
+
+  const checkAccess = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setCheckingAccess(false);
+        return;
+      }
+
+      const { data, error } = await supabase.rpc('has_phobia_access', {
+        user_id_param: session.user.id,
+        service_type_param: 'fear_marketplace'
+      });
+
+      if (!error) {
+        setHasAccess(data);
+      }
+    } catch (error) {
+      console.error('Error checking access:', error);
+    } finally {
+      setCheckingAccess(false);
+    }
+  };
 
   const loadPhobias = async () => {
     try {
@@ -105,6 +134,34 @@ const MyPhobias = ({ onPhobiaListed }: MyPhobiasProps) => {
       setListingPhobia(null);
     }
   };
+
+  if (checkingAccess) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+      </div>
+    );
+  }
+
+  if (!hasAccess) {
+    return (
+      <Card className="border-yellow-500/20 bg-gradient-to-br from-yellow-950/10 to-background">
+        <CardContent className="py-12 text-center space-y-4">
+          <TrendingUp className="w-16 h-16 text-yellow-400 mx-auto" />
+          <h3 className="text-xl font-semibold text-foreground">Access Required</h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            You need to purchase "Fear Marketplace" to manage and trade your phobias.
+          </p>
+          <Button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="bg-gradient-to-r from-cyan-500 to-blue-500"
+          >
+            View Pricing Plans
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-6">
