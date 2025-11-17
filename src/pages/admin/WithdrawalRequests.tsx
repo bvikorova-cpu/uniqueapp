@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CampaignWithdrawalManagement } from "@/components/fundraising/CampaignWithdrawalManagement";
+import { MusicianWithdrawalManagement } from "@/components/musician/MusicianWithdrawalManagement";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export default function WithdrawalRequests() {
@@ -29,18 +30,23 @@ export default function WithdrawalRequests() {
   return (
     <div className="container mx-auto p-6 max-w-7xl">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold">Campaign Withdrawal Management</h1>
+        <h1 className="text-3xl font-bold">Withdrawal Management</h1>
         <p className="text-muted-foreground mt-2">
-          Review and process campaign withdrawal requests
+          Review and process withdrawal requests from campaigns and musicians
         </p>
       </div>
 
-      <Tabs defaultValue="requests" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 max-w-md">
-          <TabsTrigger value="requests">Withdrawal Requests</TabsTrigger>
+      <Tabs defaultValue="musicians" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 max-w-md">
+          <TabsTrigger value="musicians">Musicians</TabsTrigger>
+          <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="requests" className="mt-6">
+        <TabsContent value="musicians" className="mt-6">
+          <MusicianWithdrawalManagement />
+        </TabsContent>
+
+        <TabsContent value="campaigns" className="mt-6">
           <CampaignWithdrawalManagement />
         </TabsContent>
       </Tabs>
