@@ -233,7 +233,7 @@ import ReincarnationSocial from "./pages/ReincarnationSocial";
 import BlockchainConfessions from "./pages/BlockchainConfessions";
 import PhobiaTrading from "./pages/PhobiaTrading";
 import MultiverseNetwork from "./pages/MultiverseNetwork";
-import HolographicConcerts from "./pages/HolographicConcerts";
+
 import LiveConcerts from "./pages/LiveConcerts";
 import MusicianDashboard from "./pages/MusicianDashboard";
 import Shop from "./pages/Shop";
@@ -522,7 +522,7 @@ const App = () => (
           <Route path="/blockchain-confessions" element={<BlockchainConfessions />} />
           <Route path="/phobia-trading" element={<PhobiaTrading />} />
           <Route path="/multiverse-network" element={<MultiverseNetwork />} />
-          <Route path="/holographic-concerts" element={<HolographicConcerts />} />
+          
           <Route path="/live-concerts" element={<LiveConcerts />} />
           <Route path="/musician-dashboard" element={<MusicianDashboard />} />
               <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
