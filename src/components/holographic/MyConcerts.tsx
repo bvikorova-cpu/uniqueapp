@@ -59,6 +59,18 @@ const MyConcerts = () => {
     setPlayerOpen(true);
   };
 
+  const handleGetTicket = () => {
+    // Scroll to marketplace section at bottom
+    const marketplace = document.querySelector('[data-marketplace]');
+    if (marketplace) {
+      marketplace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    toast({
+      title: "Purchase Concert Ticket",
+      description: "Scroll down to purchase Premium Concert Ticket (€150)",
+    });
+  };
+
   return (
     <>
       <ConcertPlayer
@@ -119,8 +131,14 @@ const MyConcerts = () => {
 
                     <Button 
                       className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
-                      onClick={() => handleWatchConcert(concert)}
-                      disabled={!myTickets.find(t => t?.id === concert.id)}
+                      onClick={() => {
+                        const hasTicket = myTickets.find(t => t?.id === concert.id);
+                        if (hasTicket) {
+                          handleWatchConcert(concert);
+                        } else {
+                          handleGetTicket();
+                        }
+                      }}
                     >
                       <Play className="w-4 h-4 mr-2" />
                       {myTickets.find(t => t?.id === concert.id) ? 'Watch Concert' : 'Get Ticket'}
