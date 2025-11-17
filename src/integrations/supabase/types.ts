@@ -16544,6 +16544,45 @@ export type Database = {
         }
         Relationships: []
       }
+      reincarnation_purchases: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          purchase_type: string
+          service_type: string
+          status: string
+          stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          purchase_type: string
+          service_type: string
+          status?: string
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          purchase_type?: string
+          service_type?: string
+          status?: string
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       reposts: {
         Row: {
           comment: string | null
@@ -20781,6 +20820,10 @@ export type Database = {
       generate_story_share_code: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
+      has_reincarnation_access: {
+        Args: { p_service_type: string; p_user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
