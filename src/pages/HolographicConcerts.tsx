@@ -148,6 +148,53 @@ const HolographicConcerts = () => {
             <TabsContent value="recordings"><MyRecordings /></TabsContent>
             <TabsContent value="mydedications"><MyDedications /></TabsContent>
           </Tabs>
+
+          <div className="mt-16" data-marketplace>
+            <Card className="border-purple-500/20 bg-gradient-to-br from-purple-950/10 to-background">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-2xl">
+                  <ShoppingBag className="w-6 h-6 text-purple-400" />
+                  Purchase Additional Services
+                </CardTitle>
+                <CardDescription>
+                  Enhance your holographic concert experience
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-marketplace>
+                  {features.map((feature, index) => {
+                    const Icon = feature.icon;
+                    return (
+                      <Card key={index} className="border-purple-500/30">
+                        <CardHeader>
+                          <Icon className="w-8 h-8 text-purple-400 mb-2" />
+                          <CardTitle>{feature.title}</CardTitle>
+                          <div className="text-2xl font-bold text-purple-400">{feature.price}</div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-sm text-muted-foreground mb-4">{feature.description}</p>
+                          <Button 
+                            onClick={() => handlePurchase(feature.priceId, feature.title)} 
+                            disabled={loading === feature.title} 
+                            className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
+                          >
+                            {loading === feature.title ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <>
+                                <Sparkles className="w-4 h-4 mr-2" />
+                                Purchase
+                              </>
+                            )}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     );
