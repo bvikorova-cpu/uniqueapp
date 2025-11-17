@@ -6,10 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { SendGiftDialog } from "@/components/masterchef/SendGiftDialog";
+import { useMasterChefSubscription } from "@/hooks/useMasterChefSubscription";
 
 export default function MasterChefDashboard() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { subscribed, tier, loading: subscriptionLoading } = useMasterChefSubscription();
   const [giftDialogOpen, setGiftDialogOpen] = useState(false);
   const [selectedChef, setSelectedChef] = useState<{ id: string; name: string } | null>(null);
   const [stats, setStats] = useState({
@@ -25,6 +27,17 @@ export default function MasterChefDashboard() {
     checkAuth();
   }, []);
 
+  useEffect(() => {
+    if (!subscriptionLoading && !subscribed) {
+      toast({
+        title: "Subscription Required",
+        description: "You need an active MasterChef subscription to access the dashboard",
+        variant: "destructive",
+      });
+      navigate("/masterchef-subscription");
+    }
+  }, [subscribed, subscriptionLoading, navigate, toast]);
+
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
@@ -36,6 +49,21 @@ export default function MasterChefDashboard() {
       navigate("/auth");
     }
   };
+
+  if (subscriptionLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Trophy className="h-12 w-12 animate-bounce text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading your MasterChef dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!subscribed) {
+    return null; // Will redirect via useEffect
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 p-6">
