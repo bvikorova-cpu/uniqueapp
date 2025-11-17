@@ -498,5 +498,20 @@ verify_jwt = true
 [functions.find-best-self]
 verify_jwt = true
 
+[functions.create-holographic-concert-checkout]
+verify_jwt = true
+
+[functions.verify-holographic-payment]
+verify_jwt = false
+
+[functions.get-user-concerts]
+verify_jwt = true
+
+[functions.generate-ai-dedication]
+verify_jwt = true
+
+[functions.book-meet-greet]
+verify_jwt = true
+
 [functions.get-user-universes]
 verify_jwt = true
