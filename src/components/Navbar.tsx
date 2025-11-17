@@ -162,7 +162,6 @@ const Navbar = () => {
 
   const mainNavItems = [
     { path: "/wall", label: t('services.wall.title'), icon: MessageSquare },
-    { path: "/masterchef/gallery", label: "MasterChef Battles", icon: ChefHat },
     { path: "/jobs", label: t('navbar.work'), icon: Briefcase },
     { path: "/games", label: t('navbar.games'), icon: Gamepad2 },
     { path: "/rewards", label: t('navbar.rewards'), icon: Trophy },
