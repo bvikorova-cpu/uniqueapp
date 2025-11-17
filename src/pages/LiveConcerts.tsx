@@ -58,41 +58,8 @@ const LiveConcerts = () => {
     },
   });
 
-  const { data: topSupporters } = useQuery({
-    queryKey: ["top-concert-supporters"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("concert_gifts")
-        .select(`
-          sender_id,
-          profiles(full_name, avatar_url),
-          amount
-        `)
-        .eq("payment_status", "completed")
-        .order("amount", { ascending: false })
-        .limit(10);
-
-      if (error) throw error;
-      
-      // Aggregate by sender
-      const aggregated = data.reduce((acc: any[], curr: any) => {
-        const existing = acc.find(item => item.sender_id === curr.sender_id);
-        if (existing) {
-          existing.total_amount += parseFloat(curr.amount);
-        } else {
-          acc.push({
-            sender_id: curr.sender_id,
-            full_name: curr.profiles?.full_name,
-            avatar_url: curr.profiles?.avatar_url,
-            total_amount: parseFloat(curr.amount)
-          });
-        }
-        return acc;
-      }, []);
-
-      return aggregated.sort((a, b) => b.total_amount - a.total_amount).slice(0, 10);
-    },
-  });
+  // Top supporters feature temporarily disabled due to database schema
+  const topSupporters = [];
 
   const handleBuyTicket = async (concertId: string, ticketTypeId: string) => {
     try {

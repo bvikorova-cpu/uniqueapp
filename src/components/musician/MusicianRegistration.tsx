@@ -43,7 +43,7 @@ export const MusicianRegistration = () => {
     e.preventDefault();
     
     if (!formData.stage_name || !formData.genre) {
-      toast.error("Vyplňte povinné polia");
+      toast.error("Please fill in all required fields");
       return;
     }
 
@@ -52,7 +52,7 @@ export const MusicianRegistration = () => {
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
-        toast.error("Musíte byť prihlásený");
+        toast.error("You must be signed in");
         return;
       }
 
@@ -64,7 +64,7 @@ export const MusicianRegistration = () => {
         .maybeSingle();
 
       if (existing) {
-        toast.error("Už máte vytvorený profil interpreta");
+        toast.error("You already have a musician profile");
         setOpen(false);
         navigate("/musician-dashboard");
         return;
@@ -83,12 +83,12 @@ export const MusicianRegistration = () => {
 
       if (error) throw error;
 
-      toast.success("Váš profil interpreta bol vytvorený!");
+      toast.success("Your musician profile has been created!");
       setOpen(false);
       navigate("/musician-dashboard");
     } catch (error: any) {
       console.error("Registration error:", error);
-      toast.error("Chyba pri vytváraní profilu: " + error.message);
+      toast.error("Error creating profile: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -99,28 +99,28 @@ export const MusicianRegistration = () => {
       <DialogTrigger asChild>
         <Button size="lg" className="gap-2">
           <Music className="h-5 w-5" />
-          Stať sa interpretom
+          Become a Musician
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-2xl">
             <Sparkles className="h-6 w-6 text-primary" />
-            Registrácia Interpreta
+            Musician Registration
           </DialogTitle>
           <DialogDescription>
-            Vytvorte si profil a začnite streamovať svoje koncerty pre fanúšikov po celom svete!
+            Create your profile and start streaming concerts to fans worldwide!
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <div className="space-y-2">
             <Label htmlFor="stage_name">
-              Umelecké meno <span className="text-destructive">*</span>
+              Stage Name <span className="text-destructive">*</span>
             </Label>
             <Input
               id="stage_name"
-              placeholder="Napr. DJ Shadow"
+              placeholder="e.g. DJ Shadow"
               value={formData.stage_name}
               onChange={(e) => setFormData({ ...formData, stage_name: e.target.value })}
               required
@@ -129,7 +129,7 @@ export const MusicianRegistration = () => {
 
           <div className="space-y-2">
             <Label htmlFor="genre">
-              Žáner <span className="text-destructive">*</span>
+              Genre <span className="text-destructive">*</span>
             </Label>
             <Select
               value={formData.genre}
@@ -137,7 +137,7 @@ export const MusicianRegistration = () => {
               required
             >
               <SelectTrigger>
-                <SelectValue placeholder="Vyberte žáner" />
+                <SelectValue placeholder="Select genre" />
               </SelectTrigger>
               <SelectContent>
                 {GENRES.map((genre) => (
@@ -153,7 +153,7 @@ export const MusicianRegistration = () => {
             <Label htmlFor="bio">Bio</Label>
             <Textarea
               id="bio"
-              placeholder="Povedzte niečo o sebe a vašej hudbe..."
+              placeholder="Tell your fans about yourself and your music..."
               value={formData.bio}
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               rows={4}
@@ -161,7 +161,7 @@ export const MusicianRegistration = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="avatar_url">URL avatara</Label>
+            <Label htmlFor="avatar_url">Avatar URL</Label>
             <Input
               id="avatar_url"
               type="url"
@@ -174,14 +174,14 @@ export const MusicianRegistration = () => {
           <div className="bg-primary/10 p-4 rounded-lg space-y-2">
             <h4 className="font-semibold flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
-              Výhody pre interpretov:
+              Musician Benefits:
             </h4>
             <ul className="text-sm space-y-1 text-muted-foreground">
-              <li>• Zarábajte z predaja vstupeniek (až 90%)</li>
-              <li>• Dostávajte dary od fanúšikov (80% vám)</li>
-              <li>• Streamujte neobmedzene v HD kvalite</li>
-              <li>• Získajte detailné štatistiky</li>
-              <li>• Budujte si fanúšikovskú základňu</li>
+              <li>• Earn from ticket sales (up to 90%)</li>
+              <li>• Receive gifts from fans (80% to you)</li>
+              <li>• Stream unlimited in HD quality</li>
+              <li>• Get detailed analytics</li>
+              <li>• Build your fanbase</li>
             </ul>
           </div>
 
@@ -192,14 +192,14 @@ export const MusicianRegistration = () => {
               onClick={() => setOpen(false)}
               className="flex-1"
             >
-              Zrušiť
+              Cancel
             </Button>
             <Button
               type="submit"
               disabled={loading}
               className="flex-1"
             >
-              {loading ? "Vytváram..." : "Vytvoriť profil"}
+              {loading ? "Creating..." : "Create Profile"}
             </Button>
           </div>
         </form>
