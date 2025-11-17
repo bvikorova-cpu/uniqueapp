@@ -144,7 +144,7 @@ export default function MasterChefSubscription() {
                 {tier.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                     <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
-                      Najpopulárnejšie
+                      Most Popular
                     </span>
                   </div>
                 )}
@@ -153,7 +153,7 @@ export default function MasterChefSubscription() {
                     <Icon className="h-8 w-8 text-primary" />
                     <div className="text-right">
                       <div className="text-3xl font-bold">{tier.price}</div>
-                      <div className="text-sm text-muted-foreground">/mesiac</div>
+                      <div className="text-sm text-muted-foreground">/month</div>
                     </div>
                   </div>
                   <CardTitle className="text-2xl">{tier.name}</CardTitle>
