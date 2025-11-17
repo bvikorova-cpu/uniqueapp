@@ -255,6 +255,23 @@ const Admin = () => {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium">MasterChef Provízie</CardTitle>
+              <ChefHat className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">€{stats.masterchefEarnings.toFixed(2)}</div>
+              <Button 
+                variant="link" 
+                className="p-0 h-auto text-sm" 
+                onClick={() => navigate('/admin/masterchef-payouts')}
+              >
+                Manage Payouts →
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Mesačný príjem</CardTitle>
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
@@ -267,7 +284,7 @@ const Admin = () => {
         {/* MasterChef Earnings Card */}
         <Card 
           className="mb-8 cursor-pointer hover:shadow-lg transition-shadow border-2 border-orange-500/30 bg-gradient-to-br from-orange-500/5 to-red-500/5"
-          onClick={() => navigate('/masterchef/earnings')}
+          onClick={() => navigate('/admin/masterchef-payouts')}
         >
           <CardHeader>
             <div className="flex items-center justify-between">

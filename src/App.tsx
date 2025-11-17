@@ -39,6 +39,7 @@ import Admin from "./pages/Admin";
 import AdminTransactions from "./pages/AdminTransactions";
 import AdminCorporateInquiries from "./pages/AdminCorporateInquiries";
 import AdminTipsters from "./pages/AdminTipsters";
+import AdminMasterChefPayouts from "./pages/AdminMasterChefPayouts";
 import Bazaar from "./pages/Bazaar";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
@@ -319,6 +320,7 @@ const App = () => (
               <Route path="/chef-chat" element={<ChefChat />} />
               <Route path="/wine-pairing" element={<WinePairing />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/masterchef-payouts" element={<AdminMasterChefPayouts />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />

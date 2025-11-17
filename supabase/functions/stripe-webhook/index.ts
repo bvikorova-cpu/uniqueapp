@@ -211,7 +211,7 @@ serve(async (req) => {
         if (paymentStatus === "paid" && metadata.type === "masterchef_gift") {
           console.log("Processing MasterChef gift payment", { sessionId: session.id });
           
-          const { error: giftError } = await supabaseAdmin
+          const { data: giftData, error: giftError } = await supabaseAdmin
             .from("masterchef_sent_gifts")
             .update({ 
               status: "completed",
@@ -220,12 +220,56 @@ serve(async (req) => {
             .eq("sender_id", metadata.sender_id)
             .eq("chef_id", metadata.chef_id)
             .eq("gift_id", metadata.gift_id)
-            .is("stripe_session_id", null);
+            .is("stripe_session_id", null)
+            .select('id, chef_id, chef_amount')
+            .single();
 
           if (giftError) {
             console.error("Error updating MasterChef gift:", giftError);
           } else {
             console.log("MasterChef gift marked as completed");
+            
+            // Get chef name for notification
+            const { data: chefProfile } = await supabaseAdmin
+              .from("profiles")
+              .select("full_name")
+              .eq("id", metadata.chef_id)
+              .single();
+
+            const chefName = chefProfile?.full_name || 'Chef';
+
+            // Get the platform earning record
+            const { data: earningData } = await supabaseAdmin
+              .from("masterchef_platform_earnings")
+              .select("id, chef_amount")
+              .eq("gift_id", giftData.id)
+              .single();
+
+            if (earningData) {
+              // Get all admin users
+              const { data: adminUsers } = await supabaseAdmin
+                .from('user_roles')
+                .select('user_id')
+                .eq('role', 'admin');
+
+              // Create notification for each admin
+              if (adminUsers && adminUsers.length > 0) {
+                const notifications = adminUsers.map(admin => ({
+                  user_id: admin.user_id,
+                  type: 'masterchef_payout',
+                  title: 'New MasterChef Payout Pending',
+                  message: `€${earningData.chef_amount.toFixed(2)} ready to pay to ${chefName}`,
+                  related_id: earningData.id,
+                  is_read: false
+                }));
+
+                await supabaseAdmin
+                  .from('notifications')
+                  .insert(notifications);
+
+                console.log(`Created ${notifications.length} admin notifications for payout`);
+              }
+            }
           }
         }
       }

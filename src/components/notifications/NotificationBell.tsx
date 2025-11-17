@@ -157,6 +157,8 @@ const NotificationBell = () => {
         return `${actorName} applied for your job position`;
       case "verification_request":
         return `${actorName} submitted a company verification request`;
+      case "masterchef_payout":
+        return "New MasterChef payout pending";
       default:
         return `${actorName} interacted with your content`;
     }
@@ -180,6 +182,8 @@ const NotificationBell = () => {
         return "📝";
       case "verification_request":
         return "🏢";
+      case "masterchef_payout":
+        return "👨‍🍳";
       default:
         return "🔔";
     }
@@ -234,6 +238,8 @@ const NotificationBell = () => {
       navigate(`/employer-dashboard`);
     } else if (notification.type === "verification_request") {
       navigate(`/admin/verifications`);
+    } else if (notification.type === "masterchef_payout") {
+      navigate(`/admin/masterchef-payouts`);
     } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);
     }
