@@ -504,7 +504,7 @@ const App = () => (
               <Route path="/f1-fantasy-team" element={<F1FantasyTeam />} />
               <Route path="/f1-leaderboard" element={<F1Leaderboard />} />
               <Route path="/masterchef-subscription" element={<MasterChefSubscription />} />
-              <Route path="/masterchef/gallery" element={<MasterChefCompetitionsGallery />} />
+              <Route path="/masterchef/competitions-public" element={<MasterChefCompetitionsGallery />} />
               <Route path="/masterchef/dashboard" element={<MasterChefDashboard />} />
               <Route path="/masterchef/competitions" element={<MasterChefCompetitions />} />
               <Route path="/masterchef/earnings" element={<MasterChefEarnings />} />
