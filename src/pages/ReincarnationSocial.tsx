@@ -1,9 +1,15 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { Sparkles, Users, Heart, Crown, Eye, Infinity, Moon, Star, Globe, Shield } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Sparkles, Heart, Crown, Eye, Infinity, Star, Globe, Shield, CheckCircle2, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { PastLifeRegressionSection } from "@/components/reincarnation/PastLifeRegressionSection";
+import { KarmicDebtTracker } from "@/components/reincarnation/KarmicDebtTracker";
+import { SoulmateMatchingSection } from "@/components/reincarnation/SoulmateMatchingSection";
+import { ReincarnationPlanSection } from "@/components/reincarnation/ReincarnationPlanSection";
 
 interface Service {
   id: string;
@@ -19,19 +25,73 @@ interface Service {
 const ReincarnationSocial = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
+
+  useEffect(() => {
+    const payment = searchParams.get("payment");
+    const sessionId = searchParams.get("session_id");
+
+    if (payment === "success" && sessionId) {
+      verifyPayment(sessionId);
+    } else if (payment === "canceled") {
+      toast({
+        title: "Payment Canceled",
+        description: "Your payment was canceled. No charges were made.",
+        variant: "destructive",
+      });
+    }
+  }, [searchParams]);
+
+  const verifyPayment = async (sessionId: string) => {
+    setVerifyingPayment(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("Not authenticated");
+
+      const { data, error } = await supabase.functions.invoke(
+        "verify-reincarnation-payment",
+        {
+          body: { sessionId },
+        }
+      );
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "✨ Payment Successful!",
+          description: `You now have access to ${data.service_type.replace(/_/g, " ")}. Check the service tabs!`,
+        });
+        
+        setTimeout(() => {
+          window.history.replaceState({}, '', '/reincarnation-social');
+        }, 2000);
+      }
+    } catch (error: any) {
+      console.error("Payment verification error:", error);
+      toast({
+        title: "Verification Error",
+        description: error.message || "Could not verify payment.",
+        variant: "destructive",
+      });
+    } finally {
+      setVerifyingPayment(false);
+    }
+  };
 
   const services: Service[] = [
     {
       id: "past_life_regression",
       title: "Past Life Regression",
-      description: "Explore your previous incarnations through AI-powered spiritual analysis",
+      description: "Explore your previous incarnations",
       price: "€79",
       priceType: "one-time",
       icon: Eye,
       features: [
         "AI-guided past life exploration",
-        "Detailed regression session reports",
-        "Historical context & verification",
+        "Detailed regression reports",
+        "Historical context",
         "Soul pattern recognition",
         "Spiritual timeline mapping",
       ],
@@ -39,7 +99,7 @@ const ReincarnationSocial = () => {
     {
       id: "karmic_debt_calculator",
       title: "Karmic Debt Calculator",
-      description: "Track your karmic balance and spiritual lessons",
+      description: "Track your karmic balance",
       price: "€19",
       priceType: "per month",
       icon: Infinity,
@@ -54,8 +114,8 @@ const ReincarnationSocial = () => {
     },
     {
       id: "soulmate_matching",
-      title: "Past Lives Soulmate",
-      description: "Connect with souls you've known across lifetimes",
+      title: "Soulmate Matching",
+      description: "Connect with souls from past lives",
       price: "€29",
       priceType: "per month",
       icon: Heart,
@@ -64,14 +124,14 @@ const ReincarnationSocial = () => {
         "Past relationship detection",
         "Karmic connection analysis",
         "Soul contract insights",
-        "Reunion probability scores",
+        "Reunion probability",
       ],
       highlighted: true,
     },
     {
       id: "reincarnation_guarantee",
-      title: "Reincarnation Guarantee",
-      description: "Ultimate lifetime spiritual planning & soul preservation",
+      title: "Reincarnation Guarantee™",
+      description: "Lifetime spiritual planning",
       price: "€199",
       priceType: "one-time",
       icon: Crown,
@@ -93,7 +153,7 @@ const ReincarnationSocial = () => {
       if (!session) {
         toast({
           title: "Authentication Required",
-          description: "Please sign in to access spiritual services",
+          description: "Please sign in to access services",
           variant: "destructive",
         });
         return;
@@ -112,7 +172,7 @@ const ReincarnationSocial = () => {
       console.error('Error:', error);
       toast({
         title: "Error",
-        description: "Failed to process purchase. Please try again.",
+        description: "Failed to process purchase.",
         variant: "destructive",
       });
     } finally {
@@ -120,195 +180,149 @@ const ReincarnationSocial = () => {
     }
   };
 
+  if (verifyingPayment) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-background">
+        <Card className="max-w-md border-primary/30">
+          <CardContent className="py-12 text-center space-y-4">
+            <Sparkles className="h-16 w-16 mx-auto text-primary animate-pulse" />
+            <h2 className="text-2xl font-semibold">Verifying Payment...</h2>
+            <p className="text-muted-foreground">Activating your services</p>
+            <Loader2 className="h-8 w-8 mx-auto animate-spin text-primary" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-purple-950/10 to-background">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-background">
       <section className="relative overflow-hidden py-24 px-4">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-purple-500/10 animate-gradient" />
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-20 w-64 h-64 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-          <div className="absolute top-40 right-40 w-48 h-48 bg-pink-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
-        </div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,hsl(var(--primary)/0.1),transparent)]" />
         
         <div className="container mx-auto relative z-10">
-          <div className="text-center max-w-5xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500/20 to-indigo-500/20 border border-purple-500/30 backdrop-blur-sm mb-8">
-              <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
-              <span className="text-sm font-semibold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                Ancient Wisdom Meets Modern AI
-              </span>
-              <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
-            </div>
+          <div className="max-w-5xl mx-auto text-center space-y-8">
+            <Sparkles className="w-20 h-20 mx-auto text-primary mb-6 animate-pulse" />
             
-            <h1 className="text-6xl md:text-8xl font-bold mb-8 relative">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 animate-gradient">
-                Reincarnation Social
+            <h1 className="text-6xl md:text-8xl font-bold leading-tight">
+              <span className="bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+                Reincarnation
               </span>
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-                <Moon className="w-16 h-16 text-purple-400/30 animate-pulse" />
-              </div>
+              <br />
+              <span className="text-foreground">Social</span>
             </h1>
             
-            <p className="text-xl md:text-3xl text-muted-foreground mb-12 leading-relaxed">
+            <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
               Journey through lifetimes. Discover your past lives, balance your karma, 
-              and reconnect with souls from ancient times through AI-powered spiritual intelligence.
+              and reconnect with souls through AI-powered spiritual intelligence.
             </p>
             
-            <div className="flex flex-wrap gap-8 justify-center text-sm">
-              <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-background/50 backdrop-blur-sm border border-purple-500/20">
-                <Star className="w-5 h-5 text-purple-400" />
+            <div className="flex flex-wrap gap-6 justify-center">
+              <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-background/60 backdrop-blur-md border border-primary/30">
+                <Star className="w-5 h-5 text-primary" />
                 <span>AI Spiritual Analysis</span>
               </div>
-              <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-background/50 backdrop-blur-sm border border-indigo-500/20">
-                <Shield className="w-5 h-5 text-indigo-400" />
+              <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-background/60 backdrop-blur-md border border-primary/30">
+                <Shield className="w-5 h-5 text-primary" />
                 <span>Sacred & Secure</span>
               </div>
-              <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-background/50 backdrop-blur-sm border border-pink-500/20">
-                <Globe className="w-5 h-5 text-pink-400" />
-                <span>15K+ Soul Connections</span>
+              <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-background/60 backdrop-blur-md border border-primary/30">
+                <Globe className="w-5 h-5 text-primary" />
+                <span>15K+ Connections</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services Grid with mystical cards */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service) => {
-              const Icon = service.icon;
-              return (
-                <Card 
-                  key={service.id} 
-                  className={`group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-105 border-2 ${
-                    service.highlighted 
-                      ? 'border-purple-500/50 shadow-lg shadow-purple-500/20 bg-gradient-to-br from-purple-950/20 to-background' 
-                      : 'border-purple-500/20 hover:border-purple-500/40'
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  {service.highlighted && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1 bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                      <Crown className="w-3 h-3" />
-                      POPULAR
-                    </div>
-                  )}
-                  
-                  <CardHeader>
-                    <div className="mb-6 relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
-                      <div className="relative p-4 rounded-2xl bg-gradient-to-br from-purple-500/10 to-indigo-500/10 backdrop-blur-sm w-fit border border-purple-500/20">
-                        <Icon className="w-10 h-10 text-purple-400 group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                    </div>
-                    <CardTitle className="text-2xl mb-3 group-hover:text-purple-400 transition-colors">
-                      {service.title}
-                    </CardTitle>
-                    <CardDescription className="text-base leading-relaxed">
-                      {service.description}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="mb-6">
-                      <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                          {service.price}
-                        </span>
-                        <span className="text-muted-foreground text-sm">
-                          {service.priceType}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <ul className="space-y-4 mb-8">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm">
-                          <div className="mt-1 p-1.5 rounded-full bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border border-purple-500/20">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-br from-purple-400 to-indigo-400" />
-                          </div>
-                          <span className="flex-1 leading-relaxed">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
+      <section className="py-12 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <Tabs defaultValue="services" className="w-full">
+            <TabsList className="grid w-full grid-cols-5 mb-8 h-auto p-1">
+              <TabsTrigger value="services">Services</TabsTrigger>
+              <TabsTrigger value="regression"><Eye className="w-4 h-4 mr-2" />Past Lives</TabsTrigger>
+              <TabsTrigger value="karma"><Infinity className="w-4 h-4 mr-2" />Karma</TabsTrigger>
+              <TabsTrigger value="soulmates"><Heart className="w-4 h-4 mr-2" />Soulmates</TabsTrigger>
+              <TabsTrigger value="plan"><Crown className="w-4 h-4 mr-2" />Next Life</TabsTrigger>
+            </TabsList>
 
-                    <Button 
-                      onClick={() => handlePurchase(service.id)}
-                      disabled={loading === service.id}
-                      className={`w-full transition-all duration-300 ${
-                        service.highlighted
-                          ? 'bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 shadow-lg shadow-purple-500/30'
-                          : ''
+            <TabsContent value="services" className="space-y-8">
+              <div className="text-center space-y-4 mb-12">
+                <h2 className="text-4xl font-bold">Premium Spiritual Services</h2>
+                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                  Choose your spiritual journey and unlock profound insights
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {services.map((service) => {
+                  const Icon = service.icon;
+                  return (
+                    <Card 
+                      key={service.id} 
+                      className={`group transition-all hover:shadow-xl hover:scale-105 border-2 ${
+                        service.highlighted 
+                          ? 'border-primary/50 bg-gradient-to-br from-primary/5 to-background' 
+                          : 'border-primary/20'
                       }`}
-                      variant={service.highlighted ? "default" : "outline"}
                     >
-                      {loading === service.id ? "Processing..." : "Begin Journey"}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+                      {service.highlighted && (
+                        <div className="absolute top-4 right-4 flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-bold">
+                          <Crown className="w-3 h-3" />POPULAR
+                        </div>
+                      )}
+                      
+                      <CardHeader>
+                        <div className="mb-6">
+                          <div className="p-4 rounded-2xl bg-primary/10 w-fit border border-primary/20">
+                            <Icon className="w-10 h-10 text-primary" />
+                          </div>
+                        </div>
+                        <CardTitle className="text-2xl">{service.title}</CardTitle>
+                        <CardDescription className="text-base">{service.description}</CardDescription>
+                      </CardHeader>
+                      
+                      <CardContent>
+                        <div className="mb-6">
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-5xl font-bold text-primary">{service.price}</span>
+                            <span className="text-muted-foreground text-sm">{service.priceType}</span>
+                          </div>
+                        </div>
 
-      {/* Mystical Features Section */}
-      <section className="py-24 px-4 bg-gradient-to-b from-purple-950/10 to-background relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-indigo-500 rounded-full blur-3xl" />
-        </div>
-        
-        <div className="container mx-auto relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
-            <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-              Why Journey With Us?
-            </span>
-          </h2>
-          <p className="text-center text-muted-foreground mb-16 text-lg max-w-2xl mx-auto">
-            Unlock the mysteries of your eternal soul with advanced AI spiritual technology
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border border-purple-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Shield className="w-10 h-10 text-purple-400" />
+                        <div className="space-y-3 mb-6">
+                          {service.features.map((feature, index) => (
+                            <div key={index} className="flex items-start gap-2 text-sm">
+                              <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
+                              <span className="text-muted-foreground">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <Button 
+                          onClick={() => handlePurchase(service.id)}
+                          disabled={loading === service.id}
+                          className="w-full"
+                          size="lg"
+                        >
+                          {loading === service.id ? (
+                            <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Processing...</>
+                          ) : (
+                            <>Unlock Service<Sparkles className="ml-2 h-4 w-4" /></>
+                          )}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-purple-400 transition-colors">
-                Sacred Protection
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Your spiritual data is encrypted with celestial-grade security, ensuring complete privacy across all lifetimes
-              </p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Sparkles className="w-10 h-10 text-indigo-400" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-indigo-400 transition-colors">
-                AI Mystic Intelligence
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Cutting-edge algorithms combined with ancient wisdom to analyze your soul's journey through time
-              </p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-pink-500/20 to-purple-500/20 border border-pink-500/30 mb-6 group-hover:scale-110 transition-transform duration-300">
-                <Users className="w-10 h-10 text-pink-400" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4 group-hover:text-pink-400 transition-colors">
-                Eternal Community
-              </h3>
-              <p className="text-muted-foreground leading-relaxed">
-                Join thousands reconnecting with ancient souls, discovering past relationships, and healing karmic bonds
-              </p>
-            </div>
-          </div>
+            </TabsContent>
+
+            <TabsContent value="regression"><PastLifeRegressionSection /></TabsContent>
+            <TabsContent value="karma"><KarmicDebtTracker /></TabsContent>
+            <TabsContent value="soulmates"><SoulmateMatchingSection /></TabsContent>
+            <TabsContent value="plan"><ReincarnationPlanSection /></TabsContent>
+          </Tabs>
         </div>
       </section>
     </div>

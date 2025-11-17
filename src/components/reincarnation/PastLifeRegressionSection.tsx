@@ -1,16 +1,47 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Eye, Clock, MapPin, User } from "lucide-react";
+import { Loader2, Eye, Clock, MapPin, User, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export const PastLifeRegressionSection = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [regression, setRegression] = useState<any>(null);
+  const [hasAccess, setHasAccess] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
+
+  useEffect(() => {
+    checkAccess();
+  }, []);
+
+  const checkAccess = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setCheckingAccess(false);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("reincarnation_purchases")
+        .select("*")
+        .eq("user_id", user.id)
+        .eq("service_type", "past_life_regression")
+        .eq("status", "active")
+        .single();
+
+      setHasAccess(!!data);
+    } catch (error) {
+      console.error("Error checking access:", error);
+    } finally {
+      setCheckingAccess(false);
+    }
+  };
 
   const handleRegression = async () => {
     try {
@@ -20,7 +51,7 @@ export const PastLifeRegressionSection = () => {
       if (!session) {
         toast({
           title: "Authentication Required",
-          description: "Please sign in to explore past lives",
+          description: "Please sign in",
           variant: "destructive",
         });
         return;
@@ -33,13 +64,13 @@ export const PastLifeRegressionSection = () => {
       setRegression(data.regression);
       toast({
         title: "Past Life Discovered!",
-        description: `You have uncovered a life from ${data.regression.life_era}`,
+        description: `Uncovered a life from ${data.regression.life_era}`,
       });
     } catch (error) {
       console.error('Error:', error);
       toast({
         title: "Regression Failed",
-        description: "Failed to access past life memories. Please try again.",
+        description: "Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -47,129 +78,97 @@ export const PastLifeRegressionSection = () => {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      <Card className="border-primary/20 bg-card/50 backdrop-blur">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="h-5 w-5 text-primary" />
-            Past Life Regression
-          </CardTitle>
-          <CardDescription>
-            Explore your previous incarnations through AI-powered spiritual analysis
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Button 
-            onClick={handleRegression} 
-            disabled={loading}
-            className="w-full"
-            size="lg"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Accessing Past Life Memories...
-              </>
-            ) : (
-              <>
-                <Eye className="mr-2 h-4 w-4" />
-                Begin Regression Session
-              </>
-            )}
-          </Button>
-
-          {regression && (
-            <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-bottom-4">
-              <Card className="border-primary/30">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-lg">{regression.life_name}</CardTitle>
-                      <CardDescription className="flex items-center gap-4 mt-2">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {regression.life_era}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {regression.life_location}
-                        </span>
-                      </CardDescription>
-                    </div>
-                    <Badge variant="secondary" className="flex items-center gap-1">
-                      <User className="h-3 w-3" />
-                      {regression.life_role}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Life Story</h4>
-                    <p className="text-sm text-muted-foreground">{regression.life_story}</p>
-                  </div>
-
-                  {regression.historical_context && (
-                    <div>
-                      <h4 className="font-semibold mb-2">Historical Context</h4>
-                      <p className="text-sm text-muted-foreground">{regression.historical_context}</p>
-                    </div>
-                  )}
-
-                  <div>
-                    <h4 className="font-semibold mb-2 flex items-center justify-between">
-                      Verification Score
-                      <span className="text-primary">{regression.verification_score}%</span>
-                    </h4>
-                    <Progress value={regression.verification_score} className="h-2" />
-                  </div>
-
-                  {regression.lessons_learned && regression.lessons_learned.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold mb-2">Karmic Lessons</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {regression.lessons_learned.map((lesson: string, idx: number) => (
-                          <Badge key={idx} variant="outline">{lesson}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {regression.emotional_themes && regression.emotional_themes.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold mb-2">Emotional Themes</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {regression.emotional_themes.map((theme: string, idx: number) => (
-                          <Badge key={idx} className="bg-primary/20">{theme}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {regression.key_events && regression.key_events.length > 0 && (
-                    <div>
-                      <h4 className="font-semibold mb-3">Key Life Events</h4>
-                      <div className="space-y-2">
-                        {regression.key_events.map((event: any, idx: number) => (
-                          <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                            <div className="flex-shrink-0 w-16 text-center">
-                              <span className="text-sm font-semibold text-primary">Age {event.age}</span>
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-medium text-sm">{event.event}</p>
-                              <p className="text-xs text-muted-foreground mt-1">{event.significance}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          )}
+  if (checkingAccess) {
+    return (
+      <Card className="border-primary/20">
+        <CardContent className="py-12 text-center">
+          <Loader2 className="h-10 w-10 mx-auto animate-spin text-primary" />
+          <p className="text-muted-foreground mt-4">Checking access...</p>
         </CardContent>
       </Card>
-    </div>
+    );
+  }
+
+  if (!hasAccess) {
+    return (
+      <Card className="border-destructive/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lock className="h-6 w-6" />
+            Past Life Regression - Locked
+          </CardTitle>
+          <CardDescription>
+            Purchase this service to unlock
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Alert className="border-destructive/50">
+            <Lock className="h-4 w-4" />
+            <AlertDescription>
+              Go to <strong>Services tab</strong> to purchase (€79 one-time)
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="border-primary/20">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Eye className="h-6 w-6 text-primary" />
+          Past Life Regression
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Button onClick={handleRegression} disabled={loading} className="w-full" size="lg">
+          {loading ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" />Accessing...</> : <><Eye className="mr-2 h-5 w-5" />Begin Session</>}
+        </Button>
+
+        {regression && (
+          <Card className="border-primary/30">
+            <CardHeader>
+              <CardTitle>{regression.life_name}</CardTitle>
+              <CardDescription className="flex gap-4">
+                <span className="flex items-center gap-1"><Clock className="h-4 w-4" />{regression.life_era}</span>
+                <span className="flex items-center gap-1"><MapPin className="h-4 w-4" />{regression.life_location}</span>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <h4 className="font-semibold mb-2">Life Story</h4>
+                <p className="text-muted-foreground text-sm">{regression.life_story}</p>
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-2">Key Events</h4>
+                {regression.key_events?.map((event: any, i: number) => (
+                  <div key={i} className="flex gap-2 p-2 bg-muted/50 rounded mb-2">
+                    <Badge variant="outline">Age {event.age}</Badge>
+                    <div><p className="text-sm font-medium">{event.event}</p><p className="text-xs text-muted-foreground">{event.significance}</p></div>
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <h4 className="font-semibold mb-2">Relationships</h4>
+                {regression.relationships?.map((rel: any, i: number) => (
+                  <div key={i} className="p-3 rounded bg-primary/5 border border-primary/20 mb-2">
+                    <div className="flex items-center gap-2"><User className="h-4 w-4 text-primary" /><span className="font-medium">{rel.person}</span><Badge variant="secondary" className="ml-auto">{rel.connection}</Badge></div>
+                    <p className="text-sm text-muted-foreground">Lesson: {rel.lesson}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <div className="flex justify-between mb-2"><span>Verification</span><Badge>{regression.verification_score}%</Badge></div>
+                <Progress value={regression.verification_score} />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </CardContent>
+    </Card>
   );
 };
