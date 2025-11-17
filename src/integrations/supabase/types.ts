@@ -12696,6 +12696,104 @@ export type Database = {
         }
         Relationships: []
       }
+      masterchef_competition_entries: {
+        Row: {
+          competition_id: string
+          cooking_time: number | null
+          created_at: string
+          difficulty_level: string | null
+          dish_description: string
+          dish_image_url: string
+          dish_name: string
+          id: string
+          ingredients: string[] | null
+          recipe: string | null
+          updated_at: string
+          user_id: string
+          votes_count: number
+        }
+        Insert: {
+          competition_id: string
+          cooking_time?: number | null
+          created_at?: string
+          difficulty_level?: string | null
+          dish_description: string
+          dish_image_url: string
+          dish_name: string
+          id?: string
+          ingredients?: string[] | null
+          recipe?: string | null
+          updated_at?: string
+          user_id: string
+          votes_count?: number
+        }
+        Update: {
+          competition_id?: string
+          cooking_time?: number | null
+          created_at?: string
+          difficulty_level?: string | null
+          dish_description?: string
+          dish_image_url?: string
+          dish_name?: string
+          id?: string
+          ingredients?: string[] | null
+          recipe?: string | null
+          updated_at?: string
+          user_id?: string
+          votes_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterchef_competition_entries_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "masterchef_competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      masterchef_competitions: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          end_date: string
+          id: string
+          prize_amount: number | null
+          rules: string | null
+          start_date: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          end_date: string
+          id?: string
+          prize_amount?: number | null
+          rules?: string | null
+          start_date: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string
+          id?: string
+          prize_amount?: number | null
+          rules?: string | null
+          start_date?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       masterchef_gifts: {
         Row: {
           created_at: string | null
@@ -12819,6 +12917,35 @@ export type Database = {
             columns: ["gift_id"]
             isOneToOne: false
             referencedRelation: "masterchef_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      masterchef_votes: {
+        Row: {
+          created_at: string
+          entry_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entry_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entry_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "masterchef_votes_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "masterchef_competition_entries"
             referencedColumns: ["id"]
           },
         ]
