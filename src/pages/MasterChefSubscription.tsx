@@ -111,6 +111,11 @@ export default function MasterChefSubscription() {
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-24 pb-12">
         <div className="text-center mb-16">
+          <div className="flex justify-end mb-4">
+            <Button variant="ghost" onClick={() => navigate("/masterchef/dashboard")}>
+              Go to Dashboard →
+            </Button>
+          </div>
           <div className="inline-block mb-6 px-6 py-2 bg-orange-500/20 rounded-full border border-orange-500/30">
             <span className="text-orange-600 dark:text-orange-400 font-semibold text-sm uppercase tracking-wider">
               Online Cooking Competition

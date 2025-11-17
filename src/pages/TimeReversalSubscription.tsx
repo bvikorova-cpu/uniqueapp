@@ -138,6 +138,11 @@ export default function TimeReversalSubscription() {
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-24 pb-12">
         <div className="text-center mb-16">
+          <div className="flex justify-end mb-4">
+            <Button variant="ghost" onClick={() => navigate("/time-reversal/dashboard")}>
+              Go to Dashboard →
+            </Button>
+          </div>
           <div className="inline-block mb-6 px-6 py-2 bg-purple-500/20 rounded-full border border-purple-500/30">
             <span className="text-purple-600 dark:text-purple-400 font-semibold text-sm uppercase tracking-wider">
               Time Reversal Social

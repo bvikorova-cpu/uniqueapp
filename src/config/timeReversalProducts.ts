@@ -3,10 +3,10 @@
 
 export const TIME_REVERSAL_PRODUCTS = {
   TIME_TRAVEL_SPEED: {
-    id: 'prod_time_travel_speed', // Replace with actual Stripe product ID
+    id: 'prod_TMRm1jb3zE5js2',
     name: 'Time Travel Speed',
     price: '€6.99',
-    priceId: 'price_time_travel_speed', // Replace with actual Stripe price ID
+    priceId: 'price_1SPitHGaXSfGtYFtD5qWM26P',
     features: [
       '2x faster aging reversal',
       'Custom speed settings',
@@ -16,10 +16,10 @@ export const TIME_REVERSAL_PRODUCTS = {
     description: 'Age backwards faster than ever'
   },
   AGE_LOCKS: {
-    id: 'prod_age_locks', // Replace with actual Stripe product ID
+    id: 'prod_TMRnhkeFy9ex4r',
     name: 'Age Locks',
     price: '€4.99',
-    priceId: 'price_age_locks', // Replace with actual Stripe price ID
+    priceId: 'price_1SPitb0QTWhd4oRpSUpKFiYN',
     features: [
       'Unlimited age lock points',
       'Pause at any age you want',
@@ -29,10 +29,10 @@ export const TIME_REVERSAL_PRODUCTS = {
     description: 'Freeze time at your perfect age'
   },
   FUTURE_GLIMPSE: {
-    id: 'prod_future_glimpse', // Replace with actual Stripe product ID
+    id: 'prod_TMRnPTkfIFqUKR',
     name: 'Future Glimpse',
     price: '€2.99',
-    priceId: 'price_future_glimpse', // Replace with actual Stripe price ID
+    priceId: 'price_1SPitv0QTWhd4oRpT3MCvpTR',
     features: [
       'Preview any future age',
       'AI-generated future photos',

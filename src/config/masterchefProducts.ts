@@ -3,10 +3,10 @@
 
 export const MASTERCHEF_TIERS = {
   AMATEUR: {
-    id: 'prod_masterchef_amateur', // Replace with actual Stripe product ID
+    id: 'prod_TMRTqaG6dcQNVx',
     name: 'Amateur',
     price: '€19.99',
-    priceId: 'price_masterchef_amateur', // Replace with actual Stripe price ID
+    priceId: 'price_1SPiaUGaXSfGtYFtpV3Q8jjN',
     features: [
       '5 competitions per month',
       'Basic voting system',
@@ -17,10 +17,10 @@ export const MASTERCHEF_TIERS = {
     description: 'For beginners and enthusiasts'
   },
   PRO: {
-    id: 'prod_masterchef_pro', // Replace with actual Stripe product ID
+    id: 'prod_TMRTnRIoFKo2US',
     name: 'Pro',
     price: '€49.99',
-    priceId: 'price_masterchef_pro', // Replace with actual Stripe price ID
+    priceId: 'price_1SPiarGaXSfGtYFtBgTuCPiw',
     features: [
       'Unlimited competitions',
       'Live battles in real-time',
@@ -34,10 +34,10 @@ export const MASTERCHEF_TIERS = {
     popular: true
   },
   ELITE: {
-    id: 'prod_masterchef_elite', // Replace with actual Stripe product ID
+    id: 'prod_TMRUCoB3rBTawE',
     name: 'Elite',
     price: '€99.99',
-    priceId: 'price_masterchef_elite', // Replace with actual Stripe price ID
+    priceId: 'price_1SPibC0QTWhd4oRpJwaH5vZM',
     features: [
       'Everything from Pro tier',
       'Personal mentoring from professional chefs',

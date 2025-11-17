@@ -220,6 +220,7 @@ import MasterChefSubscription from "./pages/MasterChefSubscription";
 import MasterChefDashboard from "./pages/MasterChefDashboard";
 import MasterChefEarnings from "./pages/MasterChefEarnings";
 import TimeReversalSubscription from "./pages/TimeReversalSubscription";
+import TimeReversalDashboard from "./pages/TimeReversalDashboard";
 import TimeReversalTimeline from "./pages/TimeReversalTimeline";
 import TimeCapsuleSubscription from "./pages/TimeCapsuleSubscription";
 import TimeCapsule from "./pages/TimeCapsule";
@@ -504,6 +505,7 @@ const App = () => (
               <Route path="/masterchef/dashboard" element={<MasterChefDashboard />} />
               <Route path="/masterchef/earnings" element={<MasterChefEarnings />} />
               <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
+              <Route path="/time-reversal/dashboard" element={<TimeReversalDashboard />} />
               <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
               <Route path="/time-capsule-subscription" element={<TimeCapsuleSubscription />} />
               <Route path="/time-capsule" element={<TimeCapsule />} />
