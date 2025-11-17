@@ -24,6 +24,8 @@ interface Notification {
   repost_id?: string | null;
   related_id?: string | null;
   actor_id?: string;
+  title?: string | null;
+  message?: string | null;
   actor?: {
     id: string;
     full_name: string | null;
@@ -159,6 +161,8 @@ const NotificationBell = () => {
         return `${actorName} submitted a company verification request`;
       case "masterchef_payout":
         return "New MasterChef payout pending";
+      case "masterchef_withdrawal":
+        return notification.message || "New MasterChef withdrawal request";
       default:
         return `${actorName} interacted with your content`;
     }
@@ -184,6 +188,8 @@ const NotificationBell = () => {
         return "🏢";
       case "masterchef_payout":
         return "👨‍🍳";
+      case "masterchef_withdrawal":
+        return "💰";
       default:
         return "🔔";
     }
@@ -240,6 +246,8 @@ const NotificationBell = () => {
       navigate(`/admin/verifications`);
     } else if (notification.type === "masterchef_payout") {
       navigate(`/admin/masterchef-payouts`);
+    } else if (notification.type === "masterchef_withdrawal") {
+      navigate(`/admin/withdrawal-requests`);
     } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);
     }
