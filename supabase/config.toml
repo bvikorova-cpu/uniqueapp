@@ -452,3 +452,18 @@ verify_jwt = true
 
 [functions.process-withdrawal-request]
 verify_jwt = true
+
+[functions.verify-confession-payment]
+verify_jwt = true
+
+[functions.post-confession]
+verify_jwt = true
+
+[functions.vote-absolution]
+verify_jwt = true
+
+[functions.get-confessions]
+verify_jwt = false
+
+[functions.generate-redemption-plan]
+verify_jwt = true
