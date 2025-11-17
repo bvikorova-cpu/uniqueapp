@@ -9,6 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import PhobiaDetector from "@/components/phobia/PhobiaDetector";
 import PhobiaMarketplace from "@/components/phobia/PhobiaMarketplace";
 import PhobiaCureDashboard from "@/components/phobia/PhobiaCureDashboard";
+import MyPhobias from "@/components/phobia/MyPhobias";
 
 interface Service {
   id: string;
@@ -360,6 +361,67 @@ const PhobiaTrading = () => {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Functional Dashboard */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-7xl">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-400">
+              Your Phobia Management Hub
+            </span>
+          </h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg">
+            Detect, trade, and overcome your fears with AI-powered tools
+          </p>
+
+          <Tabs defaultValue="detect" className="w-full">
+            <TabsList className="grid w-full grid-cols-4 mb-8">
+              <TabsTrigger value="detect" className="text-base">
+                <Brain className="w-4 h-4 mr-2" />
+                Detect Phobia
+              </TabsTrigger>
+              <TabsTrigger value="my-phobias" className="text-base">
+                <Brain className="w-4 h-4 mr-2" />
+                My Phobias
+              </TabsTrigger>
+              <TabsTrigger value="marketplace" className="text-base">
+                <ShoppingCart className="w-4 h-4 mr-2" />
+                Marketplace
+              </TabsTrigger>
+              <TabsTrigger value="cure" className="text-base">
+                <HeartPulse className="w-4 h-4 mr-2" />
+                Cure Dashboard
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="detect">
+              <PhobiaDetector onPhobiaDetected={() => {
+                toast({
+                  title: "Phobia Added",
+                  description: "Your phobia has been saved to your profile",
+                });
+              }} />
+            </TabsContent>
+
+            <TabsContent value="my-phobias">
+              <MyPhobias onPhobiaListed={() => {
+                toast({
+                  title: "Phobia Listed",
+                  description: "Check the Marketplace tab to see your listing",
+                });
+              }} />
+            </TabsContent>
+
+            <TabsContent value="marketplace">
+              <PhobiaMarketplace />
+            </TabsContent>
+
+            <TabsContent value="cure">
+              <PhobiaCureDashboard />
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
