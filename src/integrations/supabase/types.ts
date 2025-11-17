@@ -19471,6 +19471,45 @@ export type Database = {
           },
         ]
       }
+      time_capsule_purchases: {
+        Row: {
+          created_at: string | null
+          duration_years: number | null
+          expires_at: string | null
+          id: string
+          service_type: string
+          status: string
+          stripe_session_id: string
+          stripe_subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          duration_years?: number | null
+          expires_at?: string | null
+          id?: string
+          service_type: string
+          status?: string
+          stripe_session_id: string
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          duration_years?: number | null
+          expires_at?: string | null
+          id?: string
+          service_type?: string
+          status?: string
+          stripe_session_id?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       time_capsule_subscriptions: {
         Row: {
           capsules_created: number | null
@@ -21804,7 +21843,7 @@ export type Database = {
         Returns: boolean
       }
       has_holographic_access: {
-        Args: { service_type_param: string; user_id_param: string }
+        Args: { p_service_type: string; p_user_id: string }
         Returns: boolean
       }
       has_multiverse_access: {
@@ -21824,6 +21863,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      has_time_capsule_access: {
+        Args: { p_service_type: string; p_user_id: string }
         Returns: boolean
       }
       increment_collection_pages: {
