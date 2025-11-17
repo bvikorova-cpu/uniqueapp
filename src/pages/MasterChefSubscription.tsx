@@ -111,7 +111,10 @@ export default function MasterChefSubscription() {
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 pt-24 pb-12">
         <div className="text-center mb-16">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-between items-center mb-4">
+            <Button variant="outline" onClick={() => navigate("/masterchef/competitions-public")}>
+              ← View Public Competitions
+            </Button>
             <Button variant="ghost" onClick={() => navigate("/masterchef/dashboard")}>
               Go to Dashboard →
             </Button>
@@ -124,9 +127,24 @@ export default function MasterChefSubscription() {
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 bg-clip-text text-transparent">
             MasterChef Platform
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
             Compete, vote, and become the king of the kitchen! Choose the package that suits you best.
           </p>
+          <Card className="max-w-2xl mx-auto bg-orange-500/10 border-orange-500/20">
+            <CardContent className="p-6 text-center">
+              <p className="text-lg text-foreground">
+                🍳 <strong>Free Access:</strong> You can view active competitions and vote for your favorites absolutely free! 
+                No subscription needed to be part of the action.
+              </p>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate("/masterchef/competitions-public")}
+                className="mt-4"
+              >
+                Browse Competitions & Vote Free
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
