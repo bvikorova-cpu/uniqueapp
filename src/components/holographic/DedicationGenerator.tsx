@@ -70,8 +70,13 @@ const DedicationGenerator = () => {
 
       toast({
         title: "Dedication Generated! 🎤",
-        description: "Your personalized dedication is ready",
+        description: "Your personalized dedication is ready. Check 'My Dedications' tab to view it!",
       });
+
+      // Reload dedications after 1 second
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
 
       setArtistName("");
       setRecipientName("");

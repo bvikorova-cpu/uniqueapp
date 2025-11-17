@@ -6,11 +6,14 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Music, Calendar, Clock, Play, Loader2, Ticket } from "lucide-react";
 import { format } from "date-fns";
+import ConcertPlayer from "./ConcertPlayer";
 
 const MyConcerts = () => {
   const [concerts, setConcerts] = useState<any[]>([]);
   const [tickets, setTickets] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedConcert, setSelectedConcert] = useState<any>(null);
+  const [playerOpen, setPlayerOpen] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -42,7 +45,31 @@ const MyConcerts = () => {
   const upcomingConcerts = concerts.filter(c => new Date(c.concert_date) > new Date());
   const myTickets = tickets.map(t => t.concert);
 
+  const handleWatchConcert = (concert: any) => {
+    const hasTicket = myTickets.find(t => t?.id === concert.id);
+    if (!hasTicket) {
+      toast({
+        title: "Ticket Required",
+        description: "Please purchase a ticket to watch this concert",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSelectedConcert(concert);
+    setPlayerOpen(true);
+  };
+
   return (
+    <>
+      <ConcertPlayer
+        concert={selectedConcert}
+        open={playerOpen}
+        onClose={() => {
+          setPlayerOpen(false);
+          setSelectedConcert(null);
+        }}
+      />
+      
     <div className="space-y-8">
       <Card className="border-purple-500/20 bg-gradient-to-br from-purple-950/10 to-background">
         <CardHeader>
@@ -92,6 +119,7 @@ const MyConcerts = () => {
 
                     <Button 
                       className="w-full bg-gradient-to-r from-purple-500 to-pink-500"
+                      onClick={() => handleWatchConcert(concert)}
                       disabled={!myTickets.find(t => t?.id === concert.id)}
                     >
                       <Play className="w-4 h-4 mr-2" />
@@ -139,6 +167,7 @@ const MyConcerts = () => {
         </Card>
       )}
     </div>
+    </>
   );
 };
 
