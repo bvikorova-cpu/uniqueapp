@@ -507,6 +507,9 @@ verify_jwt = false
 [functions.get-user-concerts]
 verify_jwt = true
 
+[functions.generate-artist-image]
+verify_jwt = false
+
 [functions.generate-ai-dedication]
 verify_jwt = true
 
