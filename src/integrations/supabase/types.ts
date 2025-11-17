@@ -232,6 +232,45 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_dedications: {
+        Row: {
+          artist_name: string
+          audio_url: string | null
+          created_at: string | null
+          dedication_text: string | null
+          id: string
+          message: string
+          recipient_name: string
+          status: string
+          user_id: string
+          video_url: string | null
+        }
+        Insert: {
+          artist_name: string
+          audio_url?: string | null
+          created_at?: string | null
+          dedication_text?: string | null
+          id?: string
+          message: string
+          recipient_name: string
+          status?: string
+          user_id: string
+          video_url?: string | null
+        }
+        Update: {
+          artist_name?: string
+          audio_url?: string | null
+          created_at?: string | null
+          dedication_text?: string | null
+          id?: string
+          message?: string
+          recipient_name?: string
+          status?: string
+          user_id?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
       ai_generated_content: {
         Row: {
           content_type: Database["public"]["Enums"]["content_type"]
@@ -4785,6 +4824,44 @@ export type Database = {
           },
         ]
       }
+      concert_recordings: {
+        Row: {
+          concert_id: string | null
+          duration_minutes: number | null
+          id: string
+          purchased_at: string | null
+          quality: string
+          recording_url: string
+          user_id: string
+        }
+        Insert: {
+          concert_id?: string | null
+          duration_minutes?: number | null
+          id?: string
+          purchased_at?: string | null
+          quality?: string
+          recording_url: string
+          user_id: string
+        }
+        Update: {
+          concert_id?: string | null
+          duration_minutes?: number | null
+          id?: string
+          purchased_at?: string | null
+          quality?: string
+          recording_url?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concert_recordings_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "holographic_concerts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       concert_ticket_purchases: {
         Row: {
           amount: number
@@ -4879,6 +4956,47 @@ export type Database = {
             columns: ["concert_id"]
             isOneToOne: false
             referencedRelation: "live_concert_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concert_tickets: {
+        Row: {
+          concert_id: string | null
+          id: string
+          purchase_date: string | null
+          qr_code: string | null
+          seat_number: string | null
+          ticket_type: string
+          used: boolean | null
+          user_id: string
+        }
+        Insert: {
+          concert_id?: string | null
+          id?: string
+          purchase_date?: string | null
+          qr_code?: string | null
+          seat_number?: string | null
+          ticket_type: string
+          used?: boolean | null
+          user_id: string
+        }
+        Update: {
+          concert_id?: string | null
+          id?: string
+          purchase_date?: string | null
+          qr_code?: string | null
+          seat_number?: string | null
+          ticket_type?: string
+          used?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concert_tickets_concert_id_fkey"
+            columns: ["concert_id"]
+            isOneToOne: false
+            referencedRelation: "holographic_concerts"
             referencedColumns: ["id"]
           },
         ]
@@ -9828,6 +9946,81 @@ export type Database = {
         }
         Relationships: []
       }
+      holographic_concerts: {
+        Row: {
+          artist_name: string
+          concert_date: string
+          created_at: string | null
+          description: string | null
+          duration_minutes: number
+          id: string
+          is_live: boolean | null
+          stream_url: string | null
+          thumbnail_url: string | null
+          title: string
+        }
+        Insert: {
+          artist_name: string
+          concert_date: string
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_live?: boolean | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title: string
+        }
+        Update: {
+          artist_name?: string
+          concert_date?: string
+          created_at?: string | null
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_live?: boolean | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      holographic_purchases: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          service_type: string
+          status: string
+          stripe_session_id: string
+          stripe_subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          service_type: string
+          status?: string
+          stripe_session_id: string
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          service_type?: string
+          status?: string
+          stripe_session_id?: string
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       home_decor_items: {
         Row: {
           category: string
@@ -12833,6 +13026,42 @@ export type Database = {
         }
         Relationships: []
       }
+      meet_greet_sessions: {
+        Row: {
+          artist_name: string
+          created_at: string | null
+          duration_minutes: number | null
+          id: string
+          meeting_url: string | null
+          scheduled_at: string
+          session_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          artist_name: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          meeting_url?: string | null
+          scheduled_at: string
+          session_type?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          artist_name?: string
+          created_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          meeting_url?: string | null
+          scheduled_at?: string
+          session_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       megatalent_referral_codes: {
         Row: {
           code: string
@@ -13432,6 +13661,42 @@ export type Database = {
           started_at?: string
           status?: string
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      merch_orders: {
+        Row: {
+          artist_name: string
+          created_at: string | null
+          id: string
+          items: Json
+          shipping_address: Json | null
+          status: string
+          total_amount: number
+          tracking_number: string | null
+          user_id: string
+        }
+        Insert: {
+          artist_name: string
+          created_at?: string | null
+          id?: string
+          items: Json
+          shipping_address?: Json | null
+          status?: string
+          total_amount: number
+          tracking_number?: string | null
+          user_id: string
+        }
+        Update: {
+          artist_name?: string
+          created_at?: string | null
+          id?: string
+          items?: Json
+          shipping_address?: Json | null
+          status?: string
+          total_amount?: number
+          tracking_number?: string | null
           user_id?: string
         }
         Relationships: []
@@ -21429,6 +21694,10 @@ export type Database = {
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
       has_confession_access: {
+        Args: { service_type_param: string; user_id_param: string }
+        Returns: boolean
+      }
+      has_holographic_access: {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean
       }
