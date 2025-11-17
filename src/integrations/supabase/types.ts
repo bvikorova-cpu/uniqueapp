@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      absolution_tokens: {
+        Row: {
+          created_at: string | null
+          id: string
+          tokens_purchased: number | null
+          tokens_remaining: number | null
+          tokens_used: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          tokens_purchased?: number | null
+          tokens_remaining?: number | null
+          tokens_used?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          tokens_purchased?: number | null
+          tokens_remaining?: number | null
+          tokens_used?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      absolution_votes: {
+        Row: {
+          confession_id: string
+          created_at: string | null
+          id: string
+          tokens_spent: number | null
+          vote_type: string
+          voter_id: string
+        }
+        Insert: {
+          confession_id: string
+          created_at?: string | null
+          id?: string
+          tokens_spent?: number | null
+          vote_type: string
+          voter_id: string
+        }
+        Update: {
+          confession_id?: string
+          created_at?: string | null
+          id?: string
+          tokens_spent?: number | null
+          vote_type?: string
+          voter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "absolution_votes_confession_id_fkey"
+            columns: ["confession_id"]
+            isOneToOne: false
+            referencedRelation: "confessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       achievements: {
         Row: {
           code: string
@@ -4776,6 +4841,90 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      confession_purchases: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          purchase_type: string
+          service_type: string
+          status: string
+          stripe_session_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          purchase_type: string
+          service_type: string
+          status?: string
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          purchase_type?: string
+          service_type?: string
+          status?: string
+          stripe_session_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      confessions: {
+        Row: {
+          absolution_tokens_used: number | null
+          absolution_votes: number | null
+          condemnation_votes: number | null
+          confession_text: string
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          severity_score: number | null
+          sin_category: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          absolution_tokens_used?: number | null
+          absolution_votes?: number | null
+          condemnation_votes?: number | null
+          confession_text: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          severity_score?: number | null
+          sin_category?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          absolution_tokens_used?: number | null
+          absolution_votes?: number | null
+          condemnation_votes?: number | null
+          confession_text?: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          severity_score?: number | null
+          sin_category?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       contact_messages: {
         Row: {
@@ -16493,6 +16642,56 @@ export type Database = {
         }
         Relationships: []
       }
+      redemption_progress: {
+        Row: {
+          certificate_earned: boolean | null
+          confession_id: string | null
+          counseling_sessions: Json | null
+          created_at: string | null
+          id: string
+          milestones_completed: number | null
+          progress_percentage: number | null
+          redemption_plan: Json | null
+          total_milestones: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          certificate_earned?: boolean | null
+          confession_id?: string | null
+          counseling_sessions?: Json | null
+          created_at?: string | null
+          id?: string
+          milestones_completed?: number | null
+          progress_percentage?: number | null
+          redemption_plan?: Json | null
+          total_milestones?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          certificate_earned?: boolean | null
+          confession_id?: string | null
+          counseling_sessions?: Json | null
+          created_at?: string | null
+          id?: string
+          milestones_completed?: number | null
+          progress_percentage?: number | null
+          redemption_plan?: Json | null
+          total_milestones?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "redemption_progress_confession_id_fkey"
+            columns: ["confession_id"]
+            isOneToOne: false
+            referencedRelation: "confessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reincarnation_plans: {
         Row: {
           created_at: string | null
@@ -20820,6 +21019,10 @@ export type Database = {
       generate_story_share_code: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
+      has_confession_access: {
+        Args: { service_type_param: string; user_id_param: string }
+        Returns: boolean
+      }
       has_reincarnation_access: {
         Args: { p_service_type: string; p_user_id: string }
         Returns: boolean

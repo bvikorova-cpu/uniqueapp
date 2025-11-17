@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Scale, Users, TrendingUp, Flame, Shield, Lock, Award, ChevronRight, Circle } from "lucide-react";
+import { Scale, Users, TrendingUp, Flame, Shield, Lock, Award, Loader2 } from "lucide-react";
+import { ConfessionWall } from "@/components/confessions/ConfessionWall";
+import { PostConfession } from "@/components/confessions/PostConfession";
+import { RedemptionDashboard } from "@/components/confessions/RedemptionDashboard";
 
 interface Service {
   id: string;
@@ -18,7 +23,42 @@ interface Service {
 
 const BlockchainConfessions = () => {
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState(false);
+
+  useEffect(() => {
+    const payment = searchParams.get("payment");
+    const sessionId = searchParams.get("session_id");
+    
+    if (payment === "success" && sessionId) {
+      verifyPayment(sessionId);
+    }
+  }, [searchParams]);
+
+  const verifyPayment = async (sessionId: string) => {
+    try {
+      setVerifying(true);
+      const { data, error } = await supabase.functions.invoke("verify-confession-payment", {
+        body: { sessionId },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Payment Successful!",
+        description: `${data.serviceType} activated`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Verification Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const services: Service[] = [
     {
@@ -120,10 +160,23 @@ const BlockchainConfessions = () => {
     }
   };
 
+  if (verifying) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="border-border/50">
+          <CardContent className="py-12 text-center">
+            <Loader2 className="h-10 w-10 mx-auto animate-spin text-primary mb-4" />
+            <p className="text-foreground">Verifying Payment...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-slate-900/10 to-background">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-24 px-4">
+      <section className="relative overflow-hidden py-24 px-4 bg-gradient-to-br from-background via-muted/20 to-background">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900/20 via-background to-background" />
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/20 rounded-full blur-3xl animate-pulse" />
