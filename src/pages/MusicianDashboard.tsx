@@ -19,6 +19,7 @@ import { Calendar, DollarSign, Music, Users, Video, TrendingUp } from "lucide-re
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { TicketPricingManager } from "@/components/musician/TicketPricingManager";
+import { EarningsDashboard } from "@/components/musician/EarningsDashboard";
 
 const MusicianDashboard = () => {
   const [profile, setProfile] = useState<any>(null);
@@ -64,7 +65,7 @@ const MusicianDashboard = () => {
       setProfile(musicianProfile);
     } catch (error: any) {
       console.error("Error loading profile:", error);
-      toast.error("Chyba pri načítaní profilu");
+      toast.error("Error loading profile");
     } finally {
       setLoading(false);
     }
@@ -231,10 +232,10 @@ const MusicianDashboard = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="stream_key">Stream Key (voliteľné)</Label>
+                  <Label htmlFor="stream_key">Stream Key (auto-generated)</Label>
                   <Input
                     id="stream_key"
-                    placeholder="Automaticky vygenerovaný"
+                    placeholder="Auto-generated if left empty"
                     value={concertForm.stream_key}
                     onChange={(e) => setConcertForm({ ...concertForm, stream_key: e.target.value })}
                   />
@@ -247,10 +248,10 @@ const MusicianDashboard = () => {
                     onClick={() => setConcertDialogOpen(false)}
                     className="flex-1"
                   >
-                    Zrušiť
+                    Cancel
                   </Button>
                   <Button type="submit" disabled={loading} className="flex-1">
-                    {loading ? "Vytváram..." : "Vytvoriť koncert"}
+                    {loading ? "Creating..." : "Schedule Concert"}
                   </Button>
                 </div>
               </form>
