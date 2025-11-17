@@ -498,6 +498,12 @@ verify_jwt = true
 [functions.find-best-self]
 verify_jwt = true
 
+[functions.check-holographic-access]
+verify_jwt = true
+
+[functions.create-holographic-avatar-checkout]
+verify_jwt = true
+
 [functions.create-holographic-concert-checkout]
 verify_jwt = true
 
@@ -505,6 +511,18 @@ verify_jwt = true
 verify_jwt = false
 
 [functions.get-user-concerts]
+verify_jwt = true
+
+[functions.check-time-capsule-access]
+verify_jwt = true
+
+[functions.create-time-capsule-checkout]
+verify_jwt = true
+
+[functions.create-time-capsule-payment]
+verify_jwt = true
+
+[functions.create-time-capsule-premium-subscription]
 verify_jwt = true
 
 [functions.generate-artist-image]
@@ -517,4 +535,13 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.get-user-universes]
+verify_jwt = true
+
+[functions.create-time-reversal-checkout]
+verify_jwt = true
+
+[functions.check-time-reversal-subscription]
+verify_jwt = true
+
+[functions.check-masterchef-subscription]
 verify_jwt = true
