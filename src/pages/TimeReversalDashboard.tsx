@@ -5,10 +5,24 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Zap, Lock, Eye, ArrowRight } from "lucide-react";
 import { TIME_REVERSAL_PRODUCTS, getTimeReversalProduct, hasTimeReversalFeature } from "@/config/timeReversalProducts";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function TimeReversalDashboard() {
   const { subscribed, activeFeatures, subscription_end, loading, refresh } = useTimeReversalSubscription();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!loading && (!subscribed || activeFeatures.length === 0)) {
+      toast({
+        title: "Subscription Required",
+        description: "You need an active Time Reversal subscription to access the dashboard",
+        variant: "destructive",
+      });
+      navigate("/time-reversal-subscription");
+    }
+  }, [loading, subscribed, activeFeatures, navigate, toast]);
 
   if (loading) {
     return (
@@ -19,23 +33,7 @@ export default function TimeReversalDashboard() {
   }
 
   if (!subscribed || activeFeatures.length === 0) {
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full">
-          <CardHeader>
-            <CardTitle>No Active Subscription</CardTitle>
-            <CardDescription>
-              Subscribe to access Time Reversal features
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button onClick={() => navigate('/time-reversal-subscription')} className="w-full">
-              View Subscription Plans
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return null; // Will redirect via useEffect
   }
 
   const hasTimeTravelSpeed = hasTimeReversalFeature(activeFeatures, TIME_REVERSAL_PRODUCTS.TIME_TRAVEL_SPEED.id);

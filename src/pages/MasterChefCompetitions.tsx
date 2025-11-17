@@ -6,15 +6,28 @@ import { Clock, Trophy, Users, ChefHat, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useMasterChefSubscription } from "@/hooks/useMasterChefSubscription";
 
 export default function MasterChefCompetitions() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { subscribed, loading: subscriptionLoading } = useMasterChefSubscription();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    if (!subscriptionLoading && !subscribed) {
+      toast({
+        title: "Subscription Required",
+        description: "You need an active MasterChef subscription to view competitions",
+        variant: "destructive",
+      });
+      navigate("/masterchef-subscription");
+    }
+  }, [subscribed, subscriptionLoading, navigate, toast]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -66,7 +79,7 @@ export default function MasterChefCompetitions() {
     },
   ];
 
-  if (loading) {
+  if (loading || subscriptionLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -75,6 +88,10 @@ export default function MasterChefCompetitions() {
         </div>
       </div>
     );
+  }
+
+  if (!subscribed) {
+    return null; // Will redirect via useEffect
   }
 
   return (
