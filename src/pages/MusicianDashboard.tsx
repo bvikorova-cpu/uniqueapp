@@ -259,30 +259,51 @@ const MusicianDashboard = () => {
           </Dialog>
         </div>
 
-        {/* Profile Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Môj profil</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-muted-foreground">Umelecké meno</Label>
-                <p className="text-lg font-medium">{profile?.stage_name}</p>
-              </div>
-              <div>
-                <Label className="text-muted-foreground">Žáner</Label>
-                <p className="text-lg font-medium">{profile?.genre}</p>
-              </div>
-            </div>
-            {profile?.bio && (
-              <div>
-                <Label className="text-muted-foreground">Bio</Label>
-                <p className="mt-1">{profile.bio}</p>
-              </div>
+        {/* Tabs for different sections */}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="earnings">Earnings</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-6">
+            {/* Profile Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle>My Profile</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-muted-foreground">Stage Name</Label>
+                    <p className="text-lg font-medium">{profile?.stage_name}</p>
+                  </div>
+                  <div>
+                    <Label className="text-muted-foreground">Genre</Label>
+                    <p className="text-lg font-medium">{profile?.genre}</p>
+                  </div>
+                </div>
+                {profile?.bio && (
+                  <div>
+                    <Label className="text-muted-foreground">Bio</Label>
+                    <p className="mt-1">{profile.bio}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="earnings">
+            {profile && (
+              <EarningsDashboard
+                musicianId={profile.id}
+                pendingBalance={profile.pending_balance || 0}
+                lifetimeEarnings={profile.lifetime_earnings || 0}
+                totalWithdrawn={profile.total_withdrawn || 0}
+              />
             )}
-          </CardContent>
-        </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
