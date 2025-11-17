@@ -163,6 +163,12 @@ const NotificationBell = () => {
         return "New MasterChef payout pending";
       case "masterchef_withdrawal":
         return notification.message || "New MasterChef withdrawal request";
+      case "musician_withdrawal":
+        return notification.message || "New Musician withdrawal request";
+      case "instructor_withdrawal":
+        return notification.message || "New Instructor withdrawal request";
+      case "campaign_withdrawal":
+        return notification.message || "New Campaign withdrawal request";
       default:
         return `${actorName} interacted with your content`;
     }
@@ -189,6 +195,9 @@ const NotificationBell = () => {
       case "masterchef_payout":
         return "👨‍🍳";
       case "masterchef_withdrawal":
+      case "musician_withdrawal":
+      case "instructor_withdrawal":
+      case "campaign_withdrawal":
         return "💰";
       default:
         return "🔔";
@@ -246,7 +255,12 @@ const NotificationBell = () => {
       navigate(`/admin/verifications`);
     } else if (notification.type === "masterchef_payout") {
       navigate(`/admin/masterchef-payouts`);
-    } else if (notification.type === "masterchef_withdrawal") {
+    } else if (
+      notification.type === "masterchef_withdrawal" ||
+      notification.type === "musician_withdrawal" ||
+      notification.type === "instructor_withdrawal" ||
+      notification.type === "campaign_withdrawal"
+    ) {
       navigate(`/admin/withdrawal-requests`);
     } else if (notification.post_id) {
       navigate(`/post/${notification.post_id}`);

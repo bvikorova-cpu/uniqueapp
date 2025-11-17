@@ -21906,6 +21906,63 @@ export type Database = {
         }
         Relationships: []
       }
+      withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          bank_account_name: string
+          bank_account_number: string
+          bank_name: string
+          campaign_id: string
+          campaign_type: string
+          created_at: string | null
+          creator_id: string
+          iban: string | null
+          id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          swift_code: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          bank_account_name: string
+          bank_account_number: string
+          bank_name: string
+          campaign_id: string
+          campaign_type: string
+          created_at?: string | null
+          creator_id: string
+          iban?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          swift_code?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          bank_account_name?: string
+          bank_account_number?: string
+          bank_name?: string
+          campaign_id?: string
+          campaign_type?: string
+          created_at?: string | null
+          creator_id?: string
+          iban?: string | null
+          id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          swift_code?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       workout_plans: {
         Row: {
           created_at: string
