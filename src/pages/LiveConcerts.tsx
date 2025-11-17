@@ -178,6 +178,148 @@ const LiveConcerts = () => {
           <div className="absolute -left-10 -bottom-10 w-64 h-64 bg-purple-300/10 rounded-full blur-3xl"></div>
         </div>
 
+        {/* How It Works Section */}
+        <Card className="border-2 bg-gradient-to-br from-primary/5 via-background to-purple-500/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3 text-2xl">
+              <Sparkles className="h-6 w-6 text-primary" />
+              How Live Concerts Work
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* For Fans */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  For Fans
+                </h3>
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">1</div>
+                    <div>
+                      <p className="font-semibold text-foreground">Browse Concerts</p>
+                      <p>Discover upcoming live concerts from talented musicians worldwide. Each concert features exclusive performances streamed in HD quality.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">2</div>
+                    <div>
+                      <p className="font-semibold text-foreground">Purchase Tickets</p>
+                      <p>Choose from different ticket tiers (Standard, VIP, Premium) with varying benefits. Secure checkout via Stripe with instant access.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">3</div>
+                    <div>
+                      <p className="font-semibold text-foreground">Watch & Interact</p>
+                      <p>Join the live stream when the concert starts. Experience real-time HLS streaming with adaptive quality for smooth playback.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">4</div>
+                    <div>
+                      <p className="font-semibold text-foreground">Send Virtual Gifts</p>
+                      <p>Show appreciation by sending virtual gifts (roses, hearts, diamonds, crowns) during the performance. 80% goes directly to the artist!</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* For Musicians */}
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-primary flex items-center gap-2">
+                  <Music className="h-5 w-5" />
+                  For Musicians
+                </h3>
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">1</div>
+                    <div>
+                      <p className="font-semibold text-foreground">Create Profile</p>
+                      <p>Register as a musician by providing your stage name, genre, bio, and photo. Instant approval to start streaming.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">2</div>
+                    <div>
+                      <p className="font-semibold text-foreground">Schedule Concerts</p>
+                      <p>Create concert events with custom ticket types and pricing. Set date, time, and stream details through your musician dashboard.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">3</div>
+                    <div>
+                      <p className="font-semibold text-foreground">Go Live</p>
+                      <p>Stream your performance using HLS technology. Your stream URL is automatically generated with adaptive bitrate for all viewers.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">4</div>
+                    <div>
+                      <p className="font-semibold text-foreground">Earn Revenue</p>
+                      <p>Keep up to 90% of ticket sales and 80% of virtual gifts. Track your earnings and analytics in real-time through the dashboard.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Key Features */}
+            <div className="pt-6 border-t">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Star className="h-5 w-5 text-primary" />
+                Key Features
+              </h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <Zap className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">HD Streaming</p>
+                    <p className="text-xs text-muted-foreground">HLS adaptive bitrate technology</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <DollarSign className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">Secure Payments</p>
+                    <p className="text-xs text-muted-foreground">Stripe integration for safety</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <MessageCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">Real-Time Chat</p>
+                    <p className="text-xs text-muted-foreground">Interact with fans instantly</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
+                  <TrendingUp className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm">Analytics</p>
+                    <p className="text-xs text-muted-foreground">Track earnings & engagement</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Call to Action */}
+            <div className="bg-primary/10 rounded-lg p-6 text-center">
+              <h4 className="text-lg font-semibold mb-2">Ready to Get Started?</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Whether you're a fan looking for exclusive content or a musician ready to perform, join our platform today!
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <Button variant="default" size="lg" className="gap-2">
+                  <Ticket className="h-5 w-5" />
+                  Browse Concerts
+                </Button>
+                <MusicianRegistration />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Tabs defaultValue="concerts" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 lg:w-auto">
             <TabsTrigger value="concerts" className="gap-2">
