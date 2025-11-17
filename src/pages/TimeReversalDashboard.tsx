@@ -43,21 +43,25 @@ export default function TimeReversalDashboard() {
   const hasFutureGlimpse = hasTimeReversalFeature(activeFeatures, TIME_REVERSAL_PRODUCTS.FUTURE_GLIMPSE.id);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
-            Time Reversal Dashboard
-          </h1>
-          <p className="text-muted-foreground">
-            Manage your time manipulation abilities
-          </p>
-          {subscription_end && (
-            <Badge variant="secondary" className="text-sm">
-              Active until {new Date(subscription_end).toLocaleDateString()}
-            </Badge>
-          )}
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
+              Time Reversal Dashboard
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Manage your time manipulation abilities
+            </p>
+            {subscription_end && (
+              <Badge variant="secondary" className="text-sm mt-2">
+                Active until {new Date(subscription_end).toLocaleDateString()}
+              </Badge>
+            )}
+          </div>
+          <Button variant="outline" onClick={() => navigate("/time-reversal-subscription")}>
+            Manage Subscription
+          </Button>
         </div>
 
         {/* Active Features */}
