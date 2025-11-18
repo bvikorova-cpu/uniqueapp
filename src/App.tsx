@@ -42,6 +42,7 @@ import AdminCorporateInquiries from "./pages/AdminCorporateInquiries";
 import AdminTipsters from "./pages/AdminTipsters";
 import AdminMasterChefPayouts from "./pages/AdminMasterChefPayouts";
 import AdminInfluencerPayouts from "./pages/AdminInfluencerPayouts";
+import AdminPlatformEarnings from "./pages/AdminPlatformEarnings";
 import Bazaar from "./pages/Bazaar";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
@@ -482,6 +483,7 @@ const App = () => (
           <Route path="/instructor-earnings" element={<InstructorEarnings />} />
           <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
           <Route path="/admin/influencer-payouts" element={<AdminInfluencerPayouts />} />
+          <Route path="/admin/platform-earnings" element={<AdminPlatformEarnings />} />
           <Route path="/my-learning" element={<Navigate to="/courses?tab=learning" replace />} />
           <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
