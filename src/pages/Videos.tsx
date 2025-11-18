@@ -209,7 +209,7 @@ export default function Videos() {
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="video-file">Video súbor</Label>
+                  <Label htmlFor="video-file">Video File</Label>
                   <Input
                     id="video-file"
                     type="file"
@@ -218,43 +218,17 @@ export default function Videos() {
                     disabled={uploading}
                   />
                   {selectedFile && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {selectedFile.name}
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Selected: {selectedFile.name}
                     </p>
                   )}
                 </div>
+
                 <div>
-                  <Label htmlFor="title">Názov</Label>
-                  <Input
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Zadajte názov videa"
-                    disabled={uploading}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="description">Popis</Label>
-                  <Textarea
-                    id="description"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Pridajte popis..."
-                    disabled={uploading}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="audio">
-                    <Music className="inline mr-2 h-4 w-4" />
-                    Pridať audio stopu (voliteľné)
-                  </Label>
-                  <Select
-                    value={selectedAudioTrack}
-                    onValueChange={setSelectedAudioTrack}
-                    disabled={uploading}
-                  >
+                  <Label htmlFor="audio-track">Audio Track (Optional)</Label>
+                  <Select value={selectedAudioTrack} onValueChange={setSelectedAudioTrack} disabled={uploading}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Vyberte audio stopu..." />
+                      <SelectValue placeholder="Select audio track" />
                     </SelectTrigger>
                     <SelectContent>
                       {popularAudioTracks.map((track) => (
@@ -264,22 +238,19 @@ export default function Videos() {
                       ))}
                     </SelectContent>
                   </Select>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Môžete pridať populárnu pesničku alebo zvuk k vášmu videu
-                  </p>
                 </div>
-                <Button
-                  onClick={handleUpload}
-                  disabled={uploading || !selectedFile || !title}
-                  className="w-full"
-                >
+
+                <Button onClick={handleUpload} disabled={uploading || !selectedFile} className="w-full">
                   {uploading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Nahrávam...
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Uploading...
                     </>
                   ) : (
-                    "Nahrať video"
+                    <>
+                      <Upload className="w-4 h-4 mr-2" />
+                      Upload Video
+                    </>
                   )}
                 </Button>
               </div>
