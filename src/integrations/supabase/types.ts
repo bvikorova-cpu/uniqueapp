@@ -21246,6 +21246,38 @@ export type Database = {
           },
         ]
       }
+      video_views: {
+        Row: {
+          id: string
+          ip_address: string | null
+          user_id: string | null
+          video_id: string
+          viewed_at: string | null
+        }
+        Insert: {
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+          video_id: string
+          viewed_at?: string | null
+        }
+        Update: {
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+          video_id?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_views_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       videos: {
         Row: {
           audio_track_name: string | null
