@@ -41,8 +41,6 @@ export default function Videos() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedAudioTrack, setSelectedAudioTrack] = useState<string>("");
   const { toast } = useToast();
@@ -76,8 +74,8 @@ export default function Videos() {
         setSelectedFile(file);
       } else {
         toast({
-          title: "Neplatný súbor",
-          description: "Prosím vyberte video súbor",
+          title: "Invalid file",
+          description: "Please select a video file",
           variant: "destructive",
         });
       }
@@ -85,10 +83,10 @@ export default function Videos() {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile || !title) {
+    if (!selectedFile) {
       toast({
-        title: "Chýbajúce údaje",
-        description: "Prosím vyplňte názov a vyberte video",
+        title: "Missing file",
+        description: "Please select a video",
         variant: "destructive",
       });
       return;
@@ -97,8 +95,8 @@ export default function Videos() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast({
-        title: "Nie ste prihlásený",
-        description: "Musíte byť prihlásený na nahrávanie videí",
+        title: "Not logged in",
+        description: "You must be logged in to upload videos",
         variant: "destructive",
       });
       return;
@@ -125,8 +123,6 @@ export default function Videos() {
         .from("videos")
         .insert({
           user_id: user.id,
-          title,
-          description,
           video_url: publicUrl,
           audio_track: selectedAudioTrack || null,
           is_active: true,
@@ -135,19 +131,17 @@ export default function Videos() {
       if (insertError) throw insertError;
 
       toast({
-        title: "Video nahrané!",
-        description: "Vaše video bolo úspešne nahrané",
+        title: "Video uploaded!",
+        description: "Your video has been uploaded successfully",
       });
 
       setUploadDialogOpen(false);
-      setTitle("");
-      setDescription("");
       setSelectedFile(null);
       setSelectedAudioTrack("");
       fetchVideos();
     } catch (error: any) {
       toast({
-        title: "Chyba pri nahrávaní",
+        title: "Upload error",
         description: error.message,
         variant: "destructive",
       });
