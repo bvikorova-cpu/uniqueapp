@@ -196,7 +196,7 @@ const F1Racing = () => {
             className="fixed inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: `url(${backgroundImage})`,
-              filter: 'blur(8px) brightness(0.9)',
+              filter: 'blur(8px) brightness(1.3)',
               transform: 'scale(1.1)',
             }}
           />
@@ -215,7 +215,7 @@ const F1Racing = () => {
             className="fixed inset-0 bg-cover bg-center bg-no-repeat"
             style={{
               backgroundImage: `url(${backgroundImage})`,
-              filter: 'blur(8px) brightness(0.9)',
+              filter: 'blur(8px) brightness(1.3)',
               transform: 'scale(1.1)',
             }}
           />
@@ -249,7 +249,7 @@ const F1Racing = () => {
           className="fixed inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: `url(${backgroundImage})`,
-            filter: 'blur(8px) brightness(0.9)',
+            filter: 'blur(8px) brightness(1.3)',
             transform: 'scale(1.1)',
           }}
         />
