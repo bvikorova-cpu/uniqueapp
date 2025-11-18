@@ -41,6 +41,7 @@ import AdminTransactions from "./pages/AdminTransactions";
 import AdminCorporateInquiries from "./pages/AdminCorporateInquiries";
 import AdminTipsters from "./pages/AdminTipsters";
 import AdminMasterChefPayouts from "./pages/AdminMasterChefPayouts";
+import AdminInfluencerPayouts from "./pages/AdminInfluencerPayouts";
 import Bazaar from "./pages/Bazaar";
 import Auction from "./pages/Auction";
 import AIGeneration from "./pages/AIGeneration";
@@ -223,6 +224,7 @@ import MasterChefDashboard from "./pages/MasterChefDashboard";
 import MasterChefCompetitions from "./pages/MasterChefCompetitions";
 import MasterChefCompetitionsGallery from "./pages/MasterChefCompetitionsGallery";
 import MasterChefEarnings from "./pages/MasterChefEarnings";
+import InfluencerEarnings from "./pages/InfluencerEarnings";
 import TimeReversalSubscription from "./pages/TimeReversalSubscription";
 import TimeReversalDashboard from "./pages/TimeReversalDashboard";
 import TimeReversalTimeline from "./pages/TimeReversalTimeline";
@@ -479,6 +481,7 @@ const App = () => (
           <Route path="/become-creator" element={<BecomeCreator />} />
           <Route path="/instructor-earnings" element={<InstructorEarnings />} />
           <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
+          <Route path="/admin/influencer-payouts" element={<AdminInfluencerPayouts />} />
           <Route path="/my-learning" element={<Navigate to="/courses?tab=learning" replace />} />
           <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
@@ -513,6 +516,7 @@ const App = () => (
               <Route path="/masterchef/dashboard" element={<MasterChefDashboard />} />
               <Route path="/masterchef/competitions" element={<MasterChefCompetitions />} />
               <Route path="/masterchef/earnings" element={<MasterChefEarnings />} />
+              <Route path="/influencer/earnings" element={<InfluencerEarnings />} />
               <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
               <Route path="/time-reversal/dashboard" element={<TimeReversalDashboard />} />
               <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />

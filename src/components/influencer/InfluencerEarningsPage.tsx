@@ -20,11 +20,11 @@ interface GiftEarning {
   chef_amount: number;
   platform_commission: number;
   created_at: string;
-  message: string;
+  message: string | null;
   influencer_gifts: {
     name: string;
     icon: string;
-  };
+  } | null;
 }
 
 export const InfluencerEarningsPage = () => {

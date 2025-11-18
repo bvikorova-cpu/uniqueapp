@@ -10488,7 +10488,7 @@ export type Database = {
           {
             foreignKeyName: "influencer_platform_earnings_gift_id_fkey"
             columns: ["gift_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "influencer_sent_gifts"
             referencedColumns: ["id"]
           },
