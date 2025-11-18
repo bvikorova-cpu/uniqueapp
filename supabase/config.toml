@@ -81,6 +81,9 @@ verify_jwt = false
 [functions.convert-to-mp3]
 verify_jwt = false
 
+[functions.mix-video-audio]
+verify_jwt = false
+
 [functions.verify-payment]
 verify_jwt = false
 
