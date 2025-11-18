@@ -58,7 +58,7 @@ const Home = () => {
 
   const services = [
     { name: "Wall", path: "/wall", keywords: ["wall", "posts", "sharing", "social network"] },
-    { name: "Videá", path: "/tiktok", keywords: ["videá", "tiktok", "krátke videá"] },
+    { name: "Videá", path: "/videos", keywords: ["videá", "videos", "krátke videá"] },
     { name: "Messenger", path: "/messenger", keywords: ["messenger", "chat", "správy", "komunikácia"] },
     { name: "Megatalent", path: "/megatalent", keywords: ["megatalent", "súťaž", "talent", "výhra"] },
     { name: "Megaforum", path: "/megaforum", keywords: ["megaforum", "diskusia", "fórum"] },
@@ -284,7 +284,7 @@ const Home = () => {
               </Card>
             </Link>
 
-            <Link to="/tiktok">
+            <Link to="/videos">
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
                   <Video className="h-12 w-12 text-accent mx-auto mb-4" />
