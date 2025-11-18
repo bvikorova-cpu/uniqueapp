@@ -9,6 +9,7 @@ import { ArrowLeft, Trophy, Zap, Users, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import f1Background from "@/assets/f1-racing-background.jpg";
 
 // 3D F1 Car Component
 function F1Car({ position, color }: { position: [number, number, number]; color: string }) {
@@ -112,7 +113,7 @@ const F1Racing = () => {
   const [loading, setLoading] = useState(true);
   const [isRacing, setIsRacing] = useState(false);
   const [raceProgress, setRaceProgress] = useState(0);
-  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const backgroundImage = f1Background;
   const [position, setPosition] = useState(1);
 
   const cars = [
@@ -124,25 +125,7 @@ const F1Racing = () => {
 
   useEffect(() => {
     checkSubscription();
-    generateBackground();
   }, []);
-
-  const generateBackground = async () => {
-    try {
-      console.log("Generating F1 background...");
-      const { data, error } = await supabase.functions.invoke("generate-f1-background");
-      
-      if (error) throw error;
-      
-      if (data?.image) {
-        setBackgroundImage(data.image);
-        console.log("Background generated successfully");
-      }
-    } catch (error) {
-      console.error("Error generating background:", error);
-      toast.error("Failed to load background image");
-    }
-  };
 
   const checkSubscription = async () => {
     try {
