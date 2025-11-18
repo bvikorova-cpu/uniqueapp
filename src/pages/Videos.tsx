@@ -40,9 +40,7 @@ export default function Videos() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedAudioTrack, setSelectedAudioTrack] = useState<string>("");
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -67,11 +65,13 @@ export default function Videos() {
     setLoading(false);
   };
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.type.startsWith("video/")) {
         setSelectedFile(file);
+        // Auto-upload when file is selected
+        await handleUploadFile(file);
       } else {
         toast({
           title: "Invalid file",
@@ -82,16 +82,7 @@ export default function Videos() {
     }
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      toast({
-        title: "Missing file",
-        description: "Please select a video",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleUploadFile = async (file: File) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       toast({
@@ -106,11 +97,11 @@ export default function Videos() {
 
     try {
       // Upload video
-      const fileExt = selectedFile.name.split(".").pop();
+      const fileExt = file.name.split(".").pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("videos")
-        .upload(fileName, selectedFile);
+        .upload(fileName, file);
 
       if (uploadError) throw uploadError;
 
@@ -124,7 +115,6 @@ export default function Videos() {
         .insert({
           user_id: user.id,
           video_url: publicUrl,
-          audio_track: selectedAudioTrack || null,
           is_active: true,
         });
 
@@ -135,9 +125,7 @@ export default function Videos() {
         description: "Your video has been uploaded successfully",
       });
 
-      setUploadDialogOpen(false);
       setSelectedFile(null);
-      setSelectedAudioTrack("");
       fetchVideos();
     } catch (error: any) {
       toast({
@@ -160,7 +148,7 @@ export default function Videos() {
 
     if (!error) {
       fetchVideos();
-      toast({ title: "Video sa páči!" });
+      toast({ title: "Liked!" });
     }
   };
 
@@ -173,14 +161,14 @@ export default function Videos() {
       .insert({ video_id: videoId, user_id: user.id });
 
     if (!error) {
-      toast({ title: "Video uložené!" });
+      toast({ title: "Video saved!" });
     }
   };
 
   const handleShare = (video: Video) => {
     const shareUrl = `${window.location.origin}/videos/${video.id}`;
     navigator.clipboard.writeText(shareUrl);
-    toast({ title: "Odkaz skopírovaný!" });
+    toast({ title: "Link copied!" });
   };
 
   if (loading) {
@@ -192,70 +180,10 @@ export default function Videos() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       <div className="container max-w-6xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Videá</h1>
-          <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Upload className="mr-2 h-4 w-4" />
-                Nahrať video
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-md">
-              <DialogHeader>
-                <DialogTitle>Nahrať nové video</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="video-file">Video File</Label>
-                  <Input
-                    id="video-file"
-                    type="file"
-                    accept="video/*"
-                    onChange={handleFileSelect}
-                    disabled={uploading}
-                  />
-                  {selectedFile && (
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Selected: {selectedFile.name}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="audio-track">Audio Track (Optional)</Label>
-                  <Select value={selectedAudioTrack} onValueChange={setSelectedAudioTrack} disabled={uploading}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select audio track" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {popularAudioTracks.map((track) => (
-                        <SelectItem key={track.id} value={track.id}>
-                          {track.name} - {track.artist}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Button onClick={handleUpload} disabled={uploading || !selectedFile} className="w-full">
-                  {uploading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Uploading...
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="w-4 h-4 mr-2" />
-                      Upload Video
-                    </>
-                  )}
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold">Videos</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -283,7 +211,7 @@ export default function Videos() {
                       className="w-8 h-8 rounded-full"
                     />
                     <span className="text-white font-semibold text-sm">
-                      {video.profiles.username || "Používateľ"}
+                      {video.profiles.username || "User"}
                     </span>
                   </div>
                   <p className="text-white text-sm font-medium mb-1">
@@ -346,13 +274,38 @@ export default function Videos() {
 
         {videos.length === 0 && (
           <Card className="p-12 text-center">
-            <p className="text-muted-foreground mb-4">Zatiaľ tu nie sú žiadne videá</p>
-            <Button onClick={() => setUploadDialogOpen(true)}>
-              <Upload className="mr-2 h-4 w-4" />
-              Nahrať prvé video
-            </Button>
+            <p className="text-muted-foreground mb-4">No videos yet</p>
+            <p className="text-sm text-muted-foreground">Click the upload button to add your first video</p>
           </Card>
         )}
+      </div>
+
+      {/* Floating upload button */}
+      <div className="fixed bottom-8 right-8">
+        <input
+          type="file"
+          id="video-upload"
+          accept="video/*"
+          className="hidden"
+          onChange={handleFileSelect}
+          disabled={uploading}
+        />
+        <label htmlFor="video-upload">
+          <Button
+            size="lg"
+            className="rounded-full h-16 w-16 shadow-lg"
+            disabled={uploading}
+            asChild
+          >
+            <span className="cursor-pointer">
+              {uploading ? (
+                <Loader2 className="h-6 w-6 animate-spin" />
+              ) : (
+                <Upload className="h-6 w-6" />
+              )}
+            </span>
+          </Button>
+        </label>
       </div>
     </div>
   );
