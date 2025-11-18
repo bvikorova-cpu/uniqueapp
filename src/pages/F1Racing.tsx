@@ -112,6 +112,7 @@ const F1Racing = () => {
   const [loading, setLoading] = useState(true);
   const [isRacing, setIsRacing] = useState(false);
   const [raceProgress, setRaceProgress] = useState(0);
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [position, setPosition] = useState(1);
 
   const cars = [
@@ -123,7 +124,25 @@ const F1Racing = () => {
 
   useEffect(() => {
     checkSubscription();
+    generateBackground();
   }, []);
+
+  const generateBackground = async () => {
+    try {
+      console.log("Generating F1 background...");
+      const { data, error } = await supabase.functions.invoke("generate-f1-background");
+      
+      if (error) throw error;
+      
+      if (data?.image) {
+        setBackgroundImage(data.image);
+        console.log("Background generated successfully");
+      }
+    } catch (error) {
+      console.error("Error generating background:", error);
+      toast.error("Failed to load background image");
+    }
+  };
 
   const checkSubscription = async () => {
     try {
@@ -188,11 +207,18 @@ const F1Racing = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-zinc-950 via-red-950/40 to-black flex items-center justify-center">
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px), repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)`
-        }} />
-        <div className="absolute -top-1/2 -left-1/4 w-[600px] h-[600px] bg-red-600/20 rounded-full blur-[120px] animate-pulse" />
+      <div className="min-h-screen relative overflow-hidden bg-black flex items-center justify-center">
+        {backgroundImage && (
+          <div 
+            className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              filter: 'blur(8px) brightness(0.5)',
+              transform: 'scale(1.1)',
+            }}
+          />
+        )}
+        <div className="fixed inset-0 bg-black/50" />
         <div className="text-white text-2xl z-10">Loading...</div>
       </div>
     );
@@ -201,17 +227,17 @@ const F1Racing = () => {
   if (!isSubscribed) {
     return (
       <div className="min-h-screen relative overflow-hidden p-4 flex items-center justify-center">
-        <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-red-950/40 to-black" />
-        <div className="absolute inset-0 opacity-10" style={{
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px), repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)`
-        }} />
-        <div className="fixed inset-0 opacity-30">
-          <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-red-500 to-transparent animate-pulse" />
-          <div className="absolute top-1/3 right-0 w-3/4 h-0.5 bg-gradient-to-l from-transparent via-amber-500 to-transparent animate-pulse" style={{ animationDelay: '0.3s' }} />
-          <div className="absolute bottom-1/3 left-0 w-4/5 h-0.5 bg-gradient-to-r from-transparent via-red-600 to-transparent animate-pulse" style={{ animationDelay: '0.6s' }} />
-        </div>
-        <div className="absolute -top-1/2 -left-1/4 w-[600px] h-[600px] bg-red-600/20 rounded-full blur-[120px] animate-float" />
-        <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-amber-600/20 rounded-full blur-[100px] animate-float" style={{ animationDelay: '2s' }} />
+        {backgroundImage && (
+          <div 
+            className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `url(${backgroundImage})`,
+              filter: 'blur(8px) brightness(0.5)',
+              transform: 'scale(1.1)',
+            }}
+          />
+        )}
+        <div className="fixed inset-0 bg-black/50" />
         <Card className="max-w-2xl border-4 border-red-500 bg-black/80 text-white z-10 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-4xl text-center text-red-500">
@@ -234,13 +260,25 @@ const F1Racing = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden p-4">
-      {/* Luxurious Animated Background */}
-      <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-red-950/40 to-black" />
+      {/* AI Generated F1 Background */}
+      {backgroundImage && (
+        <div 
+          className="fixed inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: `url(${backgroundImage})`,
+            filter: 'blur(8px) brightness(0.6)',
+            transform: 'scale(1.1)',
+          }}
+        />
+      )}
       
-      {/* Carbon Fiber Texture */}
-      <div className="fixed inset-0 opacity-10" style={{
-        backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px), repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px)`
-      }} />
+      {/* Fallback Gradient Background */}
+      {!backgroundImage && (
+        <div className="fixed inset-0 bg-gradient-to-br from-zinc-950 via-red-950/40 to-black" />
+      )}
+      
+      {/* Dark Overlay for better text readability */}
+      <div className="fixed inset-0 bg-black/40" />
       
       {/* Dynamic Racing Track Lines */}
       <div className="fixed inset-0 opacity-30">
@@ -249,13 +287,6 @@ const F1Racing = () => {
         <div className="absolute top-1/2 left-0 w-4/5 h-0.5 bg-gradient-to-r from-transparent via-red-600 to-transparent animate-pulse" style={{ animationDelay: '0.6s' }} />
         <div className="absolute top-3/4 right-0 w-2/3 h-0.5 bg-gradient-to-l from-transparent via-amber-600 to-transparent animate-pulse" style={{ animationDelay: '0.9s' }} />
         <div className="absolute bottom-10 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-red-500 to-transparent animate-pulse" style={{ animationDelay: '1.2s' }} />
-      </div>
-
-      {/* Premium Glowing Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -left-1/4 w-[600px] h-[600px] bg-red-600/20 rounded-full blur-[120px] animate-float" />
-        <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-amber-600/20 rounded-full blur-[100px] animate-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute -bottom-1/3 left-1/3 w-[700px] h-[700px] bg-red-700/15 rounded-full blur-[140px] animate-float" style={{ animationDelay: '4s' }} />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
