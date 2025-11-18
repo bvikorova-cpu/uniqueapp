@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Play, Heart, MessageCircle, Share2, Bookmark, Upload, Music, Loader2, Eye } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { Loader2, Upload } from "lucide-react";
+import { VideoPlayer } from "@/components/videos/VideoPlayer";
+import { VideoUpload } from "@/components/videos/VideoUpload";
 
 interface Video {
   id: string;
   title: string | null;
   video_url: string;
   thumbnail_url: string | null;
-  audio_track: string | null;
   views_count: number;
   likes_count: number;
   comments_count: number;
@@ -25,27 +18,35 @@ interface Video {
   profiles: {
     username: string | null;
     avatar_url: string | null;
+    full_name: string | null;
   };
 }
-
-const popularAudioTracks = [
-  { id: "track1", name: "Summer Vibes", artist: "DJ Cool" },
-  { id: "track2", name: "Chill Beats", artist: "Lo-Fi Master" },
-  { id: "track3", name: "Dance Energy", artist: "EDM King" },
-  { id: "track4", name: "Acoustic Dreams", artist: "Guitar Soul" },
-  { id: "track5", name: "Hip Hop Flow", artist: "Rap Star" },
-];
 
 export default function Videos() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchVideos();
+
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel('videos-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'videos'
+        },
+        () => fetchVideos()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchVideos = async () => {
@@ -53,7 +54,7 @@ export default function Videos() {
       .from("videos")
       .select(`
         *,
-        profiles (username, avatar_url)
+        profiles (username, avatar_url, full_name)
       `)
       .eq("is_active", true)
       .order("created_at", { ascending: false })
@@ -63,112 +64,6 @@ export default function Videos() {
       setVideos(data as any);
     }
     setLoading(false);
-  };
-
-  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.type.startsWith("video/")) {
-        setSelectedFile(file);
-        // Auto-upload when file is selected
-        await handleUploadFile(file);
-      } else {
-        toast({
-          title: "Invalid file",
-          description: "Please select a video file",
-          variant: "destructive",
-        });
-      }
-    }
-  };
-
-  const handleUploadFile = async (file: File) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast({
-        title: "Not logged in",
-        description: "You must be logged in to upload videos",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setUploading(true);
-
-    try {
-      // Upload video
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-      const { error: uploadError } = await supabase.storage
-        .from("videos")
-        .upload(fileName, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from("videos")
-        .getPublicUrl(fileName);
-
-      // Insert video record
-      const { error: insertError } = await supabase
-        .from("videos")
-        .insert({
-          user_id: user.id,
-          video_url: publicUrl,
-          is_active: true,
-        });
-
-      if (insertError) throw insertError;
-
-      toast({
-        title: "Video uploaded!",
-        description: "Your video has been uploaded successfully",
-      });
-
-      setSelectedFile(null);
-      fetchVideos();
-    } catch (error: any) {
-      toast({
-        title: "Upload error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleLike = async (videoId: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase
-      .from("video_likes")
-      .insert({ video_id: videoId, user_id: user.id });
-
-    if (!error) {
-      fetchVideos();
-      toast({ title: "Liked!" });
-    }
-  };
-
-  const handleSave = async (videoId: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase
-      .from("saved_videos")
-      .insert({ video_id: videoId, user_id: user.id });
-
-    if (!error) {
-      toast({ title: "Video saved!" });
-    }
-  };
-
-  const handleShare = (video: Video) => {
-    const shareUrl = `${window.location.origin}/videos/${video.id}`;
-    navigator.clipboard.writeText(shareUrl);
-    toast({ title: "Link copied!" });
   };
 
   if (loading) {
