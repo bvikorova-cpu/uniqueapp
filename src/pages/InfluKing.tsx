@@ -83,6 +83,9 @@ const InfluKing = () => {
     twitter: "",
   });
 
+  const [uploadingProfilePhoto, setUploadingProfilePhoto] = useState(false);
+  const [uploadingCoverPhoto, setUploadingCoverPhoto] = useState(false);
+
   const [newPost, setNewPost] = useState({
     title: "",
     content: "",
@@ -261,6 +264,96 @@ const InfluKing = () => {
       return null;
     } finally {
       setUploadingMedia(false);
+    }
+  };
+
+  // Upload profile photo
+  const handleProfilePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file",
+        description: "Please upload an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingProfilePhoto(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user!.id}/profile-${Date.now()}.${fileExt}`;
+      
+      const { error } = await supabase.storage
+        .from('media')
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('media')
+        .getPublicUrl(fileName);
+
+      setNewProfile({ ...newProfile, profile_photo_url: publicUrl });
+      toast({
+        title: "Photo Uploaded",
+        description: "Profile photo has been uploaded",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingProfilePhoto(false);
+    }
+  };
+
+  // Upload cover photo
+  const handleCoverPhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file",
+        description: "Please upload an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingCoverPhoto(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user!.id}/cover-${Date.now()}.${fileExt}`;
+      
+      const { error } = await supabase.storage
+        .from('media')
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('media')
+        .getPublicUrl(fileName);
+
+      setNewProfile({ ...newProfile, cover_photo_url: publicUrl });
+      toast({
+        title: "Photo Uploaded",
+        description: "Cover photo has been uploaded",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Upload Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingCoverPhoto(false);
     }
   };
 
@@ -668,19 +761,67 @@ const InfluKing = () => {
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <Label htmlFor="profile-photo">Profile Photo URL</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="profile-photo">Profile Photo</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="profile-photo"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleProfilePhotoUpload}
+                        disabled={uploadingProfilePhoto}
+                        className="flex-1"
+                      />
+                      {uploadingProfilePhoto && (
+                        <div className="flex items-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                        </div>
+                      )}
+                    </div>
+                    {newProfile.profile_photo_url && (
+                      <div className="mt-2">
+                        <img 
+                          src={newProfile.profile_photo_url} 
+                          alt="Profile preview" 
+                          className="w-20 h-20 object-cover rounded-full border-2 border-border"
+                        />
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground">Or enter URL:</p>
                     <Input
-                      id="profile-photo"
                       value={newProfile.profile_photo_url}
                       onChange={(e) => setNewProfile({ ...newProfile, profile_photo_url: e.target.value })}
                       placeholder="https://..."
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="cover-photo">Cover Photo URL</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="cover-photo">Cover Photo</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="cover-photo"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleCoverPhotoUpload}
+                        disabled={uploadingCoverPhoto}
+                        className="flex-1"
+                      />
+                      {uploadingCoverPhoto && (
+                        <div className="flex items-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary"></div>
+                        </div>
+                      )}
+                    </div>
+                    {newProfile.cover_photo_url && (
+                      <div className="mt-2">
+                        <img 
+                          src={newProfile.cover_photo_url} 
+                          alt="Cover preview" 
+                          className="w-full h-32 object-cover rounded-lg border-2 border-border"
+                        />
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground">Or enter URL:</p>
                     <Input
-                      id="cover-photo"
                       value={newProfile.cover_photo_url}
                       onChange={(e) => setNewProfile({ ...newProfile, cover_photo_url: e.target.value })}
                       placeholder="https://..."
