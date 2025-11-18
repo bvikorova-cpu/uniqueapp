@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,16 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const videoPreviewRef = useRef<HTMLVideoElement | null>(null);
   const { toast } = useToast();
+
+  // Connect stream to video element when stream changes
+  useEffect(() => {
+    if (liveStream && videoPreviewRef.current) {
+      videoPreviewRef.current.srcObject = liveStream;
+      videoPreviewRef.current.play().catch(err => {
+        console.error("Error playing video:", err);
+      });
+    }
+  }, [liveStream]);
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
