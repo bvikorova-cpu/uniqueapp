@@ -12,10 +12,10 @@ import { Progress } from "@/components/ui/progress";
 interface VideoUploadProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
+  onUploadComplete?: () => void;
 }
 
-export function VideoUpload({ open, onOpenChange, onSuccess }: VideoUploadProps) {
+export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -154,7 +154,7 @@ export function VideoUpload({ open, onOpenChange, onSuccess }: VideoUploadProps)
 
       clearVideo();
       onOpenChange(false);
-      onSuccess();
+      onUploadComplete?.();
     } catch (error: any) {
       toast({
         title: "Upload error",
