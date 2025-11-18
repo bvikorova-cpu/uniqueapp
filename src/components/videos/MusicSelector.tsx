@@ -109,7 +109,7 @@ export function MusicSelector({ selectedTrack, onSelectTrack }: MusicSelectorPro
       )}
 
       {/* Music List */}
-      <ScrollArea className="h-[300px] rounded-lg border">
+      <div className="h-[300px] rounded-lg border overflow-y-auto bg-background">
         <RadioGroup
           value={selectedTrack?.id}
           onValueChange={(value) => {
@@ -156,7 +156,7 @@ export function MusicSelector({ selectedTrack, onSelectTrack }: MusicSelectorPro
             ))}
           </div>
         </RadioGroup>
-      </ScrollArea>
+      </div>
 
       {filteredTracks.length === 0 && (
         <div className="text-center py-8 text-muted-foreground">
