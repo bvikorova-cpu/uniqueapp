@@ -11,9 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Crown, Users, Heart, Eye, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink } from "lucide-react";
+import { Crown, Users, Heart, Eye, TrendingUp, Camera, Plus, CheckCircle, Star, Upload, ExternalLink, Gift } from "lucide-react";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { GoLiveButton } from "@/components/influencer/GoLiveButton";
+import { SendInfluencerGiftDialog } from "@/components/influencer/SendInfluencerGiftDialog";
+import { useNavigate } from "react-router-dom";
 
 interface InfluencerProfile {
   id: string;
@@ -61,6 +63,7 @@ const CATEGORIES = [
 const InfluKing = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [selectedInfluencer, setSelectedInfluencer] = useState<InfluencerProfile | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -70,6 +73,7 @@ const InfluKing = () => {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [followStatusMap, setFollowStatusMap] = useState<Record<string, boolean>>({});
+  const [showGiftDialog, setShowGiftDialog] = useState(false);
 
   const [newProfile, setNewProfile] = useState({
     display_name: "",
@@ -675,6 +679,9 @@ const InfluKing = () => {
                 </DialogContent>
               </Dialog>
               <GoLiveButton influencerId={myProfile.id} />
+              <Button variant="outline" onClick={() => navigate("/influencer/earnings")}>
+                My Earnings
+              </Button>
               <Button variant="outline" onClick={() => setSelectedInfluencer(myProfile)}>
                 My Profile
               </Button>
@@ -928,16 +935,26 @@ const InfluKing = () => {
                     </div>
 
                     {selectedInfluencer.user_id !== user?.id && (
-                      <Button
-                        onClick={() => followMutation.mutate({ 
-                          influencerId: selectedInfluencer.id, 
-                          follow: !isFollowing 
-                        })}
-                        disabled={followMutation.isPending}
-                        variant={isFollowing ? "outline" : "default"}
-                      >
-                        {isFollowing ? "Sledovaný" : "Sledovať"}
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={() => followMutation.mutate({ 
+                            influencerId: selectedInfluencer.id, 
+                            follow: !isFollowing 
+                          })}
+                          disabled={followMutation.isPending}
+                          variant={isFollowing ? "outline" : "default"}
+                        >
+                          {isFollowing ? "Sledovaný" : "Sledovať"}
+                        </Button>
+                        <Button
+                          onClick={() => setShowGiftDialog(true)}
+                          variant="outline"
+                          className="gap-2"
+                        >
+                          <Gift className="h-4 w-4" />
+                          Send Gift
+                        </Button>
+                      </div>
                     )}
 
                     {/* Social Links */}
@@ -1004,6 +1021,16 @@ const InfluKing = () => {
             )}
           </DialogContent>
         </Dialog>
+
+        {/* Send Gift Dialog */}
+        {selectedInfluencer && (
+          <SendInfluencerGiftDialog
+            open={showGiftDialog}
+            onOpenChange={setShowGiftDialog}
+            influencerId={selectedInfluencer.id}
+            influencerName={selectedInfluencer.display_name}
+          />
+        )}
 
         {/* Top Influencers Leaderboard */}
         <div className="max-w-6xl mx-auto">

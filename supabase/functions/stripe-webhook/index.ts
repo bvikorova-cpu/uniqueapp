@@ -248,28 +248,47 @@ serve(async (req) => {
             if (earningData) {
               // Get all admin users
               const { data: adminUsers } = await supabaseAdmin
-                .from('user_roles')
-                .select('user_id')
-                .eq('role', 'admin');
+                .from("user_roles")
+                .select("user_id")
+                .eq("role", "admin");
 
-              // Create notification for each admin
-              if (adminUsers && adminUsers.length > 0) {
-                const notifications = adminUsers.map(admin => ({
-                  user_id: admin.user_id,
-                  type: 'masterchef_payout',
-                  title: 'New MasterChef Payout Pending',
-                  message: `€${earningData.chef_amount.toFixed(2)} ready to pay to ${chefName}`,
-                  related_id: earningData.id,
-                  is_read: false
-                }));
-
-                await supabaseAdmin
-                  .from('notifications')
-                  .insert(notifications);
-
-                console.log(`Created ${notifications.length} admin notifications for payout`);
+              // Notify admins about new withdrawal request
+              if (adminUsers) {
+                for (const admin of adminUsers) {
+                  await supabaseAdmin
+                    .from("notifications")
+                    .insert({
+                      user_id: admin.user_id,
+                      type: "masterchef_withdrawal",
+                      message: `${chefName} received a gift worth €${Number(earningData.chef_amount).toFixed(2)}`
+                    });
+                }
               }
             }
+          }
+        }
+
+        // Handle Influencer gift payments
+        if (paymentStatus === "paid" && metadata.type === "influencer_gift") {
+          console.log("Processing Influencer gift payment", { sessionId: session.id });
+          
+          const { data: giftData, error: giftError } = await supabaseAdmin
+            .from("influencer_sent_gifts")
+            .update({ 
+              status: "completed",
+              stripe_payment_intent: session.payment_intent
+            })
+            .eq("sender_id", metadata.sender_id)
+            .eq("influencer_id", metadata.influencer_id)
+            .eq("gift_id", metadata.gift_id)
+            .eq("stripe_session_id", session.id)
+            .select('id, influencer_id, chef_amount')
+            .single();
+
+          if (giftError) {
+            console.error("Error updating Influencer gift:", giftError);
+          } else {
+            console.log("Influencer gift marked as completed - trigger will update balances");
           }
         }
       }

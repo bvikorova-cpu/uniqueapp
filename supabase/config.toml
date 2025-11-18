@@ -108,6 +108,9 @@ verify_jwt = false
 [functions.create-influencer-tip-payment]
 verify_jwt = true
 
+[functions.send-influencer-gift]
+verify_jwt = true
+
 [functions.send-platform-gift]
 verify_jwt = true
 
