@@ -10417,6 +10417,83 @@ export type Database = {
           },
         ]
       }
+      influencer_gifts: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          icon: string
+          id: string
+          is_active: boolean | null
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          icon: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
+      influencer_platform_earnings: {
+        Row: {
+          admin_notes: string | null
+          commission_amount: number
+          commission_rate: number
+          created_at: string | null
+          gift_id: string | null
+          id: string
+          influencer_amount: number
+          paid_at: string | null
+          status: string | null
+          total_amount: number
+        }
+        Insert: {
+          admin_notes?: string | null
+          commission_amount: number
+          commission_rate?: number
+          created_at?: string | null
+          gift_id?: string | null
+          id?: string
+          influencer_amount: number
+          paid_at?: string | null
+          status?: string | null
+          total_amount: number
+        }
+        Update: {
+          admin_notes?: string | null
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string | null
+          gift_id?: string | null
+          id?: string
+          influencer_amount?: number
+          paid_at?: string | null
+          status?: string | null
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_platform_earnings_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_sent_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       influencer_post_likes: {
         Row: {
           created_at: string | null
@@ -10507,10 +10584,13 @@ export type Database = {
           id: string
           is_active: boolean | null
           is_verified: boolean | null
+          lifetime_earnings: number | null
+          pending_balance: number | null
           profile_photo_url: string | null
           social_links: Json | null
           total_likes: number | null
           total_views: number | null
+          total_withdrawn: number | null
           updated_at: string | null
           user_id: string
         }
@@ -10524,10 +10604,13 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           is_verified?: boolean | null
+          lifetime_earnings?: number | null
+          pending_balance?: number | null
           profile_photo_url?: string | null
           social_links?: Json | null
           total_likes?: number | null
           total_views?: number | null
+          total_withdrawn?: number | null
           updated_at?: string | null
           user_id: string
         }
@@ -10541,14 +10624,80 @@ export type Database = {
           id?: string
           is_active?: boolean | null
           is_verified?: boolean | null
+          lifetime_earnings?: number | null
+          pending_balance?: number | null
           profile_photo_url?: string | null
           social_links?: Json | null
           total_likes?: number | null
           total_views?: number | null
+          total_withdrawn?: number | null
           updated_at?: string | null
           user_id?: string
         }
         Relationships: []
+      }
+      influencer_sent_gifts: {
+        Row: {
+          amount: number
+          chef_amount: number | null
+          commission_rate: number | null
+          created_at: string | null
+          gift_id: string
+          id: string
+          influencer_id: string
+          message: string | null
+          platform_commission: number | null
+          sender_id: string
+          status: string | null
+          stripe_payment_intent: string | null
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount: number
+          chef_amount?: number | null
+          commission_rate?: number | null
+          created_at?: string | null
+          gift_id: string
+          id?: string
+          influencer_id: string
+          message?: string | null
+          platform_commission?: number | null
+          sender_id: string
+          status?: string | null
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number
+          chef_amount?: number | null
+          commission_rate?: number | null
+          created_at?: string | null
+          gift_id?: string
+          id?: string
+          influencer_id?: string
+          message?: string | null
+          platform_commission?: number | null
+          sender_id?: string
+          status?: string | null
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_sent_gifts_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_gifts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "influencer_sent_gifts_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       influencer_subscriptions: {
         Row: {
@@ -10625,6 +10774,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "influencer_tips_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      influencer_withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string | null
+          id: string
+          influencer_id: string
+          payment_details: Json
+          payment_method: string
+          processed_at: string | null
+          processed_by: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string | null
+          id?: string
+          influencer_id: string
+          payment_details: Json
+          payment_method: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string | null
+          id?: string
+          influencer_id?: string
+          payment_details?: Json
+          payment_method?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_withdrawal_requests_influencer_id_fkey"
             columns: ["influencer_id"]
             isOneToOne: false
             referencedRelation: "influencer_profiles"
@@ -22155,6 +22354,15 @@ export type Database = {
         Returns: boolean
       }
       is_vip_user: { Args: { user_id_param: string }; Returns: boolean }
+      process_influencer_withdrawal: {
+        Args: {
+          p_admin_id: string
+          p_admin_notes?: string
+          p_request_id: string
+          p_status: string
+        }
+        Returns: undefined
+      }
       process_masterchef_withdrawal: {
         Args: {
           p_admin_id: string
