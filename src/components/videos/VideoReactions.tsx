@@ -32,13 +32,13 @@ export function VideoReactions({ videoId, onUpdate }: VideoReactionsProps) {
   const fetchReactions = async () => {
     const { data } = await supabase
       .from("video_reactions")
-      .select("reaction_type")
+      .select("emoji")
       .eq("video_id", videoId);
 
     if (data) {
       const counts: Record<string, number> = {};
       data.forEach((r) => {
-        counts[r.reaction_type] = (counts[r.reaction_type] || 0) + 1;
+        counts[r.emoji] = (counts[r.emoji] || 0) + 1;
       });
       setReactionCounts(counts);
     }
@@ -50,12 +50,12 @@ export function VideoReactions({ videoId, onUpdate }: VideoReactionsProps) {
 
     const { data } = await supabase
       .from("video_reactions")
-      .select("reaction_type")
+      .select("emoji")
       .eq("video_id", videoId)
       .eq("user_id", user.id)
       .maybeSingle();
 
-    setCurrentReaction(data?.reaction_type || null);
+    setCurrentReaction(data?.emoji || null);
   };
 
   const handleReaction = async (reactionType: string) => {
@@ -79,7 +79,7 @@ export function VideoReactions({ videoId, onUpdate }: VideoReactionsProps) {
       await supabase.from("video_reactions").upsert({
         video_id: videoId,
         user_id: user.id,
-        reaction_type: reactionType,
+        emoji: reactionType,
       }, {
         onConflict: 'video_id,user_id'
       });
