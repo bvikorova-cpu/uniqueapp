@@ -17,6 +17,7 @@ interface VideoUploadProps {
 
 export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -27,6 +28,7 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
   const [liveStream, setLiveStream] = useState<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const videoPreviewRef = useRef<HTMLVideoElement | null>(null);
+  const audioPreviewRef = useRef<HTMLAudioElement | null>(null);
   const { toast } = useToast();
 
   // Connect stream to video element when stream changes
@@ -49,6 +51,25 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
         toast({
           title: "Invalid file",
           description: "Please select a video file",
+          variant: "destructive",
+        });
+      }
+    }
+  };
+
+  const handleAudioSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.type.startsWith("audio/")) {
+        setAudioFile(file);
+        toast({
+          title: "Audio file selected",
+          description: file.name,
+        });
+      } else {
+        toast({
+          title: "Invalid file",
+          description: "Please select an audio file",
           variant: "destructive",
         });
       }
@@ -119,6 +140,7 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
       setLiveStream(null);
     }
     setSelectedFile(null);
+    setAudioFile(null);
     setPreviewUrl(null);
     setTitle("");
     setDescription("");
@@ -149,13 +171,43 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
     setUploadProgress(0);
 
     try {
+      let finalFile = selectedFile;
+
+      // If audio is selected, mix it with video first
+      if (audioFile) {
+        toast({
+          title: "Processing video",
+          description: "Adding background music...",
+        });
+
+        const formData = new FormData();
+        formData.append('video', selectedFile);
+        formData.append('audio', audioFile);
+
+        const { data: { session } } = await supabase.auth.getSession();
+        const response = await supabase.functions.invoke('mix-video-audio', {
+          body: formData,
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`,
+          },
+        });
+
+        if (response.error) {
+          throw new Error('Failed to mix audio with video');
+        }
+
+        // Convert response to file
+        const mixedBlob = new Blob([response.data], { type: 'video/mp4' });
+        finalFile = new File([mixedBlob], 'video_with_audio.mp4', { type: 'video/mp4' });
+      }
+
       // Upload video with progress tracking
-      const fileExt = selectedFile.name.split(".").pop();
+      const fileExt = finalFile.name.split(".").pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
       const { error: uploadError } = await supabase.storage
         .from("videos")
-        .upload(fileName, selectedFile);
+        .upload(fileName, finalFile);
 
       if (uploadError) throw uploadError;
 
@@ -294,6 +346,31 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
                   rows={3}
                   disabled={uploading}
                 />
+              </div>
+
+              {/* Audio File Selection */}
+              <div>
+                <Label htmlFor="audio-file">Add Background Music (Optional)</Label>
+                <Input
+                  id="audio-file"
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioSelect}
+                  disabled={uploading}
+                />
+                {audioFile && (
+                  <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                    <span>🎵 {audioFile.name}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setAudioFile(null)}
+                      disabled={uploading}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                )}
               </div>
 
               {/* Upload Progress */}
