@@ -24,7 +24,9 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
   const [recording, setRecording] = useState(false);
   const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [liveStream, setLiveStream] = useState<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const videoPreviewRef = useRef<HTMLVideoElement | null>(null);
   const { toast } = useToast();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,9 +48,16 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: { width: 1280, height: 720 },
         audio: true,
       });
+
+      // Set live stream for preview
+      setLiveStream(stream);
+      if (videoPreviewRef.current) {
+        videoPreviewRef.current.srcObject = stream;
+        videoPreviewRef.current.play();
+      }
 
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: "video/webm",
@@ -66,6 +75,7 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
         const file = new File([blob], "recording.webm", { type: "video/webm" });
         setSelectedFile(file);
         setPreviewUrl(URL.createObjectURL(blob));
+        setLiveStream(null);
         stream.getTracks().forEach((track) => track.stop());
       };
 
@@ -87,13 +97,22 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
       mediaRecorderRef.current.stop();
       setRecording(false);
     }
+    if (liveStream) {
+      liveStream.getTracks().forEach((track) => track.stop());
+      setLiveStream(null);
+    }
   };
 
   const clearVideo = () => {
+    if (liveStream) {
+      liveStream.getTracks().forEach((track) => track.stop());
+      setLiveStream(null);
+    }
     setSelectedFile(null);
     setPreviewUrl(null);
     setTitle("");
     setDescription("");
+    setRecording(false);
   };
 
   const handleUpload = async () => {
@@ -175,8 +194,32 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Preview */}
-          {previewUrl ? (
+          {/* Live camera preview while recording */}
+          {recording && liveStream && (
+            <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+              <video
+                ref={videoPreviewRef}
+                autoPlay
+                muted
+                playsInline
+                className="w-full h-full object-contain"
+              />
+              <div className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+                <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                RECORDING
+              </div>
+              <Button
+                variant="destructive"
+                onClick={stopRecording}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2"
+              >
+                Stop Recording
+              </Button>
+            </div>
+          )}
+
+          {/* Video preview after recording/upload */}
+          {previewUrl && !recording ? (
             <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
               <video src={previewUrl} controls className="w-full h-full" />
               <Button
@@ -188,7 +231,7 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
                 <X className="h-4 w-4" />
               </Button>
             </div>
-          ) : (
+          ) : !recording && (
             <div className="space-y-2">
               {/* File Upload */}
               <div>
@@ -198,7 +241,7 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
                   type="file"
                   accept="video/*"
                   onChange={handleFileSelect}
-                  disabled={uploading || recording}
+                  disabled={uploading}
                 />
               </div>
 
@@ -206,12 +249,12 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
               <div className="flex justify-center">
                 <Button
                   variant="outline"
-                  onClick={recording ? stopRecording : startRecording}
+                  onClick={startRecording}
                   disabled={uploading}
                   className="w-full"
                 >
                   <Video className="h-4 w-4 mr-2" />
-                  {recording ? "Stop Recording" : "Record from Camera"}
+                  Record from Camera
                 </Button>
               </div>
             </div>
