@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
@@ -277,9 +278,10 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <AuthProvider>
-        <TooltipProvider delayDuration={0}>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      <BrowserRouter>
+        <AuthProvider>
+          <TooltipProvider delayDuration={0}>
           <Toaster />
           <Sonner />
           <div className="flex flex-col min-h-screen">
@@ -588,6 +590,7 @@ const App = () => (
         </TooltipProvider>
       </AuthProvider>
     </BrowserRouter>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 
