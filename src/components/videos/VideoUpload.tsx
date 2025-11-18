@@ -8,8 +8,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Video, Loader2, X } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { MusicSelector } from "./MusicSelector";
-import type { MusicTrack } from "@/data/musicLibrary";
 
 interface VideoUploadProps {
   open: boolean;
@@ -19,7 +17,6 @@ interface VideoUploadProps {
 
 export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedTrack, setSelectedTrack] = useState<MusicTrack | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -122,7 +119,6 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
       setLiveStream(null);
     }
     setSelectedFile(null);
-    setSelectedTrack(null);
     setPreviewUrl(null);
     setTitle("");
     setDescription("");
@@ -153,51 +149,13 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
     setUploadProgress(0);
 
     try {
-      let finalFile = selectedFile;
-
-      // If music track is selected, download and mix it with video
-      if (selectedTrack && selectedTrack.url) {
-        toast({
-          title: "Processing video",
-          description: "Adding background music...",
-        });
-
-        // Download the music track
-        const audioResponse = await fetch(selectedTrack.url);
-        if (!audioResponse.ok) {
-          throw new Error('Failed to download music track');
-        }
-        const audioBlob = await audioResponse.blob();
-        const audioFile = new File([audioBlob], 'music.mp3', { type: 'audio/mpeg' });
-
-        const formData = new FormData();
-        formData.append('video', selectedFile);
-        formData.append('audio', audioFile);
-
-        const { data: { session } } = await supabase.auth.getSession();
-        const response = await supabase.functions.invoke('mix-video-audio', {
-          body: formData,
-          headers: {
-            'Authorization': `Bearer ${session?.access_token}`,
-          },
-        });
-
-        if (response.error) {
-          throw new Error('Failed to mix audio with video');
-        }
-
-        // Convert response to file
-        const mixedBlob = new Blob([response.data], { type: 'video/mp4' });
-        finalFile = new File([mixedBlob], 'video_with_audio.mp4', { type: 'video/mp4' });
-      }
-
       // Upload video with progress tracking
-      const fileExt = finalFile.name.split(".").pop();
+      const fileExt = selectedFile.name.split(".").pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
       const { error: uploadError } = await supabase.storage
         .from("videos")
-        .upload(fileName, finalFile);
+        .upload(fileName, selectedFile);
 
       if (uploadError) throw uploadError;
 
@@ -337,12 +295,6 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
                   disabled={uploading}
                 />
               </div>
-
-              {/* Music Selection */}
-              <MusicSelector
-                selectedTrack={selectedTrack}
-                onSelectTrack={setSelectedTrack}
-              />
 
               {/* Upload Progress */}
               {uploading && (
