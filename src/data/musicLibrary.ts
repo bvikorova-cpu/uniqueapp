@@ -9,11 +9,15 @@ export interface MusicTrack {
 }
 
 // Royalty-free music library
-// NOTE: Replace these URLs with actual royalty-free music URLs from services like:
-// - YouTube Audio Library
-// - Free Music Archive
-// - Incompetech
-// - Bensound
+// NOTE: To use this feature, you need to add actual music file URLs below
+// You can use royalty-free music from services like:
+// - YouTube Audio Library (https://www.youtube.com/audiolibrary)
+// - Free Music Archive (https://freemusicarchive.org)
+// - Incompetech (https://incompetech.com)
+// - Bensound (https://www.bensound.com)
+//
+// Upload the audio files to Supabase Storage or host them externally,
+// then replace the URLs below with the actual file URLs
 export const musicLibrary: MusicTrack[] = [
   {
     id: "1",
@@ -21,7 +25,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "Modern Beats",
     genre: "Pop",
     duration: 180,
-    url: "https://example.com/track1.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "🎵"
   },
   {
@@ -30,7 +34,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "DJ Rhythm",
     genre: "Dance",
     duration: 200,
-    url: "https://example.com/track2.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "💃"
   },
   {
@@ -39,7 +43,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "Synth Wave",
     genre: "Electronic",
     duration: 190,
-    url: "https://example.com/track3.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "⚡"
   },
   {
@@ -48,7 +52,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "Street Sound",
     genre: "Hip Hop",
     duration: 170,
-    url: "https://example.com/track4.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "🎤"
   },
   {
@@ -57,7 +61,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "City Pop",
     genre: "Pop",
     duration: 195,
-    url: "https://example.com/track5.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "🌃"
   },
   {
@@ -66,7 +70,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "Beach Beats",
     genre: "Dance",
     duration: 185,
-    url: "https://example.com/track6.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "🏖️"
   },
   {
@@ -75,7 +79,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "Retro Wave",
     genre: "Electronic",
     duration: 210,
-    url: "https://example.com/track7.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "🌙"
   },
   {
@@ -84,7 +88,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "Happy Tunes",
     genre: "Pop",
     duration: 165,
-    url: "https://example.com/track8.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "😊"
   },
   {
@@ -93,7 +97,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "Bass Drop",
     genre: "Dance",
     duration: 200,
-    url: "https://example.com/track9.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "🎧"
   },
   {
@@ -102,7 +106,7 @@ export const musicLibrary: MusicTrack[] = [
     artist: "EDM Masters",
     genre: "Electronic",
     duration: 175,
-    url: "https://example.com/track10.mp3", // Replace with actual URL
+    url: "", // Add your music file URL here
     thumbnail: "🔊"
   }
 ];

@@ -156,7 +156,7 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
       let finalFile = selectedFile;
 
       // If music track is selected, download and mix it with video
-      if (selectedTrack) {
+      if (selectedTrack && selectedTrack.url) {
         toast({
           title: "Processing video",
           description: "Adding background music...",
@@ -164,6 +164,9 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
 
         // Download the music track
         const audioResponse = await fetch(selectedTrack.url);
+        if (!audioResponse.ok) {
+          throw new Error('Failed to download music track');
+        }
         const audioBlob = await audioResponse.blob();
         const audioFile = new File([audioBlob], 'music.mp3', { type: 'audio/mpeg' });
 
@@ -237,12 +240,12 @@ export function VideoUpload({ open, onOpenChange, onUploadComplete }: VideoUploa
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Upload Video</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto flex-1 pr-2">
           {/* Live camera preview while recording */}
           {recording && liveStream && (
             <div className="relative aspect-video bg-black rounded-lg overflow-hidden">

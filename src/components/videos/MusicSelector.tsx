@@ -58,6 +58,11 @@ export function MusicSelector({ selectedTrack, onSelectTrack }: MusicSelectorPro
         )}
       </div>
 
+      {/* Info Alert */}
+      <div className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg border">
+        ℹ️ Aby ste mohli používať hudbu, musíte najprv pridať skutočné audio súbory do <code className="bg-background px-1 rounded">src/data/musicLibrary.ts</code>
+      </div>
+
       {/* Search */}
       <Input
         placeholder="Search songs..."
