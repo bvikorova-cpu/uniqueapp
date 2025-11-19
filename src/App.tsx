@@ -519,12 +519,11 @@ const App = () => (
               <Route path="/masterchef/competitions" element={<MasterChefCompetitions />} />
               <Route path="/masterchef/earnings" element={<MasterChefEarnings />} />
               <Route path="/influencer/earnings" element={<InfluencerEarnings />} />
-              <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
+          <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
               <Route path="/time-reversal/dashboard" element={<TimeReversalDashboard />} />
               <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
               <Route path="/time-capsule-subscription" element={<TimeCapsuleSubscription />} />
               <Route path="/time-capsule" element={<TimeCapsule />} />
-              <Route path="/home-decor-marketplace" element={<HomeDecorMarketplace />} />
               <Route path="/home-decor-subscription" element={<HomeDecorSubscription />} />
           <Route path="/holographic-avatars" element={<HolographicAvatars />} />
           
