@@ -50,6 +50,7 @@ const JournalEntryForm = ({ onSuccess }: JournalEntryFormProps) => {
         title: title || "Journal Entry",
         content,
         mood: mood as any,
+        entry_date: new Date().toISOString().split('T')[0],
         ai_insights: insights.insights,
         emotions_detected: insights.emotions,
         user_id: user.id
