@@ -3815,6 +3815,42 @@ export type Database = {
           },
         ]
       }
+      collectible_listings: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          listing_type: string
+          price_credits: number | null
+          updated_at: string | null
+          user_collectible_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          listing_type: string
+          price_credits?: number | null
+          updated_at?: string | null
+          user_collectible_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          listing_type?: string
+          price_credits?: number | null
+          updated_at?: string | null
+          user_collectible_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       collectible_purchases: {
         Row: {
           amount: number
