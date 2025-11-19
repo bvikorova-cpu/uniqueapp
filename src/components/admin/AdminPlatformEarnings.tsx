@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, DollarSign, Users, Calendar } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { TrendingUp, DollarSign, Users, Calendar, User } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format } from "date-fns";
 
@@ -18,6 +19,18 @@ interface SectionEarnings {
   sports: EarningStats;
 }
 
+interface InfluencerDetail {
+  id: string;
+  display_name: string;
+  profile_photo_url: string | null;
+  category: string;
+  lifetime_earnings: number;
+  pending_balance: number;
+  total_withdrawn: number;
+  pendingWithdrawals: number;
+  availableBalance: number;
+}
+
 export function AdminPlatformEarnings() {
   // Fetch InfluKing earnings
   const { data: influkingEarnings } = useQuery({
@@ -30,6 +43,42 @@ export function AdminPlatformEarnings() {
       
       if (error) throw error;
       return data || [];
+    },
+  });
+
+  // Fetch detailed influencer data with earnings
+  const { data: influencerDetails } = useQuery({
+    queryKey: ["admin-influencer-details"],
+    queryFn: async () => {
+      const { data: profiles, error: profileError } = await supabase
+        .from("influencer_profiles")
+        .select("*")
+        .order("lifetime_earnings", { ascending: false });
+      
+      if (profileError) throw profileError;
+
+      // Fetch pending withdrawal requests for each influencer
+      const { data: withdrawals, error: withdrawalError } = await supabase
+        .from("influencer_withdrawal_requests")
+        .select("*")
+        .eq("status", "pending");
+      
+      if (withdrawalError) throw withdrawalError;
+
+      // Map influencer details with withdrawal info
+      return (profiles || []).map((profile) => {
+        const pendingWithdrawals = (withdrawals || [])
+          .filter((w) => w.influencer_id === profile.id)
+          .reduce((sum, w) => sum + w.amount, 0);
+
+        const availableBalance = (profile.lifetime_earnings || 0) - (profile.total_withdrawn || 0) - pendingWithdrawals;
+
+        return {
+          ...profile,
+          pendingWithdrawals,
+          availableBalance,
+        } as InfluencerDetail;
+      });
     },
   });
 
@@ -213,8 +262,12 @@ export function AdminPlatformEarnings() {
       </div>
 
       {/* Section Details */}
-      <Tabs defaultValue="influking" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+      <Tabs defaultValue="influencers" className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="influencers">
+            <User className="w-4 h-4 mr-2" />
+            Influencers
+          </TabsTrigger>
           <TabsTrigger value="influking">
             InfluKing (€{influkingStats.total.toFixed(2)})
           </TabsTrigger>
@@ -225,6 +278,75 @@ export function AdminPlatformEarnings() {
             Sports (€{sportsStats.total.toFixed(2)})
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="influencers" className="mt-6">
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Detailed Influencer Earnings</h3>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Influencer</TableHead>
+                    <TableHead>Category</TableHead>
+                    <TableHead className="text-right">Total Earnings</TableHead>
+                    <TableHead className="text-right">Withdrawn</TableHead>
+                    <TableHead className="text-right">Pending Withdrawals</TableHead>
+                    <TableHead className="text-right">Available Balance</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(influencerDetails || []).map((influencer) => (
+                    <TableRow key={influencer.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          {influencer.profile_photo_url ? (
+                            <img
+                              src={influencer.profile_photo_url}
+                              alt={influencer.display_name}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                              <User className="w-5 h-5 text-muted-foreground" />
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-medium">{influencer.display_name}</p>
+                            <p className="text-xs text-muted-foreground">ID: {influencer.id.slice(0, 8)}...</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary">
+                          {influencer.category}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right font-semibold">
+                        €{(influencer.lifetime_earnings || 0).toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        €{(influencer.total_withdrawn || 0).toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right text-amber-600">
+                        €{influencer.pendingWithdrawals.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right font-bold text-green-600">
+                        €{influencer.availableBalance.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {(!influencerDetails || influencerDetails.length === 0) && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                        No influencer data available
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="influking" className="mt-6">
           <Card className="p-6">
