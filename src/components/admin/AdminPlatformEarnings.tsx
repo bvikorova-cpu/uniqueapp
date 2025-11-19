@@ -31,6 +31,18 @@ interface InfluencerDetail {
   availableBalance: number;
 }
 
+interface CreatorDetail {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+  type: string;
+  lifetime_earnings: number;
+  pending_balance: number;
+  total_withdrawn: number;
+  pendingWithdrawals: number;
+  availableBalance: number;
+}
+
 export function AdminPlatformEarnings() {
   // Fetch InfluKing earnings
   const { data: influkingEarnings } = useQuery({
@@ -78,6 +90,86 @@ export function AdminPlatformEarnings() {
           pendingWithdrawals,
           availableBalance,
         } as InfluencerDetail;
+      });
+    },
+  });
+
+  // Fetch Musicians data with earnings
+  const { data: musicianDetails } = useQuery({
+    queryKey: ["admin-musician-details"],
+    queryFn: async () => {
+      const { data: profiles, error: profileError } = await supabase
+        .from("musician_profiles")
+        .select("*")
+        .order("lifetime_earnings", { ascending: false });
+      
+      if (profileError) throw profileError;
+
+      const { data: withdrawals, error: withdrawalError } = await supabase
+        .from("musician_withdrawal_requests")
+        .select("*")
+        .eq("status", "pending");
+      
+      if (withdrawalError) throw withdrawalError;
+
+      return (profiles || []).map((profile) => {
+        const pendingWithdrawals = (withdrawals || [])
+          .filter((w) => w.musician_id === profile.id)
+          .reduce((sum, w) => sum + w.amount, 0);
+
+        const availableBalance = (profile.lifetime_earnings || 0) - (profile.total_withdrawn || 0) - pendingWithdrawals;
+
+        return {
+          id: profile.id,
+          name: profile.stage_name,
+          avatar_url: profile.avatar_url,
+          type: profile.genre || "Unknown",
+          lifetime_earnings: profile.lifetime_earnings || 0,
+          pending_balance: profile.pending_balance || 0,
+          total_withdrawn: profile.total_withdrawn || 0,
+          pendingWithdrawals,
+          availableBalance,
+        } as CreatorDetail;
+      });
+    },
+  });
+
+  // Fetch Instructors data with earnings
+  const { data: instructorDetails } = useQuery({
+    queryKey: ["admin-instructor-details"],
+    queryFn: async () => {
+      const { data: profiles, error: profileError } = await supabase
+        .from("instructor_profiles")
+        .select("*")
+        .order("lifetime_earnings", { ascending: false });
+      
+      if (profileError) throw profileError;
+
+      const { data: withdrawals, error: withdrawalError } = await supabase
+        .from("instructor_withdrawal_requests")
+        .select("*")
+        .eq("status", "pending");
+      
+      if (withdrawalError) throw withdrawalError;
+
+      return (profiles || []).map((profile) => {
+        const pendingWithdrawals = (withdrawals || [])
+          .filter((w) => w.instructor_id === profile.id)
+          .reduce((sum, w) => sum + w.amount, 0);
+
+        const availableBalance = (profile.lifetime_earnings || 0) - (profile.total_withdrawn || 0) - pendingWithdrawals;
+
+        return {
+          id: profile.id,
+          name: `Instructor ${profile.id.slice(0, 8)}`,
+          avatar_url: profile.profile_image_url,
+          type: profile.expertise?.join(", ") || "General",
+          lifetime_earnings: profile.lifetime_earnings || 0,
+          pending_balance: profile.pending_balance || 0,
+          total_withdrawn: profile.total_withdrawn || 0,
+          pendingWithdrawals,
+          availableBalance,
+        } as CreatorDetail;
       });
     },
   });
@@ -263,10 +355,16 @@ export function AdminPlatformEarnings() {
 
       {/* Section Details */}
       <Tabs defaultValue="influencers" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="influencers">
             <User className="w-4 h-4 mr-2" />
             Influencers
+          </TabsTrigger>
+          <TabsTrigger value="musicians">
+            Musicians
+          </TabsTrigger>
+          <TabsTrigger value="instructors">
+            Instructors
           </TabsTrigger>
           <TabsTrigger value="influking">
             InfluKing (€{influkingStats.total.toFixed(2)})
@@ -339,6 +437,144 @@ export function AdminPlatformEarnings() {
                     <TableRow>
                       <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                         No influencer data available
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="musicians" className="mt-6">
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Detailed Musician Earnings</h3>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Musician</TableHead>
+                    <TableHead>Genre</TableHead>
+                    <TableHead className="text-right">Total Earnings</TableHead>
+                    <TableHead className="text-right">Withdrawn</TableHead>
+                    <TableHead className="text-right">Pending Withdrawals</TableHead>
+                    <TableHead className="text-right">Available Balance</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(musicianDetails || []).map((musician) => (
+                    <TableRow key={musician.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          {musician.avatar_url ? (
+                            <img
+                              src={musician.avatar_url}
+                              alt={musician.name}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                              <User className="w-5 h-5 text-muted-foreground" />
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-medium">{musician.name}</p>
+                            <p className="text-xs text-muted-foreground">ID: {musician.id.slice(0, 8)}...</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary">
+                          {musician.type}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right font-semibold">
+                        €{musician.lifetime_earnings.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        €{musician.total_withdrawn.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right text-amber-600">
+                        €{musician.pendingWithdrawals.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right font-bold text-green-600">
+                        €{musician.availableBalance.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {(!musicianDetails || musicianDetails.length === 0) && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                        No musician data available
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="instructors" className="mt-6">
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Detailed Instructor Earnings</h3>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Instructor</TableHead>
+                    <TableHead>Expertise</TableHead>
+                    <TableHead className="text-right">Total Earnings</TableHead>
+                    <TableHead className="text-right">Withdrawn</TableHead>
+                    <TableHead className="text-right">Pending Withdrawals</TableHead>
+                    <TableHead className="text-right">Available Balance</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(instructorDetails || []).map((instructor) => (
+                    <TableRow key={instructor.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          {instructor.avatar_url ? (
+                            <img
+                              src={instructor.avatar_url}
+                              alt={instructor.name}
+                              className="w-10 h-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                              <User className="w-5 h-5 text-muted-foreground" />
+                            </div>
+                          )}
+                          <div>
+                            <p className="font-medium">{instructor.name}</p>
+                            <p className="text-xs text-muted-foreground">ID: {instructor.id.slice(0, 8)}...</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary">
+                          {instructor.type}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right font-semibold">
+                        €{instructor.lifetime_earnings.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right text-muted-foreground">
+                        €{instructor.total_withdrawn.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right text-amber-600">
+                        €{instructor.pendingWithdrawals.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right font-bold text-green-600">
+                        €{instructor.availableBalance.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {(!instructorDetails || instructorDetails.length === 0) && (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                        No instructor data available
                       </TableCell>
                     </TableRow>
                   )}
