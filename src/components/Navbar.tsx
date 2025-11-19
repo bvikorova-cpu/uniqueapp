@@ -223,7 +223,7 @@ const Navbar = () => {
     { path: "/content-studio", label: "Content Studio", icon: Sparkles },
     { path: "/companions", label: "Character Companions", icon: MessageCircle },
     { path: "/ai-experiences", label: "Exclusive Experiences", icon: Sparkles },
-    { path: "/career-hub", label: "Career Hub", icon: Briefcase },
+    
     { path: "/brand-builder", label: t('services.brand_builder.title'), icon: Sparkles },
     { path: "/home-designer", label: t('services.home_designer.title'), icon: Home },
     { path: "/home-decor-marketplace", label: "🏡 Home Decor Marketplace", icon: Home },

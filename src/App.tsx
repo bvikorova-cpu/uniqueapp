@@ -67,7 +67,7 @@ import CompanionChat from "./pages/CompanionChat";
 import CourseDetail from "./pages/CourseDetail";
 import GenerateCourses from "./pages/GenerateCourses";
 import Earnings from "./pages/Earnings";
-import CareerHub from "./pages/CareerHub";
+
 import DreamJournal from "./pages/DreamJournal";
 import FashionStylist from "./pages/FashionStylist";
 import VirtualPet from "./pages/VirtualPet";
@@ -356,7 +356,7 @@ const App = () => (
           <Route path="/content-studio" element={<ContentStudio />} />
           <Route path="/companions" element={<AICompanions />} />
           <Route path="/companions/:conversationId" element={<CompanionChat />} />
-          <Route path="/career-hub" element={<CareerHub />} />
+          
           <Route path="/dream-journal" element={<DreamJournal />} />
           <Route path="/fashion-stylist" element={<FashionStylist />} />
           <Route path="/virtual-pet" element={<VirtualPet />} />
