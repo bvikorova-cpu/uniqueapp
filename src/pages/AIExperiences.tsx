@@ -29,42 +29,41 @@ const AIExperiences = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const destinations = [
-    { name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Tokyo", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop", credits: 10 },
-    { name: "New York", image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop", credits: 10 },
-    { name: "London", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Dubai", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Barcelona", image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Rome", image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Istanbul", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Sydney", image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Singapore", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Hong Kong", image: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Las Vegas", image: "https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?w=400&h=300&fit=crop", credits: 10 },
-    { name: "San Francisco", image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Los Angeles", image: "https://images.unsplash.com/photo-1534190239940-9ba8944ea261?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Miami", image: "https://images.unsplash.com/photo-1503198515498-d0bd9ed16902?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Amsterdam", image: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Prague", image: "https://images.unsplash.com/photo-1541849546-216549ae216d?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Vienna", image: "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Berlin", image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Bangkok", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Seoul", image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Rio de Janeiro", image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Budapest", image: "https://images.unsplash.com/photo-1541697418592-f24c8cda67a1?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Athens", image: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Lisbon", image: "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Moscow", image: "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Cairo", image: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Mexico City", image: "https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Toronto", image: "https://images.unsplash.com/photo-1517935706615-2717063c2225?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Copenhagen", image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Stockholm", image: "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Edinburgh", image: "https://images.unsplash.com/photo-1573241268405-9e3c33dcf285?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Mars", image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Ancient Rome", image: "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Underwater City", image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop", credits: 10 },
-    { name: "Future Metropolis", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop", credits: 10 },
+    { name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Tokyo", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop", credits: 15 },
+    { name: "New York", image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop", credits: 15 },
+    { name: "London", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Dubai", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Barcelona", image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Rome", image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Istanbul", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Sydney", image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Singapore", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Hong Kong", image: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Las Vegas", image: "https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?w=400&h=300&fit=crop", credits: 15 },
+    { name: "San Francisco", image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Los Angeles", image: "https://images.unsplash.com/photo-1534190239940-9ba8944ea261?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Miami", image: "https://images.unsplash.com/photo-1503198515498-d0bd9ed16902?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Amsterdam", image: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Prague", image: "https://images.unsplash.com/photo-1541849546-216549ae216d?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Vienna", image: "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Berlin", image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Bangkok", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Seoul", image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Budapest", image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Athens", image: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Lisbon", image: "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Moscow", image: "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Cairo", image: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Mexico City", image: "https://images.unsplash.com/photo-1518105779142-d975f22f1b0a?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Toronto", image: "https://images.unsplash.com/photo-1517935706615-2717063c2225?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Copenhagen", image: "https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Stockholm", image: "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Edinburgh", image: "https://images.unsplash.com/photo-1573241268405-9e3c33dcf285?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Mars", image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Ancient Rome", image: "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Underwater City", image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Future Metropolis", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop", credits: 15 },
   ];
 
   const historicalFigures = [
@@ -286,7 +285,7 @@ const AIExperiences = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Explore virtual worlds, chat with history's greatest minds, and see your future
+            Explore virtual worlds and see your future
           </p>
           <Badge variant="secondary" className="mt-4">
             Your Credits: {typeof credits === 'number' ? credits : credits.credits_remaining}
@@ -294,14 +293,10 @@ const AIExperiences = () => {
         </div>
 
         <Tabs defaultValue="tours" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="tours">
               <Globe className="h-4 w-4 mr-2" />
               Virtual Tours
-            </TabsTrigger>
-            <TabsTrigger value="history">
-              <History className="h-4 w-4 mr-2" />
-              Historical Chats
             </TabsTrigger>
             <TabsTrigger value="future">
               <Clock className="h-4 w-4 mr-2" />
@@ -399,45 +394,6 @@ const AIExperiences = () => {
             </Card>
           </TabsContent>
 
-          {/* Historical Chats Tab */}
-          <TabsContent value="history" className="space-y-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-primary" />
-                  Talk to Historical Figures
-                </CardTitle>
-                <CardDescription>
-                  Have deep conversations with history's greatest minds
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {historicalFigures.map((figure) => (
-                    <Card key={figure.name} className="hover:shadow-lg transition-shadow">
-                      <CardContent className="pt-6">
-                        <div className="space-y-4">
-                          <div className="flex items-center gap-4">
-                            <div className="text-4xl">{figure.icon}</div>
-                            <div>
-                              <h3 className="font-bold">{figure.name}</h3>
-                              <Badge variant="outline" className="text-xs">3 credits per chat</Badge>
-                            </div>
-                          </div>
-                          <Button
-                            onClick={() => handleHistoricalChat(figure.name)}
-                            className="w-full"
-                          >
-                            Start Conversation
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           {/* Future Preview Tab */}
           <TabsContent value="future" className="space-y-8">
