@@ -29,32 +29,32 @@ const AIExperiences = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const destinations = [
-    { name: "Paris", icon: "🗼", credits: 3 },
-    { name: "Tokyo", icon: "🏯", credits: 3 },
-    { name: "New York", icon: "🗽", credits: 3 },
-    { name: "London", icon: "🏰", credits: 3 },
-    { name: "Dubai", icon: "🏙️", credits: 3 },
-    { name: "Barcelona", icon: "⛪", credits: 3 },
-    { name: "Rome", icon: "🏛️", credits: 3 },
-    { name: "Istanbul", icon: "🕌", credits: 3 },
-    { name: "Sydney", icon: "🌉", credits: 3 },
-    { name: "Singapore", icon: "🌆", credits: 3 },
-    { name: "Hong Kong", icon: "🌃", credits: 3 },
-    { name: "Las Vegas", icon: "🎰", credits: 3 },
-    { name: "San Francisco", icon: "🌁", credits: 3 },
-    { name: "Los Angeles", icon: "🎬", credits: 3 },
-    { name: "Miami", icon: "🏖️", credits: 3 },
-    { name: "Amsterdam", icon: "🌷", credits: 3 },
-    { name: "Prague", icon: "🏰", credits: 3 },
-    { name: "Vienna", icon: "🎻", credits: 3 },
-    { name: "Berlin", icon: "🚪", credits: 3 },
-    { name: "Bangkok", icon: "🛕", credits: 3 },
-    { name: "Seoul", icon: "🏙️", credits: 3 },
-    { name: "Rio de Janeiro", icon: "🏖️", credits: 3 },
-    { name: "Mars", icon: "🔴", credits: 5 },
-    { name: "Ancient Rome", icon: "🏛️", credits: 4 },
-    { name: "Underwater City", icon: "🌊", credits: 4 },
-    { name: "Future Metropolis", icon: "🌃", credits: 5 },
+    { name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Tokyo", image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop", credits: 3 },
+    { name: "New York", image: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop", credits: 3 },
+    { name: "London", image: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Dubai", image: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Barcelona", image: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Rome", image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Istanbul", image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Sydney", image: "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Singapore", image: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Hong Kong", image: "https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Las Vegas", image: "https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?w=400&h=300&fit=crop", credits: 3 },
+    { name: "San Francisco", image: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Los Angeles", image: "https://images.unsplash.com/photo-1534190239940-9ba8944ea261?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Miami", image: "https://images.unsplash.com/photo-1503198515498-d0bd9ed16902?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Amsterdam", image: "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Prague", image: "https://images.unsplash.com/photo-1541849546-216549ae216d?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Vienna", image: "https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Berlin", image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Bangkok", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Seoul", image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Rio de Janeiro", image: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=400&h=300&fit=crop", credits: 3 },
+    { name: "Mars", image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d5?w=400&h=300&fit=crop", credits: 5 },
+    { name: "Ancient Rome", image: "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=400&h=300&fit=crop", credits: 4 },
+    { name: "Underwater City", image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop", credits: 4 },
+    { name: "Future Metropolis", image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop", credits: 5 },
   ];
 
   const historicalFigures = [
@@ -314,12 +314,19 @@ const AIExperiences = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {destinations.map((dest) => (
-                    <Card key={dest.name} className="hover:shadow-lg transition-shadow">
-                      <CardContent className="pt-6">
-                        <div className="text-center space-y-4">
-                          <div className="text-6xl">{dest.icon}</div>
-                          <h3 className="font-bold text-lg">{dest.name}</h3>
-                          <Badge variant="secondary">{dest.credits} credits</Badge>
+                    <Card key={dest.name} className="hover:shadow-xl transition-all hover:scale-105 overflow-hidden group">
+                      <div className="relative h-48 overflow-hidden">
+                        <img 
+                          src={dest.image} 
+                          alt={dest.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <h3 className="absolute bottom-4 left-4 font-bold text-xl text-white">{dest.name}</h3>
+                      </div>
+                      <CardContent className="pt-4">
+                        <div className="space-y-3">
+                          <Badge variant="secondary" className="w-full justify-center">{dest.credits} credits</Badge>
                           <Button
                             onClick={() => handleVirtualTour(dest.name, dest.credits)}
                             disabled={loading}
@@ -517,77 +524,121 @@ const AIExperiences = () => {
             
             {selectedTour?.image_urls && selectedTour.image_urls.length > 0 && (
               <div className="space-y-4">
-                {/* Image Carousel */}
-                <div className="relative w-full h-96 bg-muted rounded-lg overflow-hidden group">
-                  <img 
-                    src={selectedTour.image_urls[currentImageIndex]} 
-                    alt={`${selectedTour.destination} - Scene ${currentImageIndex + 1}`}
-                    className="w-full h-full object-cover animate-fade-in"
-                    key={currentImageIndex}
-                  />
-                  
-                  {/* Navigation Buttons */}
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="absolute left-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => setCurrentImageIndex((prev) => 
-                      prev === 0 ? selectedTour.image_urls.length - 1 : prev - 1
-                    )}
+                {/* Immersive 3D-Style Image Viewer */}
+                <div className="relative w-full h-[70vh] bg-black rounded-xl overflow-hidden group perspective-1000">
+                  <div 
+                    className="w-full h-full transition-all duration-700 ease-out transform-gpu"
+                    style={{
+                      backgroundImage: `url(${selectedTour.image_urls[currentImageIndex]})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      transform: isPlaying ? 'scale(1.05)' : 'scale(1)',
+                    }}
                   >
-                    <ChevronLeft className="h-6 w-6" />
-                  </Button>
-                  
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => setCurrentImageIndex((prev) => 
-                      (prev + 1) % selectedTour.image_urls.length
-                    )}
-                  >
-                    <ChevronRight className="h-6 w-6" />
-                  </Button>
-
-                  {/* Play/Pause Button */}
-                  <Button
-                    variant="secondary"
-                    size="icon"
-                    className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => setIsPlaying(!isPlaying)}
-                  >
-                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                  </Button>
-
-                  {/* Progress Indicators */}
-                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                    {selectedTour.image_urls.map((_: any, idx: number) => (
+                    {/* Gradient Overlays for Depth */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50" />
+                    
+                    {/* Navigation Controls - Street View Style */}
+                    <div className="absolute inset-0 grid grid-cols-3 grid-rows-3">
+                      {/* Left navigation */}
                       <button
-                        key={idx}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                          idx === currentImageIndex 
-                            ? 'bg-white w-8' 
-                            : 'bg-white/50 hover:bg-white/75'
-                        }`}
-                        onClick={() => setCurrentImageIndex(idx)}
-                      />
-                    ))}
+                        className="col-start-1 row-start-2 flex items-center justify-start pl-8 opacity-0 hover:opacity-100 transition-all group-hover:opacity-70"
+                        onClick={() => setCurrentImageIndex((prev) => 
+                          prev === 0 ? selectedTour.image_urls.length - 1 : prev - 1
+                        )}
+                      >
+                        <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-2xl hover:bg-white hover:scale-110 transition-all">
+                          <ChevronLeft className="h-8 w-8 text-primary" />
+                        </div>
+                      </button>
+                      
+                      {/* Right navigation */}
+                      <button
+                        className="col-start-3 row-start-2 flex items-center justify-end pr-8 opacity-0 hover:opacity-100 transition-all group-hover:opacity-70"
+                        onClick={() => setCurrentImageIndex((prev) => 
+                          (prev + 1) % selectedTour.image_urls.length
+                        )}
+                      >
+                        <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-2xl hover:bg-white hover:scale-110 transition-all">
+                          <ChevronRight className="h-8 w-8 text-primary" />
+                        </div>
+                      </button>
+                    </div>
+
+                    {/* Bottom Control Bar */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
+                      <div className="flex items-center justify-between mb-4">
+                        {/* Location Info */}
+                        <div className="flex items-center gap-3">
+                          <div className="bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white/30">
+                            <MapPin className="h-4 w-4 text-white inline mr-2" />
+                            <span className="text-white font-semibold text-sm">
+                              {selectedTour.destination}
+                            </span>
+                          </div>
+                          <div className="bg-white/20 backdrop-blur-md rounded-lg px-4 py-2 border border-white/30">
+                            <span className="text-white text-sm">
+                              Scene {currentImageIndex + 1} / {selectedTour.image_urls.length}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Play/Pause Control */}
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          className="bg-white/90 backdrop-blur-sm hover:bg-white hover:scale-110 transition-all shadow-2xl"
+                          onClick={() => setIsPlaying(!isPlaying)}
+                        >
+                          {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+                        </Button>
+                      </div>
+
+                      {/* Progress Bar & Scene Indicators */}
+                      <div className="space-y-3">
+                        {/* Progress Bar */}
+                        <div className="w-full h-1 bg-white/30 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-white transition-all duration-300 rounded-full"
+                            style={{ width: `${((currentImageIndex + 1) / selectedTour.image_urls.length) * 100}%` }}
+                          />
+                        </div>
+                        
+                        {/* Scene Thumbnails */}
+                        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                          {selectedTour.image_urls.map((_: any, idx: number) => (
+                            <button
+                              key={idx}
+                              className={`flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${
+                                idx === currentImageIndex 
+                                  ? 'border-white shadow-lg scale-110' 
+                                  : 'border-white/30 hover:border-white/60 opacity-70 hover:opacity-100'
+                              }`}
+                              onClick={() => setCurrentImageIndex(idx)}
+                            >
+                              <div 
+                                className="w-full h-full bg-cover bg-center"
+                                style={{ backgroundImage: `url(${selectedTour.image_urls[idx]})` }}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                {/* Tour Description */}
-                <Card>
+                {/* Tour Description Card */}
+                <Card className="bg-gradient-to-br from-muted/50 to-muted">
                   <CardContent className="pt-6">
-                    <p className="text-sm whitespace-pre-line leading-relaxed">
-                      {selectedTour.description}
-                    </p>
+                    <div className="flex items-start gap-3">
+                      <Globe className="h-5 w-5 text-primary mt-1 flex-shrink-0" />
+                      <p className="text-sm whitespace-pre-line leading-relaxed">
+                        {selectedTour.description}
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
-
-                {/* Scene Counter */}
-                <div className="text-center text-sm text-muted-foreground">
-                  Scene {currentImageIndex + 1} of {selectedTour.image_urls.length}
-                </div>
               </div>
             )}
           </DialogContent>
