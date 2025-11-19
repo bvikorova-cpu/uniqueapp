@@ -294,9 +294,12 @@ serve(async (req) => {
       }
 
       if (paymentStatus === "paid" && userId && credits > 0) {
+        const creditType = metadata.type || "ai_credits";
+        const tableName = creditType === "photo_credits" ? "photo_credits" : "ai_credits";
+        
         // Get current credits
         const { data: currentCredits } = await supabaseAdmin
-          .from("ai_credits")
+          .from(tableName)
           .select("*")
           .eq("user_id", userId)
           .maybeSingle();
@@ -304,7 +307,7 @@ serve(async (req) => {
         if (currentCredits) {
           // Update existing record
           const { error } = await supabaseAdmin
-            .from("ai_credits")
+            .from(tableName)
             .update({
               credits_remaining: currentCredits.credits_remaining + credits,
               total_credits_purchased: currentCredits.total_credits_purchased + credits,
@@ -312,13 +315,13 @@ serve(async (req) => {
             .eq("user_id", userId);
 
           if (error) {
-            console.error("Error updating credits:", error);
+            console.error(`Error updating ${tableName}:`, error);
             throw error;
           }
         } else {
           // Create new record
           const { error } = await supabaseAdmin
-            .from("ai_credits")
+            .from(tableName)
             .insert({
               user_id: userId,
               credits_remaining: credits,
@@ -326,12 +329,12 @@ serve(async (req) => {
             });
 
           if (error) {
-            console.error("Error creating credits:", error);
+            console.error(`Error creating ${tableName}:`, error);
             throw error;
           }
         }
 
-        console.log(`Added ${credits} credits to user ${userId}`);
+        console.log(`Added ${credits} credits to user ${userId} in ${tableName}`);
       }
     }
 

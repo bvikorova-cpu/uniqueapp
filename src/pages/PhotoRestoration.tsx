@@ -12,7 +12,7 @@ const PhotoRestoration = () => {
   const [restoredUrl, setRestoredUrl] = useState<string>("");
   const [restorationType, setRestorationType] = useState<'colorize' | 'repair' | 'enhance'>('colorize');
   
-  const { credits, isLoading, restorePhoto, isRestoring } = usePhotoCredits();
+  const { credits, isLoading, restorePhoto, isRestoring, purchaseCredits } = usePhotoCredits();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -212,21 +212,38 @@ const PhotoRestoration = () => {
             <div className="grid md:grid-cols-3 gap-4">
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-2xl font-bold mb-2">5 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">$10</p>
-                <Button variant="outline" className="w-full">Buy Now</Button>
+                <p className="text-3xl font-bold text-primary mb-4">€10</p>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => purchaseCredits(5, 10)}
+                >
+                  Buy Now
+                </Button>
               </div>
               <div className="border-2 border-primary rounded-lg p-4 text-center">
                 <div className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full inline-block mb-2">
                   MOST POPULAR
                 </div>
                 <p className="text-2xl font-bold mb-2">20 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">$30</p>
-                <Button className="w-full">Buy Now</Button>
+                <p className="text-3xl font-bold text-primary mb-4">€30</p>
+                <Button 
+                  className="w-full"
+                  onClick={() => purchaseCredits(20, 30)}
+                >
+                  Buy Now
+                </Button>
               </div>
               <div className="border rounded-lg p-4 text-center">
                 <p className="text-2xl font-bold mb-2">50 credits</p>
-                <p className="text-3xl font-bold text-primary mb-4">$60</p>
-                <Button variant="outline" className="w-full">Buy Now</Button>
+                <p className="text-3xl font-bold text-primary mb-4">€60</p>
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => purchaseCredits(50, 60)}
+                >
+                  Buy Now
+                </Button>
               </div>
             </div>
           </CardContent>

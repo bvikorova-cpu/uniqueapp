@@ -69,12 +69,27 @@ export const usePhotoCredits = () => {
     },
   });
 
-  const purchaseCredits = async (amount: number) => {
+  const purchaseCredits = async (credits: number, price: number) => {
     try {
-      // This will be implemented with Stripe later
-      toast.info("Payment system coming soon!");
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please sign in to purchase credits");
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-photo-credits-payment', {
+        body: { credits }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast.success("Redirecting to payment...");
+      }
     } catch (error) {
-      toast.error("Error purchasing credits");
+      console.error('Purchase error:', error);
+      toast.error("Error creating payment session");
     }
   };
 
