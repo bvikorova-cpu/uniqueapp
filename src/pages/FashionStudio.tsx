@@ -48,7 +48,7 @@ export default function FashionStudio() {
               
               {(!credits || credits.credits_remaining < 50) && (
                 <Button 
-                  onClick={() => navigate('/megastore')}
+                  onClick={() => navigate('/ai-credits-store')}
                   variant="default"
                   className="gap-2"
                 >
