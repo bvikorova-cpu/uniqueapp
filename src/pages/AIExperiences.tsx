@@ -50,7 +50,7 @@ const AIExperiences = () => {
     { name: "Berlin", image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?w=400&h=300&fit=crop", credits: 15 },
     { name: "Bangkok", image: "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=400&h=300&fit=crop", credits: 15 },
     { name: "Seoul", image: "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&h=300&fit=crop", credits: 15 },
-    { name: "Budapest", image: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=400&h=300&fit=crop", credits: 15 },
+    { name: "Budapest", image: "https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?w=400&h=300&fit=crop", credits: 15 },
     { name: "Athens", image: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=400&h=300&fit=crop", credits: 15 },
     { name: "Lisbon", image: "https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=400&h=300&fit=crop", credits: 15 },
     { name: "Moscow", image: "https://images.unsplash.com/photo-1513326738677-b964603b136d?w=400&h=300&fit=crop", credits: 15 },
