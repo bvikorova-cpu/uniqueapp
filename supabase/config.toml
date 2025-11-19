@@ -548,3 +548,6 @@ verify_jwt = true
 
 [functions.check-masterchef-subscription]
 verify_jwt = true
+
+[functions.character-chat]
+verify_jwt = true
