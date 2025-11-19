@@ -21,13 +21,13 @@ export const usePhotoCredits = () => {
 
       if (error) throw error;
       
-      // If no credits record exists, create one
+      // If no credits record exists, create one with 5 free initial credits
       if (!data) {
         const { data: newData, error: insertError } = await supabase
           .from("photo_credits")
           .insert({
             user_id: user.id,
-            credits_remaining: 0,
+            credits_remaining: 5,
             total_credits_purchased: 0
           })
           .select()
