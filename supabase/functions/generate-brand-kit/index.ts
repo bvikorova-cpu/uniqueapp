@@ -37,7 +37,7 @@ serve(async (req) => {
       .eq('user_id', user.id)
       .single();
 
-    const creditsNeeded = 10;
+    const creditsNeeded = 15;
 
     if (!creditsData || creditsData.credits_remaining < creditsNeeded) {
       return new Response(

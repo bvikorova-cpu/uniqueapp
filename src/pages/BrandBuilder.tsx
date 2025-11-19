@@ -61,10 +61,10 @@ const BrandBuilder = () => {
       setLoading(true);
       const currentCredits = typeof credits === 'number' ? credits : credits.credits_remaining;
 
-      if (currentCredits < 10) {
+      if (currentCredits < 15) {
         toast({
           title: "Insufficient Credits",
-          description: "You need 10 credits to generate a brand kit.",
+          description: "You need 15 credits to generate a brand kit.",
           variant: "destructive",
         });
         setTimeout(() => navigate("/ai-credits-store"), 2000);
@@ -131,7 +131,7 @@ const BrandBuilder = () => {
             Create a complete professional brand identity with AI-powered logo, colors, slogans, and social media strategy
           </p>
           <Badge variant="secondary" className="mt-4">
-            Your Credits: {typeof credits === 'number' ? credits : credits.credits_remaining} | Cost: 10 credits per brand kit
+            Your Credits: {typeof credits === 'number' ? credits : credits.credits_remaining} | Cost: 15 credits per brand kit
           </Badge>
         </div>
 
@@ -212,7 +212,7 @@ const BrandBuilder = () => {
                   {loading ? (
                     <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Generating Your Brand...</>
                   ) : (
-                    <><Sparkles className="mr-2 h-5 w-5" /> Generate Brand Kit (10 Credits)</>
+                    <><Sparkles className="mr-2 h-5 w-5" /> Generate Brand Kit (15 Credits)</>
                   )}
                 </Button>
 
