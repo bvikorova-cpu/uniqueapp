@@ -85,7 +85,6 @@ const Home = () => {
     { name: "Astrology", path: "/astrology", keywords: ["astrology", "astrologický", "horoskop", "znamenia"] },
     { name: "AI Music", path: "/ai-music", keywords: ["music", "hudba", "curator", "playlist"] },
     { name: "Dream Journal", path: "/dream-journal", keywords: ["dream", "sen", "journal", "denník"] },
-    { name: "Fashion Stylist", path: "/fashion-stylist", keywords: ["fashion", "móda", "stylist", "oblečenie"] },
     { name: "Virtual Pet", path: "/virtual-pet", keywords: ["pet", "zviera", "virtual", "virtuálny"] },
     { name: "Brand Builder", path: "/brand-builder", keywords: ["brand", "značka", "builder", "tvorba"] },
     { name: "Home Designer", path: "/home-designer", keywords: ["home", "dom", "designer", "dizajn", "interiér"] },
@@ -671,20 +670,6 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Record and analyze your dreams with AI
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link to="/fashion-stylist">
-              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
-                <CardHeader>
-                  <Shirt className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>Fashion Stylist</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    AI stylist for perfect outfits
                   </p>
                 </CardContent>
               </Card>

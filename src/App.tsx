@@ -69,7 +69,6 @@ import GenerateCourses from "./pages/GenerateCourses";
 import Earnings from "./pages/Earnings";
 
 import DreamJournal from "./pages/DreamJournal";
-import FashionStylist from "./pages/FashionStylist";
 import VirtualPet from "./pages/VirtualPet";
 import Astrology from "./pages/Astrology";
 
@@ -358,7 +357,6 @@ const App = () => (
           <Route path="/companions/:conversationId" element={<CompanionChat />} />
           
           <Route path="/dream-journal" element={<DreamJournal />} />
-          <Route path="/fashion-stylist" element={<FashionStylist />} />
           <Route path="/virtual-pet" element={<VirtualPet />} />
           <Route path="/astrology" element={<Astrology />} />
           <Route path="/character-arena" element={<CharacterArena />} />

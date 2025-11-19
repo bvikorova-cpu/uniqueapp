@@ -231,7 +231,6 @@ const Navbar = () => {
     { path: "/antique-appraisal", label: "Antique Appraisal", icon: Gem },
     { path: "/collectibles", label: "Collectibles", icon: Sparkles },
     { path: "/dream-journal", label: "Dream Analyzer", icon: Brain },
-    { path: "/fashion-stylist", label: "Fashion Stylist", icon: Shirt },
     { path: "/fashion-studio", label: "Fashion Studio", icon: Palette },
     { path: "/nutrition-hub", label: "Nutrition Hub", icon: Apple },
     { path: "/virtual-pet", label: "Virtual Pet", icon: PawPrint },
