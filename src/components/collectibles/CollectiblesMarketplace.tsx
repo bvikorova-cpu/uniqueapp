@@ -1,7 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ShoppingBag, Gavel } from "lucide-react";
+import { ShoppingBag, Gavel, Store } from "lucide-react";
 import AuctionsList from "./AuctionsList";
 import TradesList from "./TradesList";
+import BrowseListings from "./BrowseListings";
 
 interface CollectiblesMarketplaceProps {
   userId: string;
@@ -17,8 +18,12 @@ export default function CollectiblesMarketplace({ userId }: CollectiblesMarketpl
         </p>
       </div>
 
-      <Tabs defaultValue="auctions" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
+      <Tabs defaultValue="browse" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="browse" className="gap-2">
+            <Store className="h-4 w-4" />
+            Browse
+          </TabsTrigger>
           <TabsTrigger value="auctions" className="gap-2">
             <Gavel className="h-4 w-4" />
             Auctions
@@ -28,6 +33,10 @@ export default function CollectiblesMarketplace({ userId }: CollectiblesMarketpl
             Trades
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="browse">
+          <BrowseListings userId={userId} />
+        </TabsContent>
 
         <TabsContent value="auctions">
           <AuctionsList userId={userId} />
