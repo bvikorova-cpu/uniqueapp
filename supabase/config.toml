@@ -551,3 +551,9 @@ verify_jwt = true
 
 [functions.character-chat]
 verify_jwt = true
+
+[functions.generate-virtual-tour]
+verify_jwt = true
+
+[functions.generate-age-progression]
+verify_jwt = true
