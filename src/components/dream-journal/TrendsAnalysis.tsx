@@ -24,7 +24,27 @@ const TrendsAnalysis = () => {
         headers: { Authorization: `Bearer ${session?.access_token}` }
       });
 
-      if (response.error) throw response.error;
+      if (response.error) {
+        // Handle specific error cases
+        const errorMessage = response.error.message || response.error;
+        if (errorMessage.includes("402") || errorMessage.includes("Insufficient") || errorMessage.includes("credits")) {
+          toast({ 
+            title: "Insufficient Credits", 
+            description: "You need to add Lovable AI credits to your workspace. Go to Settings → Workspace → Usage.",
+            variant: "destructive" 
+          });
+        } else if (errorMessage.includes("429") || errorMessage.includes("Rate limit")) {
+          toast({ 
+            title: "Rate Limit Exceeded", 
+            description: "Too many requests. Please try again in a few minutes.",
+            variant: "destructive" 
+          });
+        } else {
+          toast({ title: "Error", description: errorMessage, variant: "destructive" });
+        }
+        return;
+      }
+      
       setTrends(response.data);
       toast({ title: "Success", description: "Trends analyzed successfully!" });
     } catch (error: any) {
