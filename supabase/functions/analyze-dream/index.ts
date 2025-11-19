@@ -66,7 +66,9 @@ Respond with a JSON object containing:
     });
 
     if (!response.ok) {
-      throw new Error("Failed to generate analysis");
+      const errorText = await response.text();
+      console.error("AI API error:", response.status, errorText);
+      throw new Error(`Failed to generate analysis: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
