@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat } from "lucide-react";
+import { DollarSign, Users, TrendingUp, CreditCard, Search, ChefHat, Mic2, ChevronRight } from "lucide-react";
 import { VerificationRequestsWidget } from "@/components/admin/VerificationRequestsWidget";
 
 const Admin = () => {
@@ -307,6 +307,29 @@ const Admin = () => {
                   View Details →
                 </Button>
               </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        {/* Comedy Club Earnings Card */}
+        <Card 
+          className="mb-8 cursor-pointer hover:shadow-lg transition-shadow border-2 border-purple-500/30 bg-gradient-to-br from-purple-500/5 to-pink-500/5"
+          onClick={() => navigate('/admin/comedy-payouts')}
+        >
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-purple-500/20">
+                  <Mic2 className="h-6 w-6 text-purple-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">Comedy Club Platform Earnings</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Provízie z lístkov, tipov a clipov (25%)
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="h-6 w-6 text-muted-foreground" />
             </div>
           </CardHeader>
         </Card>

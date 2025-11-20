@@ -40,8 +40,8 @@ export default function ComedianDashboard() {
       .order("created_at", { ascending: false });
 
     if (earningsData && earningsData.length > 0) {
-      const totalEarned = earningsData.reduce((sum, e) => sum + parseFloat(e.total_earned || 0), 0);
-      const pendingPayout = parseFloat(earningsData[0]?.pending_payout || 0);
+      const totalEarned = earningsData.reduce((sum, e) => sum + (e.net_amount || 0), 0);
+      const pendingPayout = earningsData[0]?.pending_payout || 0;
       setEarnings({ totalEarned, pendingPayout, history: earningsData });
     }
 

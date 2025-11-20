@@ -334,7 +334,12 @@ export default function ComedyClub() {
                     Purchased: {format(new Date(ticket.purchased_at), "MMM d, h:mm a")}
                   </p>
                   {ticket.show?.status === "live" && (
-                    <Button className="w-full mt-3">Watch Now</Button>
+                    <Button 
+                      className="w-full mt-3"
+                      onClick={() => navigate(`/comedy-watch/${ticket.show.id}`)}
+                    >
+                      Watch Now
+                    </Button>
                   )}
                 </Card>
               ))}
