@@ -65,7 +65,7 @@ export default function ComedyClub() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between mt-8">
+        <div className="flex items-center justify-between mt-16">
           <div>
             <h1 className="text-4xl font-bold">🎤 Comedy Club</h1>
             <p className="text-muted-foreground mt-2">
