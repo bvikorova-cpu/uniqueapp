@@ -11,12 +11,10 @@ import { Loader2, Sparkles, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
-import { useTrialCredits } from "@/hooks/useTrialCredits";
 
 export default function FashionGenerator() {
   const queryClient = useQueryClient();
   const { credits } = useAICredits();
-  const { credits: trialCredits, useCredit, hasCredits } = useTrialCredits();
   
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -115,16 +113,9 @@ export default function FashionGenerator() {
     const creditsNeeded = creditsMap[qualityLevel];
     const hasAICredits = credits && credits.credits_remaining >= creditsNeeded;
     
-    // Check if user has AI credits or trial credits
-    if (!hasAICredits && !hasCredits('fashion')) {
-      toast.error(`You need ${creditsNeeded} credits or trial uses to generate`);
-      return;
-    }
-
-    // Use trial credit if no AI credits
     if (!hasAICredits) {
-      const canProceed = useCredit('fashion');
-      if (!canProceed) return;
+      toast.error(`You need ${creditsNeeded} AI credits to generate this design. Please purchase credits.`);
+      return;
     }
 
     generateMutation.mutate();
@@ -172,9 +163,7 @@ export default function FashionGenerator() {
             </div>
             <div className="flex items-center gap-2 text-sm font-medium">
               <Sparkles className="h-4 w-4 text-primary" />
-              {credits && credits.credits_remaining > 0 
-                ? `${credits.credits_remaining} AI credits` 
-                : `${trialCredits.fashion} trial uses`}
+              {credits ? `${credits.credits_remaining} AI credits` : 'Loading...'}
             </div>
           </div>
         </CardHeader>

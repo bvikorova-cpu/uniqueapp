@@ -10,12 +10,10 @@ import { Loader2, Utensils, Download, ChefHat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAICredits } from "@/hooks/useAICredits";
-import { useTrialCredits } from "@/hooks/useTrialCredits";
 
 export default function MealPlannerGenerator() {
   const queryClient = useQueryClient();
   const { credits } = useAICredits();
-  const { credits: trialCredits, useCredit, hasCredits } = useTrialCredits();
   
   const [title, setTitle] = useState("");
   const [days, setDays] = useState(7);
@@ -68,16 +66,9 @@ export default function MealPlannerGenerator() {
 
     const hasAICredits = credits && credits.credits_remaining >= 50;
     
-    // Check if user has AI credits or trial credits
-    if (!hasAICredits && !hasCredits('nutrition')) {
-      toast.error('You need 50 credits or trial uses to generate a meal plan');
-      return;
-    }
-
-    // Use trial credit if no AI credits
     if (!hasAICredits) {
-      const canProceed = useCredit('nutrition');
-      if (!canProceed) return;
+      toast.error('You need 50 AI credits to generate a meal plan. Please purchase credits.');
+      return;
     }
 
     generateMutation.mutate();
@@ -114,9 +105,7 @@ export default function MealPlannerGenerator() {
             </div>
             <div className="flex items-center gap-2 text-sm font-medium">
               <ChefHat className="h-4 w-4 text-primary" />
-              {credits && credits.credits_remaining > 0 
-                ? `${credits.credits_remaining} AI credits` 
-                : `${trialCredits.nutrition} trial uses`}
+              {credits ? `${credits.credits_remaining} AI credits` : 'Loading...'}
             </div>
           </div>
         </CardHeader>
