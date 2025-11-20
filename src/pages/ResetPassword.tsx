@@ -23,8 +23,8 @@ const ResetPassword = () => {
     if (password !== confirmPassword) {
       toast({
         variant: "destructive",
-        title: "Chyba",
-        description: "Heslá sa nezhodujú.",
+        title: "Error",
+        description: "Passwords do not match.",
       });
       setLoading(false);
       return;
@@ -39,13 +39,13 @@ const ResetPassword = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Chyba pri obnovení hesla",
+        title: "Error resetting password",
         description: error.message,
       });
     } else {
       toast({
-        title: "Heslo bolo úspešne zmenené!",
-        description: "Teraz sa môžete prihlásiť s novým heslom.",
+        title: "Password successfully changed!",
+        description: "You can now log in with your new password.",
       });
       navigate("/auth");
     }
@@ -55,13 +55,13 @@ const ResetPassword = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/20 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Obnovenie hesla</CardTitle>
-          <CardDescription>Zadajte nové heslo pre váš účet</CardDescription>
+          <CardTitle>Reset Password</CardTitle>
+          <CardDescription>Enter a new password for your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleResetPassword} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="password">Nové heslo</Label>
+              <Label htmlFor="password">New Password</Label>
               <Input
                 id="password"
                 name="password"
@@ -71,7 +71,7 @@ const ResetPassword = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Potvrďte nové heslo</Label>
+              <Label htmlFor="confirmPassword">Confirm New Password</Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -81,7 +81,7 @@ const ResetPassword = () => {
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Ukladanie..." : "Zmeniť heslo"}
+              {loading ? "Saving..." : "Change Password"}
             </Button>
           </form>
         </CardContent>
