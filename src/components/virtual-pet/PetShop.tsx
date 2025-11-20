@@ -38,7 +38,7 @@ export const PetShop = () => {
   const handlePurchase = (accessory: any) => {
     const creditsNeeded = accessory.price;
     if (credits.credits_remaining < creditsNeeded) {
-      toast.error('Nemáte dostatok kreditov. Presmerovanie na nákup kreditov...');
+      toast.error('Not enough credits. Redirecting to purchase...');
       setTimeout(() => {
         navigate('/ai-credits');
       }, 1500);
@@ -118,7 +118,7 @@ export const PetShop = () => {
               <Badge variant="outline" className={getRarityColor(item.rarity)}>
                 {item.rarity}
               </Badge>
-              <span className="font-bold">${item.price}</span>
+              <span className="font-bold">{item.price} credits</span>
             </div>
 
             <Button 
@@ -128,7 +128,7 @@ export const PetShop = () => {
             >
               <ShoppingCart className="h-4 w-4" />
               {credits.credits_remaining < item.price 
-                ? `Kúpiť kredity (${item.price} credits)` 
+                ? `Buy Credits (${item.price} credits)` 
                 : `Purchase (${item.price} credits)`}
             </Button>
           </Card>
