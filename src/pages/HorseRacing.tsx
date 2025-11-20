@@ -433,6 +433,14 @@ export default function HorseRacing() {
               </Button>
             </Card>
           </TabsContent>
+
+          <TabsContent value="leaderboard" className="space-y-4">
+            <HorseLeaderboard />
+          </TabsContent>
+
+          <TabsContent value="marketplace" className="space-y-4">
+            <HorseMarketplace />
+          </TabsContent>
         </Tabs>
       </div>
 
