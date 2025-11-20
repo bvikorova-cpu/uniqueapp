@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,8 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function HorseRacing() {
+  const queryClient = useQueryClient();
   const { horses, createHorse } = useUserHorses();
   const { races } = useRaces();
   const joinRace = useJoinRace();
@@ -38,6 +41,57 @@ export default function HorseRacing() {
   const [showShop, setShowShop] = useState(false);
   const [selectedHorseForShop, setSelectedHorseForShop] = useState("");
   const [shopColor, setShopColor] = useState("#8B4513");
+
+  // Handle payment success
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const paymentStatus = params.get("payment");
+    const coins = params.get("coins");
+    const gems = params.get("gems");
+
+    if (paymentStatus === "success" && (coins || gems)) {
+      (async () => {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) return;
+
+          const { data: currency } = await supabase
+            .from("horse_currency")
+            .select("*")
+            .eq("user_id", user.id)
+            .single();
+
+          if (currency) {
+            const coinsToAdd = parseInt(coins || "0");
+            const gemsToAdd = parseInt(gems || "0");
+
+            await supabase
+              .from("horse_currency")
+              .update({
+                coins: currency.coins + coinsToAdd,
+                gems: currency.gems + gemsToAdd,
+              })
+              .eq("user_id", user.id);
+
+            queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+            
+            let message = "Nákup úspešný! ";
+            if (coinsToAdd > 0) message += `+${coinsToAdd} mincí `;
+            if (gemsToAdd > 0) message += `+${gemsToAdd} drahokamov`;
+            toast.success(message);
+          }
+        } catch (error) {
+          console.error("Error updating currency:", error);
+        }
+
+        // Clean URL
+        window.history.replaceState({}, "", "/horse-racing");
+      })();
+    } else if (paymentStatus === "cancelled") {
+      toast.info("Platba bola zrušená");
+      window.history.replaceState({}, "", "/horse-racing");
+    }
+  }, [queryClient]);
 
   const handleBuyHorse = () => {
     if (!horseName) {

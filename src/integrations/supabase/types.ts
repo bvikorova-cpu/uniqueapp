@@ -10235,6 +10235,7 @@ export type Database = {
           created_at: string | null
           gems: number
           id: string
+          last_daily_claim: string | null
           updated_at: string | null
           user_id: string
         }
@@ -10243,6 +10244,7 @@ export type Database = {
           created_at?: string | null
           gems?: number
           id?: string
+          last_daily_claim?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -10251,6 +10253,7 @@ export type Database = {
           created_at?: string | null
           gems?: number
           id?: string
+          last_daily_claim?: string | null
           updated_at?: string | null
           user_id?: string
         }
