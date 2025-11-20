@@ -22502,6 +22502,26 @@ export type Database = {
         | "dragon"
         | "unicorn"
         | "phoenix"
+        | "red_panda"
+        | "fennec_fox"
+        | "axolotl"
+        | "quokka"
+        | "sugar_glider"
+        | "toucan"
+        | "peacock"
+        | "penguin"
+        | "owl"
+        | "griffin"
+        | "kitsune"
+        | "cerberus"
+        | "chameleon"
+        | "gecko"
+        | "dolphin"
+        | "sea_turtle"
+        | "seahorse"
+        | "butterfly"
+        | "ladybug"
+        | "sloth"
       reading_type:
         | "daily"
         | "weekly"
@@ -22770,6 +22790,26 @@ export const Constants = {
         "dragon",
         "unicorn",
         "phoenix",
+        "red_panda",
+        "fennec_fox",
+        "axolotl",
+        "quokka",
+        "sugar_glider",
+        "toucan",
+        "peacock",
+        "penguin",
+        "owl",
+        "griffin",
+        "kitsune",
+        "cerberus",
+        "chameleon",
+        "gecko",
+        "dolphin",
+        "sea_turtle",
+        "seahorse",
+        "butterfly",
+        "ladybug",
+        "sloth",
       ],
       reading_type: [
         "daily",
