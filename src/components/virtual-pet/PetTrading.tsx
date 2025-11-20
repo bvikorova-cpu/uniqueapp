@@ -4,18 +4,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeftRight, Check, X } from "lucide-react";
+import { ArrowLeftRight, Check, X, Users, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const PetTrading = () => {
   const queryClient = useQueryClient();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [offeredPetId, setOfferedPetId] = useState("");
+  const [requestedPetId, setRequestedPetId] = useState("");
+  const [offeredCredits, setOfferedCredits] = useState("");
   const [requestedCredits, setRequestedCredits] = useState("");
+  const [message, setMessage] = useState("");
 
   const { data: userData } = useQuery({
     queryKey: ['user'],
@@ -24,31 +29,80 @@ export const PetTrading = () => {
 
   const user = userData?.data?.user;
 
-  const { data: myPets } = useQuery({
-    queryKey: ['my-pets-trading'],
+  const { data: allUsers } = useQuery({
+    queryKey: ['users-for-trading'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('pets')
-        .select('*, pet_types(*)')
-        .order('created_at', { ascending: false });
+        .from('profiles')
+        .select('id, full_name')
+        .limit(50);
       if (error) throw error;
       return data;
     }
   });
 
-  const { data: trades } = useQuery({
-    queryKey: ['pet-trades'],
+  const { data: allPets } = useQuery({
+    queryKey: ['all-pets-for-trading'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('pets')
+        .select('id, name, level, user_id, pet_types(name, species)')
+        .order('level', { ascending: false });
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const { data: myPets } = useQuery({
+    queryKey: ['my-pets-trading'],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('pets')
+        .select('*, pet_types(*)')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user
+  });
+
+  const { data: myTrades } = useQuery({
+    queryKey: ['my-trades'],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('pet_trades')
+        .select(`
+          *,
+          from_user:profiles!pet_trades_from_user_id_fkey(full_name),
+          to_user:profiles!pet_trades_to_user_id_fkey(full_name),
+          offered_pet:pets!pet_trades_offered_pet_id_fkey(name, level, pet_types(name)),
+          requested_pet:pets!pet_trades_requested_pet_id_fkey(name, level, pet_types(name))
+        `)
+        .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user
+  });
+
+  const { data: publicTrades } = useQuery({
+    queryKey: ['public-trades'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('pet_trades')
         .select(`
           *,
-          from_user:from_user_id(id),
-          to_user:to_user_id(id),
-          offered_pet:offered_pet_id(name, level, pet_types(name)),
-          requested_pet:requested_pet_id(name, level, pet_types(name))
+          from_user:profiles!pet_trades_from_user_id_fkey(full_name),
+          offered_pet:pets!pet_trades_offered_pet_id_fkey(name, level, user_id, pet_types(name))
         `)
-        .order('created_at', { ascending: false });
+        .eq('status', 'pending')
+        .is('to_user_id', null)
+        .order('created_at', { ascending: false })
+        .limit(20);
       if (error) throw error;
       return data;
     }
@@ -63,20 +117,41 @@ export const PetTrading = () => {
     }
   };
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed': return <Check className="h-4 w-4" />;
+      case 'pending': return <ArrowLeftRight className="h-4 w-4" />;
+      case 'rejected': return <X className="h-4 w-4" />;
+      default: return null;
+    }
+  };
+
   const createTradeMutation = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error('Not authenticated');
+      if (!offeredPetId) throw new Error('Please select a pet to offer');
 
-      // For now, create a placeholder trade without to_user_id (system will match later)
+      const tradeData: any = {
+        from_user_id: user.id,
+        offered_pet_id: offeredPetId,
+        status: 'pending',
+        message: message || null
+      };
+
+      if (requestedPetId) {
+        const requestedPet = allPets?.find(p => p.id === requestedPetId);
+        if (requestedPet) {
+          tradeData.to_user_id = requestedPet.user_id;
+          tradeData.requested_pet_id = requestedPetId;
+        }
+      }
+
+      if (offeredCredits) tradeData.offered_credits = parseInt(offeredCredits);
+      if (requestedCredits) tradeData.requested_credits = parseInt(requestedCredits);
+
       const { data, error } = await supabase
         .from('pet_trades')
-        .insert([{
-          from_user_id: user.id,
-          to_user_id: user.id, // Placeholder - would need a marketplace matching system
-          offered_pet_id: offeredPetId,
-          requested_credits: parseInt(requestedCredits),
-          status: 'pending'
-        }])
+        .insert([tradeData])
         .select()
         .single();
 
@@ -84,11 +159,15 @@ export const PetTrading = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['pet-trades'] });
+      queryClient.invalidateQueries({ queryKey: ['my-trades'] });
+      queryClient.invalidateQueries({ queryKey: ['public-trades'] });
       toast.success('Trade offer created!');
       setIsCreateOpen(false);
       setOfferedPetId("");
+      setRequestedPetId("");
+      setOfferedCredits("");
       setRequestedCredits("");
+      setMessage("");
     },
     onError: (error: any) => {
       toast.error(error.message || 'Failed to create trade');
@@ -97,9 +176,36 @@ export const PetTrading = () => {
 
   const respondTradeMutation = useMutation({
     mutationFn: async ({ tradeId, accept }: { tradeId: string; accept: boolean }) => {
+      if (!user) throw new Error('Not authenticated');
+
+      if (accept) {
+        // Transfer pets
+        const trade = myTrades?.find(t => t.id === tradeId);
+        if (!trade) throw new Error('Trade not found');
+
+        // Update pet ownership
+        if (trade.offered_pet_id) {
+          await supabase
+            .from('pets')
+            .update({ user_id: trade.to_user_id })
+            .eq('id', trade.offered_pet_id);
+        }
+
+        if (trade.requested_pet_id) {
+          await supabase
+            .from('pets')
+            .update({ user_id: trade.from_user_id })
+            .eq('id', trade.requested_pet_id);
+        }
+      }
+
       const { data, error } = await supabase
         .from('pet_trades')
-        .update({ status: accept ? 'completed' : 'rejected' })
+        .update({ 
+          status: accept ? 'completed' : 'rejected',
+          accepted_at: accept ? new Date().toISOString() : null,
+          completed_at: accept ? new Date().toISOString() : null
+        })
         .eq('id', tradeId)
         .select()
         .single();
@@ -108,11 +214,41 @@ export const PetTrading = () => {
       return data;
     },
     onSuccess: (_, { accept }) => {
-      queryClient.invalidateQueries({ queryKey: ['pet-trades'] });
-      toast.success(accept ? 'Trade accepted!' : 'Trade rejected');
+      queryClient.invalidateQueries({ queryKey: ['my-trades'] });
+      queryClient.invalidateQueries({ queryKey: ['public-trades'] });
+      queryClient.invalidateQueries({ queryKey: ['my-pets'] });
+      queryClient.invalidateQueries({ queryKey: ['my-pets-trading'] });
+      toast.success(accept ? 'Trade accepted! Pets exchanged.' : 'Trade rejected');
     },
     onError: (error: any) => {
       toast.error(error.message || 'Failed to respond to trade');
+    }
+  });
+
+  const acceptPublicTradeMutation = useMutation({
+    mutationFn: async (tradeId: string) => {
+      if (!user) throw new Error('Not authenticated');
+
+      const { data, error } = await supabase
+        .from('pet_trades')
+        .update({ 
+          to_user_id: user.id,
+          status: 'pending'
+        })
+        .eq('id', tradeId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-trades'] });
+      queryClient.invalidateQueries({ queryKey: ['public-trades'] });
+      toast.success('Trade request sent!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to accept trade');
     }
   });
 
@@ -167,7 +303,7 @@ export const PetTrading = () => {
       </div>
 
       <div className="space-y-4">
-        {trades?.map((trade: any) => (
+        {myTrades?.map((trade: any) => (
           <Card key={trade.id} className="p-6 space-y-4">
             <div className="flex justify-between items-start">
               <div className="flex-1">
@@ -231,7 +367,7 @@ export const PetTrading = () => {
           </Card>
         ))}
 
-        {(!trades || trades.length === 0) && (
+        {(!myTrades || myTrades.length === 0) && (
           <div className="text-center py-12 text-muted-foreground">
             <ArrowLeftRight className="h-12 w-12 mx-auto mb-4 opacity-50" />
             <p>No trades yet.</p>
