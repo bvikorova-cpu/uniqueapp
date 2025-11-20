@@ -20,17 +20,25 @@ export const useHorseCurrency = () => {
       if (error) throw error;
 
       if (!data) {
-        const { data: newData, error: insertError } = await supabase
+        // Call function to give starter balance
+        const { error: starterError } = await supabase.rpc(
+          "give_starter_balance",
+          { p_user_id: user.id }
+        );
+
+        if (starterError) {
+          console.error("Error giving starter balance:", starterError);
+          throw starterError;
+        }
+
+        // Fetch the newly created currency
+        const { data: newData, error: fetchError } = await supabase
           .from("horse_currency")
-          .insert({
-            user_id: user.id,
-            gems: 0,
-            coins: 0,
-          })
-          .select()
+          .select("*")
+          .eq("user_id", user.id)
           .single();
 
-        if (insertError) throw insertError;
+        if (fetchError) throw fetchError;
         return newData;
       }
 

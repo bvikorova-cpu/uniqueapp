@@ -42,51 +42,18 @@ export default function HorseRacing() {
   const [selectedHorseForShop, setSelectedHorseForShop] = useState("");
   const [shopColor, setShopColor] = useState("#8B4513");
 
-  // Handle payment success
+  // Handle payment success - just show message, webhook handles the credit addition
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const paymentStatus = params.get("payment");
-    const coins = params.get("coins");
-    const gems = params.get("gems");
 
-    if (paymentStatus === "success" && (coins || gems)) {
-      (async () => {
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (!user) return;
-
-          const { data: currency } = await supabase
-            .from("horse_currency")
-            .select("*")
-            .eq("user_id", user.id)
-            .single();
-
-          if (currency) {
-            const coinsToAdd = parseInt(coins || "0");
-            const gemsToAdd = parseInt(gems || "0");
-
-            await supabase
-              .from("horse_currency")
-              .update({
-                coins: currency.coins + coinsToAdd,
-                gems: currency.gems + gemsToAdd,
-              })
-              .eq("user_id", user.id);
-
-            queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
-            
-            let message = "Purchase successful! ";
-            if (coinsToAdd > 0) message += `+${coinsToAdd} coins `;
-            if (gemsToAdd > 0) message += `+${gemsToAdd} gems`;
-            toast.success(message);
-          }
-        } catch (error) {
-          console.error("Error updating currency:", error);
-        }
-
-        // Clean URL
-        window.history.replaceState({}, "", "/horse-racing");
-      })();
+    if (paymentStatus === "success") {
+      toast.success("Purchase successful! Your coins/gems will be added shortly.");
+      // Refresh currency after a short delay to allow webhook to process
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+      }, 2000);
+      window.history.replaceState({}, "", "/horse-racing");
     } else if (paymentStatus === "cancelled") {
       toast.info("Payment was cancelled");
       window.history.replaceState({}, "", "/horse-racing");
@@ -190,6 +157,9 @@ export default function HorseRacing() {
             <p className="text-muted-foreground mt-2">
               Skill-based racing • Legal virtual economy • No gambling
             </p>
+            <p className="text-sm text-muted-foreground mt-1">
+              🎁 New players receive 100 coins + 10 gems starter bonus!
+            </p>
           </div>
         </div>
 
@@ -288,9 +258,36 @@ export default function HorseRacing() {
                     progress: 0,
                   }))}
                   isRaceActive={activeRace.status === "running"}
-                  onRaceComplete={(results) => {
+                  onRaceComplete={async (results) => {
                     console.log("Race complete:", results);
-                    toast.success("Race finished!");
+                    
+                    try {
+                      // Calculate race results via edge function
+                      const { data, error } = await supabase.functions.invoke(
+                        "calculate-race-results",
+                        {
+                          body: { raceId: selectedRace },
+                        }
+                      );
+
+                      if (error) throw error;
+
+                      if (data?.results) {
+                        const winner = data.results[0];
+                        toast.success(
+                          `Race finished! Winner: ${winner.horseName}${
+                            winner.prize > 0 ? ` - Prize: ${winner.prize} coins` : ""
+                          }`
+                        );
+                      }
+                    } catch (error) {
+                      console.error("Error calculating results:", error);
+                      toast.error("Error calculating race results");
+                    }
+                    
+                    queryClient.invalidateQueries({ queryKey: ["active-races"] });
+                    queryClient.invalidateQueries({ queryKey: ["user-horses"] });
+                    queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
                     setSelectedRace(null);
                   }}
                 />

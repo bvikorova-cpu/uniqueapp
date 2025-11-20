@@ -22375,6 +22375,7 @@ export type Database = {
       generate_story_share_code: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
+      give_starter_balance: { Args: { p_user_id: string }; Returns: undefined }
       has_confession_access: {
         Args: { service_type_param: string; user_id_param: string }
         Returns: boolean

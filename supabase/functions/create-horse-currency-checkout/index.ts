@@ -57,7 +57,7 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/horse-racing?payment=success&coins=${selectedPackage.coins}&gems=${selectedPackage.gems}`,
+      success_url: `${req.headers.get("origin")}/horse-racing?payment=success`,
       cancel_url: `${req.headers.get("origin")}/horse-racing?payment=cancelled`,
       metadata: {
         user_id: user.id,
