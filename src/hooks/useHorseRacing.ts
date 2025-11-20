@@ -24,8 +24,8 @@ export const useHorseCurrency = () => {
           .from("horse_currency")
           .insert({
             user_id: user.id,
-            gems: 100,
-            coins: 1000,
+            gems: 0,
+            coins: 0,
           })
           .select()
           .single();
