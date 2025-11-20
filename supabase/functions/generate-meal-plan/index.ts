@@ -30,58 +30,11 @@ serve(async (req) => {
       });
     }
 
-    const {
-      title,
-      days,
-      targetCalories,
-      targetProtein,
-      targetCarbs,
-      targetFats,
-      dietaryPreferences,
-      allergens,
-      isPremium
-    } = await req.json();
+    const { title, days, targetCalories, targetProtein, targetCarbs, targetFats, dietaryPreferences, allergens, isPremium } = await req.json();
 
+    // Trial credits checked on frontend
     console.log('Generating meal plan for user:', user.id);
 
-    // Check credits
-    const creditsNeeded = 50;
-    const { data: credits } = await supabaseClient
-      .from('ai_credits')
-      .select('credits_remaining')
-      .eq('user_id', user.id)
-      .single();
-
-    if (!credits || credits.credits_remaining < creditsNeeded) {
-      return new Response(JSON.stringify({ error: 'Insufficient credits' }), {
-        status: 402,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Check subscription limits for free users
-    const { data: subscription } = await supabaseClient
-      .from('nutrition_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
-
-    if (!isPremium && subscription?.subscription_type === 'free') {
-      const { count } = await supabaseClient
-        .from('meal_plans')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .gte('created_at', new Date(new Date().setDate(1)).toISOString());
-
-      if (count && count >= 3) {
-        return new Response(JSON.stringify({ error: 'Monthly limit reached. Upgrade to premium!' }), {
-          status: 403,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-    }
-
-    // Build AI prompt
     const dietaryInfo = dietaryPreferences?.length ? `Dietary preferences: ${dietaryPreferences.join(', ')}. ` : '';
     const allergenInfo = allergens?.length ? `Allergens to avoid: ${allergens.join(', ')}. ` : '';
     const macroInfo = targetProtein ? `Target macros: ${targetProtein}g protein, ${targetCarbs}g carbs, ${targetFats}g fats. ` : '';
@@ -97,32 +50,17 @@ For each day, provide breakfast, lunch, dinner, and 2 snacks. For each meal incl
 
 Also provide a shopping list organized by category (vegetables, proteins, grains, etc.).
 
-Format the response as JSON with this structure:
-{
-  "days": [
-    {
-      "day": 1,
-      "meals": {
-        "breakfast": { "name": "", "ingredients": [], "calories": 0, "protein": 0, "carbs": 0, "fats": 0, "instructions": "" },
-        "lunch": { "name": "", "ingredients": [], "calories": 0, "protein": 0, "carbs": 0, "fats": 0, "instructions": "" },
-        "dinner": { "name": "", "ingredients": [], "calories": 0, "protein": 0, "carbs": 0, "fats": 0, "instructions": "" },
-        "snack1": { "name": "", "ingredients": [], "calories": 0, "protein": 0, "carbs": 0, "fats": 0 },
-        "snack2": { "name": "", "ingredients": [], "calories": 0, "protein": 0, "carbs": 0, "fats": 0 }
-      }
-    }
-  ],
-  "shoppingList": {
-    "vegetables": [],
-    "proteins": [],
-    "grains": [],
-    "dairy": [],
-    "other": []
-  }
-}`;
+Format the response as JSON.`;
 
-    // Call Lovable AI
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    if (!LOVABLE_API_KEY) {
+      return new Response(JSON.stringify({ error: 'API key not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${LOVABLE_API_KEY}`,
@@ -131,35 +69,38 @@ Format the response as JSON with this structure:
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [
-          { role: 'system', content: 'You are a professional nutritionist creating personalized meal plans. Always respond with valid JSON.' },
+          { role: 'system', content: 'You are a professional nutritionist. Always respond with valid JSON only.' },
           { role: 'user', content: prompt }
         ],
+        temperature: 0.7,
       }),
     });
 
-    if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error('AI API error:', aiResponse.status, errorText);
-      return new Response(JSON.stringify({ error: 'AI generation failed' }), {
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('AI error:', response.status, errorText);
+      return new Response(JSON.stringify({ error: 'Error generating meal plan' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const aiData = await aiResponse.json();
-    const generatedText = aiData.choices[0].message.content;
-    
-    // Parse JSON from AI response
-    let planData;
+    const data = await response.json();
+    const aiResponse = data.choices[0].message.content;
+
+    let mealPlanData;
     try {
-      const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
-      planData = jsonMatch ? JSON.parse(jsonMatch[0]) : JSON.parse(generatedText);
-    } catch (e) {
-      console.error('Failed to parse AI response:', e);
-      planData = { days: [], shoppingList: {} };
+      const jsonMatch = aiResponse.match(/```json\n?([\s\S]*?)\n?```/);
+      const jsonStr = jsonMatch ? jsonMatch[1] : aiResponse;
+      mealPlanData = JSON.parse(jsonStr);
+    } catch (parseError) {
+      console.error('Parse error:', parseError);
+      return new Response(JSON.stringify({ error: 'Error parsing meal plan data' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    // Save meal plan
     const { data: mealPlan, error: mealPlanError } = await supabaseClient
       .from('meal_plans')
       .insert({
@@ -170,46 +111,30 @@ Format the response as JSON with this structure:
         target_protein: targetProtein,
         target_carbs: targetCarbs,
         target_fats: targetFats,
-        dietary_preferences: dietaryPreferences || [],
-        allergens: allergens || [],
-        plan_data: planData.days || [],
-        shopping_list: planData.shoppingList || {},
-        is_premium: isPremium || false
+        dietary_preferences: dietaryPreferences,
+        allergens,
+        meal_plan_data: mealPlanData,
+        shopping_list: mealPlanData.shopping_list,
+        is_premium: isPremium,
+        credits_used: 0
       })
       .select()
       .single();
 
     if (mealPlanError) {
-      console.error('Error saving meal plan:', mealPlanError);
-      throw mealPlanError;
-    }
-
-    // Deduct credits
-    await supabaseClient
-      .from('ai_credits')
-      .update({ 
-        credits_remaining: credits.credits_remaining - creditsNeeded,
-        last_used_at: new Date().toISOString()
-      })
-      .eq('user_id', user.id);
-
-    // Log usage
-    await supabaseClient
-      .from('ai_usage_logs')
-      .insert({
-        user_id: user.id,
-        feature_type: 'meal_plan_generation',
-        credits_used: creditsNeeded
+      console.error('Save error:', mealPlanError);
+      return new Response(JSON.stringify({ error: 'Error saving meal plan' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
-
-    console.log('Meal plan generated successfully:', mealPlan.id);
+    }
 
     return new Response(JSON.stringify({ mealPlan }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error in generate-meal-plan function:', error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }), {
+    console.error('Error:', error);
+    return new Response(JSON.stringify({ error: 'Internal error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
