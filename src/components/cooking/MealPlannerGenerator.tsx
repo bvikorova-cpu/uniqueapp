@@ -6,13 +6,13 @@ import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Calendar } from 'lucide-react';
-import { useCookingCredits } from '@/hooks/useCookingCredits';
+import { useAICredits } from '@/hooks/useAICredits';
 
 export const MealPlannerGenerator = () => {
   const [days, setDays] = useState(7);
   const [calorieTarget, setCalorieTarget] = useState('2000');
   const [mealPlan, setMealPlan] = useState<any>(null);
-  const { data: credits } = useCookingCredits();
+  const { credits, loading: creditsLoading } = useAICredits();
 
   const generateMutation = useMutation({
     mutationFn: async () => {
@@ -66,11 +66,16 @@ export const MealPlannerGenerator = () => {
 
           <Button
             onClick={() => generateMutation.mutate()}
-            disabled={generateMutation.isPending || !credits || credits.credits < 3}
+            disabled={generateMutation.isPending || !credits || credits.credits_remaining < 50}
             className="w-full"
           >
-            {generateMutation.isPending ? 'Generujem...' : 'Vygeneruj plán (3 kredity)'}
+            {generateMutation.isPending ? 'Generujem...' : 'Vygeneruj plán (50 AI kreditov)'}
           </Button>
+          {credits && credits.credits_remaining < 50 && (
+            <p className="text-sm text-destructive mt-2">
+              Potrebujete 50 AI kreditov na generovanie jedálneho plánu. Máte {credits.credits_remaining} kreditov.
+            </p>
+          )}
         </div>
       </Card>
 

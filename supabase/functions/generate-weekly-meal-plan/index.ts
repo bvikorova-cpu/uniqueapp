@@ -28,15 +28,15 @@ serve(async (req) => {
       });
     }
 
-    // Check credits (3 credits for meal plan)
+    // Check if user has enough AI credits (50 credits for meal plan)
     const { data: credits } = await supabase
-      .from('cooking_credits')
-      .select('credits, subscription_tier')
+      .from('ai_credits')
+      .select('credits_remaining')
       .eq('user_id', user.id)
       .single();
 
-    if (!credits || credits.credits < 3) {
-      return new Response(JSON.stringify({ error: 'Nedostatok kreditov (potrebné 3)' }), {
+    if (!credits || credits.credits_remaining < 50) {
+      return new Response(JSON.stringify({ error: 'Nedostatok AI kreditov (potrebných 50)' }), {
         status: 402,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -130,23 +130,35 @@ Vráť JSON:
         shopping_list: mealPlanData.shopping_list || {},
         total_calories: mealPlanData.weekly_summary?.total_calories || 0,
         dietary_preferences,
-        credits_used: 3
+        credits_used: 50
       })
       .select()
       .single();
 
-    // Deduct credits
+    // Deduct 50 AI credits and log usage
     await supabase
-      .from('cooking_credits')
-      .update({ credits: credits.credits - 3 })
+      .from('ai_credits')
+      .update({ 
+        credits_remaining: credits.credits_remaining - 50,
+        last_used_at: new Date().toISOString()
+      })
       .eq('user_id', user.id);
+
+    await supabase
+      .from('ai_usage_history')
+      .insert({
+        user_id: user.id,
+        usage_type: 'meal_plan_generation',
+        credits_used: 50,
+        description: `Generated ${days}-day meal plan`
+      });
 
     console.log('Meal plan generated successfully');
 
     return new Response(JSON.stringify({ 
       meal_plan: mealPlanData,
       plan_id: savedPlan.id,
-      credits_remaining: credits.credits - 3
+      credits_remaining: credits.credits_remaining - 50
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
