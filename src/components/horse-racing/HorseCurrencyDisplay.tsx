@@ -4,16 +4,36 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Coins, Gem } from "lucide-react";
 import { useHorseCurrency, usePurchaseCurrency } from "@/hooks/useHorseRacing";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const HorseCurrencyDisplay = () => {
   const { currency, isLoading } = useHorseCurrency();
   const purchaseCurrency = usePurchaseCurrency();
   const [showBuyCoins, setShowBuyCoins] = useState(false);
   const [showBuyGems, setShowBuyGems] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center py-4">Loading...</div>;
   }
+
+  const handlePurchase = (packageType: string) => {
+    if (!currency) {
+      toast.error("Unable to load currency. Please refresh the page.");
+      return;
+    }
+    setSelectedPackage(packageType);
+    purchaseCurrency.mutate(packageType, {
+      onSettled: () => {
+        setSelectedPackage(null);
+        setShowBuyCoins(false);
+        setShowBuyGems(false);
+      },
+      onError: () => {
+        toast.error("Purchase failed. Please try again.");
+      }
+    });
+  };
 
   return (
     <Card className="p-6">
@@ -55,28 +75,28 @@ export const HorseCurrencyDisplay = () => {
                 <Button
                   variant="outline"
                   className="h-auto flex-col items-start p-4"
-                  onClick={() => {
-                    purchaseCurrency.mutate("coins_100");
-                    setShowBuyCoins(false);
-                  }}
+                  onClick={() => handlePurchase("coins_100")}
+                  disabled={purchaseCurrency.isPending}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Coins className="h-5 w-5 text-yellow-500" />
-                    <span className="font-bold">100 Coins</span>
+                    <span className="font-bold">
+                      {selectedPackage === "coins_100" && purchaseCurrency.isPending ? "Processing..." : "100 Coins"}
+                    </span>
                   </div>
                   <span className="text-sm text-muted-foreground">€1.99</span>
                 </Button>
                 <Button
                   variant="outline"
                   className="h-auto flex-col items-start p-4 border-primary"
-                  onClick={() => {
-                    purchaseCurrency.mutate("coins_500");
-                    setShowBuyCoins(false);
-                  }}
+                  onClick={() => handlePurchase("coins_500")}
+                  disabled={purchaseCurrency.isPending}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Coins className="h-5 w-5 text-yellow-500" />
-                    <span className="font-bold">500 Coins</span>
+                    <span className="font-bold">
+                      {selectedPackage === "coins_500" && purchaseCurrency.isPending ? "Processing..." : "500 Coins"}
+                    </span>
                     <span className="text-xs bg-primary text-primary-foreground px-2 py-0.5 rounded">
                       BONUS
                     </span>
@@ -105,24 +125,22 @@ export const HorseCurrencyDisplay = () => {
                 <Button
                   variant="outline"
                   className="h-auto flex-col items-start p-4"
-                  onClick={() => {
-                    purchaseCurrency.mutate("gems_50");
-                    setShowBuyGems(false);
-                  }}
+                  onClick={() => handlePurchase("gems_50")}
+                  disabled={purchaseCurrency.isPending}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Gem className="h-5 w-5 text-primary" />
-                    <span className="font-bold">50 Gems</span>
+                    <span className="font-bold">
+                      {selectedPackage === "gems_50" && purchaseCurrency.isPending ? "Processing..." : "50 Gems"}
+                    </span>
                   </div>
                   <span className="text-sm text-muted-foreground">€4.99</span>
                 </Button>
                 <Button
                   variant="outline"
                   className="h-auto flex-col items-start p-4 border-primary"
-                  onClick={() => {
-                    purchaseCurrency.mutate("gems_200");
-                    setShowBuyGems(false);
-                  }}
+                  onClick={() => handlePurchase("gems_200")}
+                  disabled={purchaseCurrency.isPending}
                 >
                   <div className="flex items-center gap-2 mb-1">
                     <Gem className="h-5 w-5 text-primary" />
