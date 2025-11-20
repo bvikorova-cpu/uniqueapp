@@ -263,7 +263,7 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
                   <SelectContent>
                     {petTypes?.map((type) => (
                       <SelectItem key={type.id} value={type.id}>
-                        {type.name} {type.is_premium && '⭐'} {type.price > 0 && `(€${type.price})`}
+                        {type.name} {type.is_premium && '⭐'} {type.price > 0 && `(${type.price} credits)`}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -274,12 +274,12 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
                 <div className="p-3 bg-muted rounded-lg space-y-1">
                   <div className="flex justify-between text-sm">
                     <span>Your Credits:</span>
-                    <span className="font-semibold">€{credits.credits_remaining}</span>
+                    <span className="font-semibold">{credits.credits_remaining}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Cost:</span>
                     <span className="font-semibold text-primary">
-                      €{petTypes.find(pt => pt.id === selectedTypeId)?.price || 0}
+                      {petTypes.find(pt => pt.id === selectedTypeId)?.price || 0} credits
                     </span>
                   </div>
                 </div>
