@@ -26,8 +26,8 @@ serve(async (req) => {
 
     const { coins } = await req.json();
     
-    // Determine price based on coin amount
-    let priceId = "price_1SPSMWGaXSfGtYFtZa8ul2dN"; // 100 coins for $5
+    // Determine price based on coin amount (EUR pricing)
+    let priceId = "price_1SVdpB0QTWhd4oRpMfGHhqkT"; // 100 coins for €5
     
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
