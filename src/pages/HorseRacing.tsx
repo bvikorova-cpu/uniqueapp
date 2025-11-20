@@ -622,15 +622,6 @@ export default function HorseRacing() {
           </div>
         </DialogContent>
       </Dialog>
-      
-      {/* New Tabs Content */}
-      <TabsContent value="leaderboard">
-        <HorseLeaderboard />
-      </TabsContent>
-
-      <TabsContent value="marketplace">
-        <HorseMarketplace />
-      </TabsContent>
     </div>
   );
 }
