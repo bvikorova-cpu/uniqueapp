@@ -162,9 +162,6 @@ export default function HorseRacing() {
             <p className="text-muted-foreground mt-2">
               Skill-based racing • Legal virtual economy • No gambling
             </p>
-            <p className="text-sm text-muted-foreground mt-1">
-              🎁 New players receive 100 coins + 10 gems starter bonus!
-            </p>
           </div>
         </div>
 
