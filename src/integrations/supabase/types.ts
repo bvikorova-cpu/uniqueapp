@@ -4629,6 +4629,38 @@ export type Database = {
           },
         ]
       }
+      comedy_show_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          sender_id: string
+          show_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          sender_id: string
+          show_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          sender_id?: string
+          show_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedy_show_messages_show_id_fkey"
+            columns: ["show_id"]
+            isOneToOne: false
+            referencedRelation: "comedy_shows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comedy_shows: {
         Row: {
           comedian_id: string
@@ -22526,6 +22558,10 @@ export type Database = {
       }
       create_payout_batch: { Args: { p_batch_date: string }; Returns: string }
       deactivate_expired_listings: { Args: never; Returns: undefined }
+      deduct_comedian_balance: {
+        Args: { p_amount: number; p_comedian_id: string }
+        Returns: undefined
+      }
       expire_featured_listings: { Args: never; Returns: undefined }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       generate_certificate_number: { Args: never; Returns: string }

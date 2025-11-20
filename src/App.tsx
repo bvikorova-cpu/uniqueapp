@@ -41,6 +41,7 @@ import AdminTransactions from "./pages/AdminTransactions";
 import AdminCorporateInquiries from "./pages/AdminCorporateInquiries";
 import AdminTipsters from "./pages/AdminTipsters";
 import AdminMasterChefPayouts from "./pages/AdminMasterChefPayouts";
+import AdminComedyPayouts from "./pages/AdminComedyPayouts";
 import AdminInfluencerPayouts from "./pages/AdminInfluencerPayouts";
 import AdminPlatformEarnings from "./pages/AdminPlatformEarnings";
 import Bazaar from "./pages/Bazaar";
@@ -211,6 +212,8 @@ import VirtualEscapeRoom from "./pages/VirtualEscapeRoom";
 import HorseRacing from "./pages/HorseRacing";
 import ComedyClub from "./pages/ComedyClub";
 import ComedianDashboard from "./pages/ComedianDashboard";
+import ComedyLiveShow from "./pages/ComedyLiveShow";
+import ComedyLiveViewer from "./pages/ComedyLiveViewer";
 import DisneyCastles from "./pages/DisneyCastles";
 import DisneyCastleTour from "./pages/DisneyCastleTour";
 import DisneyAdmin from "./pages/DisneyAdmin";
@@ -325,6 +328,7 @@ const App = () => (
               <Route path="/wine-pairing" element={<WinePairing />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/masterchef-payouts" element={<AdminMasterChefPayouts />} />
+              <Route path="/admin/comedy-payouts" element={<AdminComedyPayouts />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
@@ -502,6 +506,8 @@ const App = () => (
               <Route path="/horse-racing" element={<HorseRacing />} />
               <Route path="/comedy-club" element={<ComedyClub />} />
               <Route path="/comedian-dashboard" element={<ComedianDashboard />} />
+              <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
+              <Route path="/comedy-watch/:showId" element={<ComedyLiveViewer />} />
               <Route path="/kids-channel/disney-castles" element={<DisneyCastles />} />
               <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
               <Route path="/kids-channel/disney-admin" element={<DisneyAdmin />} />
