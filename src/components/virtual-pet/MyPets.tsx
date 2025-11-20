@@ -10,6 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useAICredits } from "@/hooks/useAICredits";
+import { useNavigate } from "react-router-dom";
 import puppyImg from "@/assets/pets/cute-puppy.png";
 import kittenImg from "@/assets/pets/cute-kitten.png";
 import bunnyImg from "@/assets/pets/cute-bunny.png";
@@ -24,6 +26,8 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
   const [newPetName, setNewPetName] = useState("");
   const [selectedTypeId, setSelectedTypeId] = useState("");
   const queryClient = useQueryClient();
+  const { credits } = useAICredits();
+  const navigate = useNavigate();
 
   const { data: petTypes } = useQuery({
     queryKey: ['pet-types'],
@@ -66,6 +70,40 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      // Get selected pet type to check price
+      const selectedType = petTypes?.find(pt => pt.id === selectedTypeId);
+      if (!selectedType) throw new Error('Pet type not found');
+
+      const price = selectedType.price || 0;
+
+      // Check and deduct credits if needed
+      if (price > 0) {
+        if (credits.credits_remaining < price) {
+          throw new Error('INSUFFICIENT_CREDITS');
+        }
+
+        // Deduct credits
+        const { error: creditError } = await supabase
+          .from('ai_credits')
+          .update({
+            credits_remaining: credits.credits_remaining - price,
+            last_used_at: new Date().toISOString(),
+          })
+          .eq('user_id', user.id);
+
+        if (creditError) throw creditError;
+
+        // Log usage
+        await supabase
+          .from('ai_usage_history')
+          .insert({
+            user_id: user.id,
+            usage_type: 'pet_adoption',
+            credits_used: price,
+            description: `Adopted ${selectedType.name}`,
+          });
+      }
+
       const { data, error } = await supabase
         .from('pets')
         .insert([{
@@ -81,13 +119,21 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-pets'] });
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success('Pet adopted successfully!');
       setIsCreateOpen(false);
       setNewPetName("");
       setSelectedTypeId("");
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to adopt pet');
+      if (error.message === 'INSUFFICIENT_CREDITS') {
+        toast.error('Not enough credits. Redirecting to purchase...');
+        setTimeout(() => {
+          navigate('/ai-credits');
+        }, 1500);
+      } else {
+        toast.error(error.message || 'Failed to adopt pet');
+      }
     }
   });
 
@@ -153,13 +199,28 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
 
   const getXPToNextLevel = (level: number) => level * 10;
 
+  const getPetEmoji = (species: string) => {
+    const emojiMap: Record<string, string> = {
+      'dog': '🐕', 'cat': '🐈', 'rabbit': '🐰', 'hamster': '🐹',
+      'dragon': '🐉', 'unicorn': '🦄', 'phoenix': '🔥',
+      'red_panda': '🐼', 'fennec_fox': '🦊', 'axolotl': '🦎',
+      'quokka': '🦘', 'sugar_glider': '🐿️', 'toucan': '🦜',
+      'peacock': '🦚', 'penguin': '🐧', 'owl': '🦉',
+      'griffin': '🦅', 'kitsune': '🦊', 'cerberus': '🐺',
+      'chameleon': '🦎', 'gecko': '🦎', 'dolphin': '🐬',
+      'sea_turtle': '🐢', 'seahorse': '🌊', 'butterfly': '🦋',
+      'ladybug': '🐞', 'sloth': '🦥'
+    };
+    return emojiMap[species] || '🐾';
+  };
+
   const getPetImage = (petTypeName: string) => {
     const name = petTypeName?.toLowerCase() || '';
     if (name.includes('puppy') || name.includes('dog')) return puppyImg;
     if (name.includes('kitten') || name.includes('cat')) return kittenImg;
     if (name.includes('bunny') || name.includes('rabbit')) return bunnyImg;
     if (name.includes('hamster')) return hamsterImg;
-    return puppyImg; // default
+    return null; // Return null for species without specific images
   };
 
   if (isLoading) {
@@ -202,12 +263,27 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
                   <SelectContent>
                     {petTypes?.map((type) => (
                       <SelectItem key={type.id} value={type.id}>
-                        {type.name} {type.is_premium && '⭐'} {type.price && `(${type.price} credits)`}
+                        {type.name} {type.is_premium && '⭐'} {type.price > 0 && `(€${type.price})`}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
+
+              {selectedTypeId && petTypes && (
+                <div className="p-3 bg-muted rounded-lg space-y-1">
+                  <div className="flex justify-between text-sm">
+                    <span>Your Credits:</span>
+                    <span className="font-semibold">€{credits.credits_remaining}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Cost:</span>
+                    <span className="font-semibold text-primary">
+                      €{petTypes.find(pt => pt.id === selectedTypeId)?.price || 0}
+                    </span>
+                  </div>
+                </div>
+              )}
 
               <Button type="submit" className="w-full" disabled={createPetMutation.isPending}>
                 {createPetMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Adopt Pet'}
@@ -226,12 +302,18 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
           return (
             <Card key={pet.id} className="p-6 space-y-4 hover:shadow-lg transition-all duration-300 cursor-pointer group" onClick={() => onSelectPet(pet.id)}>
               <div className="flex flex-col items-center mb-4">
-                <div className="relative w-32 h-32 mb-4">
-                  <img 
-                    src={getPetImage(pet.pet_types?.name)} 
-                    alt={pet.name}
-                    className="w-full h-full object-contain animate-[bounce_3s_ease-in-out_infinite] group-hover:animate-[bounce_1s_ease-in-out_infinite]"
-                  />
+                <div className="relative w-32 h-32 mb-4 flex items-center justify-center">
+                  {getPetImage(pet.pet_types?.name) ? (
+                    <img 
+                      src={getPetImage(pet.pet_types?.name)!} 
+                      alt={pet.name}
+                      className="w-full h-full object-contain animate-[bounce_3s_ease-in-out_infinite] group-hover:animate-[bounce_1s_ease-in-out_infinite]"
+                    />
+                  ) : (
+                    <div className="text-8xl animate-[bounce_3s_ease-in-out_infinite] group-hover:animate-[bounce_1s_ease-in-out_infinite]">
+                      {getPetEmoji(pet.pet_types?.species || '')}
+                    </div>
+                  )}
                   <div className="absolute -top-2 -right-2 bg-primary text-primary-foreground rounded-full p-2 animate-pulse">
                     <Star className="h-4 w-4" />
                   </div>
