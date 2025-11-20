@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HorseCurrencyDisplay } from "@/components/horse-racing/HorseCurrencyDisplay";
+import { HorseLeaderboard } from "@/components/horse-racing/HorseLeaderboard";
+import { HorseMarketplace } from "@/components/horse-racing/HorseMarketplace";
 import { useUserHorses, useRaces, useJoinRace, useTrainHorse, useBreedHorses, usePurchaseHorseColor } from "@/hooks/useHorseRacing";
 import { RaceTrack3D } from "@/components/horse-racing/RaceTrack3D";
-import { Trophy, Dumbbell, Heart, Sparkles, Zap } from "lucide-react";
+import { Trophy, Dumbbell, Heart, Sparkles, Zap, TrendingUp, ShoppingCart } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -75,6 +77,9 @@ export default function HorseRacing() {
       onSuccess: () => {
         setShowBuyHorse(false);
         setHorseName("");
+      },
+      onError: (error: Error) => {
+        toast.error(`Failed to buy horse: ${error.message}`);
       }
     });
   };
@@ -166,7 +171,7 @@ export default function HorseRacing() {
         <HorseCurrencyDisplay />
 
         <Tabs defaultValue="stable" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="stable">
               <Zap className="mr-2 h-4 w-4" />
               My Stable
@@ -186,6 +191,14 @@ export default function HorseRacing() {
             <TabsTrigger value="shop">
               <Sparkles className="mr-2 h-4 w-4" />
               Shop
+            </TabsTrigger>
+            <TabsTrigger value="leaderboard">
+              <TrendingUp className="mr-2 h-4 w-4" />
+              Leaderboard
+            </TabsTrigger>
+            <TabsTrigger value="marketplace">
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              Marketplace
             </TabsTrigger>
           </TabsList>
 
@@ -596,11 +609,20 @@ export default function HorseRacing() {
               </div>
             </div>
             <Button onClick={handlePurchaseColor} className="w-full" disabled={purchaseColor.isPending}>
-              Change Color - 50 Gems
+              {purchaseColor.isPending ? "Processing..." : "Change Color - 50 Gems"}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* New Tabs Content */}
+      <TabsContent value="leaderboard">
+        <HorseLeaderboard />
+      </TabsContent>
+
+      <TabsContent value="marketplace">
+        <HorseMarketplace />
+      </TabsContent>
     </div>
   );
 }

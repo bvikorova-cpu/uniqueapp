@@ -10259,6 +10259,50 @@ export type Database = {
         }
         Relationships: []
       }
+      horse_market_listings: {
+        Row: {
+          buyer_id: string | null
+          created_at: string | null
+          horse_id: string
+          id: string
+          is_active: boolean | null
+          listed_at: string | null
+          price_coins: number
+          seller_id: string
+          sold_at: string | null
+        }
+        Insert: {
+          buyer_id?: string | null
+          created_at?: string | null
+          horse_id: string
+          id?: string
+          is_active?: boolean | null
+          listed_at?: string | null
+          price_coins: number
+          seller_id: string
+          sold_at?: string | null
+        }
+        Update: {
+          buyer_id?: string | null
+          created_at?: string | null
+          horse_id?: string
+          id?: string
+          is_active?: boolean | null
+          listed_at?: string | null
+          price_coins?: number
+          seller_id?: string
+          sold_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "horse_market_listings_horse_id_fkey"
+            columns: ["horse_id"]
+            isOneToOne: false
+            referencedRelation: "horses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       horse_training: {
         Row: {
           created_at: string
@@ -10311,6 +10355,7 @@ export type Database = {
           level: number
           max_breeding: number
           name: string
+          race_wins: number | null
           rarity: string
           speed_stat: number
           stamina_stat: number
@@ -10333,6 +10378,7 @@ export type Database = {
           level?: number
           max_breeding?: number
           name: string
+          race_wins?: number | null
           rarity?: string
           speed_stat?: number
           stamina_stat?: number
@@ -10355,6 +10401,7 @@ export type Database = {
           level?: number
           max_breeding?: number
           name?: string
+          race_wins?: number | null
           rarity?: string
           speed_stat?: number
           stamina_stat?: number
@@ -22460,6 +22507,10 @@ export type Database = {
       }
       purchase_brain_duel_powerup: {
         Args: { p_powerup_type: string; p_price: number }
+        Returns: undefined
+      }
+      purchase_horse_from_market: {
+        Args: { buyer_id: string; listing_id: string }
         Returns: undefined
       }
       spend_brain_duel_credits: {
