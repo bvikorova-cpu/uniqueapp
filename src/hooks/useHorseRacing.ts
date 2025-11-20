@@ -41,55 +41,6 @@ export const useHorseCurrency = () => {
   return { currency, isLoading };
 };
 
-export const useClaimDailyReward = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
-
-      const { data: currency, error: fetchError } = await supabase
-        .from("horse_currency")
-        .select("*")
-        .eq("user_id", user.id)
-        .single();
-
-      if (fetchError) throw fetchError;
-
-      const lastClaim = currency.last_daily_claim ? new Date(currency.last_daily_claim) : null;
-      const now = new Date();
-      
-      if (lastClaim) {
-        const hoursSinceLastClaim = (now.getTime() - lastClaim.getTime()) / (1000 * 60 * 60);
-        if (hoursSinceLastClaim < 24) {
-          throw new Error(`Denná odmena bude dostupná o ${Math.ceil(24 - hoursSinceLastClaim)} hodín`);
-        }
-      }
-
-      const { error: updateError } = await supabase
-        .from("horse_currency")
-        .update({
-          coins: currency.coins + 50,
-          gems: currency.gems + 5,
-          last_daily_claim: now.toISOString(),
-        })
-        .eq("user_id", user.id);
-
-      if (updateError) throw updateError;
-
-      return { coins: 50, gems: 5 };
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
-      toast.success("Denná odmena získaná! +50 mincí, +5 drahokamov");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
-    },
-  });
-};
-
 export const usePurchaseCurrency = () => {
   return useMutation({
     mutationFn: async (packageType: string) => {
