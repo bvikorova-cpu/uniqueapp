@@ -294,7 +294,15 @@ export default function FashionGenerator() {
 
           <Button
             onClick={handleGenerate}
-            disabled={generateMutation.isPending || !title || !categoryId || !styleId || !materialId}
+            disabled={
+              generateMutation.isPending || 
+              !title || 
+              !categoryId || 
+              !styleId || 
+              !materialId ||
+              !credits ||
+              credits.credits_remaining < 5
+            }
             className="w-full gap-2"
             size="lg"
           >

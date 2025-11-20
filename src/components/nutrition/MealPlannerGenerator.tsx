@@ -231,7 +231,12 @@ export default function MealPlannerGenerator() {
 
           <Button
             onClick={handleGenerate}
-            disabled={generateMutation.isPending || !title}
+            disabled={
+              generateMutation.isPending || 
+              !title ||
+              !credits ||
+              credits.credits_remaining < 50
+            }
             className="w-full gap-2"
             size="lg"
           >
