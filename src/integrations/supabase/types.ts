@@ -10229,6 +10229,33 @@ export type Database = {
         }
         Relationships: []
       }
+      horse_currency: {
+        Row: {
+          coins: number
+          created_at: string | null
+          gems: number
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          coins?: number
+          created_at?: string | null
+          gems?: number
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          coins?: number
+          created_at?: string | null
+          gems?: number
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       horse_training: {
         Row: {
           created_at: string
