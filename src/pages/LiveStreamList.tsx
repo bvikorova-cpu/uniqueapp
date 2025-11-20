@@ -233,11 +233,11 @@ export default function LiveStreamList() {
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center mx-auto mb-3">
                 <Radio className="w-6 h-6 text-white" />
               </div>
-              <CardTitle className="text-lg">Jednoduché spustenie</CardTitle>
+              <CardTitle className="text-lg">Easy Launch</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Jedno kliknutie a si naživo. Žiadne komplikované nastavenia potrebné
+                One click and you're live. No complicated setup needed
               </p>
             </CardContent>
           </Card>

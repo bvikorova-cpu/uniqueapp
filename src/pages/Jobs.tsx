@@ -498,7 +498,7 @@ const Jobs = () => {
             )}
             {!user && (
               <Button onClick={() => window.location.href = "/auth"}>
-                Prihlásiť sa
+                Sign In
               </Button>
             )}
           </div>
@@ -654,10 +654,10 @@ const Jobs = () => {
                   
                   <div className="flex items-center justify-between pt-2 border-t border-border">
                     <span className="text-sm text-muted-foreground">
-                      {job.applications_count} aplikácií
+                      {job.applications_count} applications
                     </span>
                     <Button onClick={() => handleApply(job)}>
-                      {user ? "Uchádzať sa" : "Prihlásiť sa a uchádzať"}
+                      {user ? "Apply" : "Sign In to Apply"}
                     </Button>
                   </div>
                 </CardContent>
@@ -821,14 +821,14 @@ const Jobs = () => {
                   className="w-full py-6 text-lg" 
                   onClick={() => {
                     toast({
-                      title: "Prihlásenie potrebné",
-                      description: "Pre uchádzanie sa o pozíciu sa musíte prihlásiť",
+                      title: "Sign In Required",
+                      description: "You must sign in to apply for this position",
                     });
                     window.location.href = "/auth";
                   }}
                 >
                   <Search className="h-5 w-5 mr-2" />
-                  Prihlásiť sa a uchádzať
+                  Sign In to Apply
                 </Button>
               )}
             </div>
