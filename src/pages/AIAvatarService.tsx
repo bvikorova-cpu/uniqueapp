@@ -11,9 +11,9 @@ const AIAvatarService = () => {
   const [style, setStyle] = useState("");
 
   const packages = [
-    { name: "Basic", price: "$25", features: ["1 Avatar", "2 Revisions", "24h Delivery"], earn: "$18.75" },
-    { name: "Professional", price: "$50", features: ["3 Avatars", "5 Revisions", "12h Delivery"], earn: "$37.50" },
-    { name: "Premium", price: "$100", features: ["10 Avatars", "Unlimited Revisions", "6h Delivery"], earn: "$75.00" },
+    { name: "Basic", price: "€25", features: ["1 Avatar", "2 Revisions", "24h Delivery"], earn: "€18.75" },
+    { name: "Professional", price: "€50", features: ["3 Avatars", "5 Revisions", "12h Delivery"], earn: "€37.50" },
+    { name: "Premium", price: "€100", features: ["10 Avatars", "Unlimited Revisions", "6h Delivery"], earn: "€75.00" },
   ];
 
   const handleCreateOrder = () => {

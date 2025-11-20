@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Store, Upload, DollarSign, TrendingUp, Image, Eye, ShoppingCart, Sparkles } from "lucide-react";
+import { Store, Upload, Euro, TrendingUp, Image, Eye, ShoppingCart, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const AIContentMarketplace = () => {
@@ -87,7 +87,7 @@ const AIContentMarketplace = () => {
             <p className="text-muted-foreground">Generate and share your AI creations</p>
           </Card>
           <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-            <DollarSign className="w-12 h-12 mx-auto mb-4 text-primary" />
+            <Euro className="w-12 h-12 mx-auto mb-4 text-primary" />
             <h3 className="text-xl font-semibold mb-2">Set Your Price</h3>
             <p className="text-muted-foreground">You keep 80-85% of sales</p>
           </Card>
@@ -111,7 +111,7 @@ const AIContentMarketplace = () => {
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
                   />
                   <Badge className="absolute top-2 right-2 bg-primary">
-                    ${item.price}
+                    €{item.price}
                   </Badge>
                 </div>
                 <div className="p-4">
@@ -159,7 +159,7 @@ const AIContentMarketplace = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Price ($)</label>
+              <label className="block text-sm font-medium mb-2">Price (€)</label>
               <Input
                 type="number"
                 value={price}
