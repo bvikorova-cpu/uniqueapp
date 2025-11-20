@@ -75,9 +75,9 @@ export default function HorseRacing() {
 
             queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
             
-            let message = "Nákup úspešný! ";
-            if (coinsToAdd > 0) message += `+${coinsToAdd} mincí `;
-            if (gemsToAdd > 0) message += `+${gemsToAdd} drahokamov`;
+            let message = "Purchase successful! ";
+            if (coinsToAdd > 0) message += `+${coinsToAdd} coins `;
+            if (gemsToAdd > 0) message += `+${gemsToAdd} gems`;
             toast.success(message);
           }
         } catch (error) {
@@ -88,7 +88,7 @@ export default function HorseRacing() {
         window.history.replaceState({}, "", "/horse-racing");
       })();
     } else if (paymentStatus === "cancelled") {
-      toast.info("Platba bola zrušená");
+      toast.info("Payment was cancelled");
       window.history.replaceState({}, "", "/horse-racing");
     }
   }, [queryClient]);
