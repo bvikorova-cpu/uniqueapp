@@ -28,71 +28,29 @@ serve(async (req) => {
 
     const { journalContent, mood } = await req.json();
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    // Mock journal analysis - no AI API needed
+    const moodEmotions: Record<string, string[]> = {
+      happy: ["radosť", "spokojnosť", "optimizmus"],
+      sad: ["smútok", "zamyslenie", "spracovanie"],
+      anxious: ["napätie", "obavy", "potreba upokojenia"],
+      calm: ["pokoj", "vyrovnanosť", "vnútorná harmónia"],
+      energetic: ["energia", "motivácia", "nadšenie"]
+    };
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          {
-            role: "system",
-            content: `You are an empathetic journal analyzer. Analyze journal entries to provide insights about:
-- Emotional state and patterns
-- Personal growth areas
-- Coping strategies
-- Positive affirmations
-- Areas of concern
-
-Current mood reported: ${mood}
-
-Respond with a JSON object containing:
-{
-  "insights": "detailed emotional insights",
-  "emotions": ["detected_emotion1", "detected_emotion2"],
-  "suggestions": ["suggestion1", "suggestion2"],
-  "affirmations": ["affirmation1", "affirmation2"]
-}`
-          },
-          {
-            role: "user",
-            content: journalContent
-          }
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI API error:", response.status, errorText);
-      
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Insufficient Lovable AI credits. Please add credits to your workspace." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      throw new Error(`Failed to generate insights: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
-    const result = data.choices?.[0]?.message?.content;
-
-    if (!result) throw new Error("No insights generated");
-
-    const insightsData = JSON.parse(result);
+    const insightsData = {
+      insights: `Váš denníkový záznam ukazuje ${mood || "zaujímavý"} emočný stav. Písanie denníka je skvelý spôsob, ako spracovať svoje myšlienky a emócie. Pokračujte v tejto zdravej zvyklosti.`,
+      emotions: moodEmotions[mood as string] || ["sebapoznanie", "reflexia", "rast"],
+      suggestions: [
+        "Pokračujte v pravidelnom písaní denníka",
+        "Všímajte si pozitívne momenty v každom dni",
+        "Buďte k sebe láskavý a trpezlivý",
+        "Venujte si čas na aktivity, ktoré vás napĺňajú"
+      ],
+      affirmations: [
+        "Ste na dobrej ceste. Vaše myšlienky a pocity sú dôležité.",
+        "Zaslúžite si lásku a porozumenie."
+      ]
+    };
 
     return new Response(
       JSON.stringify(insightsData),
