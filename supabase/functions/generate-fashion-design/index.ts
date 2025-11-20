@@ -12,7 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    // Create Supabase client
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
@@ -23,20 +22,12 @@ serve(async (req) => {
       }
     );
 
-    // Get authenticated user
-    const {
-      data: { user },
-      error: userError,
-    } = await supabaseClient.auth.getUser();
-
-    if (userError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { 
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const { 
@@ -51,9 +42,9 @@ serve(async (req) => {
       isPublic = true
     } = await req.json();
 
-    // No credit check - using owner's API key
+    // Trial credits checked on frontend - backend uses owner's API key
+    console.log('Generating design for user:', user.id);
 
-    // Fetch category, style, and material names for prompt building
     const { data: category } = await supabaseClient
       .from('fashion_categories')
       .select('name')
@@ -72,8 +63,7 @@ serve(async (req) => {
       .eq('id', materialId)
       .single();
 
-    // Build AI prompt
-    const colorString = colors && colors.length > 0 ? `Colors: ${colors.join(', ')}.` : '';
+    const colorString = colors?.length > 0 ? `Colors: ${colors.join(', ')}.` : '';
     const detailsString = details ? `Additional details: ${JSON.stringify(details)}.` : '';
     
     let qualityModifier = '';
@@ -87,19 +77,12 @@ serve(async (req) => {
 
     const prompt = `Design a ${style?.name || 'modern'} style ${category?.name || 'clothing'} piece made of ${material?.name || 'fabric'}. ${description || ''}. ${colorString} ${detailsString} ${qualityModifier} Fashion illustration, professional design, centered composition, white background.`;
 
-    console.log('Generating fashion design with prompt:', prompt);
-
-    // Call Lovable AI for image generation
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
-      console.error('LOVABLE_API_KEY is not configured');
-      return new Response(
-        JSON.stringify({ error: 'API key not configured' }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      return new Response(JSON.stringify({ error: 'API key not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -110,94 +93,45 @@ serve(async (req) => {
       },
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
+        messages: [{ role: 'user', content: prompt }],
         modalities: ['image', 'text']
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
+      console.error('AI error:', response.status, errorText);
       
       if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: 'Prekročený limit požiadaviek. Skúste to neskôr.' }),
-          { 
-            status: 429,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        );
+        return new Response(JSON.stringify({ error: 'Rate limit exceeded. Try again later.' }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
       
       if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'Nedostatok kreditov na AI platforme. Kontaktujte podporu.' }),
-          { 
-            status: 402,
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          }
-        );
+        return new Response(JSON.stringify({ error: 'API credits insufficient. Contact support.' }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
       
-      return new Response(
-        JSON.stringify({ error: 'Chyba pri generovaní dizajnu' }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      return new Response(JSON.stringify({ error: 'Error generating design' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const data = await response.json();
     const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     
     if (!imageUrl) {
-      console.error('No image URL in response');
-      return new Response(
-        JSON.stringify({ error: 'Nepodarilo sa vygenerovať obrázok' }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Deduct credits
-    const { error: deductError } = await supabaseClient
-      .from('ai_credits')
-      .update({
-        credits_remaining: creditsData.credits_remaining - creditsNeeded,
-        last_used_at: new Date().toISOString(),
-      })
-      .eq('user_id', user.id);
-
-    if (deductError) {
-      console.error('Error deducting credits:', deductError);
-      return new Response(
-        JSON.stringify({ error: 'Chyba pri odpočítaní kreditov' }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Log usage
-    await supabaseClient
-      .from('ai_usage_history')
-      .insert({
-        user_id: user.id,
-        usage_type: 'fashion_design_generation',
-        credits_used: creditsNeeded,
-        metadata: { qualityLevel, category: category?.name, style: style?.name }
+      return new Response(JSON.stringify({ error: 'No image generated' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
+    }
 
-    // Save the fashion design
     const { data: design, error: designError } = await supabaseClient
       .from('fashion_designs')
       .insert({
@@ -209,7 +143,7 @@ serve(async (req) => {
         description,
         prompt,
         image_url: imageUrl,
-        credits_used: creditsNeeded,
+        credits_used: 0,
         quality_level: qualityLevel,
         colors,
         details,
@@ -219,37 +153,21 @@ serve(async (req) => {
       .single();
 
     if (designError) {
-      console.error('Error saving design:', designError);
-      return new Response(
-        JSON.stringify({ error: 'Chyba pri ukladaní dizajnu' }),
-        { 
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
+      console.error('Save error:', designError);
+      return new Response(JSON.stringify({ error: 'Error saving design' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    return new Response(
-      JSON.stringify({ 
-        design,
-        imageUrl,
-        creditsRemaining: creditsData.credits_remaining - creditsNeeded 
-      }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
-
+    return new Response(JSON.stringify({ design, imageUrl }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (error) {
-    console.error('Error in generate-fashion-design function:', error);
-    return new Response(
-      JSON.stringify({ 
-        error: error instanceof Error ? error.message : 'Neznáma chyba' 
-      }),
-      { 
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    );
+    console.error('Error:', error);
+    return new Response(JSON.stringify({ error: 'Internal error' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 });
