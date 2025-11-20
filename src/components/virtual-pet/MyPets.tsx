@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Heart, Utensils, Zap, Star, Plus, Loader2, TrendingUp } from "lucide-react";
+import { Heart, Utensils, Zap, Star, Plus, Loader2, TrendingUp, Dumbbell, Sparkles, Moon } from "lucide-react";
+import { calculateDecay } from "@/utils/petDecay";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +53,36 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
       return data;
     }
   });
+
+  // Apply decay to pets on load
+  useEffect(() => {
+    if (!pets || pets.length === 0) return;
+
+    const applyDecay = async () => {
+      const petsToUpdate = pets.map(pet => {
+        const decay = calculateDecay(pet);
+        return { pet, decay };
+      }).filter(({ decay }) => decay.needsUpdate);
+
+      if (petsToUpdate.length === 0) return;
+
+      for (const { pet, decay } of petsToUpdate) {
+        await supabase
+          .from('pets')
+          .update({
+            hunger: decay.hunger,
+            happiness: decay.happiness,
+            energy: decay.energy,
+            last_activity_at: new Date().toISOString(),
+          })
+          .eq('id', pet.id);
+      }
+
+      queryClient.invalidateQueries({ queryKey: ['my-pets'] });
+    };
+
+    applyDecay();
+  }, [pets?.length]); // Only run when pets length changes (initial load)
 
   const handleAdoptPet = () => {
     if (!newPetName.trim()) {
@@ -171,7 +202,8 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
           energy: Math.max((pet.energy - 10), 0),
           experience: pet.experience + 5,
           total_games_played: pet.total_games_played + 1,
-          last_played_at: new Date().toISOString()
+          last_played_at: new Date().toISOString(),
+          last_activity_at: new Date().toISOString()
         })
         .eq('id', petId)
         .select()
@@ -186,8 +218,113 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
     }
   });
 
+  const trainPetMutation = useMutation({
+    mutationFn: async (petId: string) => {
+      const pet = pets?.find(p => p.id === petId);
+      if (!pet) return;
+
+      const xpGain = 20;
+      const newXP = pet.experience + xpGain;
+      const xpToNext = getXPToNextLevel(pet.level);
+      let newLevel = pet.level;
+      let remainingXP = newXP;
+
+      if (newXP >= xpToNext) {
+        newLevel = pet.level + 1;
+        remainingXP = newXP - xpToNext;
+      }
+
+      const { data, error } = await supabase
+        .from('pets')
+        .update({
+          experience: remainingXP,
+          level: newLevel,
+          energy: Math.max((pet.energy - 20), 0),
+          last_activity_at: new Date().toISOString()
+        })
+        .eq('id', petId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return { data, leveledUp: newLevel > pet.level };
+    },
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['my-pets'] });
+      if (result?.leveledUp) {
+        toast.success('Training complete! +20 XP and LEVELED UP! 🎉');
+      } else {
+        toast.success('Training complete! +20 XP');
+      }
+    }
+  });
+
+  const restPetMutation = useMutation({
+    mutationFn: async (petId: string) => {
+      const { data, error } = await supabase
+        .from('pets')
+        .update({
+          energy: 100,
+          last_activity_at: new Date().toISOString()
+        })
+        .eq('id', petId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-pets'] });
+      toast.success('Pet is well rested! Energy restored to 100');
+    }
+  });
+
+  const evolvePetMutation = useMutation({
+    mutationFn: async (petId: string) => {
+      const pet = pets?.find(p => p.id === petId);
+      if (!pet) return;
+
+      const evolutionLevels = Array.isArray(pet.pet_types?.evolution_levels) 
+        ? pet.pet_types.evolution_levels as any[]
+        : [];
+      const nextStage = (pet.evolution_stage || 0) + 1;
+      
+      if (nextStage >= evolutionLevels.length) {
+        throw new Error('Pet is already at max evolution!');
+      }
+
+      const requiredLevel = evolutionLevels[nextStage]?.level || 999;
+      if (pet.level < requiredLevel) {
+        throw new Error(`Need level ${requiredLevel} to evolve!`);
+      }
+
+      const { data, error } = await supabase
+        .from('pets')
+        .update({
+          evolution_stage: nextStage,
+          last_activity_at: new Date().toISOString()
+        })
+        .eq('id', petId)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['my-pets'] });
+      toast.success('🌟 Pet evolved to next stage! 🌟');
+    },
+    onError: (error: any) => {
+      toast.error(error.message);
+    }
+  });
+
   const getEvolutionStage = (pet: any) => {
-    const evolutionLevels = pet.pet_types?.evolution_levels || [];
+    const evolutionLevels = Array.isArray(pet.pet_types?.evolution_levels) 
+      ? pet.pet_types.evolution_levels as any[]
+      : [];
     let stage = 0;
     for (let i = 0; i < evolutionLevels.length; i++) {
       if (pet.level >= evolutionLevels[i].level) {
@@ -354,26 +491,65 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={(e) => { e.stopPropagation(); feedPetMutation.mutate(pet.id); }}
+                    disabled={pet.hunger >= 100 || feedPetMutation.isPending}
+                  >
+                    <Utensils className="h-4 w-4 mr-1" />
+                    Feed
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={(e) => { e.stopPropagation(); playWithPetMutation.mutate(pet.id); }}
+                    disabled={pet.energy < 10 || playWithPetMutation.isPending}
+                  >
+                    <Heart className="h-4 w-4 mr-1" />
+                    Play
+                  </Button>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={(e) => { e.stopPropagation(); trainPetMutation.mutate(pet.id); }}
+                    disabled={pet.energy < 20 || trainPetMutation.isPending}
+                  >
+                    <Dumbbell className="h-4 w-4 mr-1" />
+                    Train
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={(e) => { e.stopPropagation(); restPetMutation.mutate(pet.id); }}
+                    disabled={pet.energy >= 100 || restPetMutation.isPending}
+                  >
+                    <Moon className="h-4 w-4 mr-1" />
+                    Rest
+                  </Button>
+                </div>
+
                 <Button
-                  variant="outline"
+                  variant="default"
                   size="sm"
-                  className="flex-1"
-                  onClick={(e) => { e.stopPropagation(); feedPetMutation.mutate(pet.id); }}
-                  disabled={pet.hunger >= 100 || feedPetMutation.isPending}
+                  className="w-full"
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    evolvePetMutation.mutate(pet.id); 
+                  }}
+                  disabled={evolvePetMutation.isPending}
                 >
-                  <Utensils className="h-4 w-4 mr-1" />
-                  Feed
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={(e) => { e.stopPropagation(); playWithPetMutation.mutate(pet.id); }}
-                  disabled={pet.energy < 10 || playWithPetMutation.isPending}
-                >
-                  <Heart className="h-4 w-4 mr-1" />
-                  Play
+                  <Sparkles className="h-4 w-4 mr-1" />
+                  Evolve
                 </Button>
               </div>
 
