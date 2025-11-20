@@ -64,8 +64,8 @@ export default function ComedyClub() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between mt-16">
+      <div className="max-w-7xl mx-auto space-y-6 mt-16">
+        <div className="flex items-center justify-between">
           <div>
             <h1 className="text-4xl font-bold">🎤 Comedy Club</h1>
             <p className="text-muted-foreground mt-2">
@@ -120,6 +120,40 @@ export default function ComedyClub() {
             </Button>
           )}
         </div>
+
+        {/* How It Works Section */}
+        <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10">
+          <h2 className="text-2xl font-bold mb-4">How Comedy Club Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-bold text-lg mb-2 flex items-center">
+                <TrendingUp className="mr-2 h-5 w-5 text-primary" />
+                For Viewers
+              </h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>• <strong>Buy Comedy Coins:</strong> Purchase coins to access premium content (100 coins = €5)</li>
+                <li>• <strong>Buy Tickets:</strong> Get tickets to live comedy shows and watch comedians perform in real-time</li>
+                <li>• <strong>Send Tips:</strong> Show appreciation during live shows with virtual tips (10-100 coins)</li>
+                <li>• <strong>Vote in Battles:</strong> Support your favorite comedians in comedy battles (10 coins per vote)</li>
+                <li>• <strong>Buy Clips:</strong> Purchase recorded comedy clips from the marketplace</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold text-lg mb-2 flex items-center">
+                <Mic2 className="mr-2 h-5 w-5 text-primary" />
+                For Comedians
+              </h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li>• <strong>Go Live:</strong> Schedule and stream live comedy shows to earn from ticket sales</li>
+                <li>• <strong>Receive Tips:</strong> Earn real money from viewer tips during your performances</li>
+                <li>• <strong>Join Battles:</strong> Compete for prize pools and gain exposure</li>
+                <li>• <strong>Sell Clips:</strong> Upload and monetize your best comedy clips</li>
+                <li>• <strong>Withdraw Earnings:</strong> Request payouts when you reach €50 minimum balance</li>
+                <li>• <strong>Platform Fee:</strong> We take 25% commission, you keep 75% of all earnings</li>
+              </ul>
+            </div>
+          </div>
+        </Card>
 
         <ComedyCurrencyDisplay />
 
