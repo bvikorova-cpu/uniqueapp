@@ -1,168 +1,185 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ShoppingBag, Store, TrendingUp, Package } from "lucide-react";
+import { ShoppingBag, Store, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 export default function FashionMarketplace() {
-  const navigate = useNavigate();
-  const [showStoreDialog, setShowStoreDialog] = useState(false);
+  const queryClient = useQueryClient();
+  const [selectedDesign, setSelectedDesign] = useState<any>(null);
+  const [productType, setProductType] = useState<"digital" | "print">("digital");
+  const [showPurchaseDialog, setShowPurchaseDialog] = useState(false);
 
-  const handleOpenStore = () => {
-    setShowStoreDialog(true);
-  };
+  const { data: myDesigns } = useQuery({
+    queryKey: ['my-marketplace-designs'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('fashion_designs')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      if (error) throw error;
+      return data;
+    }
+  });
 
-  const handleBrowse = () => {
-    toast.info("Browse feature coming soon!", {
-      description: "Discover amazing fashion designs from creators worldwide"
+  const { data: marketplaceListings, isLoading } = useQuery({
+    queryKey: ['fashion-marketplace'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fashion_designs')
+        .select(`*,fashion_categories(name),fashion_styles(name)`)
+        .eq('is_public', true)
+        .order('created_at', { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const purchaseMutation = useMutation({
+    mutationFn: async ({ designId, title, type }: { designId: string; title: string; type: string }) => {
+      const { data, error } = await supabase.functions.invoke('create-fashion-marketplace-payment', {
+        body: { productType: type, designId, designTitle: title }
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      if (data.url) {
+        window.open(data.url, '_blank');
+        setShowPurchaseDialog(false);
+        toast.success("Redirecting to checkout...");
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.message || "Error creating payment");
+    }
+  });
+
+  const handlePurchase = () => {
+    if (!selectedDesign) return;
+    purchaseMutation.mutate({
+      designId: selectedDesign.id,
+      title: selectedDesign.title,
+      type: productType
     });
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <ShoppingBag className="h-5 w-5" />
-          Fashion Marketplace
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="pt-6 text-center space-y-2">
-              <Store className="h-8 w-8 mx-auto text-primary" />
-              <h3 className="font-semibold">Sell Your Designs</h3>
-              <p className="text-sm text-muted-foreground">
-                Turn your AI-generated designs into products
-              </p>
-              <Button variant="outline" className="w-full" onClick={handleOpenStore}>
-                Open Store
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6 text-center space-y-2">
-              <TrendingUp className="h-8 w-8 mx-auto text-primary" />
-              <h3 className="font-semibold">Track Sales</h3>
-              <p className="text-sm text-muted-foreground">
-                Monitor your earnings and popular items
-              </p>
-              <Badge variant="secondary">0 Sales</Badge>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="pt-6 text-center space-y-2">
-              <ShoppingBag className="h-8 w-8 mx-auto text-primary" />
-              <h3 className="font-semibold">Browse Designs</h3>
-              <p className="text-sm text-muted-foreground">
-                Discover designs from other creators
-              </p>
-              <Button variant="outline" className="w-full" onClick={handleBrowse}>
-                Explore
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="text-center py-8 border-t">
-          <p className="text-muted-foreground mb-4">
-            Start selling your fashion designs to a global audience
-          </p>
-          <Button size="lg" onClick={handleOpenStore}>
-            Set Up Your Marketplace
-          </Button>
-        </div>
-      </CardContent>
-
-      <Dialog open={showStoreDialog} onOpenChange={setShowStoreDialog}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Set Up Your Fashion Store</DialogTitle>
-            <DialogDescription>
-              Start selling your AI-generated fashion designs
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="space-y-6">
-            <div className="grid gap-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <Package className="h-8 w-8 text-primary flex-shrink-0" />
-                    <div>
-                      <h3 className="font-semibold mb-2">Create Product Listings</h3>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Upload your fashion designs and set prices. We handle printing and shipping.
-                      </p>
-                      <Button variant="outline" size="sm">
-                        Create Listing
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <Store className="h-8 w-8 text-primary flex-shrink-0" />
-                    <div>
-                      <h3 className="font-semibold mb-2">Customize Your Storefront</h3>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Personalize your store with a unique URL and branding.
-                      </p>
-                      <Button variant="outline" size="sm" disabled>
-                        Coming Soon
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <TrendingUp className="h-8 w-8 text-primary flex-shrink-0" />
-                    <div>
-                      <h3 className="font-semibold mb-2">Earn Revenue</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Get paid for every sale. We handle everything else.
-                      </p>
-                      <div className="mt-4 p-3 bg-muted rounded-lg">
-                        <div className="flex justify-between text-sm">
-                          <span>Your Earnings:</span>
-                          <span className="font-semibold">70%</span>
-                        </div>
-                        <div className="flex justify-between text-sm mt-1">
-                          <span>Platform Fee:</span>
-                          <span>30%</span>
-                        </div>
+    <div className="space-y-6">
+      <div className="grid md:grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="pt-6 text-center space-y-2">
+            <Store className="h-8 w-8 mx-auto text-primary" />
+            <h3 className="font-semibold">Your Designs</h3>
+            <p className="text-2xl font-bold">{myDesigns?.length || 0}</p>
+            <p className="text-sm text-muted-foreground">Available for sale</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6 text-center space-y-2">
+            <TrendingUp className="h-8 w-8 mx-auto text-primary" />
+            <h3 className="font-semibold">Marketplace</h3>
+            <p className="text-2xl font-bold">{marketplaceListings?.length || 0}</p>
+            <p className="text-sm text-muted-foreground">Designs available</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6 text-center space-y-2">
+            <ShoppingBag className="h-8 w-8 mx-auto text-primary" />
+            <h3 className="font-semibold">Pricing</h3>
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Digital: €9.90</p>
+              <p className="text-sm font-medium">Print: €19.90</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ShoppingBag className="h-5 w-5" />
+            Browse Marketplace
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="text-center py-8">Loading designs...</div>
+          ) : marketplaceListings && marketplaceListings.length > 0 ? (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {marketplaceListings.map((design) => (
+                <Card key={design.id} className="group hover:shadow-lg transition-shadow">
+                  <div className="relative aspect-square overflow-hidden rounded-t-lg">
+                    {design.image_url ? (
+                      <img src={design.image_url} alt={design.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    ) : (
+                      <div className="w-full h-full bg-muted flex items-center justify-center">
+                        <ShoppingBag className="h-12 w-12 text-muted-foreground" />
                       </div>
-                    </div>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+                  <CardContent className="p-4 space-y-2">
+                    <h3 className="font-semibold truncate">{design.title}</h3>
+                    <div className="flex gap-2">
+                      <Badge variant="secondary">{design.fashion_categories?.name}</Badge>
+                      <Badge variant="outline">{design.fashion_styles?.name}</Badge>
+                    </div>
+                    <Dialog open={showPurchaseDialog && selectedDesign?.id === design.id} onOpenChange={(open) => {
+                      setShowPurchaseDialog(open);
+                      if (!open) setSelectedDesign(null);
+                    }}>
+                      <DialogTrigger asChild>
+                        <Button className="w-full" size="sm" onClick={() => setSelectedDesign(design)}>
+                          <ShoppingBag className="h-4 w-4 mr-2" />
+                          Purchase
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Purchase Design</DialogTitle>
+                          <DialogDescription>Choose the format you want to purchase</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div>
+                            <Label>Product Type</Label>
+                            <Select value={productType} onValueChange={(v: any) => setProductType(v)}>
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="digital">Digital Download (€9.90)</SelectItem>
+                                <SelectItem value="print">Print Ready (€19.90)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <Button onClick={handlePurchase} className="w-full" disabled={purchaseMutation.isPending}>
+                            {purchaseMutation.isPending ? "Processing..." : "Proceed to Checkout"}
+                          </Button>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-
-            <div className="flex gap-3">
-              <Button className="flex-1" onClick={() => {
-                toast.success("Store setup in progress!");
-                setShowStoreDialog(false);
-              }}>
-                Get Started
-              </Button>
-              <Button variant="outline" onClick={() => setShowStoreDialog(false)}>
-                Close
-              </Button>
+          ) : (
+            <div className="text-center py-12">
+              <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+              <p className="text-muted-foreground">No designs available yet</p>
+              <p className="text-sm text-muted-foreground mt-2">Create and publish designs to see them here</p>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </Card>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 }

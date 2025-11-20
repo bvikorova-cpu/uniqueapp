@@ -1,5 +1,14 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.create-fashion-marketplace-payment]
+verify_jwt = true
+
+[functions.submit-fashion-challenge]
+verify_jwt = true
+
+[functions.vote-fashion-challenge]
+verify_jwt = true
+
 [functions.astrology-reading]
 verify_jwt = true
 
