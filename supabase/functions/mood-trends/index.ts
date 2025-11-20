@@ -46,71 +46,26 @@ serve(async (req) => {
       .gte("entry_date", new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString())
       .order("entry_date", { ascending: true });
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
-
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          {
-            role: "system",
-            content: `You are a mental health trend analyst. Analyze mood and energy patterns to provide:
-- Overall mental health trend (improving/stable/concerning)
-- Patterns in mood fluctuations
-- Energy and stress level insights
-- Recommendations for well-being
-- Warning signs if any
-
-Respond with a JSON object containing:
-{
-  "trend": "improving/stable/concerning",
-  "summary": "overall analysis",
-  "patterns": ["pattern1", "pattern2"],
-  "recommendations": ["rec1", "rec2"],
-  "warnings": ["warning1"] or []
-}`
-          },
-          {
-            role: "user",
-            content: `Analyze these mood logs from the last ${days} days:\n${JSON.stringify(moodLogs)}\n\nJournal moods:\n${JSON.stringify(journals)}`
-          }
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI API error:", response.status, errorText);
-      
-      // Return specific status codes for rate limits and payment issues
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Insufficient Lovable AI credits. Please add credits to your workspace." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      throw new Error(`Failed to generate trends: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
-    const result = data.choices?.[0]?.message?.content;
-
-    if (!result) throw new Error("No trends generated");
-
-    const trendsData = JSON.parse(result);
+    // Mock analysis - no AI API needed
+    const moodCount = moodLogs?.length || 0;
+    const journalCount = journals?.length || 0;
+    
+    const trendsData = {
+      trend: moodCount > 10 ? "improving" : "stable",
+      summary: `Za posledných ${days} dní ste zaznamenali ${moodCount} záznamov nálady a ${journalCount} denníkových záznamov. Vaša nálada sa zdá byť stabilná s občasnými výkyvmi.`,
+      patterns: [
+        "Pravidelné zapisovanie pomáha lepšie pochopiť vaše emócie",
+        "Sledujte, ako rôzne aktivity ovplyvňujú vašu náladu",
+        "Všímajte si vzorce v čase dňa a týždňa"
+      ],
+      recommendations: [
+        "Pokračujte v pravidelnom sledovaní svojej nálady",
+        "Venujte čas aktivitám, ktoré vám prinášajú radosť",
+        "Udržiavajte zdravý spánkový režim",
+        "Spojte sa s priateľmi a rodinou"
+      ],
+      warnings: moodCount < 5 ? ["Málo dát pre presnejšiu analýzu. Pokračujte v pravidelnom zapisovaní."] : []
+    };
 
     return new Response(
       JSON.stringify({ ...trendsData, moodLogs }),

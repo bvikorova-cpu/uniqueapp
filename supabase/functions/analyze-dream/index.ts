@@ -28,70 +28,26 @@ serve(async (req) => {
 
     const { dreamContent } = await req.json();
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
-
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          {
-            role: "system",
-            content: `You are an expert dream analyst. Analyze dreams and provide insights about:
-- Main themes and symbols
-- Emotional undertones
-- Possible subconscious meanings
-- Recurring patterns
-- Connections to waking life
-
-Respond with a JSON object containing:
-{
-  "analysis": "detailed analysis text",
-  "themes": ["theme1", "theme2"],
-  "emotions": ["emotion1", "emotion2"],
-  "symbols": [{"symbol": "name", "meaning": "interpretation"}]
-}`
-          },
-          {
-            role: "user",
-            content: dreamContent
-          }
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("AI API error:", response.status, errorText);
-      
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Insufficient Lovable AI credits. Please add credits to your workspace." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      throw new Error(`Failed to generate analysis: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
-    const result = data.choices?.[0]?.message?.content;
-
-    if (!result) throw new Error("No analysis generated");
-
-    // Parse the JSON response
-    const analysisData = JSON.parse(result);
+    // Mock dream analysis - no AI API needed
+    const analysisData = {
+      analysis: "Váš sen obsahuje zaujímavé symboly a témy. Sny často odrážajú naše denné skúsenosti, emócie a podvedomé myšlienky. Tento konkrétny sen môže naznačovať váš aktuálny emocionálny stav a to, čo vás v živote zaujíma.",
+      themes: [
+        "Každodenné zážitky",
+        "Emočné spracovanie",
+        "Podvedomé myšlienky"
+      ],
+      emotions: [
+        "Zvedavosť",
+        "Sebaobjavovanie",
+        "Vnútorný pokoj"
+      ],
+      symbols: [
+        {
+          symbol: "Hlavné symboly sna",
+          meaning: "Symboly vo vašom sne môžu reprezentovať rôzne aspekty vášho života a vnútorného sveta. Každý symbol má osobný význam založený na vašich skúsenostiach."
+        }
+      ]
+    };
 
     return new Response(
       JSON.stringify(analysisData),
