@@ -42,8 +42,51 @@ serve(async (req) => {
       isPublic = true
     } = await req.json();
 
-    // Trial credits checked on frontend - backend uses owner's API key
     console.log('Generating design for user:', user.id);
+
+    // Check and deduct AI credits based on quality
+    const creditsMap: Record<string, number> = { basic: 5, detailed: 10, premium: 15, collection: 15 };
+    const creditsNeeded = creditsMap[qualityLevel as string] || 5;
+
+    const { data: creditData, error: creditError } = await supabaseClient
+      .from('ai_credits')
+      .select('credits_remaining')
+      .eq('user_id', user.id)
+      .single();
+
+    if (creditError || !creditData || creditData.credits_remaining < creditsNeeded) {
+      return new Response(JSON.stringify({ error: `Insufficient credits. You need ${creditsNeeded} AI credits.` }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Deduct credits
+    const { error: deductError } = await supabaseClient
+      .from('ai_credits')
+      .update({ 
+        credits_remaining: creditData.credits_remaining - creditsNeeded,
+        last_used_at: new Date().toISOString()
+      })
+      .eq('user_id', user.id);
+
+    if (deductError) {
+      console.error('Error deducting credits:', deductError);
+      return new Response(JSON.stringify({ error: 'Error processing credits' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Log usage
+    await supabaseClient
+      .from('ai_usage_history')
+      .insert({
+        user_id: user.id,
+        usage_type: 'fashion_design',
+        credits_used: creditsNeeded,
+        description: `Generated fashion design: ${title}`
+      });
 
     const { data: category } = await supabaseClient
       .from('fashion_categories')

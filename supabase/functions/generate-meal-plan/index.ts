@@ -32,8 +32,50 @@ serve(async (req) => {
 
     const { title, days, targetCalories, targetProtein, targetCarbs, targetFats, dietaryPreferences, allergens, isPremium } = await req.json();
 
-    // Trial credits checked on frontend
     console.log('Generating meal plan for user:', user.id);
+
+    // Check and deduct AI credits (meal plans cost 50 credits)
+    const creditsNeeded = 50;
+
+    const { data: creditData, error: creditError } = await supabaseClient
+      .from('ai_credits')
+      .select('credits_remaining')
+      .eq('user_id', user.id)
+      .single();
+
+    if (creditError || !creditData || creditData.credits_remaining < creditsNeeded) {
+      return new Response(JSON.stringify({ error: `Insufficient credits. You need ${creditsNeeded} AI credits.` }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Deduct credits
+    const { error: deductError } = await supabaseClient
+      .from('ai_credits')
+      .update({ 
+        credits_remaining: creditData.credits_remaining - creditsNeeded,
+        last_used_at: new Date().toISOString()
+      })
+      .eq('user_id', user.id);
+
+    if (deductError) {
+      console.error('Error deducting credits:', deductError);
+      return new Response(JSON.stringify({ error: 'Error processing credits' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Log usage
+    await supabaseClient
+      .from('ai_usage_history')
+      .insert({
+        user_id: user.id,
+        usage_type: 'meal_plan',
+        credits_used: creditsNeeded,
+        description: `Generated ${days}-day meal plan: ${title}`
+      });
 
     const dietaryInfo = dietaryPreferences?.length ? `Dietary preferences: ${dietaryPreferences.join(', ')}. ` : '';
     const allergenInfo = allergens?.length ? `Allergens to avoid: ${allergens.join(', ')}. ` : '';
