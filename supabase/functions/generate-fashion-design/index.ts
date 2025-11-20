@@ -51,31 +51,7 @@ serve(async (req) => {
       isPublic = true
     } = await req.json();
 
-    // Determine credits needed based on quality level
-    const creditsMap = {
-      basic: 50,
-      detailed: 100,
-      premium: 200,
-      collection: 400
-    };
-    const creditsNeeded = creditsMap[qualityLevel as keyof typeof creditsMap] || 50;
-
-    // Check user's AI credits
-    const { data: creditsData, error: creditsError } = await supabaseClient
-      .from('ai_credits')
-      .select('credits_remaining')
-      .eq('user_id', user.id)
-      .single();
-
-    if (creditsError || !creditsData || creditsData.credits_remaining < creditsNeeded) {
-      return new Response(
-        JSON.stringify({ error: 'Nedostatok kreditov', creditsNeeded }),
-        { 
-          status: 402,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
+    // No credit check - using owner's API key
 
     // Fetch category, style, and material names for prompt building
     const { data: category } = await supabaseClient
