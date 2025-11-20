@@ -1,34 +1,18 @@
 import { useState, useRef } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Camera, Loader2, TrendingUp } from "lucide-react";
+import { Camera, Loader2, TrendingUp, ChefHat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAICredits } from "@/hooks/useAICredits";
 
 export default function FoodScanner() {
+  const queryClient = useQueryClient();
+  const { credits } = useAICredits();
   const [image, setImage] = useState<string | null>(null);
   const [scanResult, setScanResult] = useState<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Fetch today's scan count
-  const { data: scanCounter } = useQuery({
-    queryKey: ['daily-scans'],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-
-      const today = new Date().toISOString().split('T')[0];
-      const { data } = await supabase
-        .from('daily_scans_counter')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('scan_date', today)
-        .single();
-
-      return data;
-    }
-  });
 
   const scanMutation = useMutation({
     mutationFn: async (imageBase64: string) => {
@@ -41,6 +25,7 @@ export default function FoodScanner() {
     },
     onSuccess: (data) => {
       setScanResult(data.scan);
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
       toast.success("Food scanned successfully!");
     },
     onError: (error: any) => {
@@ -67,6 +52,11 @@ export default function FoodScanner() {
       return;
     }
 
+    if (!credits || credits.credits_remaining < 10) {
+      toast.error('You need 10 AI credits to scan food. Please purchase credits.');
+      return;
+    }
+
     scanMutation.mutate(image);
   };
 
@@ -75,15 +65,21 @@ export default function FoodScanner() {
       {/* Scanner Card */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Camera className="h-5 w-5 text-primary" />
-            Smart Food Scanner
-          </CardTitle>
-          <CardDescription>
-            Scan food to get instant nutritional info
-            <br />
-            <span className="text-sm">Daily scans: {scanCounter?.scans_count || 0}/5 (Free tier)</span>
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Camera className="h-5 w-5 text-primary" />
+                Smart Food Scanner
+              </CardTitle>
+              <CardDescription>
+                AI-powered nutritional analysis from food photos (10 credits)
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <ChefHat className="h-4 w-4 text-primary" />
+              {credits ? `${credits.credits_remaining} AI credits` : 'Loading...'}
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div
@@ -110,7 +106,7 @@ export default function FoodScanner() {
 
           <Button
             onClick={handleScan}
-            disabled={scanMutation.isPending || !image}
+            disabled={scanMutation.isPending || !image || !credits || credits.credits_remaining < 10}
             className="w-full gap-2"
             size="lg"
           >

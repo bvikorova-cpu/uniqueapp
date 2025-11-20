@@ -34,34 +34,17 @@ serve(async (req) => {
 
     console.log('Scanning food for user:', user.id);
 
-    // Check daily limit
-    const today = new Date().toISOString().split('T')[0];
-    const { data: scanCounter } = await supabaseClient
-      .from('daily_scans_counter')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('scan_date', today)
-      .single();
-
-    const { data: subscription } = await supabaseClient
-      .from('nutrition_subscriptions')
-      .select('*')
+    // Check AI credits
+    const creditsNeeded = 10;
+    const { data: credits } = await supabaseClient
+      .from('ai_credits')
+      .select('credits_remaining')
       .eq('user_id', user.id)
       .single();
 
-    const limits: Record<string, number> = {
-      free: 5,
-      starter: 50,
-      premium: 999999
-    };
-
-    const subscriptionType = subscription?.subscription_type || 'free';
-    const currentLimit = limits[subscriptionType] || 5;
-    const currentScans = scanCounter?.scans_count || 0;
-
-    if (currentScans >= currentLimit) {
-      return new Response(JSON.stringify({ error: 'Daily scan limit reached' }), {
-        status: 403,
+    if (!credits || credits.credits_remaining < creditsNeeded) {
+      return new Response(JSON.stringify({ error: 'Insufficient AI credits. You need 10 credits to scan food.' }), {
+        status: 402,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
@@ -185,13 +168,23 @@ serve(async (req) => {
       throw scanError;
     }
 
-    // Update scan counter
+    // Deduct AI credits
     await supabaseClient
-      .from('daily_scans_counter')
-      .upsert({
+      .from('ai_credits')
+      .update({ 
+        credits_remaining: credits.credits_remaining - creditsNeeded,
+        last_used_at: new Date().toISOString()
+      })
+      .eq('user_id', user.id);
+
+    // Log AI usage
+    await supabaseClient
+      .from('ai_usage_history')
+      .insert({
         user_id: user.id,
-        scan_date: today,
-        scans_count: currentScans + 1
+        usage_type: 'food_scan',
+        credits_used: creditsNeeded,
+        description: `Scanned ${foodData.foodName}`
       });
 
     console.log('Food scan completed:', foodScan.id);
