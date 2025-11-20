@@ -416,15 +416,7 @@ const AIMusic = () => {
 
         <Card className="mt-12 p-6 bg-gradient-to-r from-primary/10 to-purple-500/10">
           <h3 className="text-xl font-bold mb-4 text-center">Other Services</h3>
-          <div className="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            <div className="p-4 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-2 border-purple-500/30 rounded-lg text-center cursor-pointer hover:shadow-xl hover:scale-105 hover:border-purple-500 transition-all duration-300" onClick={() => navigate('/ai-music-producer')}>
-              <Music className="h-8 w-8 text-purple-500 mx-auto mb-2 transition-transform" />
-              <h4 className="font-bold text-purple-600 dark:text-purple-400">✨ AI Music Producer</h4>
-              <p className="text-sm text-muted-foreground mt-1">
-                Create original songs from text/mood with AI-generated melodies, beats & lyrics
-              </p>
-              <p className="text-xs text-purple-500 mt-2 font-semibold">Click to start creating →</p>
-            </div>
+          <div className="grid md:grid-cols-1 gap-4 max-w-md mx-auto">
             <div className="p-4 bg-background rounded-lg text-center">
               <Star className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
               <h4 className="font-bold">Premium Playlists</h4>
