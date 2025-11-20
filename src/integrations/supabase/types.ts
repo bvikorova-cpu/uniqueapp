@@ -4264,27 +4264,39 @@ export type Database = {
         Row: {
           amount_coins: number
           comedian_id: string
+          commission_rate: number | null
           created_at: string
           description: string | null
           id: string
+          net_amount: number | null
+          pending_payout: number | null
+          platform_commission: number | null
           source_id: string | null
           source_type: string
         }
         Insert: {
           amount_coins: number
           comedian_id: string
+          commission_rate?: number | null
           created_at?: string
           description?: string | null
           id?: string
+          net_amount?: number | null
+          pending_payout?: number | null
+          platform_commission?: number | null
           source_id?: string | null
           source_type: string
         }
         Update: {
           amount_coins?: number
           comedian_id?: string
+          commission_rate?: number | null
           created_at?: string
           description?: string | null
           id?: string
+          net_amount?: number | null
+          pending_payout?: number | null
+          platform_commission?: number | null
           source_id?: string | null
           source_type?: string
         }
@@ -4374,6 +4386,53 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      comedian_withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          comedian_id: string
+          id: string
+          payment_details: Json | null
+          payment_method: string
+          processed_at: string | null
+          processed_by: string | null
+          requested_at: string | null
+          status: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          comedian_id: string
+          id?: string
+          payment_details?: Json | null
+          payment_method: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_at?: string | null
+          status?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          comedian_id?: string
+          id?: string
+          payment_details?: Json | null
+          payment_method?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          requested_at?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedian_withdrawal_requests_comedian_id_fkey"
+            columns: ["comedian_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       comedy_battles: {
         Row: {
@@ -4516,6 +4575,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      comedy_platform_earnings: {
+        Row: {
+          admin_notes: string | null
+          comedian_amount: number
+          comedian_id: string
+          commission_rate: number
+          created_at: string | null
+          id: string
+          paid_at: string | null
+          platform_commission: number
+          related_id: string | null
+          status: string | null
+          total_amount: number
+          transaction_type: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          comedian_amount: number
+          comedian_id: string
+          commission_rate: number
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          platform_commission: number
+          related_id?: string | null
+          status?: string | null
+          total_amount: number
+          transaction_type: string
+        }
+        Update: {
+          admin_notes?: string | null
+          comedian_amount?: number
+          comedian_id?: string
+          commission_rate?: number
+          created_at?: string | null
+          id?: string
+          paid_at?: string | null
+          platform_commission?: number
+          related_id?: string | null
+          status?: string | null
+          total_amount?: number
+          transaction_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comedy_platform_earnings_comedian_id_fkey"
+            columns: ["comedian_id"]
+            isOneToOne: false
+            referencedRelation: "comedian_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       comedy_shows: {
         Row: {
