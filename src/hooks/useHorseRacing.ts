@@ -12,7 +12,7 @@ export const useHorseCurrency = () => {
       if (!user) throw new Error("Not authenticated");
 
       const { data, error } = await supabase
-        .from("user_currencies")
+        .from("horse_currency")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
@@ -21,11 +21,11 @@ export const useHorseCurrency = () => {
 
       if (!data) {
         const { data: newData, error: insertError } = await supabase
-          .from("user_currencies")
+          .from("horse_currency")
           .insert({
             user_id: user.id,
-            gems: 0,
-            coins: 100,
+            gems: 100,
+            coins: 1000,
           })
           .select()
           .single();
@@ -73,7 +73,7 @@ export const useUserHorses = () => {
 
       // Deduct coins
       const { data: currency } = await supabase
-        .from("user_currencies")
+        .from("horse_currency")
         .select("coins")
         .eq("user_id", user.id)
         .single();
@@ -106,7 +106,7 @@ export const useUserHorses = () => {
 
       // Update currency
       await supabase
-        .from("user_currencies")
+        .from("horse_currency")
         .update({ coins: currency.coins - costCoins })
         .eq("user_id", user.id);
 
@@ -177,7 +177,7 @@ export const useJoinRace = () => {
 
       // Check coins
       const { data: currency } = await supabase
-        .from("user_currencies")
+        .from("horse_currency")
         .select("coins")
         .eq("user_id", user.id)
         .single();
@@ -202,7 +202,7 @@ export const useJoinRace = () => {
 
       // Deduct entry fee
       await supabase
-        .from("user_currencies")
+        .from("horse_currency")
         .update({ coins: currency.coins - race.entry_fee_coins })
         .eq("user_id", user.id);
 
@@ -212,6 +212,213 @@ export const useJoinRace = () => {
       queryClient.invalidateQueries({ queryKey: ["active-races"] });
       queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
       toast.success("Joined race!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+// Training Hook
+export const useTrainHorse = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ horseId, statType }: { horseId: string; statType: 'speed' | 'stamina' | 'acceleration' | 'temperament' }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const TRAINING_COST = 20;
+      const STAT_INCREASE = 5;
+
+      // Check coins
+      const { data: currency } = await supabase
+        .from("horse_currency")
+        .select("coins")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!currency || currency.coins < TRAINING_COST) {
+        throw new Error("Insufficient coins for training");
+      }
+
+      // Get current horse stats
+      const { data: horse } = await supabase
+        .from("horses")
+        .select("*")
+        .eq("id", horseId)
+        .single();
+
+      if (!horse) throw new Error("Horse not found");
+
+      // Update stat
+      const statField = `${statType}_stat`;
+      const newStatValue = Math.min((horse[statField] || 0) + STAT_INCREASE, 100);
+      const newXP = (horse.experience || 0) + 10;
+      const newLevel = Math.floor(newXP / 100) + 1;
+
+      await supabase
+        .from("horses")
+        .update({
+          [statField]: newStatValue,
+          experience: newXP,
+          level: newLevel,
+        })
+        .eq("id", horseId);
+
+      // Deduct coins
+      await supabase
+        .from("horse_currency")
+        .update({ coins: currency.coins - TRAINING_COST })
+        .eq("user_id", user.id);
+
+      return { statType, newValue: newStatValue };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["user-horses"] });
+      queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+      toast.success(`${data.statType} increased to ${data.newValue}!`);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+// Breeding Hook
+export const useBreedHorses = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ parent1Id, parent2Id }: { parent1Id: string; parent2Id: string }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const BREEDING_COST = 100;
+
+      // Check coins
+      const { data: currency } = await supabase
+        .from("horse_currency")
+        .select("coins")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!currency || currency.coins < BREEDING_COST) {
+        throw new Error("Insufficient coins for breeding");
+      }
+
+      // Get parent horses
+      const { data: parents } = await supabase
+        .from("horses")
+        .select("*")
+        .in("id", [parent1Id, parent2Id]);
+
+      if (!parents || parents.length !== 2) {
+        throw new Error("Parent horses not found");
+      }
+
+      const [parent1, parent2] = parents;
+
+      // Calculate offspring stats (average with small random variation)
+      const calculateOffspringStat = (stat1: number, stat2: number) => {
+        const average = (stat1 + stat2) / 2;
+        const variation = Math.floor(Math.random() * 10) - 5;
+        return Math.max(30, Math.min(100, Math.floor(average + variation)));
+      };
+
+      const offspringStats = {
+        speed_stat: calculateOffspringStat(parent1.speed_stat, parent2.speed_stat),
+        stamina_stat: calculateOffspringStat(parent1.stamina_stat, parent2.stamina_stat),
+        acceleration_stat: calculateOffspringStat(parent1.acceleration_stat, parent2.acceleration_stat),
+        temperament_stat: calculateOffspringStat(parent1.temperament_stat, parent2.temperament_stat),
+      };
+
+      // Create offspring
+      const { data: offspring, error } = await supabase
+        .from("horses")
+        .insert({
+          user_id: user.id,
+          name: `${parent1.name} Jr.`,
+          breed: parent1.breed,
+          color: Math.random() > 0.5 ? parent1.color : parent2.color,
+          ...offspringStats,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Record breeding
+      await supabase
+        .from("breeding_records")
+        .insert({
+          user_id: user.id,
+          parent1_id: parent1Id,
+          parent2_id: parent2Id,
+          offspring_id: offspring.id,
+          cost_coins: BREEDING_COST,
+          status: 'completed',
+        });
+
+      // Deduct coins
+      await supabase
+        .from("horse_currency")
+        .update({ coins: currency.coins - BREEDING_COST })
+        .eq("user_id", user.id);
+
+      return offspring;
+    },
+    onSuccess: (offspring) => {
+      queryClient.invalidateQueries({ queryKey: ["user-horses"] });
+      queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+      toast.success(`New foal ${offspring.name} born!`);
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+// Shop - Change Horse Color
+export const usePurchaseHorseColor = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ horseId, newColor }: { horseId: string; newColor: string }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const COLOR_COST = 50; // Gems
+
+      // Check gems
+      const { data: currency } = await supabase
+        .from("horse_currency")
+        .select("gems")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!currency || currency.gems < COLOR_COST) {
+        throw new Error("Insufficient gems");
+      }
+
+      // Update horse color
+      await supabase
+        .from("horses")
+        .update({ color: newColor })
+        .eq("id", horseId);
+
+      // Deduct gems
+      await supabase
+        .from("horse_currency")
+        .update({ gems: currency.gems - COLOR_COST })
+        .eq("user_id", user.id);
+
+      return { horseId, newColor };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-horses"] });
+      queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+      toast.success("Horse color changed!");
     },
     onError: (error: Error) => {
       toast.error(error.message);

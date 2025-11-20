@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HorseCurrencyDisplay } from "@/components/horse-racing/HorseCurrencyDisplay";
-import { useUserHorses, useRaces, useJoinRace } from "@/hooks/useHorseRacing";
+import { useUserHorses, useRaces, useJoinRace, useTrainHorse, useBreedHorses, usePurchaseHorseColor } from "@/hooks/useHorseRacing";
 import { RaceTrack3D } from "@/components/horse-racing/RaceTrack3D";
 import { Trophy, Dumbbell, Heart, Sparkles, Zap } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -16,11 +16,28 @@ export default function HorseRacing() {
   const { horses, createHorse } = useUserHorses();
   const { races } = useRaces();
   const joinRace = useJoinRace();
+  const trainHorse = useTrainHorse();
+  const breedHorses = useBreedHorses();
+  const purchaseColor = usePurchaseHorseColor();
+  
   const [showBuyHorse, setShowBuyHorse] = useState(false);
+  const [showJoinRace, setShowJoinRace] = useState(false);
   const [selectedRace, setSelectedRace] = useState<string | null>(null);
+  const [selectedHorseForRace, setSelectedHorseForRace] = useState("");
+  const [raceStrategy, setRaceStrategy] = useState("balanced");
   const [horseName, setHorseName] = useState("");
   const [horseBreed, setHorseBreed] = useState("thoroughbred");
   const [horseColor, setHorseColor] = useState("#8B4513");
+  
+  // Breeding state
+  const [showBreeding, setShowBreeding] = useState(false);
+  const [breedingParent1, setBreedingParent1] = useState("");
+  const [breedingParent2, setBreedingParent2] = useState("");
+  
+  // Shop state
+  const [showShop, setShowShop] = useState(false);
+  const [selectedHorseForShop, setSelectedHorseForShop] = useState("");
+  const [shopColor, setShopColor] = useState("#8B4513");
 
   const handleBuyHorse = () => {
     if (!horseName) {
@@ -37,6 +54,73 @@ export default function HorseRacing() {
       onSuccess: () => {
         setShowBuyHorse(false);
         setHorseName("");
+      }
+    });
+  };
+
+  const handleJoinRace = (raceId: string) => {
+    setSelectedRace(raceId);
+    setShowJoinRace(true);
+  };
+
+  const handleConfirmJoinRace = () => {
+    if (!selectedHorseForRace || !selectedRace) {
+      toast.error("Please select a horse");
+      return;
+    }
+
+    joinRace.mutate({
+      raceId: selectedRace,
+      horseId: selectedHorseForRace,
+      strategy: raceStrategy,
+    }, {
+      onSuccess: () => {
+        setShowJoinRace(false);
+        setSelectedHorseForRace("");
+        setRaceStrategy("balanced");
+      }
+    });
+  };
+
+  const handleTrainHorse = (horseId: string, statType: 'speed' | 'stamina' | 'acceleration' | 'temperament') => {
+    trainHorse.mutate({ horseId, statType });
+  };
+
+  const handleBreedHorses = () => {
+    if (!breedingParent1 || !breedingParent2) {
+      toast.error("Please select two horses");
+      return;
+    }
+    if (breedingParent1 === breedingParent2) {
+      toast.error("Please select different horses");
+      return;
+    }
+
+    breedHorses.mutate({
+      parent1Id: breedingParent1,
+      parent2Id: breedingParent2,
+    }, {
+      onSuccess: () => {
+        setShowBreeding(false);
+        setBreedingParent1("");
+        setBreedingParent2("");
+      }
+    });
+  };
+
+  const handlePurchaseColor = () => {
+    if (!selectedHorseForShop) {
+      toast.error("Please select a horse");
+      return;
+    }
+
+    purchaseColor.mutate({
+      horseId: selectedHorseForShop,
+      newColor: shopColor,
+    }, {
+      onSuccess: () => {
+        setShowShop(false);
+        setSelectedHorseForShop("");
       }
     });
   };
@@ -179,7 +263,7 @@ export default function HorseRacing() {
                         <Button onClick={() => setSelectedRace(race.id)}>
                           View Race
                         </Button>
-                        <Button variant="outline">
+                        <Button variant="outline" onClick={() => handleJoinRace(race.id)}>
                           Join Race
                         </Button>
                       </div>
@@ -190,24 +274,99 @@ export default function HorseRacing() {
             )}
           </TabsContent>
 
-          <TabsContent value="training">
+          <TabsContent value="training" className="space-y-4">
             <Card className="p-6">
               <h2 className="text-2xl font-bold mb-4">Training Facility</h2>
-              <p className="text-muted-foreground">Coming soon: Train your horses to improve their stats!</p>
+              <p className="text-muted-foreground mb-6">Train your horses to improve their stats! (20 Coins per session)</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {horses?.map((horse) => (
+                  <Card key={horse.id} className="p-4">
+                    <h3 className="font-bold text-lg mb-2">{horse.name}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">Level {horse.level}</p>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between text-sm">
+                        <span>Speed</span>
+                        <span>{horse.speed_stat}/100</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Stamina</span>
+                        <span>{horse.stamina_stat}/100</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Acceleration</span>
+                        <span>{horse.acceleration_stat}/100</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span>Temperament</span>
+                        <span>{horse.temperament_stat}/100</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleTrainHorse(horse.id, 'speed')}
+                        disabled={trainHorse.isPending || horse.speed_stat >= 100}
+                      >
+                        Train Speed
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => handleTrainHorse(horse.id, 'stamina')}
+                        disabled={trainHorse.isPending || horse.stamina_stat >= 100}
+                      >
+                        Train Stamina
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => handleTrainHorse(horse.id, 'acceleration')}
+                        disabled={trainHorse.isPending || horse.acceleration_stat >= 100}
+                      >
+                        Train Acceleration
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => handleTrainHorse(horse.id, 'temperament')}
+                        disabled={trainHorse.isPending || horse.temperament_stat >= 100}
+                      >
+                        Train Temperament
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             </Card>
           </TabsContent>
 
-          <TabsContent value="breeding">
+          <TabsContent value="breeding" className="space-y-4">
             <Card className="p-6">
               <h2 className="text-2xl font-bold mb-4">Breeding Center</h2>
-              <p className="text-muted-foreground">Coming soon: Breed horses to create offspring with combined traits!</p>
+              <p className="text-muted-foreground mb-6">Breed two horses to create offspring with combined traits! (100 Coins)</p>
+              
+              <Button onClick={() => setShowBreeding(true)} disabled={!horses || horses.length < 2}>
+                <Heart className="mr-2 h-4 w-4" />
+                Start Breeding
+              </Button>
+
+              {horses && horses.length < 2 && (
+                <p className="text-sm text-muted-foreground mt-4">
+                  You need at least 2 horses to breed
+                </p>
+              )}
             </Card>
           </TabsContent>
 
-          <TabsContent value="shop">
+          <TabsContent value="shop" className="space-y-4">
             <Card className="p-6">
               <h2 className="text-2xl font-bold mb-4">Cosmetics Shop</h2>
-              <p className="text-muted-foreground">Coming soon: Purchase cosmetic items with Gems!</p>
+              <p className="text-muted-foreground mb-6">Customize your horse's appearance with gems!</p>
+              
+              <Button onClick={() => setShowShop(true)} disabled={!horses || horses.length === 0}>
+                <Sparkles className="mr-2 h-4 w-4" />
+                Change Horse Color (50 Gems)
+              </Button>
             </Card>
           </TabsContent>
         </Tabs>
@@ -259,6 +418,134 @@ export default function HorseRacing() {
             </div>
             <Button onClick={handleBuyHorse} className="w-full">
               Buy Horse - 50 Coins
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showJoinRace} onOpenChange={setShowJoinRace}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Join Race</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Select Horse</Label>
+              <Select value={selectedHorseForRace} onValueChange={setSelectedHorseForRace}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a horse" />
+                </SelectTrigger>
+                <SelectContent>
+                  {horses?.map((horse) => (
+                    <SelectItem key={horse.id} value={horse.id}>
+                      {horse.name} (Lvl {horse.level})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Race Strategy</Label>
+              <Select value={raceStrategy} onValueChange={setRaceStrategy}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="aggressive">Aggressive - Early sprint</SelectItem>
+                  <SelectItem value="balanced">Balanced - Steady pace</SelectItem>
+                  <SelectItem value="conservative">Conservative - Save energy</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={handleConfirmJoinRace} className="w-full" disabled={joinRace.isPending}>
+              Join Race
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showBreeding} onOpenChange={setShowBreeding}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Breed Horses</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Parent 1</Label>
+              <Select value={breedingParent1} onValueChange={setBreedingParent1}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select first parent" />
+                </SelectTrigger>
+                <SelectContent>
+                  {horses?.map((horse) => (
+                    <SelectItem key={horse.id} value={horse.id}>
+                      {horse.name} - {horse.breed}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Parent 2</Label>
+              <Select value={breedingParent2} onValueChange={setBreedingParent2}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select second parent" />
+                </SelectTrigger>
+                <SelectContent>
+                  {horses?.filter(h => h.id !== breedingParent1).map((horse) => (
+                    <SelectItem key={horse.id} value={horse.id}>
+                      {horse.name} - {horse.breed}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={handleBreedHorses} className="w-full" disabled={breedHorses.isPending}>
+              Breed Horses - 100 Coins
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showShop} onOpenChange={setShowShop}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Horse Color</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label>Select Horse</Label>
+              <Select value={selectedHorseForShop} onValueChange={setSelectedHorseForShop}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a horse" />
+                </SelectTrigger>
+                <SelectContent>
+                  {horses?.map((horse) => (
+                    <SelectItem key={horse.id} value={horse.id}>
+                      {horse.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>New Color</Label>
+              <div className="flex gap-2">
+                {["#8B4513", "#000000", "#FFFFFF", "#808080", "#D2691E", "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#DDA15E"].map((color) => (
+                  <button
+                    key={color}
+                    onClick={() => setShopColor(color)}
+                    className="w-10 h-10 rounded-full border-2"
+                    style={{
+                      backgroundColor: color,
+                      borderColor: shopColor === color ? "hsl(var(--primary))" : "hsl(var(--border))",
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+            <Button onClick={handlePurchaseColor} className="w-full" disabled={purchaseColor.isPending}>
+              Change Color - 50 Gems
             </Button>
           </div>
         </DialogContent>
