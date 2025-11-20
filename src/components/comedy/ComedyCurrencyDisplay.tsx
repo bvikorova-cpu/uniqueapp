@@ -102,7 +102,7 @@ export const ComedyCurrencyDisplay = () => {
             onClick={() => handleBuyCoins(100)}
             disabled={isBuying}
           >
-            {isBuying ? "Processing..." : "100 Coins - $5"}
+            {isBuying ? "Processing..." : "100 Coins - €5"}
           </Button>
         </div>
       </div>
