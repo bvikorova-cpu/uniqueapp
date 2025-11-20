@@ -1,11 +1,25 @@
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dumbbell, Utensils, Zap, TrendingUp, Activity } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Dumbbell, Utensils, Zap, TrendingUp, Activity, ChefHat, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useAICredits } from "@/hooks/useAICredits";
 
 export default function WorkoutMatcher() {
+  const queryClient = useQueryClient();
+  const { credits } = useAICredits();
   const [selectedWorkoutType, setSelectedWorkoutType] = useState<string | null>(null);
+  const [goal, setGoal] = useState("muscle_gain");
+  const [experienceLevel, setExperienceLevel] = useState("intermediate");
+  const [daysPerWeek, setDaysPerWeek] = useState(4);
+  const [sessionDuration, setSessionDuration] = useState(60);
+  const [equipment, setEquipment] = useState("full_gym");
+  const [generatedPlan, setGeneratedPlan] = useState<any>(null);
 
   const workoutTypes = [
     {
@@ -42,63 +56,166 @@ export default function WorkoutMatcher() {
     }
   ];
 
-  const sampleWorkoutPlans = [
-    {
-      id: '1',
-      title: 'Beginner Full Body',
-      duration_weeks: 4,
-      description: '3 days/week strength training',
-      matched_meal_plan: 'High protein meal plan (2200 cal)'
+  const generateMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke('generate-workout-plan', {
+        body: {
+          workoutType: selectedWorkoutType,
+          goal,
+          experienceLevel,
+          daysPerWeek,
+          sessionDuration,
+          equipment
+        }
+      });
+
+      if (error) throw error;
+      return data;
     },
-    {
-      id: '2',
-      title: 'Advanced Fat Loss',
-      duration_weeks: 8,
-      description: '5 days HIIT + 2 days strength',
-      matched_meal_plan: 'Calorie deficit plan (1800 cal)'
+    onSuccess: (data) => {
+      setGeneratedPlan(data.plan);
+      queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
+      toast.success("Workout plan generated successfully!");
     },
-    {
-      id: '3',
-      title: 'Muscle Gain Program',
-      duration_weeks: 12,
-      description: '4 days strength training',
-      matched_meal_plan: 'Calorie surplus plan (2800 cal)'
+    onError: (error: any) => {
+      console.error('Generation error:', error);
+      toast.error(error.message || "Error generating workout plan");
     }
-  ];
+  });
+
+  const handleGenerate = () => {
+    if (!selectedWorkoutType) {
+      toast.error("Please select a workout type");
+      return;
+    }
+
+    if (!credits || credits.credits_remaining < 30) {
+      toast.error('You need 30 AI credits to generate a workout plan. Please purchase credits.');
+      return;
+    }
+
+    generateMutation.mutate();
+  };
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Dumbbell className="h-5 w-5 text-primary" />
-            FitFuel Combo
-          </CardTitle>
-          <CardDescription>
-            AI matches your workout with perfect nutrition
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Dumbbell className="h-5 w-5 text-primary" />
+                AI Workout + Nutrition Planner
+              </CardTitle>
+              <CardDescription>
+                AI generates personalized workout plans with meal pairing (30 credits)
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2 text-sm font-medium">
+              <ChefHat className="h-4 w-4 text-primary" />
+              {credits ? `${credits.credits_remaining} AI credits` : 'Loading...'}
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <h3 className="font-semibold mb-3">Select Your Workout Type</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {workoutTypes.map((workout) => {
-                const Icon = workout.icon;
-                return (
-                  <button
-                    key={workout.id}
-                    onClick={() => setSelectedWorkoutType(workout.id)}
-                    className={`p-4 rounded-lg border-2 transition-colors ${
-                      selectedWorkoutType === workout.id
-                        ? 'border-primary bg-primary/10'
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                  >
-                    <Icon className="h-6 w-6 mx-auto mb-2" />
-                    <p className="text-sm font-medium text-center">{workout.name}</p>
-                  </button>
-                );
-              })}
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <Label className="text-base font-semibold mb-3 block">Select Workout Type *</Label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {workoutTypes.map((workout) => {
+                  const Icon = workout.icon;
+                  return (
+                    <button
+                      key={workout.id}
+                      onClick={() => setSelectedWorkoutType(workout.id)}
+                      className={`p-4 rounded-lg border-2 transition-colors ${
+                        selectedWorkoutType === workout.id
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <Icon className="h-6 w-6 mx-auto mb-2" />
+                      <p className="text-sm font-medium text-center">{workout.name}</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="goal">Fitness Goal</Label>
+                <Select value={goal} onValueChange={setGoal}>
+                  <SelectTrigger id="goal">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="muscle_gain">Muscle Gain</SelectItem>
+                    <SelectItem value="fat_loss">Fat Loss</SelectItem>
+                    <SelectItem value="strength">Build Strength</SelectItem>
+                    <SelectItem value="endurance">Improve Endurance</SelectItem>
+                    <SelectItem value="general_fitness">General Fitness</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="experience">Experience Level</Label>
+                <Select value={experienceLevel} onValueChange={setExperienceLevel}>
+                  <SelectTrigger id="experience">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="beginner">Beginner</SelectItem>
+                    <SelectItem value="intermediate">Intermediate</SelectItem>
+                    <SelectItem value="advanced">Advanced</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="days">Days Per Week</Label>
+                <Select value={daysPerWeek.toString()} onValueChange={(v) => setDaysPerWeek(Number(v))}>
+                  <SelectTrigger id="days">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3">3 days</SelectItem>
+                    <SelectItem value="4">4 days</SelectItem>
+                    <SelectItem value="5">5 days</SelectItem>
+                    <SelectItem value="6">6 days</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="duration">Session Duration (min)</Label>
+                <Select value={sessionDuration.toString()} onValueChange={(v) => setSessionDuration(Number(v))}>
+                  <SelectTrigger id="duration">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="30">30 minutes</SelectItem>
+                    <SelectItem value="45">45 minutes</SelectItem>
+                    <SelectItem value="60">60 minutes</SelectItem>
+                    <SelectItem value="90">90 minutes</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="equipment">Available Equipment</Label>
+                <Select value={equipment} onValueChange={setEquipment}>
+                  <SelectTrigger id="equipment">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="bodyweight">Bodyweight Only</SelectItem>
+                    <SelectItem value="minimal">Minimal (dumbbells, bands)</SelectItem>
+                    <SelectItem value="full_gym">Full Gym</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -131,61 +248,6 @@ export default function WorkoutMatcher() {
               })()}
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Pre-Made Workout Programs</CardTitle>
-          <CardDescription>
-            Complete programs with matched meal plans
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {sampleWorkoutPlans.map((plan) => (
-            <div key={plan.id} className="p-4 border rounded-lg space-y-2">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h4 className="font-semibold">{plan.title}</h4>
-                  <p className="text-sm text-muted-foreground">{plan.description}</p>
-                </div>
-                <Badge variant="secondary">{plan.duration_weeks} weeks</Badge>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Utensils className="h-4 w-4 text-primary" />
-                <span className="text-muted-foreground">{plan.matched_meal_plan}</span>
-              </div>
-              <Button size="sm" variant="outline" className="w-full">
-                View Program
-              </Button>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      <Card className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-blue-500" />
-            Beast Mode Features
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Activity className="h-4 w-4 text-blue-500" />
-            <span className="text-sm">Personal AI trainer with video analysis</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Utensils className="h-4 w-4 text-purple-500" />
-            <span className="text-sm">Dynamic meal plans that adapt to your workouts</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-green-500" />
-            <span className="text-sm">Real-time macro adjustments</span>
-          </div>
-          <Button variant="default" className="w-full mt-4">
-            Upgrade to Beast Mode ($29.99/month)
-          </Button>
         </CardContent>
       </Card>
     </div>
