@@ -71,7 +71,7 @@ const InfluencerCard = ({ influencer, onSelect }: InfluencerCardProps) => {
         <div className="text-center p-2 bg-muted/50 rounded">
           <DollarSign className="h-4 w-4 mx-auto mb-1 text-muted-foreground" />
           <p className="text-xs text-muted-foreground">Earned</p>
-          <p className="font-semibold text-sm">${Number(influencer.total_earnings).toFixed(0)}</p>
+          <p className="font-semibold text-sm">€{Number(influencer.total_earnings).toFixed(0)}</p>
         </div>
       </div>
 
