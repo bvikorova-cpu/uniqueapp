@@ -1,6 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { Check, Star, Crown, Zap } from "lucide-react";
 
 const subscriptionTiers = [
@@ -54,6 +56,34 @@ const subscriptionTiers = [
 ];
 
 export function CloneSubscriptions() {
+  const { toast } = useToast();
+
+  const handleSubscribe = async (tierName: string, price: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to subscribe",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Subscription Starting...",
+        description: `Subscribing to ${tierName} (€${price}/month)`,
+      });
+    } catch (error) {
+      console.error('Error subscribing:', error);
+      toast({
+        title: "Error",
+        description: "Failed to process subscription",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -100,6 +130,7 @@ export function CloneSubscriptions() {
                 <Button 
                   className="w-full" 
                   variant={tier.popular ? "default" : "outline"}
+                  onClick={() => handleSubscribe(tier.name, tier.price)}
                 >
                   Subscribe Now
                 </Button>
