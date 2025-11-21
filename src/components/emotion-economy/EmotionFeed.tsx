@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +13,10 @@ export function EmotionFeed() {
   const [isPosting, setIsPosting] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const fetchPosts = async () => {
     try {
@@ -158,75 +162,49 @@ export function EmotionFeed() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Card className="border-yellow-500/20">
-              <CardContent className="pt-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold mb-1">@user123</p>
-                    <p className="text-sm">Just finished an amazing workout session! Feeling motivated and energized! 💪</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 mb-3">
-                  <Badge variant="outline" className="gap-1">
-                    <Heart className="h-3 w-3 text-yellow-500" />
-                    Joy: 85
-                  </Badge>
-                  <Badge variant="outline" className="gap-1">
-                    <Sparkles className="h-3 w-3 text-blue-500" />
-                    Motivation: 95
-                  </Badge>
-                </div>
-                <div className="flex gap-6 text-sm text-muted-foreground">
-                  <button className="flex items-center gap-1 hover:text-foreground transition-colors" onClick={() => handleLike('sample1')}>
-                    <Heart className="h-4 w-4" />
-                    <span>24</span>
-                  </button>
-                  <button className="flex items-center gap-1 hover:text-foreground transition-colors">
-                    <MessageCircle className="h-4 w-4" />
-                    <span>5</span>
-                  </button>
-                  <div className="flex items-center gap-1">
-                    <Eye className="h-4 w-4" />
-                    <span>156</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-red-500/20">
-              <CardContent className="pt-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold mb-1">@creator</p>
-                    <p className="text-sm">Sending love and positive vibes to everyone today! Remember, you're amazing! ❤️</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 mb-3">
-                  <Badge variant="outline" className="gap-1">
-                    <Heart className="h-3 w-3 text-red-500" />
-                    Love: 98
-                  </Badge>
-                  <Badge variant="outline" className="gap-1">
-                    <Sparkles className="h-3 w-3 text-yellow-500" />
-                    Joy: 92
-                  </Badge>
-                </div>
-                <div className="flex gap-6 text-sm text-muted-foreground">
-                  <button className="flex items-center gap-1 hover:text-foreground transition-colors" onClick={() => handleLike('sample2')}>
-                    <Heart className="h-4 w-4" />
-                    <span>89</span>
-                  </button>
-                  <button className="flex items-center gap-1 hover:text-foreground transition-colors">
-                    <MessageCircle className="h-4 w-4" />
-                    <span>12</span>
-                  </button>
-                  <div className="flex items-center gap-1">
-                    <Eye className="h-4 w-4" />
-                    <span>342</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {posts.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No posts yet. Be the first to share your emotions!</p>
+              </div>
+            ) : (
+              posts.map((post) => (
+                <Card key={post.id} className="border-primary/20">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold mb-1">@user{post.user_id.substring(0, 6)}</p>
+                        <p className="text-sm">{post.content}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 mb-3 flex-wrap">
+                      {post.ai_detected_emotions && Object.entries(post.ai_detected_emotions).map(([emotion, value]) => (
+                        <Badge key={emotion} variant="outline" className="gap-1">
+                          <Heart className="h-3 w-3" />
+                          {emotion}: {value as number}
+                        </Badge>
+                      ))}
+                    </div>
+                    <div className="flex gap-6 text-sm text-muted-foreground">
+                      <button 
+                        className="flex items-center gap-1 hover:text-foreground transition-colors" 
+                        onClick={() => handleLike(post.id)}
+                      >
+                        <Heart className="h-4 w-4" />
+                        <span>{post.likes_count || 0}</span>
+                      </button>
+                      <button className="flex items-center gap-1 hover:text-foreground transition-colors">
+                        <MessageCircle className="h-4 w-4" />
+                        <span>{post.comments_count || 0}</span>
+                      </button>
+                      <div className="flex items-center gap-1">
+                        <Eye className="h-4 w-4" />
+                        <span>{post.views_count || 0}</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

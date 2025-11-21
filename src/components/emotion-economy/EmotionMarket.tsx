@@ -73,12 +73,26 @@ export function EmotionMarket() {
 
       if (transactionError) throw transactionError;
 
-      // Get current wallet
-      const { data: currentWallet } = await supabase
+      // Get current wallet or create one
+      let { data: currentWallet, error: walletFetchError } = await supabase
         .from('emotion_wallets')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
+
+      // If wallet doesn't exist, create it
+      if (!currentWallet && !walletFetchError) {
+        const { data: newWallet, error: walletCreateError } = await supabase
+          .from('emotion_wallets')
+          .insert({ user_id: user.id })
+          .select()
+          .single();
+        
+        if (walletCreateError) throw walletCreateError;
+        currentWallet = newWallet;
+      }
+
+      if (walletFetchError) throw walletFetchError;
 
       if (currentWallet) {
         const balanceKey = `${emotionType}_balance` as keyof typeof currentWallet;

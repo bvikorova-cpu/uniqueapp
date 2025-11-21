@@ -183,7 +183,16 @@ export function MyClones() {
                 )}
               </Button>
               
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  toast({
+                    title: "Opening Conversations",
+                    description: `Viewing chats for ${clone.clone_name}`
+                  });
+                }}
+              >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 View Conversations
               </Button>

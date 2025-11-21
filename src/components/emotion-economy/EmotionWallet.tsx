@@ -46,23 +46,24 @@ export function EmotionWallet() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      let { data: walletData } = await supabase
+      let { data: walletData, error } = await supabase
         .from('emotion_wallets')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (!walletData) {
-        const { data: newWallet, error } = await supabase
+      if (!walletData && !error) {
+        const { data: newWallet, error: insertError } = await supabase
           .from('emotion_wallets')
           .insert({ user_id: user.id })
           .select()
           .single();
 
-        if (error) throw error;
+        if (insertError) throw insertError;
         walletData = newWallet;
       }
 
+      if (error) throw error;
       setWallet(walletData);
     } catch (error) {
       console.error('Error fetching wallet:', error);
