@@ -221,7 +221,15 @@ const Cooking = () => {
                 <Sparkles className="h-6 w-6 text-primary" />
                 AI Cooking Tools
               </h2>
-              <p className="text-muted-foreground">Try our AI features for cooking</p>
+              <p className="text-muted-foreground mb-4">Try our AI-powered features that make cooking easier and more enjoyable</p>
+              <div className="text-sm text-muted-foreground space-y-1 max-w-3xl">
+                <p>• <strong>Recipe Generator:</strong> Enter ingredients you have at home and AI creates custom recipes</p>
+                <p>• <strong>Meal Planner:</strong> Get personalized weekly meal plans based on your dietary preferences and calorie goals</p>
+                <p>• <strong>Food Scanner:</strong> Take a photo of your meal to instantly analyze nutritional values and calories</p>
+                <p>• <strong>Menu Analyzer:</strong> Upload restaurant menus for healthy recommendations and allergen information</p>
+                <p>• <strong>AI Chef Chat:</strong> Ask cooking questions and get expert advice from our AI chef assistant</p>
+                <p>• <strong>Wine Pairing:</strong> Discover perfect wine and beverage matches for your dishes</p>
+              </div>
             </div>
             <Button 
               variant="outline" 

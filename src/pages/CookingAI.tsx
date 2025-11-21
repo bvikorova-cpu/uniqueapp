@@ -65,9 +65,18 @@ const CookingAI = () => {
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
             🍳 AI Cooking Tools
           </h1>
-          <p className="text-xl text-muted-foreground">
+          <p className="text-xl text-muted-foreground mb-4">
             All AI cooking features in one place
           </p>
+          <div className="max-w-3xl mx-auto text-sm text-muted-foreground space-y-2 text-left bg-card p-6 rounded-lg border">
+            <p className="font-semibold text-foreground mb-2">How it works:</p>
+            <p>• Each AI feature requires credits to use</p>
+            <p>• Credits are deducted automatically when you generate content</p>
+            <p>• Free tier includes 10 credits to get started</p>
+            <p>• Subscribe for unlimited monthly credits</p>
+            <p>• All generated content is saved to your account</p>
+            <p>• Export or share your recipes and meal plans</p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
