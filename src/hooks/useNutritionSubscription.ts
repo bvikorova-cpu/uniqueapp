@@ -37,16 +37,16 @@ export function useNutritionSubscription() {
         throw error;
       }
 
-      // If no subscription, create free tier
+      // If no subscription, create premium tier with inactive status
       if (!data) {
         const { data: newSub, error: createError } = await supabase
           .from('nutrition_subscriptions')
           .insert({
             user_id: user.id,
-            subscription_type: 'free',
-            status: 'active',
-            meal_plans_limit: 3,
-            food_scans_limit: 5,
+            subscription_type: 'premium',
+            status: 'inactive',
+            meal_plans_limit: 0,
+            food_scans_limit: 0,
             features: {},
             current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
           })

@@ -7,18 +7,6 @@ import { toast } from "sonner";
 
 const plans = [
   {
-    id: 'free',
-    name: 'Free',
-    price: 0,
-    interval: 'forever',
-    features: [
-      '3 meal plans/month',
-      '5 food scans/day',
-      'Basic nutrition info',
-      '3 restaurant analyses/month'
-    ]
-  },
-  {
     id: 'premium',
     name: 'Premium',
     price: 9.99,
@@ -111,7 +99,7 @@ export default function SubscriptionPlans() {
             <CardHeader>
               <CardTitle>{plan.name}</CardTitle>
               <CardDescription>
-                <span className="text-3xl font-bold">${plan.price}</span>
+                <span className="text-3xl font-bold">€{plan.price}</span>
                 <span className="text-muted-foreground">/{plan.interval}</span>
               </CardDescription>
             </CardHeader>

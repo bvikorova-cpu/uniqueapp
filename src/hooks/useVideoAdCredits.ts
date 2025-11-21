@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 interface VideoAdCredits {
   credits_remaining: number;
-  tier: 'free' | 'pro' | 'agency';
+  tier: 'pro' | 'agency';
   subscription_end_date?: string;
 }
 
@@ -65,8 +65,8 @@ export const useVideoAdCredits = () => {
           .from("video_ad_credits")
           .insert({
             user_id: user.id,
-            credits_remaining: 5,
-            tier: 'free'
+            credits_remaining: 50,
+            tier: 'pro'
           })
           .select()
           .single();
@@ -108,13 +108,6 @@ export const useVideoAdCredits = () => {
 
   const getTierLimits = (tier: string) => {
     switch (tier) {
-      case 'free':
-        return {
-          dailyLimit: 1,
-          maxDuration: 30,
-          features: ['basic'],
-          creditsPerVideo: 1
-        };
       case 'pro':
         return {
           dailyLimit: Infinity,

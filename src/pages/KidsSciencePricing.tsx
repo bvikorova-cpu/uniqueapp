@@ -11,12 +11,6 @@ const KidsSciencePricing = () => {
   const { subscription, subscribe } = useScienceSubscription();
 
   const features = {
-    free: [
-      "1 experiment analysis per month",
-      "Basic AI analysis",
-      "Scientific explanations",
-      "Fun facts included",
-    ],
     premium: [
       "Unlimited experiment analyses",
       "Priority AI analysis",
@@ -41,47 +35,9 @@ const KidsSciencePricing = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Free Plan */}
-            <Card className="border-2 relative">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-2xl">
-                  <Sparkles className="w-6 h-6 text-blue-500" />
-                  Free Plan
-                </CardTitle>
-                <CardDescription className="text-lg">
-                  Perfect for trying out the Science Lab
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <div className="text-4xl font-bold mb-2">
-                    €0
-                    <span className="text-lg font-normal text-muted-foreground">/month</span>
-                  </div>
-                </div>
-
-                <ul className="space-y-3">
-                  {features.free.map((feature, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <Check className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button
-                  className="w-full"
-                  variant="outline"
-                  onClick={() => navigate('/kids-science-lab')}
-                >
-                  Get Started Free
-                </Button>
-              </CardContent>
-            </Card>
-
+          <div className="flex justify-center">
             {/* Premium Plan */}
-            <Card className="border-2 border-primary relative shadow-lg">
+            <Card className="border-2 border-primary relative shadow-lg max-w-md w-full">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                   Most Popular

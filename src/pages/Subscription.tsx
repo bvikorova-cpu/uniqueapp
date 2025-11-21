@@ -19,7 +19,7 @@ const Subscription = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
-  const [currentTier, setCurrentTier] = useState<string>('free');
+  const [currentTier, setCurrentTier] = useState<string>('basic');
   const [loading, setLoading] = useState(true);
   const [canceling, setCanceling] = useState(false);
   const [stripeUrl, setStripeUrl] = useState<string | null>(null);
@@ -63,14 +63,6 @@ const Subscription = () => {
     if (!user) return;
 
     try {
-      if (tier === 'free') {
-        toast({
-          title: "Free tier",
-          description: "You are already using the free tier",
-        });
-        return;
-      }
-
       // Create Stripe checkout session
       const { data, error } = await supabase.functions.invoke('create-subscription-checkout', {
         body: { tier }
@@ -92,7 +84,7 @@ const Subscription = () => {
   };
 
   const handleCancelSubscription = async () => {
-    if (!user || currentTier === 'free') return;
+    if (!user || currentTier === 'basic') return;
 
     setCanceling(true);
     try {
@@ -158,20 +150,6 @@ const Subscription = () => {
   }
 
   const plans = [
-    {
-      tier: 'free',
-      name: 'Free',
-      price: 0,
-      icon: Sparkles,
-      features: [
-        '1 Bazaar listing/month',
-        '1 auction/month',
-        'Basic features',
-        '5% sales commission',
-        'Limited AI features'
-      ],
-      limitations: true,
-    },
     {
       tier: 'basic',
       name: 'Basic',
@@ -269,7 +247,7 @@ const Subscription = () => {
           <p className="text-xl text-muted-foreground">
             Get more from the Unique platform
           </p>
-          {currentTier !== 'free' && (
+          {currentTier !== 'basic' && (
             <Badge className="mt-4" variant="default">
               Current: {currentTier.toUpperCase()}
             </Badge>
@@ -331,7 +309,7 @@ const Subscription = () => {
                     disabled={isCurrent}
                     onClick={() => handleSubscribe(plan.tier, plan.price)}
                   >
-                    {isCurrent ? 'Current Plan' : plan.tier === 'free' ? 'Stay Free' : 'Select Plan'}
+                    {isCurrent ? 'Current Plan' : 'Select Plan'}
                   </Button>
                 </CardContent>
               </Card>
@@ -339,7 +317,7 @@ const Subscription = () => {
           })}
         </div>
 
-        {currentTier !== 'free' && (
+        {currentTier !== 'basic' && (
           <div className="mt-8 text-center">
             <Button 
               variant="outline" 

@@ -8,7 +8,7 @@ export const useCookingCredits = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        return { credits: 0, subscription_tier: 'free' };
+        return { credits: 0, subscription_tier: 'basic' };
       }
 
       // Kontrola admin statusu
@@ -30,7 +30,7 @@ export const useCookingCredits = () => {
         .single();
 
       if (error) throw error;
-      return data || { credits: 0, subscription_tier: 'free' };
+      return data || { credits: 0, subscription_tier: 'basic' };
     },
   });
 };

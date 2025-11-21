@@ -439,7 +439,7 @@ const Auction = () => {
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
                   Limit: {limits.auctionListingsPerMonth} auctions/month • Commission: {limits.commissionRate}%
-                  {limits.tier === 'free' && (
+                  {limits.tier === 'basic' && (
                     <Link to="/subscription" className="ml-2 text-primary hover:underline">
                       Upgrade
                     </Link>

@@ -31,16 +31,16 @@ export function useKidsSubscription() {
       if (stored) {
         setSubscription(JSON.parse(stored));
       } else {
-        // Default to free tier
-        const freeTier: KidsSubscription = {
-          subscription_type: 'free',
-          status: 'active',
-          stories_limit: 3,
+        // Default to monthly tier
+        const monthlyTier: KidsSubscription = {
+          subscription_type: 'monthly',
+          status: 'inactive',
+          stories_limit: 0,
           features: {},
           current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
         };
-        setSubscription(freeTier);
-        localStorage.setItem('kids_subscription', JSON.stringify(freeTier));
+        setSubscription(monthlyTier);
+        localStorage.setItem('kids_subscription', JSON.stringify(monthlyTier));
       }
     } catch (error) {
       console.error('Error loading kids subscription:', error);
@@ -56,9 +56,6 @@ export function useKidsSubscription() {
 
       // Set limits based on tier
       switch (newTier) {
-        case 'free':
-          stories_limit = 3;
-          break;
         case 'basic':
           stories_limit = 20;
           features.hd_illustrations = true;

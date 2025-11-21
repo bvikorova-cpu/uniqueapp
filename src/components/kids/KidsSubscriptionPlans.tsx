@@ -19,22 +19,6 @@ const PRODUCT_TIERS = {
 
 const subscriptionPlans = [
   {
-    id: 'free',
-    name: '📚 Free',
-    price: 0,
-    interval: 'forever',
-    icon: School,
-    color: 'from-gray-500 to-gray-600',
-    popular: false,
-    features: [
-      '1 homework question per day',
-      'AI-powered explanations',
-      'Fun facts included',
-      'Kid-friendly guidance',
-      'All subjects covered'
-    ]
-  },
-  {
     id: 'monthly',
     name: '✨ Premium Monthly',
     price: 5,
@@ -271,14 +255,12 @@ export default function KidsSubscriptionPlans() {
                   </div>
 
                   <Button
-                    onClick={() => plan.id === 'free' ? null : handleUpgrade(plan.id)}
-                    disabled={plan.id === 'free' || isCurrentPlan(plan.id) || loading[plan.id] || checkingSubscription}
+                    onClick={() => handleUpgrade(plan.id)}
+                    disabled={isCurrentPlan(plan.id) || loading[plan.id] || checkingSubscription}
                     className="w-full text-lg py-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow"
                     variant={plan.popular ? 'default' : 'outline'}
                   >
-                    {plan.id === 'free' ? (
-                      'Current Plan'
-                    ) : loading[plan.id] ? (
+                    {loading[plan.id] ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Loading...

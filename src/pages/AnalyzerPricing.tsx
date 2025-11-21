@@ -8,27 +8,6 @@ import { toast } from "sonner";
 
 const PRICING_TIERS = [
   {
-    id: 'free',
-    name: 'Free',
-    price: '€0',
-    period: 'forever',
-    icon: Sparkles,
-    color: 'text-muted-foreground',
-    features: [
-      '1 analysis per day',
-      'Basic identification',
-      'Text extraction (max 100 words)',
-      'Watermarked reports',
-      'Basic info only',
-    ],
-    limitations: [
-      'Limited features',
-      'No AI chat follow-up',
-      'No batch upload',
-      'No export options',
-    ]
-  },
-  {
     id: 'basic',
     name: 'Basic',
     price: '€4.99',
@@ -166,14 +145,11 @@ export default function AnalyzerPricing() {
                     <Button
                       className="w-full"
                       variant={tier.popular ? 'default' : 'outline'}
-                      disabled={tier.id === 'free'}
                       onClick={() => {
-                        if (tier.id !== 'free') {
-                          toast.info(`Upgrade to ${tier.name} coming soon! Payment integration in progress.`);
-                        }
+                        toast.info(`Upgrade to ${tier.name} coming soon! Payment integration in progress.`);
                       }}
                     >
-                      {tier.id === 'free' ? 'Current Plan' : 'Upgrade Now'}
+                      Upgrade Now
                     </Button>
                   </div>
                 </Card>
