@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -46,7 +46,31 @@ export default function ShadowArenaSubmitStory() {
 
   return (
     <SubscriptionGate>
-      <div className="container mx-auto p-6 max-w-3xl">
+      <div className="container mx-auto p-6 max-w-4xl">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-fuchsia-600 bg-clip-text text-transparent">
+            📝 Submit Your Horror Story
+          </h1>
+          <p className="text-lg text-muted-foreground mb-6">
+            Share your terrifying tale and let our AI enhance it with professional illustrations
+          </p>
+          
+          {/* Instructions Card */}
+          <Card className="mb-6 bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 border-purple-500/20">
+            <CardContent className="pt-6">
+              <h2 className="text-xl font-bold mb-4">📋 Story Submission Guidelines</h2>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>✍️ <strong>Be Original:</strong> Share your unique horror stories, experiences, or creative fiction</p>
+                <p>🎭 <strong>Set the Mood:</strong> Use descriptive language to create atmosphere and tension</p>
+                <p>📖 <strong>Keep it Engaging:</strong> Hook readers from the first sentence to the last</p>
+                <p>🎨 <strong>AI Enhancement:</strong> Our AI will automatically generate 2-3 illustrations and format your story</p>
+                <p>👥 <strong>Audience:</strong> Your story will be visible to all Shadow Arena subscribers</p>
+                <p>⚔️ <strong>Battle Ready:</strong> Quality stories may be selected for monthly creator battles</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         <Card className="p-8">
           <h1 className="text-3xl font-bold mb-6">📝 Submit Your Horror Story</h1>
           <p className="text-muted-foreground mb-8">

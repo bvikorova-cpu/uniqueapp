@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
@@ -90,23 +90,40 @@ export default function ShadowArenaBattles() {
   return (
     <SubscriptionGate>
       <div className="container mx-auto p-6 max-w-7xl">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold mb-2 flex items-center gap-3">
-              <Swords className="h-10 w-10 text-primary" />
-              Battle Arena
-            </h1>
-            <p className="text-muted-foreground">
-              Creator battles with €1 entry fee and prize pools
-            </p>
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 flex items-center gap-3 bg-gradient-to-r from-purple-400 to-fuchsia-600 bg-clip-text text-transparent">
+                <Swords className="h-10 w-10 text-purple-400" />
+                Battle Arena
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Monthly horror storytelling competitions with real cash prizes
+              </p>
+            </div>
+            <Button 
+              onClick={createNewBattle}
+              disabled={creating}
+              size="lg"
+            >
+              {creating ? 'Creating...' : 'Create New Battle'}
+            </Button>
           </div>
-          <Button 
-            onClick={createNewBattle}
-            disabled={creating}
-            size="lg"
-          >
-            {creating ? 'Creating...' : 'Create New Battle'}
-          </Button>
+
+          {/* Battle Explanation Card */}
+          <Card className="bg-gradient-to-br from-purple-500/10 to-fuchsia-500/10 border-purple-500/20">
+            <CardContent className="pt-6">
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>🎯 <strong>How Battles Work:</strong> Every month, new challenges are created with AI-generated themes</p>
+                <p>💶 <strong>Entry Fee:</strong> €1 to participate | All entries go into the prize pool</p>
+                <p>🎭 <strong>Anonymous Competition:</strong> Stories are submitted anonymously for fair judging</p>
+                <p>🎁 <strong>Voting System:</strong> Readers vote using digital gifts (each gift = weighted vote)</p>
+                <p>🏆 <strong>Prize Distribution:</strong> 80% to winners, 20% platform fee | Top 3 places win prizes</p>
+                <p>⏰ <strong>Duration:</strong> Each battle runs for 14 days from start</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {loading ? (
