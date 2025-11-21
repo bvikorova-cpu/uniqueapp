@@ -207,6 +207,8 @@ import AIAvatarService from "./pages/AIAvatarService";
 import TutorialPlatform from "./pages/TutorialPlatform";
 import MonetizationIdeas from "./pages/MonetizationIdeas";
 import ShadowArena from "./pages/ShadowArena";
+import ShadowArenaDashboard from "./pages/ShadowArenaDashboard";
+import ShadowArenaSubmitStory from "./pages/ShadowArenaSubmitStory";
 import VirtualEscapeRoom from "./pages/VirtualEscapeRoom";
 import HorseRacing from "./pages/HorseRacing";
 import ComedyClub from "./pages/ComedyClub";
@@ -500,6 +502,8 @@ const App = () => (
           <Route path="/tutorial-platform" element={<TutorialPlatform />} />
           <Route path="/monetization-ideas" element={<MonetizationIdeas />} />
           <Route path="/shadow-arena" element={<ShadowArena />} />
+          <Route path="/shadow-arena/dashboard" element={<ShadowArenaDashboard />} />
+          <Route path="/shadow-arena/submit-story" element={<ShadowArenaSubmitStory />} />
           <Route path="/virtual-escape-room" element={<VirtualEscapeRoom />} />
               <Route path="/horse-racing" element={<HorseRacing />} />
               <Route path="/comedy-club" element={<ComedyClub />} />

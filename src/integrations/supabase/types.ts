@@ -18708,6 +18708,280 @@ export type Database = {
           },
         ]
       }
+      shadow_battle_participants: {
+        Row: {
+          battle_id: string
+          entry_fee_paid: boolean | null
+          id: string
+          story_content: string
+          story_title: string
+          stripe_payment_id: string | null
+          submitted_at: string | null
+          total_gifts_received: number | null
+          user_id: string
+        }
+        Insert: {
+          battle_id: string
+          entry_fee_paid?: boolean | null
+          id?: string
+          story_content: string
+          story_title: string
+          stripe_payment_id?: string | null
+          submitted_at?: string | null
+          total_gifts_received?: number | null
+          user_id: string
+        }
+        Update: {
+          battle_id?: string
+          entry_fee_paid?: boolean | null
+          id?: string
+          story_content?: string
+          story_title?: string
+          stripe_payment_id?: string | null
+          submitted_at?: string | null
+          total_gifts_received?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_battle_participants_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shadow_battles: {
+        Row: {
+          challenge_keywords: string[] | null
+          challenge_prompt: string
+          challenge_theme: string
+          created_at: string | null
+          ends_at: string | null
+          id: string
+          started_at: string | null
+          status: string
+          total_prize_pool: number | null
+          winner_id: string | null
+        }
+        Insert: {
+          challenge_keywords?: string[] | null
+          challenge_prompt: string
+          challenge_theme: string
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: string
+          total_prize_pool?: number | null
+          winner_id?: string | null
+        }
+        Update: {
+          challenge_keywords?: string[] | null
+          challenge_prompt?: string
+          challenge_theme?: string
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          started_at?: string | null
+          status?: string
+          total_prize_pool?: number | null
+          winner_id?: string | null
+        }
+        Relationships: []
+      }
+      shadow_credit_transactions: {
+        Row: {
+          amount: number
+          battle_id: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          battle_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          battle_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_credit_transactions_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_battles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shadow_credits: {
+        Row: {
+          balance: number | null
+          created_at: string | null
+          id: string
+          total_earned: number | null
+          total_spent: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          total_earned?: number | null
+          total_spent?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          balance?: number | null
+          created_at?: string | null
+          id?: string
+          total_earned?: number | null
+          total_spent?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      shadow_gifts: {
+        Row: {
+          battle_id: string
+          created_at: string | null
+          gift_amount: number
+          gift_type: string
+          id: string
+          participant_id: string
+          sender_id: string
+          stripe_payment_id: string | null
+        }
+        Insert: {
+          battle_id: string
+          created_at?: string | null
+          gift_amount: number
+          gift_type: string
+          id?: string
+          participant_id: string
+          sender_id: string
+          stripe_payment_id?: string | null
+        }
+        Update: {
+          battle_id?: string
+          created_at?: string | null
+          gift_amount?: number
+          gift_type?: string
+          id?: string
+          participant_id?: string
+          sender_id?: string
+          stripe_payment_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shadow_gifts_battle_id_fkey"
+            columns: ["battle_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_battles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shadow_gifts_participant_id_fkey"
+            columns: ["participant_id"]
+            isOneToOne: false
+            referencedRelation: "shadow_battle_participants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shadow_stories: {
+        Row: {
+          ai_images: Json | null
+          ai_sound_url: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          is_top_week: boolean | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          votes_count: number | null
+        }
+        Insert: {
+          ai_images?: Json | null
+          ai_sound_url?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_top_week?: boolean | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          votes_count?: number | null
+        }
+        Update: {
+          ai_images?: Json | null
+          ai_sound_url?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_top_week?: boolean | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          votes_count?: number | null
+        }
+        Relationships: []
+      }
+      shadow_subscriptions: {
+        Row: {
+          created_at: string | null
+          current_period_end: string | null
+          id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_period_end?: string | null
+          id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       shopping_wishlist: {
         Row: {
           affiliate_link: string | null
