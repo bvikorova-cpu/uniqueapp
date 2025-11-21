@@ -174,7 +174,6 @@ import ParallelLives from "./pages/ParallelLives";
 import EmotionEconomy from "./pages/EmotionEconomy";
 import QuantumSocial from "./pages/QuantumSocial";
 import VirtualInfluencerAgency from "./pages/VirtualInfluencerAgency";
-import AIContentMarketplace from "./pages/AIContentMarketplace";
 import MembershipCommunity from "./pages/MembershipCommunity";
 import CreatorDashboard from "./pages/CreatorDashboard";
 import CreatorProfile from "./pages/CreatorProfile";
@@ -200,7 +199,6 @@ import MyProperties from "./pages/MyProperties";
 import HomeDecorMarketplace from "./pages/HomeDecorMarketplace";
 import HomeDecorSubscription from "./pages/HomeDecorSubscription";
 import BrandCollaboration from "./pages/BrandCollaboration";
-import CustomCommissions from "./pages/CustomCommissions";
 import StockContentLibrary from "./pages/StockContentLibrary";
 import DigitalProductStore from "./pages/DigitalProductStore";
 import AIAvatarService from "./pages/AIAvatarService";
@@ -479,7 +477,6 @@ const App = () => (
           <Route path="/emotion-economy" element={<EmotionEconomy />} />
           <Route path="/quantum-social" element={<QuantumSocial />} />
           <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
-          <Route path="/ai-content-marketplace" element={<AIContentMarketplace />} />
           <Route path="/membership-community" element={<MembershipCommunity />} />
           <Route path="/discover-creators" element={<DiscoverCreators />} />
           <Route path="/creator-dashboard" element={<CreatorDashboard />} />
@@ -499,7 +496,6 @@ const App = () => (
           <Route path="/sports-admin" element={<SportsAdmin />} />
           <Route path="/admin/sports-matches" element={<AdminSportsMatches />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
-          <Route path="/custom-commissions" element={<CustomCommissions />} />
           <Route path="/stock-content-library" element={<StockContentLibrary />} />
           <Route path="/digital-product-store" element={<DigitalProductStore />} />
           <Route path="/ai-avatar-service" element={<AIAvatarService />} />
