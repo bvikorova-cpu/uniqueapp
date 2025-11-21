@@ -245,7 +245,6 @@ const Navbar = () => {
     { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
     { path: "/fit-slim", label: t('services.fit_slim.title'), icon: Apple },
     { path: "/cooking", label: t('navbar.cooking'), icon: ChefHat },
-    { path: "/cooking-ai", label: "AI Cooking Tools", icon: Sparkles },
     { path: "/coffee", label: "Coffee Community", icon: Coffee },
     { path: "/ai-clone", label: "AI Personality Clone", icon: Bot },
     { path: "/parallel-lives", label: "Parallel Lives Network", icon: Globe },
