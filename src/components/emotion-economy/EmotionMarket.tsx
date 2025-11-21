@@ -45,7 +45,7 @@ export function EmotionMarket() {
     });
   };
 
-  const handleBuyEmotion = async (emotionType: string, amount: number, price: number) => {
+  const handleBuyEmotion = async (emotionType: string, amount: number, pricePerUnit: number) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -57,32 +57,45 @@ export function EmotionMarket() {
         return;
       }
 
-      const totalPrice = amount * price;
+      const totalPrice = amount * pricePerUnit;
 
       // Create transaction
-      const { error } = await supabase
+      const { error: transactionError } = await supabase
         .from('emotion_transactions')
         .insert({
           buyer_id: user.id,
           emotion_type: emotionType,
           amount: amount,
-          price_per_unit: price,
-          total_price: totalPrice,
-          transaction_type: 'buy'
+          price: totalPrice,
+          transaction_type: 'buy',
+          status: 'completed'
         });
 
-      if (error) throw error;
+      if (transactionError) throw transactionError;
 
-      // Update wallet
-      await supabase
+      // Get current wallet
+      const { data: currentWallet } = await supabase
         .from('emotion_wallets')
-        .upsert({
-          user_id: user.id,
-          [`balance_${emotionType}`]: amount
-        }, {
-          onConflict: 'user_id',
-          ignoreDuplicates: false
-        });
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (currentWallet) {
+        const balanceKey = `${emotionType}_balance` as keyof typeof currentWallet;
+        const currentBalance = (currentWallet[balanceKey] as number) || 0;
+        const newBalance = currentBalance + amount;
+
+        // Update wallet with new balance
+        const { error: walletError } = await supabase
+          .from('emotion_wallets')
+          .update({
+            [balanceKey]: newBalance,
+            total_traded: (currentWallet.total_traded || 0) + 1
+          })
+          .eq('user_id', user.id);
+
+        if (walletError) throw walletError;
+      }
 
       toast({
         title: "Purchase Successful! 🎉",
