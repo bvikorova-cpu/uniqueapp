@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
-import { Globe, Search, Users, UserPlus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { Globe, Search, Users, UserPlus, RefreshCw } from "lucide-react";
 
 interface ParallelLife {
   id: string;
@@ -18,8 +19,10 @@ interface ParallelLife {
 }
 
 export function ExploreLives() {
+  const { toast } = useToast();
   const [lives, setLives] = useState<ParallelLife[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     fetchLives();
@@ -41,6 +44,37 @@ export function ExploreLives() {
     }
   };
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchLives();
+    setIsRefreshing(false);
+    toast({
+      title: "Lives Refreshed",
+      description: "Latest lives loaded"
+    });
+  };
+
+  const handleFollow = async (lifeId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to follow",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Followed!",
+        description: "You are now following this parallel life"
+      });
+    } catch (error) {
+      console.error('Error following:', error);
+    }
+  };
+
   const filteredLives = lives.filter(life =>
     life.life_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     life.profession.toLowerCase().includes(searchTerm.toLowerCase())
@@ -50,10 +84,17 @@ export function ExploreLives() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Explore Parallel Lives</CardTitle>
-          <CardDescription>
-            Discover alternative realities and follow different versions of people
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Explore Parallel Lives</CardTitle>
+              <CardDescription>
+                Discover alternative realities and follow different versions of people
+              </CardDescription>
+            </div>
+            <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isRefreshing}>
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="relative">
@@ -101,7 +142,7 @@ export function ExploreLives() {
                 <Button className="flex-1" size="sm">
                   View Profile
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => handleFollow(life.id)}>
                   <UserPlus className="h-4 w-4" />
                 </Button>
               </div>

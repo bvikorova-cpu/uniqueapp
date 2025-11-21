@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Bot, MessageCircle, Pause, Play, Download, Trash2 } from "lucide-react";
+import { Bot, MessageCircle, Pause, Play, Download, Trash2, RefreshCw } from "lucide-react";
 
 interface Clone {
   id: string;
@@ -21,6 +21,7 @@ export function MyClones() {
   const { toast } = useToast();
   const [clones, setClones] = useState<Clone[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     fetchClones();
@@ -69,6 +70,16 @@ export function MyClones() {
         variant: "destructive"
       });
     }
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchClones();
+    setIsRefreshing(false);
+    toast({
+      title: "Clones Refreshed",
+      description: "Latest data loaded"
+    });
   };
 
   const exportConversations = async (cloneId: string) => {
@@ -123,8 +134,15 @@ export function MyClones() {
   }
 
   return (
-    <div className="grid gap-4">
-      {clones.map((clone) => (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
+          <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
+      <div className="grid gap-4">
+        {clones.map((clone) => (
         <Card key={clone.id}>
           <CardHeader>
             <div className="flex items-start justify-between">
@@ -181,7 +199,8 @@ export function MyClones() {
             </div>
           </CardContent>
         </Card>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

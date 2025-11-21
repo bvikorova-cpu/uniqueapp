@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { User, Users, FileText, Eye, EyeOff, Globe } from "lucide-react";
+import { User, Users, FileText, Eye, EyeOff, Globe, RefreshCw } from "lucide-react";
 
 interface ParallelLife {
   id: string;
@@ -24,6 +24,7 @@ export function MyLives() {
   const { toast } = useToast();
   const [lives, setLives] = useState<ParallelLife[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     fetchLives();
@@ -47,6 +48,16 @@ export function MyLives() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchLives();
+    setIsRefreshing(false);
+    toast({
+      title: "Lives Refreshed",
+      description: "Latest data loaded"
+    });
   };
 
   const toggleLifeStatus = async (lifeId: string, currentStatus: boolean) => {
@@ -91,8 +102,15 @@ export function MyLives() {
   }
 
   return (
-    <div className="grid gap-4">
-      {lives.map((life) => (
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
+          <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
+      <div className="grid gap-4">
+        {lives.map((life) => (
         <Card key={life.id} className={!life.is_active ? 'opacity-60' : ''}>
           <CardHeader>
             <div className="flex items-start justify-between">
@@ -155,7 +173,8 @@ export function MyLives() {
             </div>
           </CardContent>
         </Card>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
