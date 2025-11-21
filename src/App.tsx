@@ -43,6 +43,7 @@ import AdminTipsters from "./pages/AdminTipsters";
 import AdminMasterChefPayouts from "./pages/AdminMasterChefPayouts";
 import AdminComedyPayouts from "./pages/AdminComedyPayouts";
 import AdminInfluencerPayouts from "./pages/AdminInfluencerPayouts";
+import AdminBrandCampaigns from "./pages/AdminBrandCampaigns";
 import AdminPlatformEarnings from "./pages/AdminPlatformEarnings";
 import Bazaar from "./pages/Bazaar";
 import Auction from "./pages/Auction";
@@ -325,6 +326,7 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/masterchef-payouts" element={<AdminMasterChefPayouts />} />
               <Route path="/admin/comedy-payouts" element={<AdminComedyPayouts />} />
+              <Route path="/admin/brand-campaigns" element={<AdminBrandCampaigns />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />

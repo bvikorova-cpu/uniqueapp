@@ -2364,31 +2364,40 @@ export type Database = {
       }
       campaign_applications: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           campaign_id: string
           created_at: string
           id: string
           message: string | null
           portfolio_link: string | null
+          rejection_reason: string | null
           status: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           campaign_id: string
           created_at?: string
           id?: string
           message?: string | null
           portfolio_link?: string | null
+          rejection_reason?: string | null
           status?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           campaign_id?: string
           created_at?: string
           id?: string
           message?: string | null
           portfolio_link?: string | null
+          rejection_reason?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -2492,6 +2501,72 @@ export type Database = {
           stripe_payment_id?: string | null
         }
         Relationships: []
+      }
+      campaign_payments: {
+        Row: {
+          amount: number
+          application_id: string
+          brand_user_id: string
+          campaign_id: string
+          created_at: string | null
+          id: string
+          influencer_amount: number
+          influencer_user_id: string
+          paid_at: string | null
+          platform_fee: number
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          application_id: string
+          brand_user_id: string
+          campaign_id: string
+          created_at?: string | null
+          id?: string
+          influencer_amount: number
+          influencer_user_id: string
+          paid_at?: string | null
+          platform_fee: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          application_id?: string
+          brand_user_id?: string
+          campaign_id?: string
+          created_at?: string | null
+          id?: string
+          influencer_amount?: number
+          influencer_user_id?: string
+          paid_at?: string | null
+          platform_fee?: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_payments_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "campaign_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "campaign_payments_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "brand_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       castle_room_collectibles: {
         Row: {
