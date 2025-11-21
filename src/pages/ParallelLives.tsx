@@ -14,7 +14,7 @@ export default function ParallelLives() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-20 pb-8">
         {/* Hero Section */}
         <div className="text-center mb-20 space-y-4">
           <div className="flex items-center justify-center gap-3 mb-4">
