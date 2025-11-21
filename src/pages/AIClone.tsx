@@ -15,7 +15,7 @@ export default function AIClone() {
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       <div className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-12 space-y-4">
+        <div className="text-center mb-20 space-y-4">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Bot className="h-12 w-12 text-primary" />
             <h1 className="text-5xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
@@ -55,7 +55,7 @@ export default function AIClone() {
         </div>
 
         {/* Main Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 mt-8">
           <TabsList className="grid w-full grid-cols-5 max-w-4xl mx-auto">
             <TabsTrigger value="create">
               <Sparkles className="h-4 w-4 mr-2" />
