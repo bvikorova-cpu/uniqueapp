@@ -53,9 +53,9 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
           
           <Lock className="h-24 w-24 mx-auto mb-6 text-red-500 animate-pulse drop-shadow-[0_0_20px_rgba(220,38,38,0.8)] relative z-10" />
           <h2 className="text-4xl font-bold mb-4 text-red-400 drop-shadow-[0_0_10px_rgba(220,38,38,0.6)] relative z-10">
-            🎭 Shadow Arena Hub Access Required
+            👻 Shadow Arena Hub Access Required
           </h2>
-          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto relative z-10">
+          <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto relative z-10">
             Enter the darkest corner of storytelling. Unlock live horror battles, AI-enhanced tales, 
             and compete for real cash prizes in our terrifying arena.
           </p>
@@ -64,50 +64,50 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
               <Sparkles className="h-6 w-6 text-red-400 mt-1 animate-pulse" />
               <div>
                 <p className="font-bold text-red-300 mb-1">📚 Story Archive</p>
-                <p className="text-sm text-gray-400">Access all AI-enhanced horror stories with atmospheric illustrations</p>
+                <p className="text-sm text-gray-200">Access all AI-enhanced horror stories with atmospheric illustrations</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-gradient-to-r from-purple-950/50 to-black/50 p-4 rounded-lg border border-purple-900/30">
               <Sparkles className="h-6 w-6 text-purple-400 mt-1 animate-pulse" />
               <div>
                 <p className="font-bold text-purple-300 mb-1">📹 Live Battle Viewing</p>
-                <p className="text-sm text-gray-400">Watch creators perform horror stories LIVE in real-time battles</p>
+                <p className="text-sm text-gray-200">Watch creators perform horror stories LIVE in real-time battles</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-gradient-to-r from-red-950/50 to-black/50 p-4 rounded-lg border border-red-900/30">
               <Sparkles className="h-6 w-6 text-red-400 mt-1 animate-pulse" />
               <div>
                 <p className="font-bold text-red-300 mb-1">🎁 Voting Rights</p>
-                <p className="text-sm text-gray-400">Send digital gifts during streams to vote for your favorites</p>
+                <p className="text-sm text-gray-200">Send digital gifts during streams to vote for your favorites</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-gradient-to-r from-purple-950/50 to-black/50 p-4 rounded-lg border border-purple-900/30">
               <Sparkles className="h-6 w-6 text-purple-400 mt-1 animate-pulse" />
               <div>
                 <p className="font-bold text-purple-300 mb-1">✍️ Story Submission</p>
-                <p className="text-sm text-gray-400">Submit your stories & compete in €1 entry battles for cash prizes</p>
+                <p className="text-sm text-gray-200">Submit your stories & compete in €1 entry battles for cash prizes</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-gradient-to-r from-red-950/50 to-black/50 p-4 rounded-lg border border-red-900/30">
               <Sparkles className="h-6 w-6 text-red-400 mt-1 animate-pulse" />
               <div>
                 <p className="font-bold text-red-300 mb-1">💰 Prize Pool Access</p>
-                <p className="text-sm text-gray-400">Win 80% of battle entry fees - top 3 performers get paid</p>
+                <p className="text-sm text-gray-200">Win 80% of battle entry fees - top 3 performers get paid</p>
               </div>
             </div>
             <div className="flex items-start gap-3 bg-gradient-to-r from-purple-950/50 to-black/50 p-4 rounded-lg border border-purple-900/30">
               <Sparkles className="h-6 w-6 text-purple-400 mt-1 animate-pulse" />
               <div>
                 <p className="font-bold text-purple-300 mb-1">🤖 AI Enhancements</p>
-                <p className="text-sm text-gray-400">Every story gets 3 AI-generated horror illustrations automatically</p>
+                <p className="text-sm text-gray-200">Every story gets 3 AI-generated horror illustrations automatically</p>
               </div>
             </div>
           </div>
 
           <div className="bg-gradient-to-r from-red-950/70 to-black/70 p-8 rounded-lg mb-8 border border-red-900/50 shadow-[0_0_30px_rgba(139,0,0,0.3)] relative z-10">
             <p className="text-4xl font-bold mb-3 text-red-400 drop-shadow-[0_0_10px_rgba(220,38,38,0.8)]">€2.00 / month</p>
-            <p className="text-sm text-gray-400 mb-4">Cancel anytime - No long-term commitment</p>
-            <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+            <p className="text-sm text-gray-200 mb-4">Cancel anytime - No long-term commitment</p>
+            <div className="flex items-center justify-center gap-4 text-xs text-gray-300">
               <span>✓ Instant access</span>
               <span>✓ Stripe secure payment</span>
               <span>✓ Cancel online anytime</span>
@@ -123,7 +123,7 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
             Unlock Shadow Arena Now
           </Button>
           
-          <p className="text-xs text-gray-500 mt-6 relative z-10">
+          <p className="text-xs text-gray-300 mt-6 relative z-10">
             Join hundreds of horror creators earning real money from their stories
           </p>
         </Card>
