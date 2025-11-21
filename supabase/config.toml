@@ -569,3 +569,9 @@ verify_jwt = true
 
 [functions.generate-age-progression]
 verify_jwt = true
+
+[functions.send-dating-gift]
+verify_jwt = true
+
+[functions.dating-payment-webhook]
+verify_jwt = false
