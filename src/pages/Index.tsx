@@ -15,7 +15,8 @@ import {
   Mic,
   ShoppingBag,
   Brain,
-  TrendingUp
+  TrendingUp,
+  Ghost
 } from "lucide-react";
 
 const Index = () => {
@@ -149,6 +150,15 @@ const Index = () => {
       badge: "Sports",
       badgeColor: "bg-green-600",
       gradient: "from-green-600 to-emerald-600"
+    },
+    {
+      title: "🎭 Shadow Arena",
+      description: "Horror storytelling platform with creator battles & AI-enhanced stories",
+      icon: Ghost,
+      path: "/shadow-arena",
+      badge: "Horror",
+      badgeColor: "bg-purple-600",
+      gradient: "from-purple-600 to-fuchsia-600"
     }
   ];
   
