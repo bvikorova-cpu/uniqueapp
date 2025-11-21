@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 import { Shield, Check, AlertTriangle } from "lucide-react";
 
 const insurancePlans = [
@@ -48,6 +49,15 @@ const insurancePlans = [
 ];
 
 export function EmotionInsurance() {
+  const { toast } = useToast();
+
+  const handleGetProtected = (planName: string, price: string) => {
+    toast({
+      title: `${planName} Selected`,
+      description: `Redirecting to payment... (€${price}/month)`
+    });
+  };
+
   return (
     <div className="space-y-6">
       <Card className="border-purple-500/20">
@@ -107,6 +117,7 @@ export function EmotionInsurance() {
               <Button 
                 className="w-full" 
                 variant={plan.popular ? "default" : "outline"}
+                onClick={() => handleGetProtected(plan.name, plan.price)}
               >
                 Get Protected
               </Button>
