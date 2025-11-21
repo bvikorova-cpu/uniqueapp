@@ -171,7 +171,6 @@ import CoffeeBuddy from "./pages/CoffeeBuddy";
 import AIClone from "./pages/AIClone";
 import ParallelLives from "./pages/ParallelLives";
 import EmotionEconomy from "./pages/EmotionEconomy";
-import MemoryTheft from "./pages/MemoryTheft";
 import QuantumSocial from "./pages/QuantumSocial";
 import VirtualInfluencerAgency from "./pages/VirtualInfluencerAgency";
 import AIContentMarketplace from "./pages/AIContentMarketplace";
@@ -199,7 +198,6 @@ import PropertySubmission from "./pages/PropertySubmission";
 import MyProperties from "./pages/MyProperties";
 import HomeDecorMarketplace from "./pages/HomeDecorMarketplace";
 import HomeDecorSubscription from "./pages/HomeDecorSubscription";
-import PrintOnDemand from "./pages/PrintOnDemand";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import CustomCommissions from "./pages/CustomCommissions";
 import StockContentLibrary from "./pages/StockContentLibrary";
@@ -469,7 +467,6 @@ const App = () => (
           <Route path="/parallel-lives" element={<ParallelLives />} />
           <Route path="/lottery-history" element={<LotteryHistory />} />
           <Route path="/emotion-economy" element={<EmotionEconomy />} />
-          <Route path="/memory-theft" element={<MemoryTheft />} />
           <Route path="/quantum-social" element={<QuantumSocial />} />
           <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
           <Route path="/ai-content-marketplace" element={<AIContentMarketplace />} />
@@ -491,7 +488,6 @@ const App = () => (
           <Route path="/tipster-dashboard" element={<TipsterDashboard />} />
           <Route path="/sports-admin" element={<SportsAdmin />} />
           <Route path="/admin/sports-matches" element={<AdminSportsMatches />} />
-          <Route path="/print-on-demand" element={<PrintOnDemand />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/custom-commissions" element={<CustomCommissions />} />
           <Route path="/stock-content-library" element={<StockContentLibrary />} />
