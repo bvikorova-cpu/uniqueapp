@@ -65,43 +65,43 @@ const Cooking = () => {
   const aiFeatures = [
     {
       icon: Sparkles,
-      title: "Generátor receptov",
-      description: "AI vygeneruje recepty z tvojich ingrediencií",
+      title: "Recipe Generator",
+      description: "AI generates recipes from your ingredients",
       path: "/recipe-generator",
       color: "from-orange-500 to-red-500"
     },
     {
       icon: Calendar,
-      title: "Jedálny plán",
-      description: "Personalizovaný týždenný meal plan",
+      title: "Meal Planner",
+      description: "Personalized weekly meal plan",
       path: "/meal-planner",
       color: "from-green-500 to-emerald-500"
     },
     {
       icon: Camera,
       title: "Food Scanner",
-      description: "Naskenuj jedlo a získaj nutričné info",
+      description: "Scan food and get nutritional info",
       path: "/food-scanner",
       color: "from-blue-500 to-cyan-500"
     },
     {
       icon: Store,
       title: "Menu Analyzer",
-      description: "Analyzuj reštauračné menu",
+      description: "Analyze restaurant menus",
       path: "/restaurant-analyzer",
       color: "from-purple-500 to-pink-500"
     },
     {
       icon: MessageCircle,
       title: "AI Chef Chat",
-      description: "Chatuj s AI kuchárom",
+      description: "Chat with AI chef",
       path: "/chef-chat",
       color: "from-yellow-500 to-orange-500"
     },
     {
       icon: Wine,
       title: "Wine Pairing",
-      description: "Nájdi ideálne víno k jedlu",
+      description: "Find perfect wine for your food",
       path: "/wine-pairing",
       color: "from-red-500 to-rose-500"
     }
@@ -219,16 +219,16 @@ const Cooking = () => {
             <div>
               <h2 className="text-2xl font-bold flex items-center gap-2">
                 <Sparkles className="h-6 w-6 text-primary" />
-                AI Kuchárske Nástroje
+                AI Cooking Tools
               </h2>
-              <p className="text-muted-foreground">Vyskúšaj naše AI funkcie pre varenie</p>
+              <p className="text-muted-foreground">Try our AI features for cooking</p>
             </div>
             <Button 
               variant="outline" 
               onClick={() => navigate('/cooking-ai')}
               className="gap-2"
             >
-              Zobraziť všetky
+              View All
             </Button>
           </div>
           
