@@ -83,6 +83,15 @@ serve(async (req) => {
 
     if (updateError) throw updateError;
 
+    // Get influencer details for notification
+    const { data: influencer, error: influencerError } = await supabase
+      .from("virtual_influencers")
+      .select("user_id, name")
+      .eq("id", withdrawal.influencer_id)
+      .single();
+
+    if (influencerError) throw influencerError;
+
     // Update balance based on action
     if (action === "rejected") {
       // Return funds to available balance
@@ -95,6 +104,17 @@ serve(async (req) => {
 
       if (balanceError) throw balanceError;
       logStep("Funds returned to available balance");
+
+      // Create notification for user
+      await supabase
+        .from("notifications")
+        .insert({
+          user_id: influencer.user_id,
+          type: "influencer_withdrawal_rejected",
+          title: "Withdrawal Request Rejected",
+          message: `Your withdrawal request for €${withdrawal.amount} for ${influencer.name} was rejected. ${adminNotes || ""}`,
+          is_read: false,
+        });
     } else if (action === "completed") {
       // Move from pending to withdrawn
       const { error: balanceError } = await supabase
@@ -107,6 +127,28 @@ serve(async (req) => {
 
       if (balanceError) throw balanceError;
       logStep("Funds moved to withdrawn");
+
+      // Create notification for user
+      await supabase
+        .from("notifications")
+        .insert({
+          user_id: influencer.user_id,
+          type: "influencer_withdrawal_completed",
+          title: "Withdrawal Completed 💰",
+          message: `Your withdrawal of €${withdrawal.amount} for ${influencer.name} has been processed and sent to your ${withdrawal.payment_method}.`,
+          is_read: false,
+        });
+    } else if (action === "approved") {
+      // Create notification for user
+      await supabase
+        .from("notifications")
+        .insert({
+          user_id: influencer.user_id,
+          type: "influencer_withdrawal_approved",
+          title: "Withdrawal Approved ✅",
+          message: `Your withdrawal request for €${withdrawal.amount} for ${influencer.name} has been approved and will be processed soon.`,
+          is_read: false,
+        });
     }
 
     logStep("Withdrawal processed successfully");

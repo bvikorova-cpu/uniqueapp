@@ -30,7 +30,7 @@ serve(async (req) => {
     // Verify user owns this influencer
     const { data: influencer, error: influencerError } = await supabase
       .from("virtual_influencers")
-      .select("id, user_id")
+      .select("id, user_id, name")
       .eq("id", influencerId)
       .eq("user_id", user.id)
       .single();
@@ -82,6 +82,25 @@ serve(async (req) => {
       .eq("influencer_id", influencerId);
 
     if (updateError) throw updateError;
+
+    // Notify admins about new withdrawal request
+    const { data: adminUsers } = await supabase
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "admin");
+
+    if (adminUsers && adminUsers.length > 0) {
+      const adminNotifications = adminUsers.map(admin => ({
+        user_id: admin.user_id,
+        type: "influencer_withdrawal_pending",
+        title: "New Influencer Withdrawal Request",
+        message: `${influencer.name} requested €${amount} withdrawal via ${paymentMethod}`,
+        related_id: influencerId,
+        is_read: false,
+      }));
+
+      await supabase.from("notifications").insert(adminNotifications);
+    }
 
     return new Response(
       JSON.stringify({ success: true, withdrawal }),
