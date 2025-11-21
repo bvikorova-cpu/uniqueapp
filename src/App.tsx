@@ -75,7 +75,6 @@ import Astrology from "./pages/Astrology";
 
 import PremiumStore from "./pages/PremiumStore";
 import AICreditsStore from "./pages/AICreditsStore";
-import AIMusic from "./pages/AIMusic";
 import MysteryBox from "./pages/MysteryBox";
 import PetTranslator from "./pages/PetTranslator";
 import PetTranslatorPricing from "./pages/PetTranslatorPricing";
@@ -90,7 +89,6 @@ import SkillSwapProfile from "./pages/SkillSwapProfile";
 import SkillSwapSettings from "./pages/SkillSwapSettings";
 import SkillSwapDashboard from "./pages/SkillSwapDashboard";
 import SubscriptionManagement from "./pages/SubscriptionManagement";
-import RoutineOptimizer from "./pages/RoutineOptimizer";
 import Psychology from "./pages/Psychology";
 import Quiz from "./pages/Quiz";
 import Home from "./pages/Home";
@@ -364,7 +362,6 @@ const App = () => (
           <Route path="/virtual-pet" element={<VirtualPet />} />
           <Route path="/astrology" element={<Astrology />} />
           <Route path="/character-arena" element={<CharacterArena />} />
-          <Route path="/ai-music" element={<AIMusic />} />
           <Route path="/mystery-box" element={<MysteryBox />} />
           <Route path="/pet-translator" element={<PetTranslator />} />
           <Route path="/pet-translator-pricing" element={<PetTranslatorPricing />} />
@@ -379,7 +376,6 @@ const App = () => (
            <Route path="/skill-swap/profile/:userId" element={<SkillSwapProfile />} />
            <Route path="/skill-swap/profile/edit" element={<SkillSwapSettings />} />
            <Route path="/subscription-management" element={<SubscriptionManagement />} />
-               <Route path="/routine-optimizer" element={<RoutineOptimizer />} />
            <Route path="/wellness" element={<Wellness />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />

@@ -80,10 +80,8 @@ const Home = () => {
     { name: "AI Music Producer", path: "/ai-music-producer", keywords: ["music", "hudba", "songs", "skladby", "producer"] },
     { name: "Plant Care", path: "/plant-care", keywords: ["plant", "rastlina", "garden", "zahrada", "care", "starostlivosť"] },
     { name: "AI Tattoo Designer", path: "/ai-tattoo", keywords: ["tattoo", "tetovanie", "design", "dizajn", "ai"] },
-    { name: "Routine Optimizer", path: "/routine-optimizer", keywords: ["routine", "rutina", "optimalizácia", "produktivita"] },
     { name: "Mystery Box", path: "/mystery-box", keywords: ["mystery", "box", "prekvapenie", "odmeny"] },
     { name: "Astrology", path: "/astrology", keywords: ["astrology", "astrologický", "horoskop", "znamenia"] },
-    { name: "AI Music", path: "/ai-music", keywords: ["music", "hudba", "curator", "playlist"] },
     { name: "Dream Journal", path: "/dream-journal", keywords: ["dream", "sen", "journal", "denník"] },
     { name: "Virtual Pet", path: "/virtual-pet", keywords: ["pet", "zviera", "virtual", "virtuálny"] },
     { name: "Brand Builder", path: "/brand-builder", keywords: ["brand", "značka", "builder", "tvorba"] },
@@ -605,20 +603,6 @@ const Home = () => {
               </Card>
             </Link>
 
-            <Link to="/routine-optimizer">
-              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
-                <CardHeader>
-                  <Zap className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>Routine Optimizer</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Optimize your daily routine for maximum productivity
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
             <Link to="/mystery-box">
               <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
                 <CardHeader>
@@ -642,20 +626,6 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Horoscopes, tarot readings and astrological predictions
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link to="/ai-music">
-              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
-                <CardHeader>
-                  <Disc3 className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>AI Music Curator</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Personalized playlists based on your mood
                   </p>
                 </CardContent>
               </Card>
