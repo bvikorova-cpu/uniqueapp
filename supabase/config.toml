@@ -592,4 +592,4 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.generate-monetization-ideas]
-verify_jwt = true
+verify_jwt = false
