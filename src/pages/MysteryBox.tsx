@@ -93,8 +93,8 @@ const MysteryBox = () => {
 
       if (currentCredits < box.price) {
         toast({
-          title: "Nedostatok kreditov",
-          description: `Potrebujete ${box.price} kreditov. Presmerujeme vás na nákup.`,
+          title: "Insufficient Credits",
+          description: `You need ${box.price} credits. Redirecting to purchase...`,
           variant: "destructive",
         });
         setTimeout(() => navigate("/ai-credits-store"), 2000);
@@ -129,16 +129,16 @@ const MysteryBox = () => {
       });
 
       toast({
-        title: "Mystery Box zakúpený!",
-        description: `${box.name} bol pridaný do vašej zbierky.`,
+        title: "Mystery Box Purchased!",
+        description: `${box.name} has been added to your collection.`,
       });
 
       await Promise.all([loadData(), refreshCredits()]);
     } catch (error) {
       console.error('Error purchasing box:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa zakúpiť Mystery Box.",
+        title: "Error",
+        description: "Failed to purchase Mystery Box.",
         variant: "destructive",
       });
     } finally {
@@ -165,16 +165,16 @@ const MysteryBox = () => {
         
         setTimeout(() => {
           toast({
-            title: "🎉 Výhra!",
-            description: `Získali ste: ${data.reward.item_name}`,
+            title: "🎉 You Won!",
+            description: `You received: ${data.reward.item_name}`,
           });
         }, 1000);
       }
     } catch (error) {
       console.error('Error opening box:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa otvoriť Mystery Box.",
+        title: "Error",
+        description: "Failed to open Mystery Box.",
         variant: "destructive",
       });
     } finally {
@@ -222,11 +222,11 @@ const MysteryBox = () => {
             </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Mesačné mystery boxy s exkluzívnym digitálnym obsahom
+            Monthly mystery boxes with exclusive digital content
           </p>
           <div className="mt-4 inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
             <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Gacha-style systém pre vzácne items</span>
+            <span className="text-sm font-medium">Gacha-style system for rare items</span>
           </div>
         </div>
 
@@ -240,8 +240,8 @@ const MysteryBox = () => {
                     {getRarityIcon(revealedReward.rarity)}
                   </div>
                 </div>
-                <CardTitle className="text-2xl">🎉 Výhra!</CardTitle>
-                <CardDescription>Získali ste nový item</CardDescription>
+                <CardTitle className="text-2xl">🎉 You Won!</CardTitle>
+                <CardDescription>You received a new item</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
@@ -250,14 +250,14 @@ const MysteryBox = () => {
                     {revealedReward.rarity.toUpperCase()}
                   </Badge>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Typ: {revealedReward.item_type}
+                    Type: {revealedReward.item_type}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Platnosť do: {new Date(revealedReward.expiresAt).toLocaleDateString('sk-SK')}
+                    Valid until: {new Date(revealedReward.expiresAt).toLocaleDateString('en-US')}
                   </p>
                 </div>
                 <Button onClick={() => setRevealedReward(null)} className="w-full">
-                  Pokračovať
+                  Continue
                 </Button>
               </CardContent>
             </Card>
@@ -266,7 +266,7 @@ const MysteryBox = () => {
 
         {/* Available Boxes */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6">Dostupné Mystery Boxy</h2>
+          <h2 className="text-2xl font-bold mb-6">Available Mystery Boxes</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {boxes.map((box) => (
               <Card key={box.id} className="hover:shadow-lg transition-shadow">
@@ -278,7 +278,7 @@ const MysteryBox = () => {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-bold">{box.price}</span>
-                    <span className="text-muted-foreground">kreditov</span>
+                    <span className="text-muted-foreground">credits</span>
                   </div>
                   <Button
                     onClick={() => handlePurchase(box)}
@@ -288,10 +288,10 @@ const MysteryBox = () => {
                     {purchasing === box.id ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Nakupujem...
+                        Purchasing...
                       </>
                     ) : (
-                      'Kúpiť Mystery Box'
+                      'Buy Mystery Box'
                     )}
                   </Button>
                 </CardContent>
@@ -303,7 +303,7 @@ const MysteryBox = () => {
         {/* User's Boxes */}
         {userBoxes.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Vaše Mystery Boxy</h2>
+            <h2 className="text-2xl font-bold mb-6">Your Mystery Boxes</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {userBoxes.filter(ub => !ub.is_opened).map((userBox) => (
                 <Card key={userBox.id} className="hover:shadow-lg transition-shadow">
@@ -311,7 +311,7 @@ const MysteryBox = () => {
                     <div className="text-6xl mb-4 animate-bounce">{userBox.mystery_boxes.icon}</div>
                     <CardTitle>{userBox.mystery_boxes.name}</CardTitle>
                     <CardDescription>
-                      Zakúpené: {new Date(userBox.purchased_at).toLocaleDateString('sk-SK')}
+                      Purchased: {new Date(userBox.purchased_at).toLocaleDateString('en-US')}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -324,10 +324,10 @@ const MysteryBox = () => {
                       {opening === userBox.id ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Otváram...
+                          Opening...
                         </>
                       ) : (
-                        'Otvoriť Box'
+                        'Open Box'
                       )}
                     </Button>
                   </CardContent>
@@ -340,7 +340,7 @@ const MysteryBox = () => {
         {/* Active Rewards */}
         {rewards.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold mb-6">Vaše Aktívne Items</h2>
+            <h2 className="text-2xl font-bold mb-6">Your Active Items</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {rewards.map((reward) => (
                 <Card key={reward.id}>
@@ -360,7 +360,7 @@ const MysteryBox = () => {
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground">
-                      Platnosť do: {new Date(reward.expires_at).toLocaleDateString('sk-SK')}
+                      Valid until: {new Date(reward.expires_at).toLocaleDateString('en-US')}
                     </p>
                   </CardContent>
                 </Card>
