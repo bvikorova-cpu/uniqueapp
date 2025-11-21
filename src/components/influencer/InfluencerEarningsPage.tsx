@@ -1,252 +1,254 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { Euro, TrendingUp, Gift, Wallet } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { InfluencerWithdrawalDialog } from "./InfluencerWithdrawalDialog";
-
-interface ProfileEarnings {
-  id: string;
-  pending_balance: number;
-  lifetime_earnings: number;
-  total_withdrawn: number;
-}
-
-interface GiftEarning {
-  id: string;
-  amount: number;
-  chef_amount: number;
-  platform_commission: number;
-  created_at: string;
-  message: string | null;
-  influencer_gifts: {
-    name: string;
-    icon: string;
-  } | null;
-}
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Wallet, TrendingUp, Clock, CheckCircle } from "lucide-react";
+import { InfluencerWithdrawalForm } from "./InfluencerWithdrawalForm";
+import { format } from "date-fns";
 
 export const InfluencerEarningsPage = () => {
-  const [profile, setProfile] = useState<ProfileEarnings | null>(null);
-  const [gifts, setGifts] = useState<GiftEarning[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [showWithdrawalDialog, setShowWithdrawalDialog] = useState(false);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const [selectedInfluencer, setSelectedInfluencer] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadEarningsData();
-  }, []);
-
-  const loadEarningsData = async () => {
-    try {
-      setLoading(true);
+  const { data: influencers, isLoading: loadingInfluencers } = useQuery({
+    queryKey: ["user-influencers"],
+    queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        navigate("/auth");
-        return;
-      }
+      if (!user) throw new Error("Not authenticated");
 
-      // Get influencer profile
-      const { data: profileData, error: profileError } = await supabase
-        .from("influencer_profiles")
-        .select("id, pending_balance, lifetime_earnings, total_withdrawn")
-        .eq("user_id", user.id)
+      const { data, error } = await supabase
+        .from("virtual_influencers")
+        .select("*")
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: balance, isLoading: loadingBalance, refetch: refetchBalance } = useQuery({
+    queryKey: ["influencer-balance", selectedInfluencer],
+    queryFn: async () => {
+      if (!selectedInfluencer) return null;
+
+      const { data, error } = await supabase
+        .from("influencer_balances")
+        .select("*")
+        .eq("influencer_id", selectedInfluencer)
         .single();
 
-      if (profileError) {
-        if (profileError.code === "PGRST116") {
-          toast({
-            title: "No Influencer Profile",
-            description: "You need to create an influencer profile first",
-            variant: "destructive",
-          });
-          navigate("/influ-king");
-          return;
-        }
-        throw profileError;
-      }
+      if (error && error.code !== "PGRST116") throw error;
+      return data;
+    },
+    enabled: !!selectedInfluencer,
+  });
 
-      setProfile(profileData);
+  const { data: withdrawals, refetch: refetchWithdrawals } = useQuery({
+    queryKey: ["influencer-withdrawals", selectedInfluencer],
+    queryFn: async () => {
+      if (!selectedInfluencer) return [];
 
-      // Get gifts received
-      const { data: giftsData, error: giftsError } = await supabase
-        .from("influencer_sent_gifts")
-        .select(`
-          id,
-          amount,
-          chef_amount,
-          platform_commission,
-          created_at,
-          message,
-          influencer_gifts (
-            name,
-            icon
-          )
-        `)
-        .eq("influencer_id", profileData.id)
-        .eq("status", "completed")
+      const { data, error } = await supabase
+        .from("influencer_withdrawal_requests")
+        .select("*")
+        .eq("influencer_id", selectedInfluencer)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedInfluencer,
+  });
+
+  const { data: earnings } = useQuery({
+    queryKey: ["influencer-earnings", selectedInfluencer],
+    queryFn: async () => {
+      if (!selectedInfluencer) return [];
+
+      const { data, error } = await supabase
+        .from("influencer_earnings")
+        .select("*")
+        .eq("influencer_id", selectedInfluencer)
         .order("created_at", { ascending: false })
         .limit(20);
 
-      if (giftsError) throw giftsError;
-      setGifts(giftsData || []);
-    } catch (error: any) {
-      console.error("Error loading earnings:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load earnings data",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!selectedInfluencer,
+  });
 
-  if (loading) {
+  if (loadingInfluencers) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading earnings...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
-  if (!profile) {
-    return null;
+  if (!influencers || influencers.length === 0) {
+    return (
+      <Card className="p-12 text-center">
+        <p className="text-muted-foreground">No influencers found. Create one first!</p>
+      </Card>
+    );
   }
 
+  const currentInfluencer = influencers.find((i) => i.id === selectedInfluencer);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-            Influencer Earnings
-          </h1>
-          <p className="text-muted-foreground">Your gift income and withdrawals</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Available Balance</CardTitle>
-              <Wallet className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">€{Number(profile.pending_balance).toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground mt-1">Ready to withdraw</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Lifetime Earnings</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">€{Number(profile.lifetime_earnings).toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground mt-1">Total earned</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Withdrawn</CardTitle>
-              <Euro className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">€{Number(profile.total_withdrawn).toFixed(2)}</div>
-              <p className="text-xs text-muted-foreground mt-1">Paid out</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Gifts</CardTitle>
-              <Gift className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{gifts.length}</div>
-              <p className="text-xs text-muted-foreground mt-1">Gifts received</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Request Withdrawal</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <p className="text-sm text-muted-foreground">
-                Minimum withdrawal amount: €10.00
-              </p>
-              <Button
-                onClick={() => setShowWithdrawalDialog(true)}
-                disabled={Number(profile.pending_balance) < 10}
-              >
-                Request Withdrawal
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Gifts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {gifts.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">
-                  No gifts received yet
-                </p>
-              ) : (
-                gifts.map((gift) => (
-                  <div
-                    key={gift.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="text-3xl">{gift.influencer_gifts?.icon}</div>
-                      <div>
-                        <p className="font-medium">{gift.influencer_gifts?.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(gift.created_at).toLocaleDateString()}
-                        </p>
-                        {gift.message && (
-                          <p className="text-sm text-muted-foreground italic mt-1">
-                            "{gift.message}"
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-bold text-green-600">
-                        +€{Number(gift.chef_amount).toFixed(2)}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        (€{Number(gift.platform_commission).toFixed(2)} fee)
-                      </p>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <InfluencerWithdrawalDialog
-          open={showWithdrawalDialog}
-          onOpenChange={setShowWithdrawalDialog}
-          influencerId={profile.id}
-          availableBalance={Number(profile.pending_balance)}
-          onSuccess={loadEarningsData}
-        />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">Earnings & Payouts</h1>
+        <p className="text-muted-foreground">Manage your influencer earnings and request withdrawals</p>
       </div>
+
+      <Card className="p-4">
+        <label className="text-sm font-medium mb-2 block">Select Influencer</label>
+        <select
+          className="w-full p-2 border rounded-md bg-background"
+          value={selectedInfluencer || ""}
+          onChange={(e) => setSelectedInfluencer(e.target.value)}
+        >
+          <option value="">Choose an influencer...</option>
+          {influencers.map((inf) => (
+            <option key={inf.id} value={inf.id}>
+              {inf.name}
+            </option>
+          ))}
+        </select>
+      </Card>
+
+      {selectedInfluencer && currentInfluencer && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Wallet className="h-5 w-5 text-primary" />
+                <h3 className="text-sm text-muted-foreground">Available Balance</h3>
+              </div>
+              <p className="text-3xl font-bold">€{balance?.available_balance?.toFixed(2) || "0.00"}</p>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="h-5 w-5 text-green-500" />
+                <h3 className="text-sm text-muted-foreground">Total Earned</h3>
+              </div>
+              <p className="text-3xl font-bold">€{balance?.total_earned?.toFixed(2) || "0.00"}</p>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="h-5 w-5 text-yellow-500" />
+                <h3 className="text-sm text-muted-foreground">Pending Withdrawal</h3>
+              </div>
+              <p className="text-3xl font-bold">€{balance?.pending_withdrawal?.toFixed(2) || "0.00"}</p>
+            </Card>
+
+            <Card className="p-6">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle className="h-5 w-5 text-blue-500" />
+                <h3 className="text-sm text-muted-foreground">Total Withdrawn</h3>
+              </div>
+              <p className="text-3xl font-bold">€{balance?.withdrawn?.toFixed(2) || "0.00"}</p>
+            </Card>
+          </div>
+
+          <Tabs defaultValue="withdraw">
+            <TabsList>
+              <TabsTrigger value="withdraw">Request Withdrawal</TabsTrigger>
+              <TabsTrigger value="history">Withdrawal History</TabsTrigger>
+              <TabsTrigger value="earnings">Earnings History</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="withdraw" className="mt-6">
+              {(balance?.available_balance || 0) >= 50 ? (
+                <InfluencerWithdrawalForm
+                  influencerId={selectedInfluencer}
+                  availableBalance={balance?.available_balance || 0}
+                  onSuccess={() => {
+                    refetchBalance();
+                    refetchWithdrawals();
+                  }}
+                />
+              ) : (
+                <Card className="p-12 text-center">
+                  <p className="text-muted-foreground mb-2">
+                    Minimum withdrawal amount is €50
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Current balance: €{balance?.available_balance?.toFixed(2) || "0.00"}
+                  </p>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="history" className="mt-6">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Withdrawal Requests</h3>
+                <div className="space-y-3">
+                  {withdrawals && withdrawals.length > 0 ? (
+                    withdrawals.map((w) => (
+                      <div key={w.id} className="flex justify-between items-center p-4 border rounded">
+                        <div>
+                          <p className="font-medium">€{Number(w.amount).toFixed(2)}</p>
+                          <p className="text-sm text-muted-foreground capitalize">
+                            {w.payment_method?.replace("_", " ")} • {format(new Date(w.created_at), "MMM dd, yyyy")}
+                          </p>
+                        </div>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm ${
+                            w.status === "completed"
+                              ? "bg-green-100 text-green-700"
+                              : w.status === "approved"
+                              ? "bg-blue-100 text-blue-700"
+                              : w.status === "rejected"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {w.status}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center text-muted-foreground py-8">No withdrawal requests yet</p>
+                  )}
+                </div>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="earnings" className="mt-6">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Recent Earnings</h3>
+                <div className="space-y-2">
+                  {earnings && earnings.length > 0 ? (
+                    earnings.map((e) => (
+                      <div key={e.id} className="flex justify-between items-center p-3 border rounded">
+                        <div>
+                          <p className="font-medium capitalize">{e.source.replace(/_/g, " ")}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {format(new Date(e.created_at), "MMM dd, yyyy HH:mm")}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-green-600">+€{Number(e.net_amount).toFixed(2)}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Fee: €{Number(e.platform_fee).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center text-muted-foreground py-8">No earnings yet</p>
+                  )}
+                </div>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </>
+      )}
     </div>
   );
 };
