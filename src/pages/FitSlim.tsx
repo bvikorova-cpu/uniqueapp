@@ -652,25 +652,6 @@ const FitSlim = () => {
       ],
       instructions: "1. Cook rice noodles according to instructions.\n2. Cut vegetables and thread onto skewers.\n3. Grill or bake in the oven for 15 minutes.\n4. Heat sesame oil in a pan.\n5. Add garlic, ginger and soy sauce.\n6. Mix with noodles and serve with skewers."
     },
-    {
-      id: 18,
-      title: "Zeleninové špízy s ryžovými rezancami",
-      calories: "285 kcal",
-      protein: "13g",
-      time: "24 min",
-      image: vegetableSkewersNoodles,
-      ingredients: [
-        "150g ryžových rezancov",
-        "1 paprika",
-        "1 cuketa",
-        "huby",
-        "cherry paradajky",
-        "sójová omáčka",
-        "sezamový olej",
-        "cesnak, zázvor"
-      ],
-      instructions: "1. Ryžové rezance uvarte podľa návodu.\n2. Zeleninu nakrájajte a napichnite na špízy.\n3. Grilujte alebo pečte v trúbe 15 minút.\n4. Na panvici rozohrejte sezamový olej.\n5. Pridajte cesnak, zázvor a sójovú omáčku.\n6. Premiešajte s rezancami a podávajte so špízmi."
-    },
   ];
 
   const healthyRecipes = [
@@ -1096,11 +1077,13 @@ const FitSlim = () => {
                   </div>
                   <CardHeader>
                     <CardTitle className="text-lg">{video.title}</CardTitle>
-                    <CardDescription className="flex items-center justify-between">
-                      <span>Difficulty: {video.difficulty}</span>
-                      <span className="text-primary font-semibold flex items-center">
-                        <Heart className="h-3 w-3 mr-1" />
-                        {video.benefit}
+                    <CardDescription>
+                      <span className="flex items-center justify-between">
+                        <span>Difficulty: {video.difficulty}</span>
+                        <span className="text-primary font-semibold flex items-center">
+                          <Heart className="h-3 w-3 mr-1" />
+                          {video.benefit}
+                        </span>
                       </span>
                     </CardDescription>
                   </CardHeader>
@@ -1133,10 +1116,10 @@ const FitSlim = () => {
                       {recipe.title}
                     </CardTitle>
                     <CardDescription>
-                      <div className="flex items-center justify-between mt-2">
+                      <span className="flex items-center justify-between mt-2">
                         <span className="text-primary font-semibold">{recipe.calories}</span>
                         <span>Protein: {recipe.protein}</span>
-                      </div>
+                      </span>
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -1168,13 +1151,13 @@ const FitSlim = () => {
                       {recipe.title}
                     </CardTitle>
                     <CardDescription>
-                      <div className="flex items-center justify-between mt-2">
+                      <span className="flex items-center justify-between mt-2">
                         <span className="text-primary font-semibold">{recipe.calories}</span>
                         <span className="flex items-center">
                           <Heart className="h-3 w-3 mr-1" />
                           {recipe.benefit}
                         </span>
-                      </div>
+                      </span>
                     </CardDescription>
                   </CardHeader>
                 </Card>
