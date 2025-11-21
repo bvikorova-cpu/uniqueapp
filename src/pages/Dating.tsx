@@ -661,45 +661,33 @@ const Dating = () => {
   const handleSendGift = async (giftId: string) => {
     if (!selectedMatch || !user) return;
 
-    const otherId = selectedMatch.user1_id === user.id 
-      ? selectedMatch.user2_id 
-      : selectedMatch.user1_id;
+    try {
+      const { data, error } = await supabase.functions.invoke('send-dating-gift', {
+        body: {
+          matchId: selectedMatch.id,
+          giftId: giftId,
+          message: newMessage || "",
+        }
+      });
 
-    const gift = availableGifts.find(g => g.id === giftId);
+      if (error) throw error;
 
-    const { error } = await supabase
-      .from("dating_sent_gifts")
-      .insert([{
-        sender_id: user.id,
-        receiver_id: otherId,
-        gift_id: giftId,
-        match_id: selectedMatch.id,
-      }]);
-
-    if (error) {
+      if (data?.url) {
+        // Open Stripe checkout in new tab
+        window.open(data.url, '_blank');
+        toast({
+          title: "Opening Checkout 🎁",
+          description: "Complete payment to send your gift",
+        });
+        setShowGiftDialog(false);
+      }
+    } catch (error) {
+      console.error("Gift sending error:", error);
       toast({
         title: "Error",
-        description: "Failed to send gift",
+        description: "Failed to process gift. Please try again.",
         variant: "destructive",
       });
-    } else {
-      // Create notification for receiver
-      await supabase
-        .from("notifications")
-        .insert([{
-          user_id: otherId,
-          type: "dating_gift",
-          title: "Gift Received 🎁",
-          message: `${currentProfile?.display_name || "Someone"} sent you ${gift?.name || "a gift"}!`,
-          related_id: selectedMatch.id,
-        }]);
-
-      toast({
-        title: "Gift Sent! 🎁",
-        description: "Your gift has been delivered",
-      });
-      setShowGiftDialog(false);
-      await loadMessages(selectedMatch.id);
     }
   };
 
