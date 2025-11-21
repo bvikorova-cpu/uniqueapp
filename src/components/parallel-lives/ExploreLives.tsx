@@ -66,12 +66,48 @@ export function ExploreLives() {
         return;
       }
 
+      // Insert follow record
+      const { error } = await supabase
+        .from('parallel_followers')
+        .insert({
+          life_id: lifeId,
+          follower_id: user.id
+        });
+
+      if (error) {
+        if (error.code === '23505') { // Unique constraint violation
+          toast({
+            title: "Already Following",
+            description: "You're already following this life"
+          });
+        } else {
+          throw error;
+        }
+        return;
+      }
+
+      // Update follower count
+      const life = lives.find(l => l.id === lifeId);
+      if (life) {
+        await supabase
+          .from('parallel_lives')
+          .update({ follower_count: life.follower_count + 1 })
+          .eq('id', lifeId);
+      }
+
       toast({
         title: "Followed!",
         description: "You are now following this parallel life"
       });
+
+      await fetchLives();
     } catch (error) {
       console.error('Error following:', error);
+      toast({
+        title: "Error",
+        description: "Failed to follow",
+        variant: "destructive"
+      });
     }
   };
 
@@ -139,7 +175,16 @@ export function ExploreLives() {
                 {life.bio || life.persona}
               </p>
               <div className="flex gap-2">
-                <Button className="flex-1" size="sm">
+                <Button 
+                  className="flex-1" 
+                  size="sm"
+                  onClick={() => {
+                    toast({
+                      title: "Opening Profile",
+                      description: `Viewing ${life.life_name}'s profile`
+                    });
+                  }}
+                >
                   View Profile
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => handleFollow(life.id)}>

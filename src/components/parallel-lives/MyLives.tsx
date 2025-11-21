@@ -147,10 +147,28 @@ export function MyLives() {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  toast({
+                    title: "Opening Profile",
+                    description: `Viewing profile for ${life.life_name}`
+                  });
+                }}
+              >
                 View Profile
               </Button>
-              <Button variant="outline" size="sm">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  toast({
+                    title: "Edit Mode",
+                    description: "Opening editor for this life..."
+                  });
+                }}
+              >
                 Edit Life
               </Button>
               <Button 
