@@ -18713,8 +18713,12 @@ export type Database = {
           battle_id: string
           entry_fee_paid: boolean | null
           id: string
+          is_streaming: boolean | null
           story_content: string
           story_title: string
+          stream_ended_at: string | null
+          stream_started_at: string | null
+          stream_viewers_count: number | null
           stripe_payment_id: string | null
           submitted_at: string | null
           total_gifts_received: number | null
@@ -18724,8 +18728,12 @@ export type Database = {
           battle_id: string
           entry_fee_paid?: boolean | null
           id?: string
+          is_streaming?: boolean | null
           story_content: string
           story_title: string
+          stream_ended_at?: string | null
+          stream_started_at?: string | null
+          stream_viewers_count?: number | null
           stripe_payment_id?: string | null
           submitted_at?: string | null
           total_gifts_received?: number | null
@@ -18735,8 +18743,12 @@ export type Database = {
           battle_id?: string
           entry_fee_paid?: boolean | null
           id?: string
+          is_streaming?: boolean | null
           story_content?: string
           story_title?: string
+          stream_ended_at?: string | null
+          stream_started_at?: string | null
+          stream_viewers_count?: number | null
           stripe_payment_id?: string | null
           submitted_at?: string | null
           total_gifts_received?: number | null

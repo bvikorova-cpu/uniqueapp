@@ -611,3 +611,10 @@ verify_jwt = true
 
 [functions.purchase-shadow-gift]
 verify_jwt = true
+
+[functions.start-stream]
+verify_jwt = true
+
+[functions.stop-stream]
+verify_jwt = true
+

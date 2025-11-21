@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { SubscriptionGate } from '@/components/shadow-arena/SubscriptionGate';
+import { LiveStream } from '@/components/shadow-arena/LiveStream';
 import { Swords, Trophy, Gift, User } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -174,13 +175,24 @@ export default function ShadowArenaBattleDetail() {
         </h2>
 
         {participants.length === 0 ? (
-          <Card className="p-12 text-center">
+          <Card className="p-12 text-center bg-gradient-to-br from-black/80 to-red-950/20 border-red-900/50">
             <p className="text-muted-foreground">No participants yet. Be the first to join!</p>
           </Card>
         ) : (
           <div className="grid gap-6">
             {participants.map((participant, index) => (
-              <Card key={participant.id} className="p-6">
+              <Card key={participant.id} className="p-6 bg-gradient-to-br from-black/80 to-red-950/20 border-red-900/50">
+                {/* Live Stream Section */}
+                {participant.user_id === user?.id || (participant as any).is_streaming ? (
+                  <div className="mb-6">
+                    <LiveStream
+                      participantId={participant.id}
+                      battleId={battleId!}
+                      isStreamer={participant.user_id === user?.id}
+                    />
+                  </div>
+                ) : null}
+                
                 <div className="flex items-start justify-between gap-4 mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
