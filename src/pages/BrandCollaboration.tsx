@@ -117,7 +117,7 @@ const BrandCollaboration = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 mt-16">
           <Handshake className="w-16 h-16 mx-auto mb-4 text-primary" />
           <h1 className="text-4xl font-bold mb-4">Brand Collaboration Hub</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
