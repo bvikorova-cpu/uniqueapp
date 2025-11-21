@@ -75,7 +75,7 @@ export default function ShadowArenaDashboard() {
               <Ghost className="h-16 w-16 text-red-600 animate-pulse drop-shadow-[0_0_10px_rgba(139,0,0,0.8)]" />
               Shadow Arena
             </h1>
-            <p className="text-2xl text-red-300/80 mb-6 font-serif italic">
+            <p className="text-2xl text-red-200 mb-6 font-serif italic">
               Where Terror Meets Glory in Live Horror Battles
             </p>
           </div>
@@ -89,7 +89,7 @@ export default function ShadowArenaDashboard() {
                     <Ghost className="h-8 w-8 text-red-500 animate-pulse" />
                     What is Shadow Arena?
                   </h2>
-                  <p className="text-gray-300 mb-4 leading-relaxed">
+                  <p className="text-gray-200 mb-4 leading-relaxed">
                     <strong className="text-red-400">Shadow Arena</strong> is the world's first <strong>live horror storytelling battle platform</strong> where 
                     creators compete in spine-chilling monthly competitions. Stream yourself reading terrifying tales in real-time, 
                     engage with a live audience, and earn substantial cash prizes. For just <strong className="text-red-400">€2/month</strong>, 
@@ -142,35 +142,35 @@ export default function ShadowArenaDashboard() {
                       <div className="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0 shadow-[0_0_15px_rgba(139,0,0,0.6)]">1</div>
                       <div>
                         <h3 className="font-bold mb-1 text-red-300">Subscribe to Enter</h3>
-                        <p className="text-sm text-gray-400">Unlock full access for €2/month - cancel anytime</p>
+                        <p className="text-sm text-gray-200">Unlock full access for €2/month - cancel anytime</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 bg-gradient-to-r from-purple-950/50 to-black/50 p-4 rounded-lg border border-purple-900/30">
                       <div className="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0 shadow-[0_0_15px_rgba(147,51,234,0.6)]">2</div>
                       <div>
                         <h3 className="font-bold mb-1 text-purple-300">Write Your Horror</h3>
-                        <p className="text-sm text-gray-400">Submit stories & AI generates 3 atmospheric illustrations automatically</p>
+                        <p className="text-sm text-gray-200">Submit stories & AI generates 3 atmospheric illustrations automatically</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 bg-gradient-to-r from-red-950/50 to-black/50 p-4 rounded-lg border border-red-900/30">
                       <div className="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0 shadow-[0_0_15px_rgba(139,0,0,0.6)]">3</div>
                       <div>
                         <h3 className="font-bold mb-1 text-red-300">Join Battle & Stream</h3>
-                        <p className="text-sm text-gray-400">Pay €1 entry | Go live and perform your story | Viewers send gifts to vote</p>
+                        <p className="text-sm text-gray-200">Pay €1 entry | Go live and perform your story | Viewers send gifts to vote</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 bg-gradient-to-r from-purple-950/50 to-black/50 p-4 rounded-lg border border-purple-900/30">
                       <div className="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0 shadow-[0_0_15px_rgba(147,51,234,0.6)]">4</div>
                       <div>
                         <h3 className="font-bold mb-1 text-purple-300">Win Cash Prizes</h3>
-                        <p className="text-sm text-gray-400">Top 3 split 80% of pool | More gifts = higher rank | Instant Stripe payouts</p>
+                        <p className="text-sm text-gray-200">Top 3 split 80% of pool | More gifts = higher rank | Instant Stripe payouts</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3 bg-gradient-to-r from-red-950/50 to-black/50 p-4 rounded-lg border border-red-900/30">
                       <div className="bg-red-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0 shadow-[0_0_15px_rgba(139,0,0,0.6)]">5</div>
                       <div>
                         <h3 className="font-bold mb-1 text-red-300">Build Your Following</h3>
-                        <p className="text-sm text-gray-400">Gain fans | Archive streams | Earn from gifts on past performances</p>
+                        <p className="text-sm text-gray-200">Gain fans | Archive streams | Earn from gifts on past performances</p>
                       </div>
                     </div>
                   </div>
@@ -222,7 +222,7 @@ export default function ShadowArenaDashboard() {
               </div>
             ) : stories.length === 0 ? (
               <Card className="p-12 text-center bg-gradient-to-br from-black/80 to-red-950/20 border-red-900/50">
-                <p className="text-muted-foreground">No stories yet. Be the first to submit!</p>
+                <p className="text-gray-300">No stories yet. Be the first to submit!</p>
               </Card>
             ) : (
               stories.map((story) => (
@@ -234,7 +234,7 @@ export default function ShadowArenaDashboard() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <h3 className="text-xl font-bold mb-2 text-red-300">{story.title}</h3>
-                      <p className="text-gray-400 line-clamp-2 mb-3">
+                      <p className="text-gray-200 line-clamp-2 mb-3">
                         {story.content.substring(0, 200)}...
                       </p>
                       <Badge className="bg-red-600">
@@ -254,7 +254,7 @@ export default function ShadowArenaDashboard() {
               </div>
             ) : battles.length === 0 ? (
               <Card className="p-12 text-center bg-gradient-to-br from-black/80 to-purple-950/20 border-purple-900/50">
-                <p className="text-muted-foreground">No battles yet. Create the first one!</p>
+                <p className="text-gray-300">No battles yet. Create the first one!</p>
               </Card>
             ) : (
               battles.map((battle) => (
