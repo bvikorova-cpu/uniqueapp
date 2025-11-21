@@ -10,16 +10,16 @@ const CookingAI = () => {
   const features = [
     {
       icon: <ChefHat className="w-8 h-8" />,
-      title: "Generátor receptov",
-      description: "Zadaj ingrediencie a dostaneš 3 úžasné recepty",
+      title: "Recipe Generator",
+      description: "Enter ingredients and get 3 amazing recipes",
       credits: 1,
       color: "from-orange-500 to-red-500",
       path: "/recipe-generator"
     },
     {
       icon: <Calendar className="w-8 h-8" />,
-      title: "Týždenný meal plan",
-      description: "AI vytvorí kompletný jedálniček na celý týždeň",
+      title: "Weekly Meal Plan",
+      description: "AI creates complete meal plan for the week",
       credits: 3,
       color: "from-green-500 to-emerald-500",
       path: "/meal-planner"
@@ -27,7 +27,7 @@ const CookingAI = () => {
     {
       icon: <Camera className="w-8 h-8" />,
       title: "Food Scanner",
-      description: "Odfotiť jedlo a zisti kalórie a nutričné hodnoty",
+      description: "Snap food and find out calories and nutritional values",
       credits: 1,
       color: "from-blue-500 to-cyan-500",
       path: "/food-scanner"
@@ -35,7 +35,7 @@ const CookingAI = () => {
     {
       icon: <MapPin className="w-8 h-8" />,
       title: "Restaurant Menu Analyzer",
-      description: "Analyzuj menu reštaurácie a získaj zdravé odporúčania",
+      description: "Analyze restaurant menu and get healthy recommendations",
       credits: 2,
       color: "from-purple-500 to-pink-500",
       path: "/restaurant-analyzer"
@@ -43,7 +43,7 @@ const CookingAI = () => {
     {
       icon: <MessageSquare className="w-8 h-8" />,
       title: "AI Chef Chat",
-      description: "Chatuj so skúseným šéfkuchárom a dostávaj rady",
+      description: "Chat with experienced chef and get advice",
       credits: 1,
       color: "from-yellow-500 to-orange-500",
       path: "/chef-chat"
@@ -51,7 +51,7 @@ const CookingAI = () => {
     {
       icon: <Wine className="w-8 h-8" />,
       title: "Wine Pairing",
-      description: "Odporúčania vína a nápojov k tvojim jedlám",
+      description: "Wine and beverage recommendations for your dishes",
       credits: 1,
       color: "from-red-500 to-rose-500",
       path: "/wine-pairing"
@@ -63,10 +63,10 @@ const CookingAI = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-            🍳 AI Kuchárske Nástroje
+            🍳 AI Cooking Tools
           </h1>
           <p className="text-xl text-muted-foreground">
-            Všetky AI funkcie pre varenie na jednom mieste
+            All AI cooking features in one place
           </p>
         </div>
 
@@ -87,10 +87,10 @@ const CookingAI = () => {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
-                    {feature.credits} {feature.credits === 1 ? 'kredit' : 'kredity'}
+                    {feature.credits} {feature.credits === 1 ? 'credit' : 'credits'}
                   </span>
                   <Button variant="outline" size="sm">
-                    Spustiť
+                    Launch
                   </Button>
                 </div>
               </CardContent>
@@ -100,14 +100,14 @@ const CookingAI = () => {
 
         <Card className="mt-12 bg-gradient-to-r from-orange-100 to-red-100">
           <CardHeader>
-            <CardTitle>💰 Cenník & Kredity</CardTitle>
+            <CardTitle>💰 Pricing & Credits</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Free</CardTitle>
-                  <CardDescription>10 kreditov</CardDescription>
+                  <CardDescription>10 credits</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold">€0</p>
@@ -116,7 +116,7 @@ const CookingAI = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Basic</CardTitle>
-                  <CardDescription>100 kreditov/mesiac</CardDescription>
+                  <CardDescription>100 credits/month</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold">€4.99</p>
@@ -125,7 +125,7 @@ const CookingAI = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-lg">Premium</CardTitle>
-                  <CardDescription>500 kreditov/mesiac</CardDescription>
+                  <CardDescription>500 credits/month</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-2xl font-bold">€9.99</p>
