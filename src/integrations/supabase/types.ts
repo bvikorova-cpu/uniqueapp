@@ -1802,6 +1802,54 @@ export type Database = {
         }
         Relationships: []
       }
+      brand_campaigns: {
+        Row: {
+          applications_count: number | null
+          brand_name: string
+          budget_max: number
+          budget_min: number
+          campaign_name: string
+          created_at: string
+          deadline: string
+          description: string | null
+          id: string
+          status: string
+          tags: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          applications_count?: number | null
+          brand_name: string
+          budget_max: number
+          budget_min: number
+          campaign_name: string
+          created_at?: string
+          deadline: string
+          description?: string | null
+          id?: string
+          status?: string
+          tags?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          applications_count?: number | null
+          brand_name?: string
+          budget_max?: number
+          budget_min?: number
+          campaign_name?: string
+          created_at?: string
+          deadline?: string
+          description?: string | null
+          id?: string
+          status?: string
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       brand_kits: {
         Row: {
           brand_values: string | null
@@ -2313,6 +2361,47 @@ export type Database = {
           xp_reward?: number
         }
         Relationships: []
+      }
+      campaign_applications: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          id: string
+          message: string | null
+          portfolio_link: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          portfolio_link?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          portfolio_link?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_applications_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "brand_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       campaign_approvals: {
         Row: {
