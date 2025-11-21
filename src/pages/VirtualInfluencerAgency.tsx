@@ -60,9 +60,35 @@ const VirtualInfluencerAgency = () => {
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
             Virtual Influencer Agency
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-6">
             Create AI-powered virtual influencers that generate content and earn money for you
           </p>
+          
+          <div className="bg-card border rounded-lg p-6 text-left space-y-4 max-w-4xl mx-auto">
+            <h2 className="text-xl font-semibold">How It Works</h2>
+            
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>
+                <strong className="text-foreground">1. Create Your Influencer:</strong> Design a virtual influencer by choosing their name, niche (Fashion, Fitness, Technology, etc.), and personality type. AI generates a unique avatar for your influencer.
+              </p>
+              
+              <p>
+                <strong className="text-foreground">2. Generate Content:</strong> Use AI to automatically create Instagram posts, stories, reels, and videos. Each content type costs credits: Stories (3 credits), Posts (5 credits), Reels (8 credits), Videos (10 credits).
+              </p>
+              
+              <p>
+                <strong className="text-foreground">3. Publish & Earn:</strong> When you publish content, it simulates real engagement (likes, comments, shares) based on your influencer's follower count and engagement rate. You earn money from views - the platform takes 20% commission.
+              </p>
+              
+              <p>
+                <strong className="text-foreground">4. Track Performance:</strong> Monitor your influencer's growth through the dashboard - see follower count, engagement rates, content library, and detailed earnings breakdowns with transaction history.
+              </p>
+              
+              <p>
+                <strong className="text-foreground">5. Scale Up:</strong> Create multiple influencers across different niches to diversify your income streams. Each influencer operates independently with its own audience and earnings.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Stats */}

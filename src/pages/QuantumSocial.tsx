@@ -14,9 +14,35 @@ const QuantumSocial = () => {
           <Atom className="h-8 w-8 text-primary animate-spin-slow" />
           <h1 className="text-4xl font-bold">Quantum Social Network</h1>
         </div>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-muted-foreground text-lg mb-6">
           Your profile exists in quantum superposition - followers see different versions of you
         </p>
+        
+        <div className="max-w-4xl mx-auto bg-card border rounded-lg p-6 text-left space-y-4">
+          <h2 className="text-xl font-semibold">How It Works</h2>
+          
+          <div className="space-y-3 text-sm text-muted-foreground">
+            <p>
+              <strong className="text-foreground">Quantum Posts:</strong> When you create a post, AI generates multiple versions with different personality tones (professional, casual, humorous). Each follower sees a different version randomly assigned to them, creating a unique experience.
+            </p>
+            
+            <p>
+              <strong className="text-foreground">Reality Collapse:</strong> For €2.99, you can "collapse" a post's quantum state, making everyone see the same version. Perfect for important announcements or when you want consistent messaging.
+            </p>
+            
+            <p>
+              <strong className="text-foreground">Observer Mode (€19.99/month):</strong> Subscribe to see all quantum versions of any post. Discover how content appears differently to various audiences and understand quantum dynamics.
+            </p>
+            
+            <p>
+              <strong className="text-foreground">Quantum Entanglement (€9.99/month):</strong> Connect with someone special - you'll both always see the same versions of posts, creating a shared reality experience.
+            </p>
+            
+            <p>
+              <strong className="text-foreground">Quantum Profiles (€12.99/month):</strong> Enable multiple reality versions of your profile. Different followers see different aspects of your personality, optimized for their preferences.
+            </p>
+          </div>
+        </div>
       </div>
 
       <Tabs defaultValue="feed" className="w-full">

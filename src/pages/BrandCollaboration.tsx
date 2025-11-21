@@ -120,9 +120,35 @@ const BrandCollaboration = () => {
         <div className="text-center mb-12 mt-16">
           <Handshake className="w-16 h-16 mx-auto mb-4 text-primary" />
           <h1 className="text-4xl font-bold mb-4">Brand Collaboration Hub</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Connect with brands for sponsored content. Platform takes 20% of deals.
           </p>
+          
+          <div className="max-w-4xl mx-auto bg-card border rounded-lg p-6 text-left space-y-4">
+            <h2 className="text-xl font-semibold">How It Works</h2>
+            
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>
+                <strong className="text-foreground">For Creators:</strong> Browse active brand campaigns looking for influencers and content creators. Each campaign shows the brand name, campaign details, budget range (in EUR), deadline, and required tags/categories.
+              </p>
+              
+              <p>
+                <strong className="text-foreground">Apply to Campaigns:</strong> Click "Apply Now" to submit your application. Include a personalized message explaining why you're a great fit and optionally add a portfolio link showcasing your previous work.
+              </p>
+              
+              <p>
+                <strong className="text-foreground">Platform Commission:</strong> When you land a collaboration, you keep 80% of the agreed payment. The platform takes a 20% commission for connecting you with brands and handling the transaction.
+              </p>
+              
+              <p>
+                <strong className="text-foreground">For Brands:</strong> Post campaigns to reach talented creators. Set your budget range, deadline, campaign requirements, and relevant tags. Track how many creators have applied to your opportunity.
+              </p>
+              
+              <p>
+                <strong className="text-foreground">Build Your Portfolio:</strong> Successful collaborations help you build credibility and reputation on the platform, making it easier to land future high-paying brand deals.
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
