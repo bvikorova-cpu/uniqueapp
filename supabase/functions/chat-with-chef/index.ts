@@ -36,7 +36,7 @@ serve(async (req) => {
       .single();
 
     if (!credits || credits.credits < 1) {
-      return new Response(JSON.stringify({ error: 'Nedostatok kreditov' }), {
+      return new Response(JSON.stringify({ error: 'Insufficient credits' }), {
         status: 402,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -75,8 +75,8 @@ serve(async (req) => {
 
     // Call Lovable AI
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    const systemPrompt = `Si skúsený šéfkuchár so širokými znalosťami o varení, technikách, ingredienciách a náhradách. 
-Odpovedaj priateľsky a podrobne. Daj praktické rady a tipy.`;
+    const systemPrompt = `You are an experienced chef with broad knowledge about cooking, techniques, ingredients, and substitutions. 
+Answer in a friendly and detailed manner. Provide practical advice and tips.`;
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',

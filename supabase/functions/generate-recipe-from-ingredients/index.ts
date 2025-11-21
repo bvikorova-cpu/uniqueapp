@@ -36,7 +36,7 @@ serve(async (req) => {
       .single();
 
     if (!credits || credits.credits < 1) {
-      return new Response(JSON.stringify({ error: 'Nedostatok kreditov' }), {
+      return new Response(JSON.stringify({ error: 'Insufficient credits' }), {
         status: 402,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -47,21 +47,21 @@ serve(async (req) => {
 
     // Call Lovable AI
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    const prompt = `Vygeneruj 3 recepty z týchto ingrediencií: ${ingredients.join(', ')}.
-${dietary_preferences ? `Dietetické preferencie: ${dietary_preferences.join(', ')}.` : ''}
+    const prompt = `Generate 3 recipes from these ingredients: ${ingredients.join(', ')}.
+${dietary_preferences?.length > 0 ? `Dietary preferences: ${dietary_preferences.join(', ')}.` : ''}
 
-Vráť JSON v tomto formáte:
+Return JSON in this format:
 {
   "recipes": [
     {
-      "title": "Názov receptu",
-      "description": "Krátky popis",
+      "title": "Recipe name",
+      "description": "Short description",
       "difficulty": "easy|medium|hard",
-      "prep_time": "čas v minútach",
+      "prep_time": "time in minutes",
       "servings": 4,
       "calories": 450,
       "ingredients": ["ingredient 1", "ingredient 2"],
-      "instructions": ["krok 1", "krok 2"],
+      "instructions": ["step 1", "step 2"],
       "tags": ["tag1", "tag2"]
     }
   ]

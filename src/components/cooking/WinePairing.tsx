@@ -22,11 +22,11 @@ export const WinePairing = () => {
       return data;
     },
     onSuccess: (data) => {
-      setPairing(data.pairing);
-      toast.success('Párovanie vína bolo úspešne vygenerované!');
+      setPairing(data.pairings);
+      toast.success('Wine pairing generated successfully!');
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Chyba pri generovaní párovania');
+      toast.error(error.message || 'Error generating wine pairing');
     }
   });
 
@@ -35,14 +35,14 @@ export const WinePairing = () => {
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Wine className="h-6 w-6 text-primary" />
-          Párovanie vína s jedlom
+          Wine & Food Pairing
         </h2>
         
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Názov jedla</label>
+            <label className="block text-sm font-medium mb-2">Dish name</label>
             <Input
-              placeholder="Napríklad: grilovaný losos..."
+              placeholder="e.g., grilled salmon..."
               value={dishName}
               onChange={(e) => setDishName(e.target.value)}
             />
@@ -53,20 +53,21 @@ export const WinePairing = () => {
             disabled={!dishName || pairingMutation.isPending || !credits || credits.credits < 1}
             className="w-full"
           >
-            {pairingMutation.isPending ? 'Generujem...' : 'Nájdi vhodné víno (1 kredit)'}
+            {pairingMutation.isPending ? 'Generating...' : 'Find Wine Pairing (1 credit)'}
           </Button>
         </div>
       </Card>
 
-      {pairing && (
+      {pairing && pairing.length > 0 && (
         <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4">Odporúčané víno</h3>
+          <h3 className="text-xl font-bold mb-4">Recommended Wines</h3>
           <div className="space-y-3">
-            {pairing.suggestions?.map((wine: any, idx: number) => (
+            {pairing.map((wine: any, idx: number) => (
               <div key={idx} className="border-b pb-3 last:border-0">
-                <p className="font-semibold">{wine.wine_name}</p>
+                <p className="font-semibold">{wine.drink_name}</p>
                 <p className="text-sm text-muted-foreground">{wine.type}</p>
-                <p className="text-sm mt-1">{wine.reasoning}</p>
+                <p className="text-sm mt-1">{wine.reason}</p>
+                {wine.price_range && <p className="text-sm text-muted-foreground mt-1">€{wine.price_range}</p>}
               </div>
             ))}
           </div>

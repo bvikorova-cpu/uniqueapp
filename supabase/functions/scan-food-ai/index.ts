@@ -36,7 +36,7 @@ serve(async (req) => {
       .single();
 
     if (!credits || credits.credits < 1) {
-      return new Response(JSON.stringify({ error: 'Nedostatok kreditov' }), {
+      return new Response(JSON.stringify({ error: 'Insufficient credits' }), {
         status: 402,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -66,10 +66,10 @@ serve(async (req) => {
 
     // Call Lovable AI with vision
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    const prompt = `Analyzuj toto jedlo a vráť JSON:
+    const prompt = `Analyze this food and return JSON:
 {
   "recognized_items": [
-    { "name": "názov jedla", "portion": "veľkosť porcie" }
+    { "name": "food name", "portion": "portion size" }
   ],
   "nutritional_info": {
     "total_calories": 450,
@@ -79,7 +79,7 @@ serve(async (req) => {
     "fiber_g": 5
   },
   "healthier_alternatives": [
-    { "original": "pôvodné jedlo", "alternative": "zdravšia alternatíva", "benefits": "výhody" }
+    { "original": "original food", "alternative": "healthier option", "benefits": "health benefits" }
   ]
 }`;
 

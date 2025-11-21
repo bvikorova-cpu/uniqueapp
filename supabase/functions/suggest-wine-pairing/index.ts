@@ -36,7 +36,7 @@ serve(async (req) => {
       .single();
 
     if (!credits || credits.credits < 1) {
-      return new Response(JSON.stringify({ error: 'Nedostatok kreditov' }), {
+      return new Response(JSON.stringify({ error: 'Insufficient credits' }), {
         status: 402,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -47,19 +47,19 @@ serve(async (req) => {
 
     // Call Lovable AI
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    const prompt = `Odporuč víno/nápoj k jedlu "${dish_name}".
-${price_range ? `Cenová kategória: ${price_range}` : ''}
+    const prompt = `Recommend wine/drinks for the dish "${dish_name}".
+${price_range ? `Price range: ${price_range}` : ''}
 
-Vráť JSON:
+Return JSON:
 {
   "pairings": [
     {
-      "drink_name": "názov nápoja",
+      "drink_name": "drink name",
       "type": "wine|beer|cocktail|other",
-      "reason": "prečo pasuje",
+      "reason": "why it pairs well",
       "price_range": "€10-20",
-      "serving_tips": "ako podávať",
-      "alternatives": ["alternatíva 1", "alternatíva 2"]
+      "serving_tips": "how to serve",
+      "alternatives": ["alternative 1", "alternative 2"]
     }
   ]
 }`;

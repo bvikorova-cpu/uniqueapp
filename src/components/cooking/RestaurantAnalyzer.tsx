@@ -25,10 +25,10 @@ export const RestaurantAnalyzer = () => {
     },
     onSuccess: (data) => {
       setAnalysis(data.analysis);
-      toast.success('Menu bolo úspešne analyzované!');
+      toast.success('Menu analyzed successfully!');
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Chyba pri analýze');
+      toast.error(error.message || 'Error analyzing menu');
     }
   });
 
@@ -48,21 +48,21 @@ export const RestaurantAnalyzer = () => {
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Store className="h-6 w-6 text-primary" />
-          Analyzátor reštauračného menu
+          Restaurant Menu Analyzer
         </h2>
         
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Názov reštaurácie</label>
+            <label className="block text-sm font-medium mb-2">Restaurant name</label>
             <Input
-              placeholder="Zadaj názov reštaurácie..."
+              placeholder="Enter restaurant name..."
               value={restaurantName}
               onChange={(e) => setRestaurantName(e.target.value)}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Menu (voliteľné)</label>
+            <label className="block text-sm font-medium mb-2">Menu (optional)</label>
             <div 
               onClick={() => fileInputRef.current?.click()}
               className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-accent transition-colors"
@@ -72,7 +72,7 @@ export const RestaurantAnalyzer = () => {
               ) : (
                 <div>
                   <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">Pridaj fotku menu</p>
+                  <p className="text-sm text-muted-foreground">Add menu photo</p>
                 </div>
               )}
             </div>
@@ -91,27 +91,37 @@ export const RestaurantAnalyzer = () => {
             disabled={!restaurantName || analyzeMutation.isPending || !credits || credits.credits < 2}
             className="w-full"
           >
-            {analyzeMutation.isPending ? 'Analyzujem...' : 'Analyzuj menu (2 kredity)'}
+            {analyzeMutation.isPending ? 'Analyzing...' : 'Analyze Menu (2 credits)'}
           </Button>
         </div>
       </Card>
 
       {analysis && (
         <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4">Analýza menu</h3>
+          <h3 className="text-xl font-bold mb-4">Menu Analysis</h3>
           <div className="space-y-4">
-            <div>
-              <h4 className="font-semibold mb-2">Odporúčania</h4>
-              <p className="text-muted-foreground">{analysis.recommendations}</p>
-            </div>
-            {analysis.menu_items && (
+            {analysis.top_recommendations && analysis.top_recommendations.length > 0 && (
               <div>
-                <h4 className="font-semibold mb-2">Jedlá</h4>
+                <h4 className="font-semibold mb-2 text-green-600">Top Recommendations</h4>
                 <div className="space-y-2">
-                  {analysis.menu_items.map((item: any, idx: number) => (
+                  {analysis.top_recommendations.map((item: any, idx: number) => (
                     <div key={idx} className="border-b pb-2">
                       <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-muted-foreground">{item.calories} kcal</p>
+                      <p className="text-sm text-muted-foreground">{item.reason}</p>
+                      <p className="text-sm">{item.calories} kcal</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {analysis.items_to_avoid && analysis.items_to_avoid.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2 text-orange-600">Items to Consider</h4>
+                <div className="space-y-2">
+                  {analysis.items_to_avoid.map((item: any, idx: number) => (
+                    <div key={idx} className="border-b pb-2">
+                      <p className="font-medium">{item.name}</p>
+                      <p className="text-sm text-muted-foreground">{item.reason}</p>
                     </div>
                   ))}
                 </div>

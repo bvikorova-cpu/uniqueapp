@@ -24,10 +24,10 @@ export const RecipeGenerator = () => {
     },
     onSuccess: (data) => {
       setRecipes(data.recipes);
-      toast.success('Recepty boli úspešne vygenerované!');
+      toast.success('Recipes generated successfully!');
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Chyba pri generovaní receptov');
+      toast.error(error.message || 'Error generating recipes');
     }
   });
 
@@ -47,13 +47,13 @@ export const RecipeGenerator = () => {
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Sparkles className="h-6 w-6 text-primary" />
-          Generátor receptov
+          Recipe Generator
         </h2>
         
         <div className="space-y-4">
           <div className="flex gap-2">
             <Input
-              placeholder="Pridaj ingredienciu..."
+              placeholder="Add ingredient..."
               value={currentIngredient}
               onChange={(e) => setCurrentIngredient(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addIngredient()}
@@ -79,22 +79,22 @@ export const RecipeGenerator = () => {
             disabled={ingredients.length === 0 || generateMutation.isPending || !credits || credits.credits < 1}
             className="w-full"
           >
-            {generateMutation.isPending ? 'Generujem...' : 'Vygeneruj recepty (1 kredit)'}
+            {generateMutation.isPending ? 'Generating...' : 'Generate Recipes (1 credit)'}
           </Button>
         </div>
       </Card>
 
       {recipes && (
         <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4">Vygenerované recepty</h3>
+          <h3 className="text-xl font-bold mb-4">Generated Recipes</h3>
           <div className="space-y-4">
             {recipes.recipes?.map((recipe: any, idx: number) => (
               <div key={idx} className="border-b pb-4 last:border-0">
                 <h4 className="font-semibold text-lg">{recipe.name}</h4>
                 <p className="text-muted-foreground">{recipe.description}</p>
                 <div className="mt-2 text-sm">
-                  <p><strong>Čas prípravy:</strong> {recipe.prep_time}</p>
-                  <p><strong>Obtiažnosť:</strong> {recipe.difficulty}</p>
+                  <p><strong>Prep time:</strong> {recipe.prep_time}</p>
+                  <p><strong>Difficulty:</strong> {recipe.difficulty}</p>
                 </div>
               </div>
             ))}

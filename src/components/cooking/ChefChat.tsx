@@ -32,7 +32,7 @@ export const ChefChat = () => {
       setSessionId(data.session_id);
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Chyba pri komunikácii s kuchárom');
+      toast.error(error.message || 'Error communicating with chef');
     }
   });
 
@@ -50,13 +50,13 @@ export const ChefChat = () => {
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <MessageCircle className="h-6 w-6 text-primary" />
-          Chat s AI kuchárom
+          Chat with AI Chef
         </h2>
         
         <div className="space-y-4">
           <div className="h-96 overflow-y-auto space-y-4 border rounded-lg p-4">
             {messages.length === 0 ? (
-              <p className="text-muted-foreground text-center">Začni konverzáciu s AI kuchárom...</p>
+              <p className="text-muted-foreground text-center">Start a conversation with the AI chef...</p>
             ) : (
               messages.map((msg, idx) => (
                 <div
@@ -75,7 +75,7 @@ export const ChefChat = () => {
 
           <div className="flex gap-2">
             <Input
-              placeholder="Spýtaj sa na recept..."
+              placeholder="Ask about a recipe..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
@@ -89,7 +89,7 @@ export const ChefChat = () => {
               <Send className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">1 kredit za správu</p>
+          <p className="text-xs text-muted-foreground">1 credit per message</p>
         </div>
       </Card>
     </div>
