@@ -12,7 +12,7 @@ export const CookingCreditsDisplay = () => {
       <div className="flex items-center gap-2">
         <Coins className="h-5 w-5 text-primary" />
         <div>
-          <p className="text-sm text-muted-foreground">Dostupné kredity</p>
+          <p className="text-sm text-muted-foreground">Available Credits</p>
           <p className="text-2xl font-bold">{credits?.credits || 0}</p>
         </div>
       </div>

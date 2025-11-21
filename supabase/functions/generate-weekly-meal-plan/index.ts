@@ -28,15 +28,15 @@ serve(async (req) => {
       });
     }
 
-    // Check if user has enough AI credits (50 credits for meal plan)
+    // Check if user has enough cooking credits (5 credits for meal plan)
     const { data: credits } = await supabase
-      .from('ai_credits')
-      .select('credits_remaining')
+      .from('cooking_credits')
+      .select('credits')
       .eq('user_id', user.id)
       .single();
 
-    if (!credits || credits.credits_remaining < 50) {
-      return new Response(JSON.stringify({ error: 'Nedostatok AI kreditov (potrebných 50)' }), {
+    if (!credits || credits.credits < 5) {
+      return new Response(JSON.stringify({ error: 'Insufficient credits (5 required)' }), {
         status: 402,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -46,11 +46,11 @@ serve(async (req) => {
     console.log('Generating meal plan:', { days, dietary_preferences, calorie_target });
 
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    const prompt = `Vygeneruj ${days}-dňový jedálny plán.
-${dietary_preferences ? `Diéta: ${dietary_preferences.join(', ')}.` : ''}
-${calorie_target ? `Cieľ kalórií: ${calorie_target} kcal/deň.` : ''}
+    const prompt = `Generate a ${days}-day meal plan.
+${dietary_preferences?.length > 0 ? `Diet preferences: ${dietary_preferences.join(', ')}.` : ''}
+${calorie_target ? `Calorie target: ${calorie_target} kcal/day.` : ''}
 
-Vráť JSON:
+Return JSON:
 {
   "meal_plan": {
     "days": [
@@ -58,9 +58,9 @@ Vráť JSON:
         "day": 1,
         "date": "2025-01-20",
         "meals": {
-          "breakfast": { "name": "Raňajky", "calories": 400, "ingredients": [] },
-          "lunch": { "name": "Obed", "calories": 600, "ingredients": [] },
-          "dinner": { "name": "Večera", "calories": 500, "ingredients": [] },
+          "breakfast": { "name": "Breakfast", "calories": 400, "ingredients": [] },
+          "lunch": { "name": "Lunch", "calories": 600, "ingredients": [] },
+          "dinner": { "name": "Dinner", "calories": 500, "ingredients": [] },
           "snacks": [{ "name": "Snack", "calories": 150, "ingredients": [] }]
         },
         "total_calories": 1650
@@ -69,11 +69,11 @@ Vráť JSON:
   },
   "shopping_list": {
     "categories": {
-      "vegetables": ["mrkva", "paradajky"],
-      "proteins": ["kuracie mäso"],
-      "grains": ["ryža"],
-      "dairy": ["jogurt"],
-      "other": ["olivový olej"]
+      "vegetables": ["carrots", "tomatoes"],
+      "proteins": ["chicken"],
+      "grains": ["rice"],
+      "dairy": ["yogurt"],
+      "other": ["olive oil"]
     }
   },
   "weekly_summary": {
@@ -124,41 +124,29 @@ Vráť JSON:
       .from('meal_plans_ai')
       .insert({
         user_id: user.id,
-        plan_name: `${days}-dňový plán`,
+        plan_name: `${days}-day plan`,
         days_count: days,
         meals: mealPlanData.meal_plan || {},
         shopping_list: mealPlanData.shopping_list || {},
         total_calories: mealPlanData.weekly_summary?.total_calories || 0,
         dietary_preferences,
-        credits_used: 50
+        credits_used: 5
       })
       .select()
       .single();
 
-    // Deduct 50 AI credits and log usage
+    // Deduct 5 cooking credits
     await supabase
-      .from('ai_credits')
-      .update({ 
-        credits_remaining: credits.credits_remaining - 50,
-        last_used_at: new Date().toISOString()
-      })
+      .from('cooking_credits')
+      .update({ credits: credits.credits - 5 })
       .eq('user_id', user.id);
-
-    await supabase
-      .from('ai_usage_history')
-      .insert({
-        user_id: user.id,
-        usage_type: 'meal_plan_generation',
-        credits_used: 50,
-        description: `Generated ${days}-day meal plan`
-      });
 
     console.log('Meal plan generated successfully');
 
     return new Response(JSON.stringify({ 
       meal_plan: mealPlanData,
       plan_id: savedPlan.id,
-      credits_remaining: credits.credits_remaining - 50
+      credits_remaining: credits.credits - 5
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

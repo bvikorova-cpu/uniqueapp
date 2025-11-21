@@ -6,13 +6,13 @@ import { useMutation } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Calendar } from 'lucide-react';
-import { useAICredits } from '@/hooks/useAICredits';
+import { useCookingCredits } from '@/hooks/useCookingCredits';
 
 export const MealPlannerGenerator = () => {
   const [days, setDays] = useState(7);
   const [calorieTarget, setCalorieTarget] = useState('2000');
   const [mealPlan, setMealPlan] = useState<any>(null);
-  const { credits, loading: creditsLoading } = useAICredits();
+  const { data: credits } = useCookingCredits();
 
   const generateMutation = useMutation({
     mutationFn: async () => {
@@ -28,10 +28,10 @@ export const MealPlannerGenerator = () => {
     },
     onSuccess: (data) => {
       setMealPlan(data.meal_plan);
-      toast.success('Jedálny plán bol úspešne vygenerovaný!');
+      toast.success('Meal plan generated successfully!');
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Chyba pri generovaní plánu');
+      toast.error(error.message || 'Error generating meal plan');
     }
   });
 
@@ -40,12 +40,12 @@ export const MealPlannerGenerator = () => {
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
           <Calendar className="h-6 w-6 text-primary" />
-          Generátor jedálneho plánu
+          Meal Plan Generator
         </h2>
         
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Počet dní</label>
+            <label className="block text-sm font-medium mb-2">Number of days</label>
             <Input
               type="number"
               min="1"
@@ -56,7 +56,7 @@ export const MealPlannerGenerator = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Cieľ kalórií/deň</label>
+            <label className="block text-sm font-medium mb-2">Daily calorie target</label>
             <Input
               type="number"
               value={calorieTarget}
@@ -66,14 +66,14 @@ export const MealPlannerGenerator = () => {
 
           <Button
             onClick={() => generateMutation.mutate()}
-            disabled={generateMutation.isPending || !credits || credits.credits_remaining < 50}
+            disabled={generateMutation.isPending || !credits || credits.credits < 5}
             className="w-full"
           >
-            {generateMutation.isPending ? 'Generujem...' : 'Vygeneruj plán (50 AI kreditov)'}
+            {generateMutation.isPending ? 'Generating...' : 'Generate Plan (5 credits)'}
           </Button>
-          {credits && credits.credits_remaining < 50 && (
+          {credits && credits.credits < 5 && (
             <p className="text-sm text-destructive mt-2">
-              Potrebujete 50 AI kreditov na generovanie jedálneho plánu. Máte {credits.credits_remaining} kreditov.
+              You need 5 credits to generate a meal plan. You have {credits.credits} credits.
             </p>
           )}
         </div>
@@ -81,16 +81,16 @@ export const MealPlannerGenerator = () => {
 
       {mealPlan && (
         <Card className="p-6">
-          <h3 className="text-xl font-bold mb-4">Váš jedálny plán</h3>
+          <h3 className="text-xl font-bold mb-4">Your Meal Plan</h3>
           <div className="space-y-4">
             {mealPlan.meal_plan?.days?.map((day: any, idx: number) => (
               <div key={idx} className="border-b pb-4 last:border-0">
-                <h4 className="font-semibold">Deň {day.day}</h4>
+                <h4 className="font-semibold">Day {day.day}</h4>
                 <div className="mt-2 space-y-2 text-sm">
-                  <p><strong>Raňajky:</strong> {day.meals?.breakfast?.name}</p>
-                  <p><strong>Obed:</strong> {day.meals?.lunch?.name}</p>
-                  <p><strong>Večera:</strong> {day.meals?.dinner?.name}</p>
-                  <p className="text-muted-foreground">Celkom: {day.total_calories} kcal</p>
+                  <p><strong>Breakfast:</strong> {day.meals?.breakfast?.name}</p>
+                  <p><strong>Lunch:</strong> {day.meals?.lunch?.name}</p>
+                  <p><strong>Dinner:</strong> {day.meals?.dinner?.name}</p>
+                  <p className="text-muted-foreground">Total: {day.total_calories} kcal</p>
                 </div>
               </div>
             ))}
