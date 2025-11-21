@@ -45,10 +45,10 @@ export function SubscriptionGate({ children }: SubscriptionGateProps) {
 
   if (!subscribed) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-6 pt-24 max-w-4xl">
         <Card className="p-8 text-center bg-gradient-to-br from-purple-900/20 via-background to-fuchsia-900/20 border-purple-500/20">
-          <Lock className="h-16 w-16 mx-auto mb-4 text-purple-400" />
-          <h2 className="text-3xl font-bold mb-4">🎭 Shadow Arena Hub Access Required</h2>
+          <Lock className="h-20 w-20 mx-auto mb-6 text-purple-400" />
+          <h2 className="text-3xl font-bold mb-6">🎭 Shadow Arena Hub Access Required</h2>
           <p className="text-muted-foreground mb-6 text-lg">
             Subscribe to unlock full access to Shadow Arena features:
           </p>
