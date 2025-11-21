@@ -10646,6 +10646,47 @@ export type Database = {
         }
         Relationships: []
       }
+      influencer_balances: {
+        Row: {
+          available_balance: number | null
+          created_at: string
+          id: string
+          influencer_id: string
+          pending_withdrawal: number
+          total_earned: number
+          updated_at: string
+          withdrawn: number
+        }
+        Insert: {
+          available_balance?: number | null
+          created_at?: string
+          id?: string
+          influencer_id: string
+          pending_withdrawal?: number
+          total_earned?: number
+          updated_at?: string
+          withdrawn?: number
+        }
+        Update: {
+          available_balance?: number | null
+          created_at?: string
+          id?: string
+          influencer_id?: string
+          pending_withdrawal?: number
+          total_earned?: number
+          updated_at?: string
+          withdrawn?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_balances_influencer_id_fkey"
+            columns: ["influencer_id"]
+            isOneToOne: true
+            referencedRelation: "virtual_influencers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       influencer_content: {
         Row: {
           caption: string | null
