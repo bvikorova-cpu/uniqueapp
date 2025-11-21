@@ -7,22 +7,6 @@ import { Check, Users, Crown, Infinity } from "lucide-react";
 
 const subscriptionTiers = [
   {
-    name: "Free",
-    price: "0",
-    icon: Users,
-    maxLives: 3,
-    color: "text-gray-500",
-    features: [
-      "3 parallel lives",
-      "Basic profile customization",
-      "Standard posting",
-      "Community access",
-      "Cross-reality reveal: €4.99 each",
-      "Reality merge: €9.99 each"
-    ],
-    popular: false
-  },
-  {
     name: "Premium",
     price: "7.99",
     icon: Crown,
@@ -73,8 +57,6 @@ export function ParallelSubscriptions() {
         });
         return;
       }
-
-      if (price === "0") return;
 
       toast({
         title: "Subscription Starting...",
@@ -139,10 +121,9 @@ export function ParallelSubscriptions() {
                 <Button 
                   className="w-full" 
                   variant={tier.popular ? "default" : "outline"}
-                  disabled={tier.price === "0"}
                   onClick={() => handleSubscribe(tier.name, tier.price)}
                 >
-                  {tier.price === "0" ? "Current Plan" : "Subscribe Now"}
+                  Subscribe Now
                 </Button>
               </CardContent>
             </Card>

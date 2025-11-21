@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface SubscriptionLimits {
-  tier: 'free' | 'basic' | 'premium' | 'business';
+  tier: 'basic' | 'premium' | 'business';
   bazaarListingsPerMonth: number;
   auctionListingsPerMonth: number;
   commissionRate: number;
@@ -12,15 +12,6 @@ export interface SubscriptionLimits {
 }
 
 const SUBSCRIPTION_LIMITS: Record<string, SubscriptionLimits> = {
-  free: {
-    tier: 'free',
-    bazaarListingsPerMonth: 1,
-    auctionListingsPerMonth: 1,
-    commissionRate: 5,
-    aiGenerationsPerMonth: 5, // Free: 5 uses then need to buy credits
-    featuredListingsPerMonth: 0,
-    hasAnalytics: false,
-  },
   basic: {
     tier: 'basic',
     bazaarListingsPerMonth: 5,
@@ -51,7 +42,7 @@ const SUBSCRIPTION_LIMITS: Record<string, SubscriptionLimits> = {
 };
 
 export const useSubscription = () => {
-  const [limits, setLimits] = useState<SubscriptionLimits>(SUBSCRIPTION_LIMITS.free);
+  const [limits, setLimits] = useState<SubscriptionLimits>(SUBSCRIPTION_LIMITS.basic);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -94,11 +85,11 @@ export const useSubscription = () => {
       if (sub && sub.tier in SUBSCRIPTION_LIMITS) {
         setLimits(SUBSCRIPTION_LIMITS[sub.tier]);
       } else {
-        setLimits(SUBSCRIPTION_LIMITS.free);
+        setLimits(SUBSCRIPTION_LIMITS.basic);
       }
     } catch (error) {
       console.error('Load subscription error:', error);
-      setLimits(SUBSCRIPTION_LIMITS.free);
+      setLimits(SUBSCRIPTION_LIMITS.basic);
     } finally {
       setLoading(false);
     }

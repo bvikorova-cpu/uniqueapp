@@ -9,13 +9,6 @@ export interface HealthcareSubscriptionLimits {
 }
 
 const HEALTHCARE_LIMITS: Record<string, HealthcareSubscriptionLimits> = {
-  free: {
-    name: 'Free',
-    maxCollections: 0,
-    maxPagesPerCollection: 0,
-    canAccessLibrary: false,
-    libraryAccessLevel: 'free',
-  },
   basic: {
     name: 'Basic',
     maxCollections: 5,
@@ -35,7 +28,7 @@ const HEALTHCARE_LIMITS: Record<string, HealthcareSubscriptionLimits> = {
 export const useHealthcareSubscriptionLimits = () => {
   const { subscription_tier, subscribed } = useHealthcareSubscription();
 
-  const limits = HEALTHCARE_LIMITS[subscription_tier || 'free'] || HEALTHCARE_LIMITS.free;
+  const limits = HEALTHCARE_LIMITS[subscription_tier || 'basic'] || HEALTHCARE_LIMITS.basic;
 
   return {
     limits,
