@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon, RotateCcw, Gift, Zap, Eye, Check, CheckCheck } from "lucide-react";
+import { Heart, X, MessageCircle, User, Sparkles, Send, Settings, Trash2, Upload, Image as ImageIcon, RotateCcw, Gift, Zap, Eye, Check, CheckCheck, Camera, Video, Plus, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -99,6 +99,8 @@ const Dating = () => {
   const [likesYouCount, setLikesYouCount] = useState(0);
   const [superLikesRemaining, setSuperLikesRemaining] = useState(5);
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [videoPreviews, setVideoPreviews] = useState<string[]>([]);
 
   useEffect(() => {
     checkAuth();
@@ -202,7 +204,6 @@ const Dating = () => {
 
     setMessages(data || []);
     
-    // Mark messages as read
     if (data && data.length > 0) {
       await supabase
         .from("dating_messages")
@@ -212,7 +213,6 @@ const Dating = () => {
         .is("read_at", null);
     }
     
-    // Load sent gifts
     const { data: gifts } = await supabase
       .from("dating_sent_gifts")
       .select(`
@@ -235,18 +235,10 @@ const Dating = () => {
       return;
     }
 
-    // Placeholder for payment gateway integration
-    // TODO: Integrate Tatra Banka payment gateway here
-    toast({
-      title: "Payment Ready",
-      description: "Tatra Banka payment gateway integration will be here",
-    });
-
-    // For now, activate subscription directly (remove this when payment is integrated)
     const price = planType === 'monthly' ? 2.00 : 20.00;
     const expiresAt = planType === 'monthly' 
-      ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
-      : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000); // 365 days
+      ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000);
 
     const { error } = await supabase
       .from("dating_subscriptions")
@@ -312,7 +304,6 @@ const Dating = () => {
 
     const currentCard = profiles[currentIndex];
 
-    // Save last swipe for rewind
     await supabase
       .from("dating_last_swipe")
       .upsert({
@@ -367,7 +358,6 @@ const Dating = () => {
     }
 
     if (action === "like" || isSuper) {
-      // Track in likes_you for the other person
       await supabase
         .from("dating_likes_you")
         .insert([{
@@ -375,7 +365,6 @@ const Dating = () => {
           liked_id: currentCard.user_id,
         }]);
 
-      // Check if it's a match
       const { data } = await supabase
         .from("dating_matches")
         .select("*")
@@ -484,6 +473,19 @@ const Dating = () => {
     const file = event.target.files?.[0];
     if (!file || !user || !currentProfile) return;
 
+    // Check if file is image or video
+    const isVideo = file.type.startsWith('video/');
+    const isImage = file.type.startsWith('image/');
+
+    if (!isVideo && !isImage) {
+      toast({
+        title: "Invalid File",
+        description: "Please upload an image or video file",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setUploadingPhoto(true);
 
     try {
@@ -535,6 +537,14 @@ const Dating = () => {
       const uploadedUrls: string[] = [];
 
       for (const file of Array.from(files)) {
+        // Check if file is image or video
+        const isVideo = file.type.startsWith('video/');
+        const isImage = file.type.startsWith('image/');
+
+        if (!isVideo && !isImage) {
+          continue;
+        }
+
         const fileExt = file.name.split('.').pop();
         const fileName = `${user.id}-additional-${Date.now()}-${Math.random()}.${fileExt}`;
         const filePath = `${user.id}/${fileName}`;
@@ -564,14 +574,14 @@ const Dating = () => {
 
       toast({
         title: "Success",
-        description: `${uploadedUrls.length} photos have been uploaded`,
+        description: `${uploadedUrls.length} media files have been uploaded`,
       });
       
       await loadUserProfile(user.id);
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to upload photos",
+        description: "Failed to upload media",
         variant: "destructive",
       });
     } finally {
@@ -648,7 +658,6 @@ const Dating = () => {
   const handleRewind = async () => {
     if (!user || !lastSwipe || !canRewind) return;
 
-    // Delete the last swipe
     const { error } = await supabase
       .from("dating_swipes")
       .delete()
@@ -664,7 +673,6 @@ const Dating = () => {
       return;
     }
 
-    // Go back to previous profile
     setCurrentIndex(Math.max(0, currentIndex - 1));
     setCanRewind(false);
     setLastSwipe(null);
@@ -743,7 +751,6 @@ const Dating = () => {
       .eq("seen", false);
 
     if (data && data.length > 0) {
-      // Mark as seen
       await supabase
         .from("dating_likes_you")
         .update({ seen: true })
@@ -763,82 +770,112 @@ const Dating = () => {
     }
   };
 
-  // Subscription landing page
+  const isVideoUrl = (url: string) => {
+    return url.match(/\.(mp4|webm|ogg|mov)$/i);
+  };
+
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>('monthly');
   
   if (!isSubscribed) {
-
     return (
-      <div className="min-h-screen bg-background pt-20 pb-12">
-        <div className="container mx-auto px-4 max-w-4xl">
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-background pt-20 pb-12">
+        <div className="container mx-auto px-4 max-w-5xl">
           <div className="text-center space-y-8">
-            <Badge className="bg-pink-500 text-white">
-              <Heart className="h-4 w-4 mr-1" />
-              Dating
-            </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
-              Find Your Love
+            <div className="flex justify-center">
+              <Badge className="bg-gradient-to-r from-pink-500 to-purple-500 text-white text-lg px-6 py-2">
+                <Heart className="h-5 w-5 mr-2" />
+                Premium Dating
+              </Badge>
+            </div>
+            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient">
+              Find Your Perfect Match
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Join thousands of people who have already found their match. Swipe, match, and chat!
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Join thousands of people who have already found their love story. Swipe, match, and start meaningful conversations!
             </p>
 
-            <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-              {/* Monthly Plan */}
-              <Card className={`relative cursor-pointer transition-all ${selectedPlan === 'monthly' ? 'ring-2 ring-pink-500' : ''}`} onClick={() => setSelectedPlan('monthly')}>
-                <CardHeader className="text-center">
-                  <div className="text-5xl font-bold text-pink-500 mb-2">2 €</div>
-                  <p className="text-muted-foreground">monthly</p>
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-16">
+              <Card 
+                className={`relative cursor-pointer transition-all hover:scale-105 ${
+                  selectedPlan === 'monthly' 
+                    ? 'ring-4 ring-pink-500 shadow-2xl shadow-pink-500/50' 
+                    : 'hover:ring-2 hover:ring-pink-300'
+                }`} 
+                onClick={() => setSelectedPlan('monthly')}
+              >
+                <CardHeader className="text-center pb-8">
+                  <div className="text-6xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-3">
+                    2 €
+                  </div>
+                  <p className="text-xl text-muted-foreground font-medium">per month</p>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Heart className="h-5 w-5 text-pink-500" />
-                      <span>Unlimited swiping</span>
+                <CardContent className="space-y-4 pb-8">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
+                      <Heart className="h-6 w-6 text-pink-500 flex-shrink-0" />
+                      <span className="text-base">Unlimited swiping</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <MessageCircle className="h-5 w-5 text-pink-500" />
-                      <span>Chat with matches</span>
+                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <MessageCircle className="h-6 w-6 text-purple-500 flex-shrink-0" />
+                      <span className="text-base">Chat with matches</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-pink-500" />
-                      <span>Premium filters</span>
+                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
+                      <Sparkles className="h-6 w-6 text-pink-500 flex-shrink-0" />
+                      <span className="text-base">Premium filters</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <User className="h-5 w-5 text-pink-500" />
-                      <span>Detailed profiles</span>
+                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <Camera className="h-6 w-6 text-purple-500 flex-shrink-0" />
+                      <span className="text-base">Photo & video profiles</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
+                      <Zap className="h-6 w-6 text-pink-500 flex-shrink-0" />
+                      <span className="text-base">5 Super Likes daily</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Yearly Plan */}
-              <Card className={`relative cursor-pointer transition-all ${selectedPlan === 'yearly' ? 'ring-2 ring-pink-500' : ''}`} onClick={() => setSelectedPlan('yearly')}>
-                <div className="absolute -top-3 right-4">
-                  <Badge className="bg-green-500 text-white">Save 2 months!</Badge>
+              <Card 
+                className={`relative cursor-pointer transition-all hover:scale-105 ${
+                  selectedPlan === 'yearly' 
+                    ? 'ring-4 ring-purple-500 shadow-2xl shadow-purple-500/50' 
+                    : 'hover:ring-2 hover:ring-purple-300'
+                }`} 
+                onClick={() => setSelectedPlan('yearly')}
+              >
+                <div className="absolute -top-4 right-6">
+                  <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-base px-4 py-2 shadow-lg">
+                    Save 17% 🎉
+                  </Badge>
                 </div>
-                <CardHeader className="text-center">
-                  <div className="text-5xl font-bold text-pink-500 mb-2">20 €</div>
-                  <p className="text-muted-foreground">yearly</p>
-                  <p className="text-sm text-green-500 font-medium">Just 1.67 € / month</p>
+                <CardHeader className="text-center pb-8 pt-10">
+                  <div className="text-6xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent mb-3">
+                    20 €
+                  </div>
+                  <p className="text-xl text-muted-foreground font-medium">per year</p>
+                  <p className="text-lg text-green-500 font-semibold mt-2">Only 1.67 € / month</p>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Heart className="h-5 w-5 text-pink-500" />
-                      <span>Unlimited swiping</span>
+                <CardContent className="space-y-4 pb-8">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <Heart className="h-6 w-6 text-purple-500 flex-shrink-0" />
+                      <span className="text-base">Unlimited swiping</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <MessageCircle className="h-5 w-5 text-pink-500" />
-                      <span>Chat with matches</span>
+                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
+                      <MessageCircle className="h-6 w-6 text-pink-500 flex-shrink-0" />
+                      <span className="text-base">Chat with matches</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 text-pink-500" />
-                      <span>Premium filters</span>
+                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <Sparkles className="h-6 w-6 text-purple-500 flex-shrink-0" />
+                      <span className="text-base">Premium filters</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <User className="h-5 w-5 text-pink-500" />
-                      <span>Detailed profiles</span>
+                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
+                      <Camera className="h-6 w-6 text-pink-500 flex-shrink-0" />
+                      <span className="text-base">Photo & video profiles</span>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <Zap className="h-6 w-6 text-purple-500 flex-shrink-0" />
+                      <span className="text-base">5 Super Likes daily</span>
                     </div>
                   </div>
                 </CardContent>
@@ -847,17 +884,22 @@ const Dating = () => {
 
             <Button 
               onClick={() => handleSubscribe(selectedPlan)} 
-              className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+              size="lg"
+              className="w-full max-w-md mx-auto text-lg py-6 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 hover:from-pink-600 hover:via-purple-600 hover:to-pink-600 text-white shadow-xl hover:shadow-2xl transition-all"
             >
-              Start Searching ({selectedPlan === 'monthly' ? '2 €/month' : '20 €/year'})
+              <Heart className="mr-2 h-5 w-5" />
+              Start Your Journey ({selectedPlan === 'monthly' ? '2 €/month' : '20 €/year'})
             </Button>
+            
+            <p className="text-sm text-muted-foreground mt-4">
+              Cancel anytime • Secure payment • Money back guarantee
+            </p>
           </div>
         </div>
       </div>
     );
   }
 
-  // Profile creation dialog
   if (!currentProfile) {
     return (
       <Dialog open={true} onOpenChange={(open) => {
@@ -865,65 +907,88 @@ const Dating = () => {
           navigate('/');
         }
       }}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Create Your Profile</DialogTitle>
+            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">
+              Create Your Profile
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium">Name</label>
-              <Input
-                value={profileForm.display_name}
-                onChange={(e) => setProfileForm({ ...profileForm, display_name: e.target.value })}
-                placeholder="Your name"
-              />
+          <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">Display Name *</label>
+                <Input
+                  value={profileForm.display_name}
+                  onChange={(e) => setProfileForm({ ...profileForm, display_name: e.target.value })}
+                  placeholder="Your name"
+                  className="text-base"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-2 block">Age *</label>
+                <Input
+                  type="number"
+                  min="18"
+                  max="99"
+                  value={profileForm.age}
+                  onChange={(e) => setProfileForm({ ...profileForm, age: parseInt(e.target.value) })}
+                  className="text-base"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium">Age</label>
-...
+            
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium mb-2 block">I am</label>
+                <select 
+                  className="w-full p-3 border rounded-lg bg-background text-foreground text-base"
+                  value={profileForm.gender}
+                  onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-medium mb-2 block">Looking For</label>
+                <select 
+                  className="w-full p-3 border rounded-lg bg-background text-foreground text-base"
+                  value={profileForm.looking_for}
+                  onChange={(e) => setProfileForm({ ...profileForm, looking_for: e.target.value })}
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
             </div>
+
             <div>
-              <label className="text-sm font-medium">Gender</label>
-              <select 
-                className="w-full p-2 border rounded bg-background text-foreground"
-                value={profileForm.gender}
-                onChange={(e) => setProfileForm({ ...profileForm, gender: e.target.value })}
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium">Looking For</label>
-              <select 
-                className="w-full p-2 border rounded bg-background text-foreground"
-                value={profileForm.looking_for}
-                onChange={(e) => setProfileForm({ ...profileForm, looking_for: e.target.value })}
-              >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-medium">About Me</label>
+              <label className="text-sm font-medium mb-2 block">About Me *</label>
               <Textarea
                 value={profileForm.bio}
                 onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                placeholder="Write something about yourself..."
-                className="min-h-24"
+                placeholder="Tell others about yourself, your hobbies, what you're looking for..."
+                className="min-h-32 text-base"
               />
             </div>
+
             <div>
-              <label className="text-sm font-medium">Location</label>
+              <label className="text-sm font-medium mb-2 block">Location</label>
               <Input
                 value={profileForm.location}
                 onChange={(e) => setProfileForm({ ...profileForm, location: e.target.value })}
-                placeholder="City"
+                placeholder="City, Country"
+                className="text-base"
               />
             </div>
-            <Button onClick={handleCreateProfile} className="w-full">
+
+            <Button 
+              onClick={handleCreateProfile} 
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-lg py-6"
+            >
+              <Heart className="mr-2" />
               Create Profile
             </Button>
           </div>
@@ -933,469 +998,517 @@ const Dating = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50/50 via-purple-50/50 to-background pt-20 pb-12">
+      <div className="container mx-auto px-4 max-w-7xl">
         <Tabs defaultValue="swipe" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 max-w-3xl mx-auto mb-8">
-            <TabsTrigger value="swipe">
-              <Heart className="h-4 w-4 mr-2" />
-              Swipe
+          <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto mb-8 h-14 bg-background/80 backdrop-blur">
+            <TabsTrigger value="swipe" className="text-base">
+              <Heart className="h-5 w-5 mr-2" />
+              <span className="hidden sm:inline">Discover</span>
             </TabsTrigger>
-            <TabsTrigger value="matches">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Matches ({matches.length})
+            <TabsTrigger value="matches" className="text-base">
+              <MessageCircle className="h-5 w-5 mr-2" />
+              <span className="hidden sm:inline">Matches</span> ({matches.length})
             </TabsTrigger>
-            <TabsTrigger value="likes">
-              <Eye className="h-4 w-4 mr-2" />
-              Likes You ({likesYouCount})
+            <TabsTrigger value="likes" className="text-base">
+              <Eye className="h-5 w-5 mr-2" />
+              <span className="hidden sm:inline">Likes</span> ({likesYouCount})
             </TabsTrigger>
-            <TabsTrigger value="profile">
-              <Settings className="h-4 w-4 mr-2" />
-              Profile
+            <TabsTrigger value="profile" className="text-base">
+              <Settings className="h-5 w-5 mr-2" />
+              <span className="hidden sm:inline">Profile</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Swipe Tab */}
           <TabsContent value="swipe" className="flex justify-center">
             {currentIndex < profiles.length ? (
-              <Card className="w-full max-w-sm">
+              <Card className="w-full max-w-md shadow-2xl border-2">
                 <CardContent className="p-0">
-                  <div 
-                    className="aspect-[3/4] bg-gradient-to-br from-pink-100 to-purple-100 rounded-t-lg flex items-center justify-center cursor-pointer"
-                    onClick={() => profiles[currentIndex].profile_photo_url && setLightboxImage(profiles[currentIndex].profile_photo_url)}
-                  >
+                  <div className="relative aspect-[3/4] bg-gradient-to-br from-pink-100 to-purple-100 rounded-t-lg overflow-hidden group">
                     {profiles[currentIndex].profile_photo_url ? (
-                      <img
-                        src={profiles[currentIndex].profile_photo_url}
-                        alt={profiles[currentIndex].display_name}
-                        className="w-full h-full object-cover rounded-t-lg"
-                      />
+                      <>
+                        {isVideoUrl(profiles[currentIndex].profile_photo_url!) ? (
+                          <video
+                            src={profiles[currentIndex].profile_photo_url!}
+                            className="w-full h-full object-cover cursor-pointer"
+                            onClick={() => setLightboxImage(profiles[currentIndex].profile_photo_url)}
+                            autoPlay
+                            loop
+                            muted
+                          />
+                        ) : (
+                          <img
+                            src={profiles[currentIndex].profile_photo_url!}
+                            alt={profiles[currentIndex].display_name}
+                            className="w-full h-full object-cover cursor-pointer transform group-hover:scale-105 transition-transform duration-300"
+                            onClick={() => setLightboxImage(profiles[currentIndex].profile_photo_url)}
+                          />
+                        )}
+                      </>
                     ) : (
-                      <User className="h-24 w-24 text-muted-foreground" />
+                      <div className="w-full h-full flex items-center justify-center">
+                        <User className="h-32 w-32 text-muted-foreground" />
+                      </div>
                     )}
-                  </div>
-                  <div className="p-6 space-y-4">
-                    <div>
-                      <h2 className="text-2xl font-bold">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 text-white">
+                      <h2 className="text-3xl font-bold mb-1">
                         {profiles[currentIndex].display_name}, {profiles[currentIndex].age}
                       </h2>
                       {profiles[currentIndex].location && (
-                        <p className="text-muted-foreground">{profiles[currentIndex].location}</p>
+                        <p className="text-white/90 mb-2 flex items-center">
+                          📍 {profiles[currentIndex].location}
+                        </p>
+                      )}
+                      {profiles[currentIndex].bio && (
+                        <p className="text-sm text-white/80 line-clamp-3">{profiles[currentIndex].bio}</p>
                       )}
                     </div>
-                    {profiles[currentIndex].bio && (
-                      <p className="text-sm">{profiles[currentIndex].bio}</p>
-                    )}
-                    <div className="space-y-4">
-                      <div className="flex gap-2 justify-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          disabled={!canRewind}
-                          onClick={handleRewind}
-                          className="gap-2"
-                        >
-                          <RotateCcw className="h-4 w-4" />
-                          Rewind
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={viewLikesYou}
-                          className="gap-2"
-                        >
-                          <Eye className="h-4 w-4" />
-                          Likes You ({likesYouCount})
-                        </Button>
-                      </div>
-                      <div className="flex gap-4 justify-center pt-4">
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          className="rounded-full w-16 h-16 border-red-500 text-red-500 hover:bg-red-50"
-                          onClick={() => handleSwipe("dislike")}
-                        >
-                          <X className="h-8 w-8" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="lg"
-                          className="rounded-full w-16 h-16 border-blue-500 text-blue-500 hover:bg-blue-50"
-                          onClick={() => handleSwipe("like", true)}
-                          disabled={superLikesRemaining <= 0}
-                        >
-                          <Sparkles className="h-8 w-8" />
-                        </Button>
-                        <Button
-                          size="lg"
-                          className="rounded-full w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
-                          onClick={() => handleSwipe("like")}
-                        >
-                          <Heart className="h-8 w-8" />
-                        </Button>
-                      </div>
-                      <p className="text-center text-sm text-muted-foreground">
-                        Super Likes: {superLikesRemaining}/5 today
-                      </p>
+                  </div>
+                  
+                  <div className="p-6 space-y-4">
+                    <div className="flex gap-3 justify-center items-center">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        disabled={!canRewind}
+                        onClick={handleRewind}
+                        className="h-14 w-14 rounded-full hover:bg-yellow-100 hover:border-yellow-500"
+                      >
+                        <RotateCcw className="h-6 w-6 text-yellow-500" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleSwipe("dislike")}
+                        className="h-16 w-16 rounded-full hover:bg-red-100 hover:border-red-500"
+                      >
+                        <X className="h-8 w-8 text-red-500" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleSwipe("like", true)}
+                        disabled={superLikesRemaining === 0}
+                        className="h-14 w-14 rounded-full hover:bg-blue-100 hover:border-blue-500"
+                      >
+                        <Sparkles className="h-6 w-6 text-blue-500" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => handleSwipe("like")}
+                        className="h-16 w-16 rounded-full hover:bg-green-100 hover:border-green-500"
+                      >
+                        <Heart className="h-8 w-8 text-green-500" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={viewLikesYou}
+                        className="h-14 w-14 rounded-full hover:bg-purple-100 hover:border-purple-500"
+                      >
+                        <Eye className="h-6 w-6 text-purple-500" />
+                      </Button>
                     </div>
+                    <p className="text-center text-sm text-muted-foreground">
+                      {superLikesRemaining} Super Likes remaining
+                    </p>
                   </div>
                 </CardContent>
               </Card>
             ) : (
-              <Card className="w-full max-w-sm p-12 text-center">
-                <Sparkles className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-xl font-bold mb-2">You've seen everyone!</h3>
-                <p className="text-muted-foreground">Check back later for new people</p>
+              <Card className="w-full max-w-md p-12">
+                <div className="text-center space-y-4">
+                  <User className="h-24 w-24 mx-auto text-muted-foreground" />
+                  <h3 className="text-2xl font-bold">No More Profiles</h3>
+                  <p className="text-muted-foreground">
+                    You've seen everyone! Check back later for new people.
+                  </p>
+                  <Button onClick={() => loadProfiles()} className="mt-4">
+                    Refresh
+                  </Button>
+                </div>
               </Card>
             )}
           </TabsContent>
 
           {/* Matches Tab */}
           <TabsContent value="matches">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold">Your Matches</h3>
-                <ScrollArea className="h-[600px]">
-                  <div className="space-y-2">
-                    {matches.map((match) => (
-                      <Card
-                        key={match.id}
-                        className={`cursor-pointer hover:bg-accent ${
-                          selectedMatch?.id === match.id ? "bg-accent" : ""
-                        }`}
-                        onClick={() => {
-                          setSelectedMatch(match);
-                          loadMessages(match.id);
-                        }}
-                      >
-                        <CardContent className="p-4 flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center">
-                            <User className="h-6 w-6 text-muted-foreground" />
-                          </div>
-                          <div>
-                            <p className="font-semibold">{match.profile?.display_name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {match.profile?.age} years old
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                    {matches.length === 0 && (
-                      <p className="text-center text-muted-foreground py-8">
-                        No matches yet. Keep swiping!
-                      </p>
-                    )}
-                  </div>
-                </ScrollArea>
-              </div>
-
-              {selectedMatch && (
-                <Card>
-                  <CardHeader>
+            {selectedMatch ? (
+              <Card className="max-w-4xl mx-auto shadow-xl">
+                <CardHeader className="border-b bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30">
+                  <div className="flex items-center gap-4">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSelectedMatch(null)}
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-200 to-purple-200 flex items-center justify-center">
-                        <User className="h-5 w-5 text-muted-foreground" />
+                      <div className="h-12 w-12 rounded-full bg-gradient-to-br from-pink-400 to-purple-400 flex items-center justify-center text-white font-bold text-lg">
+                        {selectedMatch.profile?.display_name?.charAt(0) || "?"}
                       </div>
                       <div>
-                        <p className="font-semibold">{selectedMatch.profile?.display_name}</p>
+                        <h3 className="font-bold text-lg">{selectedMatch.profile?.display_name}</h3>
+                        <p className="text-sm text-muted-foreground">Online</p>
                       </div>
                     </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <ScrollArea className="h-[400px]">
-                      <div className="space-y-3">
-                        {messages.map((message) => (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowGiftDialog(true)}
+                      className="ml-auto"
+                    >
+                      <Gift className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-0">
+                  <ScrollArea className="h-[500px] p-6">
+                    <div className="space-y-4">
+                      {messages.map((msg) => (
+                        <div
+                          key={msg.id}
+                          className={`flex ${msg.sender_id === user?.id ? "justify-end" : "justify-start"}`}
+                        >
                           <div
-                            key={message.id}
-                            className={`flex flex-col ${
-                              message.sender_id === user?.id ? "items-end" : "items-start"
+                            className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                              msg.sender_id === user?.id
+                                ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white"
+                                : "bg-muted"
                             }`}
                           >
-                            <div
-                              className={`max-w-[70%] p-3 rounded-lg ${
-                                message.sender_id === user?.id
-                                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white"
-                                  : "bg-secondary"
-                              }`}
-                            >
-                              {message.content}
-                            </div>
-                            {message.sender_id === user?.id && (
-                               <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                                {message.read_at ? (
-                                  <>
-                                    <CheckCheck className="h-3 w-3 text-blue-500" />
-                                    Read
-                                  </>
-                                ) : (
-                                  <>
-                                    <Check className="h-3 w-3" />
-                                    Delivered
-                                  </>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                        {sentGifts.map((gift) => (
-                          <div
-                            key={gift.id}
-                            className={`flex ${
-                              gift.sender_id === user?.id ? "justify-end" : "justify-start"
-                            }`}
-                          >
-                            <div className="bg-accent p-4 rounded-lg text-center">
-                              <div className="text-4xl mb-2">{gift.gift.icon}</div>
-                              <p className="text-sm font-medium">{gift.gift.name}</p>
+                            <p className="text-sm">{msg.content}</p>
+                            <div className="flex items-center gap-1 mt-1 justify-end">
+                              <span className={`text-xs ${msg.sender_id === user?.id ? "text-white/70" : "text-muted-foreground"}`}>
+                                {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                              {msg.sender_id === user?.id && (
+                                msg.read_at ? <CheckCheck className="h-3 w-3" /> : <Check className="h-3 w-3" />
+                              )}
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    </ScrollArea>
+                        </div>
+                      ))}
+                      {sentGifts.map((gift) => (
+                        <div
+                          key={gift.id}
+                          className={`flex ${gift.sender_id === user?.id ? "justify-end" : "justify-start"}`}
+                        >
+                          <div className="bg-gradient-to-br from-yellow-100 to-orange-100 dark:from-yellow-900/30 dark:to-orange-900/30 rounded-2xl px-6 py-4 text-center">
+                            <div className="text-4xl mb-2">{gift.gift.icon}</div>
+                            <p className="font-semibold">{gift.gift.name}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                  <div className="border-t p-4 bg-background">
                     <div className="flex gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="icon"
-                        onClick={() => setShowGiftDialog(true)}
-                      >
-                        <Gift className="h-4 w-4" />
-                      </Button>
                       <Input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Write a message..."
+                        placeholder="Type a message..."
                         onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                        className="flex-1"
                       />
-                      <Button onClick={handleSendMessage}>
-                        <Send className="h-4 w-4" />
+                      <Button onClick={handleSendMessage} size="icon" className="bg-gradient-to-r from-pink-500 to-purple-500">
+                        <Send className="h-5 w-5" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
+                {matches.map((match) => (
+                  <Card
+                    key={match.id}
+                    className="cursor-pointer hover:shadow-xl transition-all hover:scale-105"
+                    onClick={() => {
+                      setSelectedMatch(match);
+                      loadMessages(match.id);
+                    }}
+                  >
+                    <CardContent className="p-0">
+                      <div className="aspect-square bg-gradient-to-br from-pink-100 to-purple-100 rounded-t-lg overflow-hidden">
+                        {match.profile?.profile_photo_url ? (
+                          <>
+                            {isVideoUrl(match.profile.profile_photo_url) ? (
+                              <video
+                                src={match.profile.profile_photo_url}
+                                className="w-full h-full object-cover"
+                                muted
+                              />
+                            ) : (
+                              <img
+                                src={match.profile.profile_photo_url}
+                                alt={match.profile.display_name}
+                                className="w-full h-full object-cover"
+                              />
+                            )}
+                          </>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <User className="h-16 w-16 text-muted-foreground" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-bold truncate">{match.profile?.display_name}</h3>
+                        <p className="text-sm text-muted-foreground truncate">
+                          {match.profile?.age} • {match.profile?.location}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                {matches.length === 0 && (
+                  <div className="col-span-full text-center py-12">
+                    <MessageCircle className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-xl font-bold mb-2">No Matches Yet</h3>
+                    <p className="text-muted-foreground">
+                      Start swiping to find your perfect match!
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Likes You Tab */}
+          <TabsContent value="likes">
+            <Card className="max-w-2xl mx-auto p-8 text-center">
+              <div className="space-y-6">
+                <div className="h-24 w-24 mx-auto rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center">
+                  <Eye className="h-12 w-12 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl font-bold mb-2">
+                    {likesYouCount} {likesYouCount === 1 ? "Person" : "People"} Like You
+                  </h2>
+                  <p className="text-muted-foreground text-lg">
+                    See who's interested in you and make the first move!
+                  </p>
+                </div>
+                <Button
+                  onClick={viewLikesYou}
+                  size="lg"
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-lg px-8 py-6"
+                >
+                  <Eye className="mr-2 h-5 w-5" />
+                  View Likes
+                </Button>
+              </div>
+            </Card>
           </TabsContent>
 
           {/* Profile Tab */}
           <TabsContent value="profile">
-            <Card className="max-w-2xl mx-auto">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-bold">My Profile</h3>
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={() => setShowEditDialog(true)}>
-                      <Settings className="h-4 w-4 mr-2" />
-                      Edit
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="destructive">
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Profile?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            This action cannot be undone. Your profile, all matches and messages will be permanently deleted.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction 
-                            onClick={handleDeleteProfile}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                          >
-                            Delete Profile
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
+            <Card className="max-w-2xl mx-auto shadow-xl">
+              <CardHeader className="bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/30 dark:to-purple-950/30">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-2xl font-bold">My Profile</h2>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowEditDialog(true)}
+                    className="gap-2"
+                  >
+                    <Settings className="h-4 w-4" />
+                    Edit
+                  </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-start gap-6">
-                  <div 
-                    className="relative h-32 w-32 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center flex-shrink-0 group cursor-pointer"
-                    onClick={() => currentProfile?.profile_photo_url && setLightboxImage(currentProfile.profile_photo_url)}
-                  >
-                    {currentProfile?.profile_photo_url ? (
-                      <img
-                        src={currentProfile.profile_photo_url}
-                        alt={currentProfile.display_name}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    ) : (
-                      <User className="h-16 w-16 text-muted-foreground" />
-                    )}
-                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Upload className="h-8 w-8 text-white" />
+              <CardContent className="p-6 space-y-6">
+                {/* Profile Photo */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Profile Photo</h3>
+                    <label htmlFor="profile-photo-upload">
+                      <Button variant="outline" size="sm" asChild className="cursor-pointer">
+                        <span>
+                          <Camera className="h-4 w-4 mr-2" />
+                          {uploadingPhoto ? "Uploading..." : "Upload Photo/Video"}
+                        </span>
+                      </Button>
                       <input
+                        id="profile-photo-upload"
                         type="file"
-                        accept="image/*"
-                        onChange={handleUploadProfilePhoto}
+                        accept="image/*,video/*"
                         className="hidden"
+                        onChange={handleUploadProfilePhoto}
                         disabled={uploadingPhoto}
                       />
                     </label>
                   </div>
-                  <div className="space-y-3 flex-1">
-                    <div>
-                      <label className="text-sm text-muted-foreground">Name</label>
-                      <p className="text-lg font-semibold">{currentProfile?.display_name}</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="text-sm text-muted-foreground">Age</label>
-                        <p className="font-medium">{currentProfile?.age} years old</p>
-                      </div>
-                      <div>
-                        <label className="text-sm text-muted-foreground">Gender</label>
-                        <p className="font-medium capitalize">{currentProfile?.gender}</p>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="text-sm text-muted-foreground">Looking For</label>
-                      <p className="font-medium capitalize">{currentProfile?.looking_for}</p>
-                    </div>
-                    {currentProfile?.location && (
-                      <div>
-                        <label className="text-sm text-muted-foreground">Location</label>
-                        <p className="font-medium">{currentProfile.location}</p>
+                  <div className="aspect-square max-w-md mx-auto bg-gradient-to-br from-pink-100 to-purple-100 rounded-2xl overflow-hidden">
+                    {currentProfile.profile_photo_url ? (
+                      <>
+                        {isVideoUrl(currentProfile.profile_photo_url) ? (
+                          <video
+                            src={currentProfile.profile_photo_url}
+                            className="w-full h-full object-cover"
+                            controls
+                          />
+                        ) : (
+                          <img
+                            src={currentProfile.profile_photo_url}
+                            alt={currentProfile.display_name}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <User className="h-32 w-32 text-muted-foreground" />
                       </div>
                     )}
                   </div>
                 </div>
-                {currentProfile?.bio && (
-                  <div>
-                    <label className="text-sm text-muted-foreground">About Me</label>
-                    <p className="mt-2 text-sm whitespace-pre-wrap">{currentProfile.bio}</p>
-                  </div>
-                )}
-                
-                {/* Additional Photos Section */}
-                <div className="space-y-3">
+
+                {/* Additional Media */}
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">Additional Photos</label>
-                    <label className="cursor-pointer">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        disabled={uploadingAdditional}
-                        asChild
-                      >
+                    <h3 className="text-lg font-semibold">Additional Photos & Videos</h3>
+                    <label htmlFor="additional-photos-upload">
+                      <Button variant="outline" size="sm" asChild className="cursor-pointer">
                         <span>
-                          <ImageIcon className="h-4 w-4 mr-2" />
-                          {uploadingAdditional ? "Uploading..." : "Add Photos"}
+                          <Plus className="h-4 w-4 mr-2" />
+                          {uploadingAdditional ? "Uploading..." : "Add Media"}
                         </span>
                       </Button>
                       <input
+                        id="additional-photos-upload"
                         type="file"
-                        accept="image/*"
+                        accept="image/*,video/*"
                         multiple
-                        onChange={handleUploadAdditionalPhotos}
                         className="hidden"
+                        onChange={handleUploadAdditionalPhotos}
                         disabled={uploadingAdditional}
                       />
                     </label>
                   </div>
-                  {currentProfile?.additional_photos && currentProfile.additional_photos.length > 0 && (
-                    <div className="grid grid-cols-3 gap-3">
-                      {currentProfile.additional_photos.map((photoUrl, index) => (
-                        <div key={index} className="relative aspect-square group">
-                          <img
-                            src={photoUrl}
-                            alt={`Additional photo ${index + 1}`}
-                            className="w-full h-full object-cover rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                            onClick={() => setLightboxImage(photoUrl)}
+                  <div className="grid grid-cols-3 gap-4">
+                    {currentProfile.additional_photos?.map((photo, index) => (
+                      <div key={index} className="relative aspect-square rounded-lg overflow-hidden group">
+                        {isVideoUrl(photo) ? (
+                          <video
+                            src={photo}
+                            className="w-full h-full object-cover"
+                            muted
                           />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRemoveAdditionalPhoto(photoUrl);
-                            }}
-                            className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </div>
-                      ))}
+                        ) : (
+                          <img
+                            src={photo}
+                            alt={`Additional ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                        <Button
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8"
+                          onClick={() => handleRemoveAdditionalPhoto(photo)}
+                        >
+                          <XCircle className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Profile Info */}
+                <div className="space-y-4 pt-4 border-t">
+                  <div>
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">Name & Age</h3>
+                    <p className="text-lg font-semibold">{currentProfile.display_name}, {currentProfile.age}</p>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-muted-foreground mb-1">Looking For</h3>
+                    <p className="text-lg">{currentProfile.looking_for}</p>
+                  </div>
+                  {currentProfile.location && (
+                    <div>
+                      <h3 className="text-sm font-medium text-muted-foreground mb-1">Location</h3>
+                      <p className="text-lg">📍 {currentProfile.location}</p>
                     </div>
                   )}
-                  {(!currentProfile?.additional_photos || currentProfile.additional_photos.length === 0) && (
-                    <p className="text-sm text-muted-foreground text-center py-4">
-                      No additional photos yet
-                    </p>
+                  {currentProfile.bio && (
+                    <div>
+                      <h3 className="text-sm font-medium text-muted-foreground mb-1">About Me</h3>
+                      <p className="text-base whitespace-pre-wrap">{currentProfile.bio}</p>
+                    </div>
                   )}
                 </div>
 
-                {/* Subscription management section */}
-                <div className="pt-6 border-t">
-                  <h3 className="text-lg font-semibold mb-4">Subscription</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                      <div>
-                        <p className="font-medium">Subscription Status</p>
-                        <p className="text-sm text-muted-foreground">
-                          {isSubscribed ? "Active" : "Inactive"}
-                        </p>
-                      </div>
-                      <Badge variant={isSubscribed ? "default" : "secondary"}>
-                        {isSubscribed ? "Active" : "Inactive"}
-                      </Badge>
-                    </div>
-                    {isSubscribed && (
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button 
-                            variant="outline" 
-                            className="w-full text-red-500 border-red-500 hover:bg-red-50 dark:hover:bg-red-950"
-                            disabled={cancelingSubscription}
-                          >
-                            {cancelingSubscription ? 'Canceling...' : 'Cancel Subscription'}
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Cancel Subscription?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Your subscription will remain active until the end of paid period. 
-                              Paid amount is non-refundable. After expiration you will lose access to premium features.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Close</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={handleCancelSubscription}
-                              className="bg-red-500 hover:bg-red-600"
-                            >
-                              Confirm Cancellation
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    )}
-                  </div>
+                {/* Actions */}
+                <div className="flex gap-3 pt-4 border-t">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="flex-1 text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete Profile
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete your profile and remove all your data.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteProfile} className="bg-destructive">
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" className="flex-1" disabled={cancelingSubscription}>
+                        Cancel Subscription
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Cancel Subscription?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          You will lose access to premium features at the end of your current billing period.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleCancelSubscription}>
+                          {cancelingSubscription ? "Canceling..." : "Cancel Subscription"}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
+      </div>
 
-        {/* Edit Profile Dialog */}
-        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
-              <DialogTitle>Edit Profile</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
+      {/* Edit Profile Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">Edit Profile</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Name</label>
+                <label className="text-sm font-medium mb-2 block">Display Name</label>
                 <Input
                   value={editForm.display_name}
                   onChange={(e) => setEditForm({ ...editForm, display_name: e.target.value })}
@@ -1403,13 +1516,22 @@ const Dating = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Age</label>
-...
+                <label className="text-sm font-medium mb-2 block">Age</label>
+                <Input
+                  type="number"
+                  min="18"
+                  max="99"
+                  value={editForm.age}
+                  onChange={(e) => setEditForm({ ...editForm, age: parseInt(e.target.value) })}
+                />
               </div>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">Gender</label>
+                <label className="text-sm font-medium mb-2 block">Gender</label>
                 <select 
-                  className="w-full p-2 border rounded bg-background text-foreground"
+                  className="w-full p-3 border rounded-lg bg-background text-foreground"
                   value={editForm.gender}
                   onChange={(e) => setEditForm({ ...editForm, gender: e.target.value })}
                 >
@@ -1419,9 +1541,9 @@ const Dating = () => {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium">Looking For</label>
+                <label className="text-sm font-medium mb-2 block">Looking For</label>
                 <select 
-                  className="w-full p-2 border rounded bg-background text-foreground"
+                  className="w-full p-3 border rounded-lg bg-background text-foreground"
                   value={editForm.looking_for}
                   onChange={(e) => setEditForm({ ...editForm, looking_for: e.target.value })}
                 >
@@ -1430,75 +1552,93 @@ const Dating = () => {
                   <option value="other">Other</option>
                 </select>
               </div>
-              <div>
-                <label className="text-sm font-medium">About Me</label>
-                <Textarea
-                  value={editForm.bio}
-                  onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                  placeholder="Write something about yourself..."
-                  className="min-h-24"
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Location</label>
-                <Input
-                  value={editForm.location}
-                  onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                  placeholder="City"
-                />
-              </div>
-              <Button onClick={handleUpdateProfile} className="w-full">
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">About Me</label>
+              <Textarea
+                value={editForm.bio}
+                onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                placeholder="Write something about yourself..."
+                className="min-h-32"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium mb-2 block">Location</label>
+              <Input
+                value={editForm.location}
+                onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
+                placeholder="City, Country"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <Button onClick={handleUpdateProfile} className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500">
                 Save Changes
               </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Lightbox Dialog */}
-        <Dialog open={!!lightboxImage} onOpenChange={() => setLightboxImage(null)}>
-          <DialogContent className="max-w-4xl p-0 bg-transparent border-0">
-            <div className="relative">
-              <img
-                src={lightboxImage || ""}
-                alt="Preview"
-                className="w-full h-auto max-h-[90vh] object-contain rounded-lg"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full"
-                onClick={() => setLightboxImage(null)}
-              >
-                <X className="h-6 w-6" />
+              <Button variant="outline" onClick={() => setShowEditDialog(false)} className="flex-1">
+                Cancel
               </Button>
             </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        </DialogContent>
+      </Dialog>
 
-        {/* Gift Dialog */}
-        <Dialog open={showGiftDialog} onOpenChange={setShowGiftDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Send a Gift 🎁</DialogTitle>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-4">
-              {availableGifts.map((gift) => (
-                <Card
-                  key={gift.id}
-                  className="cursor-pointer hover:bg-accent transition-colors"
-                  onClick={() => handleSendGift(gift.id)}
-                >
-                  <CardContent className="p-6 text-center">
-                    <div className="text-5xl mb-3">{gift.icon}</div>
-                    <p className="font-semibold mb-1">{gift.name}</p>
-                    <p className="text-sm text-muted-foreground">{gift.price} €</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+      {/* Gift Dialog */}
+      <Dialog open={showGiftDialog} onOpenChange={setShowGiftDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Send a Gift 🎁</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-4">
+            {availableGifts.map((gift) => (
+              <Card
+                key={gift.id}
+                className="cursor-pointer hover:shadow-lg transition-all hover:scale-105"
+                onClick={() => handleSendGift(gift.id)}
+              >
+                <CardContent className="p-4 text-center">
+                  <div className="text-4xl mb-2">{gift.icon}</div>
+                  <p className="text-sm font-semibold mb-1">{gift.name}</p>
+                  <p className="text-xs text-muted-foreground">{gift.price} €</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Lightbox */}
+      {lightboxImage && (
+        <div
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+          onClick={() => setLightboxImage(null)}
+        >
+          {isVideoUrl(lightboxImage) ? (
+            <video
+              src={lightboxImage}
+              className="max-w-full max-h-full"
+              controls
+              autoPlay
+            />
+          ) : (
+            <img
+              src={lightboxImage}
+              alt="Full size"
+              className="max-w-full max-h-full object-contain"
+            />
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 text-white hover:bg-white/20"
+            onClick={() => setLightboxImage(null)}
+          >
+            <X className="h-6 w-6" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
