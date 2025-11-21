@@ -72,11 +72,6 @@ export default function ShadowArenaSubmitStory() {
         </div>
 
         <Card className="p-8">
-          <h1 className="text-3xl font-bold mb-6">📝 Submit Your Horror Story</h1>
-          <p className="text-muted-foreground mb-8">
-            Share your real-life scary experience. Our AI will enhance it with atmospheric images and sounds.
-          </p>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block font-medium mb-2">Story Title</label>
