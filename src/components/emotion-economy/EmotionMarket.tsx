@@ -7,12 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { TrendingUp, TrendingDown, ShoppingCart } from "lucide-react";
+import { TrendingUp, TrendingDown, ShoppingCart, RefreshCw } from "lucide-react";
 
 export function EmotionMarket() {
   const { toast } = useToast();
   const [listings, setListings] = useState<any[]>([]);
   const [showCreateListing, setShowCreateListing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     fetchListings();
@@ -34,6 +35,71 @@ export function EmotionMarket() {
     }
   };
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchListings();
+    setIsRefreshing(false);
+    toast({
+      title: "Market Refreshed",
+      description: "Latest listings loaded"
+    });
+  };
+
+  const handleBuyEmotion = async (emotionType: string, amount: number, price: number) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to buy emotions",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const totalPrice = amount * price;
+
+      // Create transaction
+      const { error } = await supabase
+        .from('emotion_transactions')
+        .insert({
+          buyer_id: user.id,
+          emotion_type: emotionType,
+          amount: amount,
+          price_per_unit: price,
+          total_price: totalPrice,
+          transaction_type: 'buy'
+        });
+
+      if (error) throw error;
+
+      // Update wallet
+      await supabase
+        .from('emotion_wallets')
+        .upsert({
+          user_id: user.id,
+          [`balance_${emotionType}`]: amount
+        }, {
+          onConflict: 'user_id',
+          ignoreDuplicates: false
+        });
+
+      toast({
+        title: "Purchase Successful! 🎉",
+        description: `You bought ${amount} ${emotionType} for €${totalPrice.toFixed(2)}`
+      });
+
+      fetchListings();
+    } catch (error) {
+      console.error('Error buying emotion:', error);
+      toast({
+        title: "Error",
+        description: "Failed to complete purchase",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card>
@@ -43,9 +109,14 @@ export function EmotionMarket() {
               <CardTitle>Emotion Market</CardTitle>
               <CardDescription>Buy and sell emotions with other users</CardDescription>
             </div>
-            <Button onClick={() => setShowCreateListing(!showCreateListing)}>
-              {showCreateListing ? 'Close' : 'Create Listing'}
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isRefreshing}>
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              </Button>
+              <Button onClick={() => setShowCreateListing(!showCreateListing)}>
+                {showCreateListing ? 'Close' : 'Create Listing'}
+              </Button>
+            </div>
           </div>
         </CardHeader>
         {showCreateListing && (
@@ -79,7 +150,7 @@ export function EmotionMarket() {
               <p>Total: €25.00</p>
               <p>Seller: @happyuser</p>
             </div>
-            <Button className="w-full">
+            <Button className="w-full" onClick={() => handleBuyEmotion('joy', 50, 0.50)}>
               <ShoppingCart className="h-4 w-4 mr-2" />
               Buy Joy
             </Button>
@@ -105,7 +176,7 @@ export function EmotionMarket() {
               <p>Total: €35.00</p>
               <p>Seller: @motivated123</p>
             </div>
-            <Button className="w-full">
+            <Button className="w-full" onClick={() => handleBuyEmotion('motivation', 100, 0.35)}>
               <ShoppingCart className="h-4 w-4 mr-2" />
               Buy Motivation
             </Button>
@@ -131,7 +202,7 @@ export function EmotionMarket() {
               <p>Total: €22.50</p>
               <p>Seller: @lovemaker</p>
             </div>
-            <Button className="w-full">
+            <Button className="w-full" onClick={() => handleBuyEmotion('love', 30, 0.75)}>
               <ShoppingCart className="h-4 w-4 mr-2" />
               Buy Love
             </Button>
