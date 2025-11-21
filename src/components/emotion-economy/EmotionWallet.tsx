@@ -150,7 +150,18 @@ export function EmotionWallet() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-3">€9.99/month</p>
-            <Button className="w-full" disabled={wallet.is_premium}>
+            <Button 
+              className="w-full" 
+              disabled={wallet.is_premium}
+              onClick={() => {
+                if (!wallet.is_premium) {
+                  toast({
+                    title: "Upgrade to Premium",
+                    description: "Redirecting to payment... (€9.99/month)"
+                  });
+                }
+              }}
+            >
               {wallet.is_premium ? 'Active' : 'Upgrade Now'}
             </Button>
           </CardContent>

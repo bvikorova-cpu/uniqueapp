@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Bot, Search, MessageCircle, Star } from "lucide-react";
 
@@ -15,6 +16,7 @@ interface Clone {
 }
 
 export function CloneMarketplace() {
+  const { toast } = useToast();
   const [clones, setClones] = useState<Clone[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -89,7 +91,16 @@ export function CloneMarketplace() {
               <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
                 {clone.personality_data?.personality || "A unique AI personality"}
               </p>
-              <Button className="w-full" variant="outline">
+              <Button 
+                className="w-full" 
+                variant="outline"
+                onClick={() => {
+                  toast({
+                    title: "Chat Started",
+                    description: `Starting conversation with ${clone.clone_name}...`
+                  });
+                }}
+              >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Start Chat
               </Button>
