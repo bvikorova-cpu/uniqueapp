@@ -5,12 +5,60 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, MessageCircle, Eye, Sparkles } from "lucide-react";
+import { Heart, MessageCircle, Eye, Sparkles, RefreshCw } from "lucide-react";
 
 export function EmotionFeed() {
   const { toast } = useToast();
   const [content, setContent] = useState("");
   const [isPosting, setIsPosting] = useState(false);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchPosts = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('emotion_posts')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setPosts(data || []);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchPosts();
+    setIsRefreshing(false);
+    toast({
+      title: "Feed Refreshed",
+      description: "Latest posts loaded"
+    });
+  };
+
+  const handleLike = async (postId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to like posts",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Liked! ❤️",
+        description: "You earned emotion rewards"
+      });
+    } catch (error) {
+      console.error('Error liking post:', error);
+    }
+  };
 
   const handlePost = async () => {
     if (!content.trim()) {
@@ -58,6 +106,7 @@ export function EmotionFeed() {
       });
 
       setContent("");
+      await fetchPosts();
     } catch (error) {
       console.error('Error creating post:', error);
       toast({
@@ -100,7 +149,12 @@ export function EmotionFeed() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Posts</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Recent Posts</CardTitle>
+            <Button variant="outline" size="icon" onClick={handleRefresh} disabled={isRefreshing}>
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -123,11 +177,11 @@ export function EmotionFeed() {
                   </Badge>
                 </div>
                 <div className="flex gap-6 text-sm text-muted-foreground">
-                  <button className="flex items-center gap-1 hover:text-foreground">
+                  <button className="flex items-center gap-1 hover:text-foreground transition-colors" onClick={() => handleLike('sample1')}>
                     <Heart className="h-4 w-4" />
                     <span>24</span>
                   </button>
-                  <button className="flex items-center gap-1 hover:text-foreground">
+                  <button className="flex items-center gap-1 hover:text-foreground transition-colors">
                     <MessageCircle className="h-4 w-4" />
                     <span>5</span>
                   </button>
@@ -158,11 +212,11 @@ export function EmotionFeed() {
                   </Badge>
                 </div>
                 <div className="flex gap-6 text-sm text-muted-foreground">
-                  <button className="flex items-center gap-1 hover:text-foreground">
+                  <button className="flex items-center gap-1 hover:text-foreground transition-colors" onClick={() => handleLike('sample2')}>
                     <Heart className="h-4 w-4" />
                     <span>89</span>
                   </button>
-                  <button className="flex items-center gap-1 hover:text-foreground">
+                  <button className="flex items-center gap-1 hover:text-foreground transition-colors">
                     <MessageCircle className="h-4 w-4" />
                     <span>12</span>
                   </button>
