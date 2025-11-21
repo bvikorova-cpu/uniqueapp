@@ -87,14 +87,46 @@ const Coffee = () => {
 
       {/* Features Section */}
       <section className="container mx-auto px-4 py-16">
-        <h2 className="text-3xl font-bold text-center mb-12">Features</h2>
+        <h2 className="text-3xl font-bold text-center mb-4">Features</h2>
+        <p className="text-center text-muted-foreground max-w-2xl mx-auto mb-12">
+          Join our vibrant coffee community and discover new ways to enjoy your favorite beverage
+        </p>
         <div className="grid md:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <Card key={index} className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate(feature.path)}>
               <CardHeader>
                 <feature.icon className="h-12 w-12 text-primary mb-4" />
                 <CardTitle>{feature.title}</CardTitle>
-                <CardDescription>{feature.description}</CardDescription>
+                <CardDescription className="mb-4">{feature.description}</CardDescription>
+                <div className="text-xs text-muted-foreground space-y-1 pt-2 border-t">
+                  {index === 0 && (
+                    <>
+                      <p>• Visit cafes and log your visits</p>
+                      <p>• Rate coffee quality (1-5 stars)</p>
+                      <p>• Upload photos of your drinks</p>
+                      <p>• Write detailed reviews</p>
+                      <p>• Earn points for every check-in</p>
+                    </>
+                  )}
+                  {index === 1 && (
+                    <>
+                      <p>• Answer coffee preference quiz</p>
+                      <p>• AI matches you with similar users</p>
+                      <p>• View match compatibility scores</p>
+                      <p>• Send coffee meetup invitations</p>
+                      <p>• Chat and plan cafe visits together</p>
+                    </>
+                  )}
+                  {index === 2 && (
+                    <>
+                      <p>• Compete on global leaderboard</p>
+                      <p>• Unlock achievement badges</p>
+                      <p>• Track your coffee statistics</p>
+                      <p>• Compare with other members</p>
+                      <p>• Earn rewards for activity</p>
+                    </>
+                  )}
+                </div>
               </CardHeader>
               <CardContent>
                 <Button variant="ghost" className="w-full">
