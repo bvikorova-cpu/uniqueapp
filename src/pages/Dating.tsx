@@ -373,6 +373,26 @@ const Dating = () => {
         .maybeSingle();
 
       if (data) {
+        // Create notification for both users
+        await supabase
+          .from("notifications")
+          .insert([
+            {
+              user_id: currentCard.user_id,
+              type: "dating_match",
+              title: "🎉 New Match!",
+              message: `You matched with ${currentProfile?.display_name || "someone"}!`,
+              related_id: data.id,
+            },
+            {
+              user_id: user.id,
+              type: "dating_match",
+              title: "🎉 New Match!",
+              message: `You matched with ${currentCard.display_name}!`,
+              related_id: data.id,
+            }
+          ]);
+
         toast({
           title: "🎉 It's a Match!",
           description: `You matched with ${currentCard.display_name}!`,
@@ -386,6 +406,10 @@ const Dating = () => {
 
   const handleSendMessage = async () => {
     if (!selectedMatch || !newMessage.trim()) return;
+
+    const otherId = selectedMatch.user1_id === user.id 
+      ? selectedMatch.user2_id 
+      : selectedMatch.user1_id;
 
     const { error } = await supabase
       .from("dating_messages")
@@ -402,6 +426,17 @@ const Dating = () => {
         variant: "destructive",
       });
     } else {
+      // Create notification for receiver
+      await supabase
+        .from("notifications")
+        .insert([{
+          user_id: otherId,
+          type: "dating_message",
+          title: "New Message 💌",
+          message: `${currentProfile?.display_name || "Someone"} sent you a message`,
+          related_id: selectedMatch.id,
+        }]);
+
       setNewMessage("");
       await loadMessages(selectedMatch.id);
     }
@@ -630,6 +665,8 @@ const Dating = () => {
       ? selectedMatch.user2_id 
       : selectedMatch.user1_id;
 
+    const gift = availableGifts.find(g => g.id === giftId);
+
     const { error } = await supabase
       .from("dating_sent_gifts")
       .insert([{
@@ -646,6 +683,17 @@ const Dating = () => {
         variant: "destructive",
       });
     } else {
+      // Create notification for receiver
+      await supabase
+        .from("notifications")
+        .insert([{
+          user_id: otherId,
+          type: "dating_gift",
+          title: "Gift Received 🎁",
+          message: `${currentProfile?.display_name || "Someone"} sent you ${gift?.name || "a gift"}!`,
+          related_id: selectedMatch.id,
+        }]);
+
       toast({
         title: "Gift Sent! 🎁",
         description: "Your gift has been delivered",
