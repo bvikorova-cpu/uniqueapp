@@ -47,12 +47,12 @@ const EarningsChart = ({ earnings }: EarningsChartProps) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-6">
           <h3 className="text-sm text-muted-foreground mb-1">Total Earnings</h3>
-          <p className="text-2xl font-bold">${totalEarnings.toFixed(2)}</p>
+          <p className="text-2xl font-bold">€{totalEarnings.toFixed(2)}</p>
         </Card>
 
         <Card className="p-6">
           <h3 className="text-sm text-muted-foreground mb-1">Platform Fees (20%)</h3>
-          <p className="text-2xl font-bold">${totalPlatformFees.toFixed(2)}</p>
+          <p className="text-2xl font-bold">€{totalPlatformFees.toFixed(2)}</p>
         </Card>
 
         <Card className="p-6">
@@ -70,7 +70,7 @@ const EarningsChart = ({ earnings }: EarningsChartProps) => {
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip 
-                formatter={(value: any) => `$${Number(value).toFixed(2)}`}
+                formatter={(value: any) => `€${Number(value).toFixed(2)}`}
               />
               <Line 
                 type="monotone" 
@@ -93,7 +93,7 @@ const EarningsChart = ({ earnings }: EarningsChartProps) => {
           {Object.entries(bySource).map(([source, amount]: [string, any]) => (
             <div key={source} className="flex justify-between items-center p-3 bg-muted/50 rounded">
               <span className="capitalize">{source.replace(/_/g, ' ')}</span>
-              <span className="font-semibold">${amount.toFixed(2)}</span>
+              <span className="font-semibold">€{amount.toFixed(2)}</span>
             </div>
           ))}
         </div>
@@ -111,9 +111,9 @@ const EarningsChart = ({ earnings }: EarningsChartProps) => {
                 </p>
               </div>
               <div className="text-right">
-                <p className="font-semibold">${Number(earning.net_amount).toFixed(2)}</p>
+                <p className="font-semibold">€{Number(earning.net_amount).toFixed(2)}</p>
                 <p className="text-xs text-muted-foreground">
-                  Fee: ${Number(earning.platform_fee).toFixed(2)}
+                  Fee: €{Number(earning.platform_fee).toFixed(2)}
                 </p>
               </div>
             </div>

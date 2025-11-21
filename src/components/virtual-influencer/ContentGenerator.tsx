@@ -127,7 +127,7 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
     onSuccess: (data) => {
       toast({
         title: "Content Published!",
-        description: `Earned $${data.netEarnings} with ${data.likes} likes`,
+        description: `Earned €${data.netEarnings} with ${data.likes} likes`,
       });
       
       queryClient.invalidateQueries({ queryKey: ["influencer", influencerId] });
