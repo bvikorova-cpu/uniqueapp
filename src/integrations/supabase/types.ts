@@ -1111,6 +1111,51 @@ export type Database = {
           },
         ]
       }
+      auction_withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          id: string
+          payment_details: Json
+          payment_method: string
+          processed_at: string | null
+          requested_at: string
+          seller_id: string
+          status: string
+          stripe_payout_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string
+          id?: string
+          payment_details: Json
+          payment_method: string
+          processed_at?: string | null
+          requested_at?: string
+          seller_id: string
+          status?: string
+          stripe_payout_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_details?: Json
+          payment_method?: string
+          processed_at?: string | null
+          requested_at?: string
+          seller_id?: string
+          status?: string
+          stripe_payout_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       badges: {
         Row: {
           created_at: string | null

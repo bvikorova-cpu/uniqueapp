@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CampaignWithdrawalManagement } from "@/components/fundraising/CampaignWithdrawalManagement";
 import { MusicianWithdrawalManagement } from "@/components/musician/MusicianWithdrawalManagement";
 import { ChefWithdrawalManagement } from "@/components/masterchef/ChefWithdrawalManagement";
+import { AdminAuctionWithdrawals } from "@/components/auction/AdminAuctionWithdrawals";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export default function WithdrawalRequests() {
@@ -33,15 +34,16 @@ export default function WithdrawalRequests() {
       <div className="mb-6">
         <h1 className="text-3xl font-bold">Withdrawal Management</h1>
         <p className="text-muted-foreground mt-2">
-          Review and process withdrawal requests from campaigns and musicians
+          Review and process withdrawal requests from campaigns, musicians, and auction sellers
         </p>
       </div>
 
       <Tabs defaultValue="musicians" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 max-w-2xl">
+        <TabsList className="grid w-full grid-cols-4 max-w-3xl">
           <TabsTrigger value="musicians">Musicians</TabsTrigger>
           <TabsTrigger value="chefs">MasterChefs</TabsTrigger>
           <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
+          <TabsTrigger value="auctions">Auctions</TabsTrigger>
         </TabsList>
 
         <TabsContent value="musicians" className="mt-6">
@@ -54,6 +56,10 @@ export default function WithdrawalRequests() {
 
         <TabsContent value="campaigns" className="mt-6">
           <CampaignWithdrawalManagement />
+        </TabsContent>
+
+        <TabsContent value="auctions" className="mt-6">
+          <AdminAuctionWithdrawals />
         </TabsContent>
       </Tabs>
     </div>
