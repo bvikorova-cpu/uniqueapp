@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -8,6 +8,9 @@ export const usePostEdit = () => {
 
   const editPost = useMutation({
     mutationFn: async ({ postId, newContent }: { postId: string; newContent: string }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
       // Get current post content
       const { data: post } = await supabase
         .from("posts")
@@ -19,10 +22,11 @@ export const usePostEdit = () => {
 
       // Save edit history
       await supabase
-        .from("post_edits")
+        .from("post_edit_history")
         .insert({
           post_id: postId,
           previous_content: post.content,
+          edited_by: user.id,
         });
 
       // Update post
@@ -52,4 +56,22 @@ export const usePostEdit = () => {
     editPost: editPost.mutate,
     isEditing: editPost.isPending,
   };
+};
+
+export const usePostHistory = (postId: string) => {
+  const { data: history = [], isLoading } = useQuery({
+    queryKey: ["post-history", postId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("post_edit_history")
+        .select("*")
+        .eq("post_id", postId)
+        .order("edited_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  return { history, isLoading };
 };

@@ -17329,6 +17329,38 @@ export type Database = {
         }
         Relationships: []
       }
+      post_edit_history: {
+        Row: {
+          edited_at: string | null
+          edited_by: string
+          id: string
+          post_id: string
+          previous_content: string
+        }
+        Insert: {
+          edited_at?: string | null
+          edited_by: string
+          id?: string
+          post_id: string
+          previous_content: string
+        }
+        Update: {
+          edited_at?: string | null
+          edited_by?: string
+          id?: string
+          post_id?: string
+          previous_content?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_edit_history_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_edits: {
         Row: {
           edited_at: string
@@ -17509,6 +17541,50 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "post_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_reports: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          post_id: string
+          reason: string
+          reported_by: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          post_id: string
+          reason: string
+          reported_by: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          post_id?: string
+          reason?: string
+          reported_by?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_reports_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
