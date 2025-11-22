@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSubscription } from "@/hooks/useSubscription";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { createSaleTransaction } from "@/utils/createSaleTransaction";
 
 interface BazaarItem {
   id: string;
@@ -27,6 +26,7 @@ interface BazaarItem {
   image_url: string | null;
   created_at: string;
   user_id: string;
+  is_sold: boolean;
   profiles?: {
     full_name: string | null;
   } | null;
@@ -68,13 +68,14 @@ const Bazaar = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
     const sessionId = urlParams.get('session_id');
+    const transactionId = urlParams.get('transaction_id');
 
-    if (paymentStatus === 'success' && sessionId) {
+    if (paymentStatus === 'success' && sessionId && transactionId) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         
-        const { data, error } = await supabase.functions.invoke('verify-payment', {
-          body: { session_id: sessionId },
+        const { data, error } = await supabase.functions.invoke('verify-bazaar-payment', {
+          body: { sessionId, transactionId },
           headers: session?.access_token ? {
             Authorization: `Bearer ${session.access_token}`
           } : undefined
@@ -83,8 +84,8 @@ const Bazaar = () => {
         if (error) throw error;
 
         toast({
-          title: "Payment successful!",
-          description: "Your purchase has been processed successfully.",
+          title: "Platba úspešná! 🎉",
+          description: "Tvoj nákup bol spracovaný úspešne.",
         });
 
         // Remove URL parameters
@@ -95,15 +96,15 @@ const Bazaar = () => {
       } catch (error) {
         console.error('Error verifying payment:', error);
         toast({
-          title: "Error",
-          description: "Failed to verify payment. Please contact support.",
+          title: "Chyba",
+          description: "Nepodarilo sa overiť platbu. Kontaktuj podporu.",
           variant: "destructive",
         });
       }
-    } else if (paymentStatus === 'canceled') {
+    } else if (paymentStatus === 'cancelled') {
       toast({
-        title: "Payment canceled",
-        description: "Payment was canceled.",
+        title: "Platba zrušená",
+        description: "Platba bola zrušená.",
         variant: "destructive",
       });
       window.history.replaceState({}, '', window.location.pathname);
@@ -390,38 +391,41 @@ const Bazaar = () => {
   const handleBuyItem = async () => {
     if (!selectedItem || !currentUserId) return;
 
-    try {
-      // Create transaction via secure edge function
-      const { error: transError } = await createSaleTransaction({
-        itemId: selectedItem.id,
-        itemType: 'bazaar_sale',
-        sellerId: selectedItem.user_id,
-        buyerId: currentUserId,
-        totalAmount: selectedItem.price,
-      });
-
-      if (transError) throw transError;
-
-      // Mark item as sold
-      const { error: updateError } = await supabase
-        .from('bazaar_items')
-        .update({ is_active: false })
-        .eq('id', selectedItem.id);
-
-      if (updateError) throw updateError;
-
+    if (selectedItem.is_sold) {
       toast({
-        title: "Purchase successful!",
-        description: `You paid €${selectedItem.price.toFixed(2)}`,
+        title: "Už predané",
+        description: "Táto položka už bola predaná.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { data, error } = await supabase.functions.invoke('create-bazaar-checkout', {
+        body: { itemId: selectedItem.id },
+        headers: session?.access_token ? {
+          Authorization: `Bearer ${session.access_token}`
+        } : undefined
       });
 
-      setIsDetailOpen(false);
-      loadItems();
+      if (error) throw error;
+
+      if (data?.url) {
+        // Open Stripe checkout in new tab
+        window.open(data.url, '_blank');
+        
+        toast({
+          title: "Presmerovanie na platbu",
+          description: "Otvorila sa platobná brána Stripe v novom okne.",
+        });
+      }
     } catch (error) {
       console.error('Buy item error:', error);
       toast({
-        title: "Error",
-        description: "Failed to complete purchase",
+        title: "Chyba",
+        description: "Nepodarilo sa inicializovať platbu.",
         variant: "destructive",
       });
     }
