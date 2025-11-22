@@ -200,8 +200,6 @@ import HomeDecorMarketplace from "./pages/HomeDecorMarketplace";
 import HomeDecorSubscription from "./pages/HomeDecorSubscription";
 import BrandCollaboration from "./pages/BrandCollaboration";
 import StockContentLibrary from "./pages/StockContentLibrary";
-import DigitalProductStore from "./pages/DigitalProductStore";
-import AIAvatarService from "./pages/AIAvatarService";
 import TutorialPlatform from "./pages/TutorialPlatform";
 import MonetizationIdeas from "./pages/MonetizationIdeas";
 import ShadowArena from "./pages/ShadowArena";
@@ -497,8 +495,6 @@ const App = () => (
           <Route path="/admin/sports-matches" element={<AdminSportsMatches />} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/stock-content-library" element={<StockContentLibrary />} />
-          <Route path="/digital-product-store" element={<DigitalProductStore />} />
-          <Route path="/ai-avatar-service" element={<AIAvatarService />} />
           <Route path="/tutorial-platform" element={<TutorialPlatform />} />
           <Route path="/monetization-ideas" element={<MonetizationIdeas />} />
           <Route path="/shadow-arena" element={<ShadowArena />} />
