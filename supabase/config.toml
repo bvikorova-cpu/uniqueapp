@@ -99,6 +99,12 @@ verify_jwt = true
 [functions.notify-admin-auction-withdrawal]
 verify_jwt = false
 
+[functions.process-referral-withdrawal]
+verify_jwt = false
+
+[functions.notify-admin-referral-withdrawal]
+verify_jwt = true
+
 [functions.ai-image-generation]
 verify_jwt = false
 
