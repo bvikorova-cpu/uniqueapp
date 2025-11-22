@@ -9,21 +9,21 @@ export const useReports = () => {
   const reportPost = useMutation({
     mutationFn: async ({
       postId,
-      reportType,
       reason,
+      description,
     }: {
       postId: string;
-      reportType: string;
       reason: string;
+      description?: string;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("user_reports").insert({
-        reporter_id: user.id,
-        reported_post_id: postId,
-        report_type: reportType,
+      const { error } = await supabase.from("post_reports").insert({
+        post_id: postId,
+        reported_by: user.id,
         reason,
+        description,
       });
 
       if (error) throw error;

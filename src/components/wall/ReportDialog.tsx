@@ -35,7 +35,7 @@ export const ReportDialog = ({ postId, userId, variant = "ghost" }: ReportDialog
 
     if (postId) {
       reportPost(
-        { postId, reportType, reason },
+        { postId, reason: reportType, description: reason },
         {
           onSuccess: () => {
             setOpen(false);

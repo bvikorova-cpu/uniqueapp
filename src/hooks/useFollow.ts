@@ -9,7 +9,7 @@ export const useIsFollowing = (userId: string | undefined, targetUserId: string 
       if (!userId || !targetUserId) return false;
 
       const { data, error } = await supabase
-        .from("follows")
+        .from("user_follows")
         .select("id")
         .eq("follower_id", userId)
         .eq("following_id", targetUserId)
@@ -29,8 +29,8 @@ export const useFollowCounts = (userId: string | undefined) => {
       if (!userId) return { followers: 0, following: 0 };
 
       const [followersRes, followingRes] = await Promise.all([
-        supabase.from("follows").select("id", { count: "exact" }).eq("following_id", userId),
-        supabase.from("follows").select("id", { count: "exact" }).eq("follower_id", userId),
+        supabase.from("user_follows").select("id", { count: "exact" }).eq("following_id", userId),
+        supabase.from("user_follows").select("id", { count: "exact" }).eq("follower_id", userId),
       ]);
 
       return {
@@ -49,7 +49,7 @@ export const useFollowMutation = () => {
   return useMutation({
     mutationFn: async ({ followerId, followingId }: { followerId: string; followingId: string }) => {
       const { error } = await supabase
-        .from("follows")
+        .from("user_follows")
         .insert({ follower_id: followerId, following_id: followingId });
 
       if (error) throw error;
@@ -80,7 +80,7 @@ export const useUnfollowMutation = () => {
   return useMutation({
     mutationFn: async ({ followerId, followingId }: { followerId: string; followingId: string }) => {
       const { error } = await supabase
-        .from("follows")
+        .from("user_follows")
         .delete()
         .eq("follower_id", followerId)
         .eq("following_id", followingId);
@@ -114,7 +114,7 @@ export const useFollowingPosts = (userId: string | undefined) => {
 
       // Get list of users the current user is following
       const { data: followingData, error: followingError } = await supabase
-        .from("follows")
+        .from("user_follows")
         .select("following_id")
         .eq("follower_id", userId);
 
