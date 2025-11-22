@@ -93,6 +93,12 @@ verify_jwt = true
 [functions.best-friend-customer-portal]
 verify_jwt = true
 
+[functions.process-auction-withdrawal]
+verify_jwt = true
+
+[functions.notify-admin-auction-withdrawal]
+verify_jwt = false
+
 [functions.ai-image-generation]
 verify_jwt = false
 
