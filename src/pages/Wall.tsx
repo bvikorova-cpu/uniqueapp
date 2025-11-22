@@ -17,6 +17,8 @@ import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark } from "
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
 import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
+import { StoryHighlightsBar } from "@/components/wall/StoryHighlightsBar";
+import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import { useFollowingPosts } from "@/hooks/useFollow";
@@ -593,8 +595,18 @@ const Feed = () => {
         )}
 
         <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
+          {/* Achievements Badge */}
+          <div className="flex justify-end">
+            <AchievementsBadge />
+          </div>
+
           {/* Stories Bar */}
           <StoriesBar />
+          
+          {/* Story Highlights */}
+          <Card className="p-4">
+            <StoryHighlightsBar />
+          </Card>
 
           {/* Hidden trigger for CreateStory dialog */}
           <div id="create-story-trigger" className="hidden">
