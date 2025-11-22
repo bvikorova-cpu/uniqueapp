@@ -45,9 +45,13 @@ const SubscriptionPlans = () => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-2">Choose Your Plan</h2>
-        <p className="text-muted-foreground">
+        <div className="h-8" />
+        <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
+        <p className="text-muted-foreground mb-2">
           Unlock advanced features and start creating your own escape rooms
+        </p>
+        <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+          Premium plans give you unlimited access to all rooms, AI puzzle generation, advanced creator tools, and the ability to earn from your published rooms. Educational plans include everything in Premium plus classroom management, student progress tracking, and curriculum-aligned content.
         </p>
       </div>
 

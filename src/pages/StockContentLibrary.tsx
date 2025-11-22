@@ -78,10 +78,14 @@ const StockContentLibrary = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <Library className="w-16 h-16 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-4">Stock Content Library</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Upload AI content for licensing. You earn 70% per download.
+          <Library className="w-16 h-16 mx-auto mb-8" />
+          <div className="h-8" />
+          <h1 className="text-4xl font-bold mb-6">Stock Content Library</h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
+            A marketplace for AI-generated content licensing. Upload your digital creations and earn passive income every time someone downloads your work.
+          </p>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            <strong>How it works:</strong> Upload your AI-generated images, graphics, templates, or digital assets. Set your price in euros. When someone purchases a license to use your content, you earn 70% of the sale price (30% platform fee). Track your earnings and downloads in real-time. All content must be original or properly licensed. Perfect for creators looking to monetize their AI art portfolio.
           </p>
         </div>
 
