@@ -17,8 +17,14 @@ import {
   Video as VideoIcon,
   X,
   Loader2,
-  Bookmark
+  Bookmark,
+  Flag,
+  Pin
 } from "lucide-react";
+import { ReactionPicker } from "@/components/wall/ReactionPicker";
+import { ReportDialog } from "@/components/wall/ReportDialog";
+import { PinButton } from "@/components/wall/PinButton";
+import { FollowButton } from "@/components/wall/FollowButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Popover,
@@ -724,15 +730,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
         {/* Interaction Buttons */}
         <div className="flex items-center gap-2 pt-4 border-t">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLike}
-            className="gap-1.5 flex-1 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors"
-          >
-            <Heart className={`h-4 w-4 transition-all ${liked ? "fill-red-500 text-red-500 scale-110" : ""}`} />
-            <span className="text-xs font-medium">{likesCount}</span>
-          </Button>
+          <ReactionPicker postId={post.id} />
 
           <Button
             variant="ghost"
@@ -766,145 +764,19 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           >
             <Bookmark className={`h-4 w-4 transition-all ${saved ? "fill-purple-500 text-purple-500" : ""}`} />
           </Button>
+        </div>
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="gap-1.5 flex-1 hover:bg-yellow-50 dark:hover:bg-yellow-950/20 transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <Smile className="h-4 w-4" />
-                {selectedReaction && (
-                  <span className="text-sm leading-none">{allReactions.find(r => r.type === selectedReaction)?.emoji}</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent 
-              className="w-[340px] p-3 bg-popover" 
-              onClick={(e) => e.stopPropagation()}
-              align="center"
-              side="top"
-              sideOffset={10}
-              collisionPadding={20}
-            >
-              <Tabs defaultValue="all" className="w-full">
-                <TabsList className="grid w-full grid-cols-5 mb-3 h-9">
-                  <TabsTrigger value="all" className="text-xs px-2">
-                    All
-                  </TabsTrigger>
-                  <TabsTrigger value="positive" className="text-lg px-2">
-                    😊
-                  </TabsTrigger>
-                  <TabsTrigger value="funny" className="text-lg px-2">
-                    😂
-                  </TabsTrigger>
-                  <TabsTrigger value="negative" className="text-lg px-2">
-                    😢
-                  </TabsTrigger>
-                  <TabsTrigger value="special" className="text-lg px-2">
-                    ⚡
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="all" className="mt-0">
-                  <div className="grid grid-cols-7 gap-1 max-h-[200px] overflow-y-auto">
-                    {allReactions.map((reaction) => (
-                      <Button
-                        key={reaction.type}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleReaction(reaction.type)}
-                        className={`text-xl p-2 hover:scale-125 transition-all ${
-                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
-                        }`}
-                        title={reaction.label}
-                      >
-                        {reaction.emoji}
-                      </Button>
-                    ))}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="positive" className="mt-0">
-                  <div className="grid grid-cols-7 gap-1">
-                    {reactions.positive.map((reaction) => (
-                      <Button
-                        key={reaction.type}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleReaction(reaction.type)}
-                        className={`text-xl p-2 hover:scale-125 transition-all ${
-                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
-                        }`}
-                        title={reaction.label}
-                      >
-                        {reaction.emoji}
-                      </Button>
-                    ))}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="funny" className="mt-0">
-                  <div className="grid grid-cols-7 gap-1">
-                    {reactions.funny.map((reaction) => (
-                      <Button
-                        key={reaction.type}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleReaction(reaction.type)}
-                        className={`text-xl p-2 hover:scale-125 transition-all ${
-                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
-                        }`}
-                        title={reaction.label}
-                      >
-                        {reaction.emoji}
-                      </Button>
-                    ))}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="negative" className="mt-0">
-                  <div className="grid grid-cols-7 gap-1">
-                    {reactions.negative.map((reaction) => (
-                      <Button
-                        key={reaction.type}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleReaction(reaction.type)}
-                        className={`text-xl p-2 hover:scale-125 transition-all ${
-                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
-                        }`}
-                        title={reaction.label}
-                      >
-                        {reaction.emoji}
-                      </Button>
-                    ))}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="special" className="mt-0">
-                  <div className="grid grid-cols-7 gap-1">
-                    {reactions.special.map((reaction) => (
-                      <Button
-                        key={reaction.type}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleReaction(reaction.type)}
-                        className={`text-xl p-2 hover:scale-125 transition-all ${
-                          selectedReaction === reaction.type ? "bg-accent scale-110 ring-2 ring-primary" : ""
-                        }`}
-                        title={reaction.label}
-                      >
-                        {reaction.emoji}
-                      </Button>
-                    ))}
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </PopoverContent>
-          </Popover>
+        {/* Additional Actions */}
+        <div className="flex items-center gap-2 pt-2 border-t mt-2">
+          {currentUserId !== post.user_id && (
+            <>
+              <FollowButton userId={post.user_id} variant="ghost" size="sm" />
+              <ReportDialog postId={post.id} variant="ghost" />
+            </>
+          )}
+          {currentUserId === post.user_id && (
+            <PinButton postId={post.id} userId={post.user_id} />
+          )}
         </div>
       </div>
 

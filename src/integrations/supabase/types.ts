@@ -16572,6 +16572,27 @@ export type Database = {
         }
         Relationships: []
       }
+      pinned_posts: {
+        Row: {
+          id: string
+          pinned_at: string | null
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          pinned_at?: string | null
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          pinned_at?: string | null
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       plant_care_schedules: {
         Row: {
           care_type: string
@@ -23135,6 +23156,48 @@ export type Database = {
           total_xp?: number | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_reports: {
+        Row: {
+          created_at: string | null
+          id: string
+          reason: string
+          report_type: string
+          reported_comment_id: string | null
+          reported_post_id: string | null
+          reported_user_id: string | null
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          reason: string
+          report_type: string
+          reported_comment_id?: string | null
+          reported_post_id?: string | null
+          reported_user_id?: string | null
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          reason?: string
+          report_type?: string
+          reported_comment_id?: string | null
+          reported_post_id?: string | null
+          reported_user_id?: string | null
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
         }
         Relationships: []
       }
