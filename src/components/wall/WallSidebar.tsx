@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NotificationBell } from "./NotificationBell";
+import { PrivacySettingsDialog } from "./PrivacySettingsDialog";
+import { MediaGalleryDialog } from "./MediaGalleryDialog";
 
 interface WallSidebarProps {
   currentPath?: string;
@@ -107,6 +109,14 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
               <span className="font-medium text-sm">{item.label}</span>
             </Button>
           ))}
+        </div>
+
+        <div className="h-px bg-border my-2" />
+
+        {/* Quick Actions */}
+        <div className="space-y-2">
+          <PrivacySettingsDialog />
+          <MediaGalleryDialog />
         </div>
 
         <div className="h-px bg-border my-2" />
