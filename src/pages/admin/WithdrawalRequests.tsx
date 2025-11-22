@@ -5,6 +5,7 @@ import { CampaignWithdrawalManagement } from "@/components/fundraising/CampaignW
 import { MusicianWithdrawalManagement } from "@/components/musician/MusicianWithdrawalManagement";
 import { ChefWithdrawalManagement } from "@/components/masterchef/ChefWithdrawalManagement";
 import { AdminAuctionWithdrawals } from "@/components/auction/AdminAuctionWithdrawals";
+import { AdminReferralWithdrawals } from "@/components/referral/AdminReferralWithdrawals";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 export default function WithdrawalRequests() {
@@ -39,11 +40,12 @@ export default function WithdrawalRequests() {
       </div>
 
       <Tabs defaultValue="musicians" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 max-w-3xl">
+        <TabsList className="grid w-full grid-cols-5 max-w-4xl">
           <TabsTrigger value="musicians">Musicians</TabsTrigger>
           <TabsTrigger value="chefs">MasterChefs</TabsTrigger>
           <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
           <TabsTrigger value="auctions">Auctions</TabsTrigger>
+          <TabsTrigger value="referrals">Referrals</TabsTrigger>
         </TabsList>
 
         <TabsContent value="musicians" className="mt-6">
@@ -60,6 +62,10 @@ export default function WithdrawalRequests() {
 
         <TabsContent value="auctions" className="mt-6">
           <AdminAuctionWithdrawals />
+        </TabsContent>
+
+        <TabsContent value="referrals" className="mt-6">
+          <AdminReferralWithdrawals />
         </TabsContent>
       </Tabs>
     </div>

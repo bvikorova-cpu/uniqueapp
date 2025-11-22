@@ -18401,6 +18401,48 @@ export type Database = {
           },
         ]
       }
+      referral_withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          id: string
+          payment_details: Json
+          payment_method: string
+          processed_at: string | null
+          referrer_id: string
+          requested_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string
+          id?: string
+          payment_details: Json
+          payment_method: string
+          processed_at?: string | null
+          referrer_id: string
+          requested_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          id?: string
+          payment_details?: Json
+          payment_method?: string
+          processed_at?: string | null
+          referrer_id?: string
+          requested_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reincarnation_plans: {
         Row: {
           created_at: string | null

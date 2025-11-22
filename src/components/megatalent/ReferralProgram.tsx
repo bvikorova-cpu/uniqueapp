@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, Users, DollarSign } from "lucide-react";
+import { Copy, Users, DollarSign, Share2, Facebook, Twitter, Mail } from "lucide-react";
 
 export const ReferralProgram = () => {
   const [referralCode, setReferralCode] = useState<string>("");
@@ -77,6 +77,31 @@ export const ReferralProgram = () => {
     });
   };
 
+  const shareReferralCode = (platform: string) => {
+    const text = `Join me on MegaTalent Contest! Use my referral code: ${referralCode}`;
+    const url = `${window.location.origin}?ref=${referralCode}`;
+    
+    let shareUrl = "";
+    switch (platform) {
+      case "facebook":
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+        break;
+      case "twitter":
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+        break;
+      case "whatsapp":
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`;
+        break;
+      case "email":
+        shareUrl = `mailto:?subject=${encodeURIComponent("Join MegaTalent Contest")}&body=${encodeURIComponent(text + "\n\n" + url)}`;
+        break;
+    }
+    
+    if (shareUrl) {
+      window.open(shareUrl, "_blank", "width=600,height=400");
+    }
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -96,14 +121,50 @@ export const ReferralProgram = () => {
 
         <div className="bg-muted p-4 rounded-lg mb-6">
           <p className="text-sm text-muted-foreground mb-2">Your unique code:</p>
-          <div className="flex items-center gap-2">
-            <code className="text-2xl font-bold tracking-wider">{referralCode}</code>
+          <div className="flex items-center gap-2 mb-3">
+            <code className="text-2xl font-bold tracking-wider flex-1">{referralCode}</code>
             <Button
               variant="outline"
               size="icon"
               onClick={copyReferralCode}
             >
               <Copy className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className="flex gap-2">
+            <p className="text-sm text-muted-foreground mr-2">Share:</p>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => shareReferralCode("facebook")}
+              className="h-8 w-8 p-0"
+            >
+              <Facebook className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => shareReferralCode("twitter")}
+              className="h-8 w-8 p-0"
+            >
+              <Twitter className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => shareReferralCode("whatsapp")}
+              className="h-8 w-8 p-0"
+            >
+              <Share2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => shareReferralCode("email")}
+              className="h-8 w-8 p-0"
+            >
+              <Mail className="h-4 w-4" />
             </Button>
           </div>
         </div>
