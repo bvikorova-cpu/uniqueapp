@@ -68,7 +68,7 @@ const SubscriptionPlans = () => {
               )}
 
               <CardHeader>
-                <div className="h-20" />
+                <div className="h-32" />
                 <div className="flex items-center gap-2 mb-4">
                   <Icon className={`h-6 w-6 ${plan.color}`} />
                   <CardTitle>{plan.name}</CardTitle>
@@ -104,7 +104,7 @@ const SubscriptionPlans = () => {
 
       <Card className="bg-gradient-subtle">
         <CardHeader>
-          <div className="h-16" />
+          <div className="h-24" />
           <CardTitle>Creator Earnings</CardTitle>
           <CardDescription>
             Make money by creating escape rooms

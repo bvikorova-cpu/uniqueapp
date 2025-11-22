@@ -101,8 +101,6 @@ const Home = () => {
     { name: "Brand Collaboration", path: "/brand-collaboration", keywords: ["brand", "collaboration", "sponsored", "značka", "spolupráca"] },
     { name: "Custom Commissions", path: "/custom-commissions", keywords: ["commission", "custom", "service", "zákazka", "služba"] },
     { name: "Stock Content Library", path: "/stock-content-library", keywords: ["stock", "content", "library", "licensing", "licencia", "knižnica"] },
-    { name: "Digital Product Store", path: "/digital-product-store", keywords: ["digital", "product", "store", "presets", "filters", "predaj"] },
-    { name: "AI Avatar Service", path: "/ai-avatar-service", keywords: ["avatar", "ai", "professional", "profile", "picture", "profilová"] },
     { name: "Tutorial Platform", path: "/tutorial-platform", keywords: ["tutorial", "course", "teaching", "kurz", "výučba", "vzdelávanie"] },
   ];
 
@@ -892,34 +890,6 @@ const Home = () => {
                 <CardContent>
                   <p className="text-muted-foreground">
                     Upload AI content for licensing, earn 70% per download
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link to="/digital-product-store">
-              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
-                <CardHeader>
-                  <ShoppingBag className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <CardTitle>Digital Product Store 💎</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Sell presets, filters, templates - earn 85% per sale
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link to="/ai-avatar-service">
-              <Card className="text-center hover:shadow-glow transition-all duration-300 hover:scale-105 h-full cursor-pointer">
-                <CardHeader>
-                  <UserPlus className="h-12 w-12 text-accent mx-auto mb-4" />
-                  <CardTitle>AI Avatar Creation Service 👤</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Create professional avatars for clients, earn 75%
                   </p>
                 </CardContent>
               </Card>

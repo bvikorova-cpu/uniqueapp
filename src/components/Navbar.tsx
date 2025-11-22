@@ -254,8 +254,6 @@ const Navbar = () => {
     { path: "/virtual-influencer-agency", label: "Virtual Influencer Agency", icon: Users },
     { path: "/brand-collaboration", label: "Brand Collaboration Hub", icon: Briefcase },
     { path: "/stock-content-library", label: "Stock Content Library", icon: ImageIcon },
-    { path: "/digital-product-store", label: "Digital Product Store", icon: ShoppingBag },
-    { path: "/ai-avatar-service", label: "AI Avatar Creation Service", icon: User },
     { path: "/tutorial-platform", label: "Tutorial & Course Platform", icon: GraduationCap },
     { path: "/virtual-escape-room", label: "Virtual Escape Room", icon: Lock },
     { path: "/marketplace", label: t('navbar.marketplace_skills'), icon: Briefcase },
