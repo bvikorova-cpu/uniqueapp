@@ -188,15 +188,36 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
     }
   };
 
-  const handlePlayRoom = (roomId: string, price: number) => {
-    if (price > 0) {
-      toast({
-        title: "Payment Required",
-        description: `This room costs €${price}. Payment integration coming soon!`
+  const handlePlayRoom = async (roomId: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to play escape rooms",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-escape-room-checkout', {
+        body: { roomId }
       });
-      return;
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error("Error creating checkout:", error);
+      toast({
+        title: "Error",
+        description: "Failed to start checkout process",
+        variant: "destructive"
+      });
     }
-    onSelectRoom(roomId);
   };
 
   return (
@@ -269,14 +290,10 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    {room.price > 0 ? (
-                      <span className="text-lg font-bold">€{room.price}</span>
-                    ) : (
-                      <Badge variant="secondary">Free</Badge>
-                    )}
+                    <span className="text-lg font-bold">€10</span>
                   </div>
-                  <Button onClick={() => handlePlayRoom(room.id, room.price)}>
-                    {room.price > 0 ? "Buy & Play" : "Play Now"}
+                  <Button onClick={() => handlePlayRoom(room.id)}>
+                    Buy & Play
                   </Button>
                 </div>
                 
