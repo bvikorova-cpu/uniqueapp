@@ -561,12 +561,12 @@ const Feed = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-gradient-to-br from-background via-background to-accent/5 pt-20">
       {/* Left Sidebar */}
       <WallSidebar currentPath="/wall" />
 
       {/* Main Feed */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto pt-4">
         {/* Pull-to-refresh indicator */}
         {pullToRefresh.pulling && (
           <div 

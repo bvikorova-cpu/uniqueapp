@@ -60,40 +60,55 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
   ];
 
   return (
-    <div className="w-80 h-screen sticky top-0 border-r bg-card/50 backdrop-blur-sm overflow-y-auto pb-20">
-      <div className="p-4 space-y-2">
+    <div className="w-80 h-screen sticky top-16 border-r bg-card/30 backdrop-blur-xl overflow-y-auto pb-20">
+      <div className="p-4 pt-6 space-y-2">
         {/* User Profile Quick Link */}
         <Button
           variant="ghost"
-          className="w-full justify-start gap-3 h-auto py-3 hover:bg-accent/50"
+          className="w-full justify-start gap-3 h-auto py-3 hover:bg-primary/10 rounded-xl group transition-all"
           onClick={() => navigate(`/profile/${user?.id}`)}
         >
-          <Avatar className="h-9 w-9">
-            <AvatarImage src={profile?.avatar_url || undefined} />
-            <AvatarFallback>{profile?.full_name?.[0] || "U"}</AvatarFallback>
-          </Avatar>
-          <span className="font-semibold text-sm">{profile?.full_name || "User"}</span>
+          <div className="relative">
+            <Avatar className="h-10 w-10 ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all">
+              <AvatarImage src={profile?.avatar_url || undefined} />
+              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
+                {profile?.full_name?.[0] || "U"}
+              </AvatarFallback>
+            </Avatar>
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="font-semibold text-sm">{profile?.full_name || "User"}</p>
+            <p className="text-xs text-muted-foreground">View profile</p>
+          </div>
         </Button>
 
-        <div className="h-px bg-border my-2" />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent my-3" />
 
         {/* Main Navigation */}
-        {menuItems.map((item) => (
-          <Button
-            key={item.path}
-            variant="ghost"
-            className={cn(
-              "w-full justify-start gap-3 h-auto py-3 hover:bg-accent/50 transition-colors",
-              currentPath === item.path && "bg-accent"
-            )}
-            onClick={() => navigate(item.path)}
-          >
-            <div className={cn("p-2 rounded-full bg-accent/50", item.color)}>
-              <item.icon className="h-5 w-5" />
-            </div>
-            <span className="font-medium text-sm">{item.label}</span>
-          </Button>
-        ))}
+        <div className="space-y-1">
+          {menuItems.map((item) => (
+            <Button
+              key={item.path}
+              variant="ghost"
+              className={cn(
+                "w-full justify-start gap-3 h-auto py-3 hover:bg-primary/5 rounded-xl transition-all group",
+                currentPath === item.path && "bg-primary/10 shadow-sm"
+              )}
+              onClick={() => navigate(item.path)}
+            >
+              <div className={cn(
+                "p-2.5 rounded-xl bg-gradient-to-br transition-all group-hover:scale-110",
+                currentPath === item.path 
+                  ? "from-primary/20 to-primary/10 shadow-sm" 
+                  : "from-accent/50 to-accent/30"
+              )}>
+                <item.icon className={cn("h-5 w-5", item.color)} />
+              </div>
+              <span className="font-medium text-sm">{item.label}</span>
+            </Button>
+          ))}
+        </div>
 
         <div className="h-px bg-border my-2" />
 

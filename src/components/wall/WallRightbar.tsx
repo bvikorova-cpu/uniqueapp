@@ -77,19 +77,22 @@ export function WallRightbar() {
   });
 
   return (
-    <div className="w-80 h-screen sticky top-0 p-4 space-y-4 overflow-y-auto pb-20">
-      {/* Sponsored */}
+    <div className="w-80 h-screen sticky top-16 p-4 pt-6 space-y-4 overflow-y-auto pb-20">
+      {/* Suggested */}
       <div>
-        <h3 className="font-semibold text-sm text-muted-foreground mb-3">Sponsored</h3>
-        <Card className="p-3 hover:bg-accent/50 cursor-pointer transition-colors">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-4 bg-primary rounded-full" />
+          <h3 className="font-semibold text-sm">Trending Topics</h3>
+        </div>
+        <Card className="p-4 hover:bg-accent/30 cursor-pointer transition-all rounded-xl bg-gradient-to-br from-card/80 to-card/50 border-border/50">
           <div className="flex gap-3">
-            <div className="w-24 h-24 rounded-lg bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-              <TrendingUp className="h-8 w-8 text-primary" />
+            <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-sm">
+              <TrendingUp className="h-7 w-7 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-sm">Grow Your Business</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Start reaching more customers today
+              <p className="font-semibold text-sm mb-1">What's Popular</p>
+              <p className="text-xs text-muted-foreground">
+                Discover trending content
               </p>
             </div>
           </div>
@@ -127,21 +130,26 @@ export function WallRightbar() {
 
       {/* Online Friends */}
       <div>
-        <h3 className="font-semibold text-sm mb-3">Contacts</h3>
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-1 h-4 bg-green-500 rounded-full" />
+          <h3 className="font-semibold text-sm">Active Now</h3>
+        </div>
         <div className="space-y-1">
           {onlineFriends.map((friend) => (
             <Button
               key={friend.id}
               variant="ghost"
-              className="w-full justify-start gap-3 h-auto py-2 hover:bg-accent/50"
+              className="w-full justify-start gap-3 h-auto py-2.5 hover:bg-accent/30 rounded-xl transition-all group"
               onClick={() => navigate(`/profile/${friend.id}`)}
             >
               <div className="relative">
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-9 w-9 ring-2 ring-green-500/20 group-hover:ring-green-500/40 transition-all">
                   <AvatarImage src={friend.avatar_url || undefined} />
-                  <AvatarFallback>{friend.full_name?.[0]}</AvatarFallback>
+                  <AvatarFallback className="bg-gradient-to-br from-accent/50 to-accent/30">
+                    {friend.full_name?.[0]}
+                  </AvatarFallback>
                 </Avatar>
-                <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-background" />
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background shadow-sm" />
               </div>
               <span className="text-sm font-medium">{friend.full_name}</span>
             </Button>
