@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +14,10 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark } from "lucide-react";
+import { WallSidebar } from "@/components/wall/WallSidebar";
+import { WallRightbar } from "@/components/wall/WallRightbar";
+import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
+import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import { useFollowingPosts } from "@/hooks/useFollow";
 
