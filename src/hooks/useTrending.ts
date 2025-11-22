@@ -29,3 +29,27 @@ export const useTrending = () => {
     isLoading,
   };
 };
+
+export const useTrendingPosts = () => {
+  const { data: trendingPosts = [], isLoading } = useQuery({
+    queryKey: ["trending-posts"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("trending_posts")
+        .select(`
+          *,
+          posts (*)
+        `)
+        .order("trending_score", { ascending: false })
+        .limit(20);
+
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  return {
+    trendingPosts,
+    isLoading,
+  };
+};
