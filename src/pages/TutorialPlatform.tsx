@@ -126,10 +126,14 @@ const TutorialPlatform = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <GraduationCap className="w-16 h-16 mx-auto mb-4 text-primary" />
-          <h1 className="text-4xl font-bold mb-4">Tutorial & Course Platform</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Create courses and tutorials. Earn 70% of revenue from each sale.
+          <GraduationCap className="w-16 h-16 mx-auto mb-8" />
+          <div className="h-8" />
+          <h1 className="text-4xl font-bold mb-6">Tutorial & Course Platform</h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
+            Share your expertise and earn money by creating educational courses and tutorials. Build a learning business with our comprehensive course creation tools.
+          </p>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            <strong>How it works:</strong> Create structured courses with video lessons, quizzes, and downloadable resources. Set your own price in euros. Students enroll and pay to access your content - you earn 70% per enrollment (30% platform fee). Track student progress, engagement, and course performance. Build your reputation as an educator and grow your audience. Courses can be free or paid. Perfect for professionals, educators, and experts wanting to monetize their knowledge.
           </p>
         </div>
 

@@ -40,11 +40,16 @@ const VirtualEscapeRoom = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+          <Lock className="w-16 h-16 mx-auto mb-8 text-primary" />
+          <div className="h-8" />
+          <h1 className="text-4xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
             Virtual Escape Rooms
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Challenge yourself or your team with immersive online escape rooms. Solve puzzles, race against time, and compete on the leaderboard!
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
+            Immersive online escape room experiences for individuals and teams. Test your problem-solving skills, collaborate with friends, or build team spirit.
+          </p>
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+            <strong>How it works:</strong> Browse available escape rooms by theme and difficulty. Pay €10 to unlock any room. Solve puzzles, find clues, and race against the clock. Play solo or invite your team. Premium subscription (€10/month) unlocks all rooms, advanced puzzle creator with AI-generated content, and creator tools to build and publish your own rooms. Educational plan (€20/month per class) includes student tracking and curriculum-aligned content. Creators earn 70% revenue from plays of their published rooms.
           </p>
         </div>
 
