@@ -364,13 +364,13 @@ const Marketplace = () => {
               </div>
 
               <div className="text-center space-y-4">
-                <p className="text-3xl font-bold text-primary">2 EUR / mesiac</p>
+                <p className="text-3xl font-bold text-primary">€2 / month</p>
                 <Button 
                   onClick={handleSubscribe}
                   size="lg" 
                   className="w-full max-w-md"
                 >
-                  Activate subscription
+                  Activate Subscription
                 </Button>
                 <p className="text-sm text-muted-foreground">
                   Payment gateway will be connected later
