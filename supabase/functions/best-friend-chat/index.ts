@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +12,56 @@ serve(async (req) => {
   }
 
   try {
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Missing authorization header" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { messages } = await req.json();
+
+    // Check subscription status
+    const { data: subData } = await supabase
+      .from('best_friend_subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!subData) {
+      await supabase
+        .from('best_friend_subscriptions')
+        .insert({ user_id: user.id, free_messages_used: 0 });
+    }
+
+    const isSubscribed = subData?.subscription_status === 'active' && 
+                        new Date(subData?.subscription_end) > new Date();
+    const freeMessagesUsed = subData?.free_messages_used || 0;
+
+    if (!isSubscribed && freeMessagesUsed >= 5) {
+      return new Response(JSON.stringify({ 
+        error: "Free message limit reached. Please subscribe to continue.",
+        requiresSubscription: true 
+      }), {
+        status: 402,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     if (!LOVABLE_API_KEY) {
@@ -69,7 +119,74 @@ Be authentic, sincere, and genuinely interested in how the user is doing. Rememb
       throw new Error("AI gateway error");
     }
 
-    return new Response(response.body, {
+    // Save user message to history
+    const userMessage = messages[messages.length - 1];
+    if (userMessage?.role === 'user') {
+      await supabase.from('best_friend_conversations').insert({
+        user_id: user.id,
+        role: 'user',
+        content: userMessage.content,
+      });
+
+      // Update free messages count
+      if (!isSubscribed) {
+        await supabase
+          .from('best_friend_subscriptions')
+          .update({ free_messages_used: (freeMessagesUsed + 1) })
+          .eq('user_id', user.id);
+      }
+    }
+
+    // Stream AI response and save it
+    const reader = response.body?.getReader();
+    const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    let assistantContent = "";
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        if (!reader) return;
+        
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            controller.enqueue(encoder.encode(chunk));
+
+            // Extract content from SSE for saving
+            const lines = chunk.split('\n');
+            for (const line of lines) {
+              if (line.startsWith('data: ') && !line.includes('[DONE]')) {
+                try {
+                  const data = JSON.parse(line.slice(6));
+                  const content = data.choices?.[0]?.delta?.content;
+                  if (content) assistantContent += content;
+                } catch (e) {
+                  // Ignore JSON parse errors for partial chunks
+                }
+              }
+            }
+          }
+
+          // Save assistant message to history
+          if (assistantContent) {
+            await supabase.from('best_friend_conversations').insert({
+              user_id: user.id,
+              role: 'assistant',
+              content: assistantContent,
+            });
+          }
+
+          controller.close();
+        } catch (err) {
+          controller.error(err);
+        }
+      },
+    });
+
+    return new Response(stream, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {

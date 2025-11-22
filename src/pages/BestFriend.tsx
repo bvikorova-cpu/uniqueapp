@@ -4,23 +4,74 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Heart, Sparkles } from "lucide-react";
+import { Send, Heart, Sparkles, CreditCard, Crown } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useBestFriendSubscription } from "@/hooks/useBestFriendSubscription";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const CHAT_URL = `https://jufrdzeonywluwutvyxz.supabase.co/functions/v1/best-friend-chat`;
 
 type Message = { role: "user" | "assistant"; content: string };
 
 const BestFriend = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Hi! I'm here for you. How are you? You can tell me anything that's bothering you or makes you happy. 😊"
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { subscription, refresh: refreshSubscription, createCheckout, manageSubscription } = useBestFriendSubscription();
+
+  // Load chat history
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  const loadHistory = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setMessages([{
+          role: "assistant",
+          content: "Hi! I'm here for you. How are you? You can tell me anything that's bothering you or makes you happy. 😊"
+        }]);
+        setLoadingHistory(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('best_friend_conversations')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setMessages(data.map(msg => ({
+          role: msg.role as "user" | "assistant",
+          content: msg.content
+        })));
+      } else {
+        setMessages([{
+          role: "assistant",
+          content: "Hi! I'm here for you. How are you? You can tell me anything that's bothering you or makes you happy. 😊"
+        }]);
+      }
+    } catch (error) {
+      console.error("Error loading history:", error);
+      toast.error("Failed to load chat history");
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -32,19 +83,39 @@ const BestFriend = () => {
     setIsLoading(true);
     
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast.error("Please sign in to continue");
+        setIsLoading(false);
+        return;
+      }
+
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZnJkemVvbnl3bHV3dXR2eXh6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkxMzU0MTgsImV4cCI6MjA3NDcxMTQxOH0.UOe-_WQoTeBGFmnezRHRcjFJaJd71a7rYlurDkI6h4Q`,
+          Authorization: `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({ 
           messages: [...messages, { role: "user", content: userMessage }]
         }),
       });
 
-      if (!response.ok || !response.body) {
+      if (!response.ok) {
+        if (response.status === 402) {
+          const data = await response.json();
+          if (data.requiresSubscription) {
+            setShowSubscriptionDialog(true);
+            setMessages(prev => prev.slice(0, -1));
+            setIsLoading(false);
+            return;
+          }
+        }
         throw new Error("Failed to start stream");
+      }
+
+      if (!response.body) {
+        throw new Error("No response body");
       }
 
       const reader = response.body.getReader();
@@ -98,6 +169,16 @@ const BestFriend = () => {
       setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
+      refreshSubscription();
+    }
+  };
+
+  const handleSubscribe = async () => {
+    try {
+      await createCheckout();
+      toast.success("Opening checkout...");
+    } catch (error) {
+      toast.error("Failed to create checkout");
     }
   };
 
@@ -118,6 +199,19 @@ const BestFriend = () => {
     }
   };
 
+  if (loadingHistory || subscription.loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-8 flex items-center justify-center">
+        <div className="text-center">
+          <Heart className="w-12 h-12 text-destructive animate-pulse mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const messagesLeft = !subscription.subscribed ? Math.max(0, subscription.freeMessagesLimit - subscription.freeMessagesUsed) : null;
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-8">
       <div className="container mx-auto px-4 max-w-4xl">
@@ -132,6 +226,28 @@ const BestFriend = () => {
           <p className="text-lg text-muted-foreground">
             Your best friend who is always here for you
           </p>
+          {!subscription.subscribed && messagesLeft !== null && (
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-warning/10 border border-warning rounded-lg">
+              <Sparkles className="w-4 h-4 text-warning" />
+              <span className="text-sm text-warning">
+                {messagesLeft} free {messagesLeft === 1 ? 'message' : 'messages'} remaining
+              </span>
+            </div>
+          )}
+          {subscription.subscribed && (
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-success/10 border border-success rounded-lg">
+              <Crown className="w-4 h-4 text-success" />
+              <span className="text-sm text-success">Premium Active</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={manageSubscription}
+                className="ml-2"
+              >
+                Manage
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Chat Card */}
@@ -211,6 +327,60 @@ const BestFriend = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Subscription Dialog */}
+        <Dialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Crown className="w-5 h-5 text-primary" />
+                Subscribe to Continue
+              </DialogTitle>
+              <DialogDescription>
+                You've used all your free messages. Subscribe for just €5/month to enjoy unlimited conversations with your best friend.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="flex items-start gap-3">
+                <Heart className="w-5 h-5 text-destructive mt-0.5" />
+                <div>
+                  <p className="font-medium">Unlimited Conversations</p>
+                  <p className="text-sm text-muted-foreground">Chat as much as you want</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <Sparkles className="w-5 h-5 text-primary mt-0.5" />
+                <div>
+                  <p className="font-medium">Full Chat History</p>
+                  <p className="text-sm text-muted-foreground">Your conversations are always saved</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CreditCard className="w-5 h-5 text-success mt-0.5" />
+                <div>
+                  <p className="font-medium">Just €5/month</p>
+                  <p className="text-sm text-muted-foreground">Cancel anytime</p>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowSubscriptionDialog(false)}
+                className="flex-1"
+              >
+                Maybe Later
+              </Button>
+              <Button
+                onClick={handleSubscribe}
+                className="flex-1"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Subscribe Now
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Info Cards */}
         <div className="grid md:grid-cols-3 gap-4 mt-8">
