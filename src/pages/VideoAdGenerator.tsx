@@ -109,27 +109,27 @@ ${'='.repeat(result.title.length)}
 SCRIPT:
 ${result.script}
 
-SCÉNY:
+SCENES:
 ${result.scenes.map((scene, i) => `
-Scéna ${i + 1} (${scene.duration})
-Popis: ${scene.description}
+Scene ${i + 1} (${scene.duration})
+Description: ${scene.description}
 Voiceover: ${scene.voiceover}
-Vizuály: ${scene.visuals}
+Visuals: ${scene.visuals}
 `).join('\n')}
 
 CALL TO ACTION:
 ${result.callToAction}
 
-HUDBA: ${result.musicSuggestion}
-EMÓCIE: ${result.targetEmotions.join(', ')}
+MUSIC: ${result.musicSuggestion}
+EMOTIONS: ${result.targetEmotions.join(', ')}
     `;
 
     if (result.competitiveAnalysis) {
-      content += `\n\nKONKURENCIA:\n${result.competitiveAnalysis}`;
+      content += `\n\nCOMPETITIVE ANALYSIS:\n${result.competitiveAnalysis}`;
     }
 
     if (result.budgetBreakdown) {
-      content += `\n\nROZPOČET:\nProdukcia: €${result.budgetBreakdown.production}\nDistribúcia: €${result.budgetBreakdown.distribution}\nCelkom: €${result.budgetBreakdown.total}`;
+      content += `\n\nBUDGET:\nProduction: ${result.budgetBreakdown.production} credits\nDistribution: ${result.budgetBreakdown.distribution} credits\nTotal: ${result.budgetBreakdown.total} credits`;
     }
 
     const blob = new Blob([content.trim()], { type: 'text/plain' });
