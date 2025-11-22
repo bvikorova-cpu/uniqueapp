@@ -9730,6 +9730,33 @@ export type Database = {
         }
         Relationships: []
       }
+      feed_preferences: {
+        Row: {
+          hidden_users: string[] | null
+          id: string
+          preferred_categories: string[] | null
+          sort_preference: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          hidden_users?: string[] | null
+          id?: string
+          preferred_categories?: string[] | null
+          sort_preference?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          hidden_users?: string[] | null
+          id?: string
+          preferred_categories?: string[] | null
+          sort_preference?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
@@ -20207,6 +20234,69 @@ export type Database = {
           share_code?: string | null
           user_id?: string
           views_count?: number | null
+        }
+        Relationships: []
+      }
+      story_highlight_posts: {
+        Row: {
+          added_at: string | null
+          highlight_id: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          added_at?: string | null
+          highlight_id: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          added_at?: string | null
+          highlight_id?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_highlight_posts_highlight_id_fkey"
+            columns: ["highlight_id"]
+            isOneToOne: false
+            referencedRelation: "story_highlights"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_highlight_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_highlights: {
+        Row: {
+          cover_image: string | null
+          created_at: string | null
+          id: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
