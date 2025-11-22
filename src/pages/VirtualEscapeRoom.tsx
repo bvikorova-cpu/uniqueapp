@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,10 +8,27 @@ import RoomBuilder from "@/components/escape-room/RoomBuilder";
 import GamePlay from "@/components/escape-room/GamePlay";
 import Leaderboard from "@/components/escape-room/Leaderboard";
 import SubscriptionPlans from "@/components/escape-room/SubscriptionPlans";
+import { useToast } from "@/hooks/use-toast";
 
 const VirtualEscapeRoom = () => {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("browse");
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get('success');
+    const roomId = params.get('roomId');
+    
+    if (success === 'true' && roomId) {
+      toast({
+        title: "Payment Successful!",
+        description: "Starting your escape room adventure..."
+      });
+      setSelectedRoomId(roomId);
+      window.history.replaceState({}, '', '/virtual-escape-room');
+    }
+  }, [toast]);
 
   if (selectedRoomId) {
     return <GamePlay roomId={selectedRoomId} onExit={() => setSelectedRoomId(null)} />;

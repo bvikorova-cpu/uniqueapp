@@ -5,26 +5,12 @@ import { Check, Crown, Sparkles } from "lucide-react";
 const SubscriptionPlans = () => {
   const plans = [
     {
-      name: "Free",
-      price: 0,
-      period: "forever",
-      description: "Perfect for casual players",
-      features: [
-        "Access to free rooms",
-        "Basic puzzles",
-        "Leaderboard access",
-        "Limited hints"
-      ],
-      icon: Sparkles,
-      color: "text-muted-foreground"
-    },
-    {
       name: "Premium",
       price: 10,
       period: "month",
       description: "For serious escape room enthusiasts",
       features: [
-        "All free features",
+        "Play all escape rooms",
         "Advanced puzzle creator",
         "AI-generated puzzles",
         "Custom graphics",
@@ -65,7 +51,7 @@ const SubscriptionPlans = () => {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {plans.map((plan) => {
           const Icon = plan.icon;
           return (
@@ -82,11 +68,12 @@ const SubscriptionPlans = () => {
               )}
 
               <CardHeader>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="h-12" />
+                <div className="flex items-center gap-2 mb-4">
                   <Icon className={`h-6 w-6 ${plan.color}`} />
                   <CardTitle>{plan.name}</CardTitle>
                 </div>
-                <div className="mb-2">
+                <div className="mb-4">
                   <span className="text-4xl font-bold">€{plan.price}</span>
                   <span className="text-muted-foreground">/{plan.period}</span>
                 </div>
@@ -107,7 +94,7 @@ const SubscriptionPlans = () => {
                   className="w-full"
                   variant={plan.popular ? "default" : "outline"}
                 >
-                  {plan.price === 0 ? "Get Started" : "Subscribe Now"}
+                  Subscribe Now
                 </Button>
               </CardContent>
             </Card>
@@ -117,6 +104,7 @@ const SubscriptionPlans = () => {
 
       <Card className="bg-gradient-subtle">
         <CardHeader>
+          <div className="h-8" />
           <CardTitle>Creator Earnings</CardTitle>
           <CardDescription>
             Make money by creating escape rooms
