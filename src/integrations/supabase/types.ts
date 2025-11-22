@@ -960,6 +960,35 @@ export type Database = {
           },
         ]
       }
+      archived_posts: {
+        Row: {
+          archived_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "archived_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       astro_subscriptions: {
         Row: {
           created_at: string | null
@@ -13725,6 +13754,47 @@ export type Database = {
           },
         ]
       }
+      live_posts: {
+        Row: {
+          created_at: string | null
+          ended_at: string | null
+          id: string
+          is_active: boolean | null
+          post_id: string
+          started_at: string | null
+          stream_url: string | null
+          viewers_count: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          ended_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          post_id: string
+          started_at?: string | null
+          stream_url?: string | null
+          viewers_count?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          ended_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          post_id?: string
+          started_at?: string | null
+          stream_url?: string | null
+          viewers_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       live_streams: {
         Row: {
           created_at: string | null
@@ -13777,6 +13847,38 @@ export type Database = {
             columns: ["influencer_id"]
             isOneToOne: false
             referencedRelation: "influencer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_viewers: {
+        Row: {
+          id: string
+          joined_at: string | null
+          last_seen: string | null
+          live_post_id: string
+          viewer_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          last_seen?: string | null
+          live_post_id: string
+          viewer_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          last_seen?: string | null
+          live_post_id?: string
+          viewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_viewers_live_post_id_fkey"
+            columns: ["live_post_id"]
+            isOneToOne: false
+            referencedRelation: "live_posts"
             referencedColumns: ["id"]
           },
         ]
@@ -17383,6 +17485,44 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "post_edits_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_gifts: {
+        Row: {
+          created_at: string | null
+          gift_type: string
+          gift_value: number | null
+          id: string
+          message: string | null
+          post_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          gift_type: string
+          gift_value?: number | null
+          id?: string
+          message?: string | null
+          post_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string | null
+          gift_type?: string
+          gift_value?: number | null
+          id?: string
+          message?: string | null
+          post_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_gifts_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
@@ -23752,6 +23892,33 @@ export type Database = {
           premium_items?: Json | null
           total_xp?: number | null
           updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_recommendations: {
+        Row: {
+          created_at: string | null
+          id: string
+          reason: string | null
+          recommended_user_id: string
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          recommended_user_id: string
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          reason?: string | null
+          recommended_user_id?: string
+          score?: number | null
           user_id?: string
         }
         Relationships: []
