@@ -82,7 +82,16 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.best-friend-chat]
-verify_jwt = false
+verify_jwt = true
+
+[functions.check-best-friend-subscription]
+verify_jwt = true
+
+[functions.create-best-friend-checkout]
+verify_jwt = true
+
+[functions.best-friend-customer-portal]
+verify_jwt = true
 
 [functions.ai-image-generation]
 verify_jwt = false
