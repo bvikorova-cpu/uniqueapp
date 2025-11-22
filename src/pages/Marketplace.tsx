@@ -386,14 +386,36 @@ const Marketplace = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-24 pb-12">
       <div className="container mx-auto px-4">
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">Skills Marketplace</h1>
-            <p className="text-muted-foreground">Find or offer services</p>
+        <div className="mb-8">
+          <div className="flex justify-between items-start mb-6">
+            <div className="max-w-3xl">
+              <h1 className="text-4xl font-bold mb-2 flex items-center gap-2">
+                <Briefcase className="h-8 w-8 text-primary" />
+                Skills Marketplace
+              </h1>
+              <p className="text-muted-foreground mb-4">Find skilled professionals or offer your services</p>
+              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-6 space-y-3">
+                <h2 className="text-lg font-semibold">How It Works</h2>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>Post Your Skills:</strong> Subscribe for €2/month to create unlimited service offerings. Upload images, set your hourly rate, and specify your location and expertise.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>Find Professionals:</strong> Browse by category (construction, repairs, technology, creative, and more). Filter by location and price to find the perfect match.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>Connect Directly:</strong> Send messages to service providers, discuss your project needs, and negotiate terms directly through the platform.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <Button onClick={() => setShowCreateForm(!showCreateForm)}>
+              {showCreateForm ? "Cancel" : "Add Offering"}
+            </Button>
           </div>
-          <Button onClick={() => setShowCreateForm(!showCreateForm)}>
-            {showCreateForm ? "Cancel" : "Add Offering"}
-          </Button>
         </div>
 
         {showCreateForm && (

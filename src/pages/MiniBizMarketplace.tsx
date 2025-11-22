@@ -51,19 +51,36 @@ export default function MiniBizMarketplace() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background py-12 px-4">
+      <div className="bg-gradient-to-br from-primary/10 via-secondary/5 to-background py-16 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-4xl font-bold mb-2 flex items-center gap-2">
-                <Store className="h-8 w-8 text-primary" />
+          <div className="flex items-center justify-between mb-8">
+            <div className="max-w-3xl">
+              <h1 className="text-5xl font-bold mb-4 flex items-center gap-3">
+                <Store className="h-10 w-10 text-primary" />
                 Mini Business Marketplace
               </h1>
-              <p className="text-muted-foreground text-lg">
-                Discover local businesses without websites
+              <p className="text-muted-foreground text-xl mb-6">
+                Discover and support local businesses without websites
               </p>
+              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-6 space-y-3">
+                <h2 className="text-lg font-semibold">How It Works</h2>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>For Business Owners:</strong> Create your business profile for free. Add your menu, products, services, and contact information. Accept orders directly through the platform.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>For Customers:</strong> Browse local businesses, view their offerings, read reviews, and place orders. Contact businesses via phone or WhatsApp instantly.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>Features:</strong> Search by category, view on map, leave reviews, place orders, and discover businesses near you that don't have traditional websites.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <Button onClick={() => navigate("/minibiz/create")} size="lg">
+            <Button onClick={() => navigate("/minibiz/create")} size="lg" className="self-start">
               <Plus className="h-5 w-5 mr-2" />
               Add Your Business
             </Button>

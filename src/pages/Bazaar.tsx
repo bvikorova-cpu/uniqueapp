@@ -431,35 +431,54 @@ const Bazaar = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold">
-              Online{" "}
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Bazaar
-              </span>
-            </h1>
-            <p className="text-xl text-muted-foreground mt-2">
-              Buy and sell with confidence in our community
-            </p>
+        <div className="flex flex-col gap-4 mb-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="max-w-3xl">
+              <h1 className="text-4xl md:text-5xl font-bold">
+                Online{" "}
+                <span className="bg-gradient-primary bg-clip-text text-transparent">
+                  Bazaar
+                </span>
+              </h1>
+              <p className="text-xl text-muted-foreground mt-2 mb-4">
+                Buy and sell with confidence in our community
+              </p>
+              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-6 space-y-3">
+                <h2 className="text-lg font-semibold">How It Works</h2>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>List Items:</strong> Create listings to sell or trade items. Upload photos, set prices in EUR (€), and specify condition and category. Free tier allows 5 listings, Premium (€5/month) offers unlimited listings.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>Browse & Search:</strong> Filter by category (electronics, furniture, fashion, sports, etc.), search by keywords, and view listings by condition (Like New, Good, Fair, For Parts).</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">•</span>
+                    <span><strong>Connect & Buy:</strong> Message sellers directly through the platform. Complete purchases securely via Stripe payment integration with automatic commission handling (5% for free users, 2% for premium).</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            {limits.bazaarListingsPerMonth !== -1 && (
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  Limit: {limits.bazaarListingsPerMonth} listings/month • Commission: {limits.commissionRate}%
-                  {limits.tier === 'basic' && (
-                    <Link to="/subscription" className="ml-2 text-primary hover:underline">
-                      Upgrade
-                    </Link>
-                  )}
-                </AlertDescription>
-              </Alert>
-            )}
-            
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <div className="flex flex-col gap-2">
+              {limits.bazaarListingsPerMonth !== -1 && (
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Limit: {limits.bazaarListingsPerMonth} listings/month • Commission: {limits.commissionRate}%
+                    {limits.tier === 'basic' && (
+                      <Link to="/subscription" className="ml-2 text-primary hover:underline">
+                        Upgrade
+                      </Link>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button variant="hero" size="lg">
                   <Plus className="h-5 w-5 mr-2" />
