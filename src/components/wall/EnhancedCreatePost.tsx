@@ -144,19 +144,21 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   };
 
   return (
-    <Card className="p-4">
+    <Card className="p-5 bg-gradient-to-br from-card/80 to-card/50 backdrop-blur-sm border-border/50 shadow-lg hover:shadow-xl transition-all">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex gap-3">
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-11 w-11 ring-2 ring-primary/20">
             <AvatarImage src={userProfile?.avatar_url || undefined} />
-            <AvatarFallback>{userProfile?.full_name?.[0] || "U"}</AvatarFallback>
+            <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
+              {userProfile?.full_name?.[0] || "U"}
+            </AvatarFallback>
           </Avatar>
           <div className="flex-1">
             <Textarea
-              placeholder={`What's on your mind, ${userProfile?.full_name?.split(" ")[0] || ""}?`}
+              placeholder={`Share your thoughts, ${userProfile?.full_name?.split(" ")[0] || ""}...`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="min-h-[80px] resize-none border-none bg-accent/50 focus-visible:ring-0"
+              className="min-h-[100px] resize-none border-none bg-accent/30 focus-visible:ring-2 focus-visible:ring-primary/20 rounded-xl"
             />
           </div>
         </div>
@@ -211,9 +213,12 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
         )}
 
-        <div className="border rounded-lg p-3">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-semibold">Add to your post</span>
+        <div className="border border-border/50 rounded-xl p-4 bg-gradient-to-br from-accent/20 to-accent/10">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-sm font-semibold flex items-center gap-2">
+              <div className="w-1 h-4 bg-primary rounded-full" />
+              Enhance your post
+            </span>
             <Select value={privacy} onValueChange={(v: any) => setPrivacy(v)}>
               <SelectTrigger className="w-[140px] h-8">
                 <div className="flex items-center gap-2">
@@ -249,29 +254,35 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               type="button"
               variant="ghost"
               size="sm"
-              className="flex-col h-auto py-2"
+              className="flex-col h-auto py-3 hover:bg-green-500/10 rounded-xl transition-all group"
               onClick={() => document.getElementById("image-upload")?.click()}
             >
-              <Image className="h-5 w-5 text-green-500" />
-              <span className="text-xs mt-1">Photo</span>
+              <div className="p-2 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all">
+                <Image className="h-5 w-5 text-green-600" />
+              </div>
+              <span className="text-xs mt-1 font-medium">Photo</span>
             </Button>
 
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="flex-col h-auto py-2"
+              className="flex-col h-auto py-3 hover:bg-red-500/10 rounded-xl transition-all group"
               onClick={() => document.getElementById("video-upload")?.click()}
             >
-              <Video className="h-5 w-5 text-red-500" />
-              <span className="text-xs mt-1">Video</span>
+              <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
+                <Video className="h-5 w-5 text-red-600" />
+              </div>
+              <span className="text-xs mt-1 font-medium">Video</span>
             </Button>
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2">
-                  <Smile className="h-5 w-5 text-yellow-500" />
-                  <span className="text-xs mt-1">Feeling</span>
+                <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-3 hover:bg-yellow-500/10 rounded-xl transition-all group">
+                  <div className="p-2 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all">
+                    <Smile className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <span className="text-xs mt-1 font-medium">Feeling</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64">
@@ -296,9 +307,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2">
-                  <MapPin className="h-5 w-5 text-red-600" />
-                  <span className="text-xs mt-1">Location</span>
+                <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-3 hover:bg-red-500/10 rounded-xl transition-all group">
+                  <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
+                    <MapPin className="h-5 w-5 text-red-600" />
+                  </div>
+                  <span className="text-xs mt-1 font-medium">Location</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-64">
@@ -312,9 +325,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               </PopoverContent>
             </Popover>
 
-            <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2">
-              <Users className="h-5 w-5 text-blue-500" />
-              <span className="text-xs mt-1">Tag</span>
+            <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-3 hover:bg-blue-500/10 rounded-xl transition-all group">
+              <div className="p-2 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all">
+                <Users className="h-5 w-5 text-blue-600" />
+              </div>
+              <span className="text-xs mt-1 font-medium">Tag</span>
             </Button>
           </div>
 
@@ -336,14 +351,18 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           />
         </div>
 
-        <Button type="submit" disabled={uploading} className="w-full">
+        <Button 
+          type="submit" 
+          disabled={uploading} 
+          className="w-full h-11 rounded-xl font-semibold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all"
+        >
           {uploading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Posting...
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Publishing...
             </>
           ) : (
-            "Post"
+            "Share Post"
           )}
         </Button>
       </form>
