@@ -40,8 +40,8 @@ const VirtualEscapeRoom = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <Lock className="w-16 h-16 mx-auto mb-8 text-primary" />
           <div className="h-24" />
+          <Lock className="w-16 h-16 mx-auto mb-4 text-primary" />
           <h1 className="text-4xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
             Virtual Escape Rooms
           </h1>

@@ -126,8 +126,8 @@ const TutorialPlatform = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
-          <GraduationCap className="w-16 h-16 mx-auto mb-8" />
           <div className="h-24" />
+          <GraduationCap className="w-16 h-16 mx-auto mb-4" />
           <h1 className="text-4xl font-bold mb-6">Tutorial & Course Platform</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
             Share your expertise and earn money by creating educational courses and tutorials. Build a learning business with our comprehensive course creation tools.
