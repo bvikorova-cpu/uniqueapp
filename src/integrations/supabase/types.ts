@@ -1706,6 +1706,35 @@ export type Database = {
         }
         Relationships: []
       }
+      bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookmarks_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       brain_duel_answers: {
         Row: {
           answer: string
@@ -10210,6 +10239,30 @@ export type Database = {
         }
         Relationships: []
       }
+      hashtags: {
+        Row: {
+          created_at: string
+          id: string
+          tag: string
+          updated_at: string
+          use_count: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tag: string
+          updated_at?: string
+          use_count?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tag?: string
+          updated_at?: string
+          use_count?: number
+        }
+        Relationships: []
+      }
       healthcare_collections: {
         Row: {
           age_group: string | null
@@ -16658,6 +16711,109 @@ export type Database = {
         }
         Relationships: []
       }
+      poll_options: {
+        Row: {
+          created_at: string
+          id: string
+          option_text: string
+          poll_id: string
+          vote_count: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_text: string
+          poll_id: string
+          vote_count?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_text?: string
+          poll_id?: string
+          vote_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_options_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      poll_votes: {
+        Row: {
+          created_at: string
+          id: string
+          option_id: string
+          poll_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          option_id: string
+          poll_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          option_id?: string
+          poll_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_votes_option_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "poll_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "poll_votes_poll_id_fkey"
+            columns: ["poll_id"]
+            isOneToOne: false
+            referencedRelation: "polls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      polls: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          post_id: string
+          question: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          post_id: string
+          question: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          post_id?: string
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "polls_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_analytics: {
         Row: {
           avg_time_spent: number | null
@@ -16740,6 +16896,42 @@ export type Database = {
           },
         ]
       }
+      post_hashtags: {
+        Row: {
+          created_at: string
+          hashtag_id: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          created_at?: string
+          hashtag_id: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          created_at?: string
+          hashtag_id?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_hashtags_hashtag_id_fkey"
+            columns: ["hashtag_id"]
+            isOneToOne: false
+            referencedRelation: "hashtags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_hashtags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_likes: {
         Row: {
           created_at: string
@@ -16762,6 +16954,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_mentions: {
+        Row: {
+          created_at: string
+          id: string
+          mentioned_user_id: string
+          post_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mentioned_user_id: string
+          post_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mentioned_user_id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_mentions_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
@@ -16795,6 +17016,48 @@ export type Database = {
           {
             foreignKeyName: "post_reactions_post_id_fkey"
             columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_shares: {
+        Row: {
+          created_at: string
+          id: string
+          original_post_id: string
+          share_text: string | null
+          shared_post_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          original_post_id: string
+          share_text?: string | null
+          shared_post_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          original_post_id?: string
+          share_text?: string | null
+          shared_post_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_shares_original_post_id_fkey"
+            columns: ["original_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_shares_shared_post_id_fkey"
+            columns: ["shared_post_id"]
             isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
