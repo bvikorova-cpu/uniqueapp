@@ -17492,6 +17492,50 @@ export type Database = {
           },
         ]
       }
+      post_embeds: {
+        Row: {
+          created_at: string | null
+          embed_description: string | null
+          embed_image: string | null
+          embed_metadata: Json | null
+          embed_title: string | null
+          embed_type: string
+          embed_url: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          embed_description?: string | null
+          embed_image?: string | null
+          embed_metadata?: Json | null
+          embed_title?: string | null
+          embed_type: string
+          embed_url: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          created_at?: string | null
+          embed_description?: string | null
+          embed_image?: string | null
+          embed_metadata?: Json | null
+          embed_title?: string | null
+          embed_type?: string
+          embed_url?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_embeds_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_gifts: {
         Row: {
           created_at: string | null
@@ -17720,6 +17764,44 @@ export type Database = {
           },
         ]
       }
+      post_reminders: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_sent: boolean | null
+          post_id: string
+          remind_at: string
+          reminder_type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_sent?: boolean | null
+          post_id: string
+          remind_at: string
+          reminder_type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_sent?: boolean | null
+          post_id?: string
+          remind_at?: string
+          reminder_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_reminders_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_reports: {
         Row: {
           created_at: string | null
@@ -17881,6 +17963,38 @@ export type Database = {
           {
             foreignKeyName: "post_threads_parent_post_id_fkey"
             columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_translations: {
+        Row: {
+          created_at: string | null
+          id: string
+          language: string
+          post_id: string
+          translated_content: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          language: string
+          post_id: string
+          translated_content: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          language?: string
+          post_id?: string
+          translated_content?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_translations_post_id_fkey"
+            columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
@@ -22911,6 +23025,53 @@ export type Database = {
           },
         ]
       }
+      trending_posts: {
+        Row: {
+          calculated_at: string | null
+          comments_24h: number | null
+          engagement_rate: number | null
+          id: string
+          post_id: string
+          reactions_24h: number | null
+          shares_24h: number | null
+          trending_score: number | null
+          updated_at: string | null
+          views_24h: number | null
+        }
+        Insert: {
+          calculated_at?: string | null
+          comments_24h?: number | null
+          engagement_rate?: number | null
+          id?: string
+          post_id: string
+          reactions_24h?: number | null
+          shares_24h?: number | null
+          trending_score?: number | null
+          updated_at?: string | null
+          views_24h?: number | null
+        }
+        Update: {
+          calculated_at?: string | null
+          comments_24h?: number | null
+          engagement_rate?: number | null
+          id?: string
+          post_id?: string
+          reactions_24h?: number | null
+          shares_24h?: number | null
+          trending_score?: number | null
+          updated_at?: string | null
+          views_24h?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trending_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trending_topics: {
         Row: {
           created_at: string
@@ -24782,6 +24943,44 @@ export type Database = {
           voices_limit?: number | null
         }
         Relationships: []
+      }
+      voice_posts: {
+        Row: {
+          audio_url: string
+          created_at: string | null
+          duration: number | null
+          id: string
+          post_id: string
+          transcript: string | null
+          waveform_data: Json | null
+        }
+        Insert: {
+          audio_url: string
+          created_at?: string | null
+          duration?: number | null
+          id?: string
+          post_id: string
+          transcript?: string | null
+          waveform_data?: Json | null
+        }
+        Update: {
+          audio_url?: string
+          created_at?: string | null
+          duration?: number | null
+          id?: string
+          post_id?: string
+          transcript?: string | null
+          waveform_data?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "voice_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       wardrobe_items: {
         Row: {
