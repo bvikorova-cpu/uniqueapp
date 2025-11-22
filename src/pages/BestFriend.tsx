@@ -226,6 +226,45 @@ const BestFriend = () => {
           <p className="text-lg text-muted-foreground">
             Your best friend who is always here for you
           </p>
+          
+          {/* Detailed Description */}
+          <div className="bg-card/50 rounded-lg p-6 mt-6 space-y-3 border border-border/50 text-left max-w-3xl mx-auto">
+            <h2 className="text-xl font-semibold text-center mb-3">What is Best Friend AI?</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Best Friend AI is your personal AI companion powered by advanced AI technology. 
+              This intelligent chatbot is designed to be your trusted friend who's always available 
+              to listen, support, and engage in meaningful conversations.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-4 mt-4">
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm">✨ Key Features:</h3>
+                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                  <li>Empathetic and supportive conversations</li>
+                  <li>Remembers your chat history</li>
+                  <li>Available 24/7 whenever you need to talk</li>
+                  <li>Provides thoughtful advice without judgment</li>
+                  <li>Celebrates your successes and helps with challenges</li>
+                </ul>
+              </div>
+              
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm">💰 Pricing:</h3>
+                <ul className="text-sm text-muted-foreground space-y-1">
+                  <li>• <strong>Free Trial:</strong> 5 messages to try it out</li>
+                  <li>• <strong>Premium:</strong> €5/month for unlimited conversations</li>
+                  <li>• All chat history is automatically saved</li>
+                  <li>• Cancel anytime through customer portal</li>
+                </ul>
+              </div>
+            </div>
+            
+            <p className="text-xs text-muted-foreground text-center mt-4 pt-4 border-t border-border/50">
+              💡 <strong>How it works:</strong> Simply start chatting! After your 5 free messages, 
+              you'll be prompted to subscribe. Once subscribed, enjoy unlimited conversations with your AI best friend 
+              who remembers everything you've talked about.
+            </p>
+          </div>
           {!subscription.subscribed && messagesLeft !== null && (
             <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-warning/10 border border-warning rounded-lg">
               <Sparkles className="w-4 h-4 text-warning" />

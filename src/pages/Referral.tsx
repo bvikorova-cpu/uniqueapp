@@ -98,6 +98,57 @@ const Referral = () => {
             Invite your friends to Megatalent and earn €5 for each one 
             who activates a Premium subscription
           </p>
+          
+          {/* Detailed Description */}
+          <div className="bg-card rounded-lg p-6 max-w-4xl mx-auto mt-8 text-left space-y-4 border border-border/50">
+            <h2 className="text-xl font-semibold text-center mb-3">How Our Referral Program Works</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Our referral program is designed to reward you for spreading the word about Megatalent. 
+              Every time someone uses your unique referral code to sign up and activates a Premium subscription, 
+              you automatically earn €5. It's our way of saying thank you for helping grow our community!
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-4 mt-4">
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm">💸 Earnings:</h3>
+                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                  <li>€5 per successful Premium referral</li>
+                  <li>Unlimited earning potential</li>
+                  <li>Automatic commission tracking</li>
+                  <li>Real-time earnings dashboard</li>
+                  <li>Easy withdrawal system</li>
+                  <li>View pending and paid earnings</li>
+                </ul>
+              </div>
+              
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm">🎁 Features:</h3>
+                <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                  <li>Unique personal referral code</li>
+                  <li>Share via social media or email</li>
+                  <li>Track all your referrals</li>
+                  <li>See recent successful invitations</li>
+                  <li>Leaderboard with top referrers</li>
+                  <li>Detailed statistics and analytics</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="bg-primary/5 rounded-lg p-4 mt-4">
+              <p className="text-sm font-semibold mb-2">📊 What You Get:</p>
+              <ul className="text-sm text-muted-foreground space-y-1">
+                <li>✓ <strong>Your unique referral code</strong> - Easy to share and remember</li>
+                <li>✓ <strong>Real-time tracking</strong> - See every successful referral instantly</li>
+                <li>✓ <strong>Automatic payments</strong> - Earnings credited when friend subscribes</li>
+                <li>✓ <strong>No limits</strong> - Refer as many friends as you want</li>
+              </ul>
+            </div>
+            
+            <p className="text-xs text-muted-foreground text-center mt-4 pt-4 border-t border-border/50">
+              💡 <strong>Start earning today!</strong> Share your code with friends, track your earnings in real-time, 
+              and withdraw your money when ready. The more friends you invite, the more you earn!
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

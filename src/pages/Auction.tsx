@@ -434,6 +434,49 @@ const Auction = () => {
               Buy and sell products at auction
             </p>
             
+            {/* Detailed Description */}
+            <div className="bg-card/50 rounded-lg p-6 mb-6 space-y-3 border border-border/50">
+              <h2 className="text-xl font-semibold mb-3">About Our Auction Platform</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Welcome to our comprehensive online auction marketplace where you can buy and sell items 
+                through competitive bidding or instant purchase. Our platform provides a secure, transparent, 
+                and user-friendly environment for online auctions.
+              </p>
+              
+              <div className="grid md:grid-cols-2 gap-4 mt-4">
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-sm">🎯 For Sellers:</h3>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>Create auctions with up to 3 photos</li>
+                    <li>Set starting price and optional "Buy Now" price</li>
+                    <li>Choose auction duration (hours/days)</li>
+                    <li>Real-time bid notifications</li>
+                    <li>Automatic commission calculation</li>
+                    <li>Track all your active listings</li>
+                  </ul>
+                </div>
+                
+                <div className="space-y-2">
+                  <h3 className="font-semibold text-sm">🛍️ For Buyers:</h3>
+                  <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
+                    <li>Place competitive bids on items</li>
+                    <li>Buy instantly with "Buy Now" option</li>
+                    <li>View detailed item photos and descriptions</li>
+                    <li>Track remaining auction time</li>
+                    <li>Get notifications when outbid</li>
+                    <li>Secure Stripe payment processing</li>
+                  </ul>
+                </div>
+              </div>
+              
+              <p className="text-xs text-muted-foreground mt-4 pt-4 border-t border-border/50">
+                💡 <strong>How it works:</strong> Sellers create auctions with photos and details. Buyers can either 
+                place incremental bids or purchase instantly at the "Buy Now" price. The highest bidder when the 
+                auction ends wins the item. All transactions are processed securely through Stripe with automatic 
+                commission handling.
+              </p>
+            </div>
+            
             {limits.auctionListingsPerMonth !== -1 && (
               <Alert className="max-w-xl">
                 <AlertCircle className="h-4 w-4" />
