@@ -83,28 +83,21 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
           </div>
         </Button>
 
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent my-3" />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent my-2" />
 
         {/* Main Navigation */}
-        <div className="space-y-1">
+        <div className="space-y-0.5">
           {menuItems.map((item) => (
             <Button
               key={item.path}
               variant="ghost"
               className={cn(
-                "w-full justify-start gap-3 h-auto py-3 hover:bg-primary/5 rounded-xl transition-all group",
-                currentPath === item.path && "bg-primary/10 shadow-sm"
+                "w-full justify-start gap-2.5 h-auto py-2 hover:bg-primary/5 rounded-lg transition-all",
+                currentPath === item.path && "bg-primary/10"
               )}
               onClick={() => navigate(item.path)}
             >
-              <div className={cn(
-                "p-2.5 rounded-xl bg-gradient-to-br transition-all group-hover:scale-110",
-                currentPath === item.path 
-                  ? "from-primary/20 to-primary/10 shadow-sm" 
-                  : "from-accent/50 to-accent/30"
-              )}>
-                <item.icon className={cn("h-5 w-5", item.color)} />
-              </div>
+              <item.icon className={cn("h-5 w-5", item.color)} />
               <span className="font-medium text-sm">{item.label}</span>
             </Button>
           ))}
@@ -115,12 +108,10 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
         {/* Settings */}
         <Button
           variant="ghost"
-          className="w-full justify-start gap-3 h-auto py-3 hover:bg-accent/50"
+          className="w-full justify-start gap-2.5 h-auto py-2 hover:bg-accent/50 rounded-lg"
           onClick={() => navigate("/settings")}
         >
-          <div className="p-2 rounded-full bg-accent/50">
-            <Settings className="h-5 w-5 text-gray-500" />
-          </div>
+          <Settings className="h-5 w-5 text-gray-500" />
           <span className="font-medium text-sm">Settings</span>
         </Button>
       </div>
