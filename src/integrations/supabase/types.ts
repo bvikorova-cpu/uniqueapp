@@ -3966,6 +3966,44 @@ export type Database = {
           },
         ]
       }
+      collaborative_posts: {
+        Row: {
+          accepted_at: string | null
+          collaborator_id: string
+          created_at: string | null
+          id: string
+          invited_by: string | null
+          post_id: string
+          role: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          collaborator_id: string
+          created_at?: string | null
+          id?: string
+          invited_by?: string | null
+          post_id: string
+          role?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          collaborator_id?: string
+          created_at?: string | null
+          id?: string
+          invited_by?: string | null
+          post_id?: string
+          role?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collaborative_posts_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collectible_achievements: {
         Row: {
           category: string
@@ -16620,6 +16658,53 @@ export type Database = {
         }
         Relationships: []
       }
+      post_analytics: {
+        Row: {
+          avg_time_spent: number | null
+          demographics: Json | null
+          engagement_rate: number | null
+          id: string
+          peak_engagement_hour: number | null
+          post_id: string
+          top_locations: string[] | null
+          unique_viewers: number | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          avg_time_spent?: number | null
+          demographics?: Json | null
+          engagement_rate?: number | null
+          id?: string
+          peak_engagement_hour?: number | null
+          post_id: string
+          top_locations?: string[] | null
+          unique_viewers?: number | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          avg_time_spent?: number | null
+          demographics?: Json | null
+          engagement_rate?: number | null
+          id?: string
+          peak_engagement_hour?: number | null
+          post_id?: string
+          top_locations?: string[] | null
+          unique_viewers?: number | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_analytics_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: true
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_comments: {
         Row: {
           content: string
@@ -16709,6 +16794,86 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "post_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_templates: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          tags: string[] | null
+          thumbnail: string | null
+          updated_at: string | null
+          user_id: string | null
+          uses_count: number | null
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          tags?: string[] | null
+          thumbnail?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          uses_count?: number | null
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          tags?: string[] | null
+          thumbnail?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          uses_count?: number | null
+        }
+        Relationships: []
+      }
+      post_views: {
+        Row: {
+          id: string
+          ip_address: string | null
+          post_id: string
+          time_spent: number | null
+          user_agent: string | null
+          user_id: string | null
+          viewed_at: string | null
+        }
+        Insert: {
+          id?: string
+          ip_address?: string | null
+          post_id: string
+          time_spent?: number | null
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string | null
+        }
+        Update: {
+          id?: string
+          ip_address?: string | null
+          post_id?: string
+          time_spent?: number | null
+          user_agent?: string | null
+          user_id?: string | null
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_views_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
@@ -18790,6 +18955,50 @@ export type Database = {
             columns: ["video_id"]
             isOneToOne: false
             referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scheduled_posts: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          media_urls: string[] | null
+          published_post_id: string | null
+          scheduled_for: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          media_urls?: string[] | null
+          published_post_id?: string | null
+          scheduled_for: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          media_urls?: string[] | null
+          published_post_id?: string | null
+          scheduled_for?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_posts_published_post_id_fkey"
+            columns: ["published_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
             referencedColumns: ["id"]
           },
         ]
