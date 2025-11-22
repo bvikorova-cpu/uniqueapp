@@ -45,7 +45,7 @@ const SubscriptionPlans = () => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <div className="h-8" />
+        <div className="h-20" />
         <h2 className="text-3xl font-bold mb-4">Choose Your Plan</h2>
         <p className="text-muted-foreground mb-2">
           Unlock advanced features and start creating your own escape rooms

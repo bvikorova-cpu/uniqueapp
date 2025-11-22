@@ -79,7 +79,7 @@ const StockContentLibrary = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <Library className="w-16 h-16 mx-auto mb-8" />
-          <div className="h-8" />
+          <div className="h-24" />
           <h1 className="text-4xl font-bold mb-6">Stock Content Library</h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
             A marketplace for AI-generated content licensing. Upload your digital creations and earn passive income every time someone downloads your work.
