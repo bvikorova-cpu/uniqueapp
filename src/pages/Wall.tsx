@@ -19,6 +19,7 @@ import { WallRightbar } from "@/components/wall/WallRightbar";
 import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
 import { StoryHighlightsBar } from "@/components/wall/StoryHighlightsBar";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
+import { SearchBar } from "@/components/wall/SearchBar";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import { useFollowingPosts } from "@/hooks/useFollow";
@@ -617,25 +618,7 @@ const Feed = () => {
           <EnhancedCreatePost onPostCreated={fetchPosts} userProfile={userProfile} />
 
           {/* Search Bar */}
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Search posts, hashtags or users..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-10 bg-accent/50"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Clear search"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+          <SearchBar />
 
           <PostFilters
             sortBy={sortBy}
