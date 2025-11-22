@@ -17675,18 +17675,21 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          mentioned_by: string | null
           mentioned_user_id: string
           post_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          mentioned_by?: string | null
           mentioned_user_id: string
           post_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          mentioned_by?: string | null
           mentioned_user_id?: string
           post_id?: string
         }
@@ -17725,6 +17728,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "post_moods_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_polls: {
+        Row: {
+          created_at: string | null
+          ends_at: string | null
+          id: string
+          multiple_choice: boolean | null
+          options: Json
+          post_id: string
+          question: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          multiple_choice?: boolean | null
+          options: Json
+          post_id: string
+          question: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          ends_at?: string | null
+          id?: string
+          multiple_choice?: boolean | null
+          options?: Json
+          post_id?: string
+          question?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_polls_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
