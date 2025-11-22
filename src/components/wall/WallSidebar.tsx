@@ -14,9 +14,11 @@ import {
   Settings,
   Bookmark,
   Users2,
-  Clock
+  Clock,
+  Bell
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { NotificationBell } from "./NotificationBell";
 
 interface WallSidebarProps {
   currentPath?: string;
@@ -49,6 +51,7 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
 
   const menuItems = [
     { icon: Home, label: "Feed", path: "/wall", color: "text-blue-500" },
+    { icon: MessageCircle, label: "Messages", path: "/wall/messages", color: "text-purple-500" },
     { icon: Users2, label: "Friends", path: "/wall/friends", color: "text-cyan-500" },
     { icon: Users, label: "Groups", path: "/wall/groups", color: "text-blue-600" },
     { icon: Flag, label: "Pages", path: "/wall/pages", color: "text-orange-500" },
@@ -63,25 +66,28 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
     <div className="w-80 h-screen sticky top-16 border-r bg-card/30 backdrop-blur-xl overflow-y-auto pb-20">
       <div className="p-4 pt-6 space-y-2">
         {/* User Profile Quick Link */}
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-3 h-auto py-3 hover:bg-primary/10 rounded-xl group transition-all"
-          onClick={() => navigate(`/profile/${user?.id}`)}
-        >
-          <div className="relative">
-            <Avatar className="h-10 w-10 ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all">
-              <AvatarImage src={profile?.avatar_url || undefined} />
-              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
-                {profile?.full_name?.[0] || "U"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
-          </div>
-          <div className="flex-1 text-left">
-            <p className="font-semibold text-sm">{profile?.full_name || "User"}</p>
-            <p className="text-xs text-muted-foreground">View profile</p>
-          </div>
-        </Button>
+        <div className="flex items-center justify-between mb-2">
+          <Button
+            variant="ghost"
+            className="flex-1 justify-start gap-3 h-auto py-3 hover:bg-primary/10 rounded-xl group transition-all"
+            onClick={() => navigate(`/profile/${user?.id}`)}
+          >
+            <div className="relative">
+              <Avatar className="h-10 w-10 ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all">
+                <AvatarImage src={profile?.avatar_url || undefined} />
+                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
+                  {profile?.full_name?.[0] || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="font-semibold text-sm">{profile?.full_name || "User"}</p>
+              <p className="text-xs text-muted-foreground">View profile</p>
+            </div>
+          </Button>
+          <NotificationBell />
+        </div>
 
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent my-2" />
 

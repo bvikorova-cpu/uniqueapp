@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Gift, Calendar, TrendingUp } from "lucide-react";
+import { TrendingSidebar } from "./TrendingSidebar";
 
 export function WallRightbar() {
   const navigate = useNavigate();
@@ -78,26 +79,8 @@ export function WallRightbar() {
 
   return (
     <div className="w-80 h-screen sticky top-16 p-4 pt-6 space-y-4 overflow-y-auto pb-20">
-      {/* Suggested */}
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-1 h-4 bg-primary rounded-full" />
-          <h3 className="font-semibold text-sm">Trending Topics</h3>
-        </div>
-        <Card className="p-4 hover:bg-accent/30 cursor-pointer transition-all rounded-xl bg-gradient-to-br from-card/80 to-card/50 border-border/50">
-          <div className="flex gap-3">
-            <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center shadow-sm">
-              <TrendingUp className="h-7 w-7 text-primary" />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold text-sm mb-1">What's Popular</p>
-              <p className="text-xs text-muted-foreground">
-                Discover trending content
-              </p>
-            </div>
-          </div>
-        </Card>
-      </div>
+      {/* Trending Topics */}
+      <TrendingSidebar />
 
       {/* Birthdays */}
       {birthdays.length > 0 && (

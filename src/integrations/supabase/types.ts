@@ -7897,6 +7897,33 @@ export type Database = {
           },
         ]
       }
+      direct_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
       discussion_replies: {
         Row: {
           content: string
@@ -19343,6 +19370,30 @@ export type Database = {
           },
         ]
       }
+      search_history: {
+        Row: {
+          created_at: string
+          id: string
+          query: string
+          result_type: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          query: string
+          result_type?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          query?: string
+          result_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       sent_platform_gifts: {
         Row: {
           context_id: string | null
@@ -22028,6 +22079,33 @@ export type Database = {
           },
         ]
       }
+      trending_topics: {
+        Row: {
+          created_at: string
+          engagement_score: number
+          id: string
+          last_updated: string
+          post_count: number
+          topic: string
+        }
+        Insert: {
+          created_at?: string
+          engagement_score?: number
+          id?: string
+          last_updated?: string
+          post_count?: number
+          topic: string
+        }
+        Update: {
+          created_at?: string
+          engagement_score?: number
+          id?: string
+          last_updated?: string
+          post_count?: number
+          topic?: string
+        }
+        Relationships: []
+      }
       universe_questions: {
         Row: {
           answer: string
@@ -22951,6 +23029,27 @@ export type Database = {
           subscription_tier?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      verified_users: {
+        Row: {
+          badge_type: string
+          id: string
+          user_id: string
+          verified_at: string
+        }
+        Insert: {
+          badge_type?: string
+          id?: string
+          user_id: string
+          verified_at?: string
+        }
+        Update: {
+          badge_type?: string
+          id?: string
+          user_id?: string
+          verified_at?: string
         }
         Relationships: []
       }
