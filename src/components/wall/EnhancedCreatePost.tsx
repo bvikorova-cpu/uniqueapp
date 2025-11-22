@@ -16,7 +16,9 @@ import {
   Globe,
   Lock,
   Users2,
-  ChevronDown
+  ChevronDown,
+  Clock,
+  Sparkles
 } from "lucide-react";
 import {
   Select,
@@ -30,6 +32,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { PostTemplatesDialog } from "./PostTemplatesDialog";
+import { SchedulePostDialog } from "./SchedulePostDialog";
 
 interface EnhancedCreatePostProps {
   onPostCreated: () => void;
@@ -55,6 +59,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [location, setLocation] = useState("");
   const [privacy, setPrivacy] = useState<"public" | "friends" | "private">("public");
   const [taggedFriends, setTaggedFriends] = useState<string[]>([]);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
   const { toast } = useToast();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -249,7 +255,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </Select>
           </div>
 
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-7 gap-2">
             <Button
               type="button"
               variant="ghost"
@@ -331,6 +337,32 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               </div>
               <span className="text-xs mt-1 font-medium">Tag</span>
             </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="flex-col h-auto py-3 hover:bg-purple-500/10 rounded-xl transition-all group"
+              onClick={() => setShowTemplates(true)}
+            >
+              <div className="p-2 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-all">
+                <Sparkles className="h-5 w-5 text-purple-600" />
+              </div>
+              <span className="text-xs mt-1 font-medium">Template</span>
+            </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="flex-col h-auto py-3 hover:bg-orange-500/10 rounded-xl transition-all group"
+              onClick={() => setShowSchedule(true)}
+            >
+              <div className="p-2 rounded-full bg-orange-500/10 group-hover:bg-orange-500/20 transition-all">
+                <Clock className="h-5 w-5 text-orange-600" />
+              </div>
+              <span className="text-xs mt-1 font-medium">Schedule</span>
+            </Button>
           </div>
 
           <input
@@ -366,6 +398,17 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           )}
         </Button>
       </form>
+
+      <PostTemplatesDialog
+        open={showTemplates}
+        onOpenChange={setShowTemplates}
+        onSelectTemplate={setContent}
+      />
+
+      <SchedulePostDialog
+        open={showSchedule}
+        onOpenChange={setShowSchedule}
+      />
     </Card>
   );
 }
