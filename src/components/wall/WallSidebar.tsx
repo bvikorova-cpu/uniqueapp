@@ -24,6 +24,7 @@ import { MediaGalleryDialog } from "./MediaGalleryDialog";
 import { FeedPreferencesDialog } from "./FeedPreferencesDialog";
 import { CreateEventDialog } from "./CreateEventDialog";
 import { CreateGroupDialog } from "./CreateGroupDialog";
+import { NotificationsPanel } from "./NotificationsPanel";
 
 interface WallSidebarProps {
   currentPath?: string;

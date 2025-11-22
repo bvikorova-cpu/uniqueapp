@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Gift, Calendar, TrendingUp } from "lucide-react";
 import { TrendingSidebar } from "./TrendingSidebar";
 import { ActivityFeedCard } from "./ActivityFeedCard";
+import { TrendingHashtags } from "./TrendingHashtags";
 
 export function WallRightbar() {
   const navigate = useNavigate();
@@ -143,6 +144,8 @@ export function WallRightbar() {
           ))}
         </div>
       </div>
+
+      <TrendingHashtags />
     </div>
   );
 }
