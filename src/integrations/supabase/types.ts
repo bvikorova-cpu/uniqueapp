@@ -17516,6 +17516,38 @@ export type Database = {
           },
         ]
       }
+      post_moods: {
+        Row: {
+          created_at: string | null
+          emoji: string | null
+          id: string
+          mood: string
+          post_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          emoji?: string | null
+          id?: string
+          mood: string
+          post_id: string
+        }
+        Update: {
+          created_at?: string | null
+          emoji?: string | null
+          id?: string
+          mood?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_moods_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_reactions: {
         Row: {
           created_at: string
@@ -17675,6 +17707,45 @@ export type Database = {
           uses_count?: number | null
         }
         Relationships: []
+      }
+      post_threads: {
+        Row: {
+          child_post_id: string
+          created_at: string | null
+          id: string
+          parent_post_id: string
+          thread_order: number
+        }
+        Insert: {
+          child_post_id: string
+          created_at?: string | null
+          id?: string
+          parent_post_id: string
+          thread_order: number
+        }
+        Update: {
+          child_post_id?: string
+          created_at?: string | null
+          id?: string
+          parent_post_id?: string
+          thread_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_threads_child_post_id_fkey"
+            columns: ["child_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_threads_parent_post_id_fkey"
+            columns: ["parent_post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       post_views: {
         Row: {
@@ -22786,6 +22857,36 @@ export type Database = {
           },
         ]
       }
+      user_activity: {
+        Row: {
+          created_at: string | null
+          custom_status: string | null
+          id: string
+          last_seen: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          custom_status?: string | null
+          id?: string
+          last_seen?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          custom_status?: string | null
+          id?: string
+          last_seen?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_badges: {
         Row: {
           badge_id: string
@@ -23715,6 +23816,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_stories: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          media_type: string
+          media_url: string
+          user_id: string
+          views_count: number | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          media_type: string
+          media_url: string
+          user_id: string
+          views_count?: number | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          media_type?: string
+          media_url?: string
+          user_id?: string
+          views_count?: number | null
         }
         Relationships: []
       }
