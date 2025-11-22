@@ -109,6 +109,36 @@ export type Database = {
         }
         Relationships: []
       }
+      activity_feed: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          target_id: string | null
+          target_type: string | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       activity_logs: {
         Row: {
           activity_type: string
@@ -1702,6 +1732,27 @@ export type Database = {
           rising_sign?: Database["public"]["Enums"]["zodiac_sign"] | null
           sun_sign?: Database["public"]["Enums"]["zodiac_sign"]
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      blocked_users: {
+        Row: {
+          blocked_user_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          blocked_user_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          blocked_user_id?: string
+          created_at?: string
+          id?: string
           user_id?: string
         }
         Relationships: []
@@ -16923,6 +16974,35 @@ export type Database = {
           },
         ]
       }
+      post_edits: {
+        Row: {
+          edited_at: string
+          id: string
+          post_id: string
+          previous_content: string
+        }
+        Insert: {
+          edited_at?: string
+          id?: string
+          post_id: string
+          previous_content: string
+        }
+        Update: {
+          edited_at?: string
+          id?: string
+          post_id?: string
+          previous_content?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_edits_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_hashtags: {
         Row: {
           created_at: string
@@ -17176,6 +17256,7 @@ export type Database = {
           comments_count: number | null
           content: string | null
           created_at: string
+          edited_at: string | null
           id: string
           likes_count: number | null
           reposts_count: number
@@ -17187,6 +17268,7 @@ export type Database = {
           comments_count?: number | null
           content?: string | null
           created_at?: string
+          edited_at?: string | null
           id?: string
           likes_count?: number | null
           reposts_count?: number
@@ -17198,6 +17280,7 @@ export type Database = {
           comments_count?: number | null
           content?: string | null
           created_at?: string
+          edited_at?: string | null
           id?: string
           likes_count?: number | null
           reposts_count?: number
@@ -17384,6 +17467,51 @@ export type Database = {
           season?: string | null
           theme_data?: Json
           total_supply?: number | null
+        }
+        Relationships: []
+      }
+      privacy_settings: {
+        Row: {
+          id: string
+          post_visibility: string
+          profile_visibility: string
+          show_activity: boolean
+          show_birthday: boolean
+          show_friends_list: boolean
+          show_online_status: boolean
+          updated_at: string
+          user_id: string
+          who_can_comment: string
+          who_can_message: string
+          who_can_tag: string
+        }
+        Insert: {
+          id?: string
+          post_visibility?: string
+          profile_visibility?: string
+          show_activity?: boolean
+          show_birthday?: boolean
+          show_friends_list?: boolean
+          show_online_status?: boolean
+          updated_at?: string
+          user_id: string
+          who_can_comment?: string
+          who_can_message?: string
+          who_can_tag?: string
+        }
+        Update: {
+          id?: string
+          post_visibility?: string
+          profile_visibility?: string
+          show_activity?: boolean
+          show_birthday?: boolean
+          show_friends_list?: boolean
+          show_online_status?: boolean
+          updated_at?: string
+          user_id?: string
+          who_can_comment?: string
+          who_can_message?: string
+          who_can_tag?: string
         }
         Relationships: []
       }
@@ -22574,6 +22702,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_media_gallery: {
+        Row: {
+          album_name: string | null
+          created_at: string
+          description: string | null
+          id: string
+          media_type: string
+          media_url: string
+          post_id: string | null
+          user_id: string
+        }
+        Insert: {
+          album_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          media_type: string
+          media_url: string
+          post_id?: string | null
+          user_id: string
+        }
+        Update: {
+          album_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          media_type?: string
+          media_url?: string
+          post_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_media_gallery_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_message_limits: {
         Row: {

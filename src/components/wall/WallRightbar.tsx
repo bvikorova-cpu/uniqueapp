@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Gift, Calendar, TrendingUp } from "lucide-react";
 import { TrendingSidebar } from "./TrendingSidebar";
+import { ActivityFeedCard } from "./ActivityFeedCard";
 
 export function WallRightbar() {
   const navigate = useNavigate();
@@ -81,6 +82,9 @@ export function WallRightbar() {
     <div className="w-80 h-screen sticky top-16 p-4 pt-6 space-y-4 overflow-y-auto pb-20">
       {/* Trending Topics */}
       <TrendingSidebar />
+
+      {/* Activity Feed */}
+      <ActivityFeedCard />
 
       {/* Birthdays */}
       {birthdays.length > 0 && (
