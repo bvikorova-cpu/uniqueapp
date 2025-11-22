@@ -1243,6 +1243,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean | null
+          is_sold: boolean
           listing_type: string
           location: string
           price: number
@@ -1258,6 +1259,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_sold?: boolean
           listing_type?: string
           location: string
           price: number
@@ -1273,6 +1275,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean | null
+          is_sold?: boolean
           listing_type?: string
           location?: string
           price?: number
@@ -1338,6 +1341,65 @@ export type Database = {
             columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bazaar_transactions: {
+        Row: {
+          amount: number
+          buyer_id: string
+          commission_amount: number
+          commission_rate: number
+          created_at: string
+          id: string
+          item_id: string
+          payment_completed_at: string | null
+          seller_id: string
+          seller_payout: number
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          commission_amount: number
+          commission_rate: number
+          created_at?: string
+          id?: string
+          item_id: string
+          payment_completed_at?: string | null
+          seller_id: string
+          seller_payout: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          commission_amount?: number
+          commission_rate?: number
+          created_at?: string
+          id?: string
+          item_id?: string
+          payment_completed_at?: string | null
+          seller_id?: string
+          seller_payout?: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_transactions_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_items"
             referencedColumns: ["id"]
           },
         ]
