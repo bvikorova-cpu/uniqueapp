@@ -4595,6 +4595,42 @@ export type Database = {
           },
         ]
       }
+      collection_items: {
+        Row: {
+          added_at: string | null
+          collection_id: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          added_at?: string | null
+          collection_id: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          added_at?: string | null
+          collection_id?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "saved_collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_items_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collection_pages: {
         Row: {
           collection_id: string
@@ -17358,6 +17394,38 @@ export type Database = {
           },
         ]
       }
+      post_highlights: {
+        Row: {
+          created_at: string | null
+          highlight_order: number | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          highlight_order?: number | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          highlight_order?: number | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_highlights_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_likes: {
         Row: {
           created_at: string
@@ -19634,6 +19702,36 @@ export type Database = {
           id?: string
           rune_meaning?: string
           rune_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      saved_collections: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_private: boolean | null
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean | null
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_private?: boolean | null
+          name?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -22941,6 +23039,30 @@ export type Database = {
         }
         Relationships: []
       }
+      user_interests: {
+        Row: {
+          created_at: string | null
+          id: string
+          interest: string
+          interest_level: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          interest: string
+          interest_level?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          interest?: string
+          interest_level?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_inventory: {
         Row: {
           acquired_at: string
@@ -23559,6 +23681,42 @@ export type Database = {
           subscription_tier?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_verification: {
+        Row: {
+          admin_notes: string | null
+          created_at: string | null
+          documents_submitted: boolean | null
+          id: string
+          updated_at: string | null
+          user_id: string
+          verification_badge: string | null
+          verification_type: string | null
+          verified_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string | null
+          documents_submitted?: boolean | null
+          id?: string
+          updated_at?: string | null
+          user_id: string
+          verification_badge?: string | null
+          verification_type?: string | null
+          verified_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string | null
+          documents_submitted?: boolean | null
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+          verification_badge?: string | null
+          verification_type?: string | null
+          verified_at?: string | null
         }
         Relationships: []
       }
