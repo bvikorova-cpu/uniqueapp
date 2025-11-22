@@ -78,8 +78,6 @@ const Feed = () => {
   const POSTS_PER_PAGE = 10;
   const PULL_THRESHOLD = 80;
   const { toast } = useToast();
-  const { data: trendingPosts, isLoading: trendingLoading } = useTrendingPosts();
-  const { data: followingPosts, isLoading: followingLoading } = useFollowingPosts(user?.id);
   
   // Filter states
   const [sortBy, setSortBy] = useState<SortBy>("newest");
@@ -88,6 +86,20 @@ const Feed = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [savedPosts, setSavedPosts] = useState<Post[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
+
+  const { data: userProfile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+  });
 
   const fetchPosts = async (loadMore = false) => {
     try {
@@ -549,103 +561,82 @@ const Feed = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-8">
-      {/* Pull-to-refresh indicator */}
-      {pullToRefresh.pulling && (
-        <div 
-          className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
-          style={{ 
-            height: `${pullToRefresh.pullDistance}px`,
-            opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
-          }}
-        >
-          <div className="flex flex-col items-center gap-2">
-            <Loader2 
-              className={`h-6 w-6 text-primary transition-transform duration-200 ${
-                pullToRefresh.canRefresh ? 'animate-spin' : ''
-              }`}
-              style={{
-                transform: `rotate(${pullToRefresh.pullDistance * 3}deg)`
-              }}
-            />
-            <span className="text-sm text-muted-foreground">
-              {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
-            </span>
+    <div className="flex min-h-screen bg-background">
+      {/* Left Sidebar */}
+      <WallSidebar currentPath="/wall" />
+
+      {/* Main Feed */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Pull-to-refresh indicator */}
+        {pullToRefresh.pulling && (
+          <div 
+            className="fixed top-0 left-80 right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
+            style={{ 
+              height: `${pullToRefresh.pullDistance}px`,
+              opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
+            }}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <Loader2 
+                className={`h-6 w-6 text-primary transition-transform duration-200 ${
+                  pullToRefresh.canRefresh ? 'animate-spin' : ''
+                }`}
+                style={{
+                  transform: `rotate(${pullToRefresh.pullDistance * 3}deg)`
+                }}
+              />
+              <span className="text-sm text-muted-foreground">
+                {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
+              </span>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="container mx-auto px-4 max-w-4xl">
-        {/* Stories Bar */}
-        <StoriesBar />
+        <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
+          {/* Stories Bar */}
+          <StoriesBar />
 
-        {/* Hidden trigger for CreateStory dialog */}
-        <div id="create-story-trigger" className="hidden">
-          <CreateStory />
-        </div>
+          {/* Hidden trigger for CreateStory dialog */}
+          <div id="create-story-trigger" className="hidden">
+            <CreateStory />
+          </div>
 
-        <div className="mt-4">
-          <CreateStory />
-        </div>
+          {/* Enhanced Create Post */}
+          <EnhancedCreatePost onPostCreated={fetchPosts} userProfile={userProfile} />
 
-        <CreatePost onPostCreated={fetchPosts} />
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search posts, hashtags or users..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 pr-10 bg-accent/50"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
 
-        {/* Search Bar */}
-        <div className="relative mt-4 mb-4">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search posts, hashtags or users..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 pr-10"
+          <PostFilters
+            sortBy={sortBy}
+            timeFilter={timeFilter}
+            categoryFilter={categoryFilter}
+            onSortChange={setSortBy}
+            onTimeChange={setTimeFilter}
+            onCategoryChange={setCategoryFilter}
+            onReset={handleResetFilters}
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Clear search"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
 
-        <PostFilters
-          sortBy={sortBy}
-          timeFilter={timeFilter}
-          categoryFilter={categoryFilter}
-          onSortChange={setSortBy}
-          onTimeChange={setTimeFilter}
-          onCategoryChange={setCategoryFilter}
-          onReset={handleResetFilters}
-        />
-
-        <Tabs defaultValue="all" className="mt-8">
-          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4">
-            <TabsTrigger value="all" className="flex items-center gap-2">
-              <Home className="h-4 w-4" />
-              All Posts
-            </TabsTrigger>
-            <TabsTrigger value="following" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Following
-            </TabsTrigger>
-            <TabsTrigger value="trending" className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Trending
-            </TabsTrigger>
-            <TabsTrigger 
-              value="saved" 
-              className="flex items-center gap-2"
-              onClick={() => fetchSavedPosts()}
-            >
-              <Bookmark className="h-4 w-4" />
-              Saved
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all" className="mt-6">
+          {/* Feed */}
+          <div className="space-y-4">
             {loading ? (
               <Card className="p-8 flex items-center justify-center">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -655,11 +646,11 @@ const Feed = () => {
                 No posts found. Try adjusting your filters.
               </Card>
             ) : (
-              <div className="masonry-grid">
+              <>
                 {filteredFeedItems.map((item, index) => (
                   <div 
                     key={`${item.type}-${item.data.id}`}
-                    className="masonry-item animate-fade-in"
+                    className="animate-fade-in"
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     {item.type === 'post' ? (
@@ -675,128 +666,35 @@ const Feed = () => {
                     )}
                   </div>
                 ))}
-              </div>
+                
+                {/* Loading more indicator */}
+                {loadingMore && (
+                  <Card className="p-4 flex items-center justify-center">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+                    <span className="text-sm text-muted-foreground">Loading more posts...</span>
+                  </Card>
+                )}
+                
+                {/* End of feed message */}
+                {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                  <Card className="p-4 text-center text-muted-foreground text-sm">
+                    You've reached the end! 🎉
+                  </Card>
+                )}
+              </>
             )}
-          </TabsContent>
-
-          <TabsContent value="following" className="mt-6">
-            {followingLoading ? (
-              <Card className="p-8 flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </Card>
-            ) : !followingPosts || followingPosts.length === 0 ? (
-              <Card className="p-8 text-center">
-                <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground mb-2">
-                  No posts from people you follow yet
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Follow users to see their posts here
-                </p>
-              </Card>
-            ) : (
-              <div className="masonry-grid">
-                {followingPosts.map((post, index) => (
-                  <div 
-                    key={post.id}
-                    className="masonry-item animate-fade-in"
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <PostCard
-                      post={post}
-                      onDelete={fetchPosts}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="trending" className="mt-6">
-            {trendingLoading ? (
-              <Card className="p-8 flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </Card>
-            ) : !trendingPosts || trendingPosts.length === 0 ? (
-              <Card className="p-8 text-center text-muted-foreground">
-                No trending posts yet. Be the first to create viral content!
-              </Card>
-            ) : (
-              <div className="masonry-grid">
-                {trendingPosts.map((post, index) => (
-                  <div 
-                    key={post.id}
-                    className="masonry-item animate-fade-in"
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <PostCard
-                      post={post}
-                      onDelete={fetchPosts}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Loading more indicator */}
-            {loadingMore && (
-              <Card className="p-4 mt-4 flex items-center justify-center">
-                <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
-                <span className="text-sm text-muted-foreground">Loading more posts...</span>
-              </Card>
-            )}
-            
-            {/* End of feed message */}
-            {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
-              <Card className="p-4 mt-4 text-center text-muted-foreground text-sm">
-                You've reached the end! 🎉
-              </Card>
-            )}
-          </TabsContent>
-
-          <TabsContent value="saved" className="mt-6">
-            {loadingSaved ? (
-              <Card className="p-8 flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </Card>
-            ) : !savedPosts || savedPosts.length === 0 ? (
-              <Card className="p-8 text-center">
-                <Bookmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground mb-2">
-                  No saved posts yet
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Save posts by clicking the bookmark icon to view them here
-                </p>
-              </Card>
-            ) : (
-              <div className="masonry-grid">
-                {savedPosts.map((post, index) => (
-                  <div 
-                    key={post.id}
-                    className="masonry-item animate-fade-in"
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <PostCard
-                      post={post}
-                      onDelete={() => {
-                        fetchPosts();
-                        fetchSavedPosts();
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
       </div>
+
+      {/* Right Sidebar */}
+      <WallRightbar />
 
       {/* Back to top button */}
       {showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-primary text-primary-foreground shadow-glow hover:shadow-lg transition-all duration-300 hover:scale-110 animate-fade-in"
+          className="fixed bottom-8 right-96 z-50 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-fade-in"
           aria-label="Back to top"
         >
           <ArrowUp className="h-5 w-5" />
