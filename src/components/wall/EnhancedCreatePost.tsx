@@ -18,7 +18,8 @@ import {
   Users2,
   ChevronDown,
   Clock,
-  Sparkles
+  Sparkles,
+  BarChart3
 } from "lucide-react";
 import {
   Select,
@@ -34,6 +35,10 @@ import {
 } from "@/components/ui/popover";
 import { PostTemplatesDialog } from "./PostTemplatesDialog";
 import { SchedulePostDialog } from "./SchedulePostDialog";
+import { CreatePollDialog } from "./CreatePollDialog";
+import { HashtagInput } from "./HashtagInput";
+import { useHashtags } from "@/hooks/useHashtags";
+import { usePolls } from "@/hooks/usePolls";
 
 interface EnhancedCreatePostProps {
   onPostCreated: () => void;
@@ -61,7 +66,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [taggedFriends, setTaggedFriends] = useState<string[]>([]);
   const [showTemplates, setShowTemplates] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
+  const [showPoll, setShowPoll] = useState(false);
+  const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const { toast } = useToast();
+  const { createHashtagsForPost } = useHashtags();
+  const { createPoll } = usePolls();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -106,6 +115,19 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
       if (postError) throw postError;
 
+      // Create hashtags
+      await createHashtagsForPost(post.id, content);
+
+      // Create poll if added
+      if (pollData) {
+        createPoll({
+          postId: post.id,
+          question: pollData.question,
+          options: pollData.options,
+          endsAt: pollData.endsAt,
+        });
+      }
+
       if (files.length > 0) {
         for (const file of files) {
           const fileExt = file.name.split(".").pop();
@@ -135,6 +157,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
       setFeeling(null);
       setLocation("");
       setPrivacy("public");
+      setPollData(null);
       onPostCreated();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -166,6 +189,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               onChange={(e) => setContent(e.target.value)}
               className="min-h-[100px] resize-none border-none bg-accent/30 focus-visible:ring-2 focus-visible:ring-primary/20 rounded-xl"
             />
+            <HashtagInput text={content} />
           </div>
         </div>
 
@@ -255,7 +279,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </Select>
           </div>
 
-          <div className="grid grid-cols-7 gap-2">
+          <div className="grid grid-cols-8 gap-2">
             <Button
               type="button"
               variant="ghost"
@@ -363,7 +387,43 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               </div>
               <span className="text-xs mt-1 font-medium">Schedule</span>
             </Button>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="flex-col h-auto py-3 hover:bg-cyan-500/10 rounded-xl transition-all group"
+              onClick={() => setShowPoll(true)}
+            >
+              <div className="p-2 rounded-full bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all">
+                <BarChart3 className="h-5 w-5 text-cyan-600" />
+              </div>
+              <span className="text-xs mt-1 font-medium">Poll</span>
+            </Button>
           </div>
+
+          {/* Poll preview */}
+          {pollData && (
+            <div className="mt-4 p-3 bg-accent/30 rounded-lg">
+              <div className="flex justify-between items-start mb-2">
+                <span className="font-semibold text-sm">Poll: {pollData.question}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
+                  onClick={() => setPollData(null)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="space-y-1 text-sm text-muted-foreground">
+                {pollData.options.map((opt, i) => (
+                  <div key={i}>• {opt}</div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <input
             id="image-upload"
@@ -409,6 +469,16 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
         open={showSchedule}
         onOpenChange={setShowSchedule}
       />
+
+      {showPoll && (
+        <CreatePollDialog
+          onCreatePoll={(question, options, endsAt) => {
+            setPollData({ question, options, endsAt });
+            setShowPoll(false);
+            toast({ title: "Poll added to post!" });
+          }}
+        />
+      )}
     </Card>
   );
 }
