@@ -19801,6 +19801,161 @@ export type Database = {
         }
         Relationships: []
       }
+      stock_content_downloads: {
+        Row: {
+          buyer_email: string | null
+          buyer_id: string | null
+          content_id: string
+          created_at: string | null
+          creator_earning_eur: number
+          download_url: string | null
+          downloaded_at: string | null
+          id: string
+          platform_fee_eur: number
+          price_paid_eur: number
+          stripe_payment_id: string | null
+        }
+        Insert: {
+          buyer_email?: string | null
+          buyer_id?: string | null
+          content_id: string
+          created_at?: string | null
+          creator_earning_eur: number
+          download_url?: string | null
+          downloaded_at?: string | null
+          id?: string
+          platform_fee_eur: number
+          price_paid_eur: number
+          stripe_payment_id?: string | null
+        }
+        Update: {
+          buyer_email?: string | null
+          buyer_id?: string | null
+          content_id?: string
+          created_at?: string | null
+          creator_earning_eur?: number
+          download_url?: string | null
+          downloaded_at?: string | null
+          id?: string
+          platform_fee_eur?: number
+          price_paid_eur?: number
+          stripe_payment_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_content_downloads_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "stock_content_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_content_earnings: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          id: string
+          month_year: string
+          net_earnings_eur: number | null
+          platform_fees_eur: number | null
+          total_downloads: number | null
+          total_revenue_eur: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          month_year: string
+          net_earnings_eur?: number | null
+          platform_fees_eur?: number | null
+          total_downloads?: number | null
+          total_revenue_eur?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          month_year?: string
+          net_earnings_eur?: number | null
+          platform_fees_eur?: number | null
+          total_downloads?: number | null
+          total_revenue_eur?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      stock_content_items: {
+        Row: {
+          category: string
+          content_type: string
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          duration_seconds: number | null
+          file_size_mb: number | null
+          file_url: string
+          id: string
+          is_active: boolean | null
+          license_type: string
+          preview_url: string | null
+          price_eur: number
+          resolution: string | null
+          tags: string[] | null
+          thumbnail_url: string | null
+          title: string
+          total_downloads: number | null
+          total_revenue_eur: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          category: string
+          content_type: string
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          duration_seconds?: number | null
+          file_size_mb?: number | null
+          file_url: string
+          id?: string
+          is_active?: boolean | null
+          license_type?: string
+          preview_url?: string | null
+          price_eur?: number
+          resolution?: string | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title: string
+          total_downloads?: number | null
+          total_revenue_eur?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string
+          content_type?: string
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          duration_seconds?: number | null
+          file_size_mb?: number | null
+          file_url?: string
+          id?: string
+          is_active?: boolean | null
+          license_type?: string
+          preview_url?: string | null
+          price_eur?: number
+          resolution?: string | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          title?: string
+          total_downloads?: number | null
+          total_revenue_eur?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       stories: {
         Row: {
           caption: string | null
