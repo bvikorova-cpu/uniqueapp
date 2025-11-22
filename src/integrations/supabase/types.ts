@@ -565,6 +565,33 @@ export type Database = {
         }
         Relationships: []
       }
+      album_photos: {
+        Row: {
+          album_id: string
+          caption: string | null
+          created_at: string | null
+          id: string
+          order_index: number | null
+          photo_url: string
+        }
+        Insert: {
+          album_id: string
+          caption?: string | null
+          created_at?: string | null
+          id?: string
+          order_index?: number | null
+          photo_url: string
+        }
+        Update: {
+          album_id?: string
+          caption?: string | null
+          created_at?: string | null
+          id?: string
+          order_index?: number | null
+          photo_url?: string
+        }
+        Relationships: []
+      }
       analyzer_chat_messages: {
         Row: {
           analysis_id: string
@@ -9266,6 +9293,75 @@ export type Database = {
         }
         Relationships: []
       }
+      event_attendees: {
+        Row: {
+          event_id: string
+          id: string
+          joined_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          joined_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          joined_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          cover_image: string | null
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          end_time: string
+          id: string
+          is_public: boolean | null
+          location: string | null
+          max_attendees: number | null
+          start_time: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          end_time: string
+          id?: string
+          is_public?: boolean | null
+          location?: string | null
+          max_attendees?: number | null
+          start_time: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          end_time?: string
+          id?: string
+          is_public?: boolean | null
+          location?: string | null
+          max_attendees?: number | null
+          start_time?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       f1_fantasy_teams: {
         Row: {
           constructor_id: string | null
@@ -10314,6 +10410,69 @@ export type Database = {
           personality_compatibility?: Json | null
           user1_id?: string
           user2_id?: string
+        }
+        Relationships: []
+      }
+      group_members: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string | null
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string | null
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      groups: {
+        Row: {
+          cover_image: string | null
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          id: string
+          is_private: boolean | null
+          members_count: number | null
+          name: string
+          posts_count: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          id?: string
+          is_private?: boolean | null
+          members_count?: number | null
+          name: string
+          posts_count?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          id?: string
+          is_private?: boolean | null
+          members_count?: number | null
+          name?: string
+          posts_count?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -16544,6 +16703,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      photo_albums: {
+        Row: {
+          cover_photo: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_public: boolean | null
+          photos_count: number | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cover_photo?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          photos_count?: number | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cover_photo?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          photos_count?: number | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       photo_credits: {
         Row: {

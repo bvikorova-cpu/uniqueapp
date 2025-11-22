@@ -22,6 +22,8 @@ import { NotificationBell } from "./NotificationBell";
 import { PrivacySettingsDialog } from "./PrivacySettingsDialog";
 import { MediaGalleryDialog } from "./MediaGalleryDialog";
 import { FeedPreferencesDialog } from "./FeedPreferencesDialog";
+import { CreateEventDialog } from "./CreateEventDialog";
+import { CreateGroupDialog } from "./CreateGroupDialog";
 
 interface WallSidebarProps {
   currentPath?: string;
@@ -117,6 +119,8 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
         {/* Quick Actions */}
         <div className="space-y-2">
           <FeedPreferencesDialog />
+          <CreateEventDialog />
+          <CreateGroupDialog />
           <PrivacySettingsDialog />
           <MediaGalleryDialog />
         </div>
