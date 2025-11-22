@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { NotificationBell } from "./NotificationBell";
 import { PrivacySettingsDialog } from "./PrivacySettingsDialog";
 import { MediaGalleryDialog } from "./MediaGalleryDialog";
+import { FeedPreferencesDialog } from "./FeedPreferencesDialog";
 
 interface WallSidebarProps {
   currentPath?: string;
@@ -115,6 +116,7 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
 
         {/* Quick Actions */}
         <div className="space-y-2">
+          <FeedPreferencesDialog />
           <PrivacySettingsDialog />
           <MediaGalleryDialog />
         </div>
