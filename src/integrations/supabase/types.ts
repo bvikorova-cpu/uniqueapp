@@ -16767,6 +16767,44 @@ export type Database = {
         }
         Relationships: []
       }
+      photo_tags: {
+        Row: {
+          created_at: string | null
+          id: string
+          photo_url: string
+          post_id: string
+          tagged_user_id: string
+          x_position: number | null
+          y_position: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          photo_url: string
+          post_id: string
+          tagged_user_id: string
+          x_position?: number | null
+          y_position?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          photo_url?: string
+          post_id?: string
+          tagged_user_id?: string
+          x_position?: number | null
+          y_position?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photo_tags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pinned_posts: {
         Row: {
           id: string
@@ -17155,6 +17193,41 @@ export type Database = {
           },
         ]
       }
+      post_collaborators: {
+        Row: {
+          collaborator_id: string
+          created_at: string | null
+          id: string
+          invited_by: string
+          post_id: string
+          status: string | null
+        }
+        Insert: {
+          collaborator_id: string
+          created_at?: string | null
+          id?: string
+          invited_by: string
+          post_id: string
+          status?: string | null
+        }
+        Update: {
+          collaborator_id?: string
+          created_at?: string | null
+          id?: string
+          invited_by?: string
+          post_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_collaborators_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_comments: {
         Row: {
           content: string
@@ -17189,6 +17262,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      post_drafts: {
+        Row: {
+          content: string | null
+          created_at: string | null
+          draft_data: Json | null
+          id: string
+          media_urls: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string | null
+          draft_data?: Json | null
+          id?: string
+          media_urls?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string | null
+          draft_data?: Json | null
+          id?: string
+          media_urls?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       post_edits: {
         Row: {
