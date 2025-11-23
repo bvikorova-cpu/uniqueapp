@@ -12,6 +12,15 @@ import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Wall from "./pages/Wall";
+import WallFeed from "./pages/wall/WallFeed";
+import WallMessages from "./pages/wall/WallMessages";
+import WallFriends from "./pages/wall/WallFriends";
+import WallGroups from "./pages/wall/WallGroups";
+import WallPages from "./pages/wall/WallPages";
+import WallVideos from "./pages/wall/WallVideos";
+import WallEvents from "./pages/wall/WallEvents";
+import WallSaved from "./pages/wall/WallSaved";
+import WallTrending from "./pages/wall/WallTrending";
 import Messenger from "./pages/Messenger";
 import Megatalent from "./pages/Megatalent";
 import Subscription from "./pages/Subscription";
@@ -294,6 +303,14 @@ const App = () => (
               <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/wall" element={<Wall />} />
+              <Route path="/wall/messages" element={<Wall />} />
+              <Route path="/wall/friends" element={<Wall />} />
+              <Route path="/wall/groups" element={<Wall />} />
+              <Route path="/wall/pages" element={<Wall />} />
+              <Route path="/wall/videos" element={<Wall />} />
+              <Route path="/wall/events" element={<Wall />} />
+              <Route path="/wall/saved" element={<Wall />} />
+              <Route path="/wall/trending" element={<Wall />} />
               <Route path="/post/:id" element={<PostDetail />} />
               <Route path="/videos" element={<Videos />} />
               <Route path="/messenger" element={<Messenger />} />

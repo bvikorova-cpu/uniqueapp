@@ -1,0 +1,184 @@
+import { useState, useEffect, useMemo } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import PostCard from "@/components/feed/PostCard";
+import RepostCard from "@/components/feed/RepostCard";
+import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
+import { Card } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
+import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
+import { SearchBar } from "@/components/wall/SearchBar";
+
+interface Post {
+  id: string;
+  content: string;
+  created_at: string;
+  user_id: string;
+  likes_count: number;
+  comments_count: number;
+  shares_count: number;
+  reposts_count: number;
+  media: Array<{
+    id: string;
+    file_url: string;
+    file_type: string;
+  }>;
+  profiles: {
+    id: string;
+    full_name: string | null;
+    avatar_url: string | null;
+  };
+}
+
+interface Repost {
+  id: string;
+  user_id: string;
+  comment: string;
+  created_at: string;
+  original_post: Post;
+  profiles: {
+    id: string;
+    full_name: string | null;
+    avatar_url: string | null;
+  };
+}
+
+type FeedItem = 
+  | { type: 'post'; data: Post }
+  | { type: 'repost'; data: Repost };
+
+interface WallFeedProps {
+  posts: Post[];
+  reposts: Repost[];
+  feedItems: FeedItem[];
+  loading: boolean;
+  loadingMore: boolean;
+  hasMore: boolean;
+  pullToRefresh: {
+    pulling: boolean;
+    pullDistance: number;
+    canRefresh: boolean;
+  };
+  PULL_THRESHOLD: number;
+  fetchPosts: (loadMore?: boolean) => Promise<void>;
+  filteredFeedItems: FeedItem[];
+}
+
+export default function WallFeed({ 
+  loading, 
+  loadingMore, 
+  hasMore, 
+  pullToRefresh, 
+  PULL_THRESHOLD,
+  fetchPosts,
+  filteredFeedItems 
+}: WallFeedProps) {
+  const [sortBy, setSortBy] = useState<SortBy>("newest");
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+
+  const handleResetFilters = () => {
+    setSortBy("newest");
+    setTimeFilter("all");
+    setCategoryFilter("all");
+  };
+
+  return (
+    <>
+      {/* Pull-to-refresh indicator */}
+      {pullToRefresh.pulling && (
+        <div 
+          className="fixed top-0 left-80 right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
+          style={{ 
+            height: `${pullToRefresh.pullDistance}px`,
+            opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
+          }}
+        >
+          <div className="flex flex-col items-center gap-2">
+            <Loader2 
+              className={`h-6 w-6 text-primary transition-transform duration-200 ${
+                pullToRefresh.canRefresh ? 'animate-spin' : ''
+              }`}
+              style={{
+                transform: `rotate(${pullToRefresh.pullDistance * 3}deg)`
+              }}
+            />
+            <span className="text-sm text-muted-foreground">
+              {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
+            </span>
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
+        {/* Achievements Badge */}
+        <div className="flex justify-end">
+          <AchievementsBadge />
+        </div>
+
+        {/* Search Bar */}
+        <SearchBar />
+
+        <PostFilters
+          sortBy={sortBy}
+          timeFilter={timeFilter}
+          categoryFilter={categoryFilter}
+          onSortChange={setSortBy}
+          onTimeChange={setTimeFilter}
+          onCategoryChange={setCategoryFilter}
+          onReset={handleResetFilters}
+        />
+
+        {/* Feed */}
+        <div className="space-y-4">
+          {loading ? (
+            <Card className="p-8 flex items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </Card>
+          ) : filteredFeedItems.length === 0 ? (
+            <Card className="p-8 text-center text-muted-foreground">
+              No posts found. Try adjusting your filters.
+            </Card>
+          ) : (
+            <>
+              {filteredFeedItems.map((item, index) => (
+                <div 
+                  key={`${item.type}-${item.data.id}`}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  {item.type === 'post' ? (
+                    <PostCard
+                      post={item.data}
+                      onDelete={fetchPosts}
+                    />
+                  ) : (
+                    <RepostCard
+                      repost={item.data}
+                      onDelete={fetchPosts}
+                    />
+                  )}
+                </div>
+              ))}
+              
+              {/* Loading more indicator */}
+              {loadingMore && (
+                <Card className="p-4 flex items-center justify-center">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+                  <span className="text-sm text-muted-foreground">Loading more posts...</span>
+                </Card>
+              )}
+              
+              {/* End of feed message */}
+              {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                <Card className="p-4 text-center text-muted-foreground text-sm">
+                  You've reached the end! 🎉
+                </Card>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
