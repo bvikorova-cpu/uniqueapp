@@ -22,6 +22,12 @@ import {
   BarChart3
 } from "lucide-react";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -279,128 +285,162 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
             </Select>
           </div>
 
-          <div className="grid grid-cols-8 gap-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="flex-col h-auto py-3 hover:bg-green-500/10 rounded-xl transition-all group"
-              onClick={() => document.getElementById("image-upload")?.click()}
-            >
-              <div className="p-2 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all">
-                <Image className="h-5 w-5 text-green-600" />
-              </div>
-              <span className="text-xs mt-1 font-medium">Photo</span>
-            </Button>
+          <TooltipProvider>
+            <div className="grid grid-cols-8 gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-col h-auto py-2 hover:bg-green-500/10 rounded-xl transition-all group"
+                    onClick={() => document.getElementById("image-upload")?.click()}
+                  >
+                    <div className="p-2 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all">
+                      <Image className="h-5 w-5 text-green-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Photo</TooltipContent>
+              </Tooltip>
 
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="flex-col h-auto py-3 hover:bg-red-500/10 rounded-xl transition-all group"
-              onClick={() => document.getElementById("video-upload")?.click()}
-            >
-              <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
-                <Video className="h-5 w-5 text-red-600" />
-              </div>
-              <span className="text-xs mt-1 font-medium">Video</span>
-            </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group"
+                    onClick={() => document.getElementById("video-upload")?.click()}
+                  >
+                    <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
+                      <Video className="h-5 w-5 text-red-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Video</TooltipContent>
+              </Tooltip>
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-3 hover:bg-yellow-500/10 rounded-xl transition-all group">
-                  <div className="p-2 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all">
-                    <Smile className="h-5 w-5 text-yellow-600" />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2 hover:bg-yellow-500/10 rounded-xl transition-all group">
+                        <div className="p-2 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all">
+                          <Smile className="h-5 w-5 text-yellow-600" />
+                        </div>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Feeling</TooltipContent>
+                  </Tooltip>
+                </PopoverTrigger>
+                <PopoverContent className="w-64">
+                  <div className="grid grid-cols-4 gap-2">
+                    {feelings.map((f) => (
+                      <Button
+                        key={f.label}
+                        type="button"
+                        variant="ghost"
+                        className="flex-col h-auto py-2"
+                        onClick={() => {
+                          setFeeling(f.emoji + " " + f.label);
+                        }}
+                      >
+                        <span className="text-2xl">{f.emoji}</span>
+                        <span className="text-xs mt-1">{f.label}</span>
+                      </Button>
+                    ))}
                   </div>
-                  <span className="text-xs mt-1 font-medium">Feeling</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64">
-                <div className="grid grid-cols-4 gap-2">
-                  {feelings.map((f) => (
-                    <Button
-                      key={f.label}
-                      type="button"
-                      variant="ghost"
-                      className="flex-col h-auto py-2"
-                      onClick={() => {
-                        setFeeling(f.emoji + " " + f.label);
-                      }}
-                    >
-                      <span className="text-2xl">{f.emoji}</span>
-                      <span className="text-xs mt-1">{f.label}</span>
-                    </Button>
-                  ))}
-                </div>
-              </PopoverContent>
-            </Popover>
+                </PopoverContent>
+              </Popover>
 
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-3 hover:bg-red-500/10 rounded-xl transition-all group">
-                  <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
-                    <MapPin className="h-5 w-5 text-red-600" />
-                  </div>
-                  <span className="text-xs mt-1 font-medium">Location</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-64">
-                <input
-                  type="text"
-                  placeholder="Where are you?"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-md"
-                />
-              </PopoverContent>
-            </Popover>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group">
+                        <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
+                          <MapPin className="h-5 w-5 text-red-600" />
+                        </div>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Location</TooltipContent>
+                  </Tooltip>
+                </PopoverTrigger>
+                <PopoverContent className="w-64">
+                  <input
+                    type="text"
+                    placeholder="Where are you?"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-md"
+                  />
+                </PopoverContent>
+              </Popover>
 
-            <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-3 hover:bg-blue-500/10 rounded-xl transition-all group">
-              <div className="p-2 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all">
-                <Users className="h-5 w-5 text-blue-600" />
-              </div>
-              <span className="text-xs mt-1 font-medium">Tag</span>
-            </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2 hover:bg-blue-500/10 rounded-xl transition-all group">
+                    <div className="p-2 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all">
+                      <Users className="h-5 w-5 text-blue-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Tag friends</TooltipContent>
+              </Tooltip>
 
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="flex-col h-auto py-3 hover:bg-purple-500/10 rounded-xl transition-all group"
-              onClick={() => setShowTemplates(true)}
-            >
-              <div className="p-2 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-all">
-                <Sparkles className="h-5 w-5 text-purple-600" />
-              </div>
-              <span className="text-xs mt-1 font-medium">Template</span>
-            </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-col h-auto py-2 hover:bg-purple-500/10 rounded-xl transition-all group"
+                    onClick={() => setShowTemplates(true)}
+                  >
+                    <div className="p-2 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-all">
+                      <Sparkles className="h-5 w-5 text-purple-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Template</TooltipContent>
+              </Tooltip>
 
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="flex-col h-auto py-3 hover:bg-orange-500/10 rounded-xl transition-all group"
-              onClick={() => setShowSchedule(true)}
-            >
-              <div className="p-2 rounded-full bg-orange-500/10 group-hover:bg-orange-500/20 transition-all">
-                <Clock className="h-5 w-5 text-orange-600" />
-              </div>
-              <span className="text-xs mt-1 font-medium">Schedule</span>
-            </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-col h-auto py-2 hover:bg-orange-500/10 rounded-xl transition-all group"
+                    onClick={() => setShowSchedule(true)}
+                  >
+                    <div className="p-2 rounded-full bg-orange-500/10 group-hover:bg-orange-500/20 transition-all">
+                      <Clock className="h-5 w-5 text-orange-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Schedule</TooltipContent>
+              </Tooltip>
 
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="flex-col h-auto py-3 hover:bg-cyan-500/10 rounded-xl transition-all group"
-              onClick={() => setShowPoll(true)}
-            >
-              <div className="p-2 rounded-full bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all">
-                <BarChart3 className="h-5 w-5 text-cyan-600" />
-              </div>
-              <span className="text-xs mt-1 font-medium">Poll</span>
-            </Button>
-          </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="flex-col h-auto py-2 hover:bg-cyan-500/10 rounded-xl transition-all group"
+                    onClick={() => setShowPoll(true)}
+                  >
+                    <div className="p-2 rounded-full bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all">
+                      <BarChart3 className="h-5 w-5 text-cyan-600" />
+                    </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Poll</TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
 
           {/* Poll preview */}
           {pollData && (
