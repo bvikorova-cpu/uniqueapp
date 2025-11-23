@@ -74,7 +74,7 @@ const CertificationPrograms = () => {
         "Capstone project for portfolio"
       ],
       examFormat: "Practical exam + Case study",
-      jobRelevance: "Average salary increase: $25k",
+      jobRelevance: "Average salary increase: €25k",
       enrolled: 623
     },
     {
@@ -143,7 +143,7 @@ const CertificationPrograms = () => {
         "Security audit project"
       ],
       examFormat: "Practical lab exam + Theory",
-      jobRelevance: "Starting salary: $85k average",
+      jobRelevance: "Starting salary: €85k average",
       enrolled: 534
     },
     {

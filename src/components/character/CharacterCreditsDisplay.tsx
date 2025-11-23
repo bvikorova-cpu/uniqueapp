@@ -37,13 +37,14 @@ export const CharacterCreditsDisplay = () => {
             variant="outline"
           >
             <Plus className="mr-2 h-4 w-4" />
-            50 Credits - $9.99
+            50 Credits - €9.99
           </Button>
           <Button
-            onClick={() => handlePurchase(200)}
+            variant="outline"
+            onClick={() => console.log("Purchase 200 credits")}
           >
             <Plus className="mr-2 h-4 w-4" />
-            200 Credits - $29.99
+            200 Credits - €29.99
           </Button>
         </div>
       </div>

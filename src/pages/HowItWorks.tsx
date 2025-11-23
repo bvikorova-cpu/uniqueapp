@@ -83,16 +83,16 @@ export default function HowItWorks() {
               </p>
               <div className="bg-muted p-4 rounded-lg space-y-2">
                 <div className="flex justify-between items-center">
-                  <span>Student pays $100</span>
-                  <Badge>$100</Badge>
+                  <span>Student pays €100</span>
+                  <Badge>€100</Badge>
                 </div>
                 <div className="flex justify-between items-center text-primary font-semibold">
                   <span>You receive (70%)</span>
-                  <Badge variant="default">$70</Badge>
+                  <Badge variant="default">€70</Badge>
                 </div>
                 <div className="flex justify-between items-center text-sm text-muted-foreground">
                   <span>Platform fee (30%)</span>
-                  <Badge variant="outline">$30</Badge>
+                  <Badge variant="outline">€30</Badge>
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
@@ -380,16 +380,16 @@ export default function HowItWorks() {
                       <span className="font-medium">Your Earnings (70%)</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>$49.99</span>
-                      <span className="text-primary font-semibold">$34.99</span>
+                      <span>€49.99</span>
+                      <span className="text-primary font-semibold">€34.99</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>$99.99</span>
-                      <span className="text-primary font-semibold">$69.99</span>
+                      <span>€99.99</span>
+                      <span className="text-primary font-semibold">€69.99</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>$199.99</span>
-                      <span className="text-primary font-semibold">$139.99</span>
+                      <span>€199.99</span>
+                      <span className="text-primary font-semibold">€139.99</span>
                     </div>
                   </div>
                 </div>

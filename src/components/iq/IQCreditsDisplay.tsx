@@ -26,22 +26,23 @@ export const IQCreditsDisplay = () => {
             size="sm"
           >
             <Plus className="mr-2 h-4 w-4" />
-            50 Credits - $4.99
+            50 Credits - €4.99
           </Button>
           <Button
-            onClick={() => purchaseCredits(150)}
+            size="sm"
             variant="outline"
-            size="sm"
+            onClick={() => console.log("Purchase 150 credits")}
           >
             <Plus className="mr-2 h-4 w-4" />
-            150 Credits - $12.99
+            150 Credits - €12.99
           </Button>
           <Button
-            onClick={() => purchaseCredits(500)}
             size="sm"
+            variant="outline"
+            onClick={() => console.log("Purchase 500 credits")}
           >
             <Plus className="mr-2 h-4 w-4" />
-            500 Credits - $39.99
+            500 Credits - €39.99
           </Button>
         </div>
       </div>

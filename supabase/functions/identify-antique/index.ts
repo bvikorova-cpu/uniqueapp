@@ -75,7 +75,7 @@ Format as JSON with keys: name, period, style, materials, origin`;
         break;
       case 'valuation':
         prompt = `Provide a detailed market valuation for this antique:
-1. Estimated market value range (in USD)
+1. Estimated market value range (in EUR)
 2. Factors affecting value
 3. Rarity assessment
 4. Market demand
