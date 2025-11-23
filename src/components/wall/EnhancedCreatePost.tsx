@@ -43,6 +43,7 @@ import { PostTemplatesDialog } from "./PostTemplatesDialog";
 import { SchedulePostDialog } from "./SchedulePostDialog";
 import { CreatePollDialog } from "./CreatePollDialog";
 import { HashtagInput } from "./HashtagInput";
+import { TagFriendsDialog } from "./TagFriendsDialog";
 import { useHashtags } from "@/hooks/useHashtags";
 import { usePolls } from "@/hooks/usePolls";
 
@@ -73,6 +74,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   const [showTemplates, setShowTemplates] = useState(false);
   const [showSchedule, setShowSchedule] = useState(false);
   const [showPoll, setShowPoll] = useState(false);
+  const [showTagFriends, setShowTagFriends] = useState(false);
   const [pollData, setPollData] = useState<{ question: string; options: string[]; endsAt: Date } | null>(null);
   const { toast } = useToast();
   const { createHashtagsForPost } = useHashtags();
@@ -132,6 +134,16 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           options: pollData.options,
           endsAt: pollData.endsAt,
         });
+      }
+
+      // Add tagged friends
+      if (taggedFriends.length > 0) {
+        for (const friendId of taggedFriends) {
+          await supabase.from("post_tags").insert({
+            post_id: post.id,
+            tagged_user_id: friendId,
+          });
+        }
       }
 
       if (files.length > 0) {
@@ -199,8 +211,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
         </div>
 
-        {/* Selected feeling, location preview */}
-        {(feeling || location) && (
+        {/* Selected feeling, location, tagged friends preview */}
+        {(feeling || location || taggedFriends.length > 0) && (
           <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
             {feeling && (
               <div className="flex items-center gap-1 bg-accent px-3 py-1 rounded-full">
@@ -217,6 +229,16 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <span>at</span>
                 <span className="font-semibold">{location}</span>
                 <button type="button" onClick={() => setLocation("")}>
+                  <X className="h-3 w-3 ml-1" />
+                </button>
+              </div>
+            )}
+            {taggedFriends.length > 0 && (
+              <div className="flex items-center gap-1 bg-accent px-3 py-1 rounded-full">
+                <Users className="h-3 w-3" />
+                <span>with</span>
+                <span className="font-semibold">{taggedFriends.length} {taggedFriends.length === 1 ? 'friend' : 'friends'}</span>
+                <button type="button" onClick={() => setTaggedFriends([])}>
                   <X className="h-3 w-3 ml-1" />
                 </button>
               </div>
@@ -365,7 +387,13 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2 hover:bg-blue-500/10 rounded-xl transition-all group">
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    size="sm" 
+                    className="flex-col h-auto py-2 hover:bg-blue-500/10 rounded-xl transition-all group"
+                    onClick={() => setShowTagFriends(true)}
+                  >
                     <div className="p-2 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all">
                       <Users className="h-5 w-5 text-blue-600" />
                     </div>
@@ -504,6 +532,19 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           }}
         />
       )}
+
+      <TagFriendsDialog
+        open={showTagFriends}
+        onOpenChange={setShowTagFriends}
+        selectedFriends={taggedFriends}
+        onToggleFriend={(friendId) => {
+          setTaggedFriends((prev) =>
+            prev.includes(friendId)
+              ? prev.filter((id) => id !== friendId)
+              : [...prev, friendId]
+          );
+        }}
+      />
     </Card>
   );
 }
