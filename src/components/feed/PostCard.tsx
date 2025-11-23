@@ -208,7 +208,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm("Naozaj chcete odstrániť tento príspevok?")) return;
+    if (!confirm("Do you really want to delete this post?")) return;
 
     setDeleting(true);
     try {
@@ -218,8 +218,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       if (user?.id !== post.user_id) {
         toast({
-          title: "Nedá sa odstrániť",
-          description: "Môžete odstrániť len vlastné príspevky",
+          title: "Cannot delete",
+          description: "You can only delete your own posts",
           variant: "destructive",
         });
         return;
@@ -230,14 +230,14 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Príspevok bol odstránený",
+        title: "Success",
+        description: "Post was deleted",
       });
 
       onDelete();
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -249,8 +249,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const handleEdit = async () => {
     if (!editContent.trim() && existingMedia.length === 0 && newFiles.length === 0) {
       toast({
-        title: "Chyba",
-        description: "Príspevok musí obsahovať text alebo obrázky",
+        title: "Error",
+        description: "Post must contain text or images",
         variant: "destructive",
       });
       return;
@@ -259,7 +259,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
     setSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Nie ste prihlásený");
+      if (!user) throw new Error("You are not logged in");
 
       // Update post content
       const { error: updateError } = await supabase
@@ -314,8 +314,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       }
 
       toast({
-        title: "Úspech",
-        description: "Príspevok bol aktualizovaný",
+        title: "Success",
+        description: "Post was updated",
       });
 
       setShowEditDialog(false);
@@ -324,7 +324,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       onDelete(); // Refresh posts
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -513,8 +513,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const handleRepost = async () => {
     if (!repostComment.trim()) {
       toast({
-        title: "Chyba",
-        description: "Pridajte komentár k repostu",
+        title: "Error",
+        description: "Add a comment to the repost",
         variant: "destructive",
       });
       return;
@@ -525,8 +525,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
-          title: "Chyba",
-          description: "Musíte byť prihlásený",
+          title: "Error",
+          description: "You must be logged in",
           variant: "destructive",
         });
         return;
@@ -541,8 +541,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Príspevok bol zdieľaný na váš profil",
+        title: "Success",
+        description: "Post was shared to your profile",
       });
 
       setShowRepostDialog(false);
@@ -551,7 +551,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       onDelete(); // Refresh feed
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -706,7 +706,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                   className="gap-2"
                 >
                   <Edit2 className="h-4 w-4" />
-                  Upraviť
+                  Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleDelete}
@@ -714,7 +714,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                   className="gap-2 text-destructive focus:text-destructive"
                 >
                   <Trash2 className="h-4 w-4" />
-                  Odstrániť
+                  Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -931,23 +931,23 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       }}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
-            <DialogTitle>Upraviť príspevok</DialogTitle>
+            <DialogTitle>Edit Post</DialogTitle>
             <DialogDescription>
-              Upravte text alebo obrázky vášho príspevku
+              Edit the text or images of your post
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <Textarea
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
-              placeholder="Čo máte na mysli?"
+              placeholder="What's on your mind?"
               className="min-h-[100px]"
             />
 
             {/* Existing Media */}
             {existingMedia.length > 0 && (
               <div>
-                <p className="text-sm font-medium mb-2">Existujúce obrázky:</p>
+                <p className="text-sm font-medium mb-2">Existing images:</p>
                 <div className="grid grid-cols-2 gap-2">
                   {existingMedia.map((media) => (
                     <div key={media.id} className="relative">
@@ -980,7 +980,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
             {/* New Files */}
             {newFiles.length > 0 && (
               <div>
-                <p className="text-sm font-medium mb-2">Nové obrázky:</p>
+                <p className="text-sm font-medium mb-2">New images:</p>
                 <div className="grid grid-cols-2 gap-2">
                   {newFiles.map((file, index) => (
                     <div key={index} className="relative">
@@ -1019,7 +1019,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                 onClick={() => document.getElementById("edit-image-upload")?.click()}
               >
                 <ImageIcon className="h-4 w-4 mr-2" />
-                Pridať obrázky
+                Add images
               </Button>
               <Button
                 type="button"
@@ -1028,7 +1028,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                 onClick={() => document.getElementById("edit-video-upload")?.click()}
               >
                 <VideoIcon className="h-4 w-4 mr-2" />
-                Pridať video
+                Add video
               </Button>
               <input
                 id="edit-image-upload"
