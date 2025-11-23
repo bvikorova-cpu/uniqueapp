@@ -21,28 +21,28 @@ export const IQCreditsDisplay = () => {
 
         <div className="flex gap-2">
           <Button
+            onClick={() => purchaseCredits(10)}
+            variant="outline"
+            size="sm"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            10 Credits - €5
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => purchaseCredits(20)}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            20 Credits - €7
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
             onClick={() => purchaseCredits(50)}
-            variant="outline"
-            size="sm"
           >
             <Plus className="mr-2 h-4 w-4" />
-            50 Credits - €4.99
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => console.log("Purchase 150 credits")}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            150 Credits - €12.99
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => console.log("Purchase 500 credits")}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            500 Credits - €39.99
+            50 Credits - €10
           </Button>
         </div>
       </div>

@@ -37,9 +37,9 @@ serve(async (req) => {
     }
 
     const priceMap: Record<number, string> = {
-      50: "price_1SQ7vD0QTWhd4oRpVeopmhjN",
-      150: "price_1SQ7vmGaXSfGtYFtDzpCaANo",
-      500: "price_1SQ7wLGaXSfGtYFtwD3Qw7dy",
+      10: "price_1SWg02GaXSfGtYFtWl2vsqkz",
+      20: "price_1SWg03GaXSfGtYFt8jap0rTG",
+      50: "price_1SWg03GaXSfGtYFt7edzn0gr",
     };
 
     const priceId = priceMap[credits];
