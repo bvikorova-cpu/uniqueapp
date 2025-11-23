@@ -571,7 +571,7 @@ const Feed = () => {
       <WallSidebar onPostCreated={fetchPosts} />
 
       {/* Main Feed */}
-      <div className="flex-1 overflow-y-auto pt-20">
+      <div className="flex-1 overflow-y-auto pt-32">
         {/* Pull-to-refresh indicator */}
         {pullToRefresh.pulling && (
           <div 
