@@ -79,69 +79,39 @@ const IQPlatform = () => {
     }
   };
 
-  const getTimeUntilNext20CET = (isWeekly: boolean = false) => {
+  const getTimeUntilEnd = (endTime: string) => {
     const now = new Date();
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Europe/Paris',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
+    const end = new Date(endTime);
+    const diff = end.getTime() - now.getTime();
     
-    const parts = formatter.formatToParts(now);
-    const cetDate = new Date(
-      parseInt(parts.find(p => p.type === 'year')!.value),
-      parseInt(parts.find(p => p.type === 'month')!.value) - 1,
-      parseInt(parts.find(p => p.type === 'day')!.value),
-      parseInt(parts.find(p => p.type === 'hour')!.value),
-      parseInt(parts.find(p => p.type === 'minute')!.value),
-      parseInt(parts.find(p => p.type === 'second')!.value)
-    );
-
-    let target = new Date(cetDate);
-    target.setHours(20, 0, 0, 0);
+    if (diff <= 0) return "Ended";
     
-    if (isWeekly) {
-      const dayOfWeek = target.getDay();
-      const daysUntilSunday = dayOfWeek === 0 ? 7 : 7 - dayOfWeek;
-      target.setDate(target.getDate() + daysUntilSunday);
-    } else {
-      if (cetDate >= target) {
-        target.setDate(target.getDate() + 1);
-      }
-    }
-
-    const diff = target.getTime() - cetDate.getTime();
-    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     
-    if (hours >= 24) {
-      const days = Math.floor(hours / 24);
-      const remainingHours = hours % 24;
-      return `${days}d ${remainingHours}h`;
-    }
-    return `${hours}h ${minutes}m`;
+    if (days > 0) return `${days}d ${hours}h`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
   };
 
-  const [countdown, setCountdown] = useState({
-    daily: getTimeUntilNext20CET(false),
-    weekly: getTimeUntilNext20CET(true),
-  });
+  const [countdowns, setCountdowns] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown({
-        daily: getTimeUntilNext20CET(false),
-        weekly: getTimeUntilNext20CET(true),
+    const updateCountdowns = () => {
+      const newCountdowns: Record<string, string> = {};
+      competitions.forEach(comp => {
+        if (comp.end_time) {
+          newCountdowns[comp.id] = getTimeUntilEnd(comp.end_time);
+        }
       });
-    }, 60000);
+      setCountdowns(newCountdowns);
+    };
 
+    updateCountdowns();
+    const interval = setInterval(updateCountdowns, 60000);
     return () => clearInterval(interval);
-  }, []);
+  }, [competitions]);
 
   const testCategories = [
     {
@@ -305,11 +275,7 @@ const IQPlatform = () => {
         <TabsContent value="competitions" className="space-y-6">
           <div className="space-y-4">
             {competitions.map((comp) => {
-              const endsIn = comp.title?.includes("Daily") 
-                ? countdown.daily 
-                : comp.title?.includes("Weekly") 
-                ? countdown.weekly 
-                : "TBA";
+              const endsIn = countdowns[comp.id] || "Loading...";
               
               return (
                 <Card key={comp.id} className="hover:shadow-lg transition-shadow">
@@ -351,7 +317,7 @@ const IQPlatform = () => {
                       disabled={comp.status !== "active"} 
                       onClick={() => handleJoinCompetition(comp.id)}
                     >
-                      {comp.status === "active" ? "Join Competition" : "Coming Soon"}
+                      Join Competition
                     </Button>
                   </CardContent>
                 </Card>

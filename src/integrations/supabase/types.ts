@@ -12256,6 +12256,48 @@ export type Database = {
         }
         Relationships: []
       }
+      iq_questions: {
+        Row: {
+          category: string
+          correct_answer: string
+          created_at: string | null
+          difficulty: string
+          id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+          time_limit: number | null
+        }
+        Insert: {
+          category: string
+          correct_answer: string
+          created_at?: string | null
+          difficulty: string
+          id?: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+          time_limit?: number | null
+        }
+        Update: {
+          category?: string
+          correct_answer?: string
+          created_at?: string | null
+          difficulty?: string
+          id?: string
+          option_a?: string
+          option_b?: string
+          option_c?: string
+          option_d?: string
+          question?: string
+          time_limit?: number | null
+        }
+        Relationships: []
+      }
       iq_test_questions: {
         Row: {
           correct_answer: string
@@ -25566,6 +25608,28 @@ export type Database = {
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
       get_next_20_cet: { Args: { is_weekly?: boolean }; Returns: string }
+      get_random_questions: {
+        Args: { p_count: number; p_difficulty: string }
+        Returns: {
+          category: string
+          correct_answer: string
+          created_at: string | null
+          difficulty: string
+          id: string
+          option_a: string
+          option_b: string
+          option_c: string
+          option_d: string
+          question: string
+          time_limit: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "iq_questions"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       give_starter_balance: { Args: { p_user_id: string }; Returns: undefined }
       has_confession_access: {
         Args: { service_type_param: string; user_id_param: string }
