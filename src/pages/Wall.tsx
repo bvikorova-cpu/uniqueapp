@@ -568,7 +568,7 @@ const Feed = () => {
       <WallTopNav currentPath="/wall" />
       
       {/* Left Sidebar */}
-      <WallSidebar currentPath="/wall" />
+      <WallSidebar onPostCreated={fetchPosts} />
 
       {/* Main Feed */}
       <div className="flex-1 overflow-y-auto pt-24">
@@ -602,9 +602,6 @@ const Feed = () => {
           <div className="flex justify-end">
             <AchievementsBadge />
           </div>
-
-          {/* Enhanced Create Post */}
-          <EnhancedCreatePost onPostCreated={fetchPosts} userProfile={userProfile} />
 
           {/* Search Bar */}
           <SearchBar />
