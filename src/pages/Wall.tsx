@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { useNavigate, Routes, Route } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { useToast } from "@/hooks/use-toast";
@@ -21,7 +21,14 @@ import { SearchBar } from "@/components/wall/SearchBar";
 import { WallTopNav } from "@/components/wall/WallTopNav";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
-import { useFollowingPosts } from "@/hooks/useFollow";
+import WallMessages from "./wall/WallMessages";
+import WallFriends from "./wall/WallFriends";
+import WallGroups from "./wall/WallGroups";
+import WallPages from "./wall/WallPages";
+import WallVideos from "./wall/WallVideos";
+import WallEvents from "./wall/WallEvents";
+import WallSaved from "./wall/WallSaved";
+import WallTrending from "./wall/WallTrending";
 
 interface Post {
   id: string;
@@ -562,110 +569,142 @@ const Feed = () => {
     setSearchQuery("");
   };
 
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  // Determine which component to render based on path
+  const renderContent = () => {
+    switch (currentPath) {
+      case '/wall/messages':
+        return <WallMessages />;
+      case '/wall/friends':
+        return <WallFriends />;
+      case '/wall/groups':
+        return <WallGroups />;
+      case '/wall/pages':
+        return <WallPages />;
+      case '/wall/videos':
+        return <WallVideos />;
+      case '/wall/events':
+        return <WallEvents />;
+      case '/wall/saved':
+        return <WallSaved />;
+      case '/wall/trending':
+        return <WallTrending />;
+      default:
+        // Default Feed content
+        return (
+          <>
+            {/* Pull-to-refresh indicator */}
+            {pullToRefresh.pulling && (
+              <div 
+                className="fixed top-0 left-80 right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
+                style={{ 
+                  height: `${pullToRefresh.pullDistance}px`,
+                  opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
+                }}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <Loader2 
+                    className={`h-6 w-6 text-primary transition-transform duration-200 ${
+                      pullToRefresh.canRefresh ? 'animate-spin' : ''
+                    }`}
+                    style={{
+                      transform: `rotate(${pullToRefresh.pullDistance * 3}deg)`
+                    }}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
+              {/* Achievements Badge */}
+              <div className="flex justify-end">
+                <AchievementsBadge />
+              </div>
+
+              {/* Search Bar */}
+              <SearchBar />
+
+              <PostFilters
+                sortBy={sortBy}
+                timeFilter={timeFilter}
+                categoryFilter={categoryFilter}
+                onSortChange={setSortBy}
+                onTimeChange={setTimeFilter}
+                onCategoryChange={setCategoryFilter}
+                onReset={handleResetFilters}
+              />
+
+              {/* Feed */}
+              <div className="space-y-4">
+                {loading ? (
+                  <Card className="p-8 flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </Card>
+                ) : filteredFeedItems.length === 0 ? (
+                  <Card className="p-8 text-center text-muted-foreground">
+                    No posts found. Try adjusting your filters.
+                  </Card>
+                ) : (
+                  <>
+                    {filteredFeedItems.map((item, index) => (
+                      <div 
+                        key={`${item.type}-${item.data.id}`}
+                        className="animate-fade-in"
+                        style={{ animationDelay: `${index * 0.05}s` }}
+                      >
+                        {item.type === 'post' ? (
+                          <PostCard
+                            post={item.data}
+                            onDelete={fetchPosts}
+                          />
+                        ) : (
+                          <RepostCard
+                            repost={item.data}
+                            onDelete={fetchPosts}
+                          />
+                        )}
+                      </div>
+                    ))}
+                    
+                    {/* Loading more indicator */}
+                    {loadingMore && (
+                      <Card className="p-4 flex items-center justify-center">
+                        <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+                        <span className="text-sm text-muted-foreground">Loading more posts...</span>
+                      </Card>
+                    )}
+                    
+                    {/* End of feed message */}
+                    {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                      <Card className="p-4 text-center text-muted-foreground text-sm">
+                        You've reached the end! 🎉
+                      </Card>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </>
+        );
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
       {/* Top Navigation */}
-      <WallTopNav currentPath="/wall" />
+      <WallTopNav currentPath={currentPath} />
       
       {/* Left Sidebar */}
       <WallSidebar onPostCreated={fetchPosts} />
 
-      {/* Main Feed */}
+      {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto pt-32">
-        {/* Pull-to-refresh indicator */}
-        {pullToRefresh.pulling && (
-          <div 
-            className="fixed top-0 left-80 right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
-            style={{ 
-              height: `${pullToRefresh.pullDistance}px`,
-              opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
-            }}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <Loader2 
-                className={`h-6 w-6 text-primary transition-transform duration-200 ${
-                  pullToRefresh.canRefresh ? 'animate-spin' : ''
-                }`}
-                style={{
-                  transform: `rotate(${pullToRefresh.pullDistance * 3}deg)`
-                }}
-              />
-              <span className="text-sm text-muted-foreground">
-                {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
-              </span>
-            </div>
-          </div>
-        )}
-
-        <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
-          {/* Achievements Badge */}
-          <div className="flex justify-end">
-            <AchievementsBadge />
-          </div>
-
-          {/* Search Bar */}
-          <SearchBar />
-
-          <PostFilters
-            sortBy={sortBy}
-            timeFilter={timeFilter}
-            categoryFilter={categoryFilter}
-            onSortChange={setSortBy}
-            onTimeChange={setTimeFilter}
-            onCategoryChange={setCategoryFilter}
-            onReset={handleResetFilters}
-          />
-
-          {/* Feed */}
-          <div className="space-y-4">
-            {loading ? (
-              <Card className="p-8 flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              </Card>
-            ) : filteredFeedItems.length === 0 ? (
-              <Card className="p-8 text-center text-muted-foreground">
-                No posts found. Try adjusting your filters.
-              </Card>
-            ) : (
-              <>
-                {filteredFeedItems.map((item, index) => (
-                  <div 
-                    key={`${item.type}-${item.data.id}`}
-                    className="animate-fade-in"
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    {item.type === 'post' ? (
-                      <PostCard
-                        post={item.data}
-                        onDelete={fetchPosts}
-                      />
-                    ) : (
-                      <RepostCard
-                        repost={item.data}
-                        onDelete={fetchPosts}
-                      />
-                    )}
-                  </div>
-                ))}
-                
-                {/* Loading more indicator */}
-                {loadingMore && (
-                  <Card className="p-4 flex items-center justify-center">
-                    <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
-                    <span className="text-sm text-muted-foreground">Loading more posts...</span>
-                  </Card>
-                )}
-                
-                {/* End of feed message */}
-                {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
-                  <Card className="p-4 text-center text-muted-foreground text-sm">
-                    You've reached the end! 🎉
-                  </Card>
-                )}
-              </>
-            )}
-          </div>
-        </div>
+        {renderContent()}
       </div>
 
       {/* Right Sidebar */}
