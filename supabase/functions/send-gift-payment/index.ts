@@ -53,7 +53,7 @@ serve(async (req) => {
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(amountPaid * 100), // Convert to cents
-      currency: "usd",
+      currency: "eur",
       customer: customerId,
       metadata: {
         gift_id: giftId,

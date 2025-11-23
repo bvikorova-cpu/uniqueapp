@@ -210,12 +210,12 @@ export default function CalorieQuests() {
                     </div>
                     <Badge variant="default" className="gap-1">
                       <Trophy className="h-3 w-3" />
-                      $500
+                      €500
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">128 participants</span>
-                    <span className="text-muted-foreground">Entry: $5</span>
+                    <span className="text-muted-foreground">Entry: €5</span>
                   </div>
                   <Button size="sm" className="w-full">Join Challenge</Button>
                 </div>
@@ -228,12 +228,12 @@ export default function CalorieQuests() {
                     </div>
                     <Badge variant="default" className="gap-1">
                       <Trophy className="h-3 w-3" />
-                      $200
+                      €200
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">45 participants</span>
-                    <span className="text-muted-foreground">Entry: $5</span>
+                    <span className="text-muted-foreground">Entry: €5</span>
                   </div>
                   <Button size="sm" className="w-full">Join Challenge</Button>
                 </div>
@@ -265,7 +265,7 @@ export default function CalorieQuests() {
             <span className="text-sm">Access to premium challenges</span>
           </div>
           <Button variant="default" className="w-full mt-4">
-            Upgrade to Hero Pass ($6.99/month)
+            Upgrade to Hero Pass (€6.99/month)
           </Button>
         </CardContent>
       </Card>

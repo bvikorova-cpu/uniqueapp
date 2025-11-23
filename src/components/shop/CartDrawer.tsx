@@ -131,9 +131,9 @@ export const CartDrawer = () => {
               
               <div className="flex-shrink-0 space-y-4 pt-4 border-t bg-background">
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">Spolu</span>
+                  <span className="text-lg font-semibold">Total</span>
                   <span className="text-xl font-bold">
-                    {items[0]?.price.currencyCode || 'USD'} {totalPrice.toFixed(2)}
+                    {items[0]?.price.currencyCode || 'EUR'} {totalPrice.toFixed(2)}
                   </span>
                 </div>
                 

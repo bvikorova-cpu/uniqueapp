@@ -1,13 +1,81 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Trophy, LineChart, Zap, Users, Target } from "lucide-react";
 import { IQCreditsDisplay } from "@/components/iq/IQCreditsDisplay";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const IQPlatform = () => {
   const [activeTab, setActiveTab] = useState("tests");
+  const [competitions, setCompetitions] = useState<any[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    loadCompetitions();
+  }, []);
+
+  const loadCompetitions = async () => {
+    const { data } = await supabase
+      .from("iq_competitions")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (data) setCompetitions(data);
+  };
+
+  const handleStartTest = async (testType: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Please login first", variant: "destructive" });
+        return;
+      }
+      toast({ title: "Test functionality coming soon!" });
+    } catch (error) {
+      toast({ title: "Error starting test", variant: "destructive" });
+    }
+  };
+
+  const handleGetAnalysis = async (analysisType: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Please login first", variant: "destructive" });
+        return;
+      }
+      
+      const { data, error } = await supabase.functions.invoke("get-ai-analysis", {
+        body: { analysisType },
+      });
+
+      if (error) throw error;
+      toast({ title: "Analysis complete!", description: data.message });
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
+  };
+
+  const handleJoinCompetition = async (competitionId: string) => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({ title: "Please login first", variant: "destructive" });
+        return;
+      }
+      
+      const { data, error } = await supabase.functions.invoke("join-iq-competition", {
+        body: { competitionId },
+      });
+
+      if (error) throw error;
+      toast({ title: "Success!", description: data.message });
+      loadCompetitions();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    }
+  };
 
   const testCategories = [
     {
@@ -172,7 +240,7 @@ const IQPlatform = () => {
                       <p className="font-semibold">{test.credits}</p>
                     </div>
                   </div>
-                  <Button className="w-full">Start Test</Button>
+                  <Button className="w-full" onClick={() => handleStartTest(test.id)}>Start Test</Button>
                 </CardContent>
               </Card>
             ))}
@@ -197,7 +265,7 @@ const IQPlatform = () => {
                     <span className="text-muted-foreground">Duration: {analysis.duration}</span>
                     <span className="font-semibold">{analysis.credits} credits</span>
                   </div>
-                  <Button className="w-full">Get Analysis</Button>
+                  <Button className="w-full" onClick={() => handleGetAnalysis(analysis.id)}>Get Analysis</Button>
                 </CardContent>
               </Card>
             ))}
@@ -206,7 +274,10 @@ const IQPlatform = () => {
 
         <TabsContent value="competitions" className="space-y-6">
           <div className="space-y-4">
-            {competitions.map((comp) => (
+            {(competitions.length > 0 ? competitions : [
+              { id: "1", title: "Daily IQ Challenge", description: "Quick 15-minute daily competition", entry_fee: 5, prize_pool: 250, status: "active" },
+              { id: "2", title: "Weekly Grand Tournament", description: "60-minute comprehensive test", entry_fee: 20, prize_pool: 1500, status: "active" },
+            ]).map((comp) => (
               <Card key={comp.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start justify-between">
@@ -241,8 +312,8 @@ const IQPlatform = () => {
                       <p className="font-semibold">{comp.status === "Active" ? comp.endsIn : comp.startsIn}</p>
                     </div>
                   </div>
-                  <Button className="w-full" disabled={comp.status !== "Active"}>
-                    {comp.status === "Active" ? "Join Competition" : "Coming Soon"}
+                  <Button className="w-full" disabled={comp.status !== "active"} onClick={() => handleJoinCompetition(comp.id)}>
+                    {comp.status === "active" ? "Join Competition" : "Coming Soon"}
                   </Button>
                 </CardContent>
               </Card>

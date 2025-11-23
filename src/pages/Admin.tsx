@@ -364,13 +364,13 @@ const Admin = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Užívateľ</TableHead>
+                      <TableHead>User</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Tier</TableHead>
-                      <TableHead>Cena</TableHead>
+                      <TableHead>Price</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Začiatok</TableHead>
-                      <TableHead>Koniec</TableHead>
+                      <TableHead>Start</TableHead>
+                      <TableHead>End</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
