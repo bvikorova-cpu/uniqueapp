@@ -33,7 +33,7 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
   ];
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b shadow-sm">
+    <div className="fixed top-16 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b shadow-sm">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-center gap-1 overflow-x-auto py-2">
           {navItems.map((item) => (
