@@ -15,6 +15,8 @@ const IQPlatform = () => {
 
   useEffect(() => {
     loadCompetitions();
+    const interval = setInterval(loadCompetitions, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const loadCompetitions = async () => {
@@ -76,6 +78,70 @@ const IQPlatform = () => {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     }
   };
+
+  const getTimeUntilNext20CET = (isWeekly: boolean = false) => {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Europe/Paris',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+    
+    const parts = formatter.formatToParts(now);
+    const cetDate = new Date(
+      parseInt(parts.find(p => p.type === 'year')!.value),
+      parseInt(parts.find(p => p.type === 'month')!.value) - 1,
+      parseInt(parts.find(p => p.type === 'day')!.value),
+      parseInt(parts.find(p => p.type === 'hour')!.value),
+      parseInt(parts.find(p => p.type === 'minute')!.value),
+      parseInt(parts.find(p => p.type === 'second')!.value)
+    );
+
+    let target = new Date(cetDate);
+    target.setHours(20, 0, 0, 0);
+    
+    if (isWeekly) {
+      const dayOfWeek = target.getDay();
+      const daysUntilSunday = dayOfWeek === 0 ? 7 : 7 - dayOfWeek;
+      target.setDate(target.getDate() + daysUntilSunday);
+    } else {
+      if (cetDate >= target) {
+        target.setDate(target.getDate() + 1);
+      }
+    }
+
+    const diff = target.getTime() - cetDate.getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (hours >= 24) {
+      const days = Math.floor(hours / 24);
+      const remainingHours = hours % 24;
+      return `${days}d ${remainingHours}h`;
+    }
+    return `${hours}h ${minutes}m`;
+  };
+
+  const [countdown, setCountdown] = useState({
+    daily: getTimeUntilNext20CET(false),
+    weekly: getTimeUntilNext20CET(true),
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown({
+        daily: getTimeUntilNext20CET(false),
+        weekly: getTimeUntilNext20CET(true),
+      });
+    }, 60000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const testCategories = [
     {
@@ -151,45 +217,9 @@ const IQPlatform = () => {
     },
   ];
 
-  const competitions = [
-    {
-      id: "daily",
-      title: "Daily IQ Challenge",
-      description: "Quick 15-minute daily competition",
-      entryFee: 5,
-      prizePool: 250,
-      participants: 142,
-      maxParticipants: 200,
-      status: "Active",
-      endsIn: "6h 24m",
-    },
-    {
-      id: "weekly",
-      title: "Weekly Grand Tournament",
-      description: "60-minute comprehensive test",
-      entryFee: 20,
-      prizePool: 1500,
-      participants: 89,
-      maxParticipants: 100,
-      status: "Active",
-      endsIn: "2d 14h",
-    },
-    {
-      id: "premium",
-      title: "Premium Championship",
-      description: "Expert level competition",
-      entryFee: 50,
-      prizePool: 5000,
-      participants: 45,
-      maxParticipants: 50,
-      status: "Upcoming",
-      startsIn: "12h",
-    },
-  ];
-
   return (
     <div className="container mx-auto p-6 space-y-8">
-      <div className="space-y-4">
+      <div className="space-y-4 mt-16">
         <div className="flex items-center gap-3">
           <Brain className="h-12 w-12 text-primary" />
           <div>
@@ -274,50 +304,59 @@ const IQPlatform = () => {
 
         <TabsContent value="competitions" className="space-y-6">
           <div className="space-y-4">
-            {(competitions.length > 0 ? competitions : [
-              { id: "1", title: "Daily IQ Challenge", description: "Quick 15-minute daily competition", entry_fee: 5, prize_pool: 250, status: "active" },
-              { id: "2", title: "Weekly Grand Tournament", description: "60-minute comprehensive test", entry_fee: 20, prize_pool: 1500, status: "active" },
-            ]).map((comp) => (
-              <Card key={comp.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <Trophy className="h-8 w-8 text-primary" />
+            {competitions.map((comp) => {
+              const endsIn = comp.title?.includes("Daily") 
+                ? countdown.daily 
+                : comp.title?.includes("Weekly") 
+                ? countdown.weekly 
+                : "TBA";
+              
+              return (
+                <Card key={comp.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <Trophy className="h-8 w-8 text-primary" />
+                        <div>
+                          <CardTitle>{comp.title}</CardTitle>
+                          <CardDescription>{comp.description}</CardDescription>
+                        </div>
+                      </div>
+                      <Badge variant={comp.status === "active" ? "default" : "secondary"}>
+                        {comp.status}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-4 gap-4 text-sm">
                       <div>
-                        <CardTitle>{comp.title}</CardTitle>
-                        <CardDescription>{comp.description}</CardDescription>
+                        <p className="text-muted-foreground">Entry Fee</p>
+                        <p className="font-semibold">{comp.entry_fee} credits</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Prize Pool</p>
+                        <p className="font-semibold text-green-600">{comp.prize_pool} credits</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Participants</p>
+                        <p className="font-semibold">0/{comp.max_participants}</p>
+                      </div>
+                      <div>
+                        <p className="text-muted-foreground">Ends in</p>
+                        <p className="font-semibold">{endsIn}</p>
                       </div>
                     </div>
-                    <Badge variant={comp.status === "Active" ? "default" : "secondary"}>
-                      {comp.status}
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Entry Fee</p>
-                      <p className="font-semibold">{comp.entryFee} credits</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Prize Pool</p>
-                      <p className="font-semibold text-green-600">{comp.prizePool} credits</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Participants</p>
-                      <p className="font-semibold">{comp.participants}/{comp.maxParticipants}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">{comp.status === "Active" ? "Ends in" : "Starts in"}</p>
-                      <p className="font-semibold">{comp.status === "Active" ? comp.endsIn : comp.startsIn}</p>
-                    </div>
-                  </div>
-                  <Button className="w-full" disabled={comp.status !== "active"} onClick={() => handleJoinCompetition(comp.id)}>
-                    {comp.status === "active" ? "Join Competition" : "Coming Soon"}
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                    <Button 
+                      className="w-full" 
+                      disabled={comp.status !== "active"} 
+                      onClick={() => handleJoinCompetition(comp.id)}
+                    >
+                      {comp.status === "active" ? "Join Competition" : "Coming Soon"}
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         </TabsContent>
 

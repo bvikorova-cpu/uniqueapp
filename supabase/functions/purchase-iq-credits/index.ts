@@ -26,7 +26,7 @@ serve(async (req) => {
 
     const { package: packageType } = await req.json();
 
-    // Credit packages
+    // Credit packages in EUR
     const packages: Record<string, { credits: number; priceId: string; price: number }> = {
       small: { credits: 50, priceId: "price_1SWxj2GaXSfGtYFtcKlTJYGa", price: 4.99 },
       medium: { credits: 150, priceId: "price_1SWxj3GaXSfGtYFtGEneXVhs", price: 12.99 },
