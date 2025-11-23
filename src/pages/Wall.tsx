@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark } from "lucide-react";
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
+import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
 import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
@@ -595,10 +596,10 @@ const Feed = () => {
         // Default Feed content
         return (
           <>
-            {/* Pull-to-refresh indicator */}
+            {/* Pull-to-refresh indicator - adjusted for mobile */}
             {pullToRefresh.pulling && (
               <div 
-                className="fixed top-0 left-80 right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
+                className="fixed top-0 left-0 lg:left-80 right-0 lg:right-80 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-all duration-200"
                 style={{ 
                   height: `${pullToRefresh.pullDistance}px`,
                   opacity: pullToRefresh.pullDistance / PULL_THRESHOLD 
@@ -606,21 +607,21 @@ const Feed = () => {
               >
                 <div className="flex flex-col items-center gap-2">
                   <Loader2 
-                    className={`h-6 w-6 text-primary transition-transform duration-200 ${
+                    className={`h-5 w-5 sm:h-6 sm:w-6 text-primary transition-transform duration-200 ${
                       pullToRefresh.canRefresh ? 'animate-spin' : ''
                     }`}
                     style={{
                       transform: `rotate(${pullToRefresh.pullDistance * 3}deg)`
                     }}
                   />
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
                     {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
                   </span>
                 </div>
               </div>
             )}
 
-            <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
+            <div className="max-w-2xl mx-auto px-2 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-4">
               {/* Achievements Badge */}
               <div className="flex justify-end">
                 <AchievementsBadge />
@@ -640,13 +641,13 @@ const Feed = () => {
               />
 
               {/* Feed */}
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {loading ? (
-                  <Card className="p-8 flex items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  <Card className="p-6 sm:p-8 flex items-center justify-center">
+                    <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary" />
                   </Card>
                 ) : filteredFeedItems.length === 0 ? (
-                  <Card className="p-8 text-center text-muted-foreground">
+                  <Card className="p-6 sm:p-8 text-center text-sm sm:text-base text-muted-foreground">
                     No posts found. Try adjusting your filters.
                   </Card>
                 ) : (
@@ -673,15 +674,15 @@ const Feed = () => {
                     
                     {/* Loading more indicator */}
                     {loadingMore && (
-                      <Card className="p-4 flex items-center justify-center">
-                        <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
-                        <span className="text-sm text-muted-foreground">Loading more posts...</span>
+                      <Card className="p-3 sm:p-4 flex items-center justify-center">
+                        <Loader2 className="h-5 w-5 sm:h-6 sm:w-6 animate-spin text-primary mr-2" />
+                        <span className="text-xs sm:text-sm text-muted-foreground">Loading more posts...</span>
                       </Card>
                     )}
                     
                     {/* End of feed message */}
                     {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
-                      <Card className="p-4 text-center text-muted-foreground text-sm">
+                      <Card className="p-3 sm:p-4 text-center text-muted-foreground text-xs sm:text-sm">
                         You've reached the end! 🎉
                       </Card>
                     )}
@@ -699,25 +700,32 @@ const Feed = () => {
       {/* Top Navigation */}
       <WallTopNav currentPath={currentPath} />
       
-      {/* Left Sidebar */}
-      <WallSidebar onPostCreated={fetchPosts} />
+      {/* Mobile Menu Button and Drawer */}
+      <MobileWallMenu onPostCreated={fetchPosts} />
+      
+      {/* Left Sidebar - Hidden on mobile */}
+      <div className="hidden lg:block">
+        <WallSidebar onPostCreated={fetchPosts} />
+      </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto pt-32">
+      <div className="flex-1 overflow-y-auto pt-28 lg:pt-32 px-2 sm:px-0">
         {renderContent()}
       </div>
 
-      {/* Right Sidebar */}
-      <WallRightbar />
+      {/* Right Sidebar - Hidden on tablet and below */}
+      <div className="hidden xl:block">
+        <WallRightbar />
+      </div>
 
-      {/* Back to top button */}
+      {/* Back to top button - responsive positioning */}
       {showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-8 right-96 z-50 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-fade-in"
+          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 xl:right-96 z-50 p-2.5 sm:p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-fade-in"
           aria-label="Back to top"
         >
-          <ArrowUp className="h-5 w-5" />
+          <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
       )}
     </div>
