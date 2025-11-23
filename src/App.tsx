@@ -43,7 +43,6 @@ import Terms from "./pages/Terms";
 import Education from "./pages/Education";
 import QuizCreator from "./components/education/QuizCreator";
 import QuizTaker from "./components/education/QuizTaker";
-import Videos from "./pages/Videos";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminTransactions from "./pages/AdminTransactions";
@@ -312,7 +311,6 @@ const App = () => (
               <Route path="/wall/saved" element={<Wall />} />
               <Route path="/wall/trending" element={<Wall />} />
               <Route path="/post/:id" element={<PostDetail />} />
-              <Route path="/videos" element={<Videos />} />
               <Route path="/messenger" element={<Messenger />} />
               <Route path="/megatalent" element={<Megatalent />} />
               <Route path="/megaforum" element={<Megaforum />} />
