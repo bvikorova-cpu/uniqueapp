@@ -64,7 +64,7 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!confirm("Naozaj chcete odstrániť tento repost?")) return;
+    if (!confirm("Do you really want to delete this repost?")) return;
 
     setDeleting(true);
     try {
@@ -74,8 +74,8 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
 
       if (user?.id !== repost.user_id) {
         toast({
-          title: "Nedá sa odstrániť",
-          description: "Môžete odstrániť len vlastné reposts",
+          title: "Cannot delete",
+          description: "You can only delete your own reposts",
           variant: "destructive",
         });
         return;
@@ -86,14 +86,14 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Repost bol odstránený",
+        title: "Success",
+        description: "Repost was deleted",
       });
 
       onDelete();
     } catch (error: any) {
       toast({
-        title: "Chyba",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
