@@ -328,9 +328,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <TooltipContent>Video</TooltipContent>
               </Tooltip>
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Tooltip>
+              <Tooltip>
+                <Popover>
+                  <PopoverTrigger asChild>
                     <TooltipTrigger asChild>
                       <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2 hover:bg-yellow-500/10 rounded-xl transition-all group">
                         <div className="p-2 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all">
@@ -338,32 +338,32 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                         </div>
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Feeling</TooltipContent>
-                  </Tooltip>
-                </PopoverTrigger>
-                <PopoverContent className="w-64">
-                  <div className="grid grid-cols-4 gap-2">
-                    {feelings.map((f) => (
-                      <Button
-                        key={f.label}
-                        type="button"
-                        variant="ghost"
-                        className="flex-col h-auto py-2"
-                        onClick={() => {
-                          setFeeling(f.emoji + " " + f.label);
-                        }}
-                      >
-                        <span className="text-2xl">{f.emoji}</span>
-                        <span className="text-xs mt-1">{f.label}</span>
-                      </Button>
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
+                  </PopoverTrigger>
+                  <TooltipContent>Feeling</TooltipContent>
+                  <PopoverContent className="w-64">
+                    <div className="grid grid-cols-4 gap-2">
+                      {feelings.map((f) => (
+                        <Button
+                          key={f.label}
+                          type="button"
+                          variant="ghost"
+                          className="flex-col h-auto py-2"
+                          onClick={() => {
+                            setFeeling(f.emoji + " " + f.label);
+                          }}
+                        >
+                          <span className="text-2xl">{f.emoji}</span>
+                          <span className="text-xs mt-1">{f.label}</span>
+                        </Button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </Tooltip>
 
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Tooltip>
+              <Tooltip>
+                <Popover>
+                  <PopoverTrigger asChild>
                     <TooltipTrigger asChild>
                       <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group">
                         <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
@@ -371,19 +371,19 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                         </div>
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Location</TooltipContent>
-                  </Tooltip>
-                </PopoverTrigger>
-                <PopoverContent className="w-64">
-                  <input
-                    type="text"
-                    placeholder="Where are you?"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md"
-                  />
-                </PopoverContent>
-              </Popover>
+                  </PopoverTrigger>
+                  <TooltipContent>Location</TooltipContent>
+                  <PopoverContent className="w-64">
+                    <input
+                      type="text"
+                      placeholder="Where are you?"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="w-full px-3 py-2 border rounded-md"
+                    />
+                  </PopoverContent>
+                </Popover>
+              </Tooltip>
 
               <Tooltip>
                 <TooltipTrigger asChild>
