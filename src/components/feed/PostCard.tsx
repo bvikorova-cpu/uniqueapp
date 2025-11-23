@@ -850,16 +850,16 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       <Dialog open={showRepostDialog} onOpenChange={setShowRepostDialog}>
         <DialogContent className="sm:max-w-[525px]" onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
-            <DialogTitle>Zdieľať príspevok</DialogTitle>
+            <DialogTitle>Share Post</DialogTitle>
             <DialogDescription>
-              Pridajte svoj komentár k tomuto príspevku
+              Add your comment to this post
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <Textarea
               value={repostComment}
               onChange={(e) => setRepostComment(e.target.value)}
-              placeholder="Co si o tom myslíte?"
+              placeholder="What do you think?"
               className="min-h-[100px]"
             />
             
@@ -889,7 +889,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               )}
               {post.media && post.media.length > 0 && (
                 <div className="mt-2 text-xs text-muted-foreground">
-                  📷 {post.media.length} {post.media.length === 1 ? "obrázok" : "obrázky"}
+                  📷 {post.media.length} {post.media.length === 1 ? "image" : "images"}
                 </div>
               )}
             </div>
@@ -903,16 +903,16 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               }}
               disabled={reposting}
             >
-              Zrušiť
+              Cancel
             </Button>
             <Button onClick={handleRepost} disabled={reposting || !repostComment.trim()}>
               {reposting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Zdieľa sa...
+                  Sharing...
                 </>
               ) : (
-                "Zdieľať"
+                "Share"
               )}
             </Button>
           </DialogFooter>
@@ -1054,7 +1054,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               onClick={() => setShowEditDialog(false)}
               disabled={saving}
             >
-              Zrušiť
+              Cancel
             </Button>
             <Button 
               onClick={handleEdit} 
@@ -1063,10 +1063,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
               {saving ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Ukladá sa...
+                  Saving...
                 </>
               ) : (
-                "Uložiť"
+                "Save"
               )}
             </Button>
           </DialogFooter>
