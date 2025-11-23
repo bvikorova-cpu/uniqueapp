@@ -362,8 +362,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     </TooltipTrigger>
                   </PopoverTrigger>
                   <TooltipContent>Feeling</TooltipContent>
-                  <PopoverContent className="w-64">
-                    <div className="grid grid-cols-4 gap-2">
+                  <PopoverContent className="w-80 max-h-96 overflow-y-auto">
+                    <div className="grid grid-cols-4 gap-2 p-2">
                       {feelings.map((f) => (
                         <Button
                           key={f.label}
