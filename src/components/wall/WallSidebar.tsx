@@ -15,7 +15,9 @@ import {
   Bookmark,
   Users2,
   Clock,
-  Bell
+  Bell,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { NotificationBell } from "./NotificationBell";
@@ -25,6 +27,7 @@ import { FeedPreferencesDialog } from "./FeedPreferencesDialog";
 import { CreateEventDialog } from "./CreateEventDialog";
 import { CreateGroupDialog } from "./CreateGroupDialog";
 import { NotificationsPanel } from "./NotificationsPanel";
+import { useState } from "react";
 
 interface WallSidebarProps {
   currentPath?: string;
@@ -32,6 +35,7 @@ interface WallSidebarProps {
 
 export function WallSidebar({ currentPath }: WallSidebarProps) {
   const navigate = useNavigate();
+  const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -56,16 +60,75 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
   });
 
   const menuItems = [
-    { icon: Home, label: "Feed", path: "/wall", color: "text-blue-500" },
-    { icon: MessageCircle, label: "Messages", path: "/wall/messages", color: "text-purple-500" },
-    { icon: Users2, label: "Friends", path: "/wall/friends", color: "text-cyan-500" },
-    { icon: Users, label: "Groups", path: "/wall/groups", color: "text-blue-600" },
-    { icon: Flag, label: "Pages", path: "/wall/pages", color: "text-orange-500" },
-    { icon: Video, label: "Videos", path: "/wall/videos", color: "text-blue-400" },
-    { icon: Calendar, label: "Events", path: "/wall/events", color: "text-red-500" },
-    { icon: Bookmark, label: "Saved", path: "/wall/saved", color: "text-purple-500" },
-    { icon: Clock, label: "Memories", path: "/wall/memories", color: "text-pink-500" },
-    { icon: TrendingUp, label: "Trending", path: "/wall/trending", color: "text-green-500" },
+    { 
+      icon: Home, 
+      label: "Feed", 
+      path: "/wall", 
+      color: "text-blue-500",
+      actions: [
+        { component: FeedPreferencesDialog, label: "Feed Settings" }
+      ]
+    },
+    { 
+      icon: MessageCircle, 
+      label: "Messages", 
+      path: "/wall/messages", 
+      color: "text-purple-500" 
+    },
+    { 
+      icon: Users2, 
+      label: "Friends", 
+      path: "/wall/friends", 
+      color: "text-cyan-500" 
+    },
+    { 
+      icon: Users, 
+      label: "Groups", 
+      path: "/wall/groups", 
+      color: "text-blue-600",
+      actions: [
+        { component: CreateGroupDialog, label: "Create Group" }
+      ]
+    },
+    { 
+      icon: Flag, 
+      label: "Pages", 
+      path: "/wall/pages", 
+      color: "text-orange-500" 
+    },
+    { 
+      icon: Video, 
+      label: "Videos", 
+      path: "/wall/videos", 
+      color: "text-blue-400" 
+    },
+    { 
+      icon: Calendar, 
+      label: "Events", 
+      path: "/wall/events", 
+      color: "text-red-500",
+      actions: [
+        { component: CreateEventDialog, label: "Create Event" }
+      ]
+    },
+    { 
+      icon: Bookmark, 
+      label: "Saved", 
+      path: "/wall/saved", 
+      color: "text-purple-500" 
+    },
+    { 
+      icon: Clock, 
+      label: "Memories", 
+      path: "/wall/memories", 
+      color: "text-pink-500" 
+    },
+    { 
+      icon: TrendingUp, 
+      label: "Trending", 
+      path: "/wall/trending", 
+      color: "text-green-500" 
+    },
   ];
 
   return (
@@ -100,28 +163,48 @@ export function WallSidebar({ currentPath }: WallSidebarProps) {
         {/* Main Navigation */}
         <div className="space-y-0.5">
           {menuItems.map((item) => (
-            <Button
-              key={item.path}
-              variant="ghost"
-              className={cn(
-                "w-full justify-start gap-2.5 h-auto py-2 hover:bg-primary/5 rounded-lg transition-all",
-                currentPath === item.path && "bg-primary/10"
+            <div key={item.path}>
+              <Button
+                variant="ghost"
+                className={cn(
+                  "w-full justify-between gap-2.5 h-auto py-2 hover:bg-primary/5 rounded-lg transition-all",
+                  currentPath === item.path && "bg-primary/10"
+                )}
+                onClick={() => {
+                  navigate(item.path);
+                  if (item.actions) {
+                    setExpandedItem(expandedItem === item.label ? null : item.label);
+                  }
+                }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <item.icon className={cn("h-5 w-5", item.color)} />
+                  <span className="font-medium text-sm">{item.label}</span>
+                </div>
+                {item.actions && (
+                  expandedItem === item.label ? 
+                    <ChevronUp className="h-4 w-4" /> : 
+                    <ChevronDown className="h-4 w-4" />
+                )}
+              </Button>
+              
+              {/* Submenu Actions */}
+              {item.actions && expandedItem === item.label && (
+                <div className="ml-7 mt-1 space-y-1">
+                  {item.actions.map((action, idx) => {
+                    const ActionComponent = action.component;
+                    return <ActionComponent key={idx} />;
+                  })}
+                </div>
               )}
-              onClick={() => navigate(item.path)}
-            >
-              <item.icon className={cn("h-5 w-5", item.color)} />
-              <span className="font-medium text-sm">{item.label}</span>
-            </Button>
+            </div>
           ))}
         </div>
 
         <div className="h-px bg-border my-2" />
 
-        {/* Quick Actions */}
+        {/* Other Settings */}
         <div className="space-y-2">
-          <FeedPreferencesDialog />
-          <CreateEventDialog />
-          <CreateGroupDialog />
           <PrivacySettingsDialog />
           <MediaGalleryDialog />
         </div>
