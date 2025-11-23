@@ -4699,6 +4699,35 @@ export type Database = {
           },
         ]
       }
+      collection_posts: {
+        Row: {
+          added_at: string | null
+          collection_id: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          added_at?: string | null
+          collection_id: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          added_at?: string | null
+          collection_id?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_posts_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "post_collections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       collector_pass_subscriptions: {
         Row: {
           created_at: string
@@ -17365,6 +17394,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      post_collections: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_public: boolean | null
+          name: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       post_comments: {
         Row: {
