@@ -15879,6 +15879,77 @@ export type Database = {
         }
         Relationships: []
       }
+      page_followers: {
+        Row: {
+          followed_at: string | null
+          id: string
+          page_id: string
+          user_id: string
+        }
+        Insert: {
+          followed_at?: string | null
+          id?: string
+          page_id: string
+          user_id: string
+        }
+        Update: {
+          followed_at?: string | null
+          id?: string
+          page_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "page_followers_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pages: {
+        Row: {
+          avatar_url: string | null
+          category: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          follower_count: number | null
+          id: string
+          name: string
+          updated_at: string | null
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          follower_count?: number | null
+          id?: string
+          name: string
+          updated_at?: string | null
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          category?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          follower_count?: number | null
+          id?: string
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       paint_by_numbers: {
         Row: {
           category: string
