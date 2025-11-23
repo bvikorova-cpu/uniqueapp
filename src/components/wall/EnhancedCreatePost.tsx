@@ -263,24 +263,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 </div>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="public">
-                  <div className="flex items-center gap-2">
-                    <Globe className="h-4 w-4" />
-                    Public
-                  </div>
-                </SelectItem>
-                <SelectItem value="friends">
-                  <div className="flex items-center gap-2">
-                    <Users2 className="h-4 w-4" />
-                    Friends
-                  </div>
-                </SelectItem>
-                <SelectItem value="private">
-                  <div className="flex items-center gap-2">
-                    <Lock className="h-4 w-4" />
-                    Only me
-                  </div>
-                </SelectItem>
+                <SelectItem value="public">Public</SelectItem>
+                <SelectItem value="friends">Friends</SelectItem>
+                <SelectItem value="private">Only me</SelectItem>
               </SelectContent>
             </Select>
           </div>
