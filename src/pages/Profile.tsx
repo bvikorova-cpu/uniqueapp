@@ -12,8 +12,6 @@ import { BrainDuelStats } from "@/components/profile/BrainDuelStats";
 import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
 import { CourseHistory } from "@/components/profile/CourseHistory";
-import { UserVideos } from "@/components/profile/UserVideos";
-import { SavedVideos } from "@/components/profile/SavedVideos";
 import { UserContests } from "@/components/profile/UserContests";
 import { FollowButton } from "@/components/profile/FollowButton";
 import { FollowersModal } from "@/components/profile/FollowersModal";
@@ -75,8 +73,6 @@ const Profile = () => {
     likesGiven: 0,
     commentsGiven: 0,
     friendsCount: 0,
-    videosCount: 0,
-    savedVideosCount: 0,
     submissionsCount: 0,
     completedCoursesCount: 0
   });
@@ -183,17 +179,6 @@ const Profile = () => {
           .select("*", { count: 'exact', head: true })
           .eq("user_id", userId);
 
-        const { count: videosCount } = await supabase
-          .from("videos")
-          .select("*", { count: 'exact', head: true })
-          .eq("user_id", userId)
-          .eq("is_active", true);
-
-        const { count: savedVideosCount } = await supabase
-          .from("saved_videos")
-          .select("*", { count: 'exact', head: true })
-          .eq("user_id", userId);
-
         const { count: submissionsCount } = await supabase
           .from("talent_submissions")
           .select("*", { count: 'exact', head: true })
@@ -209,8 +194,6 @@ const Profile = () => {
           likesGiven: likesCount || 0,
           commentsGiven: commentsCount || 0,
           friendsCount: friendsData?.length || 0,
-          videosCount: videosCount || 0,
-          savedVideosCount: savedVideosCount || 0,
           submissionsCount: submissionsCount || 0,
           completedCoursesCount: completedCoursesCount || 0
         });
@@ -558,14 +541,6 @@ const Profile = () => {
               <div className="text-sm text-muted-foreground">Friends</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{stats.videosCount}</div>
-              <div className="text-sm text-muted-foreground">Videos</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{stats.savedVideosCount}</div>
-              <div className="text-sm text-muted-foreground">Saved</div>
-            </div>
-            <div className="text-center">
               <div className="text-3xl font-bold text-primary">{stats.submissionsCount}</div>
               <div className="text-sm text-muted-foreground">Contests</div>
             </div>
@@ -585,10 +560,8 @@ const Profile = () => {
         </Card>
 
         <Tabs defaultValue={defaultTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="posts">Posts</TabsTrigger>
-            <TabsTrigger value="videos">Videos</TabsTrigger>
-            <TabsTrigger value="saved">Saved</TabsTrigger>
             <TabsTrigger value="contests">Contests</TabsTrigger>
             <TabsTrigger value="education">Courses</TabsTrigger>
             <TabsTrigger value="brain-duel">
@@ -612,14 +585,6 @@ const Profile = () => {
                 />
               ))
             )}
-          </TabsContent>
-
-          <TabsContent value="videos" className="mt-4">
-            <UserVideos userId={userId!} />
-          </TabsContent>
-
-          <TabsContent value="saved" className="mt-4">
-            <SavedVideos userId={userId!} />
           </TabsContent>
 
           <TabsContent value="contests" className="mt-4">

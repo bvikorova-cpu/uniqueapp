@@ -216,7 +216,6 @@ const Navbar = () => {
     { path: "/time-reversal-subscription", label: "⏮️ Time Reversal Social", icon: Clock },
     { path: "/masterchef-subscription", label: "👨‍🍳 MasterChef Competition", icon: ChefHat },
     { path: "/f1-racing", label: "🏎️ F1 Fantasy Racing", icon: Car },
-    { path: "/videos", label: t('navbar.videos'), icon: Video },
     { path: "/messenger", label: t('services.messenger.title'), icon: Mail },
     { path: "/influ-king", label: t('navbar.influ_king'), icon: Star },
     { path: "/megaforum", label: t('navbar.megaforum'), icon: Users },
