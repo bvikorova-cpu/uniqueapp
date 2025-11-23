@@ -28,9 +28,9 @@ serve(async (req) => {
 
     // Credit packages in EUR
     const packages: Record<string, { credits: number; priceId: string; price: number }> = {
-      small: { credits: 50, priceId: "price_1SWxj2GaXSfGtYFtcKlTJYGa", price: 4.99 },
-      medium: { credits: 150, priceId: "price_1SWxj3GaXSfGtYFtGEneXVhs", price: 12.99 },
-      large: { credits: 500, priceId: "price_1SWxj4GaXSfGtYFtHFofYWit", price: 39.99 },
+      small: { credits: 10, priceId: "price_1SWg02GaXSfGtYFtWl2vsqkz", price: 5.00 },
+      medium: { credits: 20, priceId: "price_1SWg03GaXSfGtYFt8jap0rTG", price: 7.00 },
+      large: { credits: 50, priceId: "price_1SWg03GaXSfGtYFt7edzn0gr", price: 10.00 },
     };
 
     const selectedPackage = packages[packageType];
