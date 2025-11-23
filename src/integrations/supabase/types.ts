@@ -18062,6 +18062,35 @@ export type Database = {
           },
         ]
       }
+      post_tags: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          tagged_user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          tagged_user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          tagged_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_tags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_templates: {
         Row: {
           category: string | null
@@ -18219,8 +18248,11 @@ export type Database = {
           content: string | null
           created_at: string
           edited_at: string | null
+          feeling: string | null
           id: string
           likes_count: number | null
+          location: string | null
+          privacy: string | null
           reposts_count: number
           shares_count: number | null
           updated_at: string
@@ -18231,8 +18263,11 @@ export type Database = {
           content?: string | null
           created_at?: string
           edited_at?: string | null
+          feeling?: string | null
           id?: string
           likes_count?: number | null
+          location?: string | null
+          privacy?: string | null
           reposts_count?: number
           shares_count?: number | null
           updated_at?: string
@@ -18243,8 +18278,11 @@ export type Database = {
           content?: string | null
           created_at?: string
           edited_at?: string | null
+          feeling?: string | null
           id?: string
           likes_count?: number | null
+          location?: string | null
+          privacy?: string | null
           reposts_count?: number
           shares_count?: number | null
           updated_at?: string
