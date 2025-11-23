@@ -34,21 +34,21 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
 
   return (
     <div className="fixed top-16 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b shadow-sm">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-center gap-1 overflow-x-auto py-2">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4">
+        <div className="flex items-center justify-start sm:justify-center gap-1 overflow-x-auto py-2 scrollbar-hide">
           {navItems.map((item) => (
             <Button
               key={item.path}
               variant="ghost"
               size="sm"
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-lg transition-all hover:bg-primary/10",
+                "flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0",
                 currentPath === item.path && "bg-primary/10 text-primary font-semibold"
               )}
               onClick={() => navigate(item.path)}
             >
               <item.icon className="h-4 w-4" />
-              <span className="text-sm whitespace-nowrap">{item.label}</span>
+              <span className="text-xs sm:text-sm whitespace-nowrap">{item.label}</span>
             </Button>
           ))}
         </div>

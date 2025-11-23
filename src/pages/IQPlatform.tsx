@@ -188,45 +188,45 @@ const IQPlatform = () => {
   ];
 
   return (
-    <div className="container mx-auto p-6 space-y-8">
-      <div className="space-y-4 mt-16">
-        <div className="flex items-center gap-3">
-          <Brain className="h-12 w-12 text-primary" />
+    <div className="container mx-auto p-3 sm:p-4 md:p-6 space-y-6 sm:space-y-8">
+      <div className="space-y-4 mt-16 sm:mt-20">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Brain className="h-8 w-8 sm:h-12 sm:w-12 text-primary" />
           <div>
-            <h1 className="text-4xl font-bold">IQ Platform</h1>
-            <p className="text-muted-foreground">Test, Analyze, Compete & Earn</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">IQ Platform</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">Test, Analyze, Compete & Earn</p>
           </div>
         </div>
         
         <IQCreditsDisplay />
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="tests">IQ Tests</TabsTrigger>
-          <TabsTrigger value="analyses">AI Analysis</TabsTrigger>
-          <TabsTrigger value="competitions">Competitions</TabsTrigger>
-          <TabsTrigger value="results">My Results</TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
+          <TabsTrigger value="tests" className="text-xs sm:text-sm">IQ Tests</TabsTrigger>
+          <TabsTrigger value="analyses" className="text-xs sm:text-sm">AI Analysis</TabsTrigger>
+          <TabsTrigger value="competitions" className="text-xs sm:text-sm">Competitions</TabsTrigger>
+          <TabsTrigger value="results" className="text-xs sm:text-sm">My Results</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="tests" className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
+        <TabsContent value="tests" className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {testCategories.map((test) => (
               <Card key={test.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <test.icon className="h-8 w-8 text-primary" />
-                      <div>
-                        <CardTitle>{test.title}</CardTitle>
-                        <CardDescription>{test.description}</CardDescription>
+                <CardHeader className="p-4 sm:p-6">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                      <test.icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+                      <div className="min-w-0">
+                        <CardTitle className="text-base sm:text-lg">{test.title}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm">{test.description}</CardDescription>
                       </div>
                     </div>
-                    <Badge variant="outline">{test.difficulty}</Badge>
+                    <Badge variant="outline" className="text-xs flex-shrink-0">{test.difficulty}</Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4 text-sm">
+                <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 text-xs sm:text-sm">
                     <div>
                       <p className="text-muted-foreground">Questions</p>
                       <p className="font-semibold">{test.questions}</p>
@@ -240,61 +240,61 @@ const IQPlatform = () => {
                       <p className="font-semibold">{test.credits}</p>
                     </div>
                   </div>
-                  <Button className="w-full" onClick={() => handleStartTest(test.id)}>Start Test</Button>
+                  <Button className="w-full text-sm" onClick={() => handleStartTest(test.id)}>Start Test</Button>
                 </CardContent>
               </Card>
             ))}
           </div>
         </TabsContent>
 
-        <TabsContent value="analyses" className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
+        <TabsContent value="analyses" className="space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {analyses.map((analysis) => (
               <Card key={analysis.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle>{analysis.title}</CardTitle>
-                      <CardDescription>{analysis.description}</CardDescription>
+                <CardHeader className="p-4 sm:p-6">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <CardTitle className="text-base sm:text-lg">{analysis.title}</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm">{analysis.description}</CardDescription>
                     </div>
-                    <LineChart className="h-6 w-6 text-primary" />
+                    <LineChart className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0" />
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between text-sm">
+                <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+                  <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-muted-foreground">Duration: {analysis.duration}</span>
                     <span className="font-semibold">{analysis.credits} credits</span>
                   </div>
-                  <Button className="w-full" onClick={() => handleGetAnalysis(analysis.id)}>Get Analysis</Button>
+                  <Button className="w-full text-sm" onClick={() => handleGetAnalysis(analysis.id)}>Get Analysis</Button>
                 </CardContent>
               </Card>
             ))}
           </div>
         </TabsContent>
 
-        <TabsContent value="competitions" className="space-y-6">
-          <div className="space-y-4">
+        <TabsContent value="competitions" className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {competitions.map((comp) => {
               const endsIn = countdowns[comp.id] || "Loading...";
               
               return (
                 <Card key={comp.id} className="hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <Trophy className="h-8 w-8 text-primary" />
-                        <div>
-                          <CardTitle>{comp.title}</CardTitle>
-                          <CardDescription>{comp.description}</CardDescription>
+                  <CardHeader className="p-4 sm:p-6">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                        <Trophy className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
+                        <div className="min-w-0">
+                          <CardTitle className="text-base sm:text-lg">{comp.title}</CardTitle>
+                          <CardDescription className="text-xs sm:text-sm">{comp.description}</CardDescription>
                         </div>
                       </div>
-                      <Badge variant={comp.status === "active" ? "default" : "secondary"}>
+                      <Badge variant={comp.status === "active" ? "default" : "secondary"} className="text-xs flex-shrink-0">
                         {comp.status}
                       </Badge>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-4 gap-4 text-sm">
+                  <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm">
                       <div>
                         <p className="text-muted-foreground">Entry Fee</p>
                         <p className="font-semibold">{comp.entry_fee} credits</p>
@@ -313,7 +313,7 @@ const IQPlatform = () => {
                       </div>
                     </div>
                     <Button 
-                      className="w-full" 
+                      className="w-full text-sm" 
                       disabled={comp.status !== "active"} 
                       onClick={() => handleJoinCompetition(comp.id)}
                     >
@@ -326,15 +326,15 @@ const IQPlatform = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="results" className="space-y-6">
+        <TabsContent value="results" className="space-y-4 sm:space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Your IQ Journey</CardTitle>
-              <CardDescription>Track your progress and improvements</CardDescription>
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="text-base sm:text-lg">Your IQ Journey</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">Track your progress and improvements</CardDescription>
             </CardHeader>
-            <CardContent className="text-center py-12">
-              <Users className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">
+            <CardContent className="text-center py-8 sm:py-12 p-4 sm:p-6">
+              <Users className="h-12 w-12 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-3 sm:mb-4" />
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Take your first IQ test to see your results here
               </p>
             </CardContent>
@@ -343,28 +343,28 @@ const IQPlatform = () => {
       </Tabs>
 
       <Card className="bg-gradient-to-r from-primary/10 to-primary/5">
-        <CardHeader>
-          <CardTitle>How It Works</CardTitle>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-base sm:text-lg">How It Works</CardTitle>
         </CardHeader>
-        <CardContent className="grid md:grid-cols-3 gap-6">
+        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 p-4 sm:p-6">
           <div className="text-center space-y-2">
-            <Brain className="h-12 w-12 text-primary mx-auto" />
-            <h3 className="font-semibold">1. Take Tests</h3>
-            <p className="text-sm text-muted-foreground">
+            <Brain className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
+            <h3 className="font-semibold text-sm sm:text-base">1. Take Tests</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Choose from beginner to expert level IQ tests
             </p>
           </div>
           <div className="text-center space-y-2">
-            <LineChart className="h-12 w-12 text-primary mx-auto" />
-            <h3 className="font-semibold">2. Get AI Analysis</h3>
-            <p className="text-sm text-muted-foreground">
+            <LineChart className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
+            <h3 className="font-semibold text-sm sm:text-base">2. Get AI Analysis</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Receive detailed insights about your cognitive abilities
             </p>
           </div>
           <div className="text-center space-y-2">
-            <Trophy className="h-12 w-12 text-primary mx-auto" />
-            <h3 className="font-semibold">3. Compete & Earn</h3>
-            <p className="text-sm text-muted-foreground">
+            <Trophy className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
+            <h3 className="font-semibold text-sm sm:text-base">3. Compete & Earn</h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Join competitions and win credits
             </p>
           </div>
