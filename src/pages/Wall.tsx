@@ -7,7 +7,7 @@ import CreatePost from "@/components/feed/CreatePost";
 import PostCard from "@/components/feed/PostCard";
 import RepostCard from "@/components/feed/RepostCard";
 import UserSearch from "@/components/feed/UserSearch";
-import CreateStory from "@/components/feed/CreateStory";
+
 import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,10 +16,9 @@ import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark } from "
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
 import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
-import { StoryHighlightsBar } from "@/components/wall/StoryHighlightsBar";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
-import { StoriesBar } from "@/components/wall/StoriesBar";
+import { WallTopNav } from "@/components/wall/WallTopNav";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import { useFollowingPosts } from "@/hooks/useFollow";
@@ -564,12 +563,15 @@ const Feed = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-background via-background to-accent/5 pt-20">
+    <div className="flex min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+      {/* Top Navigation */}
+      <WallTopNav currentPath="/wall" />
+      
       {/* Left Sidebar */}
       <WallSidebar currentPath="/wall" />
 
       {/* Main Feed */}
-      <div className="flex-1 overflow-y-auto pt-4">
+      <div className="flex-1 overflow-y-auto pt-24">
         {/* Pull-to-refresh indicator */}
         {pullToRefresh.pulling && (
           <div 
@@ -599,19 +601,6 @@ const Feed = () => {
           {/* Achievements Badge */}
           <div className="flex justify-end">
             <AchievementsBadge />
-          </div>
-
-          {/* Stories Bar */}
-          <StoriesBar />
-          
-          {/* Story Highlights */}
-          <Card className="p-4">
-            <StoryHighlightsBar />
-          </Card>
-
-          {/* Hidden trigger for CreateStory dialog */}
-          <div id="create-story-trigger" className="hidden">
-            <CreateStory />
           </div>
 
           {/* Enhanced Create Post */}
