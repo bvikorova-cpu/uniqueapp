@@ -39,7 +39,7 @@ export function WallSidebar({ onPostCreated }: WallSidebarProps) {
   });
 
   return (
-    <div className="w-64 lg:w-80 h-screen sticky top-36 border-r bg-card/30 backdrop-blur-xl overflow-y-auto pb-20">
+    <div className="w-64 lg:w-80 h-screen sticky top-44 border-r bg-card/30 backdrop-blur-xl overflow-y-auto pb-20">
       <div className="p-2 lg:p-4 pt-6 space-y-4">
         {/* User Profile */}
         <div className="flex items-center justify-between">
