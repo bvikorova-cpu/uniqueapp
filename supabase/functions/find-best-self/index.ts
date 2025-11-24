@@ -26,6 +26,25 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser(authHeader.replace("Bearer ", ""));
     if (userError || !user) throw new Error("Unauthorized");
 
+    // Check multiverse access for best self selection
+    const { data: hasAccess, error: accessError } = await supabaseClient.rpc(
+      'has_multiverse_access',
+      {
+        user_id_param: user.id,
+        service_type_param: 'best_self_selection'
+      }
+    );
+
+    if (accessError || !hasAccess) {
+      return new Response(
+        JSON.stringify({ error: "Multiverse subscription required. Please purchase Best Self Selection access." }),
+        { 
+          status: 403, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    }
+
     console.log("Analyzing user's universes...");
 
     // Get all user's universes
@@ -52,7 +71,7 @@ serve(async (req) => {
         Authorization: `Bearer ${Deno.env.get("LOVABLE_API_KEY")}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           {
             role: "system",
@@ -88,8 +107,6 @@ For the top 5 versions, generate a JSON array with objects containing:
 }`,
           },
         ],
-        temperature: 0.7,
-        max_tokens: 2000,
       }),
     });
 
