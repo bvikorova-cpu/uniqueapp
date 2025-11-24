@@ -7009,6 +7009,39 @@ export type Database = {
           },
         ]
       }
+      credit_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          credit_type: string
+          credits: number
+          currency: string
+          id: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          credit_type: string
+          credits: number
+          currency?: string
+          id?: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          credit_type?: string
+          credits?: number
+          currency?: string
+          id?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       crisis_campaigns: {
         Row: {
           created_at: string | null
