@@ -284,6 +284,8 @@ import CampaignApprovals from "./pages/admin/CampaignApprovals";
 import WithdrawalRequests from "./pages/admin/WithdrawalRequests";
 import Wellness from "./pages/Wellness";
 import PostDetail from "./pages/PostDetail";
+import AdminPaymentDashboard from "./pages/AdminPaymentDashboard";
+import PaymentDocumentation from "./pages/PaymentDocumentation";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -493,10 +495,12 @@ const App = () => (
           <Route path="/creator-dashboard" element={<CreatorDashboard />} />
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
           <Route path="/become-creator" element={<BecomeCreator />} />
-          <Route path="/instructor-earnings" element={<InstructorEarnings />} />
+              <Route path="/instructor-earnings" element={<InstructorEarnings />} />
               <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
               <Route path="/admin/influencer-payouts" element={<AdminInfluencerPayouts />} />
               <Route path="/admin/platform-earnings" element={<AdminPlatformEarnings />} />
+              <Route path="/admin/payment-dashboard" element={<AdminPaymentDashboard />} />
+              <Route path="/payment-documentation" element={<PaymentDocumentation />} />
               <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
           <Route path="/lottery-ai" element={<LotteryAI />} />

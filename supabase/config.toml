@@ -651,3 +651,9 @@ verify_jwt = true
 [functions.verify-credits-payment]
 verify_jwt = false
 
+[functions.get-payment-statistics]
+verify_jwt = true
+
+[functions.get-payment-analytics]
+verify_jwt = true
+
