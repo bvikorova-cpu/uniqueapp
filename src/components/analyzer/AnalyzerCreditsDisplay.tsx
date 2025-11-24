@@ -1,10 +1,10 @@
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useCookingCredits } from '@/hooks/useCookingCredits';
-import { Coins, Plus } from 'lucide-react';
+import { useAnalyzerCredits } from '@/hooks/useAnalyzerCredits';
+import { Eye, Plus } from 'lucide-react';
 
-export const CookingCreditsDisplay = () => {
-  const { data: credits, isLoading, purchaseCredits } = useCookingCredits();
+export const AnalyzerCreditsDisplay = () => {
+  const { credits, isLoading, purchaseCredits } = useAnalyzerCredits();
 
   const handlePurchase = async (amount: number) => {
     const url = await purchaseCredits(amount);
@@ -19,10 +19,13 @@ export const CookingCreditsDisplay = () => {
     <Card className="p-6 bg-gradient-to-r from-primary/10 to-primary/5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Coins className="h-8 w-8 text-primary" />
+          <Eye className="h-8 w-8 text-primary" />
           <div>
             <p className="text-sm text-muted-foreground">Available Credits</p>
-            <p className="text-3xl font-bold">{credits?.credits || 0}</p>
+            <p className="text-3xl font-bold">{credits?.credits_remaining || 0}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Tier: {credits?.tier || 'Free'}
+            </p>
           </div>
         </div>
 
@@ -33,23 +36,23 @@ export const CookingCreditsDisplay = () => {
             size="sm"
           >
             <Plus className="mr-2 h-4 w-4" />
-            10 Credits - €5
+            10 Credits - €6
           </Button>
           <Button
             size="sm"
             variant="outline"
-            onClick={() => handlePurchase(25)}
+            onClick={() => handlePurchase(30)}
           >
             <Plus className="mr-2 h-4 w-4" />
-            25 Credits - €10
+            30 Credits - €15
           </Button>
           <Button
             size="sm"
             variant="outline"
-            onClick={() => handlePurchase(50)}
+            onClick={() => handlePurchase(60)}
           >
             <Plus className="mr-2 h-4 w-4" />
-            50 Credits - €15
+            60 Credits - €25
           </Button>
         </div>
       </div>
