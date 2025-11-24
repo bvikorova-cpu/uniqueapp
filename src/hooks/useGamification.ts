@@ -89,18 +89,24 @@ export const useDailyReward = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Must be logged in");
 
-      const { error } = await supabase
-        .from("daily_rewards")
-        .insert({ user_id: user.id });
+      const { data, error } = await supabase.functions.invoke("claim-daily-reward");
       
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["daily-reward"] });
+      queryClient.invalidateQueries({ queryKey: ["gamification"] });
       toast({ title: "Success", description: "Daily reward claimed!" });
     },
-    onError: () => {
-      toast({ title: "Error", description: "Failed to claim reward", variant: "destructive" });
+    onError: (error: Error) => {
+      toast({ 
+        title: "Error", 
+        description: error.message || "Failed to claim reward", 
+        variant: "destructive" 
+      });
     },
   });
 
