@@ -24122,7 +24122,9 @@ export type Database = {
           created_at: string | null
           current_level_points: number | null
           id: string
+          last_login_date: string | null
           level: number | null
+          login_streak: number | null
           total_points: number | null
           updated_at: string | null
           user_id: string
@@ -24131,7 +24133,9 @@ export type Database = {
           created_at?: string | null
           current_level_points?: number | null
           id?: string
+          last_login_date?: string | null
           level?: number | null
+          login_streak?: number | null
           total_points?: number | null
           updated_at?: string | null
           user_id: string
@@ -24140,7 +24144,9 @@ export type Database = {
           created_at?: string | null
           current_level_points?: number | null
           id?: string
+          last_login_date?: string | null
           level?: number | null
+          login_streak?: number | null
           total_points?: number | null
           updated_at?: string | null
           user_id?: string
@@ -25577,11 +25583,19 @@ export type Database = {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
       }
+      award_points_and_log: {
+        Args: { p_activity_type: string; p_points: number; p_user_id: string }
+        Returns: undefined
+      }
       calculate_exp_for_level: {
         Args: { current_level: number }
         Returns: number
       }
       calculate_level: { Args: { points: number }; Returns: number }
+      check_and_award_badges: {
+        Args: { p_user_id: string }
+        Returns: undefined
+      }
       create_notification: {
         Args: {
           p_actor_id: string
