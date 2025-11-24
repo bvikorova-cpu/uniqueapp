@@ -163,7 +163,7 @@ export default function PetRescue() {
                     {campaign.urgent && (
                       <Badge variant="destructive" className="absolute top-2 right-2">
                         <AlertCircle className="h-3 w-3 mr-1" />
-                        Urgentné
+                        Urgent
                       </Badge>
                     )}
                   </div>
@@ -183,10 +183,10 @@ export default function PetRescue() {
                   <div>
                     <div className="flex justify-between text-sm mb-2">
                       <span className="font-semibold">
-                        {campaign.current_amount.toFixed(2)}€
+                        €{campaign.current_amount.toFixed(2)}
                       </span>
                       <span className="text-muted-foreground">
-                        z {campaign.target_amount.toFixed(2)}€
+                        of €{campaign.target_amount.toFixed(2)}
                       </span>
                     </div>
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />
@@ -207,7 +207,7 @@ export default function PetRescue() {
                     onClick={() => navigate(`/fundraising/pet/${campaign.id}`)}
                   >
                     <Heart className="mr-2 h-4 w-4" />
-                    Pomôcť {campaign.pet_name}
+                    Help {campaign.pet_name}
                   </Button>
                 </CardFooter>
               </Card>

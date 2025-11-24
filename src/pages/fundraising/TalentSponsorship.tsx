@@ -173,10 +173,10 @@ export default function TalentSponsorship() {
                   <div>
                     <div className="flex justify-between text-sm mb-2">
                       <span className="font-semibold">
-                        {campaign.current_amount.toFixed(2)}€
+                        €{campaign.current_amount.toFixed(2)}
                       </span>
                       <span className="text-muted-foreground">
-                        z {campaign.target_amount.toFixed(2)}€
+                        of €{campaign.target_amount.toFixed(2)}
                       </span>
                     </div>
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />

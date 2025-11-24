@@ -164,10 +164,10 @@ export default function DreamMaker() {
                   <div>
                     <div className="flex justify-between text-sm mb-2">
                       <span className="font-semibold">
-                        {campaign.current_amount.toFixed(2)}€
+                        €{campaign.current_amount.toFixed(2)}
                       </span>
                       <span className="text-muted-foreground">
-                        z {campaign.target_amount.toFixed(2)}€
+                        of €{campaign.target_amount.toFixed(2)}
                       </span>
                     </div>
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />
@@ -184,7 +184,7 @@ export default function DreamMaker() {
                     onClick={() => navigate(`/fundraising/dream/${campaign.id}`)}
                   >
                     <Sparkles className="mr-2 h-4 w-4" />
-                    Podpožiť sen
+                    Support Dream
                   </Button>
                 </CardFooter>
               </Card>
