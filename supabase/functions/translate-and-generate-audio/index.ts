@@ -107,10 +107,18 @@ serve(async (req) => {
       throw new Error(`Failed to generate audio: ${errorText}`)
     }
 
-    // Get audio as base64 using Deno's efficient base64 encoder
+    // Get audio as base64 - process in chunks to avoid stack overflow
     const audioArrayBuffer = await elevenLabsResponse.arrayBuffer()
     const bytes = new Uint8Array(audioArrayBuffer)
-    const base64Audio = btoa(String.fromCharCode(...bytes))
+    
+    // Convert to base64 in chunks to avoid "Maximum call stack size exceeded"
+    let binary = '';
+    const chunkSize = 8192;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
+      binary += String.fromCharCode(...chunk);
+    }
+    const base64Audio = btoa(binary);
 
     console.log('Audio generated successfully, size:', audioArrayBuffer.byteLength)
 
