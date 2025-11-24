@@ -23,6 +23,7 @@ import WallSaved from "./pages/wall/WallSaved";
 import WallTrending from "./pages/wall/WallTrending";
 import Messenger from "./pages/Messenger";
 import Megatalent from "./pages/Megatalent";
+import MegatalentCategory from "./pages/megatalent/MegatalentCategory";
 import Subscription from "./pages/Subscription";
 import Stories from "./pages/Stories";
 import Vacationer from "./pages/Vacationer";
@@ -313,6 +314,7 @@ const App = () => (
               <Route path="/post/:id" element={<PostDetail />} />
               <Route path="/messenger" element={<Messenger />} />
               <Route path="/megatalent" element={<Megatalent />} />
+              <Route path="/megatalent/:category" element={<MegatalentCategory />} />
               <Route path="/megaforum" element={<Megaforum />} />
               <Route path="/psychologist" element={<Psychology />} />
               <Route path="/vacationer" element={<Vacationer />} />
