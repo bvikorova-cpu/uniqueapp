@@ -178,10 +178,10 @@ export default function KidsSubscriptionPlans() {
         {/* Header */}
         <div className="text-center space-y-4 pt-16">
           <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Kids Homework Helper Pricing 📚
+            Kids Channel Premium 🌟
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Get unlimited AI-powered homework help for your kids
+            Unlimited access to Bedtime Stories, Character Chat, Story Videos, Reading Companion & more!
           </p>
           
           {currentSubscription?.subscribed && (
