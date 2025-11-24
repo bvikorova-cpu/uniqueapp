@@ -393,9 +393,9 @@ const App = () => (
           <Route path="/ancestor-twin/gallery" element={<AncestorTwinGallery />} />
           <Route path="/ancestor-twin/comparison" element={<AncestorTwinComparison />} />
            <Route path="/skill-swap" element={<SkillSwap />} />
-           <Route path="/skill-swap/dashboard" element={<SkillSwapDashboard />} />
-           <Route path="/skill-swap/profile/:userId" element={<SkillSwapProfile />} />
-           <Route path="/skill-swap/profile/edit" element={<SkillSwapSettings />} />
+           <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
+           <Route path="/skill-swap/profile/:userId" element={<ProtectedRoute><SkillSwapProfile /></ProtectedRoute>} />
+           <Route path="/skill-swap/profile/edit" element={<ProtectedRoute><SkillSwapSettings /></ProtectedRoute>} />
            <Route path="/subscription-management" element={<SubscriptionManagement />} />
            <Route path="/wellness" element={<Wellness />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
