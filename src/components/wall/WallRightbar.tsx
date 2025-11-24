@@ -80,7 +80,7 @@ export function WallRightbar() {
   });
 
   return (
-    <div className="w-64 xl:w-80 h-screen sticky top-36 p-2 xl:p-4 pt-6 space-y-4 overflow-y-auto pb-20">
+    <div className="w-64 xl:w-80 h-screen sticky top-44 p-2 xl:p-4 pt-6 space-y-4 overflow-y-auto pb-20">
       {/* Trending Topics */}
       <TrendingSidebar />
 
