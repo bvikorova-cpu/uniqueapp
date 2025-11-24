@@ -159,7 +159,7 @@ export default function StudentSupport() {
                       {campaign.pay_it_forward && (
                         <Badge variant="outline" className="text-xs">
                           <RefreshCw className="h-3 w-3 mr-1" />
-                          Daj to ďalej
+                          Pay Forward
                         </Badge>
                       )}
                     </div>
@@ -172,10 +172,10 @@ export default function StudentSupport() {
                   <div>
                     <div className="flex justify-between text-sm mb-2">
                       <span className="font-semibold">
-                        {campaign.current_amount.toFixed(2)}€
+                        €{campaign.current_amount.toFixed(2)}
                       </span>
                       <span className="text-muted-foreground">
-                        z {campaign.target_amount.toFixed(2)}€
+                        of €{campaign.target_amount.toFixed(2)}
                       </span>
                     </div>
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} />

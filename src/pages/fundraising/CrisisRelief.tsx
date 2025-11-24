@@ -133,7 +133,7 @@ export default function CrisisRelief() {
                     <div className="absolute top-2 left-2 right-2 flex justify-between">
                       <Badge variant="destructive" className="animate-pulse">
                         <AlertTriangle className="h-3 w-3 mr-1" />
-                        URGENTNÉ
+                        URGENT
                       </Badge>
                       {campaign.verified && (
                         <Badge variant="default">
@@ -159,10 +159,10 @@ export default function CrisisRelief() {
                   <div>
                     <div className="flex justify-between text-sm mb-2">
                       <span className="font-semibold">
-                        {campaign.current_amount.toFixed(2)}€
+                        €{campaign.current_amount.toFixed(2)}
                       </span>
                       <span className="text-muted-foreground">
-                        z {campaign.target_amount.toFixed(2)}€
+                        of €{campaign.target_amount.toFixed(2)}
                       </span>
                     </div>
                     <Progress value={getProgress(campaign.current_amount, campaign.target_amount)} className="h-2" />
