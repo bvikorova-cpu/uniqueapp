@@ -26,6 +26,25 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser(authHeader.replace("Bearer ", ""));
     if (userError || !user) throw new Error("Unauthorized");
 
+    // Check multiverse access for timeline merging
+    const { data: hasAccess, error: accessError } = await supabaseClient.rpc(
+      'has_multiverse_access',
+      {
+        user_id_param: user.id,
+        service_type_param: 'timeline_merging'
+      }
+    );
+
+    if (accessError || !hasAccess) {
+      return new Response(
+        JSON.stringify({ error: "Multiverse subscription required. Please purchase Timeline Merging access." }),
+        { 
+          status: 403, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    }
+
     const { universeIds } = await req.json();
 
     if (!universeIds || universeIds.length < 2) {
@@ -56,7 +75,7 @@ serve(async (req) => {
         Authorization: `Bearer ${Deno.env.get("LOVABLE_API_KEY")}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           {
             role: "system",
@@ -82,8 +101,6 @@ Generate a JSON response with:
 }`,
           },
         ],
-        temperature: 0.8,
-        max_tokens: 1200,
       }),
     });
 

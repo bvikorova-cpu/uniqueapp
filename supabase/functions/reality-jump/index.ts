@@ -26,6 +26,25 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser(authHeader.replace("Bearer ", ""));
     if (userError || !user) throw new Error("Unauthorized");
 
+    // Check multiverse access for reality jumping
+    const { data: hasAccess, error: accessError } = await supabaseClient.rpc(
+      'has_multiverse_access',
+      {
+        user_id_param: user.id,
+        service_type_param: 'reality_jumping'
+      }
+    );
+
+    if (accessError || !hasAccess) {
+      return new Response(
+        JSON.stringify({ error: "Multiverse subscription required. Please purchase Reality Jumping access." }),
+        { 
+          status: 403, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    }
+
     const { action, fromUniverseId, toUniverseId, jumpReason } = await req.json();
 
     if (action === "jump") {

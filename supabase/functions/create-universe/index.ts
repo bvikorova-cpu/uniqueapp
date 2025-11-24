@@ -26,6 +26,25 @@ serve(async (req) => {
     } = await supabaseClient.auth.getUser(authHeader.replace("Bearer ", ""));
     if (userError || !user) throw new Error("Unauthorized");
 
+    // Check multiverse access
+    const { data: hasAccess, error: accessError } = await supabaseClient.rpc(
+      'has_multiverse_access',
+      {
+        user_id_param: user.id,
+        service_type_param: 'universe_creation'
+      }
+    );
+
+    if (accessError || !hasAccess) {
+      return new Response(
+        JSON.stringify({ error: "Multiverse subscription required. Please purchase Universe Creation access." }),
+        { 
+          status: 403, 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        }
+      );
+    }
+
     const { universeName, divergencePoint, parameters } = await req.json();
 
     console.log("Creating universe with AI...");
@@ -38,7 +57,7 @@ serve(async (req) => {
         Authorization: `Bearer ${Deno.env.get("LOVABLE_API_KEY")}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           {
             role: "system",
@@ -58,8 +77,6 @@ Generate a JSON response with:
 }`,
           },
         ],
-        temperature: 0.9,
-        max_tokens: 1000,
       }),
     });
 
