@@ -53,7 +53,7 @@ const PRICING_TIERS = [
   {
     name: "Expert Tipster",
     price: "19.99",
-    currency: "$",
+    currency: "€",
     period: "month",
     description: "Follow top-rated expert tipsters",
     features: [
@@ -363,7 +363,7 @@ export default function SportsPredictor() {
                 </div>
               ) : matches.length === 0 ? (
                 <div className="text-center py-12">
-                  <p className="text-muted-foreground">Zatiaľ nie sú žiadne plánované zápasy</p>
+                  <p className="text-muted-foreground">No matches scheduled yet</p>
                 </div>
               ) : (
                 <div className="grid gap-4">
@@ -399,26 +399,26 @@ export default function SportsPredictor() {
                               )}
                               
                               <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
-                                <div className="text-sm text-muted-foreground mb-1">Predikcia</div>
+                                <div className="text-sm text-muted-foreground mb-1">Prediction</div>
                                 <Badge className="bg-green-500 text-white">
-                                  {match.prediction.prediction_type === 'home_win' ? 'Domáci' : 
-                                   match.prediction.prediction_type === 'away_win' ? 'Hostia' : 'Remíza'}
+                                  {match.prediction.prediction_type === 'home_win' ? 'Home' : 
+                                   match.prediction.prediction_type === 'away_win' ? 'Away' : 'Draw'}
                                 </Badge>
                               </div>
                               <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
-                                <div className="text-sm text-muted-foreground mb-1">Istota</div>
+                                <div className="text-sm text-muted-foreground mb-1">Confidence</div>
                                 <div className="text-2xl font-bold">{match.prediction.confidence}%</div>
                               </div>
                               {match.prediction.odds && (
                                 <div className={`text-center ${!canViewPredictions ? 'blur-sm' : ''}`}>
-                                  <div className="text-sm text-muted-foreground mb-1">Kurz</div>
+                                  <div className="text-sm text-muted-foreground mb-1">Odds</div>
                                   <div className="text-2xl font-bold text-primary">{match.prediction.odds}</div>
                                 </div>
                               )}
                               {canViewPredictions && (
                                 <Button variant="outline">
                                   <Bell className="mr-2 h-4 w-4" />
-                                  Upozorniť
+                                  Notify
                                 </Button>
                               )}
                             </div>
@@ -430,7 +430,7 @@ export default function SportsPredictor() {
                               {generatingPrediction === match.id ? (
                                 <>
                                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  Generujem...
+                                  Generating...
                                 </>
                               ) : (
                                 <>
@@ -448,8 +448,8 @@ export default function SportsPredictor() {
                             <div className="flex items-start gap-2">
                               <BarChart3 className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
                               <div>
-                                <p className="text-sm font-semibold mb-1">AI Analýza:</p>
-                                <p className="text-sm text-muted-foreground">{(match.prediction as any).analysis || 'Analýza nie je k dispozícii'}</p>
+                                <p className="text-sm font-semibold mb-1">AI Analysis:</p>
+                                <p className="text-sm text-muted-foreground">{(match.prediction as any).analysis || 'Analysis not available'}</p>
                               </div>
                             </div>
                           </div>

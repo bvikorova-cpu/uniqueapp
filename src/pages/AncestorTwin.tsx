@@ -129,15 +129,15 @@ const AncestorTwin = () => {
           
           <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
             {subscription?.hasSubscription && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/subscription-management")}
-                className="gap-2"
-              >
-                <CreditCard className="h-4 w-4" />
-                Spravovať predplatné
-              </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/subscription-management")}
+              className="gap-2"
+            >
+              <CreditCard className="h-4 w-4" />
+              Manage Subscription
+            </Button>
             )}
             <Button
               variant="outline"
