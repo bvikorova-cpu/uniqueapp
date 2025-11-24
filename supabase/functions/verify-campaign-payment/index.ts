@@ -72,12 +72,30 @@ serve(async (req) => {
 
     const { data: payment, error: paymentError } = await supabaseAdmin
       .from("campaign_payments")
-      .select("*, campaign_applications(influencer_id, brand_campaigns(campaign_name)), virtual_influencers(name, user_id)")
+      .select(`
+        *,
+        brand_campaigns (
+          campaign_name
+        )
+      `)
       .eq("stripe_session_id", sessionId)
       .single();
 
     if (paymentError || !payment) {
       throw new Error("Payment record not found");
+    }
+
+    logStep("Payment found", { paymentId: payment.id, influencerUserId: payment.influencer_user_id });
+
+    // Find virtual influencer by user_id
+    const { data: influencer, error: influencerError } = await supabaseAdmin
+      .from("virtual_influencers")
+      .select("id, name, user_id")
+      .eq("user_id", payment.influencer_user_id)
+      .single();
+
+    if (influencerError || !influencer) {
+      logStep("WARNING: No virtual influencer found for user", { userId: payment.influencer_user_id });
     }
 
     // Update payment status to completed
@@ -97,19 +115,66 @@ serve(async (req) => {
 
     logStep("Payment marked as completed", { paymentId: payment.id });
 
+    // Update or create influencer balance if virtual influencer exists
+    if (influencer) {
+      const { data: existingBalance } = await supabaseAdmin
+        .from("influencer_balances")
+        .select("*")
+        .eq("influencer_id", influencer.id)
+        .single();
+
+      if (existingBalance) {
+        // Update existing balance
+        const { error: balanceError } = await supabaseAdmin
+          .from("influencer_balances")
+          .update({
+            total_earned: existingBalance.total_earned + payment.influencer_amount,
+            available_balance: existingBalance.available_balance + payment.influencer_amount,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("influencer_id", influencer.id);
+
+        if (balanceError) {
+          logStep("ERROR updating balance", balanceError);
+        } else {
+          logStep("Balance updated", { 
+            influencerId: influencer.id, 
+            newBalance: existingBalance.available_balance + payment.influencer_amount 
+          });
+        }
+      } else {
+        // Create new balance
+        const { error: createError } = await supabaseAdmin
+          .from("influencer_balances")
+          .insert({
+            influencer_id: influencer.id,
+            total_earned: payment.influencer_amount,
+            available_balance: payment.influencer_amount,
+            withdrawn: 0,
+            pending_withdrawal: 0,
+          });
+
+        if (createError) {
+          logStep("ERROR creating balance", createError);
+        } else {
+          logStep("Balance created", { influencerId: influencer.id });
+        }
+      }
+    }
+
     // Send notifications
     await supabaseAdmin.from("notifications").insert([
       {
         user_id: payment.influencer_user_id,
         type: "payment_received",
         title: "Payment Received",
-        message: `You've received €${payment.influencer_amount.toFixed(2)} for the campaign "${payment.campaign_applications.brand_campaigns.campaign_name}". Check your earnings dashboard!`,
+        message: `You've received €${payment.influencer_amount.toFixed(2)} for the campaign "${payment.brand_campaigns?.campaign_name || 'a brand campaign'}". Check your earnings dashboard!`,
       },
       {
         user_id: payment.brand_user_id,
         type: "payment_confirmed",
         title: "Payment Confirmed",
-        message: `Your payment of €${payment.amount.toFixed(2)} for campaign "${payment.campaign_applications.brand_campaigns.campaign_name}" has been processed successfully.`,
+        message: `Your payment of €${payment.amount.toFixed(2)} for campaign "${payment.brand_campaigns?.campaign_name || 'your campaign'}" has been processed successfully.`,
       }
     ]);
 

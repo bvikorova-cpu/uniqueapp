@@ -55,11 +55,6 @@ serve(async (req) => {
           campaign_name,
           budget_min,
           budget_max
-        ),
-        virtual_influencers (
-          id,
-          user_id,
-          name
         )
       `)
       .eq("id", applicationId)
@@ -74,6 +69,15 @@ serve(async (req) => {
     if (application.brand_campaigns.user_id !== user.id) {
       throw new Error("Only campaign owner can make payment");
     }
+
+    // Get influencer info (application.user_id is the influencer's user_id)
+    const { data: influencer } = await supabaseClient
+      .from("virtual_influencers")
+      .select("id, name, user_id")
+      .eq("user_id", application.user_id)
+      .single();
+
+    const influencerName = influencer?.name || "the influencer";
 
     // Verify amount is within budget
     if (amount < application.brand_campaigns.budget_min || amount > application.brand_campaigns.budget_max) {
@@ -99,7 +103,7 @@ serve(async (req) => {
         campaign_id: application.brand_campaigns.id,
         application_id: applicationId,
         brand_user_id: user.id,
-        influencer_user_id: application.virtual_influencers.user_id,
+        influencer_user_id: application.user_id, // This is the influencer's user_id
         amount,
         platform_fee: platformFee,
         influencer_amount: influencerAmount,
@@ -137,7 +141,7 @@ serve(async (req) => {
             currency: "eur",
             product_data: {
               name: `Campaign: ${application.brand_campaigns.campaign_name}`,
-              description: `Payment to ${application.virtual_influencers.name} for brand collaboration`,
+              description: `Payment to ${influencerName} for brand collaboration`,
             },
             unit_amount: Math.round(amount * 100), // Convert to cents
           },
