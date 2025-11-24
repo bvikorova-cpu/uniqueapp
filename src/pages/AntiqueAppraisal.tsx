@@ -156,10 +156,10 @@ const AntiqueAppraisal = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" />
-              Platba pripravená
+              Payment Ready
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-4">
-              <p>Kliknite na tlačidlo nižšie pre dokončenie platby cez Stripe:</p>
+              <p>Click the button below to complete your payment via Stripe:</p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-col gap-2">
@@ -172,14 +172,14 @@ const AntiqueAppraisal = () => {
               className="w-full gap-2"
             >
               <ExternalLink className="h-4 w-4" />
-              Otvoriť Stripe Platbu
+              Open Stripe Payment
             </Button>
             <Button
               variant="outline"
               onClick={() => setStripeUrl(null)}
               className="w-full"
             >
-              Zrušiť
+              Cancel
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
