@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send, Copy, Facebook, Trash2 } from "lucide-react";
+import { Heart, MessageCircle, Share2, Upload, Video, Camera, TrendingUp, Send, Copy, Facebook, Trash2, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -91,6 +92,7 @@ const categoryGroups = [
 
 const Megatalent = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriptionTier, setSubscriptionTier] = useState<'premium' | 'top_premium' | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("drawing");
@@ -876,6 +878,132 @@ const Megatalent = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
+        {/* Featured Categories Section */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold mb-4">Explore by Category</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/art')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">🎨</div>
+                <h3 className="font-semibold mb-1">Art</h3>
+                <p className="text-xs text-muted-foreground">Drawing, Painting & More</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/music')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">🎤</div>
+                <h3 className="font-semibold mb-1">Music</h3>
+                <p className="text-xs text-muted-foreground">Singing & Instruments</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/dance')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">💃</div>
+                <h3 className="font-semibold mb-1">Dance</h3>
+                <p className="text-xs text-muted-foreground">All Dance Styles</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/photography')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">📸</div>
+                <h3 className="font-semibold mb-1">Photography</h3>
+                <p className="text-xs text-muted-foreground">Best Photos</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/cooking')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">👨‍🍳</div>
+                <h3 className="font-semibold mb-1">Cooking</h3>
+                <p className="text-xs text-muted-foreground">Culinary Creations</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/digital_art')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">💻</div>
+                <h3 className="font-semibold mb-1">Digital Art</h3>
+                <p className="text-xs text-muted-foreground">Digital Creations</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/makeup_art')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">💄</div>
+                <h3 className="font-semibold mb-1">Makeup Art</h3>
+                <p className="text-xs text-muted-foreground">Beauty Artistry</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/sports')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">💪</div>
+                <h3 className="font-semibold mb-1">Sports</h3>
+                <p className="text-xs text-muted-foreground">Fitness & Training</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/entertainment')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">😂</div>
+                <h3 className="font-semibold mb-1">Entertainment</h3>
+                <p className="text-xs text-muted-foreground">Comedy & Fun</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+            
+            <Card 
+              className="cursor-pointer hover:shadow-lg transition-all group"
+              onClick={() => navigate('/megatalent/education')}
+            >
+              <CardContent className="p-6 text-center">
+                <div className="text-4xl mb-2">💡</div>
+                <h3 className="font-semibold mb-1">Education</h3>
+                <p className="text-xs text-muted-foreground">Tutorials & Tips</p>
+                <ArrowRight className="w-4 h-4 mx-auto mt-2 group-hover:translate-x-1 transition-transform" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
         <Tabs defaultValue="feed" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="feed">{t('megatalent.contest')}</TabsTrigger>
