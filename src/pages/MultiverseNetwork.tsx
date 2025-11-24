@@ -245,7 +245,7 @@ const MultiverseNetwork = () => {
               compare different life paths, and discover your best possible self across the multiverse.
             </p>
             
-            <div className="flex flex-wrap gap-6 justify-center text-sm">
+            <div className="flex flex-wrap gap-6 justify-center text-sm mb-12">
               <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-violet-900/30 backdrop-blur-sm border border-violet-500/30 shadow-lg">
                 <Globe className="w-5 h-5 text-violet-400" />
                 <span>Infinite Universes</span>
@@ -259,12 +259,120 @@ const MultiverseNetwork = () => {
                 <span>200K+ Explorers</span>
               </div>
             </div>
+
+            <div className="flex justify-center">
+              <Button 
+                onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                size="lg"
+                className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 text-lg px-8 py-6 shadow-xl shadow-violet-500/30"
+              >
+                <Sparkles className="mr-2 h-5 w-5" />
+                Explore Access Plans
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-20 px-4 bg-gradient-to-b from-violet-950/20 to-background relative">
+      {/* Services Grid - NOW DIRECTLY AFTER HERO */}
+      <section id="pricing" className="py-16 px-4 bg-gradient-to-b from-violet-950/10 to-background">
+        <div className="container mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">
+              Multiverse Access Plans
+            </span>
+          </h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg max-w-3xl mx-auto">
+            Choose your path through infinite realities
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            {services.map((service) => {
+              const Icon = service.icon;
+              return (
+                <Card 
+                  key={service.id} 
+                  className={`group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-105 border-2 ${
+                    service.highlighted 
+                      ? 'border-violet-500/50 shadow-2xl shadow-violet-500/30 bg-gradient-to-br from-violet-950/40 to-background' 
+                      : 'border-violet-700/30 hover:border-violet-600/50'
+                  }`}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {service.highlighted && (
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-gradient-to-r from-violet-500 to-purple-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg shadow-violet-500/50">
+                      <Zap className="w-3.5 h-3.5" />
+                      POPULAR
+                    </div>
+                  )}
+                  
+                  <CardHeader className="pb-4">
+                    <div className="mb-4 relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-violet-500/30 to-purple-500/30 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500" />
+                      <div className="relative p-3 rounded-xl bg-gradient-to-br from-violet-900/40 to-purple-900/40 backdrop-blur-sm w-fit border border-violet-500/30">
+                        <Icon className="w-8 h-8 text-violet-400 group-hover:scale-110 transition-transform duration-300" />
+                      </div>
+                    </div>
+                    <CardTitle className="text-xl mb-2 group-hover:text-violet-400 transition-colors">
+                      {service.title}
+                    </CardTitle>
+                    <CardDescription className="text-sm leading-relaxed">
+                      {service.description}
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="space-y-4">
+                    <div>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
+                          {service.price}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          {service.priceType}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <ul className="space-y-2">
+                      {service.features.slice(0, 3).map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-xs">
+                          <div className="mt-0.5 p-1 rounded-full bg-gradient-to-br from-violet-500/20 to-purple-500/20 border border-violet-500/30">
+                            <div className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-violet-400 to-purple-400" />
+                          </div>
+                          <span className="flex-1">{feature}</span>
+                        </li>
+                      ))}
+                      {service.features.length > 3 && (
+                        <li className="text-xs text-muted-foreground ml-5">
+                          +{service.features.length - 3} more features
+                        </li>
+                      )}
+                    </ul>
+
+                    <Button 
+                      onClick={() => handlePurchase(service.id)}
+                      disabled={loading === service.id}
+                      className={`w-full transition-all duration-300 ${
+                        service.highlighted
+                          ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 shadow-lg shadow-violet-500/40'
+                          : ''
+                      }`}
+                      variant={service.highlighted ? "default" : "outline"}
+                      size="sm"
+                    >
+                      {loading === service.id ? "Processing..." : "Enter Multiverse"}
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works - NOW AFTER PRICING */}
+      <section className="py-16 px-4 bg-gradient-to-b from-background to-violet-950/10 relative">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-violet-500 rounded-full blur-3xl" />
         </div>
@@ -319,97 +427,6 @@ const MultiverseNetwork = () => {
                 AI identifies your most successful version across all parallel universes
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Grid */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">
-              Multiverse Access Plans
-            </span>
-          </h2>
-          <p className="text-center text-muted-foreground mb-16 text-lg max-w-3xl mx-auto">
-            Choose your path through infinite realities
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {services.map((service) => {
-              const Icon = service.icon;
-              return (
-                <Card 
-                  key={service.id} 
-                  className={`group relative overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-105 border-2 ${
-                    service.highlighted 
-                      ? 'border-violet-500/50 shadow-2xl shadow-violet-500/30 bg-gradient-to-br from-violet-950/40 to-background' 
-                      : 'border-violet-700/30 hover:border-violet-600/50'
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  {service.highlighted && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-gradient-to-r from-violet-500 to-purple-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg shadow-violet-500/50">
-                      <Zap className="w-3.5 h-3.5" />
-                      POPULAR
-                    </div>
-                  )}
-                  
-                  <CardHeader>
-                    <div className="mb-6 relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-violet-500/30 to-purple-500/30 rounded-2xl blur-2xl group-hover:blur-3xl transition-all duration-500" />
-                      <div className="relative p-4 rounded-2xl bg-gradient-to-br from-violet-900/40 to-purple-900/40 backdrop-blur-sm w-fit border border-violet-500/30 shadow-lg">
-                        <Icon className="w-10 h-10 text-violet-400 group-hover:scale-110 transition-transform duration-300" />
-                      </div>
-                    </div>
-                    <CardTitle className="text-2xl mb-3 group-hover:text-violet-400 transition-colors">
-                      {service.title}
-                    </CardTitle>
-                    <CardDescription className="text-base leading-relaxed">
-                      {service.description}
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="mb-6">
-                      <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-5xl font-bold bg-gradient-to-r from-violet-400 to-purple-400 bg-clip-text text-transparent">
-                          {service.price}
-                        </span>
-                        <span className="text-muted-foreground text-sm">
-                          {service.priceType}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <ul className="space-y-4 mb-8">
-                      {service.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm">
-                          <div className="mt-1 p-1.5 rounded-full bg-gradient-to-br from-violet-500/20 to-purple-500/20 border border-violet-500/30">
-                            <div className="w-2 h-2 rounded-full bg-gradient-to-br from-violet-400 to-purple-400" />
-                          </div>
-                          <span className="flex-1 leading-relaxed">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <Button 
-                      onClick={() => handlePurchase(service.id)}
-                      disabled={loading === service.id}
-                      className={`w-full transition-all duration-300 ${
-                        service.highlighted
-                          ? 'bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-600 hover:to-purple-600 shadow-lg shadow-violet-500/40'
-                          : ''
-                      }`}
-                      variant={service.highlighted ? "default" : "outline"}
-                    >
-                      {loading === service.id ? "Processing..." : "Enter Multiverse"}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
           </div>
         </div>
       </section>
