@@ -9,9 +9,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Calendar, Plus, MapPin, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 export default function WallEvents() {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const [newEventTitle, setNewEventTitle] = useState("");
   const [newEventDescription, setNewEventDescription] = useState("");
   const [newEventLocation, setNewEventLocation] = useState("");
@@ -72,16 +74,16 @@ export default function WallEvents() {
 
     if (error) {
       toast({
-        title: "Error",
-        description: "Failed to create event",
+        title: t('wall.events.error'),
+        description: t('wall.events.createFailed'),
         variant: "destructive",
       });
       return;
     }
 
     toast({
-      title: "Success",
-      description: "Event created successfully",
+      title: t('wall.events.success'),
+      description: t('wall.events.created'),
     });
 
     setIsCreateDialogOpen(false);
@@ -107,16 +109,16 @@ export default function WallEvents() {
 
     if (error) {
       toast({
-        title: "Error",
-        description: "Failed to RSVP",
+        title: t('wall.events.error'),
+        description: t('wall.events.rsvpFailed'),
         variant: "destructive",
       });
       return;
     }
 
     toast({
-      title: "Success",
-      description: `Marked as ${status}`,
+      title: t('wall.events.success'),
+      description: `${t('wall.events.markedAs')} ${status}`,
     });
   };
 
@@ -126,38 +128,38 @@ export default function WallEvents() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Calendar className="h-6 w-6 text-primary" />
-            <h2 className="text-2xl font-semibold">Events</h2>
+            <h2 className="text-2xl font-semibold">{t('wall.events.title')}</h2>
           </div>
           <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
-                Create Event
+                {t('wall.events.createEvent')}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Create New Event</DialogTitle>
+                <DialogTitle>{t('wall.events.createNewEvent')}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium">Event Title</label>
+                  <label className="text-sm font-medium">{t('wall.events.eventTitle')}</label>
                   <Input
                     value={newEventTitle}
                     onChange={(e) => setNewEventTitle(e.target.value)}
-                    placeholder="Enter event title"
+                    placeholder={t('wall.events.enterTitle')}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Location</label>
+                  <label className="text-sm font-medium">{t('wall.events.location')}</label>
                   <Input
                     value={newEventLocation}
                     onChange={(e) => setNewEventLocation(e.target.value)}
-                    placeholder="Where is it happening?"
+                    placeholder={t('wall.events.locationPlaceholder')}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Start Time</label>
+                  <label className="text-sm font-medium">{t('wall.events.startTime')}</label>
                   <Input
                     type="datetime-local"
                     value={newEventStartTime}
@@ -165,16 +167,16 @@ export default function WallEvents() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium">Description</label>
+                  <label className="text-sm font-medium">{t('wall.events.description')}</label>
                   <Textarea
                     value={newEventDescription}
                     onChange={(e) => setNewEventDescription(e.target.value)}
-                    placeholder="What's your event about?"
+                    placeholder={t('wall.events.descriptionPlaceholder')}
                     rows={3}
                   />
                 </div>
                 <Button onClick={createEvent} className="w-full">
-                  Create Event
+                  {t('wall.events.createEvent')}
                 </Button>
               </div>
             </DialogContent>
@@ -183,7 +185,7 @@ export default function WallEvents() {
 
         {myEvents.length > 0 && (
           <div className="mb-8">
-            <h3 className="text-lg font-semibold mb-4">My Events ({myEvents.length})</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('wall.events.myEvents')} ({myEvents.length})</h3>
             <div className="space-y-4">
               {myEvents.map((event) => (
                 <Card key={event.id} className="p-4 hover:shadow-md transition-shadow">
@@ -215,7 +217,7 @@ export default function WallEvents() {
                       )}
                       <div className="flex items-center gap-2 mt-3">
                       <span className="text-xs text-muted-foreground">
-                        Attendees: TBD
+                        {t('wall.events.attendees')}
                       </span>
                       </div>
                     </div>
@@ -227,7 +229,7 @@ export default function WallEvents() {
         )}
 
         <div>
-          <h3 className="text-lg font-semibold mb-4">Upcoming Events</h3>
+          <h3 className="text-lg font-semibold mb-4">{t('wall.events.upcomingEvents')}</h3>
           <div className="space-y-4">
             {upcomingEvents.map((event) => (
               <Card key={event.id} className="p-4 hover:shadow-md transition-shadow">
@@ -262,17 +264,17 @@ export default function WallEvents() {
                         size="sm"
                         onClick={() => rsvpToEvent(event.id, "going")}
                       >
-                        Going
+                        {t('wall.events.going')}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => rsvpToEvent(event.id, "interested")}
                       >
-                        Interested
+                        {t('wall.events.interested')}
                       </Button>
                       <span className="text-xs text-muted-foreground ml-2">
-                        Attendees: TBD
+                        {t('wall.events.attendees')}
                       </span>
                     </div>
                   </div>

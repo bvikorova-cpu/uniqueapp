@@ -24,7 +24,47 @@
     "title": "Wall",
     "loading": "Loading...",
     "noPosts": "No posts yet. Be the first to add something!",
-    "errorLoadingPosts": "Error loading posts"
+    "errorLoadingPosts": "Error loading posts",
+    "events": {
+      "title": "Events",
+      "createEvent": "Create Event",
+      "createNewEvent": "Create New Event",
+      "eventTitle": "Event Title",
+      "enterTitle": "Enter event title",
+      "location": "Location",
+      "locationPlaceholder": "Where is it happening?",
+      "startTime": "Start Time",
+      "description": "Description",
+      "descriptionPlaceholder": "What's your event about?",
+      "myEvents": "My Events",
+      "attendees": "Attendees: TBD",
+      "upcomingEvents": "Upcoming Events",
+      "going": "Going",
+      "interested": "Interested",
+      "error": "Error",
+      "createFailed": "Failed to create event",
+      "success": "Success",
+      "created": "Event created successfully",
+      "rsvpFailed": "Failed to RSVP",
+      "markedAs": "Marked as"
+    },
+    "messages": {
+      "title": "Messages",
+      "openMessenger": "Open Messenger",
+      "quickAccess": "Quick access to your conversations",
+      "noConversations": "No conversations yet",
+      "connectFriends": "Connect with friends to start messaging",
+      "clickToOpen": "Click to open conversation",
+      "fullFeatures": "For full messaging features, open the",
+      "messengerApp": "Messenger app"
+    },
+    "feed": {
+      "pullToRefresh": "Pull to refresh",
+      "releaseToRefresh": "Release to refresh",
+      "noPostsFound": "No posts found. Try adjusting your filters.",
+      "loadingMore": "Loading more posts...",
+      "reachedEnd": "You've reached the end! 🎉"
+    }
   },
   "jobs": {
     "title": "Job Listings",
@@ -310,7 +350,9 @@
     }
   },
   "rewards": {
-    "title": "🎮 Gamification & Rewards",
+    "title": "Gamification & Rewards",
+    "titleEmoji": "🎮 Gamification & Rewards",
+    "premiumStore": "Premium Store",
     "badges": "Badges",
     "leaderboard": "Leaderboard",
     "loading": "Loading..."

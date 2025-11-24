@@ -5,9 +5,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MessageCircle, Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function WallMessages() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: user } = useQuery({
     queryKey: ["current-user"],
@@ -52,23 +54,23 @@ export default function WallMessages() {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <MessageCircle className="h-6 w-6 text-primary" />
-            <h2 className="text-2xl font-semibold">Messages</h2>
+            <h2 className="text-2xl font-semibold">{t('wall.messages.title')}</h2>
           </div>
           <Button onClick={() => navigate("/messenger")}>
             <Send className="h-4 w-4 mr-2" />
-            Open Messenger
+            {t('wall.messages.openMessenger')}
           </Button>
         </div>
 
         <p className="text-muted-foreground mb-6">
-          Quick access to your conversations
+          {t('wall.messages.quickAccess')}
         </p>
 
         {friends.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
             <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p>No conversations yet</p>
-            <p className="text-sm mt-2">Connect with friends to start messaging</p>
+            <p>{t('wall.messages.noConversations')}</p>
+            <p className="text-sm mt-2">{t('wall.messages.connectFriends')}</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -85,7 +87,7 @@ export default function WallMessages() {
                   </Avatar>
                   <div className="flex-1">
                     <p className="font-semibold">{friend.full_name}</p>
-                    <p className="text-sm text-muted-foreground">Click to open conversation</p>
+                    <p className="text-sm text-muted-foreground">{t('wall.messages.clickToOpen')}</p>
                   </div>
                   <MessageCircle className="h-5 w-5 text-muted-foreground" />
                 </div>
@@ -96,12 +98,12 @@ export default function WallMessages() {
 
         <div className="mt-6 p-4 bg-muted/50 rounded-lg">
           <p className="text-sm text-muted-foreground">
-            For full messaging features, open the{" "}
+            {t('wall.messages.fullFeatures')}{" "}
             <button
               onClick={() => navigate("/messenger")}
               className="text-primary hover:underline font-medium"
             >
-              Messenger app
+              {t('wall.messages.messengerApp')}
             </button>
           </p>
         </div>
