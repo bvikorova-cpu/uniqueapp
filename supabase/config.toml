@@ -639,3 +639,15 @@ verify_jwt = true
 [functions.stop-stream]
 verify_jwt = true
 
+[functions.create-analyzer-credits-payment]
+verify_jwt = true
+
+[functions.create-cooking-credits-payment]
+verify_jwt = true
+
+[functions.create-video-ad-credits-payment]
+verify_jwt = true
+
+[functions.verify-credits-payment]
+verify_jwt = false
+

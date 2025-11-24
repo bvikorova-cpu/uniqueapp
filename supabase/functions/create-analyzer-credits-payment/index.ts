@@ -7,11 +7,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Price IDs for photo restoration credit packages - EUR prices
-const PRICE_IDS: Record<number, string> = {
-  5: "price_1SX7F7GaXSfGtYFtNHucrDmn",   // 5 credits - 10€
-  20: "price_1SX7F8GaXSfGtYFtVfVMU7nY",  // 20 credits - 30€
-  50: "price_1SX7F9GaXSfGtYFtH61LdBI5",  // 50 credits - 60€
+const CREDIT_PRICES = {
+  10: "price_1SX7FBGaXSfGtYFtgKQ9rFRV",
+  30: "price_1SX7FCGaXSfGtYFtqsZSeiFi",
+  60: "price_1SX7FDGaXSfGtYFtZ3VGpBpD",
 };
 
 serve(async (req) => {
@@ -25,27 +24,15 @@ serve(async (req) => {
   );
 
   try {
-    console.log("Starting photo credits payment creation");
-    
     const authHeader = req.headers.get("Authorization")!;
     const token = authHeader.replace("Bearer ", "");
     const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated");
 
-    console.log("User authenticated:", user.id);
-
     const { credits } = await req.json();
-
-    if (!credits) {
-      throw new Error("Credits amount is required");
-    }
-
-    if (!PRICE_IDS[credits]) {
-      throw new Error(`Invalid credit amount: ${credits}. Available amounts: 5, 20, 50`);
-    }
-
-    console.log("Creating checkout for credits:", credits);
+    const priceId = CREDIT_PRICES[credits as keyof typeof CREDIT_PRICES];
+    if (!priceId) throw new Error("Invalid credit amount");
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
@@ -55,40 +42,28 @@ serve(async (req) => {
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
-      console.log("Found existing customer:", customerId);
-    } else {
-      console.log("No existing customer found, will create new one in checkout");
     }
 
-    // Create a checkout session for one-time payment
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price: PRICE_IDS[credits],
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/photo-restoration?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/photo-restoration?payment=cancelled`,
+      success_url: `${req.headers.get("origin")}/analyzer?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/analyzer?payment=canceled`,
       metadata: {
         user_id: user.id,
         credits: credits.toString(),
-        credit_type: "photo_credits",
+        credit_type: "analyzer_credits",
       },
     });
 
-    console.log("Checkout session created:", session.id, "URL:", session.url);
-
-    return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
+    return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    console.error("Photo credits payment error:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

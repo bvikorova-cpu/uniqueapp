@@ -37,9 +37,9 @@ serve(async (req) => {
     }
 
     const priceMap: Record<number, string> = {
-      10: "price_1SWg02GaXSfGtYFtWl2vsqkz",
-      20: "price_1SWg03GaXSfGtYFt8jap0rTG",
-      50: "price_1SWg03GaXSfGtYFt7edzn0gr",
+      10: "price_1SX7FLGaXSfGtYFtf8qA5DjG",
+      20: "price_1SX7FNGaXSfGtYFtdIP9DTj6",
+      50: "price_1SX7FOGaXSfGtYFtIoxAWZen",
     };
 
     const priceId = priceMap[credits];
@@ -57,11 +57,12 @@ serve(async (req) => {
         },
       ],
       mode: "payment",
-      success_url: `${req.headers.get("origin")}/iq-platform?success=true`,
-      cancel_url: `${req.headers.get("origin")}/iq-platform`,
+      success_url: `${req.headers.get("origin")}/iq-platform?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${req.headers.get("origin")}/iq-platform?payment=canceled`,
       metadata: {
         user_id: user.id,
         credits: credits.toString(),
+        credit_type: "iq_credits",
       },
     });
 
