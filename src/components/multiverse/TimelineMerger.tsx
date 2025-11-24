@@ -119,6 +119,31 @@ const TimelineMerger = () => {
     );
   }
 
+  const handlePurchase = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-multiverse-checkout', {
+        body: { serviceType: 'timeline_merging' }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast({
+          title: "Opening Checkout",
+          description: "Complete your purchase to unlock Timeline Merging",
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to open checkout. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!hasAccess) {
     return (
       <Card className="border-yellow-500/20 bg-gradient-to-br from-yellow-950/10 to-background">
@@ -126,13 +151,14 @@ const TimelineMerger = () => {
           <AlertCircle className="w-16 h-16 text-yellow-400 mx-auto" />
           <h3 className="text-xl font-semibold text-foreground">Access Required</h3>
           <p className="text-muted-foreground max-w-md mx-auto">
-            You need to purchase "Timeline Merging" to combine parallel universes.
+            Purchase "Timeline Merging" for €79 (one-time) to combine parallel universes.
           </p>
           <Button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={handlePurchase}
             className="bg-gradient-to-r from-violet-500 to-purple-500"
           >
-            View Pricing Plans
+            <Layers className="mr-2 h-4 w-4" />
+            Purchase Timeline Merging - €79
           </Button>
         </CardContent>
       </Card>
