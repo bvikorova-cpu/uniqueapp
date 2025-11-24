@@ -657,3 +657,6 @@ verify_jwt = true
 [functions.get-payment-analytics]
 verify_jwt = true
 
+[functions.claim-daily-reward]
+verify_jwt = true
+
