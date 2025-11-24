@@ -60,6 +60,8 @@ interface PostCardProps {
     comments_count: number;
     shares_count: number;
     reposts_count: number;
+    feeling?: string | null;
+    location?: string | null;
     media: Array<{
       id: string;
       file_url: string;
@@ -678,12 +680,30 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
             >
               {post.profiles?.full_name || "User"}
             </p>
-            <p className="text-sm text-muted-foreground">
-              {formatDistanceToNow(new Date(post.created_at), {
-                addSuffix: true,
-                locale: enUS,
-              })}
-            </p>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>
+                {formatDistanceToNow(new Date(post.created_at), {
+                  addSuffix: true,
+                  locale: enUS,
+                })}
+              </span>
+              {post.feeling && (
+                <>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    {post.feeling}
+                  </span>
+                </>
+              )}
+              {post.location && (
+                <>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    📍 {post.location}
+                  </span>
+                </>
+              )}
+            </div>
           </div>
           {currentUserId === post.user_id && (
             <DropdownMenu>
