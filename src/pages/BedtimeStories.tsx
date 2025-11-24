@@ -129,53 +129,110 @@ export default function BedtimeStories() {
 
   const handlePlayStory = async (storyId: number) => {
     const story = stories.find(s => s.id === storyId);
-    if (!story) return;
+    if (!story) {
+      console.error('Story not found:', storyId);
+      return;
+    }
 
+    console.log('Starting story generation for:', story.title);
     setIsGenerating(true);
     setCurrentStory(storyId);
 
     try {
+      console.log('Invoking edge function with language:', language);
       const { data, error } = await supabase.functions.invoke('translate-and-generate-audio', {
         body: { text: story.text, language }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Edge function error:', error);
+        throw error;
+      }
 
-      if (data.audioContent) {
+      console.log('Edge function response received:', { 
+        hasAudioContent: !!data?.audioContent,
+        audioContentLength: data?.audioContent?.length 
+      });
+
+      if (!data || !data.audioContent) {
+        throw new Error('No audio content received from server');
+      }
+
+      console.log('Decoding base64 audio...');
+      try {
         const audioBlob = new Blob(
           [Uint8Array.from(atob(data.audioContent), c => c.charCodeAt(0))],
           { type: 'audio/mpeg' }
         );
+        console.log('Audio blob created, size:', audioBlob.size);
+        
         const url = URL.createObjectURL(audioBlob);
+        console.log('Audio URL created:', url);
         setAudioUrl(url);
         
         if (audioRef.current) {
           audioRef.current.pause();
+          audioRef.current = null;
         }
         
         audioRef.current = new Audio(url);
         audioRef.current.volume = volume / 100;
         
-        audioRef.current.onended = () => {
+        audioRef.current.onerror = (e) => {
+          console.error('Audio playback error:', e);
+          toast({
+            title: "Playback Error",
+            description: "Failed to play audio. Please try again.",
+            variant: "destructive",
+          });
           setIsPlaying(false);
         };
         
-        await audioRef.current.play();
-        setIsPlaying(true);
-        startSleepTimer();
+        audioRef.current.onended = () => {
+          console.log('Audio playback ended');
+          setIsPlaying(false);
+        };
         
-        toast({
-          title: "Story started 🌙",
-          description: `Now playing: ${story.title}`,
-        });
+        audioRef.current.onloadeddata = () => {
+          console.log('Audio loaded, duration:', audioRef.current?.duration);
+        };
+        
+        console.log('Starting audio playback...');
+        try {
+          await audioRef.current.play();
+          console.log('Audio playback started successfully');
+          setIsPlaying(true);
+          startSleepTimer();
+          
+          toast({
+            title: "Story started 🌙",
+            description: `Now playing: ${story.title}`,
+          });
+        } catch (playError: any) {
+          console.error('Audio play error:', playError);
+          
+          // Handle autoplay restrictions
+          if (playError.name === 'NotAllowedError') {
+            toast({
+              title: "Click to play",
+              description: "Please click the play button to start the story",
+            });
+          } else {
+            throw playError;
+          }
+        }
+      } catch (decodeError) {
+        console.error('Base64 decode error:', decodeError);
+        throw new Error('Failed to decode audio data');
       }
     } catch (error: any) {
-      console.error('Error generating story:', error);
+      console.error('Error in handlePlayStory:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to generate story audio",
+        description: error.message || "Failed to generate story audio. Please try again.",
         variant: "destructive",
       });
+      setCurrentStory(null);
     } finally {
       setIsGenerating(false);
     }
