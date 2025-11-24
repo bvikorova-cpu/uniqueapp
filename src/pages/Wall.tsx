@@ -696,26 +696,29 @@ const Feed = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
-      {/* Top Navigation */}
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+      {/* Fixed Top Navigation */}
       <WallTopNav currentPath={currentPath} />
       
       {/* Mobile Menu Button and Drawer */}
       <MobileWallMenu onPostCreated={fetchPosts} />
       
-      {/* Left Sidebar - Hidden on mobile */}
-      <div className="hidden lg:block">
-        <WallSidebar onPostCreated={fetchPosts} />
-      </div>
+      {/* Main Layout Container - starts below fixed nav */}
+      <div className="flex pt-[112px]">
+        {/* Left Sidebar - Hidden on mobile, sticky within container */}
+        <div className="hidden lg:block">
+          <WallSidebar onPostCreated={fetchPosts} />
+        </div>
 
-      {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto pt-40 lg:pt-44 px-2 sm:px-0">
-        {renderContent()}
-      </div>
+        {/* Main Content Area - scrollable */}
+        <div className="flex-1 min-w-0 px-2 sm:px-4 py-4">
+          {renderContent()}
+        </div>
 
-      {/* Right Sidebar - Hidden on tablet and below */}
-      <div className="hidden xl:block">
-        <WallRightbar />
+        {/* Right Sidebar - Hidden on tablet and below, sticky within container */}
+        <div className="hidden xl:block">
+          <WallRightbar />
+        </div>
       </div>
 
       {/* Back to top button - responsive positioning */}
