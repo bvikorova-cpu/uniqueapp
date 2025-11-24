@@ -709,7 +709,7 @@ const Feed = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto pt-28 lg:pt-32 px-2 sm:px-0">
+      <div className="flex-1 overflow-y-auto pt-40 lg:pt-44 px-2 sm:px-0">
         {renderContent()}
       </div>
 
