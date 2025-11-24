@@ -61,16 +61,16 @@ const AICreditsStore = () => {
       setLoading(true);
       
       toast({
-        title: "Vytváram platobnú reláciu",
-        description: "Počkajte prosím...",
+        title: "Creating payment session",
+        description: "Please wait...",
       });
 
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
         toast({
-          title: "Chyba autentifikácie",
-          description: "Musíte byť prihlásený na nákup kreditov",
+          title: "Authentication Error",
+          description: "You must be logged in to purchase credits",
           variant: "destructive",
         });
         setLoading(false);
@@ -85,8 +85,8 @@ const AICreditsStore = () => {
 
       if (data?.url) {
         toast({
-          title: "Presmerovanie na Stripe",
-          description: "Platobné okno sa otvorí v novej karte...",
+          title: "Redirecting to Stripe",
+          description: "Payment window will open in a new tab...",
         });
         
         setTimeout(() => {
@@ -99,8 +99,8 @@ const AICreditsStore = () => {
       console.error('Purchase error:', error);
       setLoading(false);
       toast({
-        title: "Chyba pri platbe",
-        description: error?.message || "Vyskytla sa chyba",
+        title: "Payment Error",
+        description: error?.message || "An error occurred",
         variant: "destructive",
       });
     }
@@ -112,8 +112,8 @@ const AICreditsStore = () => {
         <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
           <Card className="p-8 text-center">
             <Sparkles className="h-12 w-12 text-primary mx-auto mb-4 animate-spin" />
-            <h3 className="text-xl font-semibold mb-2">Pripravujem platbu</h3>
-            <p className="text-muted-foreground">Počkajte prosím...</p>
+            <h3 className="text-xl font-semibold mb-2">Preparing Payment</h3>
+            <p className="text-muted-foreground">Please wait...</p>
           </Card>
         </div>
       )}
