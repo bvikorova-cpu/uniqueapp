@@ -298,7 +298,7 @@ const MultiverseNetwork = () => {
                       : 'border-violet-700/30 hover:border-violet-600/50'
                   }`}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                   
                   {service.highlighted && (
                     <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-gradient-to-r from-violet-500 to-purple-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg shadow-violet-500/50">
