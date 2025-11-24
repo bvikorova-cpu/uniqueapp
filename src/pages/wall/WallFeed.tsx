@@ -19,6 +19,8 @@ interface Post {
   comments_count: number;
   shares_count: number;
   reposts_count: number;
+  feeling?: string | null;
+  location?: string | null;
   media: Array<{
     id: string;
     file_url: string;
