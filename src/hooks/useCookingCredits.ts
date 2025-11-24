@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export const useCookingCredits = () => {
-  return useQuery({
+  const query = useQuery({
     queryKey: ['cooking-credits'],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -33,4 +34,28 @@ export const useCookingCredits = () => {
       return data || { credits: 0, subscription_tier: 'basic' };
     },
   });
+
+  const purchaseCredits = async (credits: number): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-cooking-credits-payment', {
+        body: { credits }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        return data.url;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Error creating payment session");
+      return null;
+    }
+  };
+
+  return {
+    ...query,
+    purchaseCredits,
+  };
 };

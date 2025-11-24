@@ -154,6 +154,25 @@ export const useVideoAdCredits = () => {
     return cost;
   };
 
+  const purchaseCredits = async (credits: number): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-video-ad-credits-payment', {
+        body: { credits }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        return data.url;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Error creating payment session");
+      return null;
+    }
+  };
+
   return {
     credits,
     isLoading,
@@ -161,5 +180,6 @@ export const useVideoAdCredits = () => {
     isGenerating: generateVideoAd.isPending,
     getTierLimits,
     calculateCreditCost,
+    purchaseCredits,
   };
 };

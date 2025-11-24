@@ -78,6 +78,25 @@ export const useAnalyzerCredits = () => {
     },
   });
 
+  const purchaseCredits = async (credits: number): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.functions.invoke('create-analyzer-credits-payment', {
+        body: { credits }
+      });
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        return data.url;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error("Error creating payment session");
+      return null;
+    }
+  };
+
   const getTierLimits = (tier: string) => {
     switch(tier) {
       case 'free':
@@ -110,6 +129,7 @@ export const useAnalyzerCredits = () => {
     isLoading,
     analyzeImage: analyzeImage.mutate,
     isAnalyzing: analyzeImage.isPending,
+    purchaseCredits,
     getTierLimits,
   };
 };

@@ -84,8 +84,7 @@ export const usePhotoCredits = () => {
       if (error) throw error;
 
       if (data?.url) {
-        window.open(data.url, '_blank');
-        toast.success("Redirecting to payment...");
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error('Purchase error:', error);
