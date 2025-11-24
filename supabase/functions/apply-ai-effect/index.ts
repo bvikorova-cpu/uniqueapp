@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,12 +12,39 @@ serve(async (req) => {
   }
 
   try {
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+    );
+
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user } } = await supabaseClient.auth.getUser(token);
+
+    if (!user) {
+      throw new Error('Not authenticated');
+    }
+
     const { imageUrl, effectId, effectName } = await req.json();
 
     if (!imageUrl || !effectId) {
       return new Response(
         JSON.stringify({ error: 'Missing required parameters' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Check AI credits
+    const { data: credits } = await supabaseClient
+      .from('ai_credits')
+      .select('credits_remaining')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!credits || credits.credits_remaining < 3) {
+      return new Response(
+        JSON.stringify({ error: 'Insufficient AI credits. Need 3 credits for AI effect.' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 402 }
       );
     }
 
@@ -239,8 +267,30 @@ serve(async (req) => {
 
     console.log('Effect applied successfully');
 
+    // Deduct credits
+    await supabaseClient
+      .from('ai_credits')
+      .update({ 
+        credits_remaining: credits.credits_remaining - 3,
+        last_used_at: new Date().toISOString()
+      })
+      .eq('user_id', user.id);
+
+    // Log usage
+    await supabaseClient
+      .from('ai_usage_history')
+      .insert({
+        user_id: user.id,
+        usage_type: 'ai_effect',
+        credits_used: 3,
+        description: `AI Effect: ${effectName || effectId}`
+      });
+
     return new Response(
-      JSON.stringify({ imageUrl: imageUrl_result }),
+      JSON.stringify({ 
+        imageUrl: imageUrl_result,
+        creditsRemaining: credits.credits_remaining - 3
+      }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
