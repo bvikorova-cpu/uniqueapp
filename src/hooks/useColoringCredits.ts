@@ -11,7 +11,7 @@ export const useColoringCredits = () => {
     queryKey: ["coloring-credits"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) return null;
 
       const { data, error } = await supabase
         .from("coloring_credits")
@@ -39,6 +39,7 @@ export const useColoringCredits = () => {
 
       return data;
     },
+    enabled: true,
   });
 
   // Admin má vždy neobmedzené kredity
