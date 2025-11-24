@@ -97,7 +97,7 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
 
       if (contentError) throw contentError;
 
-      // Update influencer earnings and followers
+      // Update influencer followers and earnings
       const newFollowers = influencer.followers + Math.floor(Math.random() * 100) + 50;
       const { error: updateError } = await supabase
         .from("virtual_influencers")
@@ -108,6 +108,33 @@ const ContentGenerator = ({ influencerId, influencer }: ContentGeneratorProps) =
         .eq("id", influencerId);
 
       if (updateError) throw updateError;
+
+      // Update or create influencer balance
+      const { data: existingBalance } = await supabase
+        .from("influencer_balances")
+        .select("*")
+        .eq("influencer_id", influencerId)
+        .single();
+
+      if (existingBalance) {
+        await supabase
+          .from("influencer_balances")
+          .update({
+            total_earned: existingBalance.total_earned + Number(netEarnings),
+            available_balance: existingBalance.available_balance + Number(netEarnings),
+          })
+          .eq("influencer_id", influencerId);
+      } else {
+        await supabase
+          .from("influencer_balances")
+          .insert({
+            influencer_id: influencerId,
+            total_earned: Number(netEarnings),
+            available_balance: Number(netEarnings),
+            withdrawn: 0,
+            pending_withdrawal: 0,
+          });
+      }
 
       // Record earnings
       const { data: { user } } = await supabase.auth.getUser();
