@@ -8,10 +8,12 @@ import BadgesDisplay from "@/components/gamification/BadgesDisplay";
 import DailyRewardButton from "@/components/gamification/DailyRewardButton";
 import Leaderboard from "@/components/gamification/Leaderboard";
 import { Crown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Rewards() {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -26,7 +28,7 @@ export default function Rewards() {
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">{t('rewards.loading')}</p>
       </div>
     );
   }
@@ -36,11 +38,11 @@ export default function Rewards() {
       <div className="container mx-auto px-4 max-w-6xl">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-4xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-            🎮 Gamification & Rewards
+            {t('rewards.titleEmoji')}
           </h1>
           <Button onClick={() => navigate('/premium-store')} className="gap-2">
             <Crown className="h-4 w-4" />
-            Premium Store
+            {t('rewards.premiumStore')}
           </Button>
         </div>
 
@@ -51,8 +53,8 @@ export default function Rewards() {
 
         <Tabs defaultValue="badges" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="badges">Badges</TabsTrigger>
-            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
+            <TabsTrigger value="badges">{t('rewards.badges')}</TabsTrigger>
+            <TabsTrigger value="leaderboard">{t('rewards.leaderboard')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="badges">

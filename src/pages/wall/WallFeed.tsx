@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
+import { useTranslation } from "react-i18next";
 
 interface Post {
   id: string;
@@ -76,6 +77,7 @@ export default function WallFeed({
   const [sortBy, setSortBy] = useState<SortBy>("newest");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
+  const { t } = useTranslation();
 
   const handleResetFilters = () => {
     setSortBy("newest");
@@ -104,7 +106,7 @@ export default function WallFeed({
               }}
             />
             <span className="text-sm text-muted-foreground">
-              {pullToRefresh.canRefresh ? 'Release to refresh' : 'Pull to refresh'}
+              {pullToRefresh.canRefresh ? t('wall.feed.releaseToRefresh') : t('wall.feed.pullToRefresh')}
             </span>
           </div>
         </div>
@@ -137,7 +139,7 @@ export default function WallFeed({
             </Card>
           ) : filteredFeedItems.length === 0 ? (
             <Card className="p-8 text-center text-muted-foreground">
-              No posts found. Try adjusting your filters.
+              {t('wall.feed.noPostsFound')}
             </Card>
           ) : (
             <>
@@ -165,14 +167,14 @@ export default function WallFeed({
               {loadingMore && (
                 <Card className="p-4 flex items-center justify-center">
                   <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
-                  <span className="text-sm text-muted-foreground">Loading more posts...</span>
+                  <span className="text-sm text-muted-foreground">{t('wall.feed.loadingMore')}</span>
                 </Card>
               )}
               
               {/* End of feed message */}
               {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
                 <Card className="p-4 text-center text-muted-foreground text-sm">
-                  You've reached the end! 🎉
+                  {t('wall.feed.reachedEnd')}
                 </Card>
               )}
             </>
