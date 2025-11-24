@@ -329,9 +329,9 @@ const App = () => (
               <Route path="/referral" element={<Referral />} />
               <Route path="/games" element={<Games />} />
               <Route path="/jobs" element={<Jobs />} />
-              <Route path="/employer-dashboard" element={<EmployerDashboard />} />
-              <Route path="/employer-verification" element={<EmployerVerification />} />
-              <Route path="/admin/verifications" element={<AdminVerifications />} />
+              <Route path="/employer-dashboard" element={<ProtectedRoute><EmployerDashboard /></ProtectedRoute>} />
+              <Route path="/employer-verification" element={<ProtectedRoute><EmployerVerification /></ProtectedRoute>} />
+              <Route path="/admin/verifications" element={<ProtectedRoute requireAdmin={true}><AdminVerifications /></ProtectedRoute>} />
               <Route path="/influ-king" element={<InfluKing />} />
               <Route path="/auction" element={<Auction />} />
               <Route path="/ai-generation" element={<AIGeneration />} />
@@ -344,10 +344,10 @@ const App = () => (
               <Route path="/restaurant-analyzer" element={<RestaurantAnalyzer />} />
               <Route path="/chef-chat" element={<ChefChat />} />
               <Route path="/wine-pairing" element={<WinePairing />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/masterchef-payouts" element={<AdminMasterChefPayouts />} />
-              <Route path="/admin/comedy-payouts" element={<AdminComedyPayouts />} />
-              <Route path="/admin/brand-campaigns" element={<AdminBrandCampaigns />} />
+              <Route path="/admin" element={<ProtectedRoute requireAdmin={true}><Admin /></ProtectedRoute>} />
+              <Route path="/admin/masterchef-payouts" element={<ProtectedRoute requireAdmin={true}><AdminMasterChefPayouts /></ProtectedRoute>} />
+              <Route path="/admin/comedy-payouts" element={<ProtectedRoute requireAdmin={true}><AdminComedyPayouts /></ProtectedRoute>} />
+              <Route path="/admin/brand-campaigns" element={<ProtectedRoute requireAdmin={true}><AdminBrandCampaigns /></ProtectedRoute>} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
@@ -359,14 +359,14 @@ const App = () => (
               <Route path="/quiz" element={<Quiz />} />
               
               <Route path="/profile/:userId" element={<Profile />} />
-              <Route path="/edit-profile" element={<EditProfile />} />
+              <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
               <Route path="/subscription" element={<Subscription />} />
               <Route path="/ai-credits-store" element={<AICreditsStore />} />
               <Route path="/ai-credits" element={<AICreditsStore />} />
-              <Route path="/admin/transactions" element={<AdminTransactions />} />
-              <Route path="/admin/corporate-inquiries" element={<AdminCorporateInquiries />} />
-              <Route path="/admin/tipsters" element={<AdminTipsters />} />
-              <Route path="/earnings" element={<Earnings />} />
+              <Route path="/admin/transactions" element={<ProtectedRoute requireAdmin={true}><AdminTransactions /></ProtectedRoute>} />
+              <Route path="/admin/corporate-inquiries" element={<ProtectedRoute requireAdmin={true}><AdminCorporateInquiries /></ProtectedRoute>} />
+              <Route path="/admin/tipsters" element={<ProtectedRoute requireAdmin={true}><AdminTipsters /></ProtectedRoute>} />
+              <Route path="/earnings" element={<ProtectedRoute><Earnings /></ProtectedRoute>} />
               <Route path="/livestream" element={<LiveStreamList />} />
               <Route path="/live/:streamId" element={<LiveStream />} />
               <Route path="/stories/:userId" element={<Stories />} />
@@ -396,7 +396,7 @@ const App = () => (
            <Route path="/skill-swap/dashboard" element={<ProtectedRoute><SkillSwapDashboard /></ProtectedRoute>} />
            <Route path="/skill-swap/profile/:userId" element={<ProtectedRoute><SkillSwapProfile /></ProtectedRoute>} />
            <Route path="/skill-swap/profile/edit" element={<ProtectedRoute><SkillSwapSettings /></ProtectedRoute>} />
-           <Route path="/subscription-management" element={<SubscriptionManagement />} />
+           <Route path="/subscription-management" element={<ProtectedRoute><SubscriptionManagement /></ProtectedRoute>} />
            <Route path="/wellness" element={<Wellness />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />
@@ -410,7 +410,7 @@ const App = () => (
           <Route path="/kids-story-pricing" element={<KidsStoryPricing />} />
           <Route path="/kids-science-lab" element={<KidsScienceLab />} />
           <Route path="/kids-science-pricing" element={<KidsSciencePricing />} />
-          <Route path="/kids-science-admin" element={<KidsScienceAdmin />} />
+          <Route path="/kids-science-admin" element={<ProtectedRoute requireAdmin={true}><KidsScienceAdmin /></ProtectedRoute>} />
           <Route path="/kids-drawing-buddy" element={<KidsDrawingBuddy />} />
           <Route path="/kids-reading-companion" element={<KidsReadingCompanion />} />
           <Route path="/photo-restoration" element={<PhotoRestoration />} />
@@ -451,7 +451,7 @@ const App = () => (
           <Route path="/healthcare-library" element={<HealthcareContentLibrary />} />
            <Route path="/brand-battle" element={<BrandBattle />} />
            <Route path="/sponsor-registration" element={<SponsorRegistration />} />
-           <Route path="/sponsor-dashboard" element={<SponsorDashboard />} />
+           <Route path="/sponsor-dashboard" element={<ProtectedRoute><SponsorDashboard /></ProtectedRoute>} />
            <Route path="/brain-duel" element={
              <ProtectedRoute>
                <BrainDuel />
@@ -480,7 +480,7 @@ const App = () => (
            <Route path="/story-video-demo" element={<StoryVideoDemo />} />
            <Route path="/story-gallery" element={<StoryGallery />} />
            <Route path="/shared/:shareCode" element={<SharedStory />} />
-           <Route path="/admin-image-editor" element={<AdminImageEditor />} />
+           <Route path="/admin-image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
           <Route path="/coffee" element={<Coffee />} />
           <Route path="/coffee/checkins" element={<CoffeeCheckins />} />
           <Route path="/coffee/buddy" element={<CoffeeBuddy />} />
@@ -492,29 +492,29 @@ const App = () => (
           <Route path="/virtual-influencer-agency" element={<VirtualInfluencerAgency />} />
           <Route path="/membership-community" element={<MembershipCommunity />} />
           <Route path="/discover-creators" element={<DiscoverCreators />} />
-          <Route path="/creator-dashboard" element={<CreatorDashboard />} />
+          <Route path="/creator-dashboard" element={<ProtectedRoute><CreatorDashboard /></ProtectedRoute>} />
           <Route path="/creator/:creatorId" element={<CreatorProfile />} />
           <Route path="/become-creator" element={<BecomeCreator />} />
-              <Route path="/instructor-earnings" element={<InstructorEarnings />} />
-              <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
-              <Route path="/admin/influencer-payouts" element={<AdminInfluencerPayouts />} />
-              <Route path="/admin/platform-earnings" element={<AdminPlatformEarnings />} />
-              <Route path="/admin/payment-dashboard" element={<AdminPaymentDashboard />} />
+              <Route path="/instructor-earnings" element={<ProtectedRoute><InstructorEarnings /></ProtectedRoute>} />
+              <Route path="/admin/withdrawals" element={<ProtectedRoute requireAdmin={true}><AdminWithdrawals /></ProtectedRoute>} />
+              <Route path="/admin/influencer-payouts" element={<ProtectedRoute requireAdmin={true}><AdminInfluencerPayouts /></ProtectedRoute>} />
+              <Route path="/admin/platform-earnings" element={<ProtectedRoute requireAdmin={true}><AdminPlatformEarnings /></ProtectedRoute>} />
+              <Route path="/admin/payment-dashboard" element={<ProtectedRoute requireAdmin={true}><AdminPaymentDashboard /></ProtectedRoute>} />
               <Route path="/payment-documentation" element={<PaymentDocumentation />} />
               <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
           <Route path="/lottery-ai" element={<LotteryAI />} />
           <Route path="/sports-predictor" element={<SportsPredictor />} />
-          <Route path="/my-purchased-tips" element={<MyPurchasedTips />} />
-          <Route path="/tipster-dashboard" element={<TipsterDashboard />} />
-          <Route path="/sports-admin" element={<SportsAdmin />} />
-          <Route path="/admin/sports-matches" element={<AdminSportsMatches />} />
+           <Route path="/my-purchased-tips" element={<ProtectedRoute><MyPurchasedTips /></ProtectedRoute>} />
+           <Route path="/tipster-dashboard" element={<ProtectedRoute><TipsterDashboard /></ProtectedRoute>} />
+           <Route path="/sports-admin" element={<ProtectedRoute requireAdmin={true}><SportsAdmin /></ProtectedRoute>} />
+           <Route path="/admin/sports-matches" element={<ProtectedRoute requireAdmin={true}><AdminSportsMatches /></ProtectedRoute>} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/stock-content-library" element={<StockContentLibrary />} />
           <Route path="/tutorial-platform" element={<TutorialPlatform />} />
           <Route path="/monetization-ideas" element={<MonetizationIdeas />} />
           <Route path="/shadow-arena" element={<ShadowArena />} />
-          <Route path="/shadow-arena/dashboard" element={<ShadowArenaDashboard />} />
+          <Route path="/shadow-arena/dashboard" element={<ProtectedRoute><ShadowArenaDashboard /></ProtectedRoute>} />
           <Route path="/shadow-arena/submit-story" element={<ShadowArenaSubmitStory />} />
           <Route path="/shadow-arena/battles" element={<ShadowArenaBattles />} />
           <Route path="/shadow-arena/battle/:battleId" element={<ShadowArenaBattleDetail />} />
@@ -523,12 +523,12 @@ const App = () => (
           <Route path="/virtual-escape-room" element={<VirtualEscapeRoom />} />
               <Route path="/horse-racing" element={<HorseRacing />} />
               <Route path="/comedy-club" element={<ComedyClub />} />
-              <Route path="/comedian-dashboard" element={<ComedianDashboard />} />
+              <Route path="/comedian-dashboard" element={<ProtectedRoute><ComedianDashboard /></ProtectedRoute>} />
               <Route path="/comedy-live/:showId" element={<ComedyLiveShow />} />
               <Route path="/comedy-watch/:showId" element={<ComedyLiveViewer />} />
               <Route path="/kids-channel/disney-castles" element={<DisneyCastles />} />
               <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
-              <Route path="/kids-channel/disney-admin" element={<DisneyAdmin />} />
+              <Route path="/kids-channel/disney-admin" element={<ProtectedRoute requireAdmin={true}><DisneyAdmin /></ProtectedRoute>} />
               <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
               <Route path="/f1-racing" element={<F1Racing />} />
               <Route path="/f1-subscription" element={<F1Subscription />} />
@@ -537,12 +537,12 @@ const App = () => (
               <Route path="/masterchef-subscription" element={<MasterChefSubscription />} />
               <Route path="/masterchef/competitions-public" element={<MasterChefCompetitionsGallery />} />
               <Route path="/masterchef/gallery" element={<MasterChefCompetitionsGallery />} />
-              <Route path="/masterchef/dashboard" element={<MasterChefDashboard />} />
-              <Route path="/masterchef/competitions" element={<MasterChefCompetitions />} />
-              <Route path="/masterchef/earnings" element={<MasterChefEarnings />} />
-              <Route path="/influencer/earnings" element={<InfluencerEarnings />} />
+              <Route path="/masterchef/dashboard" element={<ProtectedRoute><MasterChefDashboard /></ProtectedRoute>} />
+              <Route path="/masterchef/competitions" element={<ProtectedRoute><MasterChefCompetitions /></ProtectedRoute>} />
+              <Route path="/masterchef/earnings" element={<ProtectedRoute><MasterChefEarnings /></ProtectedRoute>} />
+              <Route path="/influencer/earnings" element={<ProtectedRoute><InfluencerEarnings /></ProtectedRoute>} />
           <Route path="/time-reversal-subscription" element={<TimeReversalSubscription />} />
-              <Route path="/time-reversal/dashboard" element={<TimeReversalDashboard />} />
+              <Route path="/time-reversal/dashboard" element={<ProtectedRoute><TimeReversalDashboard /></ProtectedRoute>} />
               <Route path="/time-reversal/timeline" element={<TimeReversalTimeline />} />
               <Route path="/time-capsule-subscription" element={<TimeCapsuleSubscription />} />
               <Route path="/time-capsule" element={<TimeCapsule />} />
@@ -558,7 +558,7 @@ const App = () => (
           <Route path="/multiverse-network" element={<MultiverseNetwork />} />
           
           <Route path="/live-concerts" element={<LiveConcerts />} />
-          <Route path="/musician-dashboard" element={<MusicianDashboard />} />
+          <Route path="/musician-dashboard" element={<ProtectedRoute><MusicianDashboard /></ProtectedRoute>} />
               <Route path="/coffee/leaderboard" element={<CoffeeCheckins />} />
           <Route path="/kids-stories/adventure" element={<ChooseAdventure />} />
           <Route path="/kids-stories/voice-chat" element={<KidsVoiceChat />} />
@@ -571,15 +571,15 @@ const App = () => (
           <Route path="/kids-stories/games" element={<StoryGames />} />
           <Route path="/kids-pricing" element={<KidsPricing />} />
           <Route path="/story-video-demo" element={<StoryVideoDemo />} />
-          <Route path="/admin/image-editor" element={<AdminImageEditor />} />
+          <Route path="/admin/image-editor" element={<ProtectedRoute requireAdmin={true}><AdminImageEditor /></ProtectedRoute>} />
           <Route path="/shop" element={<Shop />} />
               <Route path="/product/:handle" element={<ProductDetail />} />
               <Route path="/iq-platform" element={<IQPlatform />} />
               
               {/* Fundraising Routes */}
               <Route path="/fundraising" element={<FundraisingHub />} />
-              <Route path="/fundraising/dashboard" element={<FundraisingDashboard />} />
-              <Route path="/fundraising/:campaignType/:campaignId/dashboard" element={<CampaignDashboard />} />
+              <Route path="/fundraising/dashboard" element={<ProtectedRoute><FundraisingDashboard /></ProtectedRoute>} />
+              <Route path="/fundraising/:campaignType/:campaignId/dashboard" element={<ProtectedRoute><CampaignDashboard /></ProtectedRoute>} />
               <Route path="/fundraising/medical" element={<MedicalFundraising />} />
               <Route path="/fundraising/medical/create" element={<CreateMedicalCampaign />} />
               <Route path="/fundraising/medical/:id" element={<MedicalDetail />} />
@@ -601,11 +601,11 @@ const App = () => (
               <Route path="/fundraising/talent" element={<TalentSponsorship />} />
               <Route path="/fundraising/talent/create" element={<CreateTalentCampaign />} />
               <Route path="/fundraising/talent/:id" element={<TalentDetail />} />
-              <Route path="/admin/campaign-approvals" element={<CampaignApprovals />} />
-              <Route path="/admin/campaign-withdrawals" element={<WithdrawalRequests />} />
+              <Route path="/admin/campaign-approvals" element={<ProtectedRoute requireAdmin={true}><CampaignApprovals /></ProtectedRoute>} />
+              <Route path="/admin/campaign-withdrawals" element={<ProtectedRoute requireAdmin={true}><WithdrawalRequests /></ProtectedRoute>} />
               <Route path="/property-marketplace" element={<PropertyMarketplace />} />
               <Route path="/property-submission" element={<PropertySubmission />} />
-              <Route path="/my-properties" element={<MyProperties />} />
+              <Route path="/my-properties" element={<ProtectedRoute><MyProperties /></ProtectedRoute>} />
               <Route path="/home-decor" element={<HomeDecorMarketplace />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
