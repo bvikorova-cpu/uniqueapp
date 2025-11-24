@@ -44,7 +44,9 @@ export function CharacterCard({ character, onClick }: CharacterCardProps) {
         );
 
         if (!response.ok) {
-          throw new Error('Failed to generate image');
+          const errorData = await response.json().catch(() => ({}));
+          console.error('Failed to generate character image:', errorData);
+          throw new Error(errorData.error || 'Failed to generate image');
         }
 
         const data = await response.json();
