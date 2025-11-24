@@ -77,10 +77,10 @@ serve(async (req) => {
         throw new Error('Rate limit exceeded. Please try again later.');
       }
       if (storyResponse.status === 402) {
-        throw new Error('Payment required. Please add funds to your Lovable AI workspace.');
+        throw new Error('Not enough Lovable AI credits. Please add credits in Settings → Cloud → AI Usage to continue.');
       }
       
-      throw new Error(`Failed to generate story: ${storyResponse.status}`);
+      throw new Error(`Failed to generate story: ${storyResponse.status} - ${errorText}`);
     }
 
     const storyData = await storyResponse.json();
