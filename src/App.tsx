@@ -13,6 +13,8 @@ import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Wall from "./pages/Wall";
+import Groups from "./pages/Groups";
+import Pages from "./pages/Pages";
 import WallFeed from "./pages/wall/WallFeed";
 import WallMessages from "./pages/wall/WallMessages";
 import WallFriends from "./pages/wall/WallFriends";
@@ -311,9 +313,9 @@ const App = () => (
               <Route path="/wall" element={<Wall />} />
               <Route path="/wall/messages" element={<Wall />} />
               <Route path="/wall/friends" element={<Wall />} />
-              <Route path="/wall/groups" element={<Wall />} />
+              <Route path="/wall/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
               <Route path="/wall/groups/:groupId" element={<GroupDetail />} />
-              <Route path="/wall/pages" element={<Wall />} />
+              <Route path="/wall/pages" element={<ProtectedRoute><Pages /></ProtectedRoute>} />
               <Route path="/wall/pages/:pageId" element={<PageDetail />} />
               <Route path="/wall/videos" element={<Wall />} />
               <Route path="/wall/events" element={<Wall />} />
