@@ -79,7 +79,6 @@ export default {
       boxShadow: {
         'glow': 'var(--shadow-glow)',
         'gold': 'var(--shadow-gold)',
-        'neon': 'var(--shadow-neon)',
       },
       transitionTimingFunction: {
         'smooth': 'var(--transition-smooth)',
