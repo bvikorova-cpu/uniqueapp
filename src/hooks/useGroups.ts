@@ -6,18 +6,27 @@ export const useGroups = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: groups, isLoading } = useQuery({
+  const { data: groups, isLoading, error: queryError } = useQuery({
     queryKey: ["groups"],
     queryFn: async () => {
+      console.log("Fetching groups...");
       const { data, error } = await supabase
         .from("groups")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error fetching groups:", error);
+        throw error;
+      }
+      console.log("Groups fetched:", data?.length);
       return data;
     },
   });
+
+  if (queryError) {
+    console.error("Query error:", queryError);
+  }
 
   const createGroup = useMutation({
     mutationFn: async ({
@@ -31,8 +40,12 @@ export const useGroups = () => {
       isPrivate?: boolean;
       coverImage?: string;
     }) => {
+      console.log("Creating group:", name);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) {
+        console.error("User not authenticated");
+        throw new Error("Not authenticated");
+      }
 
       const { data: group, error: groupError } = await supabase
         .from("groups")
@@ -46,7 +59,11 @@ export const useGroups = () => {
         .select()
         .single();
 
-      if (groupError) throw groupError;
+      if (groupError) {
+        console.error("Error creating group:", groupError);
+        throw groupError;
+      }
+      console.log("Group created:", group);
 
       // Add creator as admin
       const { error: memberError } = await supabase
@@ -57,18 +74,36 @@ export const useGroups = () => {
           role: "admin",
         });
 
-      if (memberError) throw memberError;
+      if (memberError) {
+        console.error("Error adding creator as member:", memberError);
+        throw memberError;
+      }
+      console.log("Creator added as admin");
+      
+      return group;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       toast({ title: "Group created!" });
     },
+    onError: (error: any) => {
+      console.error("Create group mutation error:", error);
+      toast({ 
+        title: "Error creating group", 
+        description: error.message,
+        variant: "destructive" 
+      });
+    },
   });
 
   const joinGroup = useMutation({
     mutationFn: async (groupId: string) => {
+      console.log("Joining group:", groupId);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) {
+        console.error("User not authenticated");
+        throw new Error("Not authenticated");
+      }
 
       const { error } = await supabase.from("group_members").insert({
         group_id: groupId,
@@ -76,18 +111,34 @@ export const useGroups = () => {
         role: "member",
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error joining group:", error);
+        throw error;
+      }
+      console.log("Successfully joined group");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       toast({ title: "Joined group!" });
     },
+    onError: (error: any) => {
+      console.error("Join group mutation error:", error);
+      toast({ 
+        title: "Error joining group", 
+        description: error.message,
+        variant: "destructive" 
+      });
+    },
   });
 
   const leaveGroup = useMutation({
     mutationFn: async (groupId: string) => {
+      console.log("Leaving group:", groupId);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) {
+        console.error("User not authenticated");
+        throw new Error("Not authenticated");
+      }
 
       const { error } = await supabase
         .from("group_members")
@@ -95,11 +146,23 @@ export const useGroups = () => {
         .eq("group_id", groupId)
         .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error leaving group:", error);
+        throw error;
+      }
+      console.log("Successfully left group");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       toast({ title: "Left group" });
+    },
+    onError: (error: any) => {
+      console.error("Leave group mutation error:", error);
+      toast({ 
+        title: "Error leaving group", 
+        description: error.message,
+        variant: "destructive" 
+      });
     },
   });
 
