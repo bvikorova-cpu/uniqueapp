@@ -8,7 +8,6 @@ import PostCard from "@/components/feed/PostCard";
 import RepostCard from "@/components/feed/RepostCard";
 import UserSearch from "@/components/feed/UserSearch";
 
-import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -91,10 +90,6 @@ const Feed = () => {
   const PULL_THRESHOLD = 80;
   const { toast } = useToast();
   
-  // Filter states
-  const [sortBy, setSortBy] = useState<SortBy>("newest");
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [savedPosts, setSavedPosts] = useState<Post[]>([]);
   const [loadingSaved, setLoadingSaved] = useState(false);
@@ -470,28 +465,22 @@ const Feed = () => {
   const filteredFeedItems = useMemo(() => {
     let filtered = [...feedItems];
 
-    // Search filter
+    // Search filter only
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(item => {
         if (item.type === 'post') {
           const post = item.data as Post;
-          // Search in content
           const contentMatch = post.content.toLowerCase().includes(query);
-          // Search in hashtags (extract hashtags from content)
           const hashtags = post.content.match(/#\w+/g) || [];
           const hashtagMatch = hashtags.some(tag => tag.toLowerCase().includes(query));
-          // Search in author name
           const authorMatch = post.profiles.full_name?.toLowerCase().includes(query);
           
           return contentMatch || hashtagMatch || authorMatch;
         } else {
           const repost = item.data as Repost;
-          // Search in repost comment
           const commentMatch = repost.comment?.toLowerCase().includes(query);
-          // Search in original post content
           const originalContentMatch = repost.original_post.content.toLowerCase().includes(query);
-          // Search in repost author name
           const authorMatch = repost.profiles.full_name?.toLowerCase().includes(query);
           
           return commentMatch || originalContentMatch || authorMatch;
@@ -499,78 +488,8 @@ const Feed = () => {
       });
     }
 
-    // Time filter
-    if (timeFilter !== "all") {
-      const now = new Date();
-      const startOfDay = new Date(now.setHours(0, 0, 0, 0));
-      const startOfWeek = new Date(now.setDate(now.getDate() - 7));
-      const startOfMonth = new Date(now.setDate(now.getDate() - 30));
-
-      filtered = filtered.filter(item => {
-        const itemDate = new Date(item.data.created_at);
-        switch (timeFilter) {
-          case "today":
-            return itemDate >= startOfDay;
-          case "week":
-            return itemDate >= startOfWeek;
-          case "month":
-            return itemDate >= startOfMonth;
-          default:
-            return true;
-        }
-      });
-    }
-
-    // Category filter
-    if (categoryFilter !== "all") {
-      filtered = filtered.filter(item => {
-        if (item.type === "repost") return false;
-        
-        const post = item.data as Post;
-        const hasMedia = post.media && post.media.length > 0;
-        
-        switch (categoryFilter) {
-          case "text":
-            return !hasMedia;
-          case "image":
-            return hasMedia && post.media.some(m => m.file_type.startsWith("image"));
-          case "video":
-            return hasMedia && post.media.some(m => m.file_type.startsWith("video"));
-          default:
-            return true;
-        }
-      });
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return new Date(b.data.created_at).getTime() - new Date(a.data.created_at).getTime();
-        case "oldest":
-          return new Date(a.data.created_at).getTime() - new Date(b.data.created_at).getTime();
-        case "popular":
-          const aLikes = a.type === "post" ? a.data.likes_count : 0;
-          const bLikes = b.type === "post" ? b.data.likes_count : 0;
-          return bLikes - aLikes;
-        case "most-comments":
-          const aComments = a.type === "post" ? a.data.comments_count : 0;
-          const bComments = b.type === "post" ? b.data.comments_count : 0;
-          return bComments - aComments;
-        default:
-          return 0;
-      }
-    });
-
     return filtered;
-  }, [feedItems, sortBy, timeFilter, categoryFilter, searchQuery]);
-
-  const handleResetFilters = () => {
-    setSortBy("newest");
-    setTimeFilter("all");
-    setCategoryFilter("all");
-    setSearchQuery("");
-  };
+  }, [feedItems, searchQuery]);
 
   const location = useLocation();
   const currentPath = location.pathname;
@@ -631,16 +550,6 @@ const Feed = () => {
 
               {/* Search Bar */}
               <SearchBar />
-
-              <PostFilters
-                sortBy={sortBy}
-                timeFilter={timeFilter}
-                categoryFilter={categoryFilter}
-                onSortChange={setSortBy}
-                onTimeChange={setTimeFilter}
-                onCategoryChange={setCategoryFilter}
-                onReset={handleResetFilters}
-              />
 
               {/* Feed */}
               <div className="space-y-3 sm:space-y-4">
