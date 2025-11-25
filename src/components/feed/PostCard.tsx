@@ -49,30 +49,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
+import type { Post } from "@/types/database";
 
 interface PostCardProps {
-  post: {
-    id: string;
-    content: string;
-    created_at: string;
-    user_id: string;
-    likes_count: number;
-    comments_count: number;
-    shares_count: number;
-    reposts_count: number;
-    feeling?: string | null;
-    location?: string | null;
-    media: Array<{
-      id: string;
-      file_url: string;
-      file_type: string;
-    }>;
-    profiles: {
-      id: string;
-      full_name: string | null;
-      avatar_url: string | null;
-    };
-  };
+  post: Post;
   onDelete: () => void;
 }
 
@@ -83,6 +63,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   const [likesCount, setLikesCount] = useState(post.likes_count || 0);
   const [commentsCount, setCommentsCount] = useState(post.comments_count || 0);
   const [showComments, setShowComments] = useState(false);
+  
+  // Provide default values for optional fields
+  const postMedia = post.media || [];
+  const postProfiles = post.profiles || { id: post.user_id, full_name: "Unknown User", avatar_url: null };
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState("");
   const [loadingComments, setLoadingComments] = useState(false);

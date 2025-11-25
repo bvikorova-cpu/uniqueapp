@@ -50,24 +50,24 @@ export interface Post {
   id: string;
   content: string;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
   user_id: string;
   likes_count: number;
   comments_count: number;
   shares_count: number;
   reposts_count: number;
-  feeling: string | null;
-  location: string | null;
-  group_id: string | null;
-  page_id: string | null;
-  event_id: string | null;
-  visibility: PostVisibility;
-  is_pinned: boolean;
-  is_archived: boolean;
+  feeling?: string | null;
+  location?: string | null;
+  group_id?: string | null;
+  page_id?: string | null;
+  event_id?: string | null;
+  visibility?: PostVisibility;
+  is_pinned?: boolean;
+  is_archived?: boolean;
   
-  // Vztahy - required pre feed rendering
-  profiles: ProfileBasic;
-  media: PostMedia[];
+  // Vztahy - optional pre databázové queries
+  profiles?: ProfileBasic;
+  media?: PostMedia[];
   likes?: PostLike[];
   comments?: Comment[];
 }
@@ -76,12 +76,13 @@ export type PostVisibility = 'public' | 'friends' | 'private' | 'custom';
 
 export interface PostMedia {
   id: string;
-  post_id: string;
+  post_id?: string;
   file_url: string;
-  file_type: 'image' | 'video' | 'audio' | 'document';
-  thumbnail_url: string | null;
-  duration: number | null;
-  created_at: string;
+  file_type: string;
+  file_name?: string;
+  thumbnail_url?: string | null;
+  duration?: number | null;
+  created_at?: string;
 }
 
 export interface PostLike {
@@ -110,11 +111,11 @@ export interface Comment {
 export interface Repost {
   id: string;
   user_id: string;
-  post_id: string;
+  post_id?: string;
   comment: string;
   created_at: string;
-  profiles: ProfileBasic;
-  original_post: Post;
+  profiles?: ProfileBasic;
+  original_post?: Post;
 }
 
 // ==================== FEED ITEMS ====================
