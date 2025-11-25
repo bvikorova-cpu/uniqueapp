@@ -2,23 +2,21 @@ import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Gamepad2, Trophy, Star, Heart, Zap, Brain, Dribbble, MapPin, Car } from "lucide-react";
-import { GameDistributionWrapper } from "@/components/games/GameDistributionWrapper";
-import { gdGames, getGamesByCategory, gameCategories, type GameCategory } from "@/data/gdgames";
+import { Gamepad2, Trophy, Star, Heart, Zap, Brain, Dribbble, MapPin, Car, Sparkles, Target } from "lucide-react";
+import { PokiGameWrapper } from "@/components/games/PokiGameWrapper";
+import { pokiGames, getGamesByCategory, gameCategories, type GameCategory } from "@/data/pokigames";
 
 const Games = () => {
   const [activeGame, setActiveGame] = useState<string | null>(null);
 
   // If a specific game is active, show it
   if (activeGame) {
-    const game = gdGames.find(g => g.id === activeGame);
+    const game = pokiGames.find(g => g.id === activeGame);
     if (game) {
       return (
-        <GameDistributionWrapper 
-          gameId={game.gameId}
+        <PokiGameWrapper 
+          slug={game.slug}
           title={game.title}
-          width={game.width}
-          height={game.height}
           onBack={() => setActiveGame(null)}
         />
       );
@@ -33,6 +31,8 @@ const Games = () => {
       case "sports": return Dribbble;
       case "adventure": return MapPin;
       case "racing": return Car;
+      case "strategy": return Target;
+      case "casual": return Sparkles;
       default: return Gamepad2;
     }
   };
@@ -40,17 +40,17 @@ const Games = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 animate-fade-in">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
-            Online Games
+            Poki Games
           </h1>
           <p className="text-muted-foreground text-lg">
-            Choose a category and your favorite game!
+            Play thousands of free online games - Powered by Poki
           </p>
         </div>
 
-        <Tabs defaultValue="girls" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 mb-8">
+        <Tabs defaultValue="action" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-8 glassmorphism">
             {(Object.keys(gameCategories) as GameCategory[]).map((category) => {
               const Icon = getCategoryIcon(category);
               return (
@@ -68,18 +68,21 @@ const Games = () => {
                 {getGamesByCategory(category).map((game) => (
                   <Card 
                     key={game.id}
-                    className="hover:shadow-elegant transition-all cursor-pointer group" 
+                    className="glassmorphism hover:shadow-glow transition-all duration-300 cursor-pointer group animate-fade-in" 
                     onClick={() => setActiveGame(game.id)}
                   >
                     <CardHeader>
-                      <div className="h-40 bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <Gamepad2 className="h-20 w-20 text-primary/40" />
+                      <div className="relative h-40 bg-gradient-to-br from-primary/20 via-accent/10 to-primary/5 rounded-lg mb-4 overflow-hidden">
+                        <div className="absolute inset-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <Gamepad2 className="h-20 w-20 text-primary/40" />
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
                       <CardTitle className="flex items-center gap-2 text-base">
                         <Star className="h-4 w-4 text-yellow-500" />
                         {game.title}
                       </CardTitle>
-                      <CardDescription className="text-sm">
+                      <CardDescription className="text-sm line-clamp-2">
                         {game.description}
                       </CardDescription>
                     </CardHeader>
@@ -91,10 +94,15 @@ const Games = () => {
                             {game.rating ? `${game.rating}/10` : "New"}
                           </span>
                         </div>
+                        {game.plays && (
+                          <span className="text-xs text-muted-foreground">
+                            {(game.plays / 1000000).toFixed(1)}M plays
+                          </span>
+                        )}
                       </div>
-                      <Button className="w-full" variant="default">
+                      <Button className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300">
                         <Gamepad2 className="h-4 w-4 mr-2" />
-                        Play
+                        Play Now
                       </Button>
                     </CardContent>
                   </Card>
