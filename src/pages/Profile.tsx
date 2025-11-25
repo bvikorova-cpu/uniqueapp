@@ -366,29 +366,29 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 py-8">
-      <div className="container mx-auto px-4 max-w-2xl">
+    <div className="min-h-screen bg-gradient-to-br from-background to-background/80 py-8">
+      <div className="container mx-auto px-4 max-w-3xl">
         <Button
           variant="ghost"
           onClick={() => navigate("/wall")}
-          className="mb-4 glass-hover rounded-xl"
+          className="mb-6 glass-hover rounded-xl"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
 
-        <div className="glass-post-card p-8 mb-8">
+        <div className="glass-post-card p-8 mb-6">
           <div className="flex items-start gap-6 mb-6">
-            <Avatar className="h-28 w-28 ring-4 ring-primary/20 ring-offset-4 ring-offset-background">
+            <Avatar className="h-32 w-32 ring-4 ring-primary/10 ring-offset-4 ring-offset-background">
               <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback className="text-4xl bg-gradient-to-br from-primary/30 to-primary/10">
+              <AvatarFallback className="text-4xl bg-gradient-to-br from-primary/20 to-accent/20 font-bold">
                 {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
 
             <div className="flex-1">
               <div className="flex items-center justify-between mb-3">
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold">
                   {profile.full_name || "No name"}
                 </h1>
                 <div className="flex gap-2">
@@ -490,12 +490,12 @@ const Profile = () => {
 
           {profile.interests && profile.interests.length > 0 && (
             <>
-              <Separator className="my-6 opacity-50" />
+              <Separator className="my-6 opacity-30" />
               <div>
-                <h3 className="text-sm font-semibold mb-3">Interests</h3>
+                <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Interests</h3>
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.map((interest) => (
-                    <Badge key={interest} variant="secondary" className="glass-button rounded-full px-3 py-1">
+                    <Badge key={interest} variant="secondary" className="glass-button rounded-full px-3 py-1 text-xs">
                       {interest}
                     </Badge>
                   ))}

@@ -25,21 +25,23 @@ export const ActivityFeedCard = ({ userId }: ActivityFeedCardProps) => {
   }
 
   return (
-    <Card className="p-4">
-      <div className="flex items-center gap-2 mb-4">
-        <Activity className="h-5 w-5 text-primary" />
-        <h3 className="font-semibold text-lg">Recent Activity</h3>
+    <div className="glass-card p-5 rounded-2xl">
+      <div className="flex items-center gap-3 mb-5">
+        <div className="p-2 bg-primary/10 rounded-xl">
+          <Activity className="h-5 w-5 text-primary" />
+        </div>
+        <h3 className="font-bold text-lg">Recent Activity</h3>
       </div>
       <ScrollArea className="h-64">
-        <div className="space-y-3">
+        <div className="space-y-2">
           {activities.slice(0, 10).map((activity) => (
             <div
               key={activity.id}
-              className="flex gap-3 p-2 rounded-lg hover:bg-accent cursor-pointer transition-colors"
+              className="flex gap-3 p-3 rounded-xl glass-hover cursor-pointer group"
             >
               <span className="text-2xl">{getActivityIcon(activity.activity_type)}</span>
               <div className="flex-1">
-                <p className="text-sm">{getActivityMessage(activity)}</p>
+                <p className="text-sm font-medium">{getActivityMessage(activity)}</p>
                 <span className="text-xs text-muted-foreground">
                   {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
                 </span>
@@ -48,9 +50,9 @@ export const ActivityFeedCard = ({ userId }: ActivityFeedCardProps) => {
           ))}
         </div>
         {activities.length === 0 && (
-          <div className="text-center text-muted-foreground py-8">No recent activity</div>
+          <div className="text-center text-muted-foreground py-8 text-sm">No recent activity</div>
         )}
       </ScrollArea>
-    </Card>
+    </div>
   );
 };
