@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
@@ -536,10 +537,34 @@ const App = () => (
               <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
               <Route path="/kids-channel/disney-admin" element={<ProtectedRoute requireAdmin={true}><DisneyAdmin /></ProtectedRoute>} />
               <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
-              <Route path="/f1-racing" element={<F1Racing />} />
+              <Route path="/f1-racing" element={
+                <SubscriptionGuard 
+                  checkFunction="check-f1-subscription" 
+                  redirectTo="/f1-subscription"
+                  serviceName="F1 Racing"
+                >
+                  <F1Racing />
+                </SubscriptionGuard>
+              } />
               <Route path="/f1-subscription" element={<F1Subscription />} />
-              <Route path="/f1-fantasy-team" element={<F1FantasyTeam />} />
-              <Route path="/f1-leaderboard" element={<F1Leaderboard />} />
+              <Route path="/f1-fantasy-team" element={
+                <SubscriptionGuard 
+                  checkFunction="check-f1-subscription" 
+                  redirectTo="/f1-subscription"
+                  serviceName="F1 Racing"
+                >
+                  <F1FantasyTeam />
+                </SubscriptionGuard>
+              } />
+              <Route path="/f1-leaderboard" element={
+                <SubscriptionGuard 
+                  checkFunction="check-f1-subscription" 
+                  redirectTo="/f1-subscription"
+                  serviceName="F1 Racing"
+                >
+                  <F1Leaderboard />
+                </SubscriptionGuard>
+              } />
               <Route path="/masterchef-subscription" element={<MasterChefSubscription />} />
               <Route path="/masterchef/competitions-public" element={<MasterChefCompetitionsGallery />} />
               <Route path="/masterchef/gallery" element={<MasterChefCompetitionsGallery />} />
