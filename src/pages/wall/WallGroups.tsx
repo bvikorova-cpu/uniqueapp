@@ -136,8 +136,8 @@ export default function WallGroups() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-4 space-y-4">
-      <Card className="p-6">
+    <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-4">
+      <Card className="p-6 glass-card">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <Users className="h-6 w-6 text-primary" />
