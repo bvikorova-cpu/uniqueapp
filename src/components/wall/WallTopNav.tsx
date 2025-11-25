@@ -24,10 +24,7 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     { icon: Home, label: "Feed", path: "/wall" },
     { icon: MessageCircle, label: "Messages", path: "/wall/messages" },
     { icon: Users2, label: "Friends", path: "/wall/friends" },
-    { icon: Users, label: "Groups", path: "/wall/groups" },
-    { icon: Flag, label: "Pages", path: "/wall/pages" },
     { icon: Video, label: "Videos", path: "/wall/videos" },
-    { icon: Calendar, label: "Events", path: "/wall/events" },
     { icon: Bookmark, label: "Saved", path: "/wall/saved" },
     { icon: TrendingUp, label: "Trending", path: "/wall/trending" },
   ];
