@@ -85,89 +85,140 @@ export default function WallPages() {
   const createPage = async () => {
     if (!user || !newPageName.trim()) return;
 
-    const { error } = await supabase
-      .from("pages")
-      .insert({
-        name: newPageName,
-        description: newPageDescription,
-        category: newPageCategory,
-        user_id: user.id,
+    try {
+      const { data: page, error: pageError } = await supabase
+        .from("pages")
+        .insert({
+          name: newPageName,
+          description: newPageDescription,
+          category: newPageCategory,
+          user_id: user.id,
+        })
+        .select()
+        .single();
+
+      if (pageError || !page) {
+        console.error("Page creation error:", pageError);
+        toast({
+          title: "Error",
+          description: pageError?.message || "Failed to create page",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Add creator as follower
+      const { error: followerError } = await supabase
+        .from("page_followers")
+        .insert({
+          page_id: page.id,
+          user_id: user.id,
+        });
+
+      if (followerError) {
+        console.error("Follower insert error:", followerError);
+        toast({
+          title: "Error",
+          description: "Page created but failed to follow it",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Page created successfully",
       });
 
-    if (error) {
+      setIsCreateDialogOpen(false);
+      setNewPageName("");
+      setNewPageDescription("");
+      setNewPageCategory("");
+      refetchPages();
+      refetchAllPages();
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: "Failed to create page",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Page created successfully",
-    });
-
-    setIsCreateDialogOpen(false);
-    setNewPageName("");
-    setNewPageDescription("");
-    setNewPageCategory("");
-    refetchPages();
   };
 
   const followPage = async (pageId: string) => {
     if (!user) return;
 
-    const { error } = await supabase
-      .from("page_followers")
-      .insert({
-        page_id: pageId,
-        user_id: user.id,
+    try {
+      const { error } = await supabase
+        .from("page_followers")
+        .insert({
+          page_id: pageId,
+          user_id: user.id,
+        });
+
+      if (error) {
+        console.error("Follow page error:", error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to follow page",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Following page",
       });
 
-    if (error) {
+      refetchFollowed();
+      refetchAllPages();
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: "Failed to follow page",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Following page",
-    });
-
-    refetchFollowed();
-    refetchAllPages();
   };
 
   const unfollowPage = async (pageId: string) => {
     if (!user) return;
 
-    const { error } = await supabase
-      .from("page_followers")
-      .delete()
-      .eq("page_id", pageId)
-      .eq("user_id", user.id);
+    try {
+      const { error } = await supabase
+        .from("page_followers")
+        .delete()
+        .eq("page_id", pageId)
+        .eq("user_id", user.id);
 
-    if (error) {
+      if (error) {
+        console.error("Unfollow page error:", error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to unfollow page",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Unfollowed page",
+      });
+
+      refetchFollowed();
+      refetchAllPages();
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: "Failed to unfollow page",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Unfollowed page",
-    });
-
-    refetchFollowed();
-    refetchAllPages();
   };
 
   return (
