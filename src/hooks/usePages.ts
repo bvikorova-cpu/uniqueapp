@@ -2,15 +2,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-export const useGroups = () => {
+export const usePages = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: groups, isLoading } = useQuery({
-    queryKey: ["groups"],
+  const { data: pages, isLoading } = useQuery({
+    queryKey: ["pages"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("groups")
+        .from("pages")
         .select("*")
         .order("created_at", { ascending: false });
 
@@ -19,95 +19,93 @@ export const useGroups = () => {
     },
   });
 
-  const createGroup = useMutation({
+  const createPage = useMutation({
     mutationFn: async ({
       name,
       description,
-      isPrivate,
+      category,
       coverImage,
     }: {
       name: string;
       description?: string;
-      isPrivate?: boolean;
+      category?: string;
       coverImage?: string;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { data: group, error: groupError } = await supabase
-        .from("groups")
+      const { data: page, error: pageError } = await supabase
+        .from("pages")
         .insert({
           name,
           description,
-          is_private: isPrivate || false,
-          cover_image: coverImage,
-          creator_id: user.id,
+          category,
+          cover_image_url: coverImage,
+          user_id: user.id,
         })
         .select()
         .single();
 
-      if (groupError) throw groupError;
+      if (pageError) throw pageError;
 
-      // Add creator as admin
-      const { error: memberError } = await supabase
-        .from("group_members")
+      // Add owner as follower
+      const { error: followerError } = await supabase
+        .from("page_followers")
         .insert({
-          group_id: group.id,
+          page_id: page.id,
           user_id: user.id,
-          role: "admin",
         });
 
-      if (memberError) throw memberError;
+      if (followerError) throw followerError;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
-      toast({ title: "Group created!" });
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      toast({ title: "Page created!" });
     },
   });
 
-  const joinGroup = useMutation({
-    mutationFn: async (groupId: string) => {
+  const followPage = useMutation({
+    mutationFn: async (pageId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("group_members").insert({
-        group_id: groupId,
+      const { error } = await supabase.from("page_followers").insert({
+        page_id: pageId,
         user_id: user.id,
-        role: "member",
       });
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
-      toast({ title: "Joined group!" });
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      toast({ title: "Following page!" });
     },
   });
 
-  const leaveGroup = useMutation({
-    mutationFn: async (groupId: string) => {
+  const unfollowPage = useMutation({
+    mutationFn: async (pageId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
       const { error } = await supabase
-        .from("group_members")
+        .from("page_followers")
         .delete()
-        .eq("group_id", groupId)
+        .eq("page_id", pageId)
         .eq("user_id", user.id);
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["groups"] });
-      toast({ title: "Left group" });
+      queryClient.invalidateQueries({ queryKey: ["pages"] });
+      toast({ title: "Unfollowed page" });
     },
   });
 
   return {
-    groups: groups || [],
+    pages: pages || [],
     isLoading,
-    createGroup: createGroup.mutate,
-    joinGroup: joinGroup.mutate,
-    leaveGroup: leaveGroup.mutate,
+    createPage: createPage.mutate,
+    followPage: followPage.mutate,
+    unfollowPage: unfollowPage.mutate,
   };
 };

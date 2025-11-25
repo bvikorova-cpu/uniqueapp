@@ -568,7 +568,7 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
   return (
     <div 
-      className={`glass-post-card overflow-hidden group hover:-translate-y-1 border-l-4 ${getAccentColor()} cursor-pointer`}
+      className={`glass-post-card overflow-hidden group hover:scale-[1.01] transition-all duration-500 border-l-4 ${getAccentColor()} cursor-pointer`}
       onClick={() => navigate(`/post/${post.id}`)}
     >
       {/* Media First - Pinterest Style */}
@@ -644,9 +644,9 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         </div>
       )}
 
-      <div className="p-6">
+      <div className="p-6 space-y-4">
         {/* Author Info */}
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3">
           <Avatar 
             className="h-10 w-10 ring-2 ring-primary/10 cursor-pointer hover:ring-primary/30 transition-all"
             onClick={(e) => handleUserClick(e, post.user_id)}
