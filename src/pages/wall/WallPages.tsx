@@ -238,7 +238,11 @@ export default function WallPages() {
             <h3 className="text-lg font-semibold mb-4">My Pages ({myPages.length})</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {myPages.map((page) => (
-                <Card key={page.id} className="p-4 hover:shadow-md transition-shadow">
+                <Card 
+                  key={page.id} 
+                  className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => window.location.href = `/wall/pages/${page.id}`}
+                >
                   <div className="flex items-start gap-3">
                     <Avatar className="h-12 w-12 rounded-md">
                       <AvatarImage src={page.avatar_url || undefined} />

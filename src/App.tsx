@@ -308,9 +308,12 @@ const App = () => (
               <Route path="/wall/messages" element={<Wall />} />
               <Route path="/wall/friends" element={<Wall />} />
               <Route path="/wall/groups" element={<Wall />} />
+              <Route path="/wall/groups/:groupId" element={<GroupDetail />} />
               <Route path="/wall/pages" element={<Wall />} />
+              <Route path="/wall/pages/:pageId" element={<PageDetail />} />
               <Route path="/wall/videos" element={<Wall />} />
               <Route path="/wall/events" element={<Wall />} />
+              <Route path="/wall/events/:eventId" element={<EventDetail />} />
               <Route path="/wall/saved" element={<Wall />} />
               <Route path="/wall/trending" element={<Wall />} />
               <Route path="/post/:id" element={<PostDetail />} />

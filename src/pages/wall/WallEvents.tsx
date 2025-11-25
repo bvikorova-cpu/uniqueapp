@@ -188,7 +188,11 @@ export default function WallEvents() {
             <h3 className="text-lg font-semibold mb-4">{t('wall.events.myEvents')} ({myEvents.length})</h3>
             <div className="space-y-4">
               {myEvents.map((event) => (
-                <Card key={event.id} className="p-4 hover:shadow-md transition-shadow">
+                <Card 
+                  key={event.id} 
+                  className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => window.location.href = `/wall/events/${event.id}`}
+                >
                   <div className="flex gap-4">
                     <div className="flex flex-col items-center justify-center bg-primary/10 rounded-lg p-3 min-w-[60px]">
                       <div className="text-2xl font-bold text-primary">
