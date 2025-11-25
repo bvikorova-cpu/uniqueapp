@@ -65,7 +65,7 @@ export default function WallPages() {
     enabled: !!user,
   });
 
-  const { data: allPages = [] } = useQuery({
+  const { data: allPages = [], refetch: refetchAllPages } = useQuery({
     queryKey: ["all-pages", searchQuery],
     queryFn: async () => {
       let query = supabase
@@ -140,6 +140,7 @@ export default function WallPages() {
     });
 
     refetchFollowed();
+    refetchAllPages();
   };
 
   const unfollowPage = async (pageId: string) => {
@@ -166,6 +167,7 @@ export default function WallPages() {
     });
 
     refetchFollowed();
+    refetchAllPages();
   };
 
   return (

@@ -49,7 +49,7 @@ export default function WallGroups() {
     enabled: !!user,
   });
 
-  const { data: allGroups = [] } = useQuery({
+  const { data: allGroups = [], refetch: refetchAllGroups } = useQuery({
     queryKey: ["all-groups", searchQuery],
     queryFn: async () => {
       let query = supabase
@@ -133,6 +133,7 @@ export default function WallGroups() {
     });
 
     refetchGroups();
+    refetchAllGroups();
   };
 
   const leaveGroup = async (groupId: string) => {
@@ -159,6 +160,7 @@ export default function WallGroups() {
     });
 
     refetchGroups();
+    refetchAllGroups();
   };
 
   return (
