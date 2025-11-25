@@ -64,8 +64,8 @@ export default function PageDetail() {
 
   const { data: posts = [] } = useQuery({
     queryKey: ["page-posts", pageId],
-    queryFn: async () => {
-      const { data }: any = await supabase
+    queryFn: async (): Promise<any[]> => {
+      const { data } = await (supabase as any)
         .from("posts")
         .select("*")
         .eq("page_id", pageId)

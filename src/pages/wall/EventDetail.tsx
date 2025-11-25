@@ -64,8 +64,8 @@ export default function EventDetail() {
 
   const { data: attendees = [] } = useQuery({
     queryKey: ["event-attendees", eventId],
-    queryFn: async () => {
-      const { data }: any = await supabase
+    queryFn: async (): Promise<any[]> => {
+      const { data } = await (supabase as any)
         .from("event_attendees")
         .select(`
           *,
@@ -84,8 +84,8 @@ export default function EventDetail() {
 
   const { data: discussions = [] } = useQuery({
     queryKey: ["event-discussions", eventId],
-    queryFn: async () => {
-      const { data }: any = await supabase
+    queryFn: async (): Promise<any[]> => {
+      const { data } = await (supabase as any)
         .from("posts")
         .select("*")
         .eq("event_id", eventId)
