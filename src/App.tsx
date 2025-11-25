@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { SubscriptionGuard } from "@/components/SubscriptionGuard";
 import Index from "./pages/Index";
@@ -297,18 +299,26 @@ import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-      <BrowserRouter>
-        <AuthProvider>
-          <TooltipProvider delayDuration={0}>
-          <Toaster />
-          <Sonner />
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-1">
-              <Routes>
+const App = () => {
+  const { i18n } = useTranslation();
+
+  useEffect(() => {
+    // Update HTML lang attribute when language changes
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <BrowserRouter>
+          <AuthProvider>
+            <TooltipProvider delayDuration={0}>
+            <Toaster />
+            <Sonner />
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-1">
+                <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/wall" element={<Wall />} />
               <Route path="/wall/messages" element={<Wall />} />
@@ -643,15 +653,16 @@ const App = () => (
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <Footer />
+              </Routes>
+            </main>
+            <Footer />
           </div>
-        </TooltipProvider>
-      </AuthProvider>
-    </BrowserRouter>
+          </TooltipProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </ThemeProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;

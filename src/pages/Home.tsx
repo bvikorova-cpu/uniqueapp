@@ -189,13 +189,13 @@ const Home = () => {
                 </div>
               </div>
               <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent mb-4">
-                Welcome to "Unique" – The Platform That Helps and Connects!
+                {t('home.welcome_title')}
               </CardTitle>
             </CardHeader>
             
             <CardContent className="relative space-y-6 text-center md:text-left px-6 md:px-8 pb-8">
               <p className="text-lg text-foreground/90 leading-relaxed">
-                At "Unique," we believe in the power of community and that everyone deserves a digital space that inspires them, educates them, and connects them with the people they care about. Our platform is designed with dedication and the goal of bringing you a unique experience – from discovering new talents and pursuing education, to creative opportunities with artificial intelligence and brand building. We are here to help you achieve your dreams and goals.
+                {t('home.welcome_intro')}
               </p>
               
               <div className="relative my-8">
@@ -203,22 +203,22 @@ const Home = () => {
                   <div className="w-full border-t border-primary/20"></div>
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-card px-4 text-sm text-primary font-semibold">Your satisfaction is our number one priority</span>
+                  <span className="bg-card px-4 text-sm text-primary font-semibold">{t('home.welcome_priority')}</span>
                 </div>
               </div>
               
               <p className="text-lg text-foreground/90 leading-relaxed">
-                We know that even the best technology occasionally encounters unforeseen obstacles. If you come across any error, or have a suggestion for improvement, please do not hesitate to contact us! Use our <Link to="/contact" className="text-primary hover:text-primary-glow font-semibold underline decoration-primary/30 hover:decoration-primary transition-colors">Contact Form</Link>. Every piece of feedback you give us is valuable, and we take it seriously.
+                {t('home.welcome_feedback')} <Link to="/contact" className="text-primary hover:text-primary-glow font-semibold underline decoration-primary/30 hover:decoration-primary transition-colors">{t('home.welcome_contact_link')}</Link>. {t('home.welcome_feedback_value')}
               </p>
               
               <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl p-6 mt-8 border border-primary/20">
                 <p className="text-lg font-semibold text-center text-foreground">
-                  Because we believe that every user deserves what they paid for – and much more.
+                  {t('home.welcome_promise')}
                 </p>
               </div>
               
               <p className="text-xl font-bold text-center bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent pt-4">
-                Thank you for being part of the community. Together, we are creating something exceptional!
+                {t('home.welcome_thanks')}
               </p>
             </CardContent>
           </Card>
@@ -230,14 +230,14 @@ const Home = () => {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-16 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Why{" "}
+              {t('home.why_unique_title')}{" "}
               <span className="bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
                 Unique
               </span>
               ?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Discover what makes our platform stand out from the rest
+              {t('home.why_unique_discover')}
             </p>
           </div>
 
@@ -250,12 +250,12 @@ const Home = () => {
                   <Layers className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl group-hover:text-primary transition-colors duration-300">
-                  All-in-One Platform
+                  {t('home.all_in_one_title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <p className="text-muted-foreground leading-relaxed">
-                  Everything you need in one place - from social networking and entertainment to education, shopping, and AI-powered tools. No need to juggle multiple apps.
+                  {t('home.all_in_one_desc')}
                 </p>
               </CardContent>
             </Card>
@@ -268,12 +268,12 @@ const Home = () => {
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl group-hover:text-accent transition-colors duration-300">
-                  Premium Features
+                  {t('home.premium_features_title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <p className="text-muted-foreground leading-relaxed">
-                  Access cutting-edge AI technology, advanced tools, and exclusive features. Experience the future of social networking with intelligent assistance.
+                  {t('home.premium_features_desc')}
                 </p>
               </CardContent>
             </Card>
@@ -286,12 +286,12 @@ const Home = () => {
                   <Coins className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-2xl group-hover:text-gold transition-colors duration-300">
-                  Earn While You Social
+                  {t('home.earn_while_social_title')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="relative">
                 <p className="text-muted-foreground leading-relaxed">
-                  Turn your social activities into income. Create content, offer services, compete in contests, and get rewarded for your engagement and talent.
+                  {t('home.earn_while_social_desc')}
                 </p>
               </CardContent>
             </Card>
