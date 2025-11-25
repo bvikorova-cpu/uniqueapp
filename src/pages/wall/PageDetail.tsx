@@ -65,12 +65,12 @@ export default function PageDetail() {
   const { data: posts = [] } = useQuery({
     queryKey: ["page-posts", pageId],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data }: any = await supabase
         .from("posts")
         .select("*")
         .eq("page_id", pageId)
         .order("created_at", { ascending: false });
-      return (data || []) as any[];
+      return data || [];
     },
     enabled: !!pageId,
   });
