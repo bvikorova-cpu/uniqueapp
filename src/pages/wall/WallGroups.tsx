@@ -202,7 +202,11 @@ export default function WallGroups() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {myGroups.map((group) => (
-                <Card key={group.id} className="p-4 hover:shadow-md transition-shadow">
+                <Card 
+                  key={group.id} 
+                  className="p-4 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => window.location.href = `/wall/groups/${group.id}`}
+                >
                   <div className="flex items-start gap-3">
                     <Avatar className="h-12 w-12">
                       <AvatarImage src={group.cover_image || undefined} />
