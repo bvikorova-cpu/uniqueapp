@@ -137,21 +137,26 @@ export const useFollowingPosts = (userId: string | undefined) => {
 
       if (postsError) throw postsError;
 
-      // Fetch profiles for posts
-      const postsWithProfiles = await Promise.all(
-        (postsData || []).map(async (post) => {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("id, full_name, avatar_url")
-            .eq("id", post.user_id)
-            .single();
+      // Batch fetch all profiles for better performance
+      const userIds = Array.from(new Set((postsData || []).map(p => p.user_id)));
+      
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", userIds);
 
-          return {
-            ...post,
-            profiles: profile || { id: post.user_id, full_name: null, avatar_url: null },
-          };
-        })
+      const profilesMap = new Map(
+        (profilesData || []).map(p => [p.id, p])
       );
+
+      const postsWithProfiles = (postsData || []).map(post => ({
+        ...post,
+        profiles: profilesMap.get(post.user_id) || { 
+          id: post.user_id, 
+          full_name: null, 
+          avatar_url: null 
+        }
+      }));
 
       return postsWithProfiles;
     },
