@@ -61,7 +61,13 @@ export const useSearch = () => {
   const search = async (query: string, type: "all" | "posts" | "users" | "hashtags" = "all") => {
     setSearching(true);
     try {
-      let results: any = {};
+      interface SearchResults {
+        posts?: Awaited<ReturnType<typeof searchPosts>>;
+        users?: Awaited<ReturnType<typeof searchUsers>>;
+        hashtags?: Awaited<ReturnType<typeof searchHashtags>>;
+      }
+      
+      const results: SearchResults = {};
 
       if (type === "all" || type === "posts") {
         results.posts = await searchPosts(query);

@@ -7,7 +7,7 @@ export interface Activity {
   activity_type: string;
   target_id: string | null;
   target_type: string | null;
-  metadata: any;
+  metadata: Record<string, unknown> | string | number | boolean | null;
   created_at: string;
 }
 
@@ -26,7 +26,7 @@ export const useActivityFeed = (userId?: string) => {
         .limit(50);
 
       if (error) throw error;
-      return data;
+      return data as Activity[];
     },
     enabled: !!userId || true,
   });
