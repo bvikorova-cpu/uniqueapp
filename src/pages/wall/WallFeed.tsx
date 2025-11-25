@@ -9,46 +9,7 @@ import { Loader2 } from "lucide-react";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
 import { useTranslation } from "react-i18next";
-
-interface Post {
-  id: string;
-  content: string;
-  created_at: string;
-  user_id: string;
-  likes_count: number;
-  comments_count: number;
-  shares_count: number;
-  reposts_count: number;
-  feeling?: string | null;
-  location?: string | null;
-  media: Array<{
-    id: string;
-    file_url: string;
-    file_type: string;
-  }>;
-  profiles: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-  };
-}
-
-interface Repost {
-  id: string;
-  user_id: string;
-  comment: string;
-  created_at: string;
-  original_post: Post;
-  profiles: {
-    id: string;
-    full_name: string | null;
-    avatar_url: string | null;
-  };
-}
-
-type FeedItem = 
-  | { type: 'post'; data: Post }
-  | { type: 'repost'; data: Repost };
+import type { Post, Repost, FeedItem } from "@/types/database";
 
 interface WallFeedProps {
   posts: Post[];
