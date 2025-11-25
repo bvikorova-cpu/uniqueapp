@@ -161,8 +161,7 @@ export const MinecraftGame = ({ onBack }: MinecraftGameProps) => {
                   <button
                     key={`${i}-${j}`}
                     onClick={() => handleCellClick(i, j)}
-                    className="aspect-square text-2xl bg-sky-200 hover:bg-sky-300 transition-colors rounded"
-                    style={{ width: '40px' }}
+                    className="aspect-square text-2xl bg-sky-200 hover:bg-sky-300 transition-colors rounded w-10 h-10 sm:w-12 sm:h-12"
                   >
                     {cell}
                   </button>
