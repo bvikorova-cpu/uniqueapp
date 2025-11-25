@@ -44,7 +44,7 @@ export default function WallEvents() {
     enabled: !!user,
   });
 
-  const { data: upcomingEvents = [] } = useQuery({
+  const { data: upcomingEvents = [], refetch: refetchUpcoming } = useQuery({
     queryKey: ["upcoming-events"],
     queryFn: async () => {
       const { data: events } = await supabase
@@ -120,6 +120,8 @@ export default function WallEvents() {
       title: t('wall.events.success'),
       description: `${t('wall.events.markedAs')} ${status}`,
     });
+
+    refetchUpcoming();
   };
 
   return (
