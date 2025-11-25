@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import { Users, Plus, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function WallGroups() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [newGroupName, setNewGroupName] = useState("");
@@ -279,7 +281,7 @@ export default function WallGroups() {
                   <div className="flex items-start justify-between gap-3">
                     <div 
                       className="flex items-start gap-3 flex-1 cursor-pointer"
-                      onClick={() => window.location.href = `/wall/groups/${group.id}`}
+                      onClick={() => navigate(`/wall/groups/${group.id}`)}
                     >
                       <Avatar className="h-12 w-12">
                         <AvatarImage src={group.cover_image || undefined} />
@@ -320,7 +322,7 @@ export default function WallGroups() {
                   <div className="flex items-start justify-between gap-3">
                     <div 
                       className="flex items-start gap-3 flex-1 cursor-pointer"
-                      onClick={() => window.location.href = `/wall/groups/${group.id}`}
+                      onClick={() => navigate(`/wall/groups/${group.id}`)}
                     >
                       <Avatar className="h-12 w-12">
                         <AvatarImage src={group.cover_image || undefined} />
