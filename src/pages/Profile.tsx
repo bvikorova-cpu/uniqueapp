@@ -366,34 +366,34 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5 py-8">
       <div className="container mx-auto px-4 max-w-2xl">
         <Button
           variant="ghost"
           onClick={() => navigate("/wall")}
-          className="mb-4"
+          className="mb-4 glass-hover rounded-xl"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
 
-        <Card className="p-6 mb-8">
-          <div className="flex items-start gap-4 mb-6">
-            <Avatar className="h-24 w-24">
+        <div className="glass-post-card p-8 mb-8">
+          <div className="flex items-start gap-6 mb-6">
+            <Avatar className="h-28 w-28 ring-4 ring-primary/20 ring-offset-4 ring-offset-background">
               <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback className="text-3xl">
+              <AvatarFallback className="text-4xl bg-gradient-to-br from-primary/30 to-primary/10">
                 {profile.full_name?.[0]?.toUpperCase() || profile.email?.[0]?.toUpperCase() || "U"}
               </AvatarFallback>
             </Avatar>
 
             <div className="flex-1">
-              <div className="flex items-center justify-between mb-2">
-                <h1 className="text-3xl font-bold">
+              <div className="flex items-center justify-between mb-3">
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
                   {profile.full_name || "No name"}
                 </h1>
                 <div className="flex gap-2">
                   {currentUserId === userId ? (
-                    <Button variant="outline" size="sm" onClick={() => navigate("/edit-profile")}>
+                    <Button variant="outline" size="sm" onClick={() => navigate("/edit-profile")} className="glass-button rounded-xl">
                       <Edit className="h-4 w-4 mr-2" />
                       Edit Profile
                     </Button>
@@ -435,19 +435,19 @@ const Profile = () => {
               </div>
               
               {profile.occupation && (
-                <p className="text-lg text-muted-foreground mb-1">
+                <p className="text-lg text-muted-foreground mb-2 font-medium">
                   {profile.occupation}
                   {profile.company && ` @ ${profile.company}`}
                 </p>
               )}
 
               {profile.bio && (
-                <p className="text-muted-foreground mt-3">{profile.bio}</p>
+                <p className="text-muted-foreground mt-4 leading-relaxed">{profile.bio}</p>
               )}
             </div>
           </div>
 
-          <Separator className="my-4" />
+          <Separator className="my-6 opacity-50" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {profile.email && (
@@ -490,12 +490,12 @@ const Profile = () => {
 
           {profile.interests && profile.interests.length > 0 && (
             <>
-              <Separator className="my-4" />
+              <Separator className="my-6 opacity-50" />
               <div>
-                <h3 className="text-sm font-semibold mb-2">Interests</h3>
+                <h3 className="text-sm font-semibold mb-3">Interests</h3>
                 <div className="flex flex-wrap gap-2">
                   {profile.interests.map((interest) => (
-                    <Badge key={interest} variant="secondary">
+                    <Badge key={interest} variant="secondary" className="glass-button rounded-full px-3 py-1">
                       {interest}
                     </Badge>
                   ))}
@@ -503,10 +503,10 @@ const Profile = () => {
               </div>
             </>
           )}
-        </Card>
+        </div>
 
         {/* Activity Statistics */}
-        <Card className="p-6 mb-8">
+        <div className="glass-post-card p-8 mb-8">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-5 w-5 text-primary" />
             <h2 className="text-xl font-semibold">Activity Statistics</h2>
@@ -557,7 +557,9 @@ const Profile = () => {
               <div className="text-sm text-muted-foreground">Comments</div>
             </div>
           </div>
-        </Card>
+        </div>
+
+        {/* Tabs Section */}
 
         <Tabs defaultValue={defaultTab} className="w-full">
           <TabsList className="grid w-full grid-cols-5">
