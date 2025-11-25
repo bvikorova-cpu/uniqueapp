@@ -237,10 +237,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       });
 
       onDelete();
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete post",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -324,10 +324,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       setNewFiles([]);
       setMediaToDelete([]);
       onDelete(); // Refresh posts
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update post",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -356,10 +356,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         setLiked(true);
         setLikesCount((prev) => prev + 1);
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to like post",
+        description: error.message,
         variant: "destructive",
       });
     }
@@ -399,10 +399,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           description: "Post saved to bookmarks",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save post",
+        description: error.message,
         variant: "destructive",
       });
     }
@@ -434,10 +434,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
           .insert({ post_id: post.id, user_id: user.id, reaction_type: reactionType });
         setSelectedReaction(reactionType);
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to add reaction",
+        description: error.message,
         variant: "destructive",
       });
     }
@@ -471,10 +471,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       );
 
       setComments(commentsWithProfiles);
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to fetch comments",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -503,10 +503,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
         title: "Success",
         description: "Comment was added",
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to add comment",
+        description: error.message,
         variant: "destructive",
       });
     }
@@ -551,10 +551,10 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
       setRepostComment("");
       setRepostsCount(prev => prev + 1);
       onDelete(); // Refresh feed
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to repost",
+        description: error.message,
         variant: "destructive",
       });
     } finally {

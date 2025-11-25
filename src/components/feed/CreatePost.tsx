@@ -103,10 +103,10 @@ const CreatePost = ({ onPostCreated }: CreatePostProps) => {
       setContent("");
       setFiles([]);
       onPostCreated();
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to create post",
+        description: error.message,
         variant: "destructive",
       });
     } finally {

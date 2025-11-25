@@ -67,14 +67,14 @@ export const useActiveUsers = () => {
       if (error) throw error;
 
       // Count posts per user
-      const userPostCounts = data.reduce((acc: Record<string, number>, post) => {
+      const userPostCounts = data.reduce((acc: any, post) => {
         acc[post.user_id] = (acc[post.user_id] || 0) + 1;
         return acc;
       }, {});
 
       // Get top 10 users
       const topUserIds = Object.entries(userPostCounts)
-        .sort(([, a], [, b]) => (b as number) - (a as number))
+        .sort(([, a]: any, [, b]: any) => b - a)
         .slice(0, 10)
         .map(([userId]) => userId);
 

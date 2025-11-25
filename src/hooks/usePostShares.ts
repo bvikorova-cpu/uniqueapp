@@ -29,7 +29,7 @@ export const usePostShares = (postId?: string) => {
     mutationFn: async ({ postId, shareType, metadata }: {
       postId: string;
       shareType: ShareType;
-      metadata?: Record<string, unknown>;
+      metadata?: any;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");

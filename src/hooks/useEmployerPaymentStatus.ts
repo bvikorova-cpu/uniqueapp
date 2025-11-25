@@ -34,9 +34,9 @@ export function useEmployerPaymentStatus() {
       setProductId(subscriptionData?.product_id || null);
       setSubscriptionEnd(subscriptionData?.subscription_end || null);
       setLoading(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error checking subscription status:', err);
-      setError(err instanceof Error ? err.message : "Unknown error");
+      setError(err.message);
       setSubscribed(false);
       setProductId(null);
       setSubscriptionEnd(null);

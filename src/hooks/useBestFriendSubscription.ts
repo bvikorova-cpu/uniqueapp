@@ -34,7 +34,7 @@ export function useBestFriendSubscription() {
         freeMessagesLimit: 5,
         loading: false,
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error checking subscription:', err);
       setSubscription(prev => ({ ...prev, loading: false }));
     }

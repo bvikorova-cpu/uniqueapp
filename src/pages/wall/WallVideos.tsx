@@ -21,7 +21,7 @@ export default function WallVideos() {
       if (!posts) return [];
 
       const videoPostsData = posts.filter(post => 
-        post.media?.some((m) => m.file_type?.startsWith("video/"))
+        post.media?.some((m: any) => m.file_type?.startsWith("video/"))
       );
 
       const userIds = Array.from(new Set(videoPostsData.map(p => p.user_id)));

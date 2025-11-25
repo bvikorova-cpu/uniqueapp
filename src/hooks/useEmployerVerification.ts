@@ -46,9 +46,9 @@ export function useEmployerVerification() {
 
       setVerificationStatus(verificationData?.verification_status || null);
       setLoading(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error checking verification status:', err);
-      setError(err instanceof Error ? err.message : "Unknown error");
+      setError(err.message);
       setVerificationStatus(null);
       setLoading(false);
     }

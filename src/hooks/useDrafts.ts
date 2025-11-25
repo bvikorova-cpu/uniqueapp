@@ -7,7 +7,7 @@ export interface PostDraft {
   user_id: string;
   content: string | null;
   media_urls: string[] | null;
-  draft_data: Record<string, unknown> | null;
+  draft_data: any;
   created_at: string;
   updated_at: string;
 }
@@ -37,7 +37,7 @@ export const useDrafts = () => {
     mutationFn: async ({ content, mediaUrls, draftData }: {
       content?: string;
       mediaUrls?: string[];
-      draftData?: Record<string, unknown>;
+      draftData?: any;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
@@ -46,9 +46,9 @@ export const useDrafts = () => {
         .from("post_drafts")
         .insert({
           user_id: user.id,
-          content: content || null,
-          media_urls: mediaUrls || null,
-          draft_data: draftData as unknown as any || null,
+          content,
+          media_urls: mediaUrls,
+          draft_data: draftData,
         })
         .select()
         .single();
@@ -67,14 +67,14 @@ export const useDrafts = () => {
       id: string;
       content?: string;
       mediaUrls?: string[];
-      draftData?: Record<string, unknown>;
+      draftData?: any;
     }) => {
       const { error } = await supabase
         .from("post_drafts")
         .update({
-          content: content || null,
-          media_urls: mediaUrls || null,
-          draft_data: draftData as unknown as any || null,
+          content,
+          media_urls: mediaUrls,
+          draft_data: draftData,
           updated_at: new Date().toISOString(),
         })
         .eq("id", id);

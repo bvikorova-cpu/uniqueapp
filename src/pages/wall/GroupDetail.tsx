@@ -64,8 +64,8 @@ export default function GroupDetail() {
 
   const { data: members = [] } = useQuery({
     queryKey: ["group-members", groupId],
-    queryFn: async (): Promise<any[]> => {
-      const { data } = await (supabase as any)
+    queryFn: async () => {
+      const { data } = await supabase
         .from("group_members")
         .select(`
           *,
@@ -84,13 +84,13 @@ export default function GroupDetail() {
 
   const { data: posts = [] } = useQuery({
     queryKey: ["group-posts", groupId],
-    queryFn: async (): Promise<any[]> => {
-      const { data } = await (supabase as any)
+    queryFn: async () => {
+      const { data } = await supabase
         .from("posts")
         .select("*")
         .eq("group_id", groupId)
         .order("created_at", { ascending: false });
-      return data || [];
+      return (data || []) as any[];
     },
     enabled: !!groupId,
   });
