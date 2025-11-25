@@ -249,6 +249,56 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Welcome Message Section */}
+      <section className="py-24 px-4 bg-gradient-to-b from-background/50 to-background">
+        <div className="container mx-auto max-w-4xl">
+          <Card className="relative overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-xl shadow-[0_0_60px_rgba(var(--primary),0.15)]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(var(--primary),0.1),transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(var(--accent),0.08),transparent_50%)]" />
+            
+            <CardHeader className="relative text-center pb-6">
+              <div className="flex justify-center mb-6">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary via-primary-glow to-accent flex items-center justify-center shadow-glow animate-float">
+                  <Sparkles className="w-10 h-10 text-white" />
+                </div>
+              </div>
+              <CardTitle className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent mb-4">
+                Welcome to "Unique" – The Platform That Helps and Connects!
+              </CardTitle>
+            </CardHeader>
+            
+            <CardContent className="relative space-y-6 text-center md:text-left px-6 md:px-8 pb-8">
+              <p className="text-lg text-foreground/90 leading-relaxed">
+                At "Unique," we believe in the power of community and that everyone deserves a digital space that inspires them, educates them, and connects them with the people they care about. Our platform is designed with dedication and the goal of bringing you a unique experience – from discovering new talents and pursuing education, to creative opportunities with artificial intelligence and brand building. We are here to help you achieve your dreams and goals.
+              </p>
+              
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-primary/20"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-card px-4 text-sm text-primary font-semibold">Your satisfaction is our number one priority</span>
+                </div>
+              </div>
+              
+              <p className="text-lg text-foreground/90 leading-relaxed">
+                We know that even the best technology occasionally encounters unforeseen obstacles. If you come across any error, or have a suggestion for improvement, please do not hesitate to contact us! Use our <Link to="/contact" className="text-primary hover:text-primary-glow font-semibold underline decoration-primary/30 hover:decoration-primary transition-colors">Contact Form</Link>. Every piece of feedback you give us is valuable, and we take it seriously.
+              </p>
+              
+              <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl p-6 mt-8 border border-primary/20">
+                <p className="text-lg font-semibold text-center text-foreground">
+                  Because we believe that every user deserves what they paid for – and much more.
+                </p>
+              </div>
+              
+              <p className="text-xl font-bold text-center bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent pt-4">
+                Thank you for being part of the "Unique" community. Together, we are creating something exceptional!
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
     </div>
   );
 };
