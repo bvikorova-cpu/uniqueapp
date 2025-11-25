@@ -4,14 +4,11 @@ import { useToast } from "@/hooks/use-toast";
 import PostCard from "@/components/feed/PostCard";
 import RepostCard from "@/components/feed/RepostCard";
 import { PostFilters, SortBy, TimeFilter, CategoryFilter } from "@/components/feed/PostFilters";
-import { Card } from "@/components/ui/card";
-import { Loader2, Zap, GraduationCap } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
-import { TopGameWidget } from "@/components/wall/TopGameWidget";
 import { useTranslation } from "react-i18next";
 import type { Post, Repost, FeedItem } from "@/types/database";
-import { Button } from "@/components/ui/button";
 
 interface WallFeedProps {
   posts: Post[];
@@ -42,50 +39,12 @@ export default function WallFeed({
   const [sortBy, setSortBy] = useState<SortBy>("newest");
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
-  const [focusMode, setFocusMode] = useState(false);
-  const [learnWorkMode, setLearnWorkMode] = useState(false);
   const { t } = useTranslation();
-
-  // Filter feed items based on focus/learn mode
-  const getFilteredItems = () => {
-    let items = filteredFeedItems;
-
-    if (focusMode) {
-      // Show only high engagement posts (sort by engagement score)
-      items = items.filter(item => {
-        if (item.type === 'post') {
-          const post = item.data;
-          const engagementScore = (post.likes_count || 0) + (post.comments_count || 0) * 2 + (post.reposts_count || 0) * 3;
-          return engagementScore > 10; // Threshold for high engagement
-        }
-        return true;
-      });
-    }
-
-    if (learnWorkMode) {
-      // Show only educational/professional content
-      items = items.filter(item => {
-        if (item.type === 'post') {
-          const post = item.data;
-          const content = post.content.toLowerCase();
-          const keywords = ['learn', 'tutorial', 'guide', 'course', 'work', 'project', 'study', 'education', 'skill'];
-          return keywords.some(keyword => content.includes(keyword));
-        }
-        return true;
-      });
-    }
-
-    return items;
-  };
-
-  const displayItems = getFilteredItems();
 
   const handleResetFilters = () => {
     setSortBy("newest");
     setTimeFilter("all");
     setCategoryFilter("all");
-    setFocusMode(false);
-    setLearnWorkMode(false);
   };
 
   return (
@@ -115,45 +74,15 @@ export default function WallFeed({
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Feed - Left & Center */}
-          <div className="lg:col-span-2 space-y-4">
-            {/* Achievements Badge */}
-            <div className="flex justify-end">
-              <AchievementsBadge />
-            </div>
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="space-y-6">
+          {/* Achievements Badge */}
+          <div className="flex justify-end">
+            <AchievementsBadge />
+          </div>
 
-            {/* Search Bar */}
-            <SearchBar />
-
-            {/* Focus Mode Buttons */}
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                variant={focusMode ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setFocusMode(!focusMode);
-                  if (learnWorkMode) setLearnWorkMode(false);
-                }}
-                className={focusMode ? "bg-gradient-primary shadow-glow" : "glassmorphism"}
-              >
-                <Zap className="h-4 w-4 mr-2" />
-                Focus Mode
-              </Button>
-              <Button
-                variant={learnWorkMode ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setLearnWorkMode(!learnWorkMode);
-                  if (focusMode) setFocusMode(false);
-                }}
-                className={learnWorkMode ? "bg-gradient-primary shadow-glow" : "glassmorphism"}
-              >
-                <GraduationCap className="h-4 w-4 mr-2" />
-                Learn/Work
-              </Button>
-            </div>
+          {/* Search Bar */}
+          <SearchBar />
 
             <PostFilters
               sortBy={sortBy}
@@ -165,21 +94,19 @@ export default function WallFeed({
               onReset={handleResetFilters}
             />
 
-            {/* Feed */}
-            <div className="space-y-4">
-              {loading ? (
-                <Card className="glassmorphism p-8 flex items-center justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                </Card>
-              ) : displayItems.length === 0 ? (
-                <Card className="glassmorphism p-8 text-center text-muted-foreground">
-                  {focusMode && "No high-engagement posts found"}
-                  {learnWorkMode && "No educational/work posts found"}
-                  {!focusMode && !learnWorkMode && t('wall.feed.noPostsFound')}
-                </Card>
-              ) : (
-                <>
-                  {displayItems.map((item, index) => (
+          {/* Feed */}
+          <div className="space-y-5">
+            {loading ? (
+              <div className="glass-post-card p-12 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : filteredFeedItems.length === 0 ? (
+              <div className="glass-post-card p-12 text-center text-muted-foreground">
+                {t('wall.feed.noPostsFound')}
+              </div>
+            ) : (
+              <>
+                {filteredFeedItems.map((item, index) => (
                     <div 
                       key={`${item.type}-${item.data.id}`}
                       className="animate-fade-in"
@@ -198,29 +125,23 @@ export default function WallFeed({
                       )}
                     </div>
                   ))}
-                  
-                  {/* Loading more indicator */}
-                  {loadingMore && (
-                    <Card className="glassmorphism p-4 flex items-center justify-center">
-                      <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
-                      <span className="text-sm text-muted-foreground">{t('wall.feed.loadingMore')}</span>
-                    </Card>
-                  )}
-                  
-                  {/* End of feed message */}
-                  {!loading && !loadingMore && !hasMore && displayItems.length > 0 && (
-                    <Card className="glassmorphism p-4 text-center text-muted-foreground text-sm">
-                      {t('wall.feed.reachedEnd')}
-                    </Card>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Right Sidebar - Widgets */}
-          <div className="hidden lg:block space-y-4 sticky top-24 h-fit">
-            <TopGameWidget />
+                
+                {/* Loading more indicator */}
+                {loadingMore && (
+                  <div className="glass-post-card p-6 flex items-center justify-center">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary mr-2" />
+                    <span className="text-sm text-muted-foreground">{t('wall.feed.loadingMore')}</span>
+                  </div>
+                )}
+                
+                {/* End of feed message */}
+                {!loading && !loadingMore && !hasMore && filteredFeedItems.length > 0 && (
+                  <div className="glass-post-card p-6 text-center text-muted-foreground text-sm">
+                    {t('wall.feed.reachedEnd')}
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -213,21 +213,21 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
   };
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-card/80 to-card/50 backdrop-blur-sm border-border/50 shadow-lg hover:shadow-xl transition-all">
+    <div className="glass-post-card p-6">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex gap-3">
-          <Avatar className="h-11 w-11 ring-2 ring-primary/20">
+          <Avatar className="h-11 w-11 ring-2 ring-primary/10">
             <AvatarImage src={userProfile?.avatar_url || undefined} />
-            <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/10">
+            <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 font-semibold">
               {userProfile?.full_name?.[0] || "U"}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1">
             <Textarea
-              placeholder={`Share your thoughts, ${userProfile?.full_name?.split(" ")[0] || ""}...`}
+              placeholder={`What's on your mind, ${userProfile?.full_name?.split(" ")[0] || ""}?`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="min-h-[100px] resize-none border-none bg-accent/30 focus-visible:ring-2 focus-visible:ring-primary/20 rounded-xl"
+              className="min-h-[100px] resize-none border-none bg-accent/20 focus-visible:ring-2 focus-visible:ring-primary/30 rounded-xl"
             />
             <HashtagInput text={content} />
           </div>
@@ -293,11 +293,10 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
         )}
 
-        <div className="border border-border/50 rounded-xl p-4 bg-gradient-to-br from-accent/20 to-accent/10">
+        <div className="border border-border/30 rounded-xl p-4 bg-accent/10">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-semibold flex items-center gap-2">
-              <div className="w-1 h-4 bg-primary rounded-full" />
-              Enhance your post
+            <span className="text-sm font-semibold text-muted-foreground">
+              Add to post
             </span>
             <Select value={privacy} onValueChange={(v: any) => setPrivacy(v)}>
               <SelectTrigger className="w-[140px] h-8">
@@ -567,6 +566,6 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           );
         }}
       />
-    </Card>
+    </div>
   );
 }
