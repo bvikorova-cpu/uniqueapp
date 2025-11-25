@@ -69,98 +69,140 @@ export default function WallGroups() {
   const createGroup = async () => {
     if (!user || !newGroupName.trim()) return;
 
-    const { data: group, error } = await supabase
-      .from("groups")
-      .insert({
-        name: newGroupName,
-        description: newGroupDescription,
-        creator_id: user.id,
-      })
-      .select()
-      .single();
+    try {
+      const { data: group, error: groupError } = await supabase
+        .from("groups")
+        .insert({
+          name: newGroupName,
+          description: newGroupDescription,
+          creator_id: user.id,
+        })
+        .select()
+        .single();
 
-    if (error || !group) {
+      if (groupError || !group) {
+        console.error("Group creation error:", groupError);
+        toast({
+          title: "Error",
+          description: groupError?.message || "Failed to create group",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Add creator as first member
+      const { error: memberError } = await supabase
+        .from("group_members")
+        .insert({
+          group_id: group.id,
+          user_id: user.id,
+          role: "admin",
+        });
+
+      if (memberError) {
+        console.error("Member insert error:", memberError);
+        toast({
+          title: "Error",
+          description: "Group created but failed to add you as member",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Group created successfully",
+      });
+
+      setIsCreateDialogOpen(false);
+      setNewGroupName("");
+      setNewGroupDescription("");
+      refetchGroups();
+      refetchAllGroups();
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: "Failed to create group",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    // Add creator as first member
-    await supabase
-      .from("group_members")
-      .insert({
-        group_id: group.id,
-        user_id: user.id,
-        role: "admin",
-      });
-
-    toast({
-      title: "Success",
-      description: "Group created successfully",
-    });
-
-    setIsCreateDialogOpen(false);
-    setNewGroupName("");
-    setNewGroupDescription("");
-    refetchGroups();
   };
 
   const joinGroup = async (groupId: string) => {
     if (!user) return;
 
-    const { error } = await supabase
-      .from("group_members")
-      .insert({
-        group_id: groupId,
-        user_id: user.id,
+    try {
+      const { error } = await supabase
+        .from("group_members")
+        .insert({
+          group_id: groupId,
+          user_id: user.id,
+          role: "member",
+        });
+
+      if (error) {
+        console.error("Join group error:", error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to join group",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Joined group successfully",
       });
 
-    if (error) {
+      refetchGroups();
+      refetchAllGroups();
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: "Failed to join group",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Joined group successfully",
-    });
-
-    refetchGroups();
-    refetchAllGroups();
   };
 
   const leaveGroup = async (groupId: string) => {
     if (!user) return;
 
-    const { error } = await supabase
-      .from("group_members")
-      .delete()
-      .eq("group_id", groupId)
-      .eq("user_id", user.id);
+    try {
+      const { error } = await supabase
+        .from("group_members")
+        .delete()
+        .eq("group_id", groupId)
+        .eq("user_id", user.id);
 
-    if (error) {
+      if (error) {
+        console.error("Leave group error:", error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to leave group",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Success",
+        description: "Left group successfully",
+      });
+
+      refetchGroups();
+      refetchAllGroups();
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: "Error",
-        description: "Failed to leave group",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: "Success",
-      description: "Left group successfully",
-    });
-
-    refetchGroups();
-    refetchAllGroups();
   };
 
   return (

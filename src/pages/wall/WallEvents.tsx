@@ -61,67 +61,88 @@ export default function WallEvents() {
   const createEvent = async () => {
     if (!user || !newEventTitle.trim() || !newEventStartTime) return;
 
-    const { error } = await supabase
-      .from("events")
-      .insert({
-        title: newEventTitle,
-        description: newEventDescription,
-        location: newEventLocation,
-        start_time: newEventStartTime,
-        end_time: newEventStartTime,
-        creator_id: user.id,
+    try {
+      const { error } = await supabase
+        .from("events")
+        .insert({
+          title: newEventTitle,
+          description: newEventDescription,
+          location: newEventLocation,
+          start_time: newEventStartTime,
+          end_time: newEventStartTime,
+          creator_id: user.id,
+        });
+
+      if (error) {
+        console.error("Event creation error:", error);
+        toast({
+          title: t('wall.events.error'),
+          description: error.message || t('wall.events.createFailed'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: t('wall.events.success'),
+        description: t('wall.events.created'),
       });
 
-    if (error) {
+      setIsCreateDialogOpen(false);
+      setNewEventTitle("");
+      setNewEventDescription("");
+      setNewEventLocation("");
+      setNewEventStartTime("");
+      refetchEvents();
+      refetchUpcoming();
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: t('wall.events.error'),
-        description: t('wall.events.createFailed'),
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: t('wall.events.success'),
-      description: t('wall.events.created'),
-    });
-
-    setIsCreateDialogOpen(false);
-    setNewEventTitle("");
-    setNewEventDescription("");
-    setNewEventLocation("");
-    setNewEventStartTime("");
-    refetchEvents();
   };
 
   const rsvpToEvent = async (eventId: string, status: "going" | "interested") => {
     if (!user) return;
 
-    const { error } = await supabase
-      .from("event_attendees")
-      .upsert({
-        event_id: eventId,
-        user_id: user.id,
-        status,
-      }, {
-        onConflict: "event_id,user_id"
+    try {
+      const { error } = await supabase
+        .from("event_attendees")
+        .upsert({
+          event_id: eventId,
+          user_id: user.id,
+          status,
+        }, {
+          onConflict: "event_id,user_id"
+        });
+
+      if (error) {
+        console.error("RSVP error:", error);
+        toast({
+          title: t('wall.events.error'),
+          description: error.message || t('wall.events.rsvpFailed'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: t('wall.events.success'),
+        description: `${t('wall.events.markedAs')} ${status}`,
       });
 
-    if (error) {
+      refetchUpcoming();
+    } catch (error) {
+      console.error("Unexpected error:", error);
       toast({
         title: t('wall.events.error'),
-        description: t('wall.events.rsvpFailed'),
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
-      return;
     }
-
-    toast({
-      title: t('wall.events.success'),
-      description: `${t('wall.events.markedAs')} ${status}`,
-    });
-
-    refetchUpcoming();
   };
 
   return (
