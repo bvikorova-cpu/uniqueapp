@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trash2, Repeat2 } from "lucide-react";
@@ -74,7 +73,7 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
   };
 
   return (
-    <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 border-l-blue-500">
+    <div className="glass-post-card overflow-hidden group hover:-translate-y-1 border-l-4 border-l-blue-500">
       <div className="p-6 pb-4">
         {/* Repost Header */}
         <div className="flex items-center gap-3 mb-4">
@@ -132,7 +131,7 @@ const RepostCard = ({ repost, onDelete }: RepostCardProps) => {
           <PostCard post={repost.original_post} onDelete={onDelete} />
         </div>
       </div>
-    </Card>
+    </div>
   );
 };
 
