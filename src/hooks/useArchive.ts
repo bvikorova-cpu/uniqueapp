@@ -2,11 +2,19 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+interface ArchivedPost {
+  id: string;
+  user_id: string;
+  post_id: string;
+  archived_at: string | null;
+  posts: unknown;
+}
+
 export const useArchive = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: archivedPosts = [], isLoading } = useQuery({
+  const { data: archivedPosts = [], isLoading } = useQuery<ArchivedPost[]>({
     queryKey: ["archived-posts"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();

@@ -1,18 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-
-export interface Activity {
-  id: string;
-  user_id: string;
-  activity_type: string;
-  target_id: string | null;
-  target_type: string | null;
-  metadata: any;
-  created_at: string;
-}
+import type { Activity } from "@/types/entities";
 
 export const useActivityFeed = (userId?: string) => {
-  const { data: activities, isLoading } = useQuery({
+  const { data: activities, isLoading } = useQuery<Activity[]>({
     queryKey: ["activity-feed", userId],
     queryFn: async () => {
       const targetUserId = userId || (await supabase.auth.getUser()).data.user?.id;

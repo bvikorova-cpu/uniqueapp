@@ -1,8 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { BrainDuelCredits } from "@/types/credits";
 
 export const useBrandVotes = () => {
-  return useQuery({
+  return useQuery<{
+    total: number;
+    used: number;
+    remaining: number;
+    purchased?: number;
+  }>({
     queryKey: ["brand-votes"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();

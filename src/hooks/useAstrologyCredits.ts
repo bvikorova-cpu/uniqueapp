@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { AstrologyCredits } from "@/types/credits";
 
 export const CREDIT_COSTS = {
   tarot_3: 3,
@@ -27,7 +28,7 @@ export type ReadingType = keyof typeof CREDIT_COSTS;
 export const useAstrologyCredits = () => {
   const queryClient = useQueryClient();
 
-  const { data: credits, isLoading } = useQuery({
+  const { data: credits, isLoading } = useQuery<AstrologyCredits>({
     queryKey: ["astrology-credits"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -61,7 +62,7 @@ export const useAstrologyCredits = () => {
   });
 
   const performReading = useMutation({
-    mutationFn: async ({ readingType, data }: { readingType: string; data: any }) => {
+    mutationFn: async ({ readingType, data }: { readingType: string; data: Record<string, unknown> }) => {
       const response = await supabase.functions.invoke('astrology-reading', {
         body: { type: readingType, data }
       });
