@@ -85,12 +85,13 @@ export default function GroupDetail() {
   const { data: posts = [] } = useQuery({
     queryKey: ["group-posts", groupId],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("posts")
-        .select("*")
+      const { data, error } = await (supabase
+        .from("posts") as any)
+        .select("id, content, created_at, user_id, image_url, likes_count, comments_count, shares_count")
         .eq("group_id", groupId)
         .order("created_at", { ascending: false });
-      return (data || []) as any[];
+      if (error) throw error;
+      return data as any[];
     },
     enabled: !!groupId,
   });

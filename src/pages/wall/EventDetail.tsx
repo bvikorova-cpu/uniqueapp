@@ -85,12 +85,13 @@ export default function EventDetail() {
   const { data: discussions = [] } = useQuery({
     queryKey: ["event-discussions", eventId],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("posts")
-        .select("*")
+      const { data, error } = await (supabase
+        .from("posts") as any)
+        .select("id, content, created_at, user_id, image_url, likes_count, comments_count, shares_count")
         .eq("event_id", eventId)
         .order("created_at", { ascending: false });
-      return (data || []) as any[];
+      if (error) throw error;
+      return data as any[];
     },
     enabled: !!eventId,
   });
