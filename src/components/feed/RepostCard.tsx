@@ -9,39 +9,10 @@ import { Trash2, Repeat2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { enUS } from "date-fns/locale";
 import PostCard from "./PostCard";
+import type { Repost } from "@/types/database";
 
 interface RepostCardProps {
-  repost: {
-    id: string;
-    user_id: string;
-    comment: string;
-    created_at: string;
-    original_post: {
-      id: string;
-      content: string;
-      created_at: string;
-      user_id: string;
-      likes_count: number;
-      comments_count: number;
-      shares_count: number;
-      reposts_count: number;
-      media: Array<{
-        id: string;
-        file_url: string;
-        file_type: string;
-      }>;
-      profiles: {
-        id: string;
-        full_name: string | null;
-        avatar_url: string | null;
-      };
-    };
-    profiles: {
-      id: string;
-      full_name: string | null;
-      avatar_url: string | null;
-    };
-  };
+  repost: Repost;
   onDelete: () => void;
 }
 
