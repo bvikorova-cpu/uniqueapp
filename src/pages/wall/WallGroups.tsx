@@ -298,7 +298,10 @@ export default function WallGroups() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => leaveGroup(group.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        leaveGroup(group.id);
+                      }}
                     >
                       Leave
                     </Button>
@@ -315,7 +318,10 @@ export default function WallGroups() {
               .map((group) => (
                 <Card key={group.id} className="p-4 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 flex-1">
+                    <div 
+                      className="flex items-start gap-3 flex-1 cursor-pointer"
+                      onClick={() => window.location.href = `/wall/groups/${group.id}`}
+                    >
                       <Avatar className="h-12 w-12">
                         <AvatarImage src={group.cover_image || undefined} />
                         <AvatarFallback>{group.name[0]}</AvatarFallback>
@@ -332,7 +338,10 @@ export default function WallGroups() {
                     </div>
                     <Button
                       size="sm"
-                      onClick={() => joinGroup(group.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        joinGroup(group.id);
+                      }}
                     >
                       Join
                     </Button>

@@ -327,7 +327,10 @@ export default function WallPages() {
               {followedPages.map((page) => (
                 <Card key={page.id} className="p-4 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 flex-1">
+                    <div 
+                      className="flex items-start gap-3 flex-1 cursor-pointer"
+                      onClick={() => window.location.href = `/wall/pages/${page.id}`}
+                    >
                       <Avatar className="h-12 w-12 rounded-md">
                         <AvatarImage src={page.avatar_url || undefined} />
                         <AvatarFallback className="rounded-md">{page.name[0]}</AvatarFallback>
@@ -348,7 +351,10 @@ export default function WallPages() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => unfollowPage(page.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        unfollowPage(page.id);
+                      }}
                     >
                       Following
                     </Button>
@@ -367,7 +373,10 @@ export default function WallPages() {
               .map((page) => (
                 <Card key={page.id} className="p-4 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3 flex-1">
+                    <div 
+                      className="flex items-start gap-3 flex-1 cursor-pointer"
+                      onClick={() => window.location.href = `/wall/pages/${page.id}`}
+                    >
                       <Avatar className="h-12 w-12 rounded-md">
                         <AvatarImage src={page.avatar_url || undefined} />
                         <AvatarFallback className="rounded-md">{page.name[0]}</AvatarFallback>
@@ -387,7 +396,10 @@ export default function WallPages() {
                     </div>
                     <Button
                       size="sm"
-                      onClick={() => followPage(page.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        followPage(page.id);
+                      }}
                     >
                       Follow
                     </Button>

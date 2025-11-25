@@ -259,8 +259,8 @@ export default function WallEvents() {
           <h3 className="text-lg font-semibold mb-4">{t('wall.events.upcomingEvents')}</h3>
           <div className="space-y-4">
             {upcomingEvents.map((event) => (
-              <Card key={event.id} className="p-4 hover:shadow-md transition-shadow">
-                <div className="flex gap-4">
+              <Card key={event.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+                <div className="flex gap-4" onClick={() => window.location.href = `/wall/events/${event.id}`}>
                   <div className="flex flex-col items-center justify-center bg-primary/10 rounded-lg p-3 min-w-[60px]">
                     <div className="text-2xl font-bold text-primary">
                       {format(new Date(event.start_time), "dd")}
@@ -289,14 +289,20 @@ export default function WallEvents() {
                     <div className="flex items-center gap-2 mt-3">
                       <Button
                         size="sm"
-                        onClick={() => rsvpToEvent(event.id, "going")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          rsvpToEvent(event.id, "going");
+                        }}
                       >
                         {t('wall.events.going')}
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => rsvpToEvent(event.id, "interested")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          rsvpToEvent(event.id, "interested");
+                        }}
                       >
                         {t('wall.events.interested')}
                       </Button>
