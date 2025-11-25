@@ -1,17 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-export interface AnalyzerCredits {
-  credits_remaining: number;
-  tier: 'free' | 'basic' | 'pro' | 'expert';
-  tier_expires_at?: string;
-}
+import type { AnalyzerCredits } from "@/types/credits";
 
 export const useAnalyzerCredits = () => {
   const queryClient = useQueryClient();
 
-  const { data: credits, isLoading } = useQuery({
+  const { data: credits, isLoading } = useQuery<AnalyzerCredits>({
     queryKey: ["analyzer-credits"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();

@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { IQCredits } from "@/types/credits";
 
 export const useIQCredits = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: credits, isLoading } = useQuery({
+  const { data: credits, isLoading } = useQuery<IQCredits>({
     queryKey: ["iq-credits"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();

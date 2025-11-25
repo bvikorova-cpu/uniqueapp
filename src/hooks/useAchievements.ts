@@ -1,18 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-
-export interface Achievement {
-  id: string;
-  code: string;
-  name: string;
-  description: string;
-  icon: string;
-  points: number;
-  earned_at?: string;
-}
+import type { Achievement } from "@/types/entities";
 
 export const useAchievements = () => {
-  const { data: userAchievements, isLoading: loadingUser } = useQuery({
+  const { data: userAchievements, isLoading: loadingUser } = useQuery<Achievement[]>({
     queryKey: ["user-achievements"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -31,7 +22,7 @@ export const useAchievements = () => {
     },
   });
 
-  const { data: allAchievements, isLoading: loadingAll } = useQuery({
+  const { data: allAchievements, isLoading: loadingAll } = useQuery<Achievement[]>({
     queryKey: ["all-achievements"],
     queryFn: async () => {
       const { data, error } = await supabase

@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { UserBadge } from "@/types/entities";
 
 export const useBadges = (userId?: string) => {
-  const { data: badges, isLoading } = useQuery({
+  const { data: badges, isLoading } = useQuery<UserBadge[]>({
     queryKey: ["user-badges", userId],
     queryFn: async () => {
       if (!userId) return [];

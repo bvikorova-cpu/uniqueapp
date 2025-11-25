@@ -2,6 +2,15 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+interface Certificate {
+  id: string;
+  user_id: string;
+  course_id: string;
+  certificate_url: string;
+  issued_at: string;
+  created_at?: string;
+}
+
 export const useCertificate = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
@@ -42,7 +51,7 @@ export const useCertificate = () => {
     }
   };
 
-  const getCertificate = async (courseId: string) => {
+  const getCertificate = async (courseId: string): Promise<Certificate | null> => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return null;
