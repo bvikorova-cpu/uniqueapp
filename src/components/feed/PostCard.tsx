@@ -568,8 +568,8 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
   };
 
   return (
-    <Card 
-      className={`overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-l-4 ${getAccentColor()} cursor-pointer`}
+    <div 
+      className={`glass-post-card overflow-hidden group hover:-translate-y-1 border-l-4 ${getAccentColor()} cursor-pointer`}
       onClick={() => navigate(`/post/${post.id}`)}
     >
       {/* Media First - Pinterest Style */}
@@ -1060,23 +1060,30 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
             >
               Cancel
             </Button>
-            <Button 
-              onClick={handleEdit} 
-              disabled={saving || (!editContent.trim() && existingMedia.length === 0 && newFiles.length === 0)}
-            >
+            <Button onClick={handleEdit} disabled={saving}>
               {saving ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Saving...
                 </>
               ) : (
-                "Save"
+                "Save changes"
               )}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Card>
+
+      {/* Image Modal */}
+      <Dialog open={showImageModal} onOpenChange={setShowImageModal}>
+        <DialogContent className="max-w-4xl p-0">
+          <img src={selectedImage} alt="Full size" className="w-full" />
+        </DialogContent>
+      </Dialog>
+
+      {/* Report Dialog */}
+      {/* Report functionality handled via dropdown menu */}
+    </div>
   );
 };
 
