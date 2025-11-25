@@ -279,16 +279,18 @@ export default function WallGroups() {
                   className="p-4 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div 
-                      className="flex items-start gap-3 flex-1 cursor-pointer"
-                      onClick={() => navigate(`/wall/groups/${group.id}`)}
-                    >
+                    <div className="flex items-start gap-3 flex-1">
                       <Avatar className="h-12 w-12">
                         <AvatarImage src={group.cover_image || undefined} />
                         <AvatarFallback>{group.name[0]}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <h4 className="font-semibold">{group.name}</h4>
+                        <h4 
+                          className="font-semibold cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => navigate(`/wall/groups/${group.id}`)}
+                        >
+                          {group.name}
+                        </h4>
                         <p className="text-sm text-muted-foreground line-clamp-2">
                           {group.description}
                         </p>
@@ -320,16 +322,18 @@ export default function WallGroups() {
               .map((group) => (
                 <Card key={group.id} className="p-4 hover:shadow-md transition-shadow">
                   <div className="flex items-start justify-between gap-3">
-                    <div 
-                      className="flex items-start gap-3 flex-1 cursor-pointer"
-                      onClick={() => navigate(`/wall/groups/${group.id}`)}
-                    >
+                    <div className="flex items-start gap-3 flex-1">
                       <Avatar className="h-12 w-12">
                         <AvatarImage src={group.cover_image || undefined} />
                         <AvatarFallback>{group.name[0]}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1">
-                        <h4 className="font-semibold">{group.name}</h4>
+                        <h4 
+                          className="font-semibold cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => navigate(`/wall/groups/${group.id}`)}
+                        >
+                          {group.name}
+                        </h4>
                         <p className="text-sm text-muted-foreground line-clamp-2">
                           {group.description}
                         </p>
