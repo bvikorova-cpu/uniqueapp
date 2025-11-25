@@ -135,6 +135,32 @@ export default function WallGroups() {
     refetchGroups();
   };
 
+  const leaveGroup = async (groupId: string) => {
+    if (!user) return;
+
+    const { error } = await supabase
+      .from("group_members")
+      .delete()
+      .eq("group_id", groupId)
+      .eq("user_id", user.id);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to leave group",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Success",
+      description: "Left group successfully",
+    });
+
+    refetchGroups();
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 pt-6 pb-8 space-y-4">
       <Card className="p-6 glass-card">
@@ -204,23 +230,34 @@ export default function WallGroups() {
               {myGroups.map((group) => (
                 <Card 
                   key={group.id} 
-                  className="p-4 hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => window.location.href = `/wall/groups/${group.id}`}
+                  className="p-4 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex items-start gap-3">
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={group.cover_image || undefined} />
-                      <AvatarFallback>{group.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <h4 className="font-semibold">{group.name}</h4>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {group.description}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {group.members_count} members
-                      </p>
+                  <div className="flex items-start justify-between gap-3">
+                    <div 
+                      className="flex items-start gap-3 flex-1 cursor-pointer"
+                      onClick={() => window.location.href = `/wall/groups/${group.id}`}
+                    >
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={group.cover_image || undefined} />
+                        <AvatarFallback>{group.name[0]}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <h4 className="font-semibold">{group.name}</h4>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {group.description}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {group.members_count} members
+                        </p>
+                      </div>
                     </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => leaveGroup(group.id)}
+                    >
+                      Leave
+                    </Button>
                   </div>
                 </Card>
               ))}
