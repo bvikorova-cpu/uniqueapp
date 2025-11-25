@@ -11,13 +11,19 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 
+interface NotificationMetadata {
+  tipster_id?: string;
+  tipster_name?: string;
+  [key: string]: unknown;
+}
+
 interface Notification {
   id: string;
   type: string;
   title: string;
   message: string;
   action_url: string | null;
-  metadata: any;
+  metadata: NotificationMetadata | null;
   is_read: boolean;
   created_at: string;
   user_id: string;
