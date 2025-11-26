@@ -608,12 +608,14 @@ const Feed = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative">
-      {/* Animated Background */}
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated Background - Full coverage */}
       <WallBackground />
       
-      {/* Fixed Top Navigation */}
-      <WallTopNav currentPath={currentPath} />
+      {/* Content overlay */}
+      <div className="relative z-10">
+        {/* Fixed Top Navigation */}
+        <WallTopNav currentPath={currentPath} />
       
       {/* Mobile Menu Button and Drawer */}
       <MobileWallMenu onPostCreated={fetchPosts} />
@@ -646,6 +648,7 @@ const Feed = () => {
           <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
       )}
+      </div>
     </div>
   );
 };

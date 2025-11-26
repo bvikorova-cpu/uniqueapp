@@ -1,0 +1,331 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  ArrowLeft, 
+  User, 
+  Bell, 
+  Lock, 
+  Globe, 
+  Palette,
+  Save
+} from "lucide-react";
+
+export default function Settings() {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [saving, setSaving] = useState(false);
+
+  const { data: user } = useQuery({
+    queryKey: ["current-user"],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user;
+    },
+  });
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const [notificationSettings, setNotificationSettings] = useState({
+    emailNotifications: true,
+    pushNotifications: true,
+    messageNotifications: true,
+    likeNotifications: true,
+  });
+
+  const [privacySettings, setPrivacySettings] = useState({
+    profileVisibility: true,
+    showEmail: false,
+    showPhone: false,
+  });
+
+  const handleSaveSettings = async () => {
+    setSaving(true);
+    try {
+      // Save settings to database or local storage
+      toast({
+        title: "Settings saved",
+        description: "Your settings have been updated successfully.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(-1)}
+            className="rounded-full"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold">Settings</h1>
+            <p className="text-muted-foreground">Manage your account preferences</p>
+          </div>
+        </div>
+
+        {/* Settings Tabs */}
+        <Tabs defaultValue="account" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:w-auto">
+            <TabsTrigger value="account" className="gap-2">
+              <User className="h-4 w-4" />
+              <span className="hidden sm:inline">Account</span>
+            </TabsTrigger>
+            <TabsTrigger value="notifications" className="gap-2">
+              <Bell className="h-4 w-4" />
+              <span className="hidden sm:inline">Notifications</span>
+            </TabsTrigger>
+            <TabsTrigger value="privacy" className="gap-2">
+              <Lock className="h-4 w-4" />
+              <span className="hidden sm:inline">Privacy</span>
+            </TabsTrigger>
+            <TabsTrigger value="appearance" className="gap-2">
+              <Palette className="h-4 w-4" />
+              <span className="hidden sm:inline">Appearance</span>
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Account Settings */}
+          <TabsContent value="account" className="space-y-4">
+            <Card className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Account Information</h3>
+                <div className="space-y-4">
+                  <div>
+                    <Label>Full Name</Label>
+                    <Input
+                      defaultValue={profile?.full_name || ""}
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                  <div>
+                    <Label>Email</Label>
+                    <Input
+                      type="email"
+                      defaultValue={user?.email || ""}
+                      disabled
+                      className="bg-muted"
+                    />
+                  </div>
+                  <div>
+                    <Label>Phone</Label>
+                    <Input
+                      type="tel"
+                      defaultValue={profile?.phone || ""}
+                      placeholder="Enter your phone number"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-4">Password</h3>
+                <Button variant="outline">Change Password</Button>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* Notifications Settings */}
+          <TabsContent value="notifications" className="space-y-4">
+            <Card className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Notification Preferences</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Email Notifications</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Receive notifications via email
+                      </p>
+                    </div>
+                    <Switch
+                      checked={notificationSettings.emailNotifications}
+                      onCheckedChange={(checked) =>
+                        setNotificationSettings({ ...notificationSettings, emailNotifications: checked })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Push Notifications</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Receive push notifications on your device
+                      </p>
+                    </div>
+                    <Switch
+                      checked={notificationSettings.pushNotifications}
+                      onCheckedChange={(checked) =>
+                        setNotificationSettings({ ...notificationSettings, pushNotifications: checked })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Message Notifications</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Get notified about new messages
+                      </p>
+                    </div>
+                    <Switch
+                      checked={notificationSettings.messageNotifications}
+                      onCheckedChange={(checked) =>
+                        setNotificationSettings({ ...notificationSettings, messageNotifications: checked })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Like & Comment Notifications</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Get notified when someone likes or comments
+                      </p>
+                    </div>
+                    <Switch
+                      checked={notificationSettings.likeNotifications}
+                      onCheckedChange={(checked) =>
+                        setNotificationSettings({ ...notificationSettings, likeNotifications: checked })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* Privacy Settings */}
+          <TabsContent value="privacy" className="space-y-4">
+            <Card className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Privacy Controls</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Public Profile</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Make your profile visible to everyone
+                      </p>
+                    </div>
+                    <Switch
+                      checked={privacySettings.profileVisibility}
+                      onCheckedChange={(checked) =>
+                        setPrivacySettings({ ...privacySettings, profileVisibility: checked })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Show Email</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Display your email on your profile
+                      </p>
+                    </div>
+                    <Switch
+                      checked={privacySettings.showEmail}
+                      onCheckedChange={(checked) =>
+                        setPrivacySettings({ ...privacySettings, showEmail: checked })
+                      }
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label>Show Phone</Label>
+                      <p className="text-sm text-muted-foreground">
+                        Display your phone number on your profile
+                      </p>
+                    </div>
+                    <Switch
+                      checked={privacySettings.showPhone}
+                      onCheckedChange={(checked) =>
+                        setPrivacySettings({ ...privacySettings, showPhone: checked })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-4">Data Management</h3>
+                <div className="space-y-2">
+                  <Button variant="outline" className="w-full justify-start">
+                    <Globe className="h-4 w-4 mr-2" />
+                    Download My Data
+                  </Button>
+                  <Button variant="destructive" className="w-full justify-start">
+                    Delete Account
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* Appearance Settings */}
+          <TabsContent value="appearance" className="space-y-4">
+            <Card className="p-6 space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Theme</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Choose your preferred theme
+                </p>
+                <div className="grid grid-cols-3 gap-4">
+                  <Button variant="outline" className="h-20 flex-col gap-2">
+                    <div className="w-8 h-8 rounded-full bg-background border-2" />
+                    <span className="text-xs">Light</span>
+                  </Button>
+                  <Button variant="outline" className="h-20 flex-col gap-2">
+                    <div className="w-8 h-8 rounded-full bg-foreground" />
+                    <span className="text-xs">Dark</span>
+                  </Button>
+                  <Button variant="outline" className="h-20 flex-col gap-2">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-background to-foreground" />
+                    <span className="text-xs">Auto</span>
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Save Button */}
+        <div className="flex justify-end mt-6">
+          <Button onClick={handleSaveSettings} disabled={saving} size="lg">
+            <Save className="h-4 w-4 mr-2" />
+            {saving ? "Saving..." : "Save Changes"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

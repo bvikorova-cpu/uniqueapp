@@ -14,6 +14,7 @@ import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import Settings from "./pages/Settings";
 import Wall from "./pages/Wall";
 import Groups from "./pages/Groups";
 import Pages from "./pages/Pages";
@@ -379,6 +380,7 @@ const App = () => {
               
               <Route path="/profile/:userId" element={<Profile />} />
               <Route path="/edit-profile" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
               <Route path="/subscription" element={<Subscription />} />
               <Route path="/ai-credits-store" element={<AICreditsStore />} />
               <Route path="/ai-credits" element={<AICreditsStore />} />

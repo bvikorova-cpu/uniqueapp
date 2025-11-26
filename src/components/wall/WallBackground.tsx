@@ -39,9 +39,14 @@ export const WallBackground = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {/* Animated gradient background with neon effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-accent/10 animate-gradient-shift" />
+      <div className="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-accent/10" 
+        style={{
+          backgroundSize: '400% 400%',
+          animation: 'gradient-shift 15s ease infinite'
+        }}
+      />
       
       {/* Neon glow layers */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-pulse-slow" />
