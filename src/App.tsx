@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { AnimationProvider } from "@/contexts/AnimationContext";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -313,12 +314,13 @@ const App = () => {
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <BrowserRouter>
           <AuthProvider>
-            <TooltipProvider delayDuration={0}>
-            <Toaster />
-            <Sonner />
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-1">
+            <AnimationProvider>
+              <TooltipProvider delayDuration={0}>
+              <Toaster />
+              <Sonner />
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-1">
                 <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/wall" element={<Wall />} />
@@ -660,6 +662,7 @@ const App = () => {
             <Footer />
           </div>
           </TooltipProvider>
+          </AnimationProvider>
         </AuthProvider>
       </BrowserRouter>
     </ThemeProvider>
