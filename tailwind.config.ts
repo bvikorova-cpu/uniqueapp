@@ -142,10 +142,58 @@ export default {
           "0%, 49%": { opacity: "1" },
           "50%, 100%": { opacity: "0" },
         },
+        "float-up": {
+          "0%": { 
+            transform: "translateY(100vh) rotate(0deg)",
+            opacity: "0"
+          },
+          "10%": {
+            opacity: "0.4"
+          },
+          "90%": {
+            opacity: "0.4"
+          },
+          "100%": { 
+            transform: "translateY(-100vh) rotate(360deg)",
+            opacity: "0"
+          },
+        },
+        "slide-right": {
+          "0%": {
+            transform: "translateX(-100%)"
+          },
+          "100%": {
+            transform: "translateX(100%)"
+          },
+        },
+        "slide-left": {
+          "0%": {
+            transform: "translateX(100%)"
+          },
+          "100%": {
+            transform: "translateX(-100%)"
+          },
+        },
+        "sparkle": {
+          "0%, 100%": {
+            opacity: "0",
+            transform: "scale(0)"
+          },
+          "50%": {
+            opacity: "1",
+            transform: "scale(1.5)"
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "float-up": "float-up 20s linear infinite",
+        "gradient-shift": "gradient-shift 15s ease infinite",
+        "pulse-slow": "pulse-slow 4s ease-in-out infinite",
+        "slide-right": "slide-right 8s linear infinite",
+        "slide-left": "slide-left 8s linear infinite",
+        "sparkle": "sparkle 2s ease-in-out infinite",
         "float": "float 3s ease-in-out infinite",
         "float-delayed": "float-delayed 4s ease-in-out infinite",
         "glow": "glow 2s ease-in-out infinite",

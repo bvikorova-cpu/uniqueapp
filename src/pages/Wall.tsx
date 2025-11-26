@@ -19,6 +19,7 @@ import { EnhancedCreatePost } from "@/components/wall/EnhancedCreatePost";
 import { AchievementsBadge } from "@/components/wall/AchievementsBadge";
 import { SearchBar } from "@/components/wall/SearchBar";
 import { WallTopNav } from "@/components/wall/WallTopNav";
+import { WallBackground } from "@/components/wall/WallBackground";
 import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import WallMessages from "./wall/WallMessages";
@@ -607,7 +608,10 @@ const Feed = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-accent/5">
+    <div className="min-h-screen bg-background relative">
+      {/* Animated Background */}
+      <WallBackground />
+      
       {/* Fixed Top Navigation */}
       <WallTopNav currentPath={currentPath} />
       
