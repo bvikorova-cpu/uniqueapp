@@ -634,8 +634,8 @@ const Feed = () => {
           </div>
         </div>
 
-        {/* Right Sidebar - Hidden on tablet and below, sticky within container */}
-        <div className="hidden xl:block">
+        {/* Right Sidebar - Show on mobile in collapsible card, always visible on XL */}
+        <div className="hidden md:block">
           <WallRightbar />
         </div>
       </div>
