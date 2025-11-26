@@ -87,10 +87,6 @@ export const WallBackground = () => {
         ))}
       </div>
 
-      {/* Pink neon streaks */}
-      <div className="absolute top-1/3 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-pink-400/40 to-transparent animate-slide-right shadow-[0_0_20px_rgba(236,72,153,0.5)]" />
-      <div className="absolute top-2/3 right-0 w-full h-[3px] bg-gradient-to-r from-transparent via-violet-400/40 to-transparent animate-slide-left shadow-[0_0_20px_rgba(167,139,250,0.5)]" />
-      
       {/* Enhanced sparkle effects with pink tones */}
       <div className="absolute top-[20%] left-[15%] w-3 h-3 bg-pink-400 rounded-full animate-sparkle shadow-[0_0_15px_rgba(236,72,153,0.8)]" />
       <div className="absolute top-[60%] right-[25%] w-3 h-3 bg-rose-400 rounded-full animate-sparkle animation-delay-1000 shadow-[0_0_15px_rgba(244,114,182,0.8)]" />
