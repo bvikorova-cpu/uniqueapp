@@ -260,11 +260,12 @@ export default function BrandBattle() {
           {/* Leaderboard Tab */}
           <TabsContent value="leaderboard" className="space-y-6">
             {/* Category Filter */}
-            <div className="flex flex-wrap gap-2 justify-center">
+            <div className="category-list flex overflow-x-auto gap-2 justify-center pb-2 scrollbar-hide">
               <Button
                 variant={selectedCategory === "All" ? "default" : "outline"}
                 onClick={() => setSelectedCategory("All")}
                 size="sm"
+                className="category-item flex-shrink-0"
               >
                 All Categories
               </Button>
@@ -274,6 +275,7 @@ export default function BrandBattle() {
                   variant={selectedCategory === cat ? "default" : "outline"}
                   onClick={() => setSelectedCategory(cat)}
                   size="sm"
+                  className="category-item flex-shrink-0"
                 >
                   {cat}
                 </Button>
@@ -281,7 +283,7 @@ export default function BrandBattle() {
             </div>
 
             {/* Top 3 - Featured */}
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {sortedSponsors.slice(0, 3).map((sponsor, index) => {
                 const tierInfo = SPONSOR_TIERS[sponsor.tier];
                 const medals = ["🥇", "🥈", "🥉"];
@@ -305,7 +307,7 @@ export default function BrandBattle() {
                       </div>
                       <Button 
                         onClick={() => handleVote(sponsor.id, sponsor.name)}
-                        className="w-full"
+                        className="w-full min-h-[44px]"
                         disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
                       >
                         {voteMutation.isPending ? (
@@ -350,6 +352,7 @@ export default function BrandBattle() {
                         <Button 
                           onClick={() => handleVote(sponsor.id, sponsor.name)}
                           disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
+                          className="min-h-[44px]"
                         >
                           {voteMutation.isPending ? (
                             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -375,7 +378,7 @@ export default function BrandBattle() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {Object.entries(SPONSOR_TIERS).map(([key, tier]) => {
                 const Icon = tier.icon;
                 return (
@@ -422,7 +425,7 @@ export default function BrandBattle() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
