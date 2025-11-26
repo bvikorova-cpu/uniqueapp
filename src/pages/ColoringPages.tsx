@@ -231,12 +231,12 @@ export default function ColoringPages() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex gap-2 mb-4">
+                <div className="button-group flex flex-col sm:flex-row gap-2 mb-4">
                   <Button
                     type="button"
                     variant={uploadMode === "file" ? "default" : "outline"}
                     onClick={() => setUploadMode("file")}
-                    className="flex-1"
+                    className="flex-1 w-full sm:w-auto"
                   >
                     <Upload className="mr-2 h-4 w-4" />
                     Upload Image
@@ -245,7 +245,7 @@ export default function ColoringPages() {
                     type="button"
                     variant={uploadMode === "url" ? "default" : "outline"}
                     onClick={() => setUploadMode("url")}
-                    className="flex-1"
+                    className="flex-1 w-full sm:w-auto"
                   >
                     <ImageIcon className="mr-2 h-4 w-4" />
                     Image URL
