@@ -12,6 +12,8 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, TrendingUp, Home, Users, ArrowUp, Search, X, Bookmark } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { WallSidebar } from "@/components/wall/WallSidebar";
 import { WallRightbar } from "@/components/wall/WallRightbar";
 import { MobileWallMenu } from "@/components/wall/MobileWallMenu";
@@ -82,6 +84,7 @@ const Feed = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [isRightbarOpen, setIsRightbarOpen] = useState(false);
   const [pullToRefresh, setPullToRefresh] = useState({
     pulling: false,
     pullDistance: 0,
@@ -634,11 +637,28 @@ const Feed = () => {
           </div>
         </div>
 
-        {/* Right Sidebar - Show on mobile in collapsible card, always visible on XL */}
+        {/* Right Sidebar - Hidden on mobile, visible on md+ */}
         <div className="hidden md:block">
           <WallRightbar />
         </div>
       </div>
+
+      {/* Mobile Rightbar Sheet */}
+      <Sheet open={isRightbarOpen} onOpenChange={setIsRightbarOpen}>
+        <SheetTrigger asChild>
+          <Button
+            size="icon"
+            className="md:hidden fixed bottom-20 right-4 z-50 h-12 w-12 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+          >
+            <TrendingUp className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="w-[85vw] sm:w-[400px] p-0 overflow-y-auto">
+          <div className="pt-6">
+            <WallRightbar />
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Back to top button - enhanced neon style */}
       {showBackToTop && (
