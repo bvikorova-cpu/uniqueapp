@@ -315,7 +315,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
 
           <TooltipProvider>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+            <div className="flex overflow-x-auto scrollbar-hide touch-scroll gap-2 pb-2">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -362,8 +362,8 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     </TooltipTrigger>
                   </PopoverTrigger>
                   <TooltipContent>Feeling</TooltipContent>
-                  <PopoverContent className="w-80 max-h-96 overflow-y-auto">
-                    <div className="grid grid-cols-4 gap-2 p-2">
+                  <PopoverContent className="w-full max-w-[90vw] sm:w-80 max-h-96 overflow-y-auto">
+                    <div className="grid grid-cols-6 sm:grid-cols-5 gap-1.5 sm:gap-2 p-2">
                       {feelings.map((f) => (
                         <Button
                           key={f.label}
