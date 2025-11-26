@@ -194,7 +194,7 @@ const Home = () => {
             </CardHeader>
             
             <CardContent className="relative space-y-6 text-center md:text-left px-6 md:px-8 pb-8">
-              <p className="text-lg text-foreground/90 leading-relaxed">
+              <p className="text-lg text-foreground/90 leading-relaxed text-justify">
                 {t('home.welcome_intro')}
               </p>
               
@@ -207,12 +207,12 @@ const Home = () => {
                 </div>
               </div>
               
-              <p className="text-lg text-foreground/90 leading-relaxed">
+              <p className="text-lg text-foreground/90 leading-relaxed text-justify">
                 {t('home.welcome_feedback')} <Link to="/contact" className="text-primary hover:text-primary-glow font-semibold underline decoration-primary/30 hover:decoration-primary transition-colors">{t('home.welcome_contact_link')}</Link>. {t('home.welcome_feedback_value')}
               </p>
               
               <div className="bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl p-6 mt-8 border border-primary/20">
-                <p className="text-lg font-semibold text-center text-foreground">
+                <p className="text-lg font-semibold text-center text-foreground text-justify">
                   {t('home.welcome_promise')}
                 </p>
               </div>
