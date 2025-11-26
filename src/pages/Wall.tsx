@@ -422,10 +422,6 @@ const Feed = () => {
     const handleTouchEnd = async () => {
       if (pullToRefresh.canRefresh && !loading) {
         await fetchPosts();
-        toast({
-          title: "Feed refreshed",
-          description: "Your feed has been updated",
-        });
       }
       
       setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
