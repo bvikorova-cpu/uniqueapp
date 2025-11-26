@@ -34,7 +34,11 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     <div className="fixed top-16 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b shadow-sm">
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between gap-2 py-2">
-          <div className="flex items-center justify-start sm:justify-center gap-1 overflow-x-auto -webkit-overflow-scrolling-touch flex-1 pl-16 lg:pl-0" style={{ scrollSnapType: 'x mandatory' }}>
+          <div className="flex items-center justify-start sm:justify-center gap-1 overflow-x-auto scrollbar-hide touch-scroll flex-1 lg:pl-0" 
+               style={{ 
+                 WebkitOverflowScrolling: 'touch',
+                 scrollSnapType: 'x mandatory'
+               }}>
             {navItems.map((item) => (
               <Button
                 key={item.path}

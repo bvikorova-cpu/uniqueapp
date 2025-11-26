@@ -421,10 +421,13 @@ const Feed = () => {
 
     const handleTouchEnd = async () => {
       if (pullToRefresh.canRefresh && !loading) {
+        setLoading(true);
+        setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
         await fetchPosts();
+        setLoading(false);
+      } else {
+        setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
       }
-      
-      setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
     };
 
     document.addEventListener('touchstart', handleTouchStart, { passive: true });
