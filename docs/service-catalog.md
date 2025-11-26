@@ -317,16 +317,38 @@
   * **Kreditná Cena:** Zadarmo (Basic), 30 kreditov/mesiac za Premium profil
   * **Typ Predplatného:** Premium - neobmedzené ukážky, prioritné zobrazenie
 
-#### Prémiové Predplatné
-* **Popis a Účel:** Prístup k exkluzívnym umelcom a službám.
+#### Prémiové Predplatné - Premium
+* **Popis a Účel:** Prístup k exkluzívnym funkciám a umelcom.
 * **Detailné Použitie:**
   1. Prihláste sa na Megatalent Premium
-  2. Získajte prístup k top umelcom
-  3. Exkluzívne zľavy a prioritná podpora
+  2. Získajte dodatočné hlasy pre podporu umelcov
+  3. Prístup k premium profilom a službám
 * **Monetizácia / Kredity:**
   * **Pre Free/Basic Používateľa:** N/A
   * **Kreditná Cena:** N/A
-  * **Typ Predplatného:** Premium - €19.99/mesiac
+  * **Typ Predplatného:** Premium - 10 €/mesiac
+  * **Výhody:**
+    * +50 bonus hlasov na hlasovanie
+    * Prístup k premium profilom
+    * Exkluzívne zľavy
+
+#### Prémiové Predplatné - Top Premium
+* **Popis a Účel:** Najvyššia úroveň prístupu s maximálnymi výhodami.
+* **Detailné Použitie:**
+  1. Prihláste sa na Megatalent Top Premium
+  2. Získajte maximálny počet bonus hlasov
+  3. 50% vyššia šanca na výhru v súťažiach
+  4. Prioritná podpora a exkluzívny prístup
+* **Monetizácia / Kredity:**
+  * **Pre Free/Basic Používateľa:** N/A
+  * **Kreditná Cena:** N/A
+  * **Typ Predplatného:** Top Premium - 15 €/mesiac
+  * **Výhody:**
+    * +100 bonus hlasov na hlasovanie
+    * 50% vyššia šanca na výhru v súťažiach
+    * Všetky výhody Premium
+    * Exkluzívne turnaje a súťaže
+    * Prioritná zákaznícka podpora
 
 ---
 
