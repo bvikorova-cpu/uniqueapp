@@ -53,7 +53,7 @@ export function MobileWallMenu({ onPostCreated }: MobileWallMenuProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="lg:hidden fixed top-20 left-4 z-50 bg-card/95 backdrop-blur-sm shadow-md"
+          className="lg:hidden fixed top-[4.5rem] left-2 z-50 bg-card/95 backdrop-blur-sm shadow-md hover:bg-card"
         >
           <Menu className="h-5 w-5" />
         </Button>
