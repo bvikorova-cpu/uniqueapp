@@ -40,29 +40,29 @@ export const WallBackground = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {/* Dark base with subtle gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900" />
+      {/* Lighter base gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-indigo-50 to-purple-50" />
       
-      {/* Animated neon gradient overlay */}
-      <div className="absolute inset-0 opacity-40" 
+      {/* Animated subtle gradient overlay */}
+      <div className="absolute inset-0 opacity-30" 
         style={{
-          background: 'radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.2) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(236, 72, 153, 0.2) 0%, transparent 50%)',
+          background: 'radial-gradient(ellipse at top left, rgba(167, 139, 250, 0.15) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(244, 114, 182, 0.15) 0%, transparent 50%)',
           backgroundSize: '200% 200%',
           animation: 'gradient-shift 15s ease infinite'
         }}
       />
       
-      {/* Enhanced neon glow layers */}
-      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-violet-500/30 rounded-full blur-[150px] animate-pulse-slow" />
-      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] bg-pink-500/25 rounded-full blur-[130px] animate-pulse-slow animation-delay-2000" />
-      <div className="absolute bottom-0 left-1/4 w-[700px] h-[700px] bg-cyan-500/20 rounded-full blur-[160px] animate-pulse-slow animation-delay-4000" />
-      <div className="absolute top-1/2 right-1/3 w-[450px] h-[450px] bg-fuchsia-500/25 rounded-full blur-[120px] animate-pulse-slow animation-delay-3000" />
+      {/* Softer neon glow layers */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-violet-400/15 rounded-full blur-[120px] animate-pulse-slow" />
+      <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-pink-400/12 rounded-full blur-[100px] animate-pulse-slow animation-delay-2000" />
+      <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-cyan-300/10 rounded-full blur-[140px] animate-pulse-slow animation-delay-4000" />
+      <div className="absolute top-1/2 right-1/3 w-[350px] h-[350px] bg-fuchsia-300/12 rounded-full blur-[100px] animate-pulse-slow animation-delay-3000" />
       
-      {/* Neon grid overlay */}
-      <div className="absolute inset-0 opacity-[0.08]" 
+      {/* Subtle grid overlay */}
+      <div className="absolute inset-0 opacity-[0.04]" 
         style={{
-          backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.3) 1px, transparent 1px),
-                           linear-gradient(90deg, rgba(139, 92, 246, 0.3) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(rgba(139, 92, 246, 0.2) 1px, transparent 1px),
+                           linear-gradient(90deg, rgba(139, 92, 246, 0.2) 1px, transparent 1px)`,
           backgroundSize: '60px 60px'
         }} 
       />
