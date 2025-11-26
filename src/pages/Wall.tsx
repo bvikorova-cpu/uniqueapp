@@ -612,7 +612,7 @@ const Feed = () => {
       {/* Animated Background - Full coverage */}
       <WallBackground />
       
-      {/* Content overlay */}
+      {/* Content overlay with stronger contrast */}
       <div className="relative z-10">
         {/* Fixed Top Navigation */}
         <WallTopNav currentPath={currentPath} />
@@ -627,9 +627,11 @@ const Feed = () => {
           <WallSidebar onPostCreated={fetchPosts} />
         </div>
 
-        {/* Main Content Area - scrollable */}
+        {/* Main Content Area - scrollable with enhanced contrast */}
         <div className="flex-1 min-w-0 px-2 sm:px-4 py-4">
-          {renderContent()}
+          <div className="[&_.card]:bg-white/95 [&_.card]:backdrop-blur-md [&_.card]:shadow-[0_0_30px_rgba(167,139,250,0.3)] [&_.card]:border-violet-300/30">
+            {renderContent()}
+          </div>
         </div>
 
         {/* Right Sidebar - Hidden on tablet and below, sticky within container */}
@@ -638,11 +640,11 @@ const Feed = () => {
         </div>
       </div>
 
-      {/* Back to top button - responsive positioning */}
+      {/* Back to top button - enhanced neon style */}
       {showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 xl:right-96 z-50 p-2.5 sm:p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 animate-fade-in"
+          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 xl:right-96 z-50 p-2.5 sm:p-3 rounded-full bg-violet-500 text-white shadow-[0_0_30px_rgba(167,139,250,0.8)] hover:shadow-[0_0_40px_rgba(167,139,250,1)] transition-all duration-300 hover:scale-110 animate-fade-in border-2 border-violet-300"
           aria-label="Back to top"
         >
           <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
