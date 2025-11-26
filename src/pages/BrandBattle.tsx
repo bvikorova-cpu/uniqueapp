@@ -292,7 +292,17 @@ export default function BrandBattle() {
                   <Card key={sponsor.id} className={`relative overflow-hidden ${index === 0 ? "md:scale-105 shadow-xl" : ""}`}>
                     <div className={`absolute top-0 left-0 right-0 h-2 bg-gradient-to-r ${tierInfo.color}`}></div>
                     <CardHeader className="text-center pb-3">
-                      <div className="text-6xl mb-2">{sponsor.logo}</div>
+                      <div className="flex justify-center mb-2">
+                        {sponsor.logo.startsWith('http') ? (
+                          <img 
+                            src={sponsor.logo} 
+                            alt={sponsor.name}
+                            className="w-24 h-24 object-cover rounded-lg"
+                          />
+                        ) : (
+                          <div className="text-6xl">{sponsor.logo}</div>
+                        )}
+                      </div>
                       <div className="text-4xl mb-2">{medals[index]}</div>
                       <CardTitle className="text-xl">{sponsor.name}</CardTitle>
                       <CardDescription>{sponsor.description}</CardDescription>
@@ -337,7 +347,17 @@ export default function BrandBattle() {
                         <div className="text-2xl font-bold text-muted-foreground w-12 text-center">
                           #{position}
                         </div>
-                        <div className="text-4xl">{sponsor.logo}</div>
+                        <div className="flex-shrink-0">
+                          {sponsor.logo.startsWith('http') ? (
+                            <img 
+                              src={sponsor.logo} 
+                              alt={sponsor.name}
+                              className="w-16 h-16 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="text-4xl">{sponsor.logo}</div>
+                          )}
+                        </div>
                         <div className="flex-1">
                           <div className="font-semibold">{sponsor.name}</div>
                           <div className="text-sm text-muted-foreground">{sponsor.description}</div>
