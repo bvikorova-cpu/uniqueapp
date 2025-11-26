@@ -227,7 +227,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
               placeholder={`What's on your mind, ${userProfile?.full_name?.split(" ")[0] || ""}?`}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="min-h-[100px] resize-none border-none bg-accent/20 focus-visible:ring-2 focus-visible:ring-primary/30 rounded-xl"
+              className="min-h-[100px] resize-none border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:border-violet-600 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:border-violet-600"
             />
             <HashtagInput text={content} />
           </div>
@@ -293,9 +293,10 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
         )}
 
-        <div className="border border-border/30 rounded-xl p-4 bg-accent/10">
+        <div className="border-2 border-violet-600/50 rounded-xl p-4 bg-violet-50 dark:bg-violet-950/30 transition-all hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] hover:border-violet-600 animate-in slide-in-from-bottom-2">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-semibold text-muted-foreground">
+            <span className="text-sm font-semibold text-violet-700 dark:text-violet-300 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 animate-pulse" />
               Add to post
             </span>
             <Select value={privacy} onValueChange={(v: any) => setPrivacy(v)}>

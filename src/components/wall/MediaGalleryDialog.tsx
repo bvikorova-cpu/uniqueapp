@@ -21,8 +21,12 @@ export const MediaGalleryDialog = ({ userId }: MediaGalleryDialogProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <ImageIcon className="w-4 h-4" />
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="gap-2 border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 hover:bg-violet-100 dark:hover:bg-violet-900/40 text-violet-700 dark:text-violet-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:border-violet-600 transition-all duration-300 hover:scale-105"
+        >
+          <ImageIcon className="w-4 h-4 animate-pulse" />
           Media Gallery
         </Button>
       </DialogTrigger>

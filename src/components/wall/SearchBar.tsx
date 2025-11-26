@@ -31,8 +31,11 @@ export const SearchBar = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-full md:w-96 justify-start text-muted-foreground">
-          <Search className="h-4 w-4 mr-2" />
+        <Button 
+          variant="outline" 
+          className="w-full md:w-96 justify-start border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 hover:bg-violet-100 dark:hover:bg-violet-900/40 text-violet-700 dark:text-violet-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:border-violet-600 transition-all duration-300 hover:scale-[1.02]"
+        >
+          <Search className="h-4 w-4 mr-2 animate-pulse" />
           Search posts, people, hashtags...
         </Button>
       </DialogTrigger>
