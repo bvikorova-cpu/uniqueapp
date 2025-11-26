@@ -32,7 +32,7 @@ export const ActivityFeedCard = ({ userId }: ActivityFeedCardProps) => {
         </div>
         <h3 className="font-bold text-lg">Recent Activity</h3>
       </div>
-      <ScrollArea className="h-64">
+      <ScrollArea className="h-64 touch-auto">
         <div className="space-y-2">
           {activities.slice(0, 10).map((activity) => (
             <div

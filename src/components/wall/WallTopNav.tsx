@@ -34,14 +34,14 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
     <div className="fixed top-16 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b shadow-sm">
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between gap-2 py-2">
-          <div className="flex items-center justify-start sm:justify-center gap-1 overflow-x-auto scrollbar-hide flex-1">
+          <div className="flex items-center justify-start sm:justify-center gap-1 overflow-x-auto overflow-y-hidden flex-1 -webkit-overflow-scrolling-touch snap-x snap-mandatory pl-12 lg:pl-0">
             {navItems.map((item) => (
               <Button
                 key={item.path}
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0",
+                  "flex items-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0 snap-start",
                   currentPath === item.path && "bg-primary/10 text-primary font-semibold"
                 )}
                 onClick={() => navigate(item.path)}
@@ -51,7 +51,7 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
               </Button>
             ))}
           </div>
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 ml-2">
             <AnimationToggle />
           </div>
         </div>
