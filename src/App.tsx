@@ -239,6 +239,7 @@ import CertificateGallery from "./pages/CertificateGallery";
 import F1Racing from "./pages/F1Racing";
 import F1Subscription from "./pages/F1Subscription";
 import F1FantasyTeam from "./pages/F1FantasyTeam";
+import F1RacingArena from "./pages/F1RacingArena";
 import F1Leaderboard from "./pages/F1Leaderboard";
 import MasterChefSubscription from "./pages/MasterChefSubscription";
 import MasterChefDashboard from "./pages/MasterChefDashboard";
@@ -553,7 +554,8 @@ const App = () => {
               <Route path="/kids-channel/disney-castles/:castleId" element={<DisneyCastleTour />} />
               <Route path="/kids-channel/disney-admin" element={<ProtectedRoute requireAdmin={true}><DisneyAdmin /></ProtectedRoute>} />
               <Route path="/kids-channel/certificate-gallery" element={<CertificateGallery />} />
-              <Route path="/f1-racing" element={
+              <Route path="/f1-racing" element={<F1RacingArena />} />
+              <Route path="/f1-racing-old" element={
                 <SubscriptionGuard 
                   checkFunction="check-f1-subscription" 
                   redirectTo="/f1-subscription"
