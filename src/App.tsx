@@ -17,6 +17,7 @@ import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import Settings from "./pages/Settings";
 import Wall from "./pages/Wall";
+import SearchResults from "./pages/SearchResults";
 import Groups from "./pages/Groups";
 import Pages from "./pages/Pages";
 import WallFeed from "./pages/wall/WallFeed";
@@ -325,6 +326,7 @@ const App = () => {
                 <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/wall" element={<Wall />} />
+              <Route path="/search" element={<SearchResults />} />
               <Route path="/wall/messages" element={<Wall />} />
               <Route path="/wall/friends" element={<Wall />} />
               <Route path="/wall/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />

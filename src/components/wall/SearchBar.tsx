@@ -100,8 +100,21 @@ export const SearchBar = () => {
   const handleHashtagClick = (tag: string) => {
     setOpen(false);
     setQuery("");
-    // Could navigate to hashtag page or filter posts
     navigate(`/wall?hashtag=${tag}`);
+  };
+
+  const handleSeeAllResults = () => {
+    if (query.trim()) {
+      setOpen(false);
+      navigate(`/search?q=${encodeURIComponent(query)}`);
+      setQuery("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && query.trim()) {
+      handleSeeAllResults();
+    }
   };
 
   const totalResults = results.posts.length + results.users.length + results.hashtags.length;
@@ -118,6 +131,7 @@ export const SearchBar = () => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setOpen(true)}
+            onKeyDown={handleKeyDown}
             className="pl-10 pr-10 border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 hover:bg-violet-100 dark:hover:bg-violet-900/40 focus:border-violet-600 transition-all"
           />
           {query && (
@@ -237,6 +251,17 @@ export const SearchBar = () => {
                   ))}
                 </div>
               )}
+
+              {/* See all results button */}
+              <div className="border-t p-2">
+                <button
+                  onClick={handleSeeAllResults}
+                  className="w-full px-3 py-2 text-sm font-medium text-primary hover:bg-accent rounded-md transition-colors flex items-center justify-center gap-2"
+                >
+                  <Search className="h-4 w-4" />
+                  Zobraziť všetky výsledky pre "{query}"
+                </button>
+              </div>
             </div>
           )}
         </ScrollArea>
