@@ -27,6 +27,7 @@ import { ReportDialog } from "@/components/wall/ReportDialog";
 import { PinButton } from "@/components/wall/PinButton";
 import { FollowButton } from "@/components/wall/FollowButton";
 import { EnhancedCommentInput } from "./EnhancedCommentInput";
+import { CommentItem } from "./CommentItem";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Popover,
@@ -796,68 +797,30 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
             }} 
           />
 
-          <div className="space-y-2 max-h-[300px] overflow-y-auto">
+          <div className="space-y-2 max-h-[400px] overflow-y-auto">
             {loadingComments ? (
               <p className="text-xs text-muted-foreground text-center py-2">Loading...</p>
             ) : comments.length === 0 ? (
               <p className="text-xs text-muted-foreground text-center py-2">No comments yet</p>
             ) : (
-              comments.map((comment) => (
-                <div key={comment.id} className="flex gap-2 p-2 rounded-lg hover:bg-accent/5 transition-colors">
-                  <Avatar className="h-7 w-7">
-                    <AvatarImage src={comment.profiles?.avatar_url || undefined} />
-                    <AvatarFallback className="text-xs">
-                      {comment.profiles?.full_name?.charAt(0) || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold">
-                      {comment.profiles?.full_name || "User"}
-                    </p>
-                    
-                    {/* Feeling & Location */}
-                    {(comment.feeling || comment.location) && (
-                      <div className="flex flex-wrap gap-1 text-[10px] text-muted-foreground my-0.5">
-                        {comment.feeling && <span>{comment.feeling}</span>}
-                        {comment.location && (
-                          <span className="flex items-center gap-0.5">
-                            <MapPin className="h-2.5 w-2.5" /> {comment.location}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    
-                    <p className="text-xs text-foreground/90 mt-0.5">{comment.content}</p>
-                    
-                    {/* Comment Media */}
-                    {comment.image_url && (
-                      <img 
-                        src={comment.image_url} 
-                        alt="Comment image" 
-                        className="mt-1 max-w-[200px] rounded-lg cursor-pointer hover:opacity-90"
-                        onClick={() => {
-                          setSelectedImage(comment.image_url);
-                          setShowImageModal(true);
-                        }}
-                      />
-                    )}
-                    {comment.video_url && (
-                      <video 
-                        src={comment.video_url} 
-                        controls 
-                        className="mt-1 max-w-[200px] rounded-lg"
-                      />
-                    )}
-                    
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      {formatDistanceToNow(new Date(comment.created_at), {
-                        addSuffix: true,
-                        locale: enUS,
-                      })}
-                    </p>
-                  </div>
-                </div>
-              ))
+              comments
+                .filter((comment) => !comment.parent_comment_id)
+                .map((comment) => (
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    postId={post.id}
+                    onImageClick={(url) => {
+                      setSelectedImage(url);
+                      setShowImageModal(true);
+                    }}
+                    onReplyAdded={() => {
+                      setCommentsCount((prev) => prev + 1);
+                      fetchComments();
+                    }}
+                    replies={comments}
+                  />
+                ))
             )}
           </div>
         </div>
