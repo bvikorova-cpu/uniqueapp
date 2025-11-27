@@ -100,7 +100,8 @@ export const useFriendChallengeAchievements = (userId?: string) => {
       const totalCreditsWon = matches
         .filter((m) => m.winner_id === userId)
         .reduce((sum, m) => {
-          const stake = (m.brain_duel_friend_challenges as any)?.stake_credits || 0;
+          const challenge = m.brain_duel_friend_challenges as { stake_credits?: number } | null;
+          const stake = challenge?.stake_credits || 0;
           return sum + stake;
         }, 0);
 

@@ -47,7 +47,8 @@ export const useFriendChallengeStats = (userId?: string) => {
         const isPlayer1 = match.player1_id === userId;
         const opponentId = isPlayer1 ? match.player2_id : match.player1_id;
         const won = match.winner_id === userId;
-        const stake = (match.brain_duel_friend_challenges as any)?.stake_credits || 0;
+        const challenge = match.brain_duel_friend_challenges as { stake_credits?: number } | null;
+        const stake = challenge?.stake_credits || 0;
 
         if (!statsMap.has(opponentId)) {
           statsMap.set(opponentId, {

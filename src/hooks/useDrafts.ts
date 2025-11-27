@@ -1,13 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import type { Json } from "@/integrations/supabase/types";
 
 export interface PostDraft {
   id: string;
   user_id: string;
   content: string | null;
   media_urls: string[] | null;
-  draft_data: any;
+  draft_data: Json | null;
   created_at: string;
   updated_at: string;
 }
@@ -37,7 +38,7 @@ export const useDrafts = () => {
     mutationFn: async ({ content, mediaUrls, draftData }: {
       content?: string;
       mediaUrls?: string[];
-      draftData?: any;
+      draftData?: Json;
     }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
@@ -67,7 +68,7 @@ export const useDrafts = () => {
       id: string;
       content?: string;
       mediaUrls?: string[];
-      draftData?: any;
+      draftData?: Json;
     }) => {
       const { error } = await supabase
         .from("post_drafts")

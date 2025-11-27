@@ -57,12 +57,12 @@ export const useCollectibles = (userId?: string) => {
     queryKey: ['mystery-boxes'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('mystery_boxes' as any)
+        .from('mystery_boxes')
         .select('*')
         .order('price');
 
       if (error) throw error;
-      return data as any[];
+      return data;
     }
   });
 
@@ -88,7 +88,7 @@ export const useCollectibles = (userId?: string) => {
         description: "New item has been added to your collection"
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to generate collectible",
@@ -111,7 +111,7 @@ export const useCollectibles = (userId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['my-collectibles'] });
       queryClient.invalidateQueries({ queryKey: ['ai-credits'] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to open mystery box",
@@ -213,12 +213,13 @@ export const useCollectDisneyItem = () => {
 
       const { data, error } = await supabase
         .from("user_collectibles")
-        .insert([{
+        .insert({
           user_id: user.id,
           collectible_id: collectibleId,
           castle_id: castleId,
           room_id: roomId,
-        } as any])
+          acquired_method: 'found',
+        })
         .select()
         .single();
 
@@ -277,7 +278,7 @@ export const useDisneyCollectionStats = () => {
       if (error) throw error;
 
       const points = collected?.reduce(
-        (sum, item: any) => sum + (item.collectible?.points || 0),
+        (sum, item) => sum + ((item.collectible as { points?: number })?.points || 0),
         0
       ) || 0;
 
