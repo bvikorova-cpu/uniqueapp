@@ -70,7 +70,7 @@ export default function LiveStreamList() {
       setStreams(data || []);
     } catch (error: any) {
       console.error("Error loading streams:", error);
-      toast.error("Nepodarilo sa načítať streamy");
+      toast.error("Failed to load streams");
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ export default function LiveStreamList() {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">Načítavam streamy...</p>
+          <p className="text-muted-foreground">Loading streams...</p>
         </div>
       </div>
     );
@@ -107,7 +107,7 @@ export default function LiveStreamList() {
             </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Sleduj živé vysielania od tvojich obľúbených tvorcov alebo začni vlastný stream
+            Watch live broadcasts from your favorite creators or start your own stream
           </p>
 
           {user && (
@@ -122,9 +122,9 @@ export default function LiveStreamList() {
           <Card className="text-center py-16 border-2 border-dashed">
             <CardContent className="space-y-4">
               <Radio className="w-16 h-16 text-muted-foreground mx-auto opacity-50" />
-              <h3 className="text-2xl font-semibold">Momentálne žiadne živé vysielania</h3>
+              <h3 className="text-2xl font-semibold">No live broadcasts at the moment</h3>
               <p className="text-muted-foreground max-w-md mx-auto">
-                Práve teraz nie sú žiadne aktívne streamy. Buď prvý, kto začne vysielať!
+                There are no active streams right now. Be the first to start broadcasting!
               </p>
               {user && (
                 <div className="mt-6">
@@ -190,7 +190,7 @@ export default function LiveStreamList() {
                     }}
                   >
                     <Play className="w-4 h-4 mr-2" />
-                    Sledovať stream
+                    Watch stream
                   </Button>
                 </CardContent>
               </Card>
@@ -205,11 +205,11 @@ export default function LiveStreamList() {
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center mx-auto mb-3">
                 <Video className="w-6 h-6 text-white" />
               </div>
-              <CardTitle className="text-lg">Živé vysielanie</CardTitle>
+              <CardTitle className="text-lg">Live Broadcasting</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Streamuj v reálnom čase a komunikuj so svojím publikom cez live chat
+                Stream in real time and interact with your audience via live chat
               </p>
             </CardContent>
           </Card>
@@ -219,11 +219,11 @@ export default function LiveStreamList() {
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-3">
                 <Users className="w-6 h-6 text-white" />
               </div>
-              <CardTitle className="text-lg">Interakcia s fanúšikmi</CardTitle>
+              <CardTitle className="text-lg">Fan Interaction</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Odpovedaj na správy, prijímaj dary a buduj si komunitu v reálnom čase
+                Reply to messages, receive gifts, and build your community in real time
               </p>
             </CardContent>
           </Card>

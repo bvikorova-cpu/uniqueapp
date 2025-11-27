@@ -30,12 +30,12 @@ export const CourseTest = ({ courseName, topics, onTestPass }: CourseTestProps) 
 
   const handleSubmit = () => {
     if (!userName.trim()) {
-      toast.error("Prosím, vyplňte svoje meno");
+      toast.error("Please enter your name");
       return;
     }
 
     if (Object.keys(answers).length < questions.length) {
-      toast.error("Prosím, odpovedzte na všetky otázky");
+      toast.error("Please answer all questions");
       return;
     }
 
@@ -50,12 +50,12 @@ export const CourseTest = ({ courseName, topics, onTestPass }: CourseTestProps) 
     setShowResults(true);
 
     if (correctCount >= 7) {
-      toast.success("Gratulujeme! Test ste úspešne zvládli!");
+      toast.success("Congratulations! You passed the test!");
       setTimeout(() => {
         onTestPass(userName);
       }, 2000);
     } else {
-      toast.error("Bohužiaľ, test ste nezvládli. Skúste to znova!");
+      toast.error("Unfortunately, you did not pass. Try again!");
     }
   };
 
@@ -68,21 +68,21 @@ export const CourseTest = ({ courseName, topics, onTestPass }: CourseTestProps) 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl">Záverečný test - {courseName}</CardTitle>
+        <CardTitle className="text-2xl">Final Test - {courseName}</CardTitle>
         <CardDescription>
-          Na úspešné absolvovanie potrebujete minimálne 7 správnych odpovedí z 10
+          You need at least 7 correct answers out of 10 to pass
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {questions.length === 0 ? (
-          <div className="text-center text-muted-foreground">Generujem test...</div>
+          <div className="text-center text-muted-foreground">Generating test...</div>
         ) : !showResults ? (
           <>
             <div className="space-y-2">
-              <Label htmlFor="userName">Vaše meno a priezvisko</Label>
+              <Label htmlFor="userName">Your full name</Label>
               <Input
                 id="userName"
-                placeholder="Napr. Ján Novák"
+                placeholder="e.g. John Smith"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
               />
@@ -118,7 +118,7 @@ export const CourseTest = ({ courseName, topics, onTestPass }: CourseTestProps) 
             ))}
 
             <Button onClick={handleSubmit} className="w-full" size="lg">
-              Odoslať test
+              Submit test
             </Button>
           </>
         ) : (
@@ -131,19 +131,19 @@ export const CourseTest = ({ courseName, topics, onTestPass }: CourseTestProps) 
               )}
               <div>
                 <h3 className="text-2xl font-bold">
-                  Vaše skóre: {score}/10
+                  Your score: {score}/10
                 </h3>
                 <p className="text-muted-foreground mt-2">
                   {score >= 7
-                    ? "Úspešne ste zvládli test! Certifikát sa generuje..."
-                    : "Bohužiaľ, test ste nezvládli. Skúste to prosím znova."}
+                    ? "You passed the test! Certificate is being generated..."
+                    : "Unfortunately, you did not pass. Please try again."}
                 </p>
               </div>
             </div>
 
             {score < 7 && (
               <Button onClick={handleRetry} className="w-full" size="lg">
-                Skúsiť znova
+                Try again
               </Button>
             )}
           </div>

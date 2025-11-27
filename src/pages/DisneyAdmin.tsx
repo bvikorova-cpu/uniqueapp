@@ -58,7 +58,7 @@ const DisneyAdmin = () => {
       setAllRooms(data || []);
     } catch (error) {
       console.error('Error loading rooms:', error);
-      toast.error('Nepodarilo sa načítať miestnosti');
+      toast.error('Failed to load rooms');
     } finally {
       setRoomsLoading(false);
     }
@@ -68,8 +68,8 @@ const DisneyAdmin = () => {
     setIsBulkGenerating(true);
     
     try {
-      toast.info('Spúšťam bulk generáciu panorám...', {
-        description: 'Vygenerujem všetky chýbajúce panorámy pre všetky zámky'
+      toast.info('Starting bulk panorama generation...', {
+        description: 'Generating all missing panoramas for all castles'
       });
 
       const { data, error } = await supabase.functions.invoke('bulk-generate-panoramas');
@@ -78,13 +78,13 @@ const DisneyAdmin = () => {
         throw error;
       }
 
-      toast.success('Bulk generácia spustená!', {
-        description: `Spracúvam ${data.total_rooms} miestností. Odhadovaný čas: ${data.estimated_time_minutes} minút. Skontroluj edge function logs pre progress.`
+      toast.success('Bulk generation started!', {
+        description: `Processing ${data.total_rooms} rooms. Estimated time: ${data.estimated_time_minutes} minutes. Check edge function logs for progress.`
       });
     } catch (error) {
       console.error('Bulk generation error:', error);
-      toast.error('Nepodarilo sa spustiť bulk generáciu', {
-        description: error instanceof Error ? error.message : 'Neznáma chyba'
+      toast.error('Failed to start bulk generation', {
+        description: error instanceof Error ? error.message : 'Unknown error'
       });
     } finally {
       setIsBulkGenerating(false);
@@ -94,7 +94,7 @@ const DisneyAdmin = () => {
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Kontrolujem prístup...</p>
+        <p>Checking access...</p>
       </div>
     );
   }
@@ -111,9 +111,9 @@ const DisneyAdmin = () => {
             className="gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Späť na zámky
+            Back to castles
           </Button>
-          <h1 className="text-3xl font-bold">Disney Zámky - Admin</h1>
+          <h1 className="text-3xl font-bold">Disney Castles - Admin</h1>
         </div>
 
         {!selectedCastleId ? (
@@ -121,10 +121,10 @@ const DisneyAdmin = () => {
             <Card className="p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 border-2">
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
                 <Sparkles className="w-6 h-6" />
-                Bulk Generácia Panorám
+                Bulk Panorama Generation
               </h2>
               <p className="text-muted-foreground mb-4">
-                Vygeneruj všetky chýbajúce panorámy pre všetky zámky naraz. Tento proces beží na pozadí a môže trvať 30+ minút v závislosti od počtu miestností.
+                Generate all missing panoramas for all castles at once. This process runs in the background and may take 30+ minutes depending on the number of rooms.
               </p>
               <Button
                 onClick={handleBulkGenerate}
@@ -133,13 +133,13 @@ const DisneyAdmin = () => {
                 className="w-full sm:w-auto"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
-                {isBulkGenerating ? 'Spúšťam...' : 'Generovať všetky panorámy'}
+                {isBulkGenerating ? 'Starting...' : 'Generate all panoramas'}
               </Button>
             </Card>
 
-            <h2 className="text-xl font-semibold mb-4">Prehľad zámkov a miestností</h2>
+            <h2 className="text-xl font-semibold mb-4">Castle and Room Overview</h2>
             {castlesLoading || roomsLoading ? (
-              <p>Načítavam zámky...</p>
+              <p>Loading castles...</p>
             ) : (
               <div className="space-y-6">
                 {castles?.map((castle) => {
@@ -155,7 +155,7 @@ const DisneyAdmin = () => {
                           <p className="text-sm text-muted-foreground mb-2">{castle.park_name}</p>
                           <div className="flex items-center gap-2">
                             <Badge variant={roomsWithPanoramas.length === totalRooms ? "default" : "secondary"}>
-                              {roomsWithPanoramas.length} / {totalRooms} miestností má panorámu
+                              {roomsWithPanoramas.length} / {totalRooms} rooms have panorama
                             </Badge>
                           </div>
                         </div>
@@ -163,12 +163,12 @@ const DisneyAdmin = () => {
                           variant="outline"
                           onClick={() => setSelectedCastleId(castle.id)}
                         >
-                          Generovať panorámy
+                          Generate panoramas
                         </Button>
                       </div>
 
                       <div className="space-y-2 mt-4">
-                        <h4 className="font-semibold text-sm mb-2">Miestnosti:</h4>
+                        <h4 className="font-semibold text-sm mb-2">Rooms:</h4>
                         <div className="grid gap-2">
                           {castleRooms.map((room) => (
                             <div
@@ -189,7 +189,7 @@ const DisneyAdmin = () => {
                                 </div>
                               </div>
                               <Badge variant={room.panorama_url ? "default" : "outline"}>
-                                {room.panorama_url ? "Hotové" : "Chýba"}
+                                {room.panorama_url ? "Done" : "Missing"}
                               </Badge>
                             </div>
                           ))}
@@ -209,7 +209,7 @@ const DisneyAdmin = () => {
               className="gap-2 mb-4"
             >
               <ArrowLeft className="h-4 w-4" />
-              Späť na výber zámku
+              Back to castle selection
             </Button>
 
             {selectedCastle && rooms && (

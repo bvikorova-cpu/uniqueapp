@@ -173,7 +173,7 @@ export default function LiveStream() {
       queryClient.invalidateQueries({ queryKey: ["stream-messages", streamId] });
     },
     onError: (error) => {
-      toast.error("Chyba pri odoslaní správy");
+      toast.error("Error sending message");
       console.error(error);
     },
   });
@@ -197,12 +197,12 @@ export default function LiveStream() {
     onSuccess: (data, gift) => {
       if (data?.url) {
         window.open(data.url, "_blank");
-        toast.success(`Otváram platbu za ${gift.name} ${gift.icon}`);
+        toast.success(`Opening payment for ${gift.name} ${gift.icon}`);
         setGiftMessage("");
       }
     },
     onError: (error) => {
-      toast.error("Chyba pri odoslaní darčeku");
+      toast.error("Error sending gift");
       console.error(error);
     },
   });
@@ -272,10 +272,10 @@ export default function LiveStream() {
       await channel.subscribe();
       setIsStreaming(true);
       setIsConnecting(false);
-      toast.success("Stream spustený!");
+      toast.success("Stream started!");
     } catch (error) {
       console.error("Error starting broadcast:", error);
-      toast.error("Chyba pri spustení streamu");
+      toast.error("Error starting stream");
       setIsConnecting(false);
     }
   };
@@ -368,7 +368,7 @@ export default function LiveStream() {
       setIsConnecting(false);
     } catch (error) {
       console.error("Error joining as viewer:", error);
-      toast.error("Chyba pri pripájaní k streamu");
+      toast.error("Error connecting to stream");
       setIsConnecting(false);
     }
   };
@@ -439,7 +439,7 @@ export default function LiveStream() {
     }
 
     setIsStreaming(false);
-    toast.info("Stream ukončený");
+    toast.info("Stream ended");
   };
 
   // Auto-join as viewer if not influencer
@@ -463,7 +463,7 @@ export default function LiveStream() {
   if (!stream) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Načítavam stream...</p>
+        <p className="text-muted-foreground">Loading stream...</p>
       </div>
     );
   }
@@ -477,7 +477,7 @@ export default function LiveStream() {
           className="mb-4"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Späť
+          Back
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
