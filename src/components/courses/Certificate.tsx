@@ -22,7 +22,7 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
     if (!certificateRef.current) return;
 
     try {
-      toast.loading("Generujem PDF certifikát...");
+      toast.loading("Generating PDF certificate...");
       
       const canvas = await html2canvas(certificateRef.current, {
         scale: 3,
@@ -43,14 +43,14 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
       const pdfHeight = pdf.internal.pageSize.getHeight();
       
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Certifikat-${userName.replace(/\s+/g, "-")}-${courseName.substring(0, 30).replace(/\s+/g, "-")}.pdf`);
+      pdf.save(`Certificate-${userName.replace(/\s+/g, "-")}-${courseName.substring(0, 30).replace(/\s+/g, "-")}.pdf`);
       
       toast.dismiss();
-      toast.success("Certifikát bol úspešne stiahnutý!");
+      toast.success("Certificate downloaded successfully!");
     } catch (error) {
       console.error("Error generating PDF:", error);
       toast.dismiss();
-      toast.error("Nepodarilo sa vygenerovať PDF");
+      toast.error("Failed to generate PDF");
     }
   };
 
@@ -59,11 +59,11 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
       <div className="flex gap-4 print:hidden">
         <Button variant="outline" onClick={() => navigate("/education")}>
           <Home className="mr-2 h-4 w-4" />
-          Späť na vzdelávanie
+          Back to Education
         </Button>
         <Button onClick={handleDownloadPDF} size="lg" className="bg-primary hover:bg-primary/90">
           <Download className="mr-2 h-5 w-5" />
-          Stiahnuť certifikát v PDF
+          Download Certificate as PDF
         </Button>
       </div>
 
@@ -104,24 +104,24 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
                 </div>
               </div>
               <h2 className="text-6xl font-serif font-bold text-primary tracking-wider">
-                CERTIFIKÁT
+                CERTIFICATE
               </h2>
               <div className="w-32 h-1 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto"></div>
               <p className="text-xl text-muted-foreground font-light tracking-wide">
-                o úspešnom absolvovaní kurzu
+                of successful course completion
               </p>
             </div>
 
             {/* Recipient */}
             <div className="text-center space-y-6 py-8">
-              <p className="text-xl font-light tracking-wide">Týmto sa potvrdzuje, že</p>
+              <p className="text-xl font-light tracking-wide">This is to certify that</p>
               <div className="relative inline-block">
                 <h3 className="text-5xl font-serif font-bold text-primary px-12 pb-3 relative z-10">
                   {userName}
                 </h3>
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
               </div>
-              <p className="text-xl font-light tracking-wide pt-4">úspešne absolvoval/a kurz</p>
+              <p className="text-xl font-light tracking-wide pt-4">has successfully completed the course</p>
               <h4 className="text-3xl font-serif font-semibold text-primary max-w-3xl mx-auto leading-relaxed">
                 {courseName}
               </h4>
@@ -130,11 +130,11 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
             {/* Details */}
             <div className="grid grid-cols-2 gap-12 pt-8 border-t-2 border-primary/20 max-w-2xl mx-auto">
               <div className="text-center">
-                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Dátum ukončenia</p>
+                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Completion Date</p>
                 <p className="font-semibold text-lg">{completionDate}</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Číslo certifikátu</p>
+                <p className="text-sm text-muted-foreground uppercase tracking-wider mb-2">Certificate Number</p>
                 <p className="font-semibold text-lg font-mono">{certificateNumber}</p>
               </div>
             </div>
@@ -164,7 +164,7 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
                   <div className="border-t-2 border-black w-64 mx-auto mb-3"></div>
                   <p className="font-bold text-lg">Mgr. Beáta Vikorová</p>
                   <p className="text-sm font-semibold text-muted-foreground">MBA, LL.M, MSc.</p>
-                  <p className="text-base font-medium text-primary mt-1">Riaditeľka UNIQUE</p>
+                  <p className="text-base font-medium text-primary mt-1">Director of UNIQUE</p>
                 </div>
                 
                 {/* Realistic stamp/seal */}
@@ -198,9 +198,9 @@ export const Certificate = ({ userName, courseName, completionDate }: Certificat
 
             {/* Footer */}
             <div className="text-center text-sm text-muted-foreground pt-8 border-t border-primary/10 space-y-2">
-              <p className="font-medium">Akreditovaný poskytovateľ vzdelávania</p>
+              <p className="font-medium">Accredited Education Provider</p>
               <p className="font-semibold text-primary">UNIQUE Education</p>
-              <p className="text-xs">www.unique-education.sk | info@unique-education.sk</p>
+              <p className="text-xs">www.unique-education.com | info@unique-education.com</p>
             </div>
           </CardContent>
         </Card>

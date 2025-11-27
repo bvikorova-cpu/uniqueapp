@@ -30,9 +30,9 @@ const SubscriptionManagement = () => {
     setIsRefreshing(true);
     try {
       await checkSubscription();
-      toast.success("Stav predplatného bol aktualizovaný");
+      toast.success("Subscription status updated");
     } catch (error) {
-      toast.error("Chyba pri aktualizácii stavu predplatného");
+      toast.error("Error updating subscription status");
     } finally {
       setIsRefreshing(false);
     }
@@ -43,7 +43,7 @@ const SubscriptionManagement = () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        toast.error("Musíte byť prihlásený");
+        toast.error("You must be logged in");
         navigate("/auth");
         return;
       }
@@ -59,11 +59,11 @@ const SubscriptionManagement = () => {
       if (data?.url) {
         window.open(data.url, "_blank");
       } else {
-        toast.error("Nepodarilo sa otvoriť portál pre správu predplatného");
+        toast.error("Failed to open subscription management portal");
       }
     } catch (error) {
       console.error("Error opening customer portal:", error);
-      toast.error("Chyba pri otváraní portálu pre správu predplatného");
+      toast.error("Error opening subscription management portal");
     } finally {
       setIsOpeningPortal(false);
     }
@@ -89,9 +89,9 @@ const SubscriptionManagement = () => {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-4xl font-bold">Správa predplatného</h1>
+            <h1 className="text-4xl font-bold">Subscription Management</h1>
             <p className="text-muted-foreground mt-2">
-              Spravujte svoje predplatné a platobné údaje
+              Manage your subscription and payment details
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@ const SubscriptionManagement = () => {
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <CreditCard className="h-5 w-5" />
-                Aktuálny stav predplatného
+                Current Subscription Status
               </CardTitle>
               <Button
                 variant="outline"
@@ -111,7 +111,7 @@ const SubscriptionManagement = () => {
                 disabled={isRefreshing}
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                Obnoviť
+                Refresh
               </Button>
             </div>
           </CardHeader>
@@ -125,17 +125,17 @@ const SubscriptionManagement = () => {
                 )}
                 <div>
                   <p className="font-semibold text-lg">
-                    {subscription.hasSubscription ? "Aktívne predplatné" : "Žiadne aktívne predplatné"}
+                    {subscription.hasSubscription ? "Active Subscription" : "No Active Subscription"}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {subscription.hasSubscription
-                      ? "Máte prístup ku všetkým funkciám Ancestor Twin"
-                      : "Zakúpte si predplatné pre neomedzený prístup"}
+                      ? "You have access to all Ancestor Twin features"
+                      : "Purchase a subscription for unlimited access"}
                   </p>
                 </div>
               </div>
               <Badge variant={subscription.hasSubscription ? "default" : "secondary"}>
-                {subscription.hasSubscription ? "AKTÍVNE" : "NEAKTÍVNE"}
+                {subscription.hasSubscription ? "ACTIVE" : "INACTIVE"}
               </Badge>
             </div>
 
@@ -143,9 +143,9 @@ const SubscriptionManagement = () => {
               <div className="flex items-center gap-2 p-4 border rounded-lg">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium">Platnosť do</p>
+                  <p className="text-sm font-medium">Valid Until</p>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(subscription.subscriptionEnd).toLocaleDateString("sk-SK", {
+                    {new Date(subscription.subscriptionEnd).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -161,9 +161,9 @@ const SubscriptionManagement = () => {
         {subscription.hasSubscription && (
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Spravovať predplatné</CardTitle>
+              <CardTitle>Manage Subscription</CardTitle>
               <CardDescription>
-                Aktualizujte platobné údaje, zrušte alebo zmeňte predplatné
+                Update payment details, cancel or change subscription
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -174,10 +174,10 @@ const SubscriptionManagement = () => {
                 size="lg"
               >
                 <ExternalLink className="mr-2 h-4 w-4" />
-                {isOpeningPortal ? "Otváram portál..." : "Otvoriť Stripe portál"}
+                {isOpeningPortal ? "Opening portal..." : "Open Stripe Portal"}
               </Button>
               <p className="text-xs text-muted-foreground mt-3 text-center">
-                Budete presmerovaný na bezpečný Stripe portál pre správu predplatného
+                You will be redirected to the secure Stripe portal for subscription management
               </p>
             </CardContent>
           </Card>
@@ -187,9 +187,9 @@ const SubscriptionManagement = () => {
         {!subscription.hasSubscription && (
           <Card>
             <CardHeader>
-              <CardTitle>Začnite s Ancestor Twin</CardTitle>
+              <CardTitle>Get Started with Ancestor Twin</CardTitle>
               <CardDescription>
-                Objavte svojich historických dvojníkov s našimi prémiové balíčkmi
+                Discover your historical lookalikes with our premium packages
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -198,7 +198,7 @@ const SubscriptionManagement = () => {
                 className="w-full"
                 size="lg"
               >
-                Zobraziť cenové balíčky
+                View Pricing Packages
               </Button>
             </CardContent>
           </Card>
@@ -207,13 +207,13 @@ const SubscriptionManagement = () => {
         {/* Information Card */}
         <Card className="mt-6 bg-muted/50">
           <CardHeader>
-            <CardTitle className="text-lg">Potrebujete pomoc?</CardTitle>
+            <CardTitle className="text-lg">Need Help?</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>• Všetky platby sú spracovávané bezpečne cez Stripe</p>
-            <p>• Predplatné sa automaticky obnovuje každý mesiac</p>
-            <p>• Môžete kedykoľvek zrušiť predplatné bez poplatkov</p>
-            <p>• Pre podporu kontaktujte náš tím na support@megasocial.com</p>
+            <p>• All payments are processed securely via Stripe</p>
+            <p>• Subscription automatically renews every month</p>
+            <p>• You can cancel your subscription at any time without fees</p>
+            <p>• For support, contact our team at support@megasocial.com</p>
           </CardContent>
         </Card>
       </div>

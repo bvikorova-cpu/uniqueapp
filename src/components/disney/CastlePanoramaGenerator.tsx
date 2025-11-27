@@ -31,8 +31,8 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
     setGeneratingRoomId(room.id);
     
     try {
-      toast.info("🎨 Generujem 360° panorámu...", {
-        description: `Vytváranie obrazu pre ${room.room_name}`,
+      toast.info("🎨 Generating 360° panorama...", {
+        description: `Creating image for ${room.room_name}`,
       });
 
       const { data, error } = await supabase.functions.invoke('generate-castle-panorama', {
@@ -47,12 +47,12 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
 
       if (data.error) {
         if (data.error.includes('Rate limit')) {
-          toast.error("Limit prekročený", {
-            description: "Príliš veľa požiadaviek. Skúste neskôr."
+          toast.error("Rate limit exceeded", {
+            description: "Too many requests. Try again later."
           });
         } else if (data.error.includes('Payment required')) {
-          toast.error("Potrebné kredity", {
-            description: "Pridajte kredity do Lovable workspace."
+          toast.error("Credits required", {
+            description: "Add credits to Lovable workspace."
           });
         } else {
           throw new Error(data.error);
@@ -68,16 +68,16 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
 
       if (updateError) throw updateError;
 
-      toast.success("✨ Panoráma vygenerovaná!", {
-        description: `${room.room_name} má teraz AI 360° obraz`,
+      toast.success("✨ Panorama generated!", {
+        description: `${room.room_name} now has AI 360° image`,
       });
 
       onRoomUpdated();
 
     } catch (error) {
       console.error('Error generating panorama:', error);
-      toast.error("Chyba pri generovaní", {
-        description: error instanceof Error ? error.message : "Neznáma chyba"
+      toast.error("Error generating", {
+        description: error instanceof Error ? error.message : "Unknown error"
       });
     } finally {
       setGeneratingRoomId(null);
@@ -103,10 +103,10 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Sparkles className="h-5 w-5 text-disney-accent" />
-          AI Generátor 360° Panorám
+          AI 360° Panorama Generator
         </CardTitle>
         <CardDescription>
-          Vygenerujte realistické panoramatické obrázky pre miestnosti pomocou Lovable AI
+          Generate realistic panoramic images for rooms using Lovable AI
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -116,7 +116,7 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
               {castle.name} ({castle.park_name})
             </p>
             <p className="text-xs text-muted-foreground">
-              {roomsNeedingPanoramas} z {rooms.length} miestností potrebuje panorámu
+              {roomsNeedingPanoramas} of {rooms.length} rooms need panorama
             </p>
           </div>
           {roomsNeedingPanoramas > 0 && (
@@ -129,12 +129,12 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
               {generatingRoomId ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generujem...
+                  Generating...
                 </>
               ) : (
                 <>
                   <Sparkles className="mr-2 h-4 w-4" />
-                  Generovať všetky
+                  Generate All
                 </>
               )}
             </Button>
@@ -175,12 +175,12 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
                   {isGenerating ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generujem
+                      Generating
                     </>
                   ) : (
                     <>
                       <Sparkles className="mr-2 h-4 w-4" />
-                      {hasCustomPanorama ? "Regenerovať" : "Generovať"}
+                      {hasCustomPanorama ? "Regenerate" : "Generate"}
                     </>
                   )}
                 </Button>
@@ -190,12 +190,12 @@ export const CastlePanoramaGenerator = ({ castle, rooms, onRoomUpdated }: Castle
         </div>
 
         <div className="text-xs text-muted-foreground space-y-1 p-3 bg-muted/50 rounded-lg">
-          <p className="font-medium">💡 Poznámky:</p>
+          <p className="font-medium">💡 Notes:</p>
           <ul className="list-disc list-inside space-y-1">
-            <li>Používa Lovable AI (Google Gemini Flash Image)</li>
-            <li>Obrázky sú automaticky nahrané do Supabase Storage</li>
-            <li>Môže trvať 10-30 sekúnd na jeden obrázok</li>
-            <li>Pozor na rate limits - medzi požiadavkami je 2s pauza</li>
+            <li>Uses Lovable AI (Google Gemini Flash Image)</li>
+            <li>Images are automatically uploaded to Supabase Storage</li>
+            <li>May take 10-30 seconds per image</li>
+            <li>Watch for rate limits - 2s pause between requests</li>
           </ul>
         </div>
       </CardContent>

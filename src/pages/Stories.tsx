@@ -214,14 +214,14 @@ export default function Stories() {
       });
     },
     onSuccess: () => {
-      toast.success("Správa odoslaná!");
+      toast.success("Message sent!");
       setReaction("");
     },
     onError: (error: any) => {
       if (error.message === "Cannot reply to own story") {
-        toast.error("Nemôžeš odpovedať na vlastnú story");
+        toast.error("You can't reply to your own story");
       } else {
-        toast.error("Chyba pri odosielaní správy");
+        toast.error("Error sending message");
       }
     },
   });
@@ -241,7 +241,7 @@ export default function Stories() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["stories", userId] });
-      toast.success("Hlas zaznamenaný!");
+      toast.success("Vote recorded!");
     },
   });
 
@@ -259,7 +259,7 @@ export default function Stories() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Story odstránená!");
+      toast.success("Story deleted!");
       queryClient.invalidateQueries({ queryKey: ["stories", userId] });
       setShowDeleteDialog(false);
       
@@ -275,7 +275,7 @@ export default function Stories() {
       }
     },
     onError: (error) => {
-      toast.error("Chyba pri odstraňovaní story");
+      toast.error("Error deleting story");
       console.error(error);
     },
   });
@@ -283,7 +283,7 @@ export default function Stories() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <p className="text-white">Načítavam...</p>
+        <p className="text-white">Loading...</p>
       </div>
     );
   }
@@ -292,7 +292,7 @@ export default function Stories() {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center text-white">
-          <p>Žiadne aktívne stories</p>
+          <p>No active stories</p>
           <Button onClick={() => navigate("/wall")} className="mt-4">
             Back to Wall
           </Button>
@@ -443,7 +443,7 @@ export default function Stories() {
               </button>
             </div>
             <p className="text-xs text-muted-foreground mt-2 text-center">
-              {totalVotes} {totalVotes === 1 ? "hlas" : totalVotes < 5 ? "hlasy" : "hlasov"}
+              {totalVotes} {totalVotes === 1 ? "vote" : "votes"}
             </p>
           </Card>
         </div>
@@ -456,7 +456,7 @@ export default function Stories() {
             <Input
               value={reaction}
               onChange={(e) => setReaction(e.target.value)}
-              placeholder="Napíš správu..."
+              placeholder="Write a message..."
               className="flex-1 bg-white/90"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && reaction.trim()) {

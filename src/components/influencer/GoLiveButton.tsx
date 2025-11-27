@@ -32,7 +32,7 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
 
   const startStream = async () => {
     if (!streamData.title.trim()) {
-      toast.error("Zadaj názov streamu");
+      toast.error("Enter stream title");
       return;
     }
 
@@ -56,12 +56,12 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
 
       if (error) throw error;
 
-      toast.success("Stream spustený!");
+      toast.success("Stream started!");
       setOpen(false);
       navigate(`/live/${data.id}`);
     } catch (error) {
       console.error("Error starting stream:", error);
-      toast.error("Chyba pri spustení streamu");
+      toast.error("Error starting stream");
     } finally {
       setLoading(false);
     }
@@ -79,19 +79,19 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Video className="h-5 w-5 text-primary" />
-            Spusti živé vysielanie
+            Start Live Stream
           </DialogTitle>
           <DialogDescription>
-            Spusti živý stream pre svojich fanúšikov
+            Start a live stream for your fans
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="title">Názov streamu *</Label>
+            <Label htmlFor="title">Stream Title *</Label>
             <Input
               id="title"
-              placeholder="napr. Odpovede na vaše otázky"
+              placeholder="e.g. Q&A with fans"
               value={streamData.title}
               onChange={(e) =>
                 setStreamData({ ...streamData, title: e.target.value })
@@ -100,10 +100,10 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="description">Popis</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              placeholder="O čom bude stream..."
+              placeholder="What will the stream be about..."
               value={streamData.description}
               onChange={(e) =>
                 setStreamData({ ...streamData, description: e.target.value })
@@ -113,25 +113,25 @@ export function GoLiveButton({ influencerId }: GoLiveButtonProps) {
           </div>
 
           <div className="bg-muted p-4 rounded-lg space-y-2">
-            <p className="text-sm font-medium">Tip pre úspešný stream:</p>
+            <p className="text-sm font-medium">Tips for a successful stream:</p>
             <ul className="text-xs text-muted-foreground space-y-1">
-              <li>• Priprav si témy na rozhovor</li>
-              <li>• Interaguj so sledovateľmi v chate</li>
-              <li>• Pozdrav nových sledovateľov menom</li>
+              <li>• Prepare topics to discuss</li>
+              <li>• Interact with viewers in chat</li>
+              <li>• Greet new followers by name</li>
             </ul>
           </div>
         </div>
 
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
-            Zrušiť
+            Cancel
           </Button>
           <Button
             onClick={startStream}
             disabled={loading || !streamData.title.trim()}
             className="bg-gradient-to-r from-red-600 to-pink-600"
           >
-            {loading ? "Spúšťam..." : "Spustiť stream"}
+            {loading ? "Starting..." : "Start Stream"}
           </Button>
         </DialogFooter>
       </DialogContent>
