@@ -315,18 +315,18 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
 
           <TooltipProvider>
-            <div className="flex flex-nowrap overflow-x-auto scrollbar-hide touch-scroll gap-2 pb-2 w-full">
+            <div className="flex flex-nowrap overflow-x-auto scrollbar-hide touch-scroll gap-1 pb-2 w-full">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-green-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-1.5 px-2 hover:bg-green-500/10 rounded-xl transition-all group"
                     onClick={() => document.getElementById("image-upload")?.click()}
                   >
-                    <div className="p-2 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all">
-                      <Image className="h-5 w-5 text-green-600" />
+                    <div className="p-1.5 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all">
+                      <Image className="h-4 w-4 text-green-600" />
                     </div>
                   </Button>
                 </TooltipTrigger>
@@ -339,11 +339,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-1.5 px-2 hover:bg-red-500/10 rounded-xl transition-all group"
                     onClick={() => document.getElementById("video-upload")?.click()}
                   >
-                    <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
-                      <Video className="h-5 w-5 text-red-600" />
+                    <div className="p-1.5 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
+                      <Video className="h-4 w-4 text-red-600" />
                     </div>
                   </Button>
                 </TooltipTrigger>
@@ -354,9 +354,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <Popover>
                   <PopoverTrigger asChild>
                     <TooltipTrigger asChild>
-                      <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-2 hover:bg-yellow-500/10 rounded-xl transition-all group">
-                        <div className="p-2 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all">
-                          <Smile className="h-5 w-5 text-yellow-600" />
+                      <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-1.5 px-2 hover:bg-yellow-500/10 rounded-xl transition-all group">
+                        <div className="p-1.5 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all">
+                          <Smile className="h-4 w-4 text-yellow-600" />
                         </div>
                       </Button>
                     </TooltipTrigger>
@@ -387,9 +387,9 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <Popover>
                   <PopoverTrigger asChild>
                     <TooltipTrigger asChild>
-                      <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group">
-                        <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
-                          <MapPin className="h-5 w-5 text-red-600" />
+                      <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-1.5 px-2 hover:bg-red-500/10 rounded-xl transition-all group">
+                        <div className="p-1.5 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
+                          <MapPin className="h-4 w-4 text-red-600" />
                         </div>
                       </Button>
                     </TooltipTrigger>
@@ -413,11 +413,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button" 
                     variant="ghost" 
                     size="sm" 
-                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-blue-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-1.5 px-2 hover:bg-blue-500/10 rounded-xl transition-all group"
                     onClick={() => setShowTagFriends(true)}
                   >
-                    <div className="p-2 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all">
-                      <Users className="h-5 w-5 text-blue-600" />
+                    <div className="p-1.5 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all">
+                      <Users className="h-4 w-4 text-blue-600" />
                     </div>
                   </Button>
                 </TooltipTrigger>
@@ -430,11 +430,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-purple-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-1.5 px-2 hover:bg-purple-500/10 rounded-xl transition-all group"
                     onClick={() => setShowTemplates(true)}
                   >
-                    <div className="p-2 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-all">
-                      <Sparkles className="h-5 w-5 text-purple-600" />
+                    <div className="p-1.5 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-all">
+                      <Sparkles className="h-4 w-4 text-purple-600" />
                     </div>
                   </Button>
                 </TooltipTrigger>
@@ -447,11 +447,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-orange-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-1.5 px-2 hover:bg-orange-500/10 rounded-xl transition-all group"
                     onClick={() => setShowSchedule(true)}
                   >
-                    <div className="p-2 rounded-full bg-orange-500/10 group-hover:bg-orange-500/20 transition-all">
-                      <Clock className="h-5 w-5 text-orange-600" />
+                    <div className="p-1.5 rounded-full bg-orange-500/10 group-hover:bg-orange-500/20 transition-all">
+                      <Clock className="h-4 w-4 text-orange-600" />
                     </div>
                   </Button>
                 </TooltipTrigger>
@@ -464,11 +464,11 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-cyan-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-1.5 px-2 hover:bg-cyan-500/10 rounded-xl transition-all group"
                     onClick={() => setShowPoll(true)}
                   >
-                    <div className="p-2 rounded-full bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all">
-                      <BarChart3 className="h-5 w-5 text-cyan-600" />
+                    <div className="p-1.5 rounded-full bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all">
+                      <BarChart3 className="h-4 w-4 text-cyan-600" />
                     </div>
                   </Button>
                 </TooltipTrigger>
