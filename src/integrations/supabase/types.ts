@@ -21865,6 +21865,7 @@ export type Database = {
           odds: number
           prediction_type: string
           prediction_value: string | null
+          price: number | null
           result: string | null
           settled_at: string | null
           tipster_id: string
@@ -21882,6 +21883,7 @@ export type Database = {
           odds: number
           prediction_type: string
           prediction_value?: string | null
+          price?: number | null
           result?: string | null
           settled_at?: string | null
           tipster_id: string
@@ -21899,6 +21901,7 @@ export type Database = {
           odds?: number
           prediction_type?: string
           prediction_value?: string | null
+          price?: number | null
           result?: string | null
           settled_at?: string | null
           tipster_id?: string
