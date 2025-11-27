@@ -1,136 +1,246 @@
-import { useState } from "react";
-import { Search, Hash, User, FileText } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { Search, Hash, User, FileText, X, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { useSearch } from "@/hooks/useSearch";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+interface SearchResult {
+  posts: any[];
+  users: any[];
+  hashtags: any[];
+}
 
 export const SearchBar = () => {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<any>({});
-  const { search, searching } = useSearch();
+  const [results, setResults] = useState<SearchResult>({ posts: [], users: [], hashtags: [] });
+  const [searching, setSearching] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const debounceRef = useRef<NodeJS.Timeout>();
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    const searchResults = await search(query);
-    setResults(searchResults);
+  // Live search as user types
+  useEffect(() => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    if (!query.trim()) {
+      setResults({ posts: [], users: [], hashtags: [] });
+      return;
+    }
+
+    // Debounce search by 300ms
+    debounceRef.current = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const [postsResult, usersResult, hashtagsResult] = await Promise.all([
+          // Search posts
+          supabase
+            .from("posts")
+            .select("id, content, created_at, profiles(id, full_name, avatar_url)")
+            .ilike("content", `%${query}%`)
+            .order("created_at", { ascending: false })
+            .limit(5),
+          // Search ALL users (not just friends)
+          supabase
+            .from("profiles")
+            .select("id, full_name, avatar_url, bio")
+            .or(`full_name.ilike.%${query}%`)
+            .limit(8),
+          // Search hashtags
+          supabase
+            .from("hashtags")
+            .select("id, tag, use_count")
+            .ilike("tag", `%${query}%`)
+            .order("use_count", { ascending: false })
+            .limit(5),
+        ]);
+
+        setResults({
+          posts: postsResult.data || [],
+          users: usersResult.data || [],
+          hashtags: hashtagsResult.data || [],
+        });
+      } catch (error) {
+        console.error("Search error:", error);
+      } finally {
+        setSearching(false);
+      }
+    }, 300);
+
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, [query]);
+
+  const handleUserClick = (userId: string) => {
+    setOpen(false);
+    setQuery("");
+    navigate(`/profile/${userId}`);
   };
 
+  const handlePostClick = (postId: string) => {
+    setOpen(false);
+    setQuery("");
+    navigate(`/post/${postId}`);
+  };
+
+  const handleHashtagClick = (tag: string) => {
+    setOpen(false);
+    setQuery("");
+    // Could navigate to hashtag page or filter posts
+    navigate(`/wall?hashtag=${tag}`);
+  };
+
+  const totalResults = results.posts.length + results.users.length + results.hashtags.length;
+  const hasResults = totalResults > 0;
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button 
-          variant="outline" 
-          className="w-full md:w-96 justify-start border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 hover:bg-violet-100 dark:hover:bg-violet-900/40 text-violet-700 dark:text-violet-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] hover:border-violet-600 transition-all duration-300 hover:scale-[1.02]"
-        >
-          <Search className="h-4 w-4 mr-2 animate-pulse" />
-          Search posts, people, hashtags...
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh]">
-        <DialogHeader>
-          <DialogTitle>Search</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSearch} className="flex gap-2">
+    <Popover open={open && (query.length > 0 || hasResults)} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <div className="relative w-full md:w-96">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="What are you looking for?"
+            ref={inputRef}
+            placeholder="Search posts, people, hashtags..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1"
+            onFocus={() => setOpen(true)}
+            className="pl-10 pr-10 border-2 border-violet-600/50 bg-violet-50 dark:bg-violet-950/30 hover:bg-violet-100 dark:hover:bg-violet-900/40 focus:border-violet-600 transition-all"
           />
-          <Button type="submit" disabled={searching}>
-            {searching ? "Searching..." : "Search"}
-          </Button>
-        </form>
+          {query && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+              onClick={() => {
+                setQuery("");
+                inputRef.current?.focus();
+              }}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </PopoverTrigger>
+      <PopoverContent 
+        className="w-[var(--radix-popover-trigger-width)] p-0" 
+        align="start"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
+        <ScrollArea className="max-h-[400px]">
+          {searching && (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          )}
 
-        {Object.keys(results).length > 0 && (
-          <Tabs defaultValue="posts" className="mt-4">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="posts" className="gap-2">
-                <FileText className="h-4 w-4" />
-                Posts ({results.posts?.length || 0})
-              </TabsTrigger>
-              <TabsTrigger value="users" className="gap-2">
-                <User className="h-4 w-4" />
-                Users ({results.users?.length || 0})
-              </TabsTrigger>
-              <TabsTrigger value="hashtags" className="gap-2">
-                <Hash className="h-4 w-4" />
-                Hashtags ({results.hashtags?.length || 0})
-              </TabsTrigger>
-            </TabsList>
+          {!searching && query && !hasResults && (
+            <div className="text-center text-muted-foreground py-6 text-sm">
+              No results for "{query}"
+            </div>
+          )}
 
-            <ScrollArea className="h-96 mt-4">
-              <TabsContent value="posts" className="space-y-3">
-                {results.posts?.map((post: any) => (
-                  <div key={post.id} className="p-3 border rounded-lg hover:bg-accent cursor-pointer">
-                    <div className="flex items-center gap-2 mb-2">
+          {!searching && hasResults && (
+            <div className="py-2">
+              {/* Users section */}
+              {results.users.length > 0 && (
+                <div>
+                  <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
+                    <User className="h-3 w-3" />
+                    People
+                  </div>
+                  {results.users.map((user) => (
+                    <button
+                      key={user.id}
+                      onClick={() => handleUserClick(user.id)}
+                      className="w-full px-3 py-2 flex items-center gap-3 hover:bg-accent transition-colors text-left"
+                    >
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src={user.avatar_url} />
+                        <AvatarFallback className="text-xs">
+                          {user.full_name?.[0] || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{user.full_name || "User"}</p>
+                        {user.bio && (
+                          <p className="text-xs text-muted-foreground truncate">{user.bio}</p>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Posts section */}
+              {results.posts.length > 0 && (
+                <div>
+                  <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground flex items-center gap-1.5 border-t">
+                    <FileText className="h-3 w-3" />
+                    Posts
+                  </div>
+                  {results.posts.map((post) => (
+                    <button
+                      key={post.id}
+                      onClick={() => handlePostClick(post.id)}
+                      className="w-full px-3 py-2 flex items-center gap-3 hover:bg-accent transition-colors text-left"
+                    >
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={post.profiles?.avatar_url} />
-                        <AvatarFallback>{post.profiles?.full_name?.[0]}</AvatarFallback>
+                        <AvatarFallback className="text-xs">
+                          {post.profiles?.full_name?.[0] || "U"}
+                        </AvatarFallback>
                       </Avatar>
-                      <span className="font-semibold text-sm">{post.profiles?.full_name}</span>
-                    </div>
-                    <p className="text-sm line-clamp-3">{post.content}</p>
-                  </div>
-                ))}
-                {results.posts?.length === 0 && (
-                  <div className="text-center text-muted-foreground py-8">No posts found</div>
-                )}
-              </TabsContent>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-muted-foreground">{post.profiles?.full_name}</p>
+                        <p className="text-sm truncate">{post.content}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
 
-              <TabsContent value="users" className="space-y-3">
-                {results.users?.map((user: any) => (
-                  <div key={user.id} className="p-3 border rounded-lg hover:bg-accent cursor-pointer flex items-center gap-3">
-                    <Avatar>
-                      <AvatarImage src={user.avatar_url} />
-                      <AvatarFallback>{user.full_name?.[0]}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold">{user.full_name}</p>
-                      {user.username && (
-                        <p className="text-sm text-muted-foreground">@{user.username}</p>
-                      )}
-                    </div>
+              {/* Hashtags section */}
+              {results.hashtags.length > 0 && (
+                <div>
+                  <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground flex items-center gap-1.5 border-t">
+                    <Hash className="h-3 w-3" />
+                    Hashtags
                   </div>
-                ))}
-                {results.users?.length === 0 && (
-                  <div className="text-center text-muted-foreground py-8">No users found</div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="hashtags" className="space-y-3">
-                {results.hashtags?.map((hashtag: any) => (
-                  <div key={hashtag.id} className="p-3 border rounded-lg hover:bg-accent cursor-pointer">
-                    <Badge variant="secondary" className="gap-1">
-                      <Hash className="h-3 w-3" />
-                      {hashtag.tag}
-                    </Badge>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      {hashtag.use_count} posts
-                    </p>
-                  </div>
-                ))}
-                {results.hashtags?.length === 0 && (
-                  <div className="text-center text-muted-foreground py-8">No hashtags found</div>
-                )}
-              </TabsContent>
-            </ScrollArea>
-          </Tabs>
-        )}
-      </DialogContent>
-    </Dialog>
+                  {results.hashtags.map((hashtag) => (
+                    <button
+                      key={hashtag.id}
+                      onClick={() => handleHashtagClick(hashtag.tag)}
+                      className="w-full px-3 py-2 flex items-center gap-3 hover:bg-accent transition-colors text-left"
+                    >
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <Hash className="h-4 w-4 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">#{hashtag.tag}</p>
+                        <p className="text-xs text-muted-foreground">{hashtag.use_count || 0} posts</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </ScrollArea>
+      </PopoverContent>
+    </Popover>
   );
 };
