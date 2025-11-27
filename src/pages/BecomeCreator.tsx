@@ -225,26 +225,31 @@ export default function BecomeCreator() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="display_name">Creator Name *</Label>
-                <p className="text-sm text-muted-foreground">This is the name users will see on your profile</p>
+                <p className="text-sm text-muted-foreground">This is the name users will see on your profile (max 50 characters)</p>
                 <Input
                   id="display_name"
                   required
+                  maxLength={50}
                   value={formData.display_name}
                   onChange={(e) => setFormData(prev => ({ ...prev, display_name: e.target.value }))}
                   placeholder="Enter your creator name"
                 />
+                <p className="text-xs text-muted-foreground text-right">{formData.display_name.length}/50</p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="bio">Bio *</Label>
+                <p className="text-sm text-muted-foreground">Tell your audience about yourself (max 500 characters)</p>
                 <Textarea
                   id="bio"
                   required
+                  maxLength={500}
                   value={formData.bio}
                   onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
                   placeholder="Tell your audience about yourself..."
                   rows={4}
                 />
+                <p className="text-xs text-muted-foreground text-right">{formData.bio.length}/500</p>
               </div>
 
               <div className="space-y-2">

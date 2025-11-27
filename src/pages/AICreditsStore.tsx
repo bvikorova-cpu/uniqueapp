@@ -182,10 +182,10 @@ const AICreditsStore = () => {
                   <CardTitle className="text-2xl">{pkg.name}</CardTitle>
                   <CardDescription>{pkg.description}</CardDescription>
                   <div className="mt-4">
-                    <span className="text-4xl font-bold">{pkg.price}€</span>
+                    <span className="text-4xl font-bold">€{pkg.price}</span>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">
-                    {pkg.credits} credits ({pkg.perCredit}€ / credit)
+                    {pkg.credits} credits (€{pkg.perCredit} / credit)
                   </p>
                 </CardHeader>
 

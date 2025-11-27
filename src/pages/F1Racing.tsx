@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Trophy, Zap, Users, Star } from "lucide-react";
+import { ArrowLeft, Trophy, Zap, Users, Star, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -202,7 +202,10 @@ const F1Racing = () => {
           />
         )}
         <div className="fixed inset-0 bg-black/50" />
-        <div className="text-white text-2xl z-10">Loading...</div>
+        <div className="flex flex-col items-center gap-4 z-10">
+          <Loader2 className="h-10 w-10 animate-spin text-white" />
+          <span className="text-white text-2xl">Loading...</span>
+        </div>
       </div>
     );
   }

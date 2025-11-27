@@ -818,6 +818,7 @@
   "auth": {
     "error_registration": "Registration error",
     "error_login": "Login error",
+    "error": "Error",
     "registration_success": "Registration successful!",
     "check_email": "Check your email for confirmation.",
     "login_success": "Login successful!",
@@ -827,6 +828,10 @@
     "email": "Email",
     "password": "Password",
     "full_name": "Full name",
+    "phone": "Phone",
+    "company_name": "Company Name",
+    "optional": "optional",
+    "company_placeholder": "Your Company Name",
     "sending": "Sending...",
     "send_reset_link": "Send reset link",
     "login_tab": "Login",
