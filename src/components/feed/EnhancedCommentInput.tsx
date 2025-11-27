@@ -31,6 +31,8 @@ import { TagFriendsDialog } from "@/components/wall/TagFriendsDialog";
 interface EnhancedCommentInputProps {
   postId: string;
   onCommentAdded: () => void;
+  parentCommentId?: string;
+  compact?: boolean;
 }
 
 const feelings = [
@@ -52,7 +54,7 @@ const feelings = [
   { emoji: "😇", label: "blessed" },
 ];
 
-export function EnhancedCommentInput({ postId, onCommentAdded }: EnhancedCommentInputProps) {
+export function EnhancedCommentInput({ postId, onCommentAdded, parentCommentId, compact }: EnhancedCommentInputProps) {
   const [content, setContent] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -129,6 +131,7 @@ export function EnhancedCommentInput({ postId, onCommentAdded }: EnhancedComment
           feeling: feeling,
           location: location || null,
           tagged_friends: taggedFriends.length > 0 ? taggedFriends : null,
+          parent_comment_id: parentCommentId || null,
         });
 
       if (commentError) throw commentError;
@@ -161,12 +164,12 @@ export function EnhancedCommentInput({ postId, onCommentAdded }: EnhancedComment
   };
 
   return (
-    <div className="space-y-2">
+    <div className={compact ? "space-y-1" : "space-y-2"}>
       <Textarea
-        placeholder="Write a comment..."
+        placeholder={parentCommentId ? "Write a reply..." : "Write a comment..."}
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="min-h-[60px] text-sm"
+        className={compact ? "min-h-[40px] text-xs" : "min-h-[60px] text-sm"}
       />
 
       {/* Preview selected items */}
