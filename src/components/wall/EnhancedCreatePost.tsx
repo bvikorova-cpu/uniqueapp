@@ -315,7 +315,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
           </div>
 
           <TooltipProvider>
-            <div className="flex overflow-x-auto scrollbar-hide touch-scroll gap-2 pb-2">
+            <div className="flex flex-nowrap overflow-x-auto scrollbar-hide touch-scroll gap-2 pb-2 w-full">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
