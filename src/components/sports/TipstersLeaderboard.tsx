@@ -8,6 +8,7 @@ import { Loader2, Users, Award, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface Tipster {
   id: string;
@@ -48,11 +49,11 @@ export function TipstersLeaderboard() {
 
       if (error) throw error;
       setTipsters(data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching tipsters:', error);
       toast({
         title: "Error",
-        description: "Failed to load tipsters",
+        description: getUserFriendlyErrorMessage(error, "Failed to load tipsters"),
         variant: "destructive",
       });
     } finally {
@@ -125,7 +126,7 @@ export function TipstersLeaderboard() {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to update follow status",
+        description: getUserFriendlyErrorMessage(error, "Failed to update follow status"),
         variant: "destructive",
       });
     } finally {

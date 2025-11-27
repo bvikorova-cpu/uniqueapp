@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Brain, Trophy, Clock, Target, Zap, Timer, Lightbulb, SkipForward, Sparkles } from 'lucide-react';
 import { useBrainDuelCredits } from '@/hooks/useBrainDuelCredits';
 import { useBrainDuelPowerups } from '@/hooks/useBrainDuelPowerups';
+import { getUserFriendlyErrorMessage } from '@/utils/errorHandler';
 
 interface Question {
   id: string;
@@ -136,7 +137,7 @@ export const BrainDuelGame = () => {
       console.error('Matchmaking error:', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to find match',
+        description: getUserFriendlyErrorMessage(error, 'Failed to find match'),
         variant: 'destructive',
       });
       setGamePhase('category');
@@ -161,7 +162,7 @@ export const BrainDuelGame = () => {
       console.error('Error getting questions:', error);
       toast({
         title: 'Error',
-        description: 'Failed to load questions',
+        description: getUserFriendlyErrorMessage(error, 'Failed to load questions'),
         variant: 'destructive',
       });
     }

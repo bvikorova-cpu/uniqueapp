@@ -11,6 +11,7 @@ import { Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface BuyVotesDialogProps {
   open: boolean;
@@ -87,7 +88,7 @@ export const BuyVotesDialog = ({ open, onOpenChange }: BuyVotesDialogProps) => {
       console.error("Error creating payment:", error);
       toast({
         title: "Error creating payment",
-        description: error.message,
+        description: getUserFriendlyErrorMessage(error, "Failed to process payment"),
         variant: "destructive",
       });
     } finally {

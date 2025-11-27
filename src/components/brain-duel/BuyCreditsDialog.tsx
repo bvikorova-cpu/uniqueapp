@@ -11,6 +11,7 @@ import { Card } from '@/components/ui/card';
 import { Coins, Check, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { getUserFriendlyErrorMessage } from '@/utils/errorHandler';
 
 interface BuyCreditsDialogProps {
   open: boolean;
@@ -59,7 +60,7 @@ export const BuyCreditsDialog = ({ open, onOpenChange }: BuyCreditsDialogProps) 
       }
     } catch (error) {
       console.error('Error creating payment:', error);
-      toast.error('Error creating payment');
+      toast.error(getUserFriendlyErrorMessage(error, 'Failed to create payment'));
     } finally {
       setLoading(null);
     }
