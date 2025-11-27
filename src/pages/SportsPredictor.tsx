@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { TipsterRegistrationDialog } from "@/components/sports/TipsterRegistrationDialog";
 import { ExpertTips } from "@/components/sports/ExpertTips";
 import { TipstersLeaderboard } from "@/components/sports/TipstersLeaderboard";
+import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 import {
   Trophy,
   TrendingUp,
@@ -237,7 +238,7 @@ export default function SportsPredictor() {
       console.error('Error generating prediction:', error);
       toast({
         title: "Error",
-        description: error.message || "Failed to generate prediction",
+        description: getUserFriendlyErrorMessage(error, "Failed to generate prediction"),
         variant: "destructive",
       });
     } finally {

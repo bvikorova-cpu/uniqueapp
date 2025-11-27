@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { usePurchaseVerification } from "@/hooks/usePurchaseVerification";
+import { getUserFriendlyErrorMessage } from "@/utils/errorHandler";
 
 interface Tipster {
   id: string;
@@ -75,11 +76,11 @@ export function ExpertTips() {
 
       if (error) throw error;
       setPredictions((data as any) || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching predictions:', error);
       toast({
         title: "Error",
-        description: "Failed to load expert tips",
+        description: getUserFriendlyErrorMessage(error, "Failed to load expert tips"),
         variant: "destructive",
       });
     } finally {
@@ -122,7 +123,7 @@ export function ExpertTips() {
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "Failed to purchase tip",
+        description: getUserFriendlyErrorMessage(error, "Failed to purchase tip"),
         variant: "destructive",
       });
     } finally {
