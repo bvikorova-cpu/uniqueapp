@@ -9489,6 +9489,122 @@ export type Database = {
         }
         Relationships: []
       }
+      f1_car_marketplace: {
+        Row: {
+          car_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          price_coins: number
+          seller_id: string
+        }
+        Insert: {
+          car_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          price_coins: number
+          seller_id: string
+        }
+        Update: {
+          car_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          price_coins?: number
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "f1_car_marketplace_car_id_fkey"
+            columns: ["car_id"]
+            isOneToOne: false
+            referencedRelation: "f1_cars"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      f1_cars: {
+        Row: {
+          aero_stat: number
+          color: string
+          created_at: string
+          engine_stat: number
+          experience: number
+          handling_stat: number
+          id: string
+          level: number
+          name: string
+          team: string
+          tires_stat: number
+          total_races: number
+          total_wins: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aero_stat?: number
+          color?: string
+          created_at?: string
+          engine_stat?: number
+          experience?: number
+          handling_stat?: number
+          id?: string
+          level?: number
+          name: string
+          team?: string
+          tires_stat?: number
+          total_races?: number
+          total_wins?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          aero_stat?: number
+          color?: string
+          created_at?: string
+          engine_stat?: number
+          experience?: number
+          handling_stat?: number
+          id?: string
+          level?: number
+          name?: string
+          team?: string
+          tires_stat?: number
+          total_races?: number
+          total_wins?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      f1_currency: {
+        Row: {
+          coins: number
+          created_at: string
+          gems: number
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coins?: number
+          created_at?: string
+          gems?: number
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coins?: number
+          created_at?: string
+          gems?: number
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       f1_fantasy_teams: {
         Row: {
           constructor_id: string | null
@@ -9555,6 +9671,96 @@ export type Database = {
           user_id?: string
           username?: string
           wins?: number | null
+        }
+        Relationships: []
+      }
+      f1_race_participants: {
+        Row: {
+          car_id: string
+          created_at: string
+          finish_time: number | null
+          id: string
+          position: number | null
+          race_id: string
+          strategy: string
+          user_id: string
+        }
+        Insert: {
+          car_id: string
+          created_at?: string
+          finish_time?: number | null
+          id?: string
+          position?: number | null
+          race_id: string
+          strategy?: string
+          user_id: string
+        }
+        Update: {
+          car_id?: string
+          created_at?: string
+          finish_time?: number | null
+          id?: string
+          position?: number | null
+          race_id?: string
+          strategy?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "f1_race_participants_car_id_fkey"
+            columns: ["car_id"]
+            isOneToOne: false
+            referencedRelation: "f1_cars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "f1_race_participants_race_id_fkey"
+            columns: ["race_id"]
+            isOneToOne: false
+            referencedRelation: "f1_races"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      f1_races: {
+        Row: {
+          created_at: string
+          distance: number
+          entry_fee_coins: number
+          finished_at: string | null
+          id: string
+          max_participants: number
+          started_at: string | null
+          status: string
+          track_condition: string
+          track_name: string
+          weather: string
+        }
+        Insert: {
+          created_at?: string
+          distance?: number
+          entry_fee_coins?: number
+          finished_at?: string | null
+          id?: string
+          max_participants?: number
+          started_at?: string | null
+          status?: string
+          track_condition?: string
+          track_name: string
+          weather?: string
+        }
+        Update: {
+          created_at?: string
+          distance?: number
+          entry_fee_coins?: number
+          finished_at?: string | null
+          id?: string
+          max_participants?: number
+          started_at?: string | null
+          status?: string
+          track_condition?: string
+          track_name?: string
+          weather?: string
         }
         Relationships: []
       }
@@ -25718,6 +25924,10 @@ export type Database = {
           isOneToOne: false
           isSetofReturn: true
         }
+      }
+      give_f1_starter_balance: {
+        Args: { p_user_id: string }
+        Returns: undefined
       }
       give_starter_balance: { Args: { p_user_id: string }; Returns: undefined }
       has_confession_access: {
