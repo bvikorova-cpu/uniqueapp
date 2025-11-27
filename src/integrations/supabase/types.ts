@@ -25960,6 +25960,7 @@ export type Database = {
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
+      get_current_user_id: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
       get_next_20_cet: { Args: { is_weekly?: boolean }; Returns: string }
