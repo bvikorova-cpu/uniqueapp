@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -6,6 +6,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useReactions } from "@/hooks/useReactions";
+import { supabase } from "@/integrations/supabase/client";
+import { X } from "lucide-react";
 
 interface ReactionPickerProps {
   postId: string;
@@ -22,12 +24,31 @@ const REACTIONS = [
 
 export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
   const [open, setOpen] = useState(false);
-  const { getReactionCounts, toggleReaction } = useReactions(postId);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const { reactions, getReactionCounts, toggleReaction } = useReactions(postId);
   const counts = getReactionCounts();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setCurrentUserId(data.user?.id || null);
+    });
+  }, []);
+
+  // Find user's current reaction
+  const userReaction = reactions.find((r) => r.user_id === currentUserId);
+  const userReactionType = userReaction?.reaction_type;
+  const userReactionEmoji = REACTIONS.find((r) => r.type === userReactionType)?.emoji;
 
   const handleReaction = (type: string) => {
     toggleReaction(type);
     setOpen(false);
+  };
+
+  const handleRemoveReaction = () => {
+    if (userReactionType) {
+      toggleReaction(userReactionType);
+      setOpen(false);
+    }
   };
 
   const totalReactions = Object.values(counts).reduce((a, b) => a + b, 0);
@@ -36,31 +57,46 @@ export const ReactionPicker = ({ postId }: ReactionPickerProps) => {
     <div className="flex items-center gap-2">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="sm">
-            <span className="text-xl mr-2">👍</span>
-            React
+          <Button variant="ghost" size="sm" className={userReactionType ? "text-primary" : ""}>
+            <span className="text-xl mr-2">{userReactionEmoji || "👍"}</span>
+            {userReactionType ? "Reacted" : "React"}
             {totalReactions > 0 && (
               <span className="ml-2 text-muted-foreground">({totalReactions})</span>
             )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-2">
-          <div className="flex gap-1">
-            {REACTIONS.map((reaction) => (
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-1">
+              {REACTIONS.map((reaction) => (
+                <button
+                  key={reaction.type}
+                  onClick={() => handleReaction(reaction.type)}
+                  className={`p-2 hover:bg-accent rounded-lg transition-colors relative group ${
+                    userReactionType === reaction.type 
+                      ? "bg-primary/20 ring-2 ring-primary" 
+                      : ""
+                  }`}
+                  title={userReactionType === reaction.type ? `Remove ${reaction.label}` : reaction.label}
+                >
+                  <span className="text-2xl">{reaction.emoji}</span>
+                  {counts[reaction.type] > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {counts[reaction.type]}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            {userReactionType && (
               <button
-                key={reaction.type}
-                onClick={() => handleReaction(reaction.type)}
-                className="p-2 hover:bg-accent rounded-lg transition-colors relative group"
-                title={reaction.label}
+                onClick={handleRemoveReaction}
+                className="flex items-center justify-center gap-1 text-sm text-destructive hover:bg-destructive/10 rounded-lg p-2 transition-colors"
               >
-                <span className="text-2xl">{reaction.emoji}</span>
-                {counts[reaction.type] > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {counts[reaction.type]}
-                  </span>
-                )}
+                <X className="h-4 w-4" />
+                Remove reaction
               </button>
-            ))}
+            )}
           </div>
         </PopoverContent>
       </Popover>
