@@ -70,7 +70,6 @@ export function ExpertTips() {
           sports_matches(home_team, away_team, sport, match_date)
         `)
         .eq('is_premium', true)
-        .not('price', 'is', null)
         .order('created_at', { ascending: false })
         .limit(20);
 
