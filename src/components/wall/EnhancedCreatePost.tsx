@@ -322,7 +322,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-col h-auto py-2 hover:bg-green-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-green-500/10 rounded-xl transition-all group"
                     onClick={() => document.getElementById("image-upload")?.click()}
                   >
                     <div className="p-2 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-all">
@@ -339,7 +339,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group"
                     onClick={() => document.getElementById("video-upload")?.click()}
                   >
                     <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
@@ -354,7 +354,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <Popover>
                   <PopoverTrigger asChild>
                     <TooltipTrigger asChild>
-                      <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2 hover:bg-yellow-500/10 rounded-xl transition-all group">
+                      <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-2 hover:bg-yellow-500/10 rounded-xl transition-all group">
                         <div className="p-2 rounded-full bg-yellow-500/10 group-hover:bg-yellow-500/20 transition-all">
                           <Smile className="h-5 w-5 text-yellow-600" />
                         </div>
@@ -387,7 +387,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                 <Popover>
                   <PopoverTrigger asChild>
                     <TooltipTrigger asChild>
-                      <Button type="button" variant="ghost" size="sm" className="flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group">
+                      <Button type="button" variant="ghost" size="sm" className="flex-shrink-0 flex-col h-auto py-2 hover:bg-red-500/10 rounded-xl transition-all group">
                         <div className="p-2 rounded-full bg-red-500/10 group-hover:bg-red-500/20 transition-all">
                           <MapPin className="h-5 w-5 text-red-600" />
                         </div>
@@ -413,7 +413,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button" 
                     variant="ghost" 
                     size="sm" 
-                    className="flex-col h-auto py-2 hover:bg-blue-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-blue-500/10 rounded-xl transition-all group"
                     onClick={() => setShowTagFriends(true)}
                   >
                     <div className="p-2 rounded-full bg-blue-500/10 group-hover:bg-blue-500/20 transition-all">
@@ -430,7 +430,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-col h-auto py-2 hover:bg-purple-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-purple-500/10 rounded-xl transition-all group"
                     onClick={() => setShowTemplates(true)}
                   >
                     <div className="p-2 rounded-full bg-purple-500/10 group-hover:bg-purple-500/20 transition-all">
@@ -447,7 +447,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-col h-auto py-2 hover:bg-orange-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-orange-500/10 rounded-xl transition-all group"
                     onClick={() => setShowSchedule(true)}
                   >
                     <div className="p-2 rounded-full bg-orange-500/10 group-hover:bg-orange-500/20 transition-all">
@@ -464,7 +464,7 @@ export function EnhancedCreatePost({ onPostCreated, userProfile }: EnhancedCreat
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="flex-col h-auto py-2 hover:bg-cyan-500/10 rounded-xl transition-all group"
+                    className="flex-shrink-0 flex-col h-auto py-2 hover:bg-cyan-500/10 rounded-xl transition-all group"
                     onClick={() => setShowPoll(true)}
                   >
                     <div className="p-2 rounded-full bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-all">
