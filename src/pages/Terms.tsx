@@ -7,7 +7,7 @@ const Terms = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 py-8 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 mt-12">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Shield className="h-8 w-8 text-primary" />
             <Badge className="text-lg px-4 py-1">UNITY V2.0 – PROTECTIVE EDITION</Badge>
