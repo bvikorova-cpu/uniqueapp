@@ -155,7 +155,7 @@ const Home = () => {
               </span>
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground/90 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto drop-shadow-lg">
             {t('home.hero_subtitle')}
           </p>
           

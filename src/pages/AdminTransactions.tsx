@@ -62,7 +62,7 @@ const AdminTransactions = () => {
       setTransactions((data as any) || []);
     } catch (error) {
       console.error("Error loading transactions:", error);
-      toast.error("Nepodarilo sa načítať transakcie");
+      toast.error("Failed to load transactions");
     } finally {
       setLoading(false);
     }
@@ -77,17 +77,17 @@ const AdminTransactions = () => {
 
       if (error) throw error;
 
-      toast.success("Transakcia označená ako vyplatená");
+      toast.success("Transaction marked as paid");
       loadTransactions();
     } catch (error) {
       console.error("Error updating transaction:", error);
-      toast.error("Nepodarilo sa aktualizovať transakciu");
+      toast.error("Failed to update transaction");
     }
   };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success("Skopírované do schránky");
+    toast.success("Copied to clipboard");
   };
 
   const totalPending = transactions
@@ -100,25 +100,25 @@ const AdminTransactions = () => {
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Správa transakcií</h1>
+        <h1 className="text-3xl font-bold">Transaction Management</h1>
         <div className="flex gap-2">
           <Button
             variant={filter === "all" ? "default" : "outline"}
             onClick={() => setFilter("all")}
           >
-            Všetky
+            All
           </Button>
           <Button
             variant={filter === "pending" ? "default" : "outline"}
             onClick={() => setFilter("pending")}
           >
-            Čakajúce
+            Pending
           </Button>
           <Button
             variant={filter === "completed" ? "default" : "outline"}
             onClick={() => setFilter("completed")}
           >
-            Vyplatené
+            Paid
           </Button>
         </div>
       </div>
@@ -126,26 +126,26 @@ const AdminTransactions = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Čakajúce vyplatenia</CardTitle>
+            <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">€{totalPending.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">
-              Na vyplatenie predajcom
+              To be paid to sellers
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Váš zisk (provízie)</CardTitle>
+            <CardTitle className="text-sm font-medium">Your Profit (Commission)</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">€{totalRevenue.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">
-              Celkové provízie
+              Total commissions
             </p>
           </CardContent>
         </Card>
@@ -153,26 +153,26 @@ const AdminTransactions = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Transakcie</CardTitle>
+          <CardTitle>Transactions</CardTitle>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p>Načítavam...</p>
+            <p>Loading...</p>
           ) : transactions.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">Žiadne transakcie</p>
+            <p className="text-muted-foreground text-center py-8">No transactions</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Dátum</TableHead>
-                    <TableHead>Typ</TableHead>
-                    <TableHead>Predajca</TableHead>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Seller</TableHead>
                     <TableHead>IBAN</TableHead>
-                    <TableHead>Suma na vyplatenie</TableHead>
-                    <TableHead>Vaša provízia</TableHead>
+                    <TableHead>Amount to Pay</TableHead>
+                    <TableHead>Your Commission</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Akcie</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -183,13 +183,13 @@ const AdminTransactions = () => {
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">
-                          {transaction.item_type === "bazaar" ? "Bazár" : "Aukcia"}
+                          {transaction.item_type === "bazaar" ? "Bazaar" : "Auction"}
                         </Badge>
                       </TableCell>
                       <TableCell>
                         <div>
                           <div className="font-medium">
-                            {transaction.seller_profile?.full_name || "Neznámy"}
+                            {transaction.seller_profile?.full_name || "Unknown"}
                           </div>
                           <div className="text-sm text-muted-foreground flex items-center gap-1">
                             {transaction.seller_profile?.email}
@@ -222,7 +222,7 @@ const AdminTransactions = () => {
                             </Button>
                           </div>
                         ) : (
-                          <span className="text-muted-foreground text-sm">Nie je zadaný</span>
+                          <span className="text-muted-foreground text-sm">Not provided</span>
                         )}
                       </TableCell>
                       <TableCell className="font-medium">
@@ -235,12 +235,12 @@ const AdminTransactions = () => {
                         {transaction.status === "pending" ? (
                           <Badge variant="secondary">
                             <Clock className="h-3 w-3 mr-1" />
-                            Čaká na vyplatenie
+                            Awaiting payout
                           </Badge>
                         ) : (
                           <Badge variant="default" className="bg-green-600">
                             <CheckCircle className="h-3 w-3 mr-1" />
-                            Vyplatené
+                            Paid
                           </Badge>
                         )}
                       </TableCell>
@@ -250,7 +250,7 @@ const AdminTransactions = () => {
                             size="sm"
                             onClick={() => markAsPaid(transaction.id)}
                           >
-                            Označiť ako vyplatené
+                            Mark as paid
                           </Button>
                         )}
                       </TableCell>
