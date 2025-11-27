@@ -37,10 +37,10 @@ export default function SearchResults() {
   }>({ posts: [], users: [], hashtags: [] });
 
   const filterOptions = [
-    { id: "all", label: "Všetko", icon: Filter },
-    { id: "people", label: "Ľudia", icon: Users },
-    { id: "posts", label: "Príspevky", icon: FileText },
-    { id: "hashtags", label: "Hashtagy", icon: Hash },
+    { id: "all", label: "All", icon: Filter },
+    { id: "people", label: "People", icon: Users },
+    { id: "posts", label: "Posts", icon: FileText },
+    { id: "hashtags", label: "Hashtags", icon: Hash },
   ];
 
   useEffect(() => {
@@ -137,11 +137,11 @@ export default function SearchResults() {
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Hľadať..."
+                placeholder="Search..."
                 className="pl-10"
               />
             </div>
-            <Button type="submit">Hľadať</Button>
+            <Button type="submit">Search</Button>
           </form>
         </div>
       </div>
@@ -150,7 +150,7 @@ export default function SearchResults() {
         {/* Left Sidebar - Filters */}
         <aside className="w-80 shrink-0 border-r min-h-[calc(100vh-65px)] sticky top-[65px] hidden md:block">
           <div className="p-4">
-            <h2 className="text-xl font-bold mb-4">Výsledky hľadania</h2>
+            <h2 className="text-xl font-bold mb-4">Search Results</h2>
             
             {/* Filter options */}
             <div className="space-y-1">
@@ -185,7 +185,7 @@ export default function SearchResults() {
               <div className="mt-6 pt-6 border-t">
                 <h3 className="font-semibold mb-3 flex items-center gap-2">
                   <SlidersHorizontal className="h-4 w-4" />
-                  Filtre príspevkov
+                  Post Filters
                 </h3>
                 <div className="space-y-3">
                   <label className="flex items-center gap-3 cursor-pointer">
@@ -195,7 +195,7 @@ export default function SearchResults() {
                       onChange={(e) => setFilters({ ...filters, recentPosts: e.target.checked })}
                       className="rounded"
                     />
-                    <span className="text-sm">Nedávne príspevky</span>
+                    <span className="text-sm">Recent posts only</span>
                   </label>
                 </div>
               </div>
@@ -224,8 +224,8 @@ export default function SearchResults() {
             ) : totalResults === 0 ? (
               <div className="text-center py-12">
                 <Search className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Žiadne výsledky pre "{query}"</h3>
-                <p className="text-muted-foreground">Skúste iný výraz alebo zmeňte filtre</p>
+                <h3 className="text-lg font-semibold mb-2">No results for "{query}"</h3>
+                <p className="text-muted-foreground">Try a different search term or change filters</p>
               </div>
             ) : (
               <div className="space-y-6">
@@ -255,7 +255,7 @@ export default function SearchResults() {
                               )}
                             </div>
                             <Button variant="outline" size="sm">
-                              Zobraziť profil
+                              View Profile
                             </Button>
                           </div>
                         </Card>
@@ -267,7 +267,7 @@ export default function SearchResults() {
                         className="w-full mt-2"
                         onClick={() => handleFilterChange("people")}
                       >
-                        Zobraziť všetkých ({results.users.length})
+                        View all ({results.users.length})
                       </Button>
                     )}
                   </section>
@@ -301,7 +301,7 @@ export default function SearchResults() {
                         className="w-full mt-2"
                         onClick={() => handleFilterChange("hashtags")}
                       >
-                        Zobraziť všetky ({results.hashtags.length})
+                        View all ({results.hashtags.length})
                       </Button>
                     )}
                   </section>

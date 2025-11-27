@@ -259,7 +259,7 @@ export const SearchBar = () => {
                   className="w-full px-3 py-2 text-sm font-medium text-primary hover:bg-accent rounded-md transition-colors flex items-center justify-center gap-2"
                 >
                   <Search className="h-4 w-4" />
-                  Zobraziť všetky výsledky pre "{query}"
+                  See all results for "{query}"
                 </button>
               </div>
             </div>

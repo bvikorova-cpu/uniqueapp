@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
+
 import { Mail, MessageSquare, User } from "lucide-react";
 
 const contactSchema = z.object({
@@ -69,8 +69,7 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="container max-w-2xl mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)]">
+      <div className="container max-w-2xl mx-auto px-4 py-12 pt-24 flex items-center justify-center min-h-screen">
         <Card className="w-full">
           <CardHeader>
             <CardTitle className="text-3xl">Contact Us</CardTitle>

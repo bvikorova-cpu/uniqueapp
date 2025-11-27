@@ -207,10 +207,10 @@ const Subscription = () => {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <Crown className="h-5 w-5 text-primary" />
-              Predplatné pripravené
+              Subscription Ready
             </AlertDialogTitle>
             <AlertDialogDescription className="space-y-4">
-              <p>Kliknite na tlačidlo nižšie pre dokončenie platby cez Stripe:</p>
+              <p>Click the button below to complete payment via Stripe:</p>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col sm:flex-col gap-2">
@@ -223,14 +223,14 @@ const Subscription = () => {
               className="w-full gap-2"
             >
               <ExternalLink className="h-4 w-4" />
-              Otvoriť Stripe Platbu
+              Open Stripe Payment
             </Button>
             <Button
               variant="outline"
               onClick={() => setStripeUrl(null)}
               className="w-full"
             >
-              Zrušiť
+              Cancel
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -254,7 +254,7 @@ const Subscription = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {plans.map((plan) => {
             const Icon = plan.icon;
             const isCurrent = currentTier === plan.tier;
