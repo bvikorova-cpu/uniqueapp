@@ -29,8 +29,8 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
-          title: "Chyba",
-          description: "Musíte byť prihlásený na uchádzanie sa o pozíciu.",
+          title: "Error",
+          description: "You must be logged in to apply for a position.",
           variant: "destructive",
         });
         return;
@@ -67,8 +67,8 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Vaša žiadosť bola úspešne odoslaná.",
+        title: "Success",
+        description: "Your application has been submitted successfully.",
       });
 
       setOpen(false);
@@ -76,8 +76,8 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
       setResumeFile(null);
     } catch (error: any) {
       toast({
-        title: "Chyba",
-        description: error.message || "Nepodarilo sa odoslať žiadosť.",
+        title: "Error",
+        description: error.message || "Failed to submit application.",
         variant: "destructive",
       });
     } finally {
@@ -90,22 +90,22 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
       <DialogTrigger asChild>
         <Button className="w-full">
           <Briefcase className="mr-2 h-4 w-4" />
-          Uchádzať sa o pozíciu
+          Apply for Position
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Uchádzať sa o pozíciu</DialogTitle>
+          <DialogTitle>Apply for Position</DialogTitle>
           <p className="text-sm text-muted-foreground">
-            {jobTitle} v {companyName}
+            {jobTitle} at {companyName}
           </p>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="cover-letter">Motivačný list</Label>
+            <Label htmlFor="cover-letter">Cover Letter</Label>
             <Textarea
               id="cover-letter"
-              placeholder="Napíšte, prečo ste vhodný kandidát pre túto pozíciu..."
+              placeholder="Describe why you are a suitable candidate for this position..."
               value={coverLetter}
               onChange={(e) => setCoverLetter(e.target.value)}
               rows={6}
@@ -114,7 +114,7 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="resume">Životopis (voliteľné)</Label>
+            <Label htmlFor="resume">Resume (optional)</Label>
             <div className="flex items-center gap-2">
               <Input
                 id="resume"
@@ -127,7 +127,7 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              Podporované formáty: PDF, DOC, DOCX
+              Supported formats: PDF, DOC, DOCX
             </p>
           </div>
 
@@ -138,10 +138,10 @@ export const JobApplicationDialog = ({ jobId, jobTitle, companyName }: JobApplic
               onClick={() => setOpen(false)}
               disabled={loading}
             >
-              Zrušiť
+              Cancel
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Odosiela sa..." : "Odoslať žiadosť"}
+              {loading ? "Submitting..." : "Submit Application"}
             </Button>
           </div>
         </form>

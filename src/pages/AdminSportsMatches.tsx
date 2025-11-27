@@ -77,8 +77,8 @@ export default function AdminSportsMatches() {
     } catch (error) {
       console.error('Error fetching matches:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa načítať zápasy",
+        title: "Error",
+        description: "Failed to load matches",
         variant: "destructive",
       });
     } finally {
@@ -91,8 +91,8 @@ export default function AdminSportsMatches() {
     
     if (!user) {
       toast({
-        title: "Chyba",
-        description: "Musíte byť prihlásený",
+        title: "Error",
+        description: "You must be logged in",
         variant: "destructive",
       });
       navigate("/auth");
@@ -102,8 +102,8 @@ export default function AdminSportsMatches() {
     if (!formData.sport || !formData.league || !formData.homeTeam || 
         !formData.awayTeam || !formData.matchDate || !formData.matchTime) {
       toast({
-        title: "Chyba",
-        description: "Vyplňte všetky povinné polia",
+        title: "Error",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
@@ -129,8 +129,8 @@ export default function AdminSportsMatches() {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Zápas bol úspešne pridaný",
+        title: "Success",
+        description: "Match added successfully",
       });
 
       // Reset form
@@ -148,8 +148,8 @@ export default function AdminSportsMatches() {
     } catch (error) {
       console.error('Error adding match:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa pridať zápas",
+        title: "Error",
+        description: "Failed to add match",
         variant: "destructive",
       });
     } finally {
@@ -158,7 +158,7 @@ export default function AdminSportsMatches() {
   };
 
   const handleDelete = async (matchId: string) => {
-    if (!confirm("Naozaj chcete zmazať tento zápas?")) {
+    if (!confirm("Are you sure you want to delete this match?")) {
       return;
     }
 
@@ -172,8 +172,8 @@ export default function AdminSportsMatches() {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Zápas bol úspešne zmazaný",
+        title: "Success",
+        description: "Match deleted successfully",
       });
 
       // Refresh matches list
@@ -181,8 +181,8 @@ export default function AdminSportsMatches() {
     } catch (error) {
       console.error('Error deleting match:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa zmazať zápas",
+        title: "Error",
+        description: "Failed to delete match",
         variant: "destructive",
       });
     } finally {
@@ -206,8 +206,8 @@ export default function AdminSportsMatches() {
 
     if (!predictionData.predictionType || !predictionData.confidence) {
       toast({
-        title: "Chyba",
-        description: "Vyplňte všetky povinné polia",
+        title: "Error",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
@@ -229,16 +229,16 @@ export default function AdminSportsMatches() {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Predikcia bola úspešne pridaná",
+        title: "Success",
+        description: "Prediction added successfully",
       });
 
       setShowPredictionDialog(false);
     } catch (error) {
       console.error('Error adding prediction:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa pridať predikciu",
+        title: "Error",
+        description: "Failed to add prediction",
         variant: "destructive",
       });
     } finally {
@@ -249,15 +249,15 @@ export default function AdminSportsMatches() {
   const getPredictionOptions = (sport: string) => {
     switch (sport) {
       case "Football":
-        return ["Výhra domáci", "Výhra hostia", "Remíza", "Obe dajú gól", "Viac ako 2.5 gólov", "Menej ako 2.5 gólov"];
+        return ["Home Win", "Away Win", "Draw", "Both Teams Score", "Over 2.5 Goals", "Under 2.5 Goals"];
       case "Basketball":
-        return ["Výhra domáci", "Výhra hostia", "Viac ako 200 bodov", "Menej ako 200 bodov", "Domáci -5.5", "Hostia +5.5"];
+        return ["Home Win", "Away Win", "Over 200 Points", "Under 200 Points", "Home -5.5", "Away +5.5"];
       case "Tennis":
-        return ["Výhra domáci 2-0", "Výhra domáci 2-1", "Výhra hostia 2-0", "Výhra hostia 2-1"];
+        return ["Home Win 2-0", "Home Win 2-1", "Away Win 2-0", "Away Win 2-1"];
       case "Hockey":
-        return ["Výhra domáci", "Výhra hostia", "Viac ako 5.5 gólov", "Menej ako 5.5 gólov"];
+        return ["Home Win", "Away Win", "Over 5.5 Goals", "Under 5.5 Goals"];
       default:
-        return ["Výhra domáci", "Výhra hostia", "Remíza"];
+        return ["Home Win", "Away Win", "Draw"];
     }
   };
 
@@ -270,45 +270,45 @@ export default function AdminSportsMatches() {
           onClick={() => navigate("/sports-predictor")}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Späť na predikcie
+          Back to Predictions
         </Button>
 
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Plus className="h-6 w-6" />
-              Pridať nový zápas
+              Add New Match
             </CardTitle>
             <CardDescription>
-              Vyplňte informácie o zápase. Miesto konania nie je povinné.
+              Fill in the match information. Location is not required.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="sport">Šport *</Label>
+                <Label htmlFor="sport">Sport *</Label>
                 <Select
                   value={formData.sport}
                   onValueChange={(value) => setFormData({ ...formData, sport: value })}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Vyberte šport" />
+                    <SelectValue placeholder="Select sport" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Football">Futbal</SelectItem>
-                    <SelectItem value="Basketball">Basketbal</SelectItem>
-                    <SelectItem value="Tennis">Tenis</SelectItem>
-                    <SelectItem value="Hockey">Hokej</SelectItem>
-                    <SelectItem value="Volleyball">Volejbal</SelectItem>
+                    <SelectItem value="Football">Football</SelectItem>
+                    <SelectItem value="Basketball">Basketball</SelectItem>
+                    <SelectItem value="Tennis">Tennis</SelectItem>
+                    <SelectItem value="Hockey">Hockey</SelectItem>
+                    <SelectItem value="Volleyball">Volleyball</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="league">Liga *</Label>
+                <Label htmlFor="league">League *</Label>
                 <Input
                   id="league"
-                  placeholder="napr. Premier League, NBA, ATP"
+                  placeholder="e.g. Premier League, NBA, ATP"
                   value={formData.league}
                   onChange={(e) => setFormData({ ...formData, league: e.target.value })}
                 />
@@ -316,20 +316,20 @@ export default function AdminSportsMatches() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="homeTeam">Domáci tím *</Label>
+                  <Label htmlFor="homeTeam">Home Team *</Label>
                   <Input
                     id="homeTeam"
-                    placeholder="napr. Manchester City"
+                    placeholder="e.g. Manchester City"
                     value={formData.homeTeam}
                     onChange={(e) => setFormData({ ...formData, homeTeam: e.target.value })}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="awayTeam">Hosťujúci tím *</Label>
+                  <Label htmlFor="awayTeam">Away Team *</Label>
                   <Input
                     id="awayTeam"
-                    placeholder="napr. Arsenal"
+                    placeholder="e.g. Arsenal"
                     value={formData.awayTeam}
                     onChange={(e) => setFormData({ ...formData, awayTeam: e.target.value })}
                   />
@@ -338,7 +338,7 @@ export default function AdminSportsMatches() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="matchDate">Dátum *</Label>
+                  <Label htmlFor="matchDate">Date *</Label>
                   <Input
                     id="matchDate"
                     type="date"
@@ -348,7 +348,7 @@ export default function AdminSportsMatches() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="matchTime">Čas *</Label>
+                  <Label htmlFor="matchTime">Time *</Label>
                   <Input
                     id="matchTime"
                     type="time"
@@ -362,12 +362,12 @@ export default function AdminSportsMatches() {
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Pridávam...
+                    Adding...
                   </>
                 ) : (
                   <>
                     <Plus className="mr-2 h-4 w-4" />
-                    Pridať zápas
+                    Add Match
                   </>
                 )}
               </Button>
@@ -380,10 +380,10 @@ export default function AdminSportsMatches() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="h-6 w-6" />
-              Pridané zápasy
+              Added Matches
             </CardTitle>
             <CardDescription>
-              Zoznam všetkých pridaných zápasov
+              List of all added matches
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -393,7 +393,7 @@ export default function AdminSportsMatches() {
               </div>
             ) : matches.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">
-                Zatiaľ neboli pridané žiadne zápasy
+                No matches have been added yet
               </p>
             ) : (
               <div className="space-y-3">
@@ -426,25 +426,25 @@ export default function AdminSportsMatches() {
                             onClick={() => handleAddPrediction(match)}
                           >
                             <TrendingUp className="h-4 w-4 mr-2" />
-                            Pridať predikciu
+                            Add Prediction
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-2xl">
                           <DialogHeader>
-                            <DialogTitle>Pridať predikciu</DialogTitle>
+                            <DialogTitle>Add Prediction</DialogTitle>
                             <DialogDescription>
                               {match.home_team} vs {match.away_team}
                             </DialogDescription>
                           </DialogHeader>
                           <div className="space-y-4 mt-4">
                             <div className="space-y-2">
-                              <Label htmlFor="predictionType">Typ predikcie *</Label>
+                              <Label htmlFor="predictionType">Prediction Type *</Label>
                               <Select
                                 value={predictionData.predictionType}
                                 onValueChange={(value) => setPredictionData({ ...predictionData, predictionType: value })}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Vyberte typ predikcie" />
+                                  <SelectValue placeholder="Select prediction type" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {getPredictionOptions(match.sport).map((option) => (
@@ -458,26 +458,26 @@ export default function AdminSportsMatches() {
 
                             <div className="grid grid-cols-2 gap-4">
                               <div className="space-y-2">
-                                <Label htmlFor="confidence">Istota (%) *</Label>
+                                <Label htmlFor="confidence">Confidence (%) *</Label>
                                 <Input
                                   id="confidence"
                                   type="number"
                                   min="0"
                                   max="100"
-                                  placeholder="napr. 75"
+                                  placeholder="e.g. 75"
                                   value={predictionData.confidence}
                                   onChange={(e) => setPredictionData({ ...predictionData, confidence: e.target.value })}
                                 />
                               </div>
 
                               <div className="space-y-2">
-                                <Label htmlFor="odds">Kurz</Label>
+                                <Label htmlFor="odds">Odds</Label>
                                 <Input
                                   id="odds"
                                   type="number"
                                   step="0.01"
                                   min="1"
-                                  placeholder="napr. 2.50"
+                                  placeholder="e.g. 2.50"
                                   value={predictionData.odds}
                                   onChange={(e) => setPredictionData({ ...predictionData, odds: e.target.value })}
                                 />
@@ -485,10 +485,10 @@ export default function AdminSportsMatches() {
                             </div>
 
                             <div className="space-y-2">
-                              <Label htmlFor="analysis">Analýza</Label>
+                              <Label htmlFor="analysis">Analysis</Label>
                               <Textarea
                                 id="analysis"
-                                placeholder="Napíšte krátku analýzu k predikcii..."
+                                placeholder="Write a brief analysis for the prediction..."
                                 value={predictionData.analysis}
                                 onChange={(e) => setPredictionData({ ...predictionData, analysis: e.target.value })}
                                 rows={4}
@@ -500,7 +500,7 @@ export default function AdminSportsMatches() {
                                 variant="outline"
                                 onClick={() => setShowPredictionDialog(false)}
                               >
-                                Zrušiť
+                                Cancel
                               </Button>
                               <Button
                                 onClick={handleSavePrediction}
@@ -509,12 +509,12 @@ export default function AdminSportsMatches() {
                                 {savingPrediction ? (
                                   <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Ukladám...
+                                    Saving...
                                   </>
                                 ) : (
                                   <>
                                     <Plus className="mr-2 h-4 w-4" />
-                                    Uložiť predikciu
+                                    Save Prediction
                                   </>
                                 )}
                               </Button>
@@ -534,7 +534,7 @@ export default function AdminSportsMatches() {
                         ) : (
                           <>
                             <Trash2 className="h-4 w-4 mr-2" />
-                            Zmazať
+                            Delete
                           </>
                         )}
                       </Button>

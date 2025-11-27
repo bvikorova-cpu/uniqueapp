@@ -161,8 +161,8 @@ const Admin = () => {
     } catch (error) {
       console.error('Load data error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa načítať dáta",
+        title: "Error",
+        description: "Failed to load data",
         variant: "destructive",
       });
     }
@@ -178,23 +178,23 @@ const Admin = () => {
       if (error) throw error;
 
       toast({
-        title: "Úspech",
-        description: "Status transakcie bol aktualizovaný",
+        title: "Success",
+        description: "Transaction status updated",
       });
       
       await loadData();
     } catch (error) {
       console.error('Update error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa aktualizovať status",
+        title: "Error",
+        description: "Failed to update status",
         variant: "destructive",
       });
     }
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-background flex items-center justify-center">Načítavam...</div>;
+    return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>;
   }
 
   if (!isAdmin) {
