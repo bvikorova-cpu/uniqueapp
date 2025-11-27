@@ -17823,26 +17823,41 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          feeling: string | null
           id: string
+          image_url: string | null
+          location: string | null
           post_id: string
+          tagged_friends: string[] | null
           updated_at: string
           user_id: string
+          video_url: string | null
         }
         Insert: {
           content: string
           created_at?: string
+          feeling?: string | null
           id?: string
+          image_url?: string | null
+          location?: string | null
           post_id: string
+          tagged_friends?: string[] | null
           updated_at?: string
           user_id: string
+          video_url?: string | null
         }
         Update: {
           content?: string
           created_at?: string
+          feeling?: string | null
           id?: string
+          image_url?: string | null
+          location?: string | null
           post_id?: string
+          tagged_friends?: string[] | null
           updated_at?: string
           user_id?: string
+          video_url?: string | null
         }
         Relationships: [
           {

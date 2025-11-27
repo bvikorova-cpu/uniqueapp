@@ -18,12 +18,15 @@ import {
   Loader2,
   Bookmark,
   Flag,
-  Pin
+  Pin,
+  MapPin,
+  Users
 } from "lucide-react";
 import { ReactionPicker } from "@/components/wall/ReactionPicker";
 import { ReportDialog } from "@/components/wall/ReportDialog";
 import { PinButton } from "@/components/wall/PinButton";
 import { FollowButton } from "@/components/wall/FollowButton";
+import { EnhancedCommentInput } from "./EnhancedCommentInput";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Popover,
@@ -785,25 +788,13 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
 
       {showComments && (
         <div className="p-4 pt-0 space-y-3 animate-accordion-down" onClick={(e) => e.stopPropagation()}>
-          <div className="flex gap-2">
-            <Textarea
-              placeholder="Write a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="min-h-[60px] text-sm"
-            />
-            <Button 
-              onClick={(e) => {
-                e.stopPropagation();
-                handleComment();
-              }} 
-              disabled={!newComment.trim()}
-              size="sm"
-              className="self-end"
-            >
-              Send
-            </Button>
-          </div>
+          <EnhancedCommentInput 
+            postId={post.id} 
+            onCommentAdded={() => {
+              setCommentsCount((prev) => prev + 1);
+              fetchComments();
+            }} 
+          />
 
           <div className="space-y-2 max-h-[300px] overflow-y-auto">
             {loadingComments ? (
@@ -823,7 +814,41 @@ const PostCard = ({ post, onDelete }: PostCardProps) => {
                     <p className="text-xs font-semibold">
                       {comment.profiles?.full_name || "User"}
                     </p>
+                    
+                    {/* Feeling & Location */}
+                    {(comment.feeling || comment.location) && (
+                      <div className="flex flex-wrap gap-1 text-[10px] text-muted-foreground my-0.5">
+                        {comment.feeling && <span>{comment.feeling}</span>}
+                        {comment.location && (
+                          <span className="flex items-center gap-0.5">
+                            <MapPin className="h-2.5 w-2.5" /> {comment.location}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    
                     <p className="text-xs text-foreground/90 mt-0.5">{comment.content}</p>
+                    
+                    {/* Comment Media */}
+                    {comment.image_url && (
+                      <img 
+                        src={comment.image_url} 
+                        alt="Comment image" 
+                        className="mt-1 max-w-[200px] rounded-lg cursor-pointer hover:opacity-90"
+                        onClick={() => {
+                          setSelectedImage(comment.image_url);
+                          setShowImageModal(true);
+                        }}
+                      />
+                    )}
+                    {comment.video_url && (
+                      <video 
+                        src={comment.video_url} 
+                        controls 
+                        className="mt-1 max-w-[200px] rounded-lg"
+                      />
+                    )}
+                    
                     <p className="text-[10px] text-muted-foreground mt-1">
                       {formatDistanceToNow(new Date(comment.created_at), {
                         addSuffix: true,
