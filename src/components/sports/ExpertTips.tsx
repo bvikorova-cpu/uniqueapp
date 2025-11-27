@@ -159,6 +159,11 @@ export function ExpertTips() {
         const tipster = prediction.sports_tipsters;
         const match = prediction.sports_matches;
 
+        // Skip predictions with missing data
+        if (!tipster || !match) {
+          return null;
+        }
+
         return (
           <Card key={prediction.id} className="hover:shadow-lg transition-all">
             <CardHeader>
@@ -166,7 +171,7 @@ export function ExpertTips() {
                 <div className="flex items-center gap-4">
                   <Avatar className="h-12 w-12">
                     <AvatarImage src={tipster.avatar_url || undefined} />
-                    <AvatarFallback>{tipster.display_name[0]}</AvatarFallback>
+                    <AvatarFallback>{tipster.display_name?.[0] || 'T'}</AvatarFallback>
                   </Avatar>
                   <div>
                     <CardTitle className="text-lg">{tipster.display_name}</CardTitle>
