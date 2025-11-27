@@ -53,7 +53,7 @@ export const useAncestorTwin = () => {
         subscriptionEnd: data?.subscriptionEnd,
         loading: false,
       });
-    } catch (error: any) {
+    } catch (error) {
       console.error('Subscription check error:', error);
       setSubscription(prev => ({ ...prev, loading: false }));
     }
@@ -133,7 +133,7 @@ export const useAncestorTwin = () => {
 
       setMatchResults(result);
       return result;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Find matches error:', error);
       throw error;
     }
@@ -158,7 +158,7 @@ export const useAncestorTwin = () => {
       if (error) throw error;
 
       return data?.url || null;
-    } catch (error: any) {
+    } catch (error) {
       console.error('Checkout error:', error);
       toast.error("Failed to create checkout session");
       return null;

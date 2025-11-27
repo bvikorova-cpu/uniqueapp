@@ -63,7 +63,7 @@ export const useFollowMutation = () => {
         description: "You are now following this user",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to follow user",
@@ -96,7 +96,7 @@ export const useUnfollowMutation = () => {
         description: "You have unfollowed this user",
       });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to unfollow user",

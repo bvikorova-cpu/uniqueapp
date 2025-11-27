@@ -119,14 +119,14 @@ export const usePurchasePaint = () => {
         .eq("id", user.id)
         .single();
 
-      const currentCoins = (profile as any)?.coins || 0;
+      const currentCoins = (profile as { coins?: number })?.coins || 0;
       if (currentCoins < price) {
         throw new Error("Not enough coins");
       }
 
       await supabase
         .from("profiles")
-        .update({ coins: currentCoins - price } as any)
+        .update({ coins: currentCoins - price })
         .eq("id", user.id);
 
       // Create purchase record
@@ -222,10 +222,10 @@ export const useUpdatePaintProgress = () => {
           .single();
 
         if (profile) {
-          const currentCoins = (profile as any)?.coins || 0;
+          const currentCoins = (profile as { coins?: number })?.coins || 0;
           await supabase
             .from("profiles")
-            .update({ coins: currentCoins + 50 } as any)
+            .update({ coins: currentCoins + 50 })
             .eq("id", user.id);
         }
       }

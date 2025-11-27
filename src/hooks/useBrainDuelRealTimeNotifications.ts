@@ -21,7 +21,7 @@ export const useBrainDuelRealTimeNotifications = () => {
           table: 'brain_duel_friend_achievements',
         },
         async (payload) => {
-          const newAchievement = payload.new as any;
+          const newAchievement = payload.new as { user_id: string; achievement_type: string };
           
           // Don't notify about your own achievements
           if (newAchievement.user_id === user.id) return;
@@ -56,7 +56,7 @@ export const useBrainDuelRealTimeNotifications = () => {
           table: 'brain_duel_friend_challenges',
         },
         async (payload) => {
-          const newChallenge = payload.new as any;
+          const newChallenge = payload.new as { challenged_id: string; challenger_id: string; stake_credits: number };
           
           // Only notify if you're the challenged player
           if (newChallenge.challenged_id !== user.id) return;

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 
 interface PremiumFeature {
   id: string;
@@ -24,7 +25,7 @@ interface PremiumTheme {
   name: string;
   description: string;
   credit_cost: number;
-  theme_data: any;
+  theme_data: Json | null;
 }
 
 interface PremiumAvatar {

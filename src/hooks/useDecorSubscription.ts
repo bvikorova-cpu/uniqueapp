@@ -72,10 +72,11 @@ export function useDecorSubscription() {
           description: "Complete your subscription to unlock AI design features.",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to create subscription";
       toast({
         title: "Subscription Error",
-        description: error.message || "Failed to create subscription",
+        description: message,
         variant: "destructive",
       });
     }
@@ -111,10 +112,11 @@ export function useDecorSubscription() {
       await checkSubscription();
 
       return data;
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to generate design";
       toast({
         title: "Design Generation Error",
-        description: error.message || "Failed to generate design",
+        description: message,
         variant: "destructive",
       });
       return null;
@@ -136,10 +138,11 @@ export function useDecorSubscription() {
           description: "Complete payment to unlock AR preview for this item.",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to create AR preview payment";
       toast({
         title: "Payment Error",
-        description: error.message || "Failed to create AR preview payment",
+        description: message,
         variant: "destructive",
       });
     }
@@ -158,10 +161,11 @@ export function useDecorSubscription() {
           description: "Manage your subscription in the Stripe portal.",
         });
       }
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to open customer portal";
       toast({
         title: "Portal Error",
-        description: error.message || "Failed to open customer portal",
+        description: message,
         variant: "destructive",
       });
     }

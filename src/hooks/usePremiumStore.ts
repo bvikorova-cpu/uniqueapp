@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAICredits } from './useAICredits';
+import type { Json } from '@/integrations/supabase/types';
 
 interface PremiumFeature {
   id: string;
@@ -27,7 +28,7 @@ interface PremiumTheme {
   name: string;
   description: string;
   preview_image: string | null;
-  theme_data: any;
+  theme_data: Json | null;
   credit_cost: number;
   is_active: boolean;
 }
@@ -319,11 +320,12 @@ export const usePremiumStore = () => {
 
       // Apply theme colors to document
       const theme = themes.find(t => t.id === themeId);
-      if (theme?.theme_data) {
+      if (theme?.theme_data && typeof theme.theme_data === 'object' && !Array.isArray(theme.theme_data)) {
         const root = document.documentElement;
-        if (theme.theme_data.primary) root.style.setProperty('--primary', theme.theme_data.primary);
-        if (theme.theme_data.background) root.style.setProperty('--background', theme.theme_data.background);
-        if (theme.theme_data.foreground) root.style.setProperty('--foreground', theme.theme_data.foreground);
+        const themeData = theme.theme_data as Record<string, string>;
+        if (themeData.primary) root.style.setProperty('--primary', themeData.primary);
+        if (themeData.background) root.style.setProperty('--background', themeData.background);
+        if (themeData.foreground) root.style.setProperty('--foreground', themeData.foreground);
       }
 
       return true;

@@ -86,7 +86,7 @@ export const useGroups = () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       toast({ title: "Group created!" });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error("Create group mutation error:", error);
       toast({ 
         title: "Error creating group", 
@@ -121,7 +121,7 @@ export const useGroups = () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       toast({ title: "Joined group!" });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error("Join group mutation error:", error);
       toast({ 
         title: "Error joining group", 
@@ -156,7 +156,7 @@ export const useGroups = () => {
       queryClient.invalidateQueries({ queryKey: ["groups"] });
       toast({ title: "Left group" });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       console.error("Leave group mutation error:", error);
       toast({ 
         title: "Error leaving group", 
