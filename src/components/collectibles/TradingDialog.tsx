@@ -118,17 +118,17 @@ export function TradingDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5 text-primary" />
-            Vytvor Trade Ponuku
+            Create Trade Offer
           </DialogTitle>
           <DialogDescription>
-            Vytvor trade ponuku pre iného používateľa. Vymeň kolekcie alebo kredity.
+            Create a trade offer for another user. Exchange collections or credits.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">
           {/* Receiver Email */}
           <div className="space-y-2">
-            <Label htmlFor="receiver-email">Email príjemcu</Label>
+            <Label htmlFor="receiver-email">Recipient Email</Label>
             <Input
               id="receiver-email"
               type="email"
@@ -142,31 +142,31 @@ export function TradingDialog({
           <div className="space-y-3 p-4 rounded-lg border border-primary/20 bg-primary/5">
             <h3 className="font-semibold text-lg flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
-              Čo ponúkaš
+              What You Offer
             </h3>
             
             <div className="space-y-2">
-              <Label>Typ</Label>
+              <Label>Type</Label>
               <Select value={offeredType || ''} onValueChange={(value: any) => {
                 setOfferedType(value);
                 setOfferedId(null);
                 setOfferedCredits(0);
               }}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Vyber typ..." />
+                  <SelectValue placeholder="Select type..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="badge">Badge</SelectItem>
                   <SelectItem value="avatar">Avatar</SelectItem>
                   <SelectItem value="theme">Theme</SelectItem>
-                  <SelectItem value="credits">Kredity</SelectItem>
+                  <SelectItem value="credits">Credits</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {offeredType === 'credits' ? (
               <div className="space-y-2">
-                <Label>Počet kreditov</Label>
+                <Label>Number of Credits</Label>
                 <Input
                   type="number"
                   min="1"
@@ -176,10 +176,10 @@ export function TradingDialog({
               </div>
             ) : offeredType && (
               <div className="space-y-2">
-                <Label>Vyber položku</Label>
+                <Label>Select Item</Label>
                 <Select value={offeredId || ''} onValueChange={setOfferedId}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Vyber položku..." />
+                    <SelectValue placeholder="Select item..." />
                   </SelectTrigger>
                   <SelectContent>
                     {getAvailableItems(offeredType).map((item: any) => (
@@ -195,30 +195,30 @@ export function TradingDialog({
 
           {/* What You Want */}
           <div className="space-y-3 p-4 rounded-lg border border-muted bg-muted/50">
-            <h3 className="font-semibold text-lg">Čo žiadaš</h3>
+            <h3 className="font-semibold text-lg">What You Want</h3>
             
             <div className="space-y-2">
-              <Label>Typ</Label>
+              <Label>Type</Label>
               <Select value={requestedType || ''} onValueChange={(value: any) => {
                 setRequestedType(value);
                 setRequestedId(null);
                 setRequestedCredits(0);
               }}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Vyber typ..." />
+                  <SelectValue placeholder="Select type..." />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="badge">Badge</SelectItem>
                   <SelectItem value="avatar">Avatar</SelectItem>
                   <SelectItem value="theme">Theme</SelectItem>
-                  <SelectItem value="credits">Kredity</SelectItem>
+                  <SelectItem value="credits">Credits</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {requestedType === 'credits' ? (
               <div className="space-y-2">
-                <Label>Počet kreditov</Label>
+                <Label>Number of Credits</Label>
                 <Input
                   type="number"
                   min="1"
@@ -228,10 +228,10 @@ export function TradingDialog({
               </div>
             ) : requestedType && (
               <div className="space-y-2">
-                <Label>Vyber položku</Label>
+                <Label>Select Item</Label>
                 <Select value={requestedId || ''} onValueChange={setRequestedId}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Vyber položku..." />
+                    <SelectValue placeholder="Select item..." />
                   </SelectTrigger>
                   <SelectContent>
                     {getAllItems(requestedType).map((item: any) => (
@@ -247,10 +247,10 @@ export function TradingDialog({
 
           {/* Message */}
           <div className="space-y-2">
-            <Label htmlFor="message">Správa (nepovinné)</Label>
+            <Label htmlFor="message">Message (optional)</Label>
             <Textarea
               id="message"
-              placeholder="Pridaj správu k trade ponuke..."
+              placeholder="Add a message to the trade offer..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
@@ -260,13 +260,13 @@ export function TradingDialog({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Zrušiť
+            Cancel
           </Button>
           <Button 
             onClick={handleSubmit}
             disabled={!receiverEmail || (!offeredType && !requestedType)}
           >
-            Odoslať Trade
+            Send Trade
           </Button>
         </DialogFooter>
       </DialogContent>

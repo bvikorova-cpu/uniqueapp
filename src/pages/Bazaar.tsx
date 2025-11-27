@@ -84,8 +84,8 @@ const Bazaar = () => {
         if (error) throw error;
 
         toast({
-          title: "Platba úspešná! 🎉",
-          description: "Tvoj nákup bol spracovaný úspešne.",
+          title: "Payment successful! 🎉",
+          description: "Your purchase was processed successfully.",
         });
 
         // Remove URL parameters
@@ -96,15 +96,15 @@ const Bazaar = () => {
       } catch (error) {
         console.error('Error verifying payment:', error);
         toast({
-          title: "Chyba",
-          description: "Nepodarilo sa overiť platbu. Kontaktuj podporu.",
+          title: "Error",
+          description: "Failed to verify payment. Please contact support.",
           variant: "destructive",
         });
       }
     } else if (paymentStatus === 'cancelled') {
       toast({
-        title: "Platba zrušená",
-        description: "Platba bola zrušená.",
+        title: "Payment cancelled",
+        description: "The payment was cancelled.",
         variant: "destructive",
       });
       window.history.replaceState({}, '', window.location.pathname);
@@ -393,8 +393,8 @@ const Bazaar = () => {
 
     if (selectedItem.is_sold) {
       toast({
-        title: "Už predané",
-        description: "Táto položka už bola predaná.",
+        title: "Already sold",
+        description: "This item has already been sold.",
         variant: "destructive",
       });
       return;
@@ -417,15 +417,15 @@ const Bazaar = () => {
         window.open(data.url, '_blank');
         
         toast({
-          title: "Presmerovanie na platbu",
-          description: "Otvorila sa platobná brána Stripe v novom okne.",
+          title: "Redirecting to payment",
+          description: "Stripe payment gateway opened in a new window.",
         });
       }
     } catch (error) {
       console.error('Buy item error:', error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa inicializovať platbu.",
+        title: "Error",
+        description: "Failed to initialize payment.",
         variant: "destructive",
       });
     }

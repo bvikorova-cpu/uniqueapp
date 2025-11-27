@@ -25,8 +25,8 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
         setHasAccess(false);
         setIsChecking(false);
         toast({
-          title: "Prístup zamietnutý",
-          description: "Musíte byť prihlásený",
+          title: "Access denied",
+          description: "You must be logged in",
           variant: "destructive",
         });
         return;
@@ -47,8 +47,8 @@ export const ProtectedRoute = ({ children, requireAdmin = false }: ProtectedRout
           setHasAccess(!!roleData);
           if (!roleData) {
             toast({
-              title: "Prístup zamietnutý",
-              description: "Nemáte oprávnenie na prístup k tejto stránke",
+              title: "Access denied",
+              description: "You do not have permission to access this page",
               variant: "destructive",
             });
           }

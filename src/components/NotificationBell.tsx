@@ -108,16 +108,16 @@ export function NotificationBell() {
       if (error) throw error;
 
       toast({
-        title: "Tipster schválený",
-        description: `${notification.metadata.tipster_name} bol schválený`,
+        title: "Tipster approved",
+        description: `${notification.metadata.tipster_name} has been approved`,
       });
 
       await markAsRead(notification.id);
     } catch (error) {
       console.error("Error approving tipster:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa schváliť tipstera",
+        title: "Error",
+        description: "Failed to approve tipster",
         variant: "destructive",
       });
     } finally {
@@ -138,16 +138,16 @@ export function NotificationBell() {
       if (error) throw error;
 
       toast({
-        title: "Tipster odmietnutý",
-        description: `${notification.metadata.tipster_name} bol odmietnutý`,
+        title: "Tipster rejected",
+        description: `${notification.metadata.tipster_name} has been rejected`,
       });
 
       await markAsRead(notification.id);
     } catch (error) {
       console.error("Error rejecting tipster:", error);
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa odmietnuť tipstera",
+        title: "Error",
+        description: "Failed to reject tipster",
         variant: "destructive",
       });
     } finally {
@@ -173,16 +173,16 @@ export function NotificationBell() {
       <PopoverContent className="w-96" align="end">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="font-semibold">Notifikácie</h4>
+            <h4 className="font-semibold">Notifications</h4>
             {unreadCount > 0 && (
-              <Badge variant="secondary">{unreadCount} nových</Badge>
+              <Badge variant="secondary">{unreadCount} new</Badge>
             )}
           </div>
           
           <ScrollArea className="h-[400px]">
             {notifications.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
-                Žiadne notifikácie
+                No notifications
               </div>
             ) : (
               <div className="space-y-3">
@@ -203,7 +203,7 @@ export function NotificationBell() {
                             {notification.message}
                           </p>
                           <p className="text-xs text-muted-foreground mt-2">
-                            {new Date(notification.created_at).toLocaleString('sk-SK')}
+                            {new Date(notification.created_at).toLocaleString('en-US')}
                           </p>
                         </div>
                       </div>
@@ -217,7 +217,7 @@ export function NotificationBell() {
                             className="flex-1"
                           >
                             <Check className="h-4 w-4 mr-1" />
-                            Schváliť
+                            Approve
                           </Button>
                           <Button
                             size="sm"
@@ -227,14 +227,14 @@ export function NotificationBell() {
                             className="flex-1"
                           >
                             <X className="h-4 w-4 mr-1" />
-                            Odmietnuť
+                            Reject
                           </Button>
                         </div>
                       )}
 
                       {notification.is_read && (
                         <Badge variant="outline" className="mt-2">
-                          Vybavené
+                          Processed
                         </Badge>
                       )}
                     </div>
