@@ -231,7 +231,7 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-phone">Phone *</Label>
+                    <Label htmlFor="signup-phone">{t('auth.phone')} *</Label>
                     <Input
                       id="signup-phone"
                       name="phone"
@@ -241,12 +241,12 @@ const Auth = () => {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-company">Company Name (optional)</Label>
+                    <Label htmlFor="signup-company">{t('auth.company_name')} ({t('auth.optional')})</Label>
                     <Input
                       id="signup-company"
                       name="companyName"
                       type="text"
-                      placeholder="Real Estate Agency XYZ"
+                      placeholder={t('auth.company_placeholder')}
                     />
                   </div>
                   <div className="space-y-2">

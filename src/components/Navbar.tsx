@@ -169,8 +169,8 @@ const Navbar = () => {
 
   const learningServices = [
     { path: "/education", label: t('navbar.education'), icon: GraduationCap },
-    { path: "/ai-mentor", label: "Personal Mentor", icon: UserCircle },
-    { path: "/kids-channel", label: "Kids Channel 🎬", icon: Video },
+    { path: "/ai-mentor", label: "AI Personal Mentor", icon: UserCircle },
+    { path: "/kids-channel", label: "Kids Channel", icon: Video },
     { path: "/coloring-pages", label: "Coloring Pages", icon: Palette },
     { path: "/brand-battle", label: "Brand Battle Arena", icon: Trophy },
     { path: "/brain-duel", label: "BrainDuel - Knowledge Battle", icon: Trophy },
@@ -184,13 +184,13 @@ const Navbar = () => {
   ];
 
   const fundraisingServices = [
-    { path: "/fundraising/medical", label: "🏥 Medical Fundraising", icon: Heart },
-    { path: "/fundraising/dream", label: "✨ Dream Maker", icon: Sparkles },
-    { path: "/fundraising/hero", label: "🦸 Community Hero", icon: Shield },
-    { path: "/fundraising/pet", label: "🐾 Pet Rescue", icon: PawPrint },
-    { path: "/fundraising/student", label: "🎓 Student Support", icon: GraduationCap },
-    { path: "/fundraising/crisis", label: "🆘 Crisis Relief", icon: AlertTriangle },
-    { path: "/fundraising/talent", label: "🎭 Talent Sponsorship", icon: Star },
+    { path: "/fundraising/medical", label: "Medical Fundraising", icon: Heart },
+    { path: "/fundraising/dream", label: "Dream Maker", icon: Sparkles },
+    { path: "/fundraising/hero", label: "Community Hero", icon: Shield },
+    { path: "/fundraising/pet", label: "Pet Rescue", icon: PawPrint },
+    { path: "/fundraising/student", label: "Student Support", icon: GraduationCap },
+    { path: "/fundraising/crisis", label: "Crisis Relief", icon: AlertTriangle },
+    { path: "/fundraising/talent", label: "Talent Sponsorship", icon: Star },
   ];
 
   const otherServices = [
