@@ -68,8 +68,7 @@ const Terms = () => {
             <div>
               <h4 className="font-semibold text-foreground mb-3">2. Parties, Governing Law, and Jurisdiction</h4>
               <p className="mb-2">
-                <strong>2.1. Operator:</strong> The term "Operator" refers to [Insert Your Company Name and Legal Seat, 
-                e.g., UNIQUE Tech s.r.o., established under the laws of the Slovak Republic].
+                <strong>2.1. Operator:</strong> The term "Operator" refers to UNIQUE Tech, established under the laws of the Slovak Republic.
               </p>
               <p className="mb-2">
                 <strong>2.2. Governing Law:</strong> These T&C shall be governed by and construed exclusively in 
