@@ -276,7 +276,7 @@ const Terms = () => {
 
             <Separator />
 
-            <div>
+            <div id="privacy">
               <h4 className="font-semibold text-foreground mb-3">10. Privacy and Data Protection</h4>
               <p className="mb-2">
                 <strong>10.1. GDPR Compliance:</strong> Personal data processing complies with GDPR and applicable data 
