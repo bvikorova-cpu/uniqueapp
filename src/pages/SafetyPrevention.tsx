@@ -128,12 +128,12 @@ const SafetyPrevention = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 pt-12 pb-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Shield className="h-12 w-12 text-primary" />
-            <h1 className="text-4xl font-bold">Safety & Bullying Prevention</h1>
+            <h1 className="text-4xl font-bold text-foreground">Safety & Bullying Prevention</h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             A comprehensive global resource for bullying prevention, self-defense education, and emotional support.
