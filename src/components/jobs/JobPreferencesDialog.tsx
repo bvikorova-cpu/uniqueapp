@@ -157,9 +157,10 @@ export function JobPreferencesDialog({ userId }: JobPreferencesDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <Bell className="h-4 w-4 mr-2" />
-          {t('jobs.preferences.title', 'Notification Settings')}
+        <Button variant="outline" size="sm" className="text-xs md:text-sm">
+          <Bell className="h-4 w-4 mr-1 md:mr-2" />
+          <span className="hidden sm:inline">{t('jobs.preferences.title', 'Notification Settings')}</span>
+          <span className="sm:hidden">Notify</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
