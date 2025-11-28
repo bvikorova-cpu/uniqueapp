@@ -113,14 +113,14 @@ const SafetyPrevention = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-20">
       {/* Critical Disclaimer Banner */}
-      <div className="bg-destructive text-destructive-foreground py-4 px-4">
+      <div className="bg-destructive py-4 px-4">
         <div className="container mx-auto">
-          <Alert variant="destructive" className="border-2 border-destructive-foreground bg-destructive">
-            <AlertTriangle className="h-6 w-6" />
-            <AlertTitle className="text-xl font-bold">⚠️ IMPORTANT DISCLAIMER ⚠️</AlertTitle>
-            <AlertDescription className="text-lg font-semibold mt-2">
+          <Alert variant="destructive" className="border-2 border-white/30 bg-destructive">
+            <AlertTriangle className="h-6 w-6 text-white" />
+            <AlertTitle className="text-xl font-bold text-white">⚠️ IMPORTANT DISCLAIMER ⚠️</AlertTitle>
+            <AlertDescription className="text-lg font-semibold mt-2 text-white">
               This service is for informational and educational purposes only. It DOES NOT REPLACE professional psychological, 
               psychiatric, or medical treatment. If you are in crisis, contact emergency services (911/112) or a crisis hotline immediately.
             </AlertDescription>
@@ -128,7 +128,7 @@ const SafetyPrevention = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pt-12 pb-8">
+      <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
