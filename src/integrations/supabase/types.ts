@@ -20759,6 +20759,197 @@ export type Database = {
         }
         Relationships: []
       }
+      safety_badges_earned: {
+        Row: {
+          badge_id: string
+          earned_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_course_progress: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          course_id: string
+          created_at: string | null
+          id: string
+          lesson_id: string
+          quiz_score: number | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          course_id: string
+          created_at?: string | null
+          id?: string
+          lesson_id: string
+          quiz_score?: number | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          lesson_id?: string
+          quiz_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_journal_entries: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          entry_date: string
+          evidence_urls: string[] | null
+          id: string
+          incident_type: string | null
+          is_reported: boolean | null
+          location: string | null
+          mood_rating: number | null
+          updated_at: string | null
+          user_id: string
+          witnesses: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          entry_date?: string
+          evidence_urls?: string[] | null
+          id?: string
+          incident_type?: string | null
+          is_reported?: boolean | null
+          location?: string | null
+          mood_rating?: number | null
+          updated_at?: string | null
+          user_id: string
+          witnesses?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          entry_date?: string
+          evidence_urls?: string[] | null
+          id?: string
+          incident_type?: string | null
+          is_reported?: boolean | null
+          location?: string | null
+          mood_rating?: number | null
+          updated_at?: string | null
+          user_id?: string
+          witnesses?: string | null
+        }
+        Relationships: []
+      }
+      safety_stories: {
+        Row: {
+          category: string | null
+          content: string
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          is_approved: boolean | null
+          support_count: number | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_approved?: boolean | null
+          support_count?: number | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          is_approved?: boolean | null
+          support_count?: number | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      safety_story_supports: {
+        Row: {
+          created_at: string | null
+          id: string
+          story_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          story_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          story_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "safety_story_supports_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "safety_stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      safety_support_wall: {
+        Row: {
+          created_at: string | null
+          encouragement_count: number | null
+          id: string
+          is_approved: boolean | null
+          message: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          encouragement_count?: number | null
+          id?: string
+          is_approved?: boolean | null
+          message: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          encouragement_count?: number | null
+          id?: string
+          is_approved?: boolean | null
+          message?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_collections: {
         Row: {
           created_at: string | null
