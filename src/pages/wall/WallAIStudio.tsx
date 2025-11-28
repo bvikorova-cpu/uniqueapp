@@ -377,7 +377,8 @@ const TRANSFORMATION_CATEGORIES = [
 const CREDIT_PACKAGES = [
   { id: "5", credits: 5, price: 3, popular: false },
   { id: "10", credits: 10, price: 6, popular: true },
-  { id: "20", credits: 20, price: 15, popular: false, bestValue: true },
+  { id: "20", credits: 20, price: 15, popular: false },
+  { id: "100", credits: 100, price: 55, popular: false, bestValue: true },
 ];
 
 export default function WallAIStudio() {

@@ -23,6 +23,11 @@ const CREDIT_PACKAGES = {
     credits: 20,
     amount: 1500, // €15.00
   },
+  "100": {
+    priceId: "price_1SYMlzGaXSfGtYFtTrXkrq89",
+    credits: 100,
+    amount: 5500, // €55.00
+  },
 };
 
 const logStep = (step: string, details?: any) => {
