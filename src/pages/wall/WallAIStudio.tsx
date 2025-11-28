@@ -18,23 +18,68 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
-// Import preview images
+// Import preview images - Christmas
 import christmasPolar from "@/assets/ai-studio/christmas-polar.jpg";
 import christmasTree from "@/assets/ai-studio/christmas-tree.jpg";
 import christmasElf from "@/assets/ai-studio/christmas-elf.jpg";
 import christmasCozy from "@/assets/ai-studio/christmas-cozy.jpg";
+// Valentine
 import valentineRoses from "@/assets/ai-studio/valentine-roses.jpg";
 import valentineCupid from "@/assets/ai-studio/valentine-cupid.jpg";
 import valentineDinner from "@/assets/ai-studio/valentine-dinner.jpg";
 import valentineGarden from "@/assets/ai-studio/valentine-garden.jpg";
+// Easter & Halloween
 import easterBunny from "@/assets/ai-studio/easter-bunny.jpg";
 import easterSpring from "@/assets/ai-studio/easter-spring.jpg";
 import halloweenVampire from "@/assets/ai-studio/halloween-vampire.jpg";
 import halloweenWitch from "@/assets/ai-studio/halloween-witch.jpg";
+// Seasons
 import summerBeach from "@/assets/ai-studio/summer-beach.jpg";
 import winterSnow from "@/assets/ai-studio/winter-snow.jpg";
+// Glamour & Portrait
 import glamourHollywood from "@/assets/ai-studio/glamour-hollywood.jpg";
 import fairytalePrincess from "@/assets/ai-studio/fairytale-princess.jpg";
+// Luxury
+import luxuryVip from "@/assets/ai-studio/luxury-vip.jpg";
+import luxuryDubai from "@/assets/ai-studio/luxury-dubai.jpg";
+import luxuryRoyal from "@/assets/ai-studio/luxury-royal.jpg";
+// Portrait
+import portraitBusiness from "@/assets/ai-studio/portrait-business.jpg";
+import portraitArtistic from "@/assets/ai-studio/portrait-artistic.jpg";
+// Star
+import starPopstar from "@/assets/ai-studio/star-popstar.jpg";
+import starMovie from "@/assets/ai-studio/star-movie.jpg";
+// Fantasy
+import fantasyElf from "@/assets/ai-studio/fantasy-elf.jpg";
+import fantasyMermaid from "@/assets/ai-studio/fantasy-mermaid.jpg";
+import fantasyKnight from "@/assets/ai-studio/fantasy-knight.jpg";
+// Retro
+import retro80s from "@/assets/ai-studio/retro-80s.jpg";
+import retro50s from "@/assets/ai-studio/retro-50s.jpg";
+// Nature
+import natureForest from "@/assets/ai-studio/nature-forest.jpg";
+import natureMountain from "@/assets/ai-studio/nature-mountain.jpg";
+// Sports
+import sportsFitness from "@/assets/ai-studio/sports-fitness.jpg";
+import sportsChampion from "@/assets/ai-studio/sports-champion.jpg";
+// Art
+import artPainting from "@/assets/ai-studio/art-painting.jpg";
+import artPopart from "@/assets/ai-studio/art-popart.jpg";
+import artAnime from "@/assets/ai-studio/art-anime.jpg";
+// Travel
+import travelParis from "@/assets/ai-studio/travel-paris.jpg";
+import travelSafari from "@/assets/ai-studio/travel-safari.jpg";
+// Party
+import partyBirthday from "@/assets/ai-studio/party-birthday.jpg";
+import partyClub from "@/assets/ai-studio/party-club.jpg";
+// Wedding
+import weddingBride from "@/assets/ai-studio/wedding-bride.jpg";
+import weddingGroom from "@/assets/ai-studio/wedding-groom.jpg";
+// Future
+import futureCyberpunk from "@/assets/ai-studio/future-cyberpunk.jpg";
+import futureSpace from "@/assets/ai-studio/future-space.jpg";
+// Super
+import superHero from "@/assets/ai-studio/super-hero.jpg";
 
 const TRANSFORMATION_CATEGORIES = [
   {
@@ -70,19 +115,102 @@ const TRANSFORMATION_CATEGORIES = [
     ]
   },
   {
-    name: "🌟 Glamour & Fantasy",
+    name: "👑 Luxury & VIP",
     items: [
-      { id: "glamour-hollywood", label: "Hollywood Star", image: glamourHollywood },
-      { id: "fairytale-princess", label: "Fairytale Princess", image: fairytalePrincess },
+      { id: "luxury-vip", label: "VIP Lifestyle", image: luxuryVip },
+      { id: "luxury-dubai", label: "Dubai Dream", image: luxuryDubai },
+      { id: "luxury-royal", label: "Royal Queen", image: luxuryRoyal },
     ]
   },
   {
-    name: "🌤️ Seasons",
+    name: "📸 Portrait & Professional",
     items: [
-      { id: "summer-beach", label: "Summer Paradise", image: summerBeach },
-      { id: "winter-snow", label: "Winter Wonderland", image: winterSnow },
+      { id: "portrait-business", label: "Business Pro", image: portraitBusiness },
+      { id: "portrait-artistic", label: "Artistic", image: portraitArtistic },
+      { id: "glamour-hollywood", label: "Hollywood Star", image: glamourHollywood },
     ]
-  }
+  },
+  {
+    name: "⭐ Celebrity & Star",
+    items: [
+      { id: "star-popstar", label: "Pop Star", image: starPopstar },
+      { id: "star-movie", label: "Movie Star", image: starMovie },
+    ]
+  },
+  {
+    name: "🧚 Fantasy & Magic",
+    items: [
+      { id: "fairytale-princess", label: "Princess", image: fairytalePrincess },
+      { id: "fantasy-elf", label: "Mystical Elf", image: fantasyElf },
+      { id: "fantasy-mermaid", label: "Mermaid", image: fantasyMermaid },
+      { id: "fantasy-knight", label: "Knight", image: fantasyKnight },
+    ]
+  },
+  {
+    name: "🦸 Superhero",
+    items: [
+      { id: "super-hero", label: "Superhero", image: superHero },
+    ]
+  },
+  {
+    name: "📼 Retro & Vintage",
+    items: [
+      { id: "retro-80s", label: "80s Neon", image: retro80s },
+      { id: "retro-50s", label: "50s Classic", image: retro50s },
+    ]
+  },
+  {
+    name: "🌲 Nature & Outdoor",
+    items: [
+      { id: "nature-forest", label: "Enchanted Forest", image: natureForest },
+      { id: "nature-mountain", label: "Mountain Peak", image: natureMountain },
+      { id: "summer-beach", label: "Summer Beach", image: summerBeach },
+      { id: "winter-snow", label: "Winter Snow", image: winterSnow },
+    ]
+  },
+  {
+    name: "🏆 Sports & Fitness",
+    items: [
+      { id: "sports-fitness", label: "Fitness Pro", image: sportsFitness },
+      { id: "sports-champion", label: "Champion", image: sportsChampion },
+    ]
+  },
+  {
+    name: "🎨 Art & Creative",
+    items: [
+      { id: "art-painting", label: "Oil Painting", image: artPainting },
+      { id: "art-popart", label: "Pop Art", image: artPopart },
+      { id: "art-anime", label: "Anime Style", image: artAnime },
+    ]
+  },
+  {
+    name: "✈️ Travel & Adventure",
+    items: [
+      { id: "travel-paris", label: "Paris Dream", image: travelParis },
+      { id: "travel-safari", label: "Safari Adventure", image: travelSafari },
+    ]
+  },
+  {
+    name: "🎉 Party & Celebration",
+    items: [
+      { id: "party-birthday", label: "Birthday Party", image: partyBirthday },
+      { id: "party-club", label: "VIP Club", image: partyClub },
+    ]
+  },
+  {
+    name: "💒 Wedding",
+    items: [
+      { id: "wedding-bride", label: "Beautiful Bride", image: weddingBride },
+      { id: "wedding-groom", label: "Elegant Groom", image: weddingGroom },
+    ]
+  },
+  {
+    name: "🚀 Futuristic & Sci-Fi",
+    items: [
+      { id: "future-cyberpunk", label: "Cyberpunk", image: futureCyberpunk },
+      { id: "future-space", label: "Space Explorer", image: futureSpace },
+    ]
+  },
 ];
 
 const CREDIT_PACKAGES = [
@@ -103,7 +231,6 @@ export default function WallAIStudio() {
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Handle successful payment redirect
   useEffect(() => {
     const success = searchParams.get("success");
     const credits = searchParams.get("credits");
@@ -133,7 +260,6 @@ export default function WallAIStudio() {
     }
   }, [searchParams]);
 
-  // Fetch user credits
   const { data: credits, isLoading: creditsLoading } = useQuery({
     queryKey: ["ai-studio-credits"],
     queryFn: async () => {
@@ -163,7 +289,6 @@ export default function WallAIStudio() {
     },
   });
 
-  // Fetch transformation history
   const { data: history = [] } = useQuery({
     queryKey: ["ai-studio-history"],
     queryFn: async () => {
@@ -182,7 +307,6 @@ export default function WallAIStudio() {
     },
   });
 
-  // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -196,7 +320,6 @@ export default function WallAIStudio() {
     }
   };
 
-  // Upload image to storage
   const uploadImage = async (): Promise<string> => {
     if (!imageFile) throw new Error("No file selected");
     
@@ -219,7 +342,6 @@ export default function WallAIStudio() {
     return publicUrl;
   };
 
-  // Transform mutation
   const transformMutation = useMutation({
     mutationFn: async () => {
       if (!selectedTransformation) throw new Error("Select a transformation style");
@@ -258,7 +380,6 @@ export default function WallAIStudio() {
     }
   });
 
-  // Purchase credits
   const purchaseMutation = useMutation({
     mutationFn: async (packageId: string) => {
       const { data, error } = await supabase.functions.invoke("ai-studio-purchase", {
@@ -282,7 +403,6 @@ export default function WallAIStudio() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-4 space-y-6">
-      {/* Header */}
       <div className="text-center space-y-2">
         <div className="flex items-center justify-center gap-2">
           <Sparkles className="h-8 w-8 text-primary" />
@@ -292,7 +412,6 @@ export default function WallAIStudio() {
         </div>
         <p className="text-muted-foreground">Transform your photos with AI magic</p>
         
-        {/* Credits display */}
         <div className="flex justify-center">
           <Badge variant="secondary" className="text-lg px-4 py-2">
             <CreditCard className="h-4 w-4 mr-2" />
@@ -302,9 +421,7 @@ export default function WallAIStudio() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
-        {/* Left: Upload & Transform */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Image Upload */}
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <Upload className="h-5 w-5" />
@@ -342,7 +459,6 @@ export default function WallAIStudio() {
                 </div>
               </div>
 
-              {/* Image preview */}
               {(imagePreview || imageUrl) && (
                 <div className="relative aspect-square max-w-sm mx-auto rounded-xl overflow-hidden border-2 border-dashed border-primary/30">
                   <img 
@@ -355,17 +471,16 @@ export default function WallAIStudio() {
             </div>
           </Card>
 
-          {/* Transformation Styles */}
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <Wand2 className="h-5 w-5" />
-              Choose Your Style
+              Choose Your Style ({TRANSFORMATION_CATEGORIES.reduce((acc, cat) => acc + cat.items.length, 0)} styles)
             </h2>
             
-            <div className="space-y-6">
+            <div className="space-y-6 max-h-[600px] overflow-y-auto pr-2">
               {TRANSFORMATION_CATEGORIES.map((category) => (
                 <div key={category.name}>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-3">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3 sticky top-0 bg-card py-1">
                     {category.name}
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -402,8 +517,7 @@ export default function WallAIStudio() {
               ))}
             </div>
 
-            {/* Transform Button */}
-            <div className="mt-6">
+            <div className="mt-6 pt-4 border-t">
               <Button
                 onClick={() => transformMutation.mutate()}
                 disabled={
@@ -436,7 +550,6 @@ export default function WallAIStudio() {
             </div>
           </Card>
 
-          {/* Transformed Result */}
           {transformedImage && (
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -461,9 +574,7 @@ export default function WallAIStudio() {
           )}
         </div>
 
-        {/* Right: Credits & History */}
         <div className="space-y-6">
-          {/* Buy Credits */}
           <Card className="p-6 bg-gradient-to-br from-primary/5 to-purple-500/5">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <CreditCard className="h-5 w-5" />
@@ -503,7 +614,6 @@ export default function WallAIStudio() {
             </div>
           </Card>
 
-          {/* History */}
           {history.length > 0 && (
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
@@ -520,7 +630,7 @@ export default function WallAIStudio() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     <span className="absolute bottom-1 left-1 text-xs text-white/80 capitalize">
-                      {item.transformation_type?.replace("-", " ")}
+                      {item.transformation_type?.replace(/-/g, " ")}
                     </span>
                   </div>
                 ))}
