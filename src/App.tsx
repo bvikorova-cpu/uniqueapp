@@ -295,6 +295,7 @@ import TalentDetail from "./pages/fundraising/TalentDetail";
 import CampaignApprovals from "./pages/admin/CampaignApprovals";
 import WithdrawalRequests from "./pages/admin/WithdrawalRequests";
 import Wellness from "./pages/Wellness";
+import SafetyPrevention from "./pages/SafetyPrevention";
 import PostDetail from "./pages/PostDetail";
 import AdminPaymentDashboard from "./pages/AdminPaymentDashboard";
 import PaymentDocumentation from "./pages/PaymentDocumentation";
@@ -425,6 +426,7 @@ const App = () => {
            <Route path="/skill-swap/profile/edit" element={<ProtectedRoute><SkillSwapSettings /></ProtectedRoute>} />
            <Route path="/subscription-management" element={<ProtectedRoute><SubscriptionManagement /></ProtectedRoute>} />
            <Route path="/wellness" element={<Wellness />} />
+           <Route path="/safety-prevention" element={<SafetyPrevention />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />
           <Route path="/home-designer" element={<HomeDesigner />} />
