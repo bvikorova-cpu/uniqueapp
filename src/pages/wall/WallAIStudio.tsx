@@ -80,6 +80,28 @@ import futureCyberpunk from "@/assets/ai-studio/future-cyberpunk.jpg";
 import futureSpace from "@/assets/ai-studio/future-space.jpg";
 // Super
 import superHero from "@/assets/ai-studio/super-hero.jpg";
+// Music
+import musicDj from "@/assets/ai-studio/music-dj.jpg";
+import musicRockstar from "@/assets/ai-studio/music-rockstar.jpg";
+// Underwater
+import underwaterDiver from "@/assets/ai-studio/underwater-diver.jpg";
+// Pets
+import petsDog from "@/assets/ai-studio/pets-dog.jpg";
+import petsCat from "@/assets/ai-studio/pets-cat.jpg";
+// Gothic
+import gothicDark from "@/assets/ai-studio/gothic-dark.jpg";
+// Steampunk
+import steampunkInventor from "@/assets/ai-studio/steampunk-inventor.jpg";
+// Viking
+import vikingWarrior from "@/assets/ai-studio/viking-warrior.jpg";
+// Pirate
+import pirateCaptain from "@/assets/ai-studio/pirate-captain.jpg";
+// Chef
+import chefGourmet from "@/assets/ai-studio/chef-gourmet.jpg";
+// Western
+import westernCowboy from "@/assets/ai-studio/western-cowboy.jpg";
+// Zen
+import zenMeditation from "@/assets/ai-studio/zen-meditation.jpg";
 
 const TRANSFORMATION_CATEGORIES = [
   {
@@ -209,6 +231,58 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "future-cyberpunk", label: "Cyberpunk", image: futureCyberpunk },
       { id: "future-space", label: "Space Explorer", image: futureSpace },
+    ]
+  },
+  {
+    name: "🎵 Music & Stage",
+    items: [
+      { id: "music-dj", label: "Famous DJ", image: musicDj },
+      { id: "music-rockstar", label: "Rock Star", image: musicRockstar },
+    ]
+  },
+  {
+    name: "🐕 Pets & Animals",
+    items: [
+      { id: "pets-dog", label: "With Puppy", image: petsDog },
+      { id: "pets-cat", label: "Cat Lover", image: petsCat },
+    ]
+  },
+  {
+    name: "🦇 Gothic & Dark",
+    items: [
+      { id: "gothic-dark", label: "Dark Queen", image: gothicDark },
+    ]
+  },
+  {
+    name: "⚙️ Steampunk",
+    items: [
+      { id: "steampunk-inventor", label: "Inventor", image: steampunkInventor },
+    ]
+  },
+  {
+    name: "⚔️ Historical Warriors",
+    items: [
+      { id: "viking-warrior", label: "Viking", image: vikingWarrior },
+      { id: "pirate-captain", label: "Pirate Captain", image: pirateCaptain },
+    ]
+  },
+  {
+    name: "🤠 Western",
+    items: [
+      { id: "western-cowboy", label: "Cowboy", image: westernCowboy },
+    ]
+  },
+  {
+    name: "👨‍🍳 Culinary",
+    items: [
+      { id: "chef-gourmet", label: "Gourmet Chef", image: chefGourmet },
+    ]
+  },
+  {
+    name: "🧘 Zen & Spiritual",
+    items: [
+      { id: "zen-meditation", label: "Meditation", image: zenMeditation },
+      { id: "underwater-diver", label: "Deep Sea", image: underwaterDiver },
     ]
   },
 ];

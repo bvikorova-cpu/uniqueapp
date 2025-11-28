@@ -84,6 +84,34 @@ const TRANSFORMATION_PROMPTS: Record<string, string> = {
   // Futuristic themes
   "future-cyberpunk": "Transform this person into a cyberpunk character. Add neon cyberpunk style, holographic elements, futuristic city background, sci-fi atmosphere. Keep the person's face exactly the same.",
   "future-space": "Transform this person into an astronaut in space. Add astronaut suit, space station background, Earth visible through window, cosmic atmosphere. Keep the person's face exactly the same.",
+  
+  // Music themes
+  "music-dj": "Transform this person into a famous DJ at an EDM music festival. Add DJ equipment, headphones, neon lights, crowd in background, electronic music atmosphere. Keep the person's face exactly the same.",
+  "music-rockstar": "Transform this person into a rock star on concert stage. Add electric guitar, leather jacket, dramatic stage lighting, rock band aesthetic. Keep the person's face exactly the same.",
+  
+  // Pets themes
+  "pets-dog": "Transform this person into a cute portrait holding an adorable golden retriever puppy. Add warm lighting, cozy atmosphere, pet photography style. Keep the person's face exactly the same.",
+  "pets-cat": "Transform this person into a cute portrait holding a fluffy white cat. Add cozy home setting, warm lighting, pet lover aesthetic. Keep the person's face exactly the same.",
+  
+  // Gothic theme
+  "gothic-dark": "Transform this person into a gothic dark queen or king. Add dark elegant crown, ravens, dark castle background, mysterious purple and black atmosphere, dramatic lighting. Keep the person's face exactly the same.",
+  
+  // Steampunk theme
+  "steampunk-inventor": "Transform this person into a steampunk Victorian inventor. Add brass goggles, gears and cogs, steam-powered machinery background, Victorian steampunk fashion. Keep the person's face exactly the same.",
+  
+  // Historical warriors
+  "viking-warrior": "Transform this person into a fierce Viking warrior. Add braided hair, fur cloak, battle axes, Nordic mountain landscape background, warrior aesthetic. Keep the person's face exactly the same.",
+  "pirate-captain": "Transform this person into a pirate captain on ship deck. Add pirate tricorn hat, captain's coat, treasure chest, Caribbean sea and ship in background. Keep the person's face exactly the same.",
+  
+  // Western theme
+  "western-cowboy": "Transform this person into a Western cowboy or cowgirl. Add cowboy hat, desert sunset background with horse, wild west aesthetic, warm golden lighting. Keep the person's face exactly the same.",
+  
+  // Culinary theme
+  "chef-gourmet": "Transform this person into a professional gourmet chef. Add white chef uniform with hat, elegant restaurant kitchen background, culinary excellence atmosphere. Keep the person's face exactly the same.",
+  
+  // Zen & Spiritual themes
+  "zen-meditation": "Transform this person into a peaceful meditation scene. Add white flowing robes, Japanese zen garden with cherry blossoms, peaceful spiritual atmosphere. Keep the person's face exactly the same.",
+  "underwater-diver": "Transform this person into a deep sea diver exploring underwater ruins. Add diving suit, tropical fish, coral reef, magical underwater lighting with sun rays. Keep the person's face exactly the same.",
 };
 
 serve(async (req) => {
