@@ -613,7 +613,7 @@ const Feed = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-x-hidden overflow-y-auto">
+    <div className="min-h-screen relative" style={{ overflowX: 'hidden', overflowY: 'auto' }}>
       {/* Animated Background - Full coverage */}
       <WallBackground />
       
@@ -622,56 +622,73 @@ const Feed = () => {
         {/* Fixed Top Navigation */}
         <WallTopNav currentPath={currentPath} />
       
-      {/* Mobile Menu Button and Drawer */}
-      <MobileWallMenu onPostCreated={fetchPosts} />
-      
-      {/* Main Layout Container - starts below fixed nav */}
-      <div className="flex pt-[112px]">
-        {/* Left Sidebar - Hidden on mobile, sticky within container */}
-        <div className="hidden lg:block">
-          <WallSidebar onPostCreated={fetchPosts} />
-        </div>
-
-        {/* Main Content Area - scrollable with enhanced contrast */}
-        <div className="flex-1 min-w-0 px-2 sm:px-4 py-4">
-          <div className="[&_.card]:bg-white/95 [&_.card]:backdrop-blur-md [&_.card]:shadow-[0_0_30px_rgba(167,139,250,0.3)] [&_.card]:border-violet-300/30">
-            {renderContent()}
+        {/* Mobile Menu Button and Drawer */}
+        <MobileWallMenu onPostCreated={fetchPosts} />
+        
+        {/* Mobile FAB for creating posts */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              className="lg:hidden fixed bottom-6 left-4 z-50 h-14 w-14 rounded-full shadow-lg bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
+            >
+              <span className="text-2xl font-bold">+</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-auto max-h-[80vh] rounded-t-3xl">
+            <div className="py-4">
+              <EnhancedCreatePost onPostCreated={fetchPosts} userProfile={userProfile} />
+            </div>
+          </SheetContent>
+        </Sheet>
+        
+        {/* Main Layout Container - starts below fixed nav */}
+        <div className="flex pt-[112px]">
+          {/* Left Sidebar - Hidden on mobile, sticky within container */}
+          <div className="hidden lg:block">
+            <WallSidebar onPostCreated={fetchPosts} />
           </div>
-        </div>
 
-        {/* Right Sidebar - Hidden on mobile, visible on md+ */}
-        <div className="hidden md:block">
-          <WallRightbar />
-        </div>
-      </div>
+          {/* Main Content Area - scrollable with enhanced contrast */}
+          <div className="flex-1 min-w-0 px-2 sm:px-4 py-4">
+            <div className="[&_.card]:bg-white/95 [&_.card]:backdrop-blur-md [&_.card]:shadow-[0_0_30px_rgba(167,139,250,0.3)] [&_.card]:border-violet-300/30">
+              {renderContent()}
+            </div>
+          </div>
 
-      {/* Mobile Rightbar Sheet */}
-      <Sheet open={isRightbarOpen} onOpenChange={setIsRightbarOpen}>
-        <SheetTrigger asChild>
-          <Button
-            size="icon"
-            className="md:hidden fixed bottom-20 right-4 z-50 h-12 w-12 rounded-full shadow-lg bg-primary hover:bg-primary/90"
-          >
-            <TrendingUp className="h-5 w-5" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="right" className="w-[85vw] sm:w-[400px] p-0 overflow-y-auto">
-          <div className="pt-6">
+          {/* Right Sidebar - Hidden on mobile, visible on md+ */}
+          <div className="hidden md:block">
             <WallRightbar />
           </div>
-        </SheetContent>
-      </Sheet>
+        </div>
 
-      {/* Back to top button - enhanced neon style */}
-      {showBackToTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 xl:right-96 z-50 p-2.5 sm:p-3 rounded-full bg-violet-500 text-white shadow-[0_0_30px_rgba(167,139,250,0.8)] hover:shadow-[0_0_40px_rgba(167,139,250,1)] transition-all duration-300 hover:scale-110 animate-fade-in border-2 border-violet-300"
-          aria-label="Back to top"
-        >
-          <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
-        </button>
-      )}
+        {/* Mobile Rightbar Sheet */}
+        <Sheet open={isRightbarOpen} onOpenChange={setIsRightbarOpen}>
+          <SheetTrigger asChild>
+            <Button
+              size="icon"
+              className="md:hidden fixed bottom-20 right-4 z-50 h-12 w-12 rounded-full shadow-lg bg-primary hover:bg-primary/90"
+            >
+              <TrendingUp className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[85vw] sm:w-[400px] p-0 overflow-y-auto">
+            <div className="pt-6">
+              <WallRightbar />
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        {/* Back to top button - enhanced neon style */}
+        {showBackToTop && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-6 right-6 sm:bottom-8 sm:right-8 xl:right-96 z-50 p-2.5 sm:p-3 rounded-full bg-violet-500 text-white shadow-[0_0_30px_rgba(167,139,250,0.8)] hover:shadow-[0_0_40px_rgba(167,139,250,1)] transition-all duration-300 hover:scale-110 animate-fade-in border-2 border-violet-300"
+            aria-label="Back to top"
+          >
+            <ArrowUp className="h-4 w-4 sm:h-5 sm:w-5" />
+          </button>
+        )}
       </div>
     </div>
   );
