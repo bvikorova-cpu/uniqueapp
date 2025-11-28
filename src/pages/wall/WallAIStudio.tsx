@@ -13,7 +13,8 @@ import {
   CreditCard, 
   Check, 
   Loader2,
-  Wand2
+  Wand2,
+  Download
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -504,6 +505,28 @@ export default function WallAIStudio() {
     return publicUrl;
   };
 
+  const handleDownload = async (imageUrl: string, fileName: string = "ai-studio-photo.png") => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download error:", error);
+      toast({
+        title: "Download Error",
+        description: "Could not download the image",
+        variant: "destructive"
+      });
+    }
+  };
+
   const transformMutation = useMutation({
     mutationFn: async () => {
       if (!selectedTransformation) throw new Error("Select a transformation style");
@@ -709,10 +732,12 @@ export default function WallAIStudio() {
                 />
               </div>
               <div className="flex justify-center mt-4">
-                <Button asChild variant="outline">
-                  <a href={transformedImage} download="transformed-photo.png" target="_blank">
-                    Download Image
-                  </a>
+                <Button 
+                  variant="outline" 
+                  onClick={() => handleDownload(transformedImage, `transformed-${Date.now()}.png`)}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download Image
                 </Button>
               </div>
             </Card>
@@ -764,12 +789,18 @@ export default function WallAIStudio() {
               </h2>
               <div className="grid grid-cols-2 gap-2">
                 {history.slice(0, 4).map((item: any) => (
-                  <div key={item.id} className="aspect-square rounded-lg overflow-hidden">
+                  <div key={item.id} className="relative group aspect-square rounded-lg overflow-hidden">
                     <img
                       src={item.transformed_image_url}
                       alt="Transformation"
                       className="w-full h-full object-cover"
                     />
+                    <button
+                      onClick={() => handleDownload(item.transformed_image_url, `transformation-${item.id}.png`)}
+                      className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                    >
+                      <Download className="h-6 w-6 text-white" />
+                    </button>
                   </div>
                 ))}
               </div>
