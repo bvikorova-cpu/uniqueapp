@@ -384,40 +384,40 @@ const Feed = () => {
     };
   }, [navigate]);
 
-  // Pull-to-refresh functionality
+  // Pull-to-refresh functionality - simplified to not block scrolling
   useEffect(() => {
     let startY = 0;
-    let currentY = 0;
+    let isPulling = false;
 
     const handleTouchStart = (e: TouchEvent) => {
-      const scrollTop = document.documentElement.scrollTop;
-      if (scrollTop === 0) {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      if (scrollTop <= 0) {
         startY = e.touches[0].clientY;
-        setPullToRefresh(prev => ({ ...prev, pulling: true }));
+        isPulling = true;
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!pullToRefresh.pulling) return;
+      if (!isPulling) return;
       
-      const scrollTop = document.documentElement.scrollTop;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
       if (scrollTop > 0) {
+        isPulling = false;
         setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
         return;
       }
 
-      currentY = e.touches[0].clientY;
+      const currentY = e.touches[0].clientY;
       const pullDistance = Math.max(0, currentY - startY);
       
-      if (pullDistance > 0) {
-        e.preventDefault();
+      // Only show pull indicator, don't block scrolling
+      if (pullDistance > 10 && scrollTop <= 0) {
+        setPullToRefresh({
+          pulling: true,
+          pullDistance: Math.min(pullDistance, 120),
+          canRefresh: pullDistance > PULL_THRESHOLD,
+        });
       }
-
-      setPullToRefresh({
-        pulling: true,
-        pullDistance: Math.min(pullDistance, 120),
-        canRefresh: pullDistance > PULL_THRESHOLD,
-      });
     };
 
     const handleTouchEnd = async () => {
@@ -429,18 +429,19 @@ const Feed = () => {
       } else {
         setPullToRefresh({ pulling: false, pullDistance: 0, canRefresh: false });
       }
+      isPulling = false;
     };
 
     document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd);
+    document.addEventListener('touchmove', handleTouchMove, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [pullToRefresh.pulling, pullToRefresh.canRefresh, loading]);
+  }, [pullToRefresh.canRefresh, loading]);
 
   // Infinite scroll effect and back to top button visibility
   useEffect(() => {
