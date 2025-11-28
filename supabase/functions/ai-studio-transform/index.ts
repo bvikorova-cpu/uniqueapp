@@ -84,34 +84,84 @@ const TRANSFORMATION_PROMPTS: Record<string, string> = {
   // Futuristic themes
   "future-cyberpunk": "Transform this person into a cyberpunk character. Add neon cyberpunk style, holographic elements, futuristic city background, sci-fi atmosphere. Keep the person's face exactly the same.",
   "future-space": "Transform this person into an astronaut in space. Add astronaut suit, space station background, Earth visible through window, cosmic atmosphere. Keep the person's face exactly the same.",
+  "future-robot": "Transform this person into a futuristic android robot with metallic skin, glowing eyes, high-tech cybernetic elements. Keep the person's face recognizable.",
+  "future-matrix": "Transform this person into a Matrix-style scene with green digital rain, holographic neon world, virtual reality aesthetic. Keep the person's face exactly the same.",
   
   // Music themes
   "music-dj": "Transform this person into a famous DJ at an EDM music festival. Add DJ equipment, headphones, neon lights, crowd in background, electronic music atmosphere. Keep the person's face exactly the same.",
   "music-rockstar": "Transform this person into a rock star on concert stage. Add electric guitar, leather jacket, dramatic stage lighting, rock band aesthetic. Keep the person's face exactly the same.",
+  "music-country": "Transform this person into a country music star on stage. Add acoustic guitar, cowboy hat, Nashville stage lighting. Keep the person's face exactly the same.",
+  "music-orchestra": "Transform this person into an elegant orchestra conductor. Add tuxedo, symphony hall background, conducting baton. Keep the person's face exactly the same.",
   
   // Pets themes
   "pets-dog": "Transform this person into a cute portrait holding an adorable golden retriever puppy. Add warm lighting, cozy atmosphere, pet photography style. Keep the person's face exactly the same.",
   "pets-cat": "Transform this person into a cute portrait holding a fluffy white cat. Add cozy home setting, warm lighting, pet lover aesthetic. Keep the person's face exactly the same.",
+  "pets-bunny": "Transform this person holding a cute fluffy bunny rabbit. Add soft lighting, adorable pet photography style. Keep the person's face exactly the same.",
+  "pets-horse": "Transform this person riding a majestic white horse. Add beautiful nature background, equestrian style. Keep the person's face exactly the same.",
   
-  // Gothic theme
+  // Gothic themes
   "gothic-dark": "Transform this person into a gothic dark queen or king. Add dark elegant crown, ravens, dark castle background, mysterious purple and black atmosphere, dramatic lighting. Keep the person's face exactly the same.",
+  "gothic-angel": "Transform this person into a gothic angel with black wings. Add dark cathedral background, mysterious atmosphere. Keep the person's face exactly the same.",
+  "gothic-romantic": "Transform this person into romantic gothic style. Add velvet Victorian dress, red roses, moonlight, romantic gothic atmosphere. Keep the person's face exactly the same.",
+  "gothic-vampire": "Transform this person into a vampire lord on gothic throne. Add dramatic red and black colors, castle throne room, dark elegance. Keep the person's face exactly the same.",
   
-  // Steampunk theme
+  // Steampunk themes
   "steampunk-inventor": "Transform this person into a steampunk Victorian inventor. Add brass goggles, gears and cogs, steam-powered machinery background, Victorian steampunk fashion. Keep the person's face exactly the same.",
+  "steampunk-pilot": "Transform this person into a steampunk airship pilot. Add aviator goggles, leather flight gear, airship background. Keep the person's face exactly the same.",
+  "steampunk-lady": "Transform this person into an elegant steampunk Victorian lady. Add clockwork accessories, Victorian dress, tea party setting. Keep the person's face exactly the same.",
+  "steampunk-explorer": "Transform this person into a steampunk explorer. Add compass, maps, Victorian adventure gear, explorer aesthetic. Keep the person's face exactly the same.",
   
   // Historical warriors
   "viking-warrior": "Transform this person into a fierce Viking warrior. Add braided hair, fur cloak, battle axes, Nordic mountain landscape background, warrior aesthetic. Keep the person's face exactly the same.",
   "pirate-captain": "Transform this person into a pirate captain on ship deck. Add pirate tricorn hat, captain's coat, treasure chest, Caribbean sea and ship in background. Keep the person's face exactly the same.",
+  "warrior-spartan": "Transform this person into an ancient Greek Spartan warrior. Add spartan helmet, armor, shield, epic battle background. Keep the person's face exactly the same.",
+  "warrior-samurai": "Transform this person into a Japanese samurai warrior. Add traditional samurai armor, katana sword, cherry blossoms background. Keep the person's face exactly the same.",
   
-  // Western theme
+  // Western themes
   "western-cowboy": "Transform this person into a Western cowboy or cowgirl. Add cowboy hat, desert sunset background with horse, wild west aesthetic, warm golden lighting. Keep the person's face exactly the same.",
+  "western-sheriff": "Transform this person into a Wild West sheriff. Add sheriff badge, cowboy hat, western town background. Keep the person's face exactly the same.",
+  "western-rodeo": "Transform this person into a rodeo rider. Add rodeo arena, bull riding action, western atmosphere. Keep the person's face exactly the same.",
+  "western-saloon": "Transform this person into a Wild West saloon scene. Add vintage saloon interior, western costume. Keep the person's face exactly the same.",
   
-  // Culinary theme
+  // Culinary themes
   "chef-gourmet": "Transform this person into a professional gourmet chef. Add white chef uniform with hat, elegant restaurant kitchen background, culinary excellence atmosphere. Keep the person's face exactly the same.",
+  "chef-pastry": "Transform this person into a pastry chef decorating cakes. Add pastry kitchen, beautiful desserts, bakery setting. Keep the person's face exactly the same.",
+  "chef-sushi": "Transform this person into a Japanese sushi chef. Add sushi bar, fresh sushi rolls, traditional Japanese restaurant. Keep the person's face exactly the same.",
+  "chef-bbq": "Transform this person into a BBQ pitmaster. Add smoker grill, outdoor cooking setup, rustic BBQ atmosphere. Keep the person's face exactly the same.",
   
   // Zen & Spiritual themes
   "zen-meditation": "Transform this person into a peaceful meditation scene. Add white flowing robes, Japanese zen garden with cherry blossoms, peaceful spiritual atmosphere. Keep the person's face exactly the same.",
   "underwater-diver": "Transform this person into a deep sea diver exploring underwater ruins. Add diving suit, tropical fish, coral reef, magical underwater lighting with sun rays. Keep the person's face exactly the same.",
+  "zen-taichi": "Transform this person doing tai chi in misty mountains. Add flowing white clothes, peaceful morning mist, martial arts atmosphere. Keep the person's face exactly the same.",
+  "zen-monk": "Transform this person into a Buddhist monk. Add orange robes, ancient temple background, peaceful spiritual atmosphere. Keep the person's face exactly the same.",
+  
+  // Easter additional
+  "easter-chick": "Transform this person with cute yellow Easter chick. Add Easter eggs, spring meadow, pastel colors. Keep the person's face exactly the same.",
+  "easter-basket": "Transform this person with Easter basket full of colorful eggs. Add spring flowers, pastel colors, Easter celebration. Keep the person's face exactly the same.",
+  
+  // Halloween additional
+  "halloween-zombie": "Transform this person into a scary zombie. Add torn clothes, graveyard background, fog, horror atmosphere. Keep the person's face recognizable but zombified.",
+  "halloween-ghost": "Transform this person into an ethereal ghost. Add white flowing dress, haunted mansion, spooky atmosphere. Keep the person's face exactly the same.",
+  
+  // Additional styles
+  "luxury-yacht": "Transform this person into a billionaire on a luxury yacht. Add champagne, gold jewelry, ocean background, wealthy lifestyle. Keep the person's face exactly the same.",
+  "portrait-fashion": "Transform this into an elegant fashion magazine cover portrait. Add high fashion styling, professional studio lighting. Keep the person's face exactly the same.",
+  "star-grammy": "Transform this person into a Grammy award winner on stage. Add microphone, award trophy, red carpet lighting. Keep the person's face exactly the same.",
+  "star-runway": "Transform this person into a runway model at fashion week. Add haute couture outfit, runway catwalk, fashion show lighting. Keep the person's face exactly the same.",
+  "super-heroine": "Transform this person into a powerful female superhero. Add superhero costume with cape, flying over city, powerful pose. Keep the person's face exactly the same.",
+  "super-villain": "Transform this person into a dramatic supervillain. Add dark costume, lightning, powerful evil aesthetic. Keep the person's face exactly the same.",
+  "super-comic": "Transform this person into a comic book superhero. Add comic art style, action pose, superhero suit. Keep the person's face recognizable.",
+  "retro-70s": "Transform this person into 70s disco style. Add afro hair, disco ball, colorful lights, retro disco club. Keep the person's face exactly the same.",
+  "retro-gatsby": "Transform this person into 1920s Great Gatsby style. Add art deco, flapper dress or suit, vintage party. Keep the person's face exactly the same.",
+  "sports-basketball": "Transform this person into a basketball player dunking. Add NBA style uniform, stadium, sports action. Keep the person's face exactly the same.",
+  "sports-yoga": "Transform this person into a yoga master in lotus pose. Add zen garden, peaceful meditation setting. Keep the person's face exactly the same.",
+  "art-watercolor": "Transform this into a beautiful watercolor painting style portrait. Add soft artistic brush strokes, watercolor aesthetic. Keep the person's face recognizable.",
+  "travel-newyork": "Transform this person in New York Times Square. Add city lights, urban atmosphere, NYC landmarks. Keep the person's face exactly the same.",
+  "travel-maldives": "Transform this person at Maldives beach resort. Add crystal clear water, luxury resort, tropical paradise. Keep the person's face exactly the same.",
+  "party-newyear": "Transform this person at New Year Eve celebration. Add champagne, fireworks, midnight celebration. Keep the person's face exactly the same.",
+  "party-carnival": "Transform this person at a Venetian carnival masquerade. Add elegant mask, carnival costume, ballroom setting. Keep the person's face exactly the same.",
+  "wedding-bridesmaid": "Transform this person into an elegant bridesmaid. Add pink dress, wedding flowers, romantic venue. Keep the person's face exactly the same.",
+  "wedding-dance": "Transform this person into a romantic first dance at wedding. Add elegant ballroom, wedding reception, romantic lighting. Keep the person's face exactly the same.",
 };
 
 serve(async (req) => {

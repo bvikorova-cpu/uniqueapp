@@ -28,11 +28,16 @@ import valentineRoses from "@/assets/ai-studio/valentine-roses.jpg";
 import valentineCupid from "@/assets/ai-studio/valentine-cupid.jpg";
 import valentineDinner from "@/assets/ai-studio/valentine-dinner.jpg";
 import valentineGarden from "@/assets/ai-studio/valentine-garden.jpg";
-// Easter & Halloween
+// Easter
 import easterBunny from "@/assets/ai-studio/easter-bunny.jpg";
 import easterSpring from "@/assets/ai-studio/easter-spring.jpg";
+import easterChick from "@/assets/ai-studio/easter-chick.jpg";
+import easterBasket from "@/assets/ai-studio/easter-basket.jpg";
+// Halloween
 import halloweenVampire from "@/assets/ai-studio/halloween-vampire.jpg";
 import halloweenWitch from "@/assets/ai-studio/halloween-witch.jpg";
+import halloweenZombie from "@/assets/ai-studio/halloween-zombie.jpg";
+import halloweenGhost from "@/assets/ai-studio/halloween-ghost.jpg";
 // Seasons
 import summerBeach from "@/assets/ai-studio/summer-beach.jpg";
 import winterSnow from "@/assets/ai-studio/winter-snow.jpg";
@@ -43,12 +48,16 @@ import fairytalePrincess from "@/assets/ai-studio/fairytale-princess.jpg";
 import luxuryVip from "@/assets/ai-studio/luxury-vip.jpg";
 import luxuryDubai from "@/assets/ai-studio/luxury-dubai.jpg";
 import luxuryRoyal from "@/assets/ai-studio/luxury-royal.jpg";
+import luxuryYacht from "@/assets/ai-studio/luxury-yacht.jpg";
 // Portrait
 import portraitBusiness from "@/assets/ai-studio/portrait-business.jpg";
 import portraitArtistic from "@/assets/ai-studio/portrait-artistic.jpg";
+import portraitFashion from "@/assets/ai-studio/portrait-fashion.jpg";
 // Star
 import starPopstar from "@/assets/ai-studio/star-popstar.jpg";
 import starMovie from "@/assets/ai-studio/star-movie.jpg";
+import starGrammy from "@/assets/ai-studio/star-grammy.jpg";
+import starRunway from "@/assets/ai-studio/star-runway.jpg";
 // Fantasy
 import fantasyElf from "@/assets/ai-studio/fantasy-elf.jpg";
 import fantasyMermaid from "@/assets/ai-studio/fantasy-mermaid.jpg";
@@ -56,52 +65,86 @@ import fantasyKnight from "@/assets/ai-studio/fantasy-knight.jpg";
 // Retro
 import retro80s from "@/assets/ai-studio/retro-80s.jpg";
 import retro50s from "@/assets/ai-studio/retro-50s.jpg";
+import retro70s from "@/assets/ai-studio/retro-70s.jpg";
+import retroGatsby from "@/assets/ai-studio/retro-gatsby.jpg";
 // Nature
 import natureForest from "@/assets/ai-studio/nature-forest.jpg";
 import natureMountain from "@/assets/ai-studio/nature-mountain.jpg";
 // Sports
 import sportsFitness from "@/assets/ai-studio/sports-fitness.jpg";
 import sportsChampion from "@/assets/ai-studio/sports-champion.jpg";
+import sportsBasketball from "@/assets/ai-studio/sports-basketball.jpg";
+import sportsYoga from "@/assets/ai-studio/sports-yoga.jpg";
 // Art
 import artPainting from "@/assets/ai-studio/art-painting.jpg";
 import artPopart from "@/assets/ai-studio/art-popart.jpg";
 import artAnime from "@/assets/ai-studio/art-anime.jpg";
+import artWatercolor from "@/assets/ai-studio/art-watercolor.jpg";
 // Travel
 import travelParis from "@/assets/ai-studio/travel-paris.jpg";
 import travelSafari from "@/assets/ai-studio/travel-safari.jpg";
+import travelNewyork from "@/assets/ai-studio/travel-newyork.jpg";
+import travelMaldives from "@/assets/ai-studio/travel-maldives.jpg";
 // Party
 import partyBirthday from "@/assets/ai-studio/party-birthday.jpg";
 import partyClub from "@/assets/ai-studio/party-club.jpg";
+import partyNewyear from "@/assets/ai-studio/party-newyear.jpg";
+import partyCarnival from "@/assets/ai-studio/party-carnival.jpg";
 // Wedding
 import weddingBride from "@/assets/ai-studio/wedding-bride.jpg";
 import weddingGroom from "@/assets/ai-studio/wedding-groom.jpg";
+import weddingBridesmaid from "@/assets/ai-studio/wedding-bridesmaid.jpg";
+import weddingDance from "@/assets/ai-studio/wedding-dance.jpg";
 // Future
 import futureCyberpunk from "@/assets/ai-studio/future-cyberpunk.jpg";
 import futureSpace from "@/assets/ai-studio/future-space.jpg";
+import futureRobot from "@/assets/ai-studio/future-robot.jpg";
+import futureMatrix from "@/assets/ai-studio/future-matrix.jpg";
 // Super
 import superHero from "@/assets/ai-studio/super-hero.jpg";
+import superHeroine from "@/assets/ai-studio/super-heroine.jpg";
+import superVillain from "@/assets/ai-studio/super-villain.jpg";
+import superComic from "@/assets/ai-studio/super-comic.jpg";
 // Music
 import musicDj from "@/assets/ai-studio/music-dj.jpg";
 import musicRockstar from "@/assets/ai-studio/music-rockstar.jpg";
-// Underwater
-import underwaterDiver from "@/assets/ai-studio/underwater-diver.jpg";
+import musicCountry from "@/assets/ai-studio/music-country.jpg";
+import musicOrchestra from "@/assets/ai-studio/music-orchestra.jpg";
 // Pets
 import petsDog from "@/assets/ai-studio/pets-dog.jpg";
 import petsCat from "@/assets/ai-studio/pets-cat.jpg";
+import petsBunny from "@/assets/ai-studio/pets-bunny.jpg";
+import petsHorse from "@/assets/ai-studio/pets-horse.jpg";
 // Gothic
 import gothicDark from "@/assets/ai-studio/gothic-dark.jpg";
+import gothicAngel from "@/assets/ai-studio/gothic-angel.jpg";
+import gothicRomantic from "@/assets/ai-studio/gothic-romantic.jpg";
+import gothicVampire from "@/assets/ai-studio/gothic-vampire.jpg";
 // Steampunk
 import steampunkInventor from "@/assets/ai-studio/steampunk-inventor.jpg";
-// Viking
+import steampunkPilot from "@/assets/ai-studio/steampunk-pilot.jpg";
+import steampunkLady from "@/assets/ai-studio/steampunk-lady.jpg";
+import steampunkExplorer from "@/assets/ai-studio/steampunk-explorer.jpg";
+// Warriors
 import vikingWarrior from "@/assets/ai-studio/viking-warrior.jpg";
-// Pirate
 import pirateCaptain from "@/assets/ai-studio/pirate-captain.jpg";
-// Chef
-import chefGourmet from "@/assets/ai-studio/chef-gourmet.jpg";
+import warriorSpartan from "@/assets/ai-studio/warrior-spartan.jpg";
+import warriorSamurai from "@/assets/ai-studio/warrior-samurai.jpg";
 // Western
 import westernCowboy from "@/assets/ai-studio/western-cowboy.jpg";
+import westernSheriff from "@/assets/ai-studio/western-sheriff.jpg";
+import westernRodeo from "@/assets/ai-studio/western-rodeo.jpg";
+import westernSaloon from "@/assets/ai-studio/western-saloon.jpg";
+// Chef
+import chefGourmet from "@/assets/ai-studio/chef-gourmet.jpg";
+import chefPastry from "@/assets/ai-studio/chef-pastry.jpg";
+import chefSushi from "@/assets/ai-studio/chef-sushi.jpg";
+import chefBbq from "@/assets/ai-studio/chef-bbq.jpg";
 // Zen
 import zenMeditation from "@/assets/ai-studio/zen-meditation.jpg";
+import underwaterDiver from "@/assets/ai-studio/underwater-diver.jpg";
+import zenTaichi from "@/assets/ai-studio/zen-taichi.jpg";
+import zenMonk from "@/assets/ai-studio/zen-monk.jpg";
 
 const TRANSFORMATION_CATEGORIES = [
   {
@@ -127,6 +170,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "easter-bunny", label: "Easter Bunny", image: easterBunny },
       { id: "easter-spring", label: "Spring Flowers", image: easterSpring },
+      { id: "easter-chick", label: "Easter Chick", image: easterChick },
+      { id: "easter-basket", label: "Easter Basket", image: easterBasket },
     ]
   },
   {
@@ -134,6 +179,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "halloween-vampire", label: "Vampire", image: halloweenVampire },
       { id: "halloween-witch", label: "Magic Witch", image: halloweenWitch },
+      { id: "halloween-zombie", label: "Zombie", image: halloweenZombie },
+      { id: "halloween-ghost", label: "Ghost", image: halloweenGhost },
     ]
   },
   {
@@ -142,6 +189,7 @@ const TRANSFORMATION_CATEGORIES = [
       { id: "luxury-vip", label: "VIP Lifestyle", image: luxuryVip },
       { id: "luxury-dubai", label: "Dubai Dream", image: luxuryDubai },
       { id: "luxury-royal", label: "Royal Queen", image: luxuryRoyal },
+      { id: "luxury-yacht", label: "Yacht Life", image: luxuryYacht },
     ]
   },
   {
@@ -150,6 +198,7 @@ const TRANSFORMATION_CATEGORIES = [
       { id: "portrait-business", label: "Business Pro", image: portraitBusiness },
       { id: "portrait-artistic", label: "Artistic", image: portraitArtistic },
       { id: "glamour-hollywood", label: "Hollywood Star", image: glamourHollywood },
+      { id: "portrait-fashion", label: "Fashion", image: portraitFashion },
     ]
   },
   {
@@ -157,6 +206,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "star-popstar", label: "Pop Star", image: starPopstar },
       { id: "star-movie", label: "Movie Star", image: starMovie },
+      { id: "star-grammy", label: "Grammy Winner", image: starGrammy },
+      { id: "star-runway", label: "Runway Model", image: starRunway },
     ]
   },
   {
@@ -172,6 +223,9 @@ const TRANSFORMATION_CATEGORIES = [
     name: "🦸 Superhero",
     items: [
       { id: "super-hero", label: "Superhero", image: superHero },
+      { id: "super-heroine", label: "Superheroine", image: superHeroine },
+      { id: "super-villain", label: "Villain", image: superVillain },
+      { id: "super-comic", label: "Comic Style", image: superComic },
     ]
   },
   {
@@ -179,6 +233,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "retro-80s", label: "80s Neon", image: retro80s },
       { id: "retro-50s", label: "50s Classic", image: retro50s },
+      { id: "retro-70s", label: "70s Disco", image: retro70s },
+      { id: "retro-gatsby", label: "Gatsby 20s", image: retroGatsby },
     ]
   },
   {
@@ -195,6 +251,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "sports-fitness", label: "Fitness Pro", image: sportsFitness },
       { id: "sports-champion", label: "Champion", image: sportsChampion },
+      { id: "sports-basketball", label: "Basketball", image: sportsBasketball },
+      { id: "sports-yoga", label: "Yoga Master", image: sportsYoga },
     ]
   },
   {
@@ -203,6 +261,7 @@ const TRANSFORMATION_CATEGORIES = [
       { id: "art-painting", label: "Oil Painting", image: artPainting },
       { id: "art-popart", label: "Pop Art", image: artPopart },
       { id: "art-anime", label: "Anime Style", image: artAnime },
+      { id: "art-watercolor", label: "Watercolor", image: artWatercolor },
     ]
   },
   {
@@ -210,6 +269,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "travel-paris", label: "Paris Dream", image: travelParis },
       { id: "travel-safari", label: "Safari Adventure", image: travelSafari },
+      { id: "travel-newyork", label: "New York", image: travelNewyork },
+      { id: "travel-maldives", label: "Maldives", image: travelMaldives },
     ]
   },
   {
@@ -217,6 +278,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "party-birthday", label: "Birthday Party", image: partyBirthday },
       { id: "party-club", label: "VIP Club", image: partyClub },
+      { id: "party-newyear", label: "New Year", image: partyNewyear },
+      { id: "party-carnival", label: "Carnival", image: partyCarnival },
     ]
   },
   {
@@ -224,6 +287,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "wedding-bride", label: "Beautiful Bride", image: weddingBride },
       { id: "wedding-groom", label: "Elegant Groom", image: weddingGroom },
+      { id: "wedding-bridesmaid", label: "Bridesmaid", image: weddingBridesmaid },
+      { id: "wedding-dance", label: "First Dance", image: weddingDance },
     ]
   },
   {
@@ -231,6 +296,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "future-cyberpunk", label: "Cyberpunk", image: futureCyberpunk },
       { id: "future-space", label: "Space Explorer", image: futureSpace },
+      { id: "future-robot", label: "Robot", image: futureRobot },
+      { id: "future-matrix", label: "Matrix", image: futureMatrix },
     ]
   },
   {
@@ -238,6 +305,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "music-dj", label: "Famous DJ", image: musicDj },
       { id: "music-rockstar", label: "Rock Star", image: musicRockstar },
+      { id: "music-country", label: "Country Star", image: musicCountry },
+      { id: "music-orchestra", label: "Conductor", image: musicOrchestra },
     ]
   },
   {
@@ -245,18 +314,26 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "pets-dog", label: "With Puppy", image: petsDog },
       { id: "pets-cat", label: "Cat Lover", image: petsCat },
+      { id: "pets-bunny", label: "Bunny", image: petsBunny },
+      { id: "pets-horse", label: "Horse Riding", image: petsHorse },
     ]
   },
   {
     name: "🦇 Gothic & Dark",
     items: [
       { id: "gothic-dark", label: "Dark Queen", image: gothicDark },
+      { id: "gothic-angel", label: "Dark Angel", image: gothicAngel },
+      { id: "gothic-romantic", label: "Romantic Gothic", image: gothicRomantic },
+      { id: "gothic-vampire", label: "Vampire Lord", image: gothicVampire },
     ]
   },
   {
     name: "⚙️ Steampunk",
     items: [
       { id: "steampunk-inventor", label: "Inventor", image: steampunkInventor },
+      { id: "steampunk-pilot", label: "Airship Pilot", image: steampunkPilot },
+      { id: "steampunk-lady", label: "Victorian Lady", image: steampunkLady },
+      { id: "steampunk-explorer", label: "Explorer", image: steampunkExplorer },
     ]
   },
   {
@@ -264,18 +341,26 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "viking-warrior", label: "Viking", image: vikingWarrior },
       { id: "pirate-captain", label: "Pirate Captain", image: pirateCaptain },
+      { id: "warrior-spartan", label: "Spartan", image: warriorSpartan },
+      { id: "warrior-samurai", label: "Samurai", image: warriorSamurai },
     ]
   },
   {
     name: "🤠 Western",
     items: [
       { id: "western-cowboy", label: "Cowboy", image: westernCowboy },
+      { id: "western-sheriff", label: "Sheriff", image: westernSheriff },
+      { id: "western-rodeo", label: "Rodeo", image: westernRodeo },
+      { id: "western-saloon", label: "Saloon", image: westernSaloon },
     ]
   },
   {
     name: "👨‍🍳 Culinary",
     items: [
       { id: "chef-gourmet", label: "Gourmet Chef", image: chefGourmet },
+      { id: "chef-pastry", label: "Pastry Chef", image: chefPastry },
+      { id: "chef-sushi", label: "Sushi Chef", image: chefSushi },
+      { id: "chef-bbq", label: "BBQ Master", image: chefBbq },
     ]
   },
   {
@@ -283,6 +368,8 @@ const TRANSFORMATION_CATEGORIES = [
     items: [
       { id: "zen-meditation", label: "Meditation", image: zenMeditation },
       { id: "underwater-diver", label: "Deep Sea", image: underwaterDiver },
+      { id: "zen-taichi", label: "Tai Chi", image: zenTaichi },
+      { id: "zen-monk", label: "Monk", image: zenMonk },
     ]
   },
 ];
@@ -562,22 +649,21 @@ export default function WallAIStudio() {
                       <button
                         key={item.id}
                         onClick={() => setSelectedTransformation(item.id)}
-                        className={`relative rounded-xl overflow-hidden transition-all duration-200 border-2 group ${
+                        className={`relative group rounded-xl overflow-hidden border-2 transition-all ${
                           selectedTransformation === item.id
-                            ? "border-primary scale-105 shadow-lg ring-2 ring-primary/50"
-                            : "border-border hover:border-primary/50 hover:scale-[1.02]"
+                            ? "border-primary ring-2 ring-primary/50"
+                            : "border-border hover:border-primary/50"
                         }`}
                       >
-                        <div className="aspect-square relative">
-                          <img 
-                            src={item.image} 
+                        <div className="aspect-square">
+                          <img
+                            src={item.image}
                             alt={item.label}
                             className="w-full h-full object-cover"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                          <span className="absolute bottom-2 left-2 right-2 text-xs font-medium text-white text-center">
-                            {item.label}
-                          </span>
+                        </div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-2">
+                          <span className="text-white text-xs font-medium">{item.label}</span>
                         </div>
                         {selectedTransformation === item.id && (
                           <div className="absolute top-2 right-2 bg-primary rounded-full p-1">
@@ -590,56 +676,40 @@ export default function WallAIStudio() {
                 </div>
               ))}
             </div>
-
-            <div className="mt-6 pt-4 border-t">
-              <Button
-                onClick={() => transformMutation.mutate()}
-                disabled={
-                  transformMutation.isPending || 
-                  isUploading || 
-                  !selectedTransformation || 
-                  (!imageUrl && !imageFile) ||
-                  (credits?.credits_remaining || 0) < 1
-                }
-                className="w-full h-12 text-lg bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90"
-              >
-                {transformMutation.isPending || isUploading ? (
-                  <>
-                    <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                    {isUploading ? "Uploading..." : "Transforming..."}
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="h-5 w-5 mr-2" />
-                    Transform Photo (1 Credit)
-                  </>
-                )}
-              </Button>
-              
-              {(credits?.credits_remaining || 0) < 1 && (
-                <p className="text-sm text-destructive text-center mt-2">
-                  You need at least 1 credit to transform photos
-                </p>
-              )}
-            </div>
           </Card>
+
+          <Button
+            onClick={() => transformMutation.mutate()}
+            disabled={!selectedTransformation || (!imageUrl && !imageFile) || transformMutation.isPending || isUploading}
+            className="w-full"
+            size="lg"
+          >
+            {transformMutation.isPending || isUploading ? (
+              <>
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                {isUploading ? "Uploading..." : "Transforming..."}
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-5 w-5 mr-2" />
+                Transform Photo (1 Credit)
+              </>
+            )}
+          </Button>
 
           {transformedImage && (
             <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                <ImageIcon className="h-5 w-5" />
-                Your Transformed Photo
-              </h2>
-              <div className="relative aspect-square max-w-lg mx-auto rounded-xl overflow-hidden shadow-2xl">
+              <h2 className="text-xl font-semibold mb-4">Your Transformed Photo</h2>
+              <div className="relative aspect-square max-w-md mx-auto rounded-xl overflow-hidden">
                 <img 
                   src={transformedImage} 
                   alt="Transformed" 
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="flex gap-2 justify-center mt-4">
-                <Button asChild>
-                  <a href={transformedImage} download target="_blank" rel="noopener noreferrer">
+              <div className="flex justify-center mt-4">
+                <Button asChild variant="outline">
+                  <a href={transformedImage} download="transformed-photo.png" target="_blank">
                     Download Image
                   </a>
                 </Button>
@@ -649,37 +719,34 @@ export default function WallAIStudio() {
         </div>
 
         <div className="space-y-6">
-          <Card className="p-6 bg-gradient-to-br from-primary/5 to-purple-500/5">
+          <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <CreditCard className="h-5 w-5" />
               Buy Credits
             </h2>
-            
             <div className="space-y-3">
               {CREDIT_PACKAGES.map((pkg) => (
                 <button
                   key={pkg.id}
                   onClick={() => purchaseMutation.mutate(pkg.id)}
                   disabled={purchaseMutation.isPending}
-                  className={`w-full p-4 rounded-xl border-2 transition-all hover:scale-[1.02] hover:shadow-lg ${
-                    pkg.popular 
-                      ? "border-primary bg-primary/10" 
-                      : pkg.bestValue 
-                        ? "border-amber-500 bg-amber-500/10"
-                        : "border-border hover:border-primary/50"
+                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                    pkg.popular
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="text-left">
-                      <div className="font-bold text-lg">{pkg.credits} Credits</div>
-                      <div className="text-2xl font-bold">€{pkg.price}</div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="font-semibold">{pkg.credits} Credits</div>
+                      <div className="text-sm text-muted-foreground">€{pkg.price}</div>
                     </div>
-                    <div className="text-right">
+                    <div className="flex flex-col items-end">
                       {pkg.popular && (
-                        <Badge className="bg-primary">Most Popular</Badge>
+                        <Badge variant="default" className="mb-1">Popular</Badge>
                       )}
                       {pkg.bestValue && (
-                        <Badge className="bg-amber-500">Best Value</Badge>
+                        <Badge variant="secondary">Best Value</Badge>
                       )}
                     </div>
                   </div>
@@ -695,17 +762,13 @@ export default function WallAIStudio() {
                 Recent Transformations
               </h2>
               <div className="grid grid-cols-2 gap-2">
-                {history.slice(0, 6).map((item: any) => (
-                  <div key={item.id} className="relative aspect-square rounded-lg overflow-hidden">
-                    <img 
-                      src={item.transformed_image_url || item.original_image_url} 
-                      alt="Transformation" 
+                {history.slice(0, 4).map((item: any) => (
+                  <div key={item.id} className="aspect-square rounded-lg overflow-hidden">
+                    <img
+                      src={item.transformed_image_url}
+                      alt="Transformation"
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                    <span className="absolute bottom-1 left-1 text-xs text-white/80 capitalize">
-                      {item.transformation_type?.replace(/-/g, " ")}
-                    </span>
                   </div>
                 ))}
               </div>
