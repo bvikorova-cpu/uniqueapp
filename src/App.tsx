@@ -329,6 +329,7 @@ const App = () => {
               <Route path="/search" element={<SearchResults />} />
               <Route path="/wall/messages" element={<Wall />} />
               <Route path="/wall/friends" element={<Wall />} />
+              <Route path="/wall/ai-studio" element={<Wall />} />
               <Route path="/wall/groups" element={<ProtectedRoute><Groups /></ProtectedRoute>} />
               <Route path="/wall/groups/:groupId" element={<GroupDetail />} />
               <Route path="/wall/pages" element={<ProtectedRoute><Pages /></ProtectedRoute>} />

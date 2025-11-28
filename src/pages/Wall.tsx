@@ -26,6 +26,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTrendingPosts } from "@/hooks/useTrends";
 import WallMessages from "./wall/WallMessages";
 import WallFriends from "./wall/WallFriends";
+import WallAIStudio from "./wall/WallAIStudio";
 import WallGroups from "./wall/WallGroups";
 import WallPages from "./wall/WallPages";
 import WallVideos from "./wall/WallVideos";
@@ -504,6 +505,8 @@ const Feed = () => {
         return <WallMessages />;
       case '/wall/friends':
         return <WallFriends />;
+      case '/wall/ai-studio':
+        return <WallAIStudio />;
       case '/wall/groups':
         return <WallGroups />;
       case '/wall/pages':
