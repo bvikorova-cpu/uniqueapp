@@ -466,18 +466,18 @@ const Jobs = () => {
           </Card>
         )}
 
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-3xl md:text-5xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
               {t('jobs.title')}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm md:text-base">
               {user 
                 ? t('jobs.subtitle')
                 : t('jobs.browseDesc', 'Browse job listings for free - log in to apply')}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {user && (
               <>
                 <JobPreferencesDialog userId={user.id} />
@@ -485,15 +485,17 @@ const Jobs = () => {
               </>
             )}
             {user && isEmployer && (
-              <Button onClick={() => navigate('/employer-dashboard')}>
-                <Building2 className="h-4 w-4 mr-2" />
-                {t('jobs.dashboard.title')}
+              <Button onClick={() => navigate('/employer-dashboard')} size="sm" className="text-xs md:text-sm">
+                <Building2 className="h-4 w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">{t('jobs.dashboard.title')}</span>
+                <span className="sm:hidden">Dashboard</span>
               </Button>
             )}
             {user && !isEmployer && (
-              <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending}>
-                <Building2 className="h-4 w-4 mr-2" />
-                {registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}
+              <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm" className="text-xs md:text-sm">
+                <Building2 className="h-4 w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">{registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}</span>
+                <span className="sm:hidden">{registerEmployerMutation.isPending ? "..." : "Employer"}</span>
               </Button>
             )}
             {!user && (

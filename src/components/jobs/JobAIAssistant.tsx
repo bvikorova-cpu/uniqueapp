@@ -101,9 +101,10 @@ export function JobAIAssistant() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-1 md:gap-2 text-xs md:text-sm">
           <Sparkles className="h-4 w-4" />
-          {t('jobs.aiAssistant.title', 'AI Job Assistant')}
+          <span className="hidden sm:inline">{t('jobs.aiAssistant.title', 'AI Job Assistant')}</span>
+          <span className="sm:hidden">AI</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
