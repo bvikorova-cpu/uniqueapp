@@ -196,6 +196,7 @@ const Navbar = () => {
   const otherServices = [
     { path: "/shadow-arena", label: "Shadow Arena - Horror Platform", icon: Ghost },
     { path: "/wellness", label: "Wellness & Relaxation", icon: Heart },
+    { path: "/safety-prevention", label: "Safety & Bullying Prevention", icon: Shield },
     { path: "/skill-swap", label: "Global Skill Swap", icon: Globe },
     { path: "/ancestor-twin", label: "Ancestor Twin Finder", icon: Users },
     { path: "/lottery-ai", label: "Lottery Numbers - AI Predictions", icon: Sparkles },
