@@ -7,25 +7,33 @@ const corsHeaders = {
 };
 
 const TRANSFORMATION_PROMPTS: Record<string, string> = {
-  // Holiday themes
-  christmas: "Transform this photo into a magical Christmas scene. Add festive elements like soft snow, warm golden lights, Christmas decorations, and a cozy winter atmosphere. Keep the person exactly the same but enhance with holiday magic.",
-  valentine: "Transform this photo into a romantic Valentine's Day scene. Add soft pink and red tones, floating hearts, rose petals, and a dreamy romantic atmosphere. Keep the person exactly the same.",
-  easter: "Transform this photo into a beautiful Easter spring scene. Add pastel colors, spring flowers, Easter eggs, butterflies, and a fresh spring atmosphere. Keep the person exactly the same.",
-  halloween: "Transform this photo into a mystical Halloween scene. Add spooky but elegant elements like autumn leaves, pumpkins, moonlight, and a magical dark atmosphere. Keep the person exactly the same.",
-  thanksgiving: "Transform this photo into a warm Thanksgiving harvest scene. Add autumn colors, golden leaves, harvest elements, and warm cozy lighting. Keep the person exactly the same.",
-  newYear: "Transform this photo into a glamorous New Year's Eve celebration scene. Add sparkles, fireworks, champagne bubbles, golden confetti, and festive party atmosphere. Keep the person exactly the same.",
-  stPatricks: "Transform this photo into a magical St. Patrick's Day scene. Add green tones, shamrocks, rainbows, gold coins, and Irish charm. Keep the person exactly the same.",
-  independence: "Transform this photo into a patriotic Independence Day scene. Add red, white and blue elements, fireworks, stars, and American celebration atmosphere. Keep the person exactly the same.",
+  // Christmas themes
+  "christmas-polar": "Transform this person into a magical Christmas scene where they are wearing a cozy red Santa outfit with white fur trim and holding an adorable white polar bear cub. Add snowy winter background with a decorated Christmas tree, golden sparkles, and warm festive lighting. Keep the person's face exactly the same.",
+  "christmas-tree": "Transform this person into an elegant Christmas portrait. Dress them in a beautiful sparkling red dress or suit, standing next to a gorgeously decorated Christmas tree with golden ornaments. Add cozy fireplace in background with warm festive lighting. Keep the person's face exactly the same.",
+  "christmas-elf": "Transform this person into Santa's magical helper elf. Add pointy elf hat, festive red and green outfit, and place them in Santa's North Pole workshop with toys and Christmas decorations. Add magical sparkles. Keep the person's face exactly the same.",
+  "christmas-cozy": "Transform this person into a cozy Christmas scene. Dress them in warm knitted sweater, holding a cup of hot cocoa, with snowy window background and fairy lights. Add warm cabin atmosphere. Keep the person's face exactly the same.",
+  
+  // Valentine themes
+  "valentine-roses": "Transform this person into a romantic Valentine portrait surrounded by beautiful red roses and floating pink hearts. Dress them in elegant red attire with soft dreamy pink lighting. Add romantic atmosphere. Keep the person's face exactly the same.",
+  "valentine-cupid": "Transform this person into a beautiful Cupid angel with soft white wings and a pink halo. Surround with floating hearts, soft pink and red background. Add dreamy romantic lighting. Keep the person's face exactly the same.",
+  "valentine-dinner": "Transform this person into an elegant romantic dinner setting. Dress them in fancy pink or red gown/suit at a candlelit table with champagne, heart-shaped bokeh lights in background. Keep the person's face exactly the same.",
+  "valentine-garden": "Transform this person into a romantic cherry blossom garden. Surround with beautiful pink flowers, falling petals forming heart shapes, soft sunset lighting. Keep the person's face exactly the same.",
+  
+  // Easter themes
+  "easter-bunny": "Transform this person into a cute Easter scene with bunny ears headband, surrounded by colorful Easter eggs and adorable white bunnies in a flower meadow. Add soft spring sunshine. Keep the person's face exactly the same.",
+  "easter-spring": "Transform this person into a beautiful spring portrait with a flower crown of tulips and daffodils. Surround with blooming spring flowers, butterflies, and soft pastel colors. Keep the person's face exactly the same.",
+  
+  // Halloween themes
+  "halloween-vampire": "Transform this person into an elegant vampire portrait. Add pale skin, subtle fangs, gothic castle background with full moon and flying bats. Add dramatic mysterious lighting. Keep the person's face exactly the same but vampiric.",
+  "halloween-witch": "Transform this person into a beautiful magical witch with an enchanted purple glowing hat. Add pumpkins, mystical forest background, magical sparkles and purple lighting. Keep the person's face exactly the same.",
   
   // Glamour themes
-  glamour: "Transform this photo into a high-fashion glamour portrait. Add professional studio lighting, soft glow, flawless skin, and magazine-quality aesthetics. Make it look like a professional photoshoot.",
-  vintage: "Transform this photo into an elegant vintage Hollywood style. Add classic black and white or sepia tones with soft focus, old Hollywood glamour, and timeless elegance.",
-  fairytale: "Transform this photo into a magical fairytale scene. Add enchanted forest elements, soft magical lighting, sparkles, and dreamy fantasy atmosphere. Keep the person exactly the same.",
-  royal: "Transform this photo into a royal palace setting. Add luxurious elements, golden accents, elegant drapery, and regal atmosphere fit for royalty. Keep the person exactly the same.",
-  summer: "Transform this photo into a perfect summer beach paradise. Add golden sunshine, tropical vibes, ocean breeze feel, and warm summer glow. Keep the person exactly the same.",
-  winter: "Transform this photo into a magical winter wonderland. Add beautiful snow, ice crystals, northern lights, and enchanting winter atmosphere. Keep the person exactly the same.",
-  spring: "Transform this photo into a blooming spring garden. Add cherry blossoms, colorful flowers, butterflies, and fresh spring morning light. Keep the person exactly the same.",
-  autumn: "Transform this photo into a cozy autumn scene. Add falling golden leaves, warm sunset light, pumpkin spice vibes, and cozy fall atmosphere. Keep the person exactly the same.",
+  "glamour-hollywood": "Transform this person into a Hollywood red carpet glamour portrait. Add professional studio lighting, golden sparkles, elegant styling, and red carpet background. Magazine-quality aesthetics. Keep the person's face exactly the same.",
+  "fairytale-princess": "Transform this person into a magical Disney-style princess. Dress them in a sparkling ball gown, add a tiara, place in front of enchanted castle with magical lights and sparkles. Keep the person's face exactly the same.",
+  
+  // Season themes
+  "summer-beach": "Transform this person into a tropical beach paradise scene. Add golden sunset, palm trees, ocean waves, and summer vacation vibes. Keep the person's face exactly the same.",
+  "winter-snow": "Transform this person into an elegant winter wonderland portrait. Dress in luxurious white fur coat, surrounded by falling snowflakes, frozen trees, and magical icy blue lighting. Keep the person's face exactly the same.",
 };
 
 serve(async (req) => {
@@ -92,7 +100,7 @@ serve(async (req) => {
       );
     }
 
-    const prompt = TRANSFORMATION_PROMPTS[transformationType] || TRANSFORMATION_PROMPTS.glamour;
+    const prompt = TRANSFORMATION_PROMPTS[transformationType] || "Transform this photo into a beautiful artistic portrait with enhanced lighting and magical atmosphere. Keep the person exactly the same.";
     console.log(`Transforming image with type: ${transformationType}`);
 
     // Call Lovable AI for image transformation

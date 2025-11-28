@@ -13,56 +13,74 @@ import {
   CreditCard, 
   Check, 
   Loader2,
-  Gift,
-  Heart,
-  Snowflake,
-  Sun,
-  Leaf,
-  Moon,
-  Star,
-  Crown,
-  Wand2,
-  TreePine,
-  Egg,
-  Ghost,
-  PartyPopper,
-  Clover,
-  Flag,
-  Waves
+  Wand2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
+// Import preview images
+import christmasPolar from "@/assets/ai-studio/christmas-polar.jpg";
+import christmasTree from "@/assets/ai-studio/christmas-tree.jpg";
+import christmasElf from "@/assets/ai-studio/christmas-elf.jpg";
+import christmasCozy from "@/assets/ai-studio/christmas-cozy.jpg";
+import valentineRoses from "@/assets/ai-studio/valentine-roses.jpg";
+import valentineCupid from "@/assets/ai-studio/valentine-cupid.jpg";
+import valentineDinner from "@/assets/ai-studio/valentine-dinner.jpg";
+import valentineGarden from "@/assets/ai-studio/valentine-garden.jpg";
+import easterBunny from "@/assets/ai-studio/easter-bunny.jpg";
+import easterSpring from "@/assets/ai-studio/easter-spring.jpg";
+import halloweenVampire from "@/assets/ai-studio/halloween-vampire.jpg";
+import halloweenWitch from "@/assets/ai-studio/halloween-witch.jpg";
+import summerBeach from "@/assets/ai-studio/summer-beach.jpg";
+import winterSnow from "@/assets/ai-studio/winter-snow.jpg";
+import glamourHollywood from "@/assets/ai-studio/glamour-hollywood.jpg";
+import fairytalePrincess from "@/assets/ai-studio/fairytale-princess.jpg";
+
 const TRANSFORMATION_CATEGORIES = [
   {
-    name: "Holiday Magic",
+    name: "🎄 Christmas Magic",
     items: [
-      { id: "christmas", label: "Christmas Magic", icon: TreePine, color: "from-red-500 to-green-500" },
-      { id: "valentine", label: "Valentine's Day", icon: Heart, color: "from-pink-500 to-red-400" },
-      { id: "easter", label: "Easter Spring", icon: Egg, color: "from-purple-400 to-pink-300" },
-      { id: "halloween", label: "Halloween Mystery", icon: Ghost, color: "from-orange-500 to-purple-600" },
-      { id: "thanksgiving", label: "Thanksgiving Harvest", icon: Leaf, color: "from-amber-500 to-orange-400" },
-      { id: "newYear", label: "New Year's Eve", icon: PartyPopper, color: "from-yellow-400 to-purple-500" },
-      { id: "stPatricks", label: "St. Patrick's Day", icon: Clover, color: "from-green-500 to-emerald-400" },
-      { id: "independence", label: "Independence Day", icon: Flag, color: "from-blue-600 to-red-500" },
+      { id: "christmas-polar", label: "Polar Bear Hug", image: christmasPolar },
+      { id: "christmas-tree", label: "Christmas Tree", image: christmasTree },
+      { id: "christmas-elf", label: "Santa's Helper", image: christmasElf },
+      { id: "christmas-cozy", label: "Cozy Winter", image: christmasCozy },
     ]
   },
   {
-    name: "Glamour & Style",
+    name: "💕 Valentine's Day",
     items: [
-      { id: "glamour", label: "Glamour Portrait", icon: Star, color: "from-yellow-400 to-pink-400" },
-      { id: "vintage", label: "Vintage Hollywood", icon: Crown, color: "from-gray-500 to-amber-400" },
-      { id: "fairytale", label: "Fairytale Magic", icon: Wand2, color: "from-purple-400 to-blue-400" },
-      { id: "royal", label: "Royal Palace", icon: Crown, color: "from-amber-500 to-yellow-300" },
+      { id: "valentine-roses", label: "Red Roses", image: valentineRoses },
+      { id: "valentine-cupid", label: "Cupid Angel", image: valentineCupid },
+      { id: "valentine-dinner", label: "Romantic Dinner", image: valentineDinner },
+      { id: "valentine-garden", label: "Love Garden", image: valentineGarden },
     ]
   },
   {
-    name: "Seasons",
+    name: "🐣 Easter & Spring",
     items: [
-      { id: "summer", label: "Summer Paradise", icon: Sun, color: "from-yellow-400 to-orange-400" },
-      { id: "winter", label: "Winter Wonderland", icon: Snowflake, color: "from-blue-300 to-cyan-200" },
-      { id: "spring", label: "Spring Garden", icon: Gift, color: "from-pink-400 to-green-400" },
-      { id: "autumn", label: "Autumn Vibes", icon: Leaf, color: "from-orange-500 to-red-500" },
+      { id: "easter-bunny", label: "Easter Bunny", image: easterBunny },
+      { id: "easter-spring", label: "Spring Flowers", image: easterSpring },
+    ]
+  },
+  {
+    name: "🎃 Halloween",
+    items: [
+      { id: "halloween-vampire", label: "Vampire", image: halloweenVampire },
+      { id: "halloween-witch", label: "Magic Witch", image: halloweenWitch },
+    ]
+  },
+  {
+    name: "🌟 Glamour & Fantasy",
+    items: [
+      { id: "glamour-hollywood", label: "Hollywood Star", image: glamourHollywood },
+      { id: "fairytale-princess", label: "Fairytale Princess", image: fairytalePrincess },
+    ]
+  },
+  {
+    name: "🌤️ Seasons",
+    items: [
+      { id: "summer-beach", label: "Summer Paradise", image: summerBeach },
+      { id: "winter-snow", label: "Winter Wonderland", image: winterSnow },
     ]
   }
 ];
@@ -91,7 +109,6 @@ export default function WallAIStudio() {
     const credits = searchParams.get("credits");
     
     if (success === "true" && credits) {
-      // Add credits to user account
       const addCredits = async () => {
         try {
           const { error } = await supabase.functions.invoke("ai-studio-add-credits", {
@@ -132,7 +149,6 @@ export default function WallAIStudio() {
       if (error && error.code !== "PGRST116") throw error;
       
       if (!data) {
-        // Create initial credits record
         const { data: newData, error: insertError } = await supabase
           .from("ai_studio_credits")
           .insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 })
@@ -357,19 +373,26 @@ export default function WallAIStudio() {
                       <button
                         key={item.id}
                         onClick={() => setSelectedTransformation(item.id)}
-                        className={`relative p-4 rounded-xl transition-all duration-200 border-2 ${
+                        className={`relative rounded-xl overflow-hidden transition-all duration-200 border-2 group ${
                           selectedTransformation === item.id
-                            ? "border-primary bg-primary/10 scale-105 shadow-lg"
-                            : "border-border hover:border-primary/50 hover:bg-accent"
+                            ? "border-primary scale-105 shadow-lg ring-2 ring-primary/50"
+                            : "border-border hover:border-primary/50 hover:scale-[1.02]"
                         }`}
                       >
-                        <div className={`w-10 h-10 mx-auto mb-2 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center`}>
-                          <item.icon className="h-5 w-5 text-white" />
+                        <div className="aspect-square relative">
+                          <img 
+                            src={item.image} 
+                            alt={item.label}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                          <span className="absolute bottom-2 left-2 right-2 text-xs font-medium text-white text-center">
+                            {item.label}
+                          </span>
                         </div>
-                        <span className="text-sm font-medium">{item.label}</span>
                         {selectedTransformation === item.id && (
-                          <div className="absolute top-2 right-2">
-                            <Check className="h-4 w-4 text-primary" />
+                          <div className="absolute top-2 right-2 bg-primary rounded-full p-1">
+                            <Check className="h-3 w-3 text-primary-foreground" />
                           </div>
                         )}
                       </button>
@@ -480,10 +503,13 @@ export default function WallAIStudio() {
             </div>
           </Card>
 
-          {/* Recent Transformations */}
+          {/* History */}
           {history.length > 0 && (
             <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Recent Transformations</h2>
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <ImageIcon className="h-5 w-5" />
+                Recent Transformations
+              </h2>
               <div className="grid grid-cols-2 gap-2">
                 {history.slice(0, 6).map((item: any) => (
                   <div key={item.id} className="relative aspect-square rounded-lg overflow-hidden">
@@ -492,11 +518,10 @@ export default function WallAIStudio() {
                       alt="Transformation" 
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
-                      <span className="text-xs text-white capitalize">
-                        {item.transformation_type}
-                      </span>
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    <span className="absolute bottom-1 left-1 text-xs text-white/80 capitalize">
+                      {item.transformation_type?.replace("-", " ")}
+                    </span>
                   </div>
                 ))}
               </div>
