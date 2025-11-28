@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Shield } from 'lucide-react';
+import { ArrowLeft, Shield, ImagePlus, X } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 const heroTypes = [
@@ -23,6 +23,7 @@ const heroTypes = [
 export default function CreateHeroCampaign() {
   const navigate = useNavigate();
   const [creating, setCreating] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -33,6 +34,63 @@ export default function CreateHeroCampaign() {
     image_url: '',
     ends_at: '',
   });
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: 'Error',
+        description: 'Image is too large (max 5MB)',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in',
+          variant: 'destructive',
+        });
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `hero-${session.user.id}-${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('bazaar_images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('bazaar_images')
+        .getPublicUrl(fileName);
+
+      setFormData({ ...formData, image_url: publicUrl });
+
+      toast({
+        title: 'Success',
+        description: 'Image uploaded successfully',
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload image',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -205,14 +263,54 @@ export default function CreateHeroCampaign() {
               </div>
 
               <div>
-                <Label htmlFor="image_url">Campaign Image URL</Label>
-                <Input
-                  id="image_url"
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <Label>Campaign Image/Video</Label>
+                <div className="mt-1.5 space-y-3">
+                  <div className="flex items-center gap-4">
+                    <label className="flex-1 cursor-pointer">
+                      <div className="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-primary/30 rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-colors">
+                        <ImagePlus className="h-5 w-5 text-primary" />
+                        <span className="text-sm text-muted-foreground">
+                          {uploading ? 'Uploading...' : 'Click to upload image from device'}
+                        </span>
+                      </div>
+                      <Input
+                        type="file"
+                        accept="image/*,video/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                        disabled={uploading}
+                      />
+                    </label>
+                  </div>
+
+                  {formData.image_url && (
+                    <div className="relative">
+                      <img
+                        src={formData.image_url}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-lg border border-border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-2 right-2 h-8 w-8"
+                        onClick={() => setFormData({ ...formData, image_url: '' })}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+
+                  <div className="text-xs text-muted-foreground">Or enter URL:</div>
+                  <Input
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                  <p className="text-xs text-muted-foreground">Max 5MB • JPG, PNG, WEBP or MP4</p>
+                </div>
               </div>
 
               <div>
@@ -236,7 +334,7 @@ export default function CreateHeroCampaign() {
                 </ul>
               </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={creating}>
+              <Button type="submit" className="w-full" size="lg" disabled={creating || uploading}>
                 <Shield className="mr-2 h-5 w-5" />
                 {creating ? 'Submitting...' : 'Submit Hero Campaign'}
               </Button>
