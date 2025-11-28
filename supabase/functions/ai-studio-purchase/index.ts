@@ -9,17 +9,17 @@ const corsHeaders = {
 
 const CREDIT_PACKAGES = {
   "5": {
-    priceId: "price_1SYLt90QTWhd4oRpIHZi8Kct",
+    priceId: "price_1SYM1kGaXSfGtYFti8C4j4mv",
     credits: 5,
     amount: 300, // €3.00
   },
   "10": {
-    priceId: "price_1SYLt90QTWhd4oRpW7UARxHp",
+    priceId: "price_1SYM1lGaXSfGtYFt3BDv0HpB",
     credits: 10,
     amount: 600, // €6.00
   },
   "20": {
-    priceId: "price_1SYLtA0QTWhd4oRprhmfgYz2",
+    priceId: "price_1SYM1lGaXSfGtYFtrm2OmnHJ",
     credits: 20,
     amount: 1500, // €15.00
   },
