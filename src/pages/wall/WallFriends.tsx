@@ -195,13 +195,13 @@ export default function WallFriends() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast({ title: "Žiadosť prijatá", description: "Teraz ste priateľmi" });
+      toast({ title: "Request accepted", description: "You are now friends" });
       refetchRequests();
       refetchFriends();
       queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
     },
     onError: () => {
-      toast({ title: "Chyba", description: "Nepodarilo sa prijať žiadosť", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to accept request", variant: "destructive" });
     }
   });
 
@@ -215,11 +215,11 @@ export default function WallFriends() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast({ title: "Žiadosť odmietnutá" });
+      toast({ title: "Request declined" });
       refetchRequests();
     },
     onError: () => {
-      toast({ title: "Chyba", description: "Nepodarilo sa odmietnuť žiadosť", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to decline request", variant: "destructive" });
     }
   });
 
@@ -233,11 +233,11 @@ export default function WallFriends() {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast({ title: "Žiadosť odoslaná", description: "Čakáme na prijatie" });
+      toast({ title: "Request sent", description: "Waiting for acceptance" });
       queryClient.invalidateQueries({ queryKey: ["friend-suggestions"] });
     },
     onError: () => {
-      toast({ title: "Chyba", description: "Nepodarilo sa odoslať žiadosť", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to send request", variant: "destructive" });
     }
   });
 
@@ -256,14 +256,14 @@ export default function WallFriends() {
       {/* Friend Requests Section */}
       <Card className="p-6 bg-card/95 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-foreground">Žiadosti o priateľstvo</h2>
+          <h2 className="text-xl font-bold text-foreground">Friend Requests</h2>
           {requests.length > 8 && (
             <Button 
               variant="link" 
               className="text-primary hover:text-primary/80"
               onClick={() => setShowAllRequests(!showAllRequests)}
             >
-              {showAllRequests ? "Skryť" : "Zobraziť všetky"}
+              {showAllRequests ? "Hide" : "Show all"}
             </Button>
           )}
         </div>
@@ -271,7 +271,7 @@ export default function WallFriends() {
         {requests.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <UserPlus className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>Žiadne nové žiadosti o priateľstvo</p>
+            <p>No new friend requests</p>
           </div>
         ) : (
           <ScrollArea className="w-full">
@@ -294,12 +294,12 @@ export default function WallFriends() {
                   </div>
                   <div className="p-3 space-y-2">
                     <h3 className="font-semibold text-sm truncate text-foreground">
-                      {request.profile?.full_name || "Neznámy používateľ"}
+                      {request.profile?.full_name || "Unknown user"}
                     </h3>
                     {request.mutual_count > 0 && (
                       <p className="text-xs text-muted-foreground flex items-center gap-1">
                         <Users2 className="h-3 w-3" />
-                        {request.mutual_count} spoločných priateľov
+                        {request.mutual_count} mutual friends
                       </p>
                     )}
                     <div className="space-y-1.5">
@@ -309,7 +309,7 @@ export default function WallFriends() {
                         onClick={() => acceptMutation.mutate(request.id)}
                         disabled={acceptMutation.isPending}
                       >
-                        {acceptMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Potvrdiť"}
+                        {acceptMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm"}
                       </Button>
                       <Button 
                         size="sm" 
@@ -318,7 +318,7 @@ export default function WallFriends() {
                         onClick={() => declineMutation.mutate(request.id)}
                         disabled={declineMutation.isPending}
                       >
-                        Odstrániť
+                        Remove
                       </Button>
                     </div>
                   </div>
@@ -336,7 +336,7 @@ export default function WallFriends() {
               className="text-primary"
               onClick={() => setShowAllRequests(true)}
             >
-              Zobraziť viac <ChevronRight className="h-4 w-4 ml-1" />
+              Show more <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
           </div>
         )}
@@ -345,14 +345,14 @@ export default function WallFriends() {
       {/* People You May Know Section */}
       <Card className="p-6 bg-card/95 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-foreground">Ľudia, ktorých možno poznáte</h2>
+          <h2 className="text-xl font-bold text-foreground">People You May Know</h2>
           {visibleSuggestions.length > 12 && (
             <Button 
               variant="link" 
               className="text-primary hover:text-primary/80"
               onClick={() => setShowAllSuggestions(!showAllSuggestions)}
             >
-              {showAllSuggestions ? "Skryť" : "Zobraziť všetky"}
+              {showAllSuggestions ? "Hide" : "Show all"}
             </Button>
           )}
         </div>
@@ -360,8 +360,8 @@ export default function WallFriends() {
         {visibleSuggestions.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Users2 className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>Žiadne návrhy priateľov</p>
-            <p className="text-sm mt-2">Pridajte si viac priateľov, aby sme vám mohli navrhnúť ďalších</p>
+            <p>No friend suggestions</p>
+            <p className="text-sm mt-2">Add more friends so we can suggest more</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -389,12 +389,12 @@ export default function WallFriends() {
                 </div>
                 <div className="p-3 space-y-2">
                   <h3 className="font-semibold text-sm truncate text-foreground">
-                    {suggestion.full_name || "Neznámy používateľ"}
+                    {suggestion.full_name || "Unknown user"}
                   </h3>
                   {suggestion.mutual_count > 0 && (
                     <p className="text-xs text-muted-foreground flex items-center gap-1">
                       <Users2 className="h-3 w-3" />
-                      {suggestion.mutual_count} spoločných priateľov
+                      {suggestion.mutual_count} mutual friends
                     </p>
                   )}
                   <div className="space-y-1.5">
@@ -410,7 +410,7 @@ export default function WallFriends() {
                       ) : (
                         <>
                           <UserPlus className="h-4 w-4 mr-1" />
-                          Pridať
+                          Add
                         </>
                       )}
                     </Button>
@@ -420,7 +420,7 @@ export default function WallFriends() {
                       className="w-full text-muted-foreground hover:text-foreground"
                       onClick={() => removeSuggestion(suggestion.id)}
                     >
-                      Odstrániť
+                      Remove
                     </Button>
                   </div>
                 </div>
@@ -433,14 +433,14 @@ export default function WallFriends() {
       {/* All Friends Section */}
       <Card className="p-6 bg-card/95 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-foreground">Všetci priatelia ({friends.length})</h2>
+          <h2 className="text-xl font-bold text-foreground">All Friends ({friends.length})</h2>
         </div>
 
         {friends.length === 0 ? (
           <div className="text-center py-8 text-muted-foreground">
             <Users2 className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>Zatiaľ nemáte žiadnych priateľov</p>
-            <p className="text-sm mt-2">Začnite sa spájať s ľuďmi!</p>
+            <p>You don't have any friends yet</p>
+            <p className="text-sm mt-2">Start connecting with people!</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -463,9 +463,8 @@ export default function WallFriends() {
                 </div>
                 <div className="p-3">
                   <h3 className="font-semibold text-sm truncate text-foreground">
-                    {friend.full_name || "Neznámy používateľ"}
+                    {friend.full_name || "Unknown user"}
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-1">Priateľ</p>
                 </div>
               </Card>
             ))}
