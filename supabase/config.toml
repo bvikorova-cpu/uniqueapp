@@ -669,3 +669,6 @@ verify_jwt = true
 [functions.ai-studio-add-credits]
 verify_jwt = true
 
+[functions.safety-prevention-chat]
+verify_jwt = false
+
