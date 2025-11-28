@@ -660,3 +660,12 @@ verify_jwt = true
 [functions.claim-daily-reward]
 verify_jwt = true
 
+[functions.ai-studio-transform]
+verify_jwt = true
+
+[functions.ai-studio-purchase]
+verify_jwt = true
+
+[functions.ai-studio-add-credits]
+verify_jwt = true
+

@@ -487,6 +487,66 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_studio_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_studio_transformations: {
+        Row: {
+          created_at: string
+          credits_used: number
+          id: string
+          original_image_url: string
+          status: string
+          transformation_type: string
+          transformed_image_url: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          original_image_url: string
+          status?: string
+          transformation_type: string
+          transformed_image_url?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_used?: number
+          id?: string
+          original_image_url?: string
+          status?: string
+          transformation_type?: string
+          transformed_image_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_tattoo_designs: {
         Row: {
           color_scheme: string | null
