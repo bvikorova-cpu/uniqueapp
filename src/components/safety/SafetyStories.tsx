@@ -29,7 +29,6 @@ const SafetyStories = () => {
       const { data, error } = await supabase
         .from("safety_stories")
         .select("*")
-        .eq("is_approved", true)
         .order("created_at", { ascending: false });
 
       if (error) throw error;

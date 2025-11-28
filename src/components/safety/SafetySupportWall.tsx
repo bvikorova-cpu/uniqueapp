@@ -28,7 +28,6 @@ const SafetySupportWall = () => {
       const { data, error } = await supabase
         .from("safety_support_wall")
         .select("*")
-        .eq("is_approved", true)
         .order("created_at", { ascending: false })
         .limit(50);
 
