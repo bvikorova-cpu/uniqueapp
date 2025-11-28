@@ -672,3 +672,306 @@ verify_jwt = true
 [functions.safety-prevention-chat]
 verify_jwt = false
 
+[functions.brain-duel-matchmaking]
+verify_jwt = true
+
+[functions.brain-duel-get-questions]
+verify_jwt = true
+
+[functions.brain-duel-submit-answer]
+verify_jwt = true
+
+[functions.brain-duel-finish-match]
+verify_jwt = true
+
+[functions.brain-duel-friend-match]
+verify_jwt = true
+
+[functions.verify-brain-duel-payment]
+verify_jwt = false
+
+[functions.beauty-transformation]
+verify_jwt = true
+
+[functions.beauty-tutorial]
+verify_jwt = true
+
+[functions.beauty-recommendations]
+verify_jwt = true
+
+[functions.ai-mentor-chat]
+verify_jwt = true
+
+[functions.wellness-mindfulness-chat]
+verify_jwt = true
+
+[functions.generate-workout-plan]
+verify_jwt = true
+
+[functions.create-digital-offspring]
+verify_jwt = true
+
+[functions.chat-with-offspring]
+verify_jwt = true
+
+[functions.create-reincarnation-plan]
+verify_jwt = true
+
+[functions.calculate-karmic-debt]
+verify_jwt = true
+
+[functions.find-soul-matches]
+verify_jwt = true
+
+[functions.create-reincarnation-checkout]
+verify_jwt = true
+
+[functions.verify-reincarnation-payment]
+verify_jwt = false
+
+[functions.find-genetic-matches]
+verify_jwt = true
+
+[functions.process-dna-analysis]
+verify_jwt = true
+
+[functions.create-dna-memory-checkout]
+verify_jwt = true
+
+[functions.analyze-crystal-energy]
+verify_jwt = true
+
+[functions.create-crystal-purchase]
+verify_jwt = true
+
+[functions.create-crystal-energy-checkout]
+verify_jwt = true
+
+[functions.generate-home-design]
+verify_jwt = true
+
+[functions.generate-ai-room-design]
+verify_jwt = true
+
+[functions.create-decor-checkout]
+verify_jwt = true
+
+[functions.create-ar-preview-checkout]
+verify_jwt = true
+
+[functions.decor-customer-portal]
+verify_jwt = true
+
+[functions.generate-content]
+verify_jwt = true
+
+[functions.generate-content-image]
+verify_jwt = true
+
+[functions.purchase-content-pack]
+verify_jwt = true
+
+[functions.generate-custom-image]
+verify_jwt = true
+
+[functions.purchase-stock-content]
+verify_jwt = true
+
+[functions.purchase-course]
+verify_jwt = true
+
+[functions.verify-course-purchase]
+verify_jwt = false
+
+[functions.generate-course-certificate]
+verify_jwt = true
+
+[functions.job-ai-matcher]
+verify_jwt = true
+
+[functions.check-expired-listings]
+verify_jwt = false
+
+[functions.calculate-race-results]
+verify_jwt = true
+
+[functions.calculate-f1-race-results]
+verify_jwt = true
+
+[functions.f1-stripe-webhook]
+verify_jwt = false
+
+[functions.create-f1-currency-checkout]
+verify_jwt = true
+
+[functions.generate-f1-background]
+verify_jwt = true
+
+[functions.stripe-webhook-horse-racing]
+verify_jwt = false
+
+[functions.create-horse-currency-checkout]
+verify_jwt = true
+
+[functions.send-gift-payment]
+verify_jwt = true
+
+[functions.send-stream-gift]
+verify_jwt = true
+
+[functions.send-masterchef-gift]
+verify_jwt = true
+
+[functions.create-masterchef-checkout]
+verify_jwt = true
+
+[functions.check-tipster-subscription]
+verify_jwt = true
+
+[functions.create-tipster-checkout]
+verify_jwt = true
+
+[functions.purchase-tip]
+verify_jwt = true
+
+[functions.verify-tip-purchase]
+verify_jwt = false
+
+[functions.create-sports-checkout]
+verify_jwt = true
+
+[functions.check-sports-subscription]
+verify_jwt = true
+
+[functions.notify-admin-comedy-payout]
+verify_jwt = false
+
+[functions.process-comedy-transaction]
+verify_jwt = true
+
+[functions.create-property-listing-checkout]
+verify_jwt = true
+
+[functions.create-property-listing-payment]
+verify_jwt = true
+
+[functions.create-skill-swap-checkout]
+verify_jwt = true
+
+[functions.check-skill-swap-subscription]
+verify_jwt = true
+
+[functions.create-phobia-checkout]
+verify_jwt = true
+
+[functions.create-multiverse-checkout]
+verify_jwt = true
+
+[functions.take-iq-test]
+verify_jwt = true
+
+[functions.join-iq-competition]
+verify_jwt = true
+
+[functions.create-iq-payment]
+verify_jwt = true
+
+[functions.purchase-iq-credits]
+verify_jwt = true
+
+[functions.verify-iq-payment]
+verify_jwt = false
+
+[functions.create-lead-boost-payment]
+verify_jwt = true
+
+[functions.process-lead-boost]
+verify_jwt = true
+
+[functions.verify-lead-boost-payment]
+verify_jwt = false
+
+[functions.customer-portal]
+verify_jwt = true
+
+[functions.process-scheduled-payouts]
+verify_jwt = false
+
+[functions.check-creator-subscription]
+verify_jwt = true
+
+[functions.create-creator-subscription]
+verify_jwt = true
+
+[functions.create-marketplace-item-checkout]
+verify_jwt = true
+
+[functions.create-confession-checkout]
+verify_jwt = true
+
+[functions.create-consultation-checkout]
+verify_jwt = true
+
+[functions.get-ai-analysis]
+verify_jwt = true
+
+[functions.generate-paint-by-numbers]
+verify_jwt = true
+
+[functions.generate-paint-image]
+verify_jwt = true
+
+[functions.generate-video-thumbnail]
+verify_jwt = false
+
+[functions.add-teen-career-generation]
+verify_jwt = true
+
+[functions.check-teen-career-usage]
+verify_jwt = true
+
+[functions.create-teen-career-payment]
+verify_jwt = true
+
+[functions.create-kids-story-subscription-checkout]
+verify_jwt = true
+
+[functions.check-kids-story-subscription]
+verify_jwt = true
+
+[functions.kids-story-customer-portal]
+verify_jwt = true
+
+[functions.clone-voice]
+verify_jwt = true
+
+[functions.list-voice-clones]
+verify_jwt = true
+
+[functions.update-voice-clone]
+verify_jwt = true
+
+[functions.delete-voice-clone]
+verify_jwt = true
+
+[functions.create-voice-clone-checkout]
+verify_jwt = true
+
+[functions.create-voice-subscription-checkout]
+verify_jwt = true
+
+[functions.check-voice-subscription]
+verify_jwt = true
+
+[functions.voice-customer-portal]
+verify_jwt = true
+
+[functions.notify-admin-new-gift]
+verify_jwt = false
+
+[functions.verify-donation]
+verify_jwt = false
+
+[functions.generate-tattoo]
+verify_jwt = true
+
