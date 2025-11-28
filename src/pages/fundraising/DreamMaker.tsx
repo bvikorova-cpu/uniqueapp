@@ -86,7 +86,7 @@ export default function DreamMaker() {
           <Button 
             size="lg" 
             onClick={() => navigate('/fundraising/dream/create')}
-            className="bg-gradient-to-r from-secondary to-secondary/80"
+            className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg"
           >
             <Sparkles className="mr-2 h-5 w-5" />
             Share Your Dream
