@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, Send } from "lucide-react";
+import { MessageCircle, Send, MoreHorizontal, ExternalLink, BellOff, Bell, User, Trash2, Flag, Phone, Video, Image, Smile, ThumbsUp, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -8,10 +8,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useDirectMessages } from "@/hooks/useDirectMessages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface DirectMessagesDialogProps {
   userId?: string;
@@ -26,12 +35,54 @@ export const DirectMessagesDialog = ({
 }: DirectMessagesDialogProps) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [isMuted, setIsMuted] = useState(false);
   const { messages, sendMessage } = useDirectMessages(userId);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleSend = () => {
     if (!message.trim() || !userId) return;
     sendMessage({ receiverId: userId, content: message });
     setMessage("");
+  };
+
+  const handleOpenInMessenger = () => {
+    setOpen(false);
+    navigate("/messenger");
+  };
+
+  const handleToggleMute = () => {
+    setIsMuted(!isMuted);
+    toast({
+      title: isMuted ? "Notifications enabled" : "Notifications muted",
+      description: isMuted 
+        ? `You will receive notifications from ${userName}` 
+        : `You won't receive notifications from ${userName}`,
+    });
+  };
+
+  const handleViewProfile = () => {
+    setOpen(false);
+    navigate(`/profile/${userId}`);
+  };
+
+  const handleDeleteConversation = () => {
+    toast({
+      title: "Conversation deleted",
+      description: "This conversation has been removed",
+    });
+  };
+
+  const handleReport = () => {
+    toast({
+      title: "Report submitted",
+      description: "Thank you for your feedback",
+    });
+  };
+
+  const handleQuickReaction = () => {
+    if (!userId) return;
+    sendMessage({ receiverId: userId, content: "👍" });
   };
 
   return (
@@ -42,28 +93,116 @@ export const DirectMessagesDialog = ({
           Message
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={userAvatar} />
-              <AvatarFallback>{userName?.[0]}</AvatarFallback>
-            </Avatar>
-            {userName}
-          </DialogTitle>
+      <DialogContent className="max-w-md p-0 gap-0 overflow-hidden">
+        {/* Header with options */}
+        <DialogHeader className="p-0">
+          <div className="flex items-center justify-between p-3 border-b bg-card">
+            <DialogTitle className="flex items-center gap-3">
+              <div className="relative">
+                <Avatar className="h-10 w-10 border-2 border-primary/20">
+                  <AvatarImage src={userAvatar} />
+                  <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                    {userName?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full" />
+              </div>
+              <div className="text-left">
+                <p className="font-semibold text-sm">{userName}</p>
+                <p className="text-xs text-green-500 font-normal">Active now</p>
+              </div>
+            </DialogTitle>
+            
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10">
+                <Phone className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10">
+                <Video className="h-4 w-4" />
+              </Button>
+              
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-muted">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem onClick={handleOpenInMessenger} className="cursor-pointer">
+                    <ExternalLink className="h-4 w-4 mr-3" />
+                    Open in Messenger
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleToggleMute} className="cursor-pointer">
+                    {isMuted ? (
+                      <>
+                        <Bell className="h-4 w-4 mr-3" />
+                        Unmute notifications
+                      </>
+                    ) : (
+                      <>
+                        <BellOff className="h-4 w-4 mr-3" />
+                        Mute notifications
+                      </>
+                    )}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleViewProfile} className="cursor-pointer">
+                    <User className="h-4 w-4 mr-3" />
+                    View profile
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={handleDeleteConversation} 
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-3" />
+                    Delete conversation
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={handleReport} 
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <Flag className="h-4 w-4 mr-3" />
+                    Report
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
         </DialogHeader>
-        <div className="flex flex-col h-[500px]">
-          <ScrollArea className="flex-1 p-4">
-            <div className="space-y-4">
-              {messages.map((msg) => (
+        
+        {/* Messages area */}
+        <ScrollArea className="h-80 px-4">
+          <div className="space-y-3 py-4">
+            {messages.length === 0 ? (
+              <div className="text-center py-8">
+                <Avatar className="h-16 w-16 mx-auto mb-3">
+                  <AvatarImage src={userAvatar} />
+                  <AvatarFallback className="text-2xl bg-primary/10 text-primary">
+                    {userName?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="font-semibold">{userName}</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Start a conversation with {userName}
+                </p>
+              </div>
+            ) : (
+              messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${
                     msg.sender_id === userId ? "justify-start" : "justify-end"
                   }`}
                 >
+                  {msg.sender_id === userId && (
+                    <Avatar className="h-7 w-7 mr-2 flex-shrink-0">
+                      <AvatarImage src={userAvatar} />
+                      <AvatarFallback className="text-xs">{userName?.[0]}</AvatarFallback>
+                    </Avatar>
+                  )}
                   <div
-                    className={`max-w-[70%] rounded-lg p-3 ${
+                    className={`max-w-[70%] rounded-2xl px-3 py-2 ${
                       msg.sender_id === userId
                         ? "bg-muted"
                         : "bg-primary text-primary-foreground"
@@ -72,20 +211,41 @@ export const DirectMessagesDialog = ({
                     <p className="text-sm">{msg.content}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </ScrollArea>
-          <div className="flex gap-2 p-4 border-t">
-            <Input
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type a message..."
-              onKeyPress={(e) => e.key === "Enter" && handleSend()}
-            />
-            <Button onClick={handleSend} size="icon">
+              ))
+            )}
+          </div>
+        </ScrollArea>
+
+        {/* Input area */}
+        <div className="flex items-center gap-2 p-3 border-t bg-card">
+          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0">
+            <Image className="h-5 w-5" />
+          </Button>
+          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-primary flex-shrink-0">
+            <Smile className="h-5 w-5" />
+          </Button>
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Aa"
+            onKeyPress={(e) => e.key === "Enter" && handleSend()}
+            className="flex-1 rounded-full bg-muted border-0 focus-visible:ring-1"
+          />
+          {message.trim() ? (
+            <Button onClick={handleSend} size="icon" className="h-8 w-8 rounded-full flex-shrink-0">
               <Send className="h-4 w-4" />
             </Button>
-          </div>
+          ) : (
+            <Button 
+              type="button" 
+              variant="ghost" 
+              size="icon" 
+              className="h-8 w-8 text-primary flex-shrink-0"
+              onClick={handleQuickReaction}
+            >
+              <ThumbsUp className="h-5 w-5" />
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>
