@@ -610,7 +610,7 @@ const Feed = () => {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-x-hidden overflow-y-auto">
       {/* Animated Background - Full coverage */}
       <WallBackground />
       
