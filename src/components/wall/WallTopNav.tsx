@@ -37,10 +37,8 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
       <div className="max-w-7xl mx-auto px-2 sm:px-4">
         <div className="flex items-center justify-between gap-2 py-2">
           <div 
-            className="flex items-center justify-start sm:justify-center gap-1 flex-1 lg:pl-0"
+            className="flex items-center justify-start sm:justify-center gap-1 flex-1 lg:pl-0 overflow-x-auto overflow-y-hidden touch-pan-x"
             style={{ 
-              overflowX: 'auto',
-              overflowY: 'hidden',
               WebkitOverflowScrolling: 'touch',
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',
@@ -51,7 +49,7 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
                 display: none;
               }
             `}</style>
-            <div className="nav-scroll-container flex items-center gap-1" style={{ minWidth: 'max-content' }}>
+            <div className="nav-scroll-container flex items-center gap-1 min-w-max px-1">
               {navItems.map((item) => (
                 <Button
                   key={item.path}
