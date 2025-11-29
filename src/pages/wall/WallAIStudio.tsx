@@ -173,6 +173,25 @@ import glamourRedDressGift from "@/assets/ai-studio/glamour-red-dress-gift.jpg";
 import glamourBabySled from "@/assets/ai-studio/glamour-baby-sled.jpg";
 import glamourGiftBox from "@/assets/ai-studio/glamour-gift-box.jpg";
 import glamourRoseWreath from "@/assets/ai-studio/glamour-rose-wreath.jpg";
+// New Glamour Christmas 2
+import glamourChampagneTree from "@/assets/ai-studio/glamour-champagne-tree.jpg";
+import glamourGingerbreadGirl from "@/assets/ai-studio/glamour-gingerbread-girl.jpg";
+import glamourSantaLollipop from "@/assets/ai-studio/glamour-santa-lollipop.jpg";
+// Atlantis Mermaid
+import atlantisSeaflora from "@/assets/ai-studio/atlantis-seaflora.jpg";
+import atlantisSunwave from "@/assets/ai-studio/atlantis-sunwave.jpg";
+import atlantisNyxelle from "@/assets/ai-studio/atlantis-nyxelle.jpg";
+// Creative
+import creativeSunflower from "@/assets/ai-studio/creative-sunflower.jpg";
+import creativeGiant from "@/assets/ai-studio/creative-giant.jpg";
+import creativeDesert from "@/assets/ai-studio/creative-desert.jpg";
+import creativeGraffiti from "@/assets/ai-studio/creative-graffiti.jpg";
+// Chibi
+import chibiSkiing from "@/assets/ai-studio/chibi-skiing.jpg";
+import chibiBasketball from "@/assets/ai-studio/chibi-basketball.jpg";
+// Pocket
+import pocketWork from "@/assets/ai-studio/pocket-work.jpg";
+import pocketGift from "@/assets/ai-studio/pocket-gift.jpg";
 
 const TRANSFORMATION_CATEGORIES = [
   {
@@ -203,6 +222,40 @@ const TRANSFORMATION_CATEGORIES = [
       { id: "glamour-baby-sled", label: "Baby Sled", image: glamourBabySled },
       { id: "glamour-gift-box", label: "Gift Box", image: glamourGiftBox },
       { id: "glamour-rose-wreath", label: "Rose Wreath", image: glamourRoseWreath },
+      { id: "glamour-champagne-tree", label: "Champagne Tree", image: glamourChampagneTree },
+      { id: "glamour-gingerbread-girl", label: "Gingerbread Girl", image: glamourGingerbreadGirl },
+      { id: "glamour-santa-lollipop", label: "Santa Lollipop", image: glamourSantaLollipop },
+    ]
+  },
+  {
+    name: "🧜‍♀️ Atlantis Mermaid",
+    items: [
+      { id: "atlantis-seaflora", label: "Seaflora Blush", image: atlantisSeaflora },
+      { id: "atlantis-sunwave", label: "Sunwave Opal", image: atlantisSunwave },
+      { id: "atlantis-nyxelle", label: "Nyxelle Pearl", image: atlantisNyxelle },
+    ]
+  },
+  {
+    name: "🎨 Creative Studio",
+    items: [
+      { id: "creative-sunflower", label: "Sun Flower", image: creativeSunflower },
+      { id: "creative-giant", label: "Giant Statue", image: creativeGiant },
+      { id: "creative-desert", label: "Desert Queen", image: creativeDesert },
+      { id: "creative-graffiti", label: "Graffiti Wall", image: creativeGraffiti },
+    ]
+  },
+  {
+    name: "🏆 Chibi Champs",
+    items: [
+      { id: "chibi-skiing", label: "Frosty Zoomers", image: chibiSkiing },
+      { id: "chibi-basketball", label: "Bounce Buds", image: chibiBasketball },
+    ]
+  },
+  {
+    name: "💝 Pocket Buddies",
+    items: [
+      { id: "pocket-work", label: "Pocket Work", image: pocketWork },
+      { id: "pocket-gift", label: "Pocket Gift", image: pocketGift },
     ]
   },
   {
