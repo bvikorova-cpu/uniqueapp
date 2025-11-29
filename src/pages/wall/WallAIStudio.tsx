@@ -146,8 +146,30 @@ import zenMeditation from "@/assets/ai-studio/zen-meditation.jpg";
 import underwaterDiver from "@/assets/ai-studio/underwater-diver.jpg";
 import zenTaichi from "@/assets/ai-studio/zen-taichi.jpg";
 import zenMonk from "@/assets/ai-studio/zen-monk.jpg";
+// Glamour Photo
+import glamourBirthday from "@/assets/ai-studio/glamour-birthday.jpg";
+import glamourChristmasLights from "@/assets/ai-studio/glamour-christmas-lights.jpg";
+import glamourMonochrome from "@/assets/ai-studio/glamour-monochrome.jpg";
+import glamourGoldenMoon from "@/assets/ai-studio/glamour-golden-moon.jpg";
+import glamourOceanWaves from "@/assets/ai-studio/glamour-ocean-waves.jpg";
+import glamourPanther from "@/assets/ai-studio/glamour-panther.jpg";
+import glamourReindeer from "@/assets/ai-studio/glamour-reindeer.jpg";
+import glamourChristmasFamily from "@/assets/ai-studio/glamour-christmas-family.jpg";
 
 const TRANSFORMATION_CATEGORIES = [
+  {
+    name: "💎 Glamour Photo",
+    items: [
+      { id: "glamour-birthday", label: "Birthday Glam", image: glamourBirthday },
+      { id: "glamour-christmas-lights", label: "Christmas Lights", image: glamourChristmasLights },
+      { id: "glamour-monochrome", label: "Monochrome", image: glamourMonochrome },
+      { id: "glamour-golden-moon", label: "Golden Moon", image: glamourGoldenMoon },
+      { id: "glamour-ocean-waves", label: "Ocean Goddess", image: glamourOceanWaves },
+      { id: "glamour-panther", label: "Black Panther", image: glamourPanther },
+      { id: "glamour-reindeer", label: "Magic Reindeer", image: glamourReindeer },
+      { id: "glamour-christmas-family", label: "Christmas Family", image: glamourChristmasFamily },
+    ]
+  },
   {
     name: "🎄 Christmas Magic",
     items: [
