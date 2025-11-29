@@ -163,6 +163,16 @@ import glamourVintage from "@/assets/ai-studio/glamour-vintage.jpg";
 import glamourBalloons from "@/assets/ai-studio/glamour-balloons.jpg";
 import glamourGolden from "@/assets/ai-studio/glamour-golden.jpg";
 import glamourButterfly from "@/assets/ai-studio/glamour-butterfly.jpg";
+// New Glamour Christmas
+import glamourCozyMug from "@/assets/ai-studio/glamour-cozy-mug.jpg";
+import glamourTreeDance from "@/assets/ai-studio/glamour-tree-dance.jpg";
+import glamourSantaCandy from "@/assets/ai-studio/glamour-santa-candy.jpg";
+import glamourSantaMirror from "@/assets/ai-studio/glamour-santa-mirror.jpg";
+import glamourGrinch from "@/assets/ai-studio/glamour-grinch.jpg";
+import glamourRedDressGift from "@/assets/ai-studio/glamour-red-dress-gift.jpg";
+import glamourBabySled from "@/assets/ai-studio/glamour-baby-sled.jpg";
+import glamourGiftBox from "@/assets/ai-studio/glamour-gift-box.jpg";
+import glamourRoseWreath from "@/assets/ai-studio/glamour-rose-wreath.jpg";
 
 const TRANSFORMATION_CATEGORIES = [
   {
@@ -184,6 +194,15 @@ const TRANSFORMATION_CATEGORIES = [
       { id: "glamour-panther", label: "Black Panther", image: glamourPanther },
       { id: "glamour-reindeer", label: "Magic Reindeer", image: glamourReindeer },
       { id: "glamour-christmas-family", label: "Christmas Family", image: glamourChristmasFamily },
+      { id: "glamour-cozy-mug", label: "Cozy Christmas Mug", image: glamourCozyMug },
+      { id: "glamour-tree-dance", label: "Tree Dance", image: glamourTreeDance },
+      { id: "glamour-santa-candy", label: "Santa Candy", image: glamourSantaCandy },
+      { id: "glamour-santa-mirror", label: "Santa Mirror", image: glamourSantaMirror },
+      { id: "glamour-grinch", label: "Grinch Friend", image: glamourGrinch },
+      { id: "glamour-red-dress-gift", label: "Red Dress Gift", image: glamourRedDressGift },
+      { id: "glamour-baby-sled", label: "Baby Sled", image: glamourBabySled },
+      { id: "glamour-gift-box", label: "Gift Box", image: glamourGiftBox },
+      { id: "glamour-rose-wreath", label: "Rose Wreath", image: glamourRoseWreath },
     ]
   },
   {
