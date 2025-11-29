@@ -155,11 +155,27 @@ import glamourOceanWaves from "@/assets/ai-studio/glamour-ocean-waves.jpg";
 import glamourPanther from "@/assets/ai-studio/glamour-panther.jpg";
 import glamourReindeer from "@/assets/ai-studio/glamour-reindeer.jpg";
 import glamourChristmasFamily from "@/assets/ai-studio/glamour-christmas-family.jpg";
+import glamourBarbie from "@/assets/ai-studio/glamour-barbie.jpg";
+import glamourParis from "@/assets/ai-studio/glamour-paris.jpg";
+import glamourFlowers from "@/assets/ai-studio/glamour-flowers.jpg";
+import glamourBiker from "@/assets/ai-studio/glamour-biker.jpg";
+import glamourVintage from "@/assets/ai-studio/glamour-vintage.jpg";
+import glamourBalloons from "@/assets/ai-studio/glamour-balloons.jpg";
+import glamourGolden from "@/assets/ai-studio/glamour-golden.jpg";
+import glamourButterfly from "@/assets/ai-studio/glamour-butterfly.jpg";
 
 const TRANSFORMATION_CATEGORIES = [
   {
     name: "💎 Glamour Photo",
     items: [
+      { id: "glamour-barbie", label: "Barbie Dream", image: glamourBarbie },
+      { id: "glamour-paris", label: "Paris Eiffel", image: glamourParis },
+      { id: "glamour-flowers", label: "Flower Garden", image: glamourFlowers },
+      { id: "glamour-biker", label: "Biker Girl", image: glamourBiker },
+      { id: "glamour-vintage", label: "Vintage Mirror", image: glamourVintage },
+      { id: "glamour-balloons", label: "Red Balloons", image: glamourBalloons },
+      { id: "glamour-golden", label: "Golden Glamour", image: glamourGolden },
+      { id: "glamour-butterfly", label: "Butterfly Queen", image: glamourButterfly },
       { id: "glamour-birthday", label: "Birthday Glam", image: glamourBirthday },
       { id: "glamour-christmas-lights", label: "Christmas Lights", image: glamourChristmasLights },
       { id: "glamour-monochrome", label: "Monochrome", image: glamourMonochrome },
