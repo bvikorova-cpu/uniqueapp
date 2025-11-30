@@ -524,13 +524,13 @@ const Healthcare = () => {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-24 mt-16">
+      <section className="container mx-auto px-3 sm:px-4 py-12 sm:py-24 mt-16">
         <div className="text-center max-w-3xl mx-auto">
-          <Heart className="w-16 h-16 mx-auto mb-6 text-primary" />
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
+          <Heart className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-6 text-primary" />
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6">
             Healthcare Coloring Solutions
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
+          <p className="text-base sm:text-xl text-muted-foreground mb-6 sm:mb-8 px-2">
             Transform waiting rooms and therapy sessions with therapeutic coloring content.
             Reduce anxiety, engage children, and support healing through art.
           </p>
@@ -580,20 +580,20 @@ const Healthcare = () => {
       )}
 
       {/* Subscription Plans */}
-      <section className="container mx-auto px-4 py-12">
-        <h2 className="text-3xl font-bold text-center mb-4">Subscription Plans</h2>
-        <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
+      <section className="container mx-auto px-3 sm:px-4 py-8 sm:py-12">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3 sm:mb-4">Subscription Plans</h2>
+        <p className="text-center text-muted-foreground mb-6 sm:mb-12 max-w-2xl mx-auto text-sm sm:text-base px-2">
           Choose the perfect plan for your healthcare practice
         </p>
         
         <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
-            <TabsTrigger value="basic">Basic Plans</TabsTrigger>
-            <TabsTrigger value="specialized">Specialized</TabsTrigger>
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-4 sm:mb-8 h-auto">
+            <TabsTrigger value="basic" className="text-xs sm:text-sm py-2">Basic Plans</TabsTrigger>
+            <TabsTrigger value="specialized" className="text-xs sm:text-sm py-2">Specialized</TabsTrigger>
           </TabsList>
           
           <TabsContent value="basic">
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 max-w-7xl mx-auto">
               {basicPlans.map((plan) => {
                 const Icon = plan.icon;
                 return (
@@ -639,7 +639,7 @@ const Healthcare = () => {
           </TabsContent>
           
           <TabsContent value="specialized">
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 max-w-6xl mx-auto">
               {specializedPackages.map((pkg) => {
                 const Icon = pkg.icon;
                 return (

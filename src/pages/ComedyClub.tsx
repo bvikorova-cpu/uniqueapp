@@ -63,12 +63,12 @@ export default function ComedyClub() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-6">
-      <div className="max-w-7xl mx-auto space-y-6 mt-16">
-        <div className="flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted p-3 sm:p-6">
+      <div className="max-w-7xl mx-auto space-y-4 sm:space-y-6 mt-14 sm:mt-16">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <h1 className="text-4xl font-bold">🎤 Comedy Club</h1>
-            <p className="text-muted-foreground mt-2">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">🎤 Comedy Club</h1>
+            <p className="text-sm sm:text-base text-muted-foreground mt-1 sm:mt-2">
               Live stand-up • Battles • Earn money performing
             </p>
           </div>
@@ -76,8 +76,8 @@ export default function ComedyClub() {
           {!comedianProfile ? (
             <Dialog open={showCreateProfile} onOpenChange={setShowCreateProfile}>
               <DialogTrigger asChild>
-                <Button size="lg">
-                  <Mic2 className="mr-2 h-5 w-5" />
+                <Button size="sm" className="sm:size-lg">
+                  <Mic2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Become a Comedian
                 </Button>
               </DialogTrigger>
@@ -112,25 +112,27 @@ export default function ComedyClub() {
           ) : (
             <Button 
               variant="outline" 
-              size="lg"
+              size="sm"
               onClick={() => navigate("/comedian-dashboard")}
+              className="sm:size-lg"
             >
-              <User className="mr-2 h-5 w-5" />
-              Comedian Dashboard
+              <User className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="hidden sm:inline">Comedian Dashboard</span>
+              <span className="sm:hidden">Dashboard</span>
             </Button>
           )}
         </div>
 
         {/* How It Works Section */}
-        <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10">
-          <h2 className="text-2xl font-bold mb-4">How Comedy Club Works</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="p-3 sm:p-6 bg-gradient-to-br from-primary/5 to-primary/10">
+          <h2 className="text-lg sm:text-2xl font-bold mb-3 sm:mb-4">How Comedy Club Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             <div>
-              <h3 className="font-bold text-lg mb-2 flex items-center">
-                <TrendingUp className="mr-2 h-5 w-5 text-primary" />
+              <h3 className="font-bold text-base sm:text-lg mb-2 flex items-center">
+                <TrendingUp className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 For Viewers
               </h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
                 <li>• <strong>Buy Comedy Coins:</strong> Purchase coins to access premium content (100 coins = €5)</li>
                 <li>• <strong>Buy Tickets:</strong> Get tickets to live comedy shows and watch comedians perform in real-time</li>
                 <li>• <strong>Send Tips:</strong> Show appreciation during live shows with virtual tips (10-100 coins)</li>
@@ -139,11 +141,11 @@ export default function ComedyClub() {
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-2 flex items-center">
-                <Mic2 className="mr-2 h-5 w-5 text-primary" />
+              <h3 className="font-bold text-base sm:text-lg mb-2 flex items-center">
+                <Mic2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 For Comedians
               </h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
                 <li>• <strong>Go Live:</strong> Schedule and stream live comedy shows to earn from ticket sales</li>
                 <li>• <strong>Receive Tips:</strong> Earn real money from viewer tips during your performances</li>
                 <li>• <strong>Join Battles:</strong> Compete for prize pools and gain exposure</li>
@@ -158,22 +160,25 @@ export default function ComedyClub() {
         <ComedyCurrencyDisplay />
 
         <Tabs defaultValue="shows" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="shows">
-              <Mic2 className="mr-2 h-4 w-4" />
-              Live Shows
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="shows" className="text-xs sm:text-sm py-2 px-1 sm:px-3 flex-col sm:flex-row gap-1">
+              <Mic2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Live Shows</span>
+              <span className="sm:hidden">Live</span>
             </TabsTrigger>
-            <TabsTrigger value="battles">
-              <Trophy className="mr-2 h-4 w-4" />
-              Battles
+            <TabsTrigger value="battles" className="text-xs sm:text-sm py-2 px-1 sm:px-3 flex-col sm:flex-row gap-1">
+              <Trophy className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>Battles</span>
             </TabsTrigger>
-            <TabsTrigger value="clips">
-              <Video className="mr-2 h-4 w-4" />
-              Clip Marketplace
+            <TabsTrigger value="clips" className="text-xs sm:text-sm py-2 px-1 sm:px-3 flex-col sm:flex-row gap-1">
+              <Video className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Clip Marketplace</span>
+              <span className="sm:hidden">Clips</span>
             </TabsTrigger>
-            <TabsTrigger value="tickets">
-              <Ticket className="mr-2 h-4 w-4" />
-              My Tickets
+            <TabsTrigger value="tickets" className="text-xs sm:text-sm py-2 px-1 sm:px-3 flex-col sm:flex-row gap-1">
+              <Ticket className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">My Tickets</span>
+              <span className="sm:hidden">Tickets</span>
             </TabsTrigger>
           </TabsList>
 

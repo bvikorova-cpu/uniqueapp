@@ -144,33 +144,34 @@ const F1Subscription = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-900 via-black to-gray-900 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-red-900 via-black to-gray-900 p-2 sm:p-4">
       <div className="max-w-7xl mx-auto">
         <Button
           variant="ghost"
           onClick={() => navigate('/f1-racing')}
-          className="mb-6 text-white hover:bg-white/10"
+          className="mb-4 sm:mb-6 text-white hover:bg-white/10"
+          size="sm"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Racing
         </Button>
 
-        <div className="text-center mb-12">
-          <h1 className="text-6xl font-bold text-white mb-4 animate-fade-in">
+        <div className="text-center mb-6 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-2 sm:mb-4 animate-fade-in">
             🏎️ Choose Your Plan
           </h1>
-          <p className="text-2xl text-gray-300 mb-4">
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-4">
             Premium-Only F1 Fantasy Racing Platform
           </p>
           {isSubscribed && (
-            <Badge className="bg-green-500 text-white text-xl px-6 py-3">
-              <Check className="w-5 h-5 mr-2 inline" />
+            <Badge className="bg-green-500 text-white text-sm sm:text-xl px-4 sm:px-6 py-2 sm:py-3">
+              <Check className="w-4 h-4 sm:w-5 sm:h-5 mr-2 inline" />
               Current Plan: {currentTier?.toUpperCase()}
             </Badge>
           )}
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {Object.entries(tiers).map(([key, tier]) => {
             const Icon = tier.icon;
             const isCurrentPlan = currentTier === key;
@@ -193,20 +194,20 @@ const F1Subscription = () => {
                   </div>
                 )}
 
-                <CardHeader>
-                  <div className={`w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br ${tier.color} flex items-center justify-center`}>
-                    <Icon className="w-10 h-10 text-white" />
+                <CardHeader className="p-4 sm:p-6">
+                  <div className={`w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 rounded-full bg-gradient-to-br ${tier.color} flex items-center justify-center`}>
+                    <Icon className="w-7 h-7 sm:w-10 sm:h-10 text-white" />
                   </div>
-                  <CardTitle className="text-3xl text-center text-white mb-2">
+                  <CardTitle className="text-xl sm:text-3xl text-center text-white mb-2">
                     {tier.name}
                   </CardTitle>
                   <div className="text-center">
-                    <span className="text-5xl font-bold text-white">{tier.price}</span>
-                    <span className="text-gray-400 text-xl">/month</span>
+                    <span className="text-3xl sm:text-5xl font-bold text-white">{tier.price}</span>
+                    <span className="text-gray-400 text-base sm:text-xl">/month</span>
                   </div>
                   <div className="text-center mt-2">
-                    <Badge className={`bg-gradient-to-r ${tier.color} text-white text-lg px-4 py-2`}>
-                      <Zap className="w-4 h-4 mr-1 inline" />
+                    <Badge className={`bg-gradient-to-r ${tier.color} text-white text-sm sm:text-lg px-3 sm:px-4 py-1 sm:py-2`}>
+                      <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1 inline" />
                       {tier.credits.toLocaleString()} Credits/mo
                     </Badge>
                   </div>
