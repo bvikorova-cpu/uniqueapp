@@ -164,48 +164,48 @@ const Index = () => {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5">
-      <div className="max-w-7xl mx-auto p-4 py-12">
+      <div className="max-w-7xl mx-auto p-2 sm:p-4 py-6 sm:py-12">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
+        <div className="text-center mb-6 sm:mb-12 animate-fade-in px-2">
+          <h1 className="text-3xl sm:text-6xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent">
             {t('index.welcome')}
           </h1>
-          <p className="text-2xl text-muted-foreground mb-2">
+          <p className="text-lg sm:text-2xl text-muted-foreground mb-1 sm:mb-2">
             {t('index.subtitle')}
           </p>
-          <p className="text-lg text-muted-foreground/80">
+          <p className="text-sm sm:text-lg text-muted-foreground/80">
             Explore our premium services and discover amazing features
           </p>
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-2 sm:gap-6">
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
               <Card
                 key={index}
-                className={`group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-105 hover:shadow-2xl ${
+                className={`group cursor-pointer border-2 hover:border-primary transition-all duration-300 hover:scale-[1.02] sm:hover:scale-105 hover:shadow-xl sm:hover:shadow-2xl ${
                   service.featured ? "border-primary shadow-lg" : ""
                 }`}
                 onClick={() => navigate(service.path)}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <CardHeader>
-                  <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className="w-8 h-8 text-white" />
+                <CardHeader className="p-3 sm:p-6">
+                  <div className={`w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br ${service.gradient} flex items-center justify-center mb-2 sm:mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <Icon className="w-5 h-5 sm:w-8 sm:h-8 text-white" />
                   </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2">
+                    <CardTitle className="text-sm sm:text-xl group-hover:text-primary transition-colors line-clamp-2">
                       {service.title}
                     </CardTitle>
-                    <Badge className={`${service.badgeColor} text-white`}>
+                    <Badge className={`${service.badgeColor} text-white text-[10px] sm:text-xs w-fit`}>
                       {service.badge}
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
+                <CardContent className="p-3 pt-0 sm:p-6 sm:pt-0">
+                  <p className="text-muted-foreground text-xs sm:text-base line-clamp-2">
                     {service.description}
                   </p>
                 </CardContent>
@@ -215,11 +215,11 @@ const Index = () => {
         </div>
 
         {/* Footer CTA */}
-        <div className="mt-12 text-center">
+        <div className="mt-6 sm:mt-12 text-center px-2">
           <Card className="border-2 border-primary bg-gradient-to-r from-primary/5 to-accent/5">
-            <CardContent className="pt-6">
-              <h3 className="text-2xl font-bold mb-2">Ready to get started?</h3>
-              <p className="text-muted-foreground mb-4">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+              <h3 className="text-lg sm:text-2xl font-bold mb-1 sm:mb-2">Ready to get started?</h3>
+              <p className="text-muted-foreground text-sm sm:text-base mb-2 sm:mb-4">
                 Choose a service above and begin your journey!
               </p>
             </CardContent>

@@ -384,35 +384,35 @@ const Marketplace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-24 pb-12">
-      <div className="container mx-auto px-4">
-        <div className="mb-8">
-          <div className="flex justify-between items-start mb-6">
-            <div className="max-w-3xl">
-              <h1 className="text-4xl font-bold mb-2 flex items-center gap-2">
-                <Briefcase className="h-8 w-8 text-primary" />
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-20 sm:pt-24 pb-12">
+      <div className="container mx-auto px-2 sm:px-4">
+        <div className="mb-4 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4 sm:mb-6">
+            <div className="flex-1">
+              <h1 className="text-2xl sm:text-4xl font-bold mb-2 flex items-center gap-2">
+                <Briefcase className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
                 Skills Marketplace
               </h1>
-              <p className="text-muted-foreground mb-4">Find skilled professionals or offer your services</p>
-              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-6 space-y-3">
-                <h2 className="text-lg font-semibold">How It Works</h2>
-                <ul className="space-y-2 text-muted-foreground">
+              <p className="text-muted-foreground text-sm sm:text-base mb-4">Find skilled professionals or offer your services</p>
+              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-3 sm:p-6 space-y-2 sm:space-y-3">
+                <h2 className="text-base sm:text-lg font-semibold">How It Works</h2>
+                <ul className="space-y-2 text-muted-foreground text-xs sm:text-sm">
                   <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">•</span>
-                    <span><strong>Post Your Skills:</strong> Subscribe for €2/month to create unlimited service offerings. Upload images, set your hourly rate, and specify your location and expertise.</span>
+                    <span className="text-primary mt-0.5">•</span>
+                    <span><strong>Post Your Skills:</strong> Subscribe for €2/month to create unlimited service offerings.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">•</span>
-                    <span><strong>Find Professionals:</strong> Browse by category (construction, repairs, technology, creative, and more). Filter by location and price to find the perfect match.</span>
+                    <span className="text-primary mt-0.5">•</span>
+                    <span><strong>Find Professionals:</strong> Browse by category to find the perfect match.</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">•</span>
-                    <span><strong>Connect Directly:</strong> Send messages to service providers, discuss your project needs, and negotiate terms directly through the platform.</span>
+                    <span className="text-primary mt-0.5">•</span>
+                    <span><strong>Connect Directly:</strong> Send messages to service providers.</span>
                   </li>
                 </ul>
               </div>
             </div>
-            <Button onClick={() => setShowCreateForm(!showCreateForm)}>
+            <Button onClick={() => setShowCreateForm(!showCreateForm)} className="w-full sm:w-auto">
               {showCreateForm ? "Cancel" : "Add Offering"}
             </Button>
           </div>
