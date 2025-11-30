@@ -252,7 +252,7 @@ export default function WallFriends() {
   const displayedSuggestions = showAllSuggestions ? visibleSuggestions : visibleSuggestions.slice(0, 12);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-4 space-y-6">
+    <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 sm:py-4 space-y-4 sm:space-y-6">
       {/* Friend Requests Section */}
       <Card className="p-6 bg-card/95 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
@@ -364,7 +364,7 @@ export default function WallFriends() {
             <p className="text-sm mt-2">Add more friends so we can suggest more</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
             {displayedSuggestions.map((suggestion) => (
               <Card 
                 key={suggestion.id} 
@@ -443,7 +443,7 @@ export default function WallFriends() {
             <p className="text-sm mt-2">Start connecting with people!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
             {friends.map((friend) => (
               <Card 
                 key={friend.id} 

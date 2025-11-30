@@ -34,40 +34,33 @@ export function WallTopNav({ currentPath }: WallTopNavProps) {
 
   return (
     <div className="fixed top-16 left-0 right-0 z-40 bg-card/95 backdrop-blur-xl border-b shadow-sm">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4">
-        <div className="flex items-center justify-between gap-2 py-2">
+      <div className="max-w-7xl mx-auto px-1 sm:px-4">
+        <div className="flex items-center gap-1 py-1.5 sm:py-2">
           <div 
-            className="flex items-center justify-start sm:justify-center gap-1 flex-1 lg:pl-0 overflow-x-auto overflow-y-hidden touch-pan-x"
+            className="flex-1 overflow-x-auto overflow-y-hidden scrollbar-hide"
             style={{ 
               WebkitOverflowScrolling: 'touch',
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
             }}
           >
-            <style>{`
-              .nav-scroll-container::-webkit-scrollbar {
-                display: none;
-              }
-            `}</style>
-            <div className="nav-scroll-container flex items-center gap-1 min-w-max px-1">
+            <div className="flex items-center gap-0.5 sm:gap-1 px-0.5 w-max">
               {navItems.map((item) => (
                 <Button
                   key={item.path}
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0",
+                    "flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-all hover:bg-primary/10 flex-shrink-0 min-w-0",
                     currentPath === item.path && "bg-primary/10 text-primary font-semibold"
                   )}
                   onClick={() => navigate(item.path)}
                 >
-                  <item.icon className="h-4 w-4" />
-                  <span className="text-xs sm:text-sm whitespace-nowrap">{item.label}</span>
+                  <item.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+                  <span className="text-[10px] sm:text-xs whitespace-nowrap">{item.label}</span>
                 </Button>
               ))}
             </div>
           </div>
-          <div className="flex-shrink-0 ml-1">
+          <div className="flex-shrink-0">
             <AnimationToggle />
           </div>
         </div>
