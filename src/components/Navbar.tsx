@@ -488,7 +488,7 @@ const Navbar = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 space-y-2 max-h-[calc(100vh-5rem)] overflow-y-auto">
+          <div className="lg:hidden py-3 space-y-1 max-h-[calc(100vh-5rem)] overflow-y-auto">
             {/* Main Navigation Items */}
             {mainNavItems.map((item) => {
               const Icon = item.icon;
@@ -499,12 +499,13 @@ const Navbar = () => {
                 <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
                   <Button
                     variant={isActive ? "premium" : "ghost"}
-                    className="w-full justify-start relative"
+                    className="w-full justify-start relative text-sm py-2"
+                    size="sm"
                   >
                     <Icon className="h-4 w-4" />
                     {item.label}
                     {isPremium && (
-                      <Badge variant="secondary" className="ml-auto bg-gold text-gold-foreground">
+                      <Badge variant="secondary" className="ml-auto bg-gold text-gold-foreground text-[10px]">
                         Premium
                       </Badge>
                     )}
@@ -514,8 +515,8 @@ const Navbar = () => {
             })}
             
             {/* Learning Section */}
-            <div className="pt-2 pb-2">
-              <div className="px-4 py-2 text-sm font-semibold text-muted-foreground">
+            <div className="pt-2 pb-1">
+              <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
                 Learning
               </div>
               {learningServices.map((item) => {
@@ -526,7 +527,8 @@ const Navbar = () => {
                   <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
                     <Button
                       variant={isActive ? "premium" : "ghost"}
-                      className="w-full justify-start"
+                      className="w-full justify-start text-sm py-2"
+                      size="sm"
                     >
                       <Icon className="h-4 w-4" />
                       {item.label}
@@ -537,8 +539,8 @@ const Navbar = () => {
             </div>
             
             {/* Fundraising Section */}
-            <div className="pt-2 pb-2">
-              <div className="px-4 py-2 text-sm font-semibold text-muted-foreground">
+            <div className="pt-2 pb-1">
+              <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
                 Fundraising
               </div>
               {fundraisingServices.map((item) => {
@@ -549,7 +551,8 @@ const Navbar = () => {
                   <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
                     <Button
                       variant={isActive ? "premium" : "ghost"}
-                      className="w-full justify-start"
+                      className="w-full justify-start text-sm py-2"
+                      size="sm"
                     >
                       <Icon className="h-4 w-4" />
                       {item.label}
@@ -560,8 +563,8 @@ const Navbar = () => {
             </div>
             
             {/* Other Services Section */}
-            <div className="pt-2 pb-2">
-              <div className="px-4 py-2 text-sm font-semibold text-muted-foreground">
+            <div className="pt-2 pb-1">
+              <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground">
                 {t('navbar.other_services')}
               </div>
               {otherServices.map((item) => {
@@ -572,7 +575,8 @@ const Navbar = () => {
                   <Link key={item.path} to={item.path} onClick={() => setIsMenuOpen(false)}>
                     <Button
                       variant={isActive ? "premium" : "ghost"}
-                      className="w-full justify-start"
+                      className="w-full justify-start text-sm py-2"
+                      size="sm"
                     >
                       <Icon className="h-4 w-4" />
                       {item.label}
@@ -581,64 +585,64 @@ const Navbar = () => {
                 );
               })}
             </div>
-            <div className="pt-4 space-y-2">
+            <div className="pt-3 space-y-1.5">
               {user ? (
                 <>
                   <Link to={`/profile/${user.id}`} onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <UserCircle className="h-4 w-4 mr-2" />
                       {t('navbar.view_profile')}
                     </Button>
                   </Link>
                   <Link to="/edit-profile" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       {t('navbar.edit_profile')}
                     </Button>
                   </Link>
                   <Link to="/subscription" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Crown className="h-4 w-4 mr-2" />
                       {t('navbar.subscription')}
                     </Button>
                   </Link>
                   <Link to="/ai-credits" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Sparkles className="h-4 w-4 mr-2" />
                       {t('navbar.ai_credits')}
                     </Button>
                   </Link>
                   <Link to="/earnings" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Euro className="h-4 w-4 mr-2" />
                       {t('navbar.earnings')}
                     </Button>
                   </Link>
                   <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start">
+                    <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                       <Mail className="h-4 w-4 mr-2" />
                       {t('navbar.contact')}
                     </Button>
                   </Link>
                   {isAdmin && (
                     <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="ghost" className="w-full justify-start">
+                      <Button variant="ghost" className="w-full justify-start text-sm" size="sm">
                         <Settings className="h-4 w-4 mr-2" />
                         {t('navbar.admin_panel')}
                       </Button>
                     </Link>
                   )}
-                  <Button onClick={handleLogout} variant="outline" className="w-full">
+                  <Button onClick={handleLogout} variant="outline" className="w-full text-sm" size="sm">
                     {t('navbar.logout')}
                   </Button>
                 </>
               ) : (
               <>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" className="w-full">{t('navbar.login')}</Button>
+                  <Button variant="outline" className="w-full text-sm" size="sm">{t('navbar.login')}</Button>
                 </Link>
                 <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="hero" className="w-full">{t('navbar.register')}</Button>
+                  <Button variant="hero" className="w-full text-sm" size="sm">{t('navbar.register')}</Button>
                 </Link>
                 </>
               )}

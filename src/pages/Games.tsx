@@ -39,32 +39,34 @@ const Games = () => {
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-primary bg-clip-text text-transparent">
+      <div className="container mx-auto px-2 sm:px-4">
+        <div className="text-center mb-6 sm:mb-12 animate-fade-in">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-primary bg-clip-text text-transparent">
             Poki Games
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-sm sm:text-lg px-2">
             Play thousands of free online games - Powered by Poki
           </p>
         </div>
 
         <Tabs defaultValue="action" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 mb-8 glassmorphism">
-            {(Object.keys(gameCategories) as GameCategory[]).map((category) => {
-              const Icon = getCategoryIcon(category);
-              return (
-                <TabsTrigger key={category} value={category} className="flex items-center gap-2">
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{gameCategories[category]}</span>
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
+          <div className="overflow-x-auto scrollbar-hide mb-8">
+            <TabsList className="inline-flex w-max min-w-full sm:w-full sm:grid sm:grid-cols-4 lg:grid-cols-8 glassmorphism">
+              {(Object.keys(gameCategories) as GameCategory[]).map((category) => {
+                const Icon = getCategoryIcon(category);
+                return (
+                  <TabsTrigger key={category} value={category} className="flex items-center gap-1.5 px-3 py-2 whitespace-nowrap">
+                    <Icon className="h-4 w-4 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm">{gameCategories[category]}</span>
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+          </div>
 
           {(Object.keys(gameCategories) as GameCategory[]).map((category) => (
             <TabsContent key={category} value={category}>
-              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
                 {getGamesByCategory(category).map((game) => (
                   <Card 
                     key={game.id}

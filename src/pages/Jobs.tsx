@@ -442,8 +442,8 @@ const Jobs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-20 pb-12">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-background pt-16 sm:pt-20 pb-8 sm:pb-12">
+      <div className="container mx-auto px-2 sm:px-4">
         {/* Info banner for non-authenticated users */}
         {!user && (
           <Card className="mb-6 border-primary/20 bg-primary/5">
@@ -466,12 +466,12 @@ const Jobs = () => {
           </Card>
         )}
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-8">
           <div>
-            <h1 className="text-3xl md:text-5xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-1 sm:mb-2 bg-gradient-primary bg-clip-text text-transparent">
               {t('jobs.title')}
             </h1>
-            <p className="text-muted-foreground text-sm md:text-base">
+            <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
               {user 
                 ? t('jobs.subtitle')
                 : t('jobs.browseDesc', 'Browse job listings for free - log in to apply')}
@@ -485,15 +485,15 @@ const Jobs = () => {
               </>
             )}
             {user && isEmployer && (
-              <Button onClick={() => navigate('/employer-dashboard')} size="sm" className="text-xs md:text-sm">
-                <Building2 className="h-4 w-4 mr-1 md:mr-2" />
+              <Button onClick={() => navigate('/employer-dashboard')} size="sm" className="text-xs">
+                <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
                 <span className="hidden sm:inline">{t('jobs.dashboard.title')}</span>
                 <span className="sm:hidden">Dashboard</span>
               </Button>
             )}
             {user && !isEmployer && (
-              <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm" className="text-xs md:text-sm">
-                <Building2 className="h-4 w-4 mr-1 md:mr-2" />
+              <Button onClick={() => registerEmployerMutation.mutate()} disabled={registerEmployerMutation.isPending} size="sm" className="text-xs">
+                <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1" />
                 <span className="hidden sm:inline">{registerEmployerMutation.isPending ? "Registering..." : "Register as Employer"}</span>
                 <span className="sm:hidden">{registerEmployerMutation.isPending ? "..." : "Employer"}</span>
               </Button>
@@ -507,10 +507,10 @@ const Jobs = () => {
         </div>
 
         {/* Filters */}
-        <Card className="mb-8">
-          <CardContent className="pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="md:col-span-2">
+        <Card className="mb-4 sm:mb-8">
+          <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+              <div className="sm:col-span-2">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -591,17 +591,17 @@ const Jobs = () => {
                       >
                         {job.title}
                       </CardTitle>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-2">
                         <div className="flex items-center gap-1">
-                          <Building2 className="h-4 w-4" />
-                          {job.company_name}
+                          <Building2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <span className="truncate max-w-[100px] sm:max-w-none">{job.company_name}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {job.location}
+                          <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+                          <span className="truncate max-w-[80px] sm:max-w-none">{job.location}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Globe className="h-4 w-4" />
+                          <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
                           {job.country}
                         </div>
                       </div>

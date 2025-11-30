@@ -145,8 +145,8 @@ const Home = () => {
         {/* Subtle animated gradient overlay for premium feel */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10"></div>
         
-        <div className="relative z-10 text-center space-y-8 px-4 pt-32">
-          <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
+        <div className="relative z-10 text-center space-y-4 sm:space-y-8 px-3 sm:px-4 pt-16 sm:pt-32">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
             {t('home.hero_title')}{" "}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent animate-glow drop-shadow-[0_0_30px_rgba(251,191,36,0.5)]">
@@ -155,20 +155,20 @@ const Home = () => {
               </span>
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-white/80 max-w-3xl mx-auto drop-shadow-lg">
+          <p className="text-base sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto drop-shadow-lg px-2">
             {t('home.hero_subtitle')}
           </p>
           
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto px-2">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+              <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
               <Input
                 type="text"
                 placeholder={t('home.search_placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-4 py-6 text-lg text-black placeholder:text-gray-500 bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
+                className="pl-10 sm:pl-12 pr-4 py-4 sm:py-6 text-sm sm:text-lg text-black placeholder:text-gray-500 bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
               />
             </div>
           </form>

@@ -110,24 +110,24 @@ const Education = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 pt-20 pb-12">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+      <div className="container mx-auto px-2 sm:px-4">
+        <div className="text-center mb-6 sm:mb-12">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Education
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-sm sm:text-lg px-2">
             Online tutoring and quizzes for your personal development
           </p>
         </div>
 
         <Tabs defaultValue="tutoring" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="tutoring" className="gap-2">
-              <Brain className="h-4 w-4" />
+          <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-8">
+            <TabsTrigger value="tutoring" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Brain className="h-3 w-3 sm:h-4 sm:w-4" />
               Tutoring
             </TabsTrigger>
-            <TabsTrigger value="quiz" className="gap-2">
-              <BookOpen className="h-4 w-4" />
+            <TabsTrigger value="quiz" className="gap-1 sm:gap-2 text-xs sm:text-sm">
+              <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
               Quiz
             </TabsTrigger>
           </TabsList>
@@ -217,7 +217,7 @@ const Education = () => {
                   <CardDescription>20 questions with instant AI feedback</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                     {quizCategories.map((category) => (
                       <Card key={category.id} className="hover:shadow-lg transition-shadow hover-scale">
                         <CardHeader>
