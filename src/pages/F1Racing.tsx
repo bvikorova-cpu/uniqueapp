@@ -275,37 +275,38 @@ const F1Racing = () => {
         <div className="absolute bottom-10 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-red-500 to-transparent animate-pulse" style={{ animationDelay: '1.2s' }} />
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="flex justify-between items-center mb-6">
+      <div className="max-w-7xl mx-auto relative z-10 px-2 sm:px-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 sm:mb-6">
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
             className="text-white hover:bg-white/10"
+            size="sm"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
 
-          <div className="flex gap-4">
-            <Badge className="bg-red-600 text-white text-lg px-4 py-2">
-              <Zap className="w-5 h-5 mr-2 inline" />
+          <div className="flex gap-2 sm:gap-4 flex-wrap">
+            <Badge className="bg-red-600 text-white text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2">
+              <Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 inline" />
               {credits} Credits
             </Badge>
-            <Badge className="bg-yellow-500 text-black text-lg px-4 py-2">
-              <Trophy className="w-5 h-5 mr-2 inline" />
+            <Badge className="bg-yellow-500 text-black text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2">
+              <Trophy className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 inline" />
               {tier?.toUpperCase()}
             </Badge>
           </div>
         </div>
 
-        <div className="text-center mb-8">
-          <h1 className="text-6xl font-bold text-white mb-2 animate-fade-in">
+        <div className="text-center mb-4 sm:mb-8">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-2 animate-fade-in">
             🏎️ F1 Fantasy Racing
           </h1>
-          <p className="text-2xl text-gray-300">Build Your Dream Team & Compete!</p>
+          <p className="text-lg sm:text-xl lg:text-2xl text-gray-300">Build Your Dream Team & Compete!</p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6">
           {/* 3D Racing View */}
           <Card className="border-4 border-red-500 bg-black/80 shadow-2xl">
             <CardHeader>

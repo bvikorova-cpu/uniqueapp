@@ -245,40 +245,40 @@ const BrainDuel = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="container mx-auto max-w-7xl pt-20">
+    <div className="min-h-screen bg-background p-2 sm:p-4">
+      <div className="container mx-auto max-w-7xl pt-16 sm:pt-20">
         {/* Hero Section */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex-1" />
-            <div className="inline-flex items-center gap-2">
-              <Badge variant="secondary" className="text-sm">Live Now</Badge>
-              <Badge variant="outline" className="text-sm">
+        <div className="text-center mb-4 sm:mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 mb-4">
+            <div className="hidden sm:block flex-1" />
+            <div className="inline-flex items-center gap-2 flex-wrap justify-center">
+              <Badge variant="secondary" className="text-xs sm:text-sm">Live Now</Badge>
+              <Badge variant="outline" className="text-xs sm:text-sm">
                 <Flame className="w-3 h-3 mr-1 text-orange-500" />
                 {onlineCount} {onlineCount === 1 ? 'player' : 'players'} online
               </Badge>
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="sm:flex-1 flex justify-center sm:justify-end">
               {userId && (
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => navigate(`/profile/${userId}?tab=brain-duel`)}
-                  className="gap-2"
+                  className="gap-2 text-xs sm:text-sm"
                 >
-                  <User className="h-4 w-4" />
+                  <User className="h-3 w-3 sm:h-4 sm:w-4" />
                   My Stats
                 </Button>
               )}
             </div>
           </div>
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
             BrainDuel
           </h1>
-          <p className="text-xl text-muted-foreground mb-2">
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-2">
             Knowledge Battle Arena • Virtual Competition
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Test Your Knowledge • Compete for Virtual Credits
           </p>
         </div>
@@ -299,30 +299,36 @@ const BrainDuel = () => {
         </div>
 
         <Tabs defaultValue="play" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 gap-2 h-auto bg-muted p-2 mb-6">
-            <TabsTrigger value="play" className="gap-2">
-              <Zap className="h-4 w-4" />
-              Play Now
+          <TabsList className="flex w-full overflow-x-auto gap-1 sm:gap-2 h-auto bg-muted p-1 sm:p-2 mb-4 sm:mb-6">
+            <TabsTrigger value="play" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
+              <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Play Now</span>
+              <span className="sm:hidden">Play</span>
             </TabsTrigger>
-            <TabsTrigger value="tournaments" className="gap-2">
-              <Trophy className="h-4 w-4" />
-              Tournaments
+            <TabsTrigger value="tournaments" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
+              <Trophy className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Tournaments</span>
+              <span className="sm:hidden">Tour</span>
             </TabsTrigger>
-            <TabsTrigger value="challenges" className="gap-2">
-              <Users className="h-4 w-4" />
-              Challenges
+            <TabsTrigger value="challenges" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
+              <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Challenges</span>
+              <span className="sm:hidden">Chal</span>
             </TabsTrigger>
-            <TabsTrigger value="powerups" className="gap-2">
-              <Sparkles className="h-4 w-4" />
-              Power-ups
+            <TabsTrigger value="powerups" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Power-ups</span>
+              <span className="sm:hidden">Power</span>
             </TabsTrigger>
-            <TabsTrigger value="packs" className="gap-2">
-              <ShoppingCart className="h-4 w-4" />
-              Question Packs
+            <TabsTrigger value="packs" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
+              <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Question Packs</span>
+              <span className="sm:hidden">Packs</span>
             </TabsTrigger>
-            <TabsTrigger value="audience" className="gap-2">
-              <Users className="h-4 w-4" />
-              Live Audience
+            <TabsTrigger value="audience" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3 flex-shrink-0">
+              <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Live Audience</span>
+              <span className="sm:hidden">Live</span>
             </TabsTrigger>
           </TabsList>
 
@@ -407,18 +413,18 @@ const BrainDuel = () => {
                   Choose your expertise or challenge yourself with mixed categories
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <CardContent className="p-3 sm:p-6">
+                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
                   {categories.map((category) => {
                     const Icon = category.icon;
                     return (
                       <Button
                         key={category.id}
                         variant="outline"
-                        className="h-auto py-4 flex-col gap-2"
+                        className="h-auto py-2 sm:py-4 flex-col gap-1 sm:gap-2 px-1 sm:px-3"
                       >
-                        <Icon className={`h-6 w-6 ${category.color}`} />
-                        <span className="text-xs font-medium">{category.name}</span>
+                        <Icon className={`h-4 w-4 sm:h-6 sm:w-6 ${category.color}`} />
+                        <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">{category.name}</span>
                       </Button>
                     );
                   })}

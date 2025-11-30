@@ -814,58 +814,58 @@ const Dating = () => {
   
   if (!isSubscribed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-background pt-20 pb-12">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="text-center space-y-8">
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-background pt-16 sm:pt-20 pb-8 sm:pb-12">
+        <div className="container mx-auto px-3 sm:px-4 max-w-5xl">
+          <div className="text-center space-y-4 sm:space-y-8">
             <div className="flex justify-center">
-              <Badge className="bg-gradient-to-r from-pink-500 to-purple-500 text-white text-lg px-6 py-2">
-                <Heart className="h-5 w-5 mr-2" />
+              <Badge className="bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm sm:text-lg px-4 sm:px-6 py-1 sm:py-2">
+                <Heart className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 Premium Dating
               </Badge>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient">
               Find Your Perfect Match
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
               Join thousands of people who have already found their love story. Swipe, match, and start meaningful conversations!
             </p>
 
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-4xl mx-auto mt-8 sm:mt-16">
               <Card 
                 className={`relative cursor-pointer transition-all hover:scale-105 ${
                   selectedPlan === 'monthly' 
-                    ? 'ring-4 ring-pink-500 shadow-2xl shadow-pink-500/50' 
+                    ? 'ring-2 sm:ring-4 ring-pink-500 shadow-xl sm:shadow-2xl shadow-pink-500/50' 
                     : 'hover:ring-2 hover:ring-pink-300'
                 }`} 
                 onClick={() => setSelectedPlan('monthly')}
               >
-                <CardHeader className="text-center pb-8">
-                  <div className="text-6xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-3">
+                <CardHeader className="text-center pb-4 sm:pb-8">
+                  <div className="text-4xl sm:text-6xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent mb-2 sm:mb-3">
                     2 €
                   </div>
-                  <p className="text-xl text-muted-foreground font-medium">per month</p>
+                  <p className="text-base sm:text-xl text-muted-foreground font-medium">per month</p>
                 </CardHeader>
-                <CardContent className="space-y-4 pb-8">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
-                      <Heart className="h-6 w-6 text-pink-500 flex-shrink-0" />
-                      <span className="text-base">Unlimited swiping</span>
+                <CardContent className="space-y-2 sm:space-y-4 pb-4 sm:pb-8">
+                  <div className="space-y-2 sm:space-y-4">
+                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
+                      <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-pink-500 flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Unlimited swiping</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
-                      <MessageCircle className="h-6 w-6 text-purple-500 flex-shrink-0" />
-                      <span className="text-base">Chat with matches</span>
+                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500 flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Chat with matches</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
-                      <Sparkles className="h-6 w-6 text-pink-500 flex-shrink-0" />
-                      <span className="text-base">Premium filters</span>
+                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
+                      <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-pink-500 flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Premium filters</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
-                      <Camera className="h-6 w-6 text-purple-500 flex-shrink-0" />
-                      <span className="text-base">Photo & video profiles</span>
+                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                      <Camera className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500 flex-shrink-0" />
+                      <span className="text-sm sm:text-base">Photo & video profiles</span>
                     </div>
-                    <div className="flex items-center gap-3 p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
-                      <Zap className="h-6 w-6 text-pink-500 flex-shrink-0" />
-                      <span className="text-base">5 Super Likes daily</span>
+                    <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-pink-50 dark:bg-pink-950/30 rounded-lg">
+                      <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-pink-500 flex-shrink-0" />
+                      <span className="text-sm sm:text-base">5 Super Likes daily</span>
                     </div>
                   </div>
                 </CardContent>

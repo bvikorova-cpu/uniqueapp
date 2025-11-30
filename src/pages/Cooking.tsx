@@ -240,19 +240,19 @@ const Cooking = () => {
             </Button>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
             {aiFeatures.map((feature, idx) => (
               <Card 
                 key={idx}
                 className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                 onClick={() => navigate(feature.path)}
               >
-                <CardContent className="p-4 text-center">
-                  <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center mx-auto mb-3`}>
-                    <feature.icon className="h-6 w-6 text-white" />
+                <CardContent className="p-2 sm:p-4 text-center">
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r ${feature.color} flex items-center justify-center mx-auto mb-2 sm:mb-3`}>
+                    <feature.icon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
-                  <h3 className="font-semibold text-sm mb-1">{feature.title}</h3>
-                  <p className="text-xs text-muted-foreground">{feature.description}</p>
+                  <h3 className="font-semibold text-xs sm:text-sm mb-1">{feature.title}</h3>
+                  <p className="text-xs text-muted-foreground hidden sm:block">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -261,12 +261,12 @@ const Cooking = () => {
 
         {/* Categories */}
         <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8">
-          <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto gap-2 bg-transparent">
+          <TabsList className="w-full justify-start overflow-x-auto flex-nowrap h-auto gap-1 sm:gap-2 bg-transparent p-1">
             {categories.map((category) => (
               <TabsTrigger
                 key={category}
                 value={category}
-                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white"
+                className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 whitespace-nowrap flex-shrink-0"
               >
                 {category}
               </TabsTrigger>
