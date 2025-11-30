@@ -156,20 +156,20 @@ export default function TimeCapsule() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-500/10 via-background to-cyan-500/10">
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <div className="inline-block p-3 bg-blue-500/10 rounded-full mb-4">
-            <Clock className="h-12 w-12 text-blue-600" />
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 pt-16 sm:pt-12">
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="inline-block p-2 sm:p-3 bg-blue-500/10 rounded-full mb-3 sm:mb-4">
+            <Clock className="h-8 w-8 sm:h-12 sm:w-12 text-blue-600" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">
             Create Your Time Capsule
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl text-muted-foreground max-w-2xl mx-auto px-2">
             Write a message to your future self or loved ones
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-12">
           {/* Create Capsule Form */}
           <Card>
             <CardHeader>
@@ -191,16 +191,16 @@ export default function TimeCapsule() {
 
               <Tabs value={capsuleType} onValueChange={(v) => setCapsuleType(v as any)}>
                 <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="text">
-                    <FileText className="h-4 w-4 mr-2" />
+                  <TabsTrigger value="text" className="text-xs sm:text-sm">
+                    <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     Text
                   </TabsTrigger>
-                  <TabsTrigger value="video">
-                    <Video className="h-4 w-4 mr-2" />
+                  <TabsTrigger value="video" className="text-xs sm:text-sm">
+                    <Video className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     Video
                   </TabsTrigger>
-                  <TabsTrigger value="letter">
-                    <Mail className="h-4 w-4 mr-2" />
+                  <TabsTrigger value="letter" className="text-xs sm:text-sm">
+                    <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                     Letter
                   </TabsTrigger>
                 </TabsList>

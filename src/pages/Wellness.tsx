@@ -167,56 +167,55 @@ export default function Wellness() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-16 max-w-7xl">
-      <div className="mb-12 space-y-6">
+    <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-16 pt-16 sm:pt-16 max-w-7xl">
+      <div className="mb-8 sm:mb-12 space-y-4 sm:space-y-6">
         <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 flex items-center justify-center gap-3">
-            <Heart className="w-12 h-12 text-primary" />
-            Wellness & Mental Health
+          <h1 className="text-2xl sm:text-5xl md:text-6xl font-bold mb-3 sm:mb-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+            <Heart className="w-8 h-8 sm:w-12 sm:h-12 text-primary" />
+            <span>Wellness & Mental Health</span>
           </h1>
-          <p className="text-xl text-muted-foreground">
-            Professional tools for relaxation, mindfulness, and mental wellbeing. Reduce stress, 
-            improve sleep, and cultivate inner peace using scientifically proven techniques.
+          <p className="text-sm sm:text-xl text-muted-foreground px-2">
+            Professional tools for relaxation, mindfulness, and mental wellbeing.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mt-4 sm:mt-8">
           <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover:shadow-lg transition-shadow">
-            <CardContent className="pt-6">
-              <Brain className="w-8 h-8 text-primary mb-2" />
-              <h3 className="font-semibold mb-1">AI Mindfulness Coach</h3>
-              <p className="text-sm text-muted-foreground">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+              <Brain className="w-5 h-5 sm:w-8 sm:h-8 text-primary mb-1 sm:mb-2" />
+              <h3 className="font-semibold mb-1 text-xs sm:text-base">AI Coach</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                 Empathetic AI assistant for your mental wellbeing
               </p>
             </CardContent>
           </Card>
 
           <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover:shadow-lg transition-shadow">
-            <CardContent className="pt-6">
-              <Wind className="w-8 h-8 text-primary mb-2" />
-              <h3 className="font-semibold mb-1">Breathing Exercises</h3>
-              <p className="text-sm text-muted-foreground">
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+              <Wind className="w-5 h-5 sm:w-8 sm:h-8 text-primary mb-1 sm:mb-2" />
+              <h3 className="font-semibold mb-1 text-xs sm:text-base">Breathing</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
                 4-7-8 and Box Breathing with visual guidance
               </p>
             </CardContent>
           </Card>
 
           <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover:shadow-lg transition-shadow">
-            <CardContent className="pt-6">
-              <Heart className="w-8 h-8 text-primary mb-2" />
-              <h3 className="font-semibold mb-1">Body Scan Meditation</h3>
-              <p className="text-sm text-muted-foreground">
-                Progressive relaxation with audio guidance and visualization
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+              <Heart className="w-5 h-5 sm:w-8 sm:h-8 text-primary mb-1 sm:mb-2" />
+              <h3 className="font-semibold mb-1 text-xs sm:text-base">Body Scan</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+                Progressive relaxation with audio guidance
               </p>
             </CardContent>
           </Card>
 
           <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent hover:shadow-lg transition-shadow">
-            <CardContent className="pt-6">
-              <Volume2 className="w-8 h-8 text-primary mb-2" />
-              <h3 className="font-semibold mb-1">Nature Sounds</h3>
-              <p className="text-sm text-muted-foreground">
-                Rain, ocean waves, and forest for deeper relaxation
+            <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+              <Volume2 className="w-5 h-5 sm:w-8 sm:h-8 text-primary mb-1 sm:mb-2" />
+              <h3 className="font-semibold mb-1 text-xs sm:text-base">Sounds</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground hidden sm:block">
+                Rain, ocean waves, and forest for relaxation
               </p>
             </CardContent>
           </Card>
@@ -329,40 +328,42 @@ export default function Wellness() {
       )}
 
       <Tabs defaultValue="breathing" className="w-full">
-        <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="progress" disabled={!hasBasicAccess}>
-            <TrendingUp className="w-4 h-4 mr-2" />
-            Progress
-          </TabsTrigger>
-          <TabsTrigger value="breathing" disabled={!hasBasicAccess}>
-            <Wind className="w-4 h-4 mr-2" />
-            Breathing
-          </TabsTrigger>
-          <TabsTrigger value="grounding" disabled={!hasBasicAccess}>
-            <Brain className="w-4 h-4 mr-2" />
-            Grounding
-          </TabsTrigger>
-          <TabsTrigger value="sounds" disabled={!hasBasicAccess}>
-            <Volume2 className="w-4 h-4 mr-2" />
-            Sounds
-          </TabsTrigger>
-          <TabsTrigger value="bodyscan" disabled={!hasBasicAccess}>
-            <Heart className="w-4 h-4 mr-2" />
-            Body Scan
-          </TabsTrigger>
-          <TabsTrigger value="chat" disabled={!hasPremiumAccess}>
-            <Brain className="w-4 h-4 mr-2" />
-            AI Coach
-          </TabsTrigger>
-          <TabsTrigger value="journal" disabled={!hasPremiumAccess}>
-            <BookOpen className="w-4 h-4 mr-2" />
-            Journal
-          </TabsTrigger>
-          <TabsTrigger value="mandala" disabled={!hasPremiumAccess}>
-            <Palette className="w-4 h-4 mr-2" />
-            Mandala
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto mb-4">
+          <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-8">
+            <TabsTrigger value="progress" disabled={!hasBasicAccess} className="text-xs px-2">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">Progress</span>
+            </TabsTrigger>
+            <TabsTrigger value="breathing" disabled={!hasBasicAccess} className="text-xs px-2">
+              <Wind className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">Breathing</span>
+            </TabsTrigger>
+            <TabsTrigger value="grounding" disabled={!hasBasicAccess} className="text-xs px-2">
+              <Brain className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">Grounding</span>
+            </TabsTrigger>
+            <TabsTrigger value="sounds" disabled={!hasBasicAccess} className="text-xs px-2">
+              <Volume2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">Sounds</span>
+            </TabsTrigger>
+            <TabsTrigger value="bodyscan" disabled={!hasBasicAccess} className="text-xs px-2">
+              <Heart className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">Body Scan</span>
+            </TabsTrigger>
+            <TabsTrigger value="chat" disabled={!hasPremiumAccess} className="text-xs px-2">
+              <Brain className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">AI Coach</span>
+            </TabsTrigger>
+            <TabsTrigger value="journal" disabled={!hasPremiumAccess} className="text-xs px-2">
+              <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">Journal</span>
+            </TabsTrigger>
+            <TabsTrigger value="mandala" disabled={!hasPremiumAccess} className="text-xs px-2">
+              <Palette className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">Mandala</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="progress">
           {hasBasicAccess ? <WellnessProgressDashboard /> : <PremiumRequired />}

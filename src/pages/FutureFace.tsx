@@ -266,107 +266,107 @@ const FutureFace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-24 pb-12">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-16 sm:pt-24 pb-12">
+      <div className="container mx-auto px-3 sm:px-4 max-w-7xl">
         
         {/* Hero Section */}
-        <div className="text-center mb-16 space-y-6">
-          <Badge className="bg-gradient-primary text-white mb-4">
+        <div className="text-center mb-8 sm:mb-16 space-y-4 sm:space-y-6">
+          <Badge className="bg-gradient-primary text-white mb-2 sm:mb-4">
             <Sparkles className="h-3 w-3 mr-1" />
             AI-Powered Age Prediction
           </Badge>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold mb-4 sm:mb-6">
             Future <span className="bg-gradient-primary bg-clip-text text-transparent">Face</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
             Discover how you'll look in <span className="text-primary font-semibold">10, 20, or 50 years</span> with AI-powered age progression. 
             See the dramatic difference between healthy and unhealthy lifestyle choices.
           </p>
         </div>
 
         {/* How It Works */}
-        <Card className="mb-16 border-2 border-primary/20">
-          <CardHeader>
-            <CardTitle className="text-3xl flex items-center gap-2">
-              <Zap className="h-8 w-8 text-primary" />
+        <Card className="mb-8 sm:mb-16 border-2 border-primary/20">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-xl sm:text-3xl flex items-center gap-2">
+              <Zap className="h-5 w-5 sm:h-8 sm:w-8 text-primary" />
               How It Works
             </CardTitle>
-            <CardDescription className="text-lg">Simple 3-step process to see your future</CardDescription>
+            <CardDescription className="text-sm sm:text-lg">Simple 3-step process to see your future</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto flex items-center justify-center text-white text-2xl font-bold">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-3 gap-3 sm:gap-8">
+              <div className="text-center space-y-2 sm:space-y-3">
+                <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-gradient-primary mx-auto flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
                   1
                 </div>
-                <h3 className="font-semibold text-xl">Upload Selfie</h3>
-                <p className="text-muted-foreground">Upload a clear photo of your face</p>
+                <h3 className="font-semibold text-xs sm:text-xl">Upload Selfie</h3>
+                <p className="text-muted-foreground text-xs sm:text-base hidden sm:block">Upload a clear photo of your face</p>
               </div>
-              <div className="text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto flex items-center justify-center text-white text-2xl font-bold">
+              <div className="text-center space-y-2 sm:space-y-3">
+                <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-gradient-primary mx-auto flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
                   2
                 </div>
-                <h3 className="font-semibold text-xl">Choose Years</h3>
-                <p className="text-muted-foreground">Select how many years into the future</p>
+                <h3 className="font-semibold text-xs sm:text-xl">Choose Years</h3>
+                <p className="text-muted-foreground text-xs sm:text-base hidden sm:block">Select how many years into the future</p>
               </div>
-              <div className="text-center space-y-3">
-                <div className="w-16 h-16 rounded-full bg-gradient-primary mx-auto flex items-center justify-center text-white text-2xl font-bold">
+              <div className="text-center space-y-2 sm:space-y-3">
+                <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-gradient-primary mx-auto flex items-center justify-center text-white text-lg sm:text-2xl font-bold">
                   3
                 </div>
-                <h3 className="font-semibold text-xl">See Results</h3>
-                <p className="text-muted-foreground">View your future with healthy vs unhealthy lifestyle</p>
+                <h3 className="font-semibold text-xs sm:text-xl">See Results</h3>
+                <p className="text-muted-foreground text-xs sm:text-base hidden sm:block">View your future with healthy vs unhealthy lifestyle</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Benefits Section */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-16">
           <Card className="border-primary/20 hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <Heart className="h-10 w-10 text-red-500 mb-2" />
-              <CardTitle>Health Motivation</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <Heart className="h-6 w-6 sm:h-10 sm:w-10 text-red-500 mb-1 sm:mb-2" />
+              <CardTitle className="text-sm sm:text-base">Health Motivation</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <p className="text-muted-foreground text-xs sm:text-sm">
                 See the visual impact of lifestyle choices on your aging process
               </p>
             </CardContent>
           </Card>
 
           <Card className="border-primary/20 hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <TrendingUp className="h-10 w-10 text-green-500 mb-2" />
-              <CardTitle>Track Progress</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <TrendingUp className="h-6 w-6 sm:h-10 sm:w-10 text-green-500 mb-1 sm:mb-2" />
+              <CardTitle className="text-sm sm:text-base">Track Progress</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <p className="text-muted-foreground text-xs sm:text-sm">
                 Monthly updates to see how your healthy choices are paying off
               </p>
             </CardContent>
           </Card>
 
           <Card className="border-primary/20 hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <Shield className="h-10 w-10 text-blue-500 mb-2" />
-              <CardTitle>Science-Backed</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <Shield className="h-6 w-6 sm:h-10 sm:w-10 text-blue-500 mb-1 sm:mb-2" />
+              <CardTitle className="text-sm sm:text-base">Science-Backed</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <p className="text-muted-foreground text-xs sm:text-sm">
                 AI trained on real aging patterns and lifestyle impact data
               </p>
             </CardContent>
           </Card>
 
           <Card className="border-primary/20 hover:border-primary/50 transition-colors">
-            <CardHeader>
-              <Sparkles className="h-10 w-10 text-purple-500 mb-2" />
-              <CardTitle>Photorealistic</CardTitle>
+            <CardHeader className="p-3 sm:p-6">
+              <Sparkles className="h-6 w-6 sm:h-10 sm:w-10 text-purple-500 mb-1 sm:mb-2" />
+              <CardTitle className="text-sm sm:text-base">Photorealistic</CardTitle>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
+            <CardContent className="p-3 sm:p-6 pt-0">
+              <p className="text-muted-foreground text-xs sm:text-sm">
                 High-quality, realistic results powered by advanced AI
               </p>
             </CardContent>

@@ -118,31 +118,31 @@ const BrandBuilder = () => {
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
       <Navbar />
       
-      <div className="container mx-auto px-4 pt-24 pb-12 max-w-7xl">
+      <div className="container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8 sm:pb-12 max-w-7xl">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="h-12 w-12 text-primary animate-pulse" />
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <Sparkles className="h-8 w-8 sm:h-12 sm:w-12 text-primary animate-pulse" />
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               Brand Builder
             </h1>
           </div>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto px-2">
             Create a complete professional brand identity with AI-powered logo, colors, slogans, and social media strategy
           </p>
-          <Badge variant="secondary" className="mt-4">
+          <Badge variant="secondary" className="mt-3 sm:mt-4 text-xs sm:text-sm">
             Your Credits: {typeof credits === 'number' ? credits : credits.credits_remaining} | Cost: 15 credits per brand kit
           </Badge>
         </div>
 
         <Tabs defaultValue="create" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="create">
-              <Lightbulb className="h-4 w-4 mr-2" />
+          <TabsList className="grid w-full grid-cols-2 mb-6 sm:mb-8">
+            <TabsTrigger value="create" className="text-xs sm:text-sm">
+              <Lightbulb className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               Create Brand Kit
             </TabsTrigger>
-            <TabsTrigger value="history">
-              <TrendingUp className="h-4 w-4 mr-2" />
+            <TabsTrigger value="history" className="text-xs sm:text-sm">
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
               My Brand Kits
             </TabsTrigger>
           </TabsList>
