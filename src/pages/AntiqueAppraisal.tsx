@@ -150,7 +150,7 @@ const AntiqueAppraisal = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-20 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-16 sm:py-20 px-3 sm:px-4">
       <AlertDialog open={!!stripeUrl} onOpenChange={() => setStripeUrl(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -186,28 +186,28 @@ const AntiqueAppraisal = () => {
       </AlertDialog>
 
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12 mt-12">
-          <h1 className="text-4xl font-bold mb-4">AI Antique Appraisal</h1>
-          <p className="text-muted-foreground text-lg">
+        <div className="text-center mb-8 sm:mb-12 mt-8 sm:mt-12">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-3 sm:mb-4">AI Antique Appraisal</h1>
+          <p className="text-muted-foreground text-base sm:text-lg px-2">
             Discover the history and value of your antiques with AI
           </p>
-          <div className="mt-4 inline-block px-6 py-2 bg-primary/10 rounded-full">
+          <div className="mt-4 inline-block px-4 sm:px-6 py-2 bg-primary/10 rounded-full">
             <p className="text-sm">
               Available credits: <span className="font-bold text-primary">{credits?.credits_remaining || 0}</span>
             </p>
           </div>
         </div>
 
-        <Tabs defaultValue="analyze" className="mb-12">
+        <Tabs defaultValue="analyze" className="mb-8 sm:mb-12">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="analyze">New Analysis</TabsTrigger>
-            <TabsTrigger value="collection">My Collection</TabsTrigger>
+            <TabsTrigger value="analyze" className="text-xs sm:text-sm">New Analysis</TabsTrigger>
+            <TabsTrigger value="collection" className="text-xs sm:text-sm">My Collection</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="analyze" className="space-y-8">
+          <TabsContent value="analyze" className="space-y-6 sm:space-y-8">
             {/* Analysis Type Selection */}
-            <div className="grid md:grid-cols-3 gap-4">
-              {analysisOptions.map((option) => {
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            {analysisOptions.map((option) => {
                 const Icon = option.icon;
                 return (
                   <Card 
@@ -217,20 +217,20 @@ const AntiqueAppraisal = () => {
                     }`}
                     onClick={() => setAnalysisType(option.type)}
                   >
-                    <CardHeader>
-                      <Icon className={`w-8 h-8 mb-2 ${option.color}`} />
-                      <CardTitle className="flex items-center gap-2">
+                    <CardHeader className="p-3 sm:p-6">
+                      <Icon className={`w-6 h-6 sm:w-8 sm:h-8 mb-2 ${option.color}`} />
+                      <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2 text-sm sm:text-base">
                         {option.name}
                         {option.premium && (
-                          <Badge variant="secondary" className="bg-gold text-gold-foreground">
+                          <Badge variant="secondary" className="bg-gold text-gold-foreground text-xs">
                             Premium
                           </Badge>
                         )}
                       </CardTitle>
-                      <CardDescription>{option.description}</CardDescription>
+                      <CardDescription className="text-xs sm:text-sm">{option.description}</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <p className="text-sm font-bold text-primary">{option.credits} credits</p>
+                    <CardContent className="p-3 sm:p-6 pt-0">
+                      <p className="text-xs sm:text-sm font-bold text-primary">{option.credits} credits</p>
                     </CardContent>
                   </Card>
                 );
@@ -238,7 +238,7 @@ const AntiqueAppraisal = () => {
             </div>
 
             {/* Upload & Analysis */}
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
               <Card>
                 <CardHeader>
                   <CardTitle>Upload Antique Photo</CardTitle>
@@ -324,8 +324,8 @@ const AntiqueAppraisal = () => {
             <CardDescription>Choose the right package for you</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-4 gap-4">
-              <div className="border rounded-lg p-4 text-center">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+              <div className="border rounded-lg p-3 sm:p-4 text-center">
                 <p className="text-2xl font-bold mb-2">10 credits</p>
                 <p className="text-3xl font-bold text-primary mb-4">€5</p>
                 <Button variant="outline" className="w-full" onClick={async () => {

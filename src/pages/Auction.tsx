@@ -421,29 +421,28 @@ const Auction = () => {
 
   return (
     <div className="min-h-screen bg-background pt-16">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {/* Header */}
-        <div className="flex justify-between items-start mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6 sm:mb-8">
           <div className="flex-1">
-            <h1 className="text-4xl font-bold mb-2">
+            <h1 className="text-2xl sm:text-4xl font-bold mb-2">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Online Auction
               </span>
             </h1>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
               Buy and sell products at auction
             </p>
             
             {/* Detailed Description */}
-            <div className="bg-card/50 rounded-lg p-6 mb-6 space-y-3 border border-border/50">
-              <h2 className="text-xl font-semibold mb-3">About Our Auction Platform</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+            <div className="bg-card/50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 space-y-2 sm:space-y-3 border border-border/50">
+              <h2 className="text-base sm:text-xl font-semibold mb-2 sm:mb-3">About Our Auction Platform</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 Welcome to our comprehensive online auction marketplace where you can buy and sell items 
-                through competitive bidding or instant purchase. Our platform provides a secure, transparent, 
-                and user-friendly environment for online auctions.
+                through competitive bidding or instant purchase.
               </p>
               
-              <div className="grid md:grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4">
                 <div className="space-y-2">
                   <h3 className="font-semibold text-sm">🎯 For Sellers:</h3>
                   <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">

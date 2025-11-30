@@ -110,18 +110,18 @@ const MusicProduction = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-3 sm:p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12 mt-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+        <div className="text-center mb-8 sm:mb-12 mt-12 sm:mt-16">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Music Production Courses
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
             Learn music production from industry professionals
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {courses.map((course) => (
             <Card key={course.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2">
               <div className="h-48 overflow-hidden relative">
@@ -140,32 +140,32 @@ const MusicProduction = () => {
                 )}
               </div>
               
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <Music className="w-5 h-5 text-primary" />
+                  <Music className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold">{course.rating}</span>
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="text-xs sm:text-sm font-semibold">{course.rating}</span>
                   </div>
                 </div>
 
-                <h3 className="text-2xl font-bold mb-2">{course.title}</h3>
-                <p className="text-muted-foreground mb-4">{course.description}</p>
+                <h3 className="text-lg sm:text-2xl font-bold mb-2">{course.title}</h3>
+                <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">{course.description}</p>
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
                   <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
+                    <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span>{course.duration}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
+                    <Users className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span>{course.students.toLocaleString()} students</span>
                   </div>
                 </div>
 
-                <div className="mb-4">
-                  <p className="text-sm font-semibold mb-2">What you'll learn:</p>
-                  <div className="flex flex-wrap gap-2">
+                <div className="mb-3 sm:mb-4">
+                  <p className="text-xs sm:text-sm font-semibold mb-2">What you'll learn:</p>
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
                     {course.skills.map((skill, idx) => (
                       <Badge key={idx} variant="outline" className="text-xs">
                         {skill}
@@ -174,7 +174,7 @@ const MusicProduction = () => {
                   </div>
                 </div>
 
-                <div className="mb-4 p-3 bg-primary/5 rounded-lg">
+                <div className="mb-3 sm:mb-4 p-2 sm:p-3 bg-primary/5 rounded-lg">
                   <p className="text-xs font-semibold mb-1">Includes:</p>
                   <ul className="text-xs text-muted-foreground space-y-1">
                     {course.includes.map((item, idx) => (
@@ -183,15 +183,16 @@ const MusicProduction = () => {
                   </ul>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 sm:pt-4 border-t">
                   <div>
-                    <p className="text-3xl font-bold text-primary">€{course.price}</p>
+                    <p className="text-2xl sm:text-3xl font-bold text-primary">€{course.price}</p>
                     <p className="text-xs text-muted-foreground">Complete course</p>
                   </div>
                   <Button
                     onClick={() => handleEnroll(course.id, course.price, course.title)}
                     disabled={enrolling === course.id || loading}
-                    size="lg"
+                    size="sm"
+                    className="w-full sm:w-auto"
                     variant={isPurchased(course.id, "music-course") ? "secondary" : "default"}
                   >
                     {enrolling === course.id 
