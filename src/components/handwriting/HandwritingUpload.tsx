@@ -77,20 +77,20 @@ export const HandwritingUpload = ({
   ];
 
   return (
-    <Card className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Upload Handwriting Sample</h2>
+    <Card className="p-4 sm:p-6">
+      <h2 className="text-xl sm:text-2xl font-bold mb-6">Upload Handwriting Sample</h2>
 
       <div className="space-y-6">
         <div>
           <Label className="mb-3 block">Upload Method</Label>
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Button
               variant={uploadMethod === "url" ? "default" : "outline"}
               onClick={() => setUploadMethod("url")}
               className="flex-1"
             >
               <LinkIcon className="mr-2 h-4 w-4" />
-              Image URL
+              <span className="text-sm sm:text-base">Image URL</span>
             </Button>
             <Button
               variant={uploadMethod === "file" ? "default" : "outline"}
@@ -98,7 +98,7 @@ export const HandwritingUpload = ({
               className="flex-1"
             >
               <Upload className="mr-2 h-4 w-4" />
-              Upload File
+              <span className="text-sm sm:text-base">Upload File</span>
             </Button>
           </div>
         </div>
@@ -187,9 +187,9 @@ export const HandwritingUpload = ({
           )}
         </Button>
 
-        <div className="text-sm text-muted-foreground text-center">
-          <p>Tips for best results:</p>
-          <ul className="list-disc list-inside mt-2 space-y-1">
+        <div className="text-xs sm:text-sm text-muted-foreground text-center">
+          <p className="font-medium">Tips for best results:</p>
+          <ul className="list-disc list-inside mt-2 space-y-1 text-left">
             <li>Use clear, high-resolution images</li>
             <li>Ensure good lighting without shadows</li>
             <li>Include at least 3-4 lines of handwriting</li>
