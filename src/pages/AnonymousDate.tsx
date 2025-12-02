@@ -197,8 +197,8 @@ export default function AnonymousDate() {
 
   if (checkingAccess) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Checking access...</div>
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="text-center text-sm sm:text-base">Checking access...</div>
       </div>
     );
   }
@@ -209,15 +209,15 @@ export default function AnonymousDate() {
 
   if (loadingProfile) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Loading...</div>
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+        <div className="text-center text-sm sm:text-base">Loading...</div>
       </div>
     );
   }
 
   if (!hasProfile) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <AnonymousDateHeader />
         <div className="max-w-4xl mx-auto">
           <ProfileSetup onComplete={() => {
@@ -230,14 +230,14 @@ export default function AnonymousDate() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-8">
       <AnonymousDateHeader />
 
       {subscriptionEnd && (
-        <div className="max-w-6xl mx-auto bg-green-50 border border-green-200 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
+        <div className="max-w-6xl mx-auto bg-green-50 border border-green-200 p-3 sm:p-4 rounded-lg flex items-center justify-between flex-wrap gap-3 sm:gap-4">
           <div>
-            <p className="font-semibold text-green-800">Active Subscription</p>
-            <p className="text-sm text-green-700">
+            <p className="font-semibold text-sm sm:text-base text-green-800">Active Subscription</p>
+            <p className="text-xs sm:text-sm text-green-700">
               Your subscription renews on {new Date(subscriptionEnd).toLocaleDateString()}
             </p>
           </div>
@@ -245,23 +245,24 @@ export default function AnonymousDate() {
             onClick={handleManageSubscription}
             variant="outline"
             size="sm"
+            className="text-xs sm:text-sm"
           >
             Manage Subscription
           </Button>
         </div>
       )}
 
-      <div className="max-w-6xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-4 sm:space-y-8">
         <CreditPackages onPurchase={purchaseCredits} currentCredits={credits} />
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2">
           <Button
             onClick={findMatch}
             disabled={loading || credits < 5}
             size="lg"
-            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white text-sm sm:text-base h-12 sm:h-auto"
           >
-            <Search className="h-5 w-5 mr-2" />
+            <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
             Find New Match (5 credits)
           </Button>
           
@@ -272,52 +273,53 @@ export default function AnonymousDate() {
             }}
             variant="outline"
             size="lg"
+            className="text-sm sm:text-base h-12 sm:h-auto"
           >
-            <UserPlus className="h-5 w-5 mr-2" />
+            <UserPlus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
             Edit Profile
           </Button>
         </div>
 
         <ActiveMatches matches={activeMatches} onOpenChat={handleOpenChat} />
 
-        <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-          <h3 className="text-xl font-bold">How Anonymous Date Works - Complete Guide</h3>
-          <div className="space-y-4 text-sm">
-            <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-lg">
-              <p className="font-semibold text-base mb-2">💳 Monthly Subscription (€1/month)</p>
-              <p className="text-muted-foreground">
+        <div className="bg-card border border-border rounded-lg p-3 sm:p-6 space-y-3 sm:space-y-4">
+          <h3 className="text-lg sm:text-xl font-bold">How Anonymous Date Works - Complete Guide</h3>
+          <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
+            <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-3 sm:p-4 rounded-lg">
+              <p className="font-semibold text-sm sm:text-base mb-1.5 sm:mb-2">💳 Monthly Subscription (€1/month)</p>
+              <p className="text-muted-foreground text-xs sm:text-sm">
                 Your monthly subscription gives you full platform access. This includes profile creation, 
                 match viewing, and access to all features. You can cancel anytime.
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="bg-white border rounded-lg p-4">
-                <p className="font-semibold mb-2">📝 Step 1: Create Your Profile</p>
+            <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
+              <div className="bg-white border rounded-lg p-3 sm:p-4">
+                <p className="font-semibold mb-1.5 sm:mb-2 text-sm">📝 Step 1: Create Your Profile</p>
                 <p className="text-muted-foreground text-xs">
                   Set up your anonymous identity with an alias, age range, interests, and personality traits. 
                   Your real name, photo, and contact info remain completely hidden until you choose to reveal them.
                 </p>
               </div>
 
-              <div className="bg-white border rounded-lg p-4">
-                <p className="font-semibold mb-2">🔍 Step 2: Find a Match (5 credits)</p>
+              <div className="bg-white border rounded-lg p-3 sm:p-4">
+                <p className="font-semibold mb-1.5 sm:mb-2 text-sm">🔍 Step 2: Find a Match (5 credits)</p>
                 <p className="text-muted-foreground text-xs">
                   Our algorithm matches you with someone based on shared interests and compatibility. 
                   Each match costs 5 credits to start the anonymous dating experience.
                 </p>
               </div>
 
-              <div className="bg-white border rounded-lg p-4">
-                <p className="font-semibold mb-2">💬 Step 3: Chat Anonymously (7 Days)</p>
+              <div className="bg-white border rounded-lg p-3 sm:p-4">
+                <p className="font-semibold mb-1.5 sm:mb-2 text-sm">💬 Step 3: Chat Anonymously (7 Days)</p>
                 <p className="text-muted-foreground text-xs">
                   Text messages: 1 credit each • Voice messages: 3 credits each
                   <br />Get to know each other through personality and conversation, not appearance.
                 </p>
               </div>
 
-              <div className="bg-white border rounded-lg p-4">
-                <p className="font-semibold mb-2">👀 Step 4: Identity Reveal</p>
+              <div className="bg-white border rounded-lg p-3 sm:p-4">
+                <p className="font-semibold mb-1.5 sm:mb-2 text-sm">👀 Step 4: Identity Reveal</p>
                 <p className="text-muted-foreground text-xs">
                   After 7 days, both can reveal identities for FREE. 
                   Or pay 15 credits for early reveal if there's a strong connection.
@@ -325,8 +327,8 @@ export default function AnonymousDate() {
               </div>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-              <p className="font-semibold mb-2">✨ Premium Features</p>
+            <div className="bg-blue-50 border border-blue-200 p-3 sm:p-4 rounded-lg">
+              <p className="font-semibold mb-1.5 sm:mb-2 text-sm">✨ Premium Features</p>
               <ul className="space-y-1 text-xs text-muted-foreground">
                 <li>• <strong>Hints (5 credits):</strong> Get subtle clues about your match's appearance or personality</li>
                 <li>• <strong>Virtual Gifts (10 credits):</strong> Send special gifts to show interest and affection</li>
@@ -335,8 +337,8 @@ export default function AnonymousDate() {
               </ul>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
-              <p className="font-semibold mb-1">💰 Credit Packages Available</p>
+            <div className="bg-yellow-50 border border-yellow-200 p-3 sm:p-4 rounded-lg">
+              <p className="font-semibold mb-1 sm:mb-1.5 text-sm">💰 Credit Packages Available</p>
               <p className="text-xs text-muted-foreground">
                 Credits are separate from your monthly subscription and are used for matching and messaging:
                 <br />• Basic: 10 credits for €5 • Standard: 30 credits for €12
@@ -344,8 +346,8 @@ export default function AnonymousDate() {
               </p>
             </div>
 
-            <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
-              <p className="font-semibold mb-1">🎯 Why Anonymous Date?</p>
+            <div className="bg-green-50 border border-green-200 p-3 sm:p-4 rounded-lg">
+              <p className="font-semibold mb-1 sm:mb-1.5 text-sm">🎯 Why Anonymous Date?</p>
               <p className="text-xs text-muted-foreground">
                 Connect based on personality and compatibility, not looks. Build genuine connections 
                 through conversation. No pressure from photos or social media profiles. Safe, verified 

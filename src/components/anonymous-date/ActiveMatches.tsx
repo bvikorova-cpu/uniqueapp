@@ -11,16 +11,16 @@ interface ActiveMatchesProps {
 export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
   if (matches.length === 0) {
     return (
-      <Card className="p-8 text-center">
-        <p className="text-muted-foreground">No active matches yet. Start finding your match!</p>
+      <Card className="p-6 sm:p-8 text-center mx-2">
+        <p className="text-sm sm:text-base text-muted-foreground">No active matches yet. Start finding your match!</p>
       </Card>
     );
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Your Matches</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-3 sm:space-y-4 px-2">
+      <h2 className="text-xl sm:text-2xl font-bold">Your Matches</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         {matches.map((match) => {
           const isUser1 = match.user1_id === match.user_id;
           const partner = isUser1 
@@ -33,14 +33,14 @@ export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
           );
 
           return (
-            <Card key={match.id} className="p-6 space-y-4">
-              <div className="flex items-start justify-between">
+            <Card key={match.id} className="p-4 sm:p-6 space-y-3 sm:space-y-4">
+              <div className="flex items-start justify-between gap-2">
                 <div>
-                  <h3 className="text-xl font-bold">{partner?.anonymous_name}</h3>
-                  <p className="text-sm text-muted-foreground">{partner?.age_range}</p>
+                  <h3 className="text-lg sm:text-xl font-bold">{partner?.anonymous_name}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{partner?.age_range}</p>
                 </div>
                 {match.status === "revealed" && (
-                  <span className="bg-green-500/20 text-green-500 px-2 py-1 rounded text-xs">
+                  <span className="bg-green-500/20 text-green-500 px-2 py-0.5 sm:py-1 rounded text-xs flex-shrink-0">
                     Revealed
                   </span>
                 )}
@@ -56,8 +56,8 @@ export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="h-4 w-4" />
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
                 {match.status === "revealed" ? (
                   <span>Revealed {formatDistanceToNow(new Date(match.revealed_at!))} ago</span>
                 ) : (
@@ -67,7 +67,7 @@ export function ActiveMatches({ matches, onOpenChat }: ActiveMatchesProps) {
 
               <Button
                 onClick={() => onOpenChat(match.id)}
-                className="w-full bg-gradient-to-r from-pink-500 to-purple-600"
+                className="w-full bg-gradient-to-r from-pink-500 to-purple-600 h-10 sm:h-auto text-sm sm:text-base"
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Open Chat
