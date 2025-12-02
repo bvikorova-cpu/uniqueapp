@@ -803,6 +803,155 @@ export type Database = {
           },
         ]
       }
+      anonymous_dating_credits: {
+        Row: {
+          created_at: string | null
+          credits_remaining: number | null
+          id: string
+          total_credits_purchased: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_remaining?: number | null
+          id?: string
+          total_credits_purchased?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_remaining?: number | null
+          id?: string
+          total_credits_purchased?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      anonymous_dating_matches: {
+        Row: {
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          match_interests: Json | null
+          revealed_at: string | null
+          status: string | null
+          updated_at: string | null
+          user1_id: string
+          user1_revealed: boolean | null
+          user2_id: string
+          user2_revealed: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          match_interests?: Json | null
+          revealed_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user1_id: string
+          user1_revealed?: boolean | null
+          user2_id: string
+          user2_revealed?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          match_interests?: Json | null
+          revealed_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user1_id?: string
+          user1_revealed?: boolean | null
+          user2_id?: string
+          user2_revealed?: boolean | null
+        }
+        Relationships: []
+      }
+      anonymous_dating_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          match_id: string
+          message_type: string | null
+          sender_id: string
+          voice_url: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          match_id: string
+          message_type?: string | null
+          sender_id: string
+          voice_url?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          match_id?: string
+          message_type?: string | null
+          sender_id?: string
+          voice_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anonymous_dating_messages_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "anonymous_dating_matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      anonymous_dating_profiles: {
+        Row: {
+          age_range: string | null
+          anonymous_name: string
+          created_at: string | null
+          id: string
+          interests: string[] | null
+          is_active: boolean | null
+          looking_for: string | null
+          personality_traits: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          age_range?: string | null
+          anonymous_name: string
+          created_at?: string | null
+          id?: string
+          interests?: string[] | null
+          is_active?: boolean | null
+          looking_for?: string | null
+          personality_traits?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          age_range?: string | null
+          anonymous_name?: string
+          created_at?: string | null
+          id?: string
+          interests?: string[] | null
+          is_active?: boolean | null
+          looking_for?: string | null
+          personality_traits?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       antique_collections: {
         Row: {
           created_at: string | null
