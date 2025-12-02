@@ -11,6 +11,7 @@ export function AccessPaymentGate({ onPayAccess, loading }: AccessPaymentGatePro
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-purple-50 flex items-center justify-center p-4">
       <Card className="max-w-3xl w-full">
+        <div className="pt-16"></div>
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
             <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-4 rounded-full">
