@@ -69,9 +69,9 @@ export const SecretSantaSendGift = () => {
   return (
     <div className="space-y-6">
       {/* Search recipient */}
-      <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <Search className="h-5 w-5 text-amber-400" />
+      <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-4 sm:p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <Search className="h-5 w-5 text-amber-500" />
           Find Recipient
         </h3>
         
@@ -80,7 +80,7 @@ export const SecretSantaSendGift = () => {
             placeholder="Search by username..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-white/5 border-white/10 text-white placeholder:text-white/40"
+            className="bg-white border-amber-200 text-gray-800 placeholder:text-gray-400"
           />
         </div>
 
@@ -95,39 +95,39 @@ export const SecretSantaSendGift = () => {
                 }}
                 className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
                   selectedRecipient === user.id
-                    ? "bg-amber-500/20 border border-amber-500/40"
-                    : "bg-white/5 hover:bg-white/10"
+                    ? "bg-amber-100 border border-amber-400"
+                    : "bg-gray-50 hover:bg-amber-50"
                 }`}
               >
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={user.avatar_url || undefined} />
-                  <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-600 text-white">
+                  <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white">
                     {user.username?.[0]?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-white font-medium">{user.username}</span>
+                <span className="text-gray-800 font-medium">{user.username}</span>
               </div>
             ))}
           </div>
         )}
 
         {selectedUserData && (
-          <div className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-amber-500/20 border border-amber-500/40">
+          <div className="mt-3 flex items-center gap-3 p-3 rounded-xl bg-amber-100 border border-amber-400">
             <Avatar className="h-10 w-10">
               <AvatarImage src={selectedUserData.avatar_url || undefined} />
-              <AvatarFallback className="bg-gradient-to-br from-amber-500 to-orange-600 text-white">
+              <AvatarFallback className="bg-gradient-to-br from-amber-400 to-orange-500 text-white">
                 {selectedUserData.username?.[0]?.toUpperCase() || "?"}
               </AvatarFallback>
             </Avatar>
-            <span className="text-white font-medium">Sending to: {selectedUserData.username}</span>
+            <span className="text-gray-800 font-medium">Sending to: {selectedUserData.username}</span>
           </div>
         )}
       </div>
 
       {/* Gift catalog */}
-      <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-amber-400" />
+      <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-4 sm:p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-amber-500" />
           Choose a Gift
         </h3>
 
@@ -142,8 +142,8 @@ export const SecretSantaSendGift = () => {
                 onClick={() => setActiveCategory(cat)}
                 className={`capitalize rounded-full ${
                   activeCategory === cat
-                    ? "bg-amber-500/30 text-amber-200 border border-amber-500/40"
-                    : "text-white/60 hover:text-white hover:bg-white/10"
+                    ? "bg-amber-500 text-white hover:bg-amber-600"
+                    : "text-gray-600 hover:text-gray-800 hover:bg-amber-100"
                 }`}
               >
                 {cat}
@@ -162,15 +162,15 @@ export const SecretSantaSendGift = () => {
                 onClick={() => affordable && setSelectedGift(gift.type)}
                 className={`relative p-3 sm:p-4 rounded-xl text-center cursor-pointer transition-all ${
                   selectedGift === gift.type
-                    ? "bg-gradient-to-br from-amber-500/30 to-yellow-500/30 border-2 border-amber-400 scale-105"
+                    ? "bg-gradient-to-br from-amber-200 to-yellow-200 border-2 border-amber-400 scale-105 shadow-md"
                     : affordable
-                    ? "bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
-                    : "bg-white/5 border border-white/10 opacity-50 cursor-not-allowed"
+                    ? "bg-white hover:bg-amber-50 border border-gray-200 hover:border-amber-300 hover:shadow-sm"
+                    : "bg-gray-100 border border-gray-200 opacity-50 cursor-not-allowed"
                 }`}
               >
                 <span className="text-2xl sm:text-3xl block">{gift.emoji}</span>
-                <p className="text-white/80 text-xs mt-1 truncate">{gift.label}</p>
-                <p className={`text-xs mt-0.5 ${affordable ? "text-amber-400" : "text-red-400"}`}>
+                <p className="text-gray-700 text-xs mt-1 truncate">{gift.label}</p>
+                <p className={`text-xs mt-0.5 font-medium ${affordable ? "text-amber-600" : "text-red-500"}`}>
                   💎 {gift.value}
                 </p>
               </div>
@@ -180,14 +180,14 @@ export const SecretSantaSendGift = () => {
       </div>
 
       {/* Message and options */}
-      <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Add a Message (Optional)</h3>
+      <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-4 sm:p-6 shadow-lg">
+        <h3 className="text-lg font-semibold text-gray-800 mb-4">Add a Message (Optional)</h3>
         
         <Textarea
           placeholder="Write a heartfelt message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="bg-white/5 border-white/10 text-white placeholder:text-white/40 min-h-[100px]"
+          className="bg-white border-amber-200 text-gray-800 placeholder:text-gray-400 min-h-[100px]"
           maxLength={500}
         />
         
@@ -198,12 +198,12 @@ export const SecretSantaSendGift = () => {
               checked={isAnonymous}
               onCheckedChange={setIsAnonymous}
             />
-            <Label htmlFor="anonymous" className="text-white/70">
+            <Label htmlFor="anonymous" className="text-gray-600">
               Send anonymously
             </Label>
           </div>
           
-          <span className="text-white/40 text-sm">{message.length}/500</span>
+          <span className="text-gray-400 text-sm">{message.length}/500</span>
         </div>
       </div>
 
@@ -211,7 +211,7 @@ export const SecretSantaSendGift = () => {
       <Button
         onClick={handleSend}
         disabled={!selectedGift || !selectedRecipient || isSending || !canAfford}
-        className="w-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black font-bold py-6 rounded-2xl text-lg shadow-lg shadow-amber-500/30 disabled:opacity-50"
+        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-6 rounded-2xl text-lg shadow-lg shadow-amber-500/30 disabled:opacity-50"
       >
         {isSending ? (
           "Sending..."

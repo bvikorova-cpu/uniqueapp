@@ -17,23 +17,23 @@ const SecretSanta = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Luxurious animated background */}
+      {/* Light luxurious background */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a1a] via-[#1a0a2e] to-[#0a1a2e]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-amber-50 to-orange-50" />
         
-        {/* Animated aurora effect */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/40 to-pink-500/40 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-to-r from-blue-500/30 to-cyan-500/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-          <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-r from-emerald-500/25 to-teal-500/25 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
+        {/* Soft decorative elements */}
+        <div className="absolute inset-0 opacity-60">
+          <div className="absolute top-20 left-1/4 w-96 h-96 bg-gradient-to-r from-rose-200/50 to-pink-200/50 rounded-full blur-3xl" />
+          <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gradient-to-r from-amber-200/40 to-yellow-200/40 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-gradient-to-r from-orange-200/30 to-red-200/30 rounded-full blur-3xl" />
         </div>
 
-        {/* Floating particles */}
+        {/* Floating sparkles */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(30)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <div
               key={i}
-              className="absolute w-1 h-1 bg-white/20 rounded-full animate-float"
+              className="absolute w-1.5 h-1.5 bg-amber-400/40 rounded-full animate-float"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
@@ -44,70 +44,70 @@ const SecretSanta = () => {
           ))}
         </div>
 
-        {/* Golden shimmer overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-amber-900/10 via-transparent to-transparent" />
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(251,191,36,0.05)_0%,transparent_50%)]" />
       </div>
 
-      <div className="container mx-auto px-4 py-6 max-w-4xl relative z-10">
+      <div className="container mx-auto px-4 py-8 sm:py-12 max-w-4xl relative z-10">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-8">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate(-1)}
-            className="text-white/70 hover:text-white hover:bg-white/10"
+            className="text-gray-600 hover:text-gray-900 hover:bg-gray-100"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
           
-          <div className="text-center flex-1">
-            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-200 bg-clip-text text-transparent">
+          <div className="text-center flex-1 pt-4">
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-rose-600 via-amber-600 to-orange-600 bg-clip-text text-transparent drop-shadow-sm">
               Secret Santa 365
             </h1>
-            <p className="text-white/60 text-sm mt-1">Send magical gifts anonymously</p>
+            <p className="text-gray-600 text-sm mt-2">Send magical gifts anonymously</p>
           </div>
 
           {/* Credits display */}
-          <div className="flex items-center gap-2 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-500/30 rounded-full px-3 py-1.5">
-            <span className="text-amber-300 text-lg">💎</span>
-            <span className="text-amber-200 font-bold">{credits}</span>
+          <div className="flex items-center gap-2 bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-300 rounded-full px-3 py-1.5 shadow-sm">
+            <span className="text-amber-500 text-lg">💎</span>
+            <span className="text-amber-700 font-bold">{credits}</span>
           </div>
         </div>
 
         {/* Main content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-1 mb-6 overflow-x-auto">
+          <TabsList className="w-full grid grid-cols-5 bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-1 mb-6 overflow-x-auto shadow-lg">
             <TabsTrigger
               value="send"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/30 data-[state=active]:to-yellow-500/30 data-[state=active]:text-amber-200 text-white/60 rounded-xl transition-all text-xs sm:text-sm"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Gift className="h-4 w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Send</span>
             </TabsTrigger>
             <TabsTrigger
               value="inbox"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/30 data-[state=active]:to-yellow-500/30 data-[state=active]:text-amber-200 text-white/60 rounded-xl transition-all text-xs sm:text-sm"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Inbox className="h-4 w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Inbox</span>
             </TabsTrigger>
             <TabsTrigger
               value="stories"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/30 data-[state=active]:to-yellow-500/30 data-[state=active]:text-amber-200 text-white/60 rounded-xl transition-all text-xs sm:text-sm"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Sparkles className="h-4 w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Stories</span>
             </TabsTrigger>
             <TabsTrigger
               value="leaderboard"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/30 data-[state=active]:to-yellow-500/30 data-[state=active]:text-amber-200 text-white/60 rounded-xl transition-all text-xs sm:text-sm"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Trophy className="h-4 w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Top</span>
             </TabsTrigger>
             <TabsTrigger
               value="credits"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500/30 data-[state=active]:to-yellow-500/30 data-[state=active]:text-amber-200 text-white/60 rounded-xl transition-all text-xs sm:text-sm"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <CreditCard className="h-4 w-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Shop</span>
