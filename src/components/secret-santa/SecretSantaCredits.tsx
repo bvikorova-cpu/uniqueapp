@@ -36,12 +36,12 @@ export const SecretSantaCredits = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-500/30 to-yellow-500/30 flex items-center justify-center">
-          <CreditCard className="h-8 w-8 text-amber-400" />
+      <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-6 text-center shadow-lg">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 flex items-center justify-center shadow-sm">
+          <CreditCard className="h-8 w-8 text-amber-500" />
         </div>
-        <h2 className="text-2xl font-bold text-white mb-2">Get More Credits</h2>
-        <p className="text-white/60">
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">Get More Credits</h2>
+        <p className="text-gray-500">
           Purchase credits to send amazing gifts to your friends
         </p>
       </div>
@@ -51,54 +51,54 @@ export const SecretSantaCredits = () => {
         {CREDIT_PACKAGES.map((pkg) => (
           <div
             key={pkg.credits}
-            className={`relative overflow-hidden rounded-2xl p-5 border transition-all hover:scale-[1.02] ${
+            className={`relative overflow-hidden rounded-2xl p-5 border transition-all hover:scale-[1.02] shadow-lg ${
               pkg.bestValue
-                ? "bg-gradient-to-br from-amber-500/20 via-yellow-500/20 to-orange-500/20 border-amber-500/50"
+                ? "bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-amber-400"
                 : pkg.popular
-                ? "bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-500/40"
-                : "bg-white/5 border-white/10 hover:border-white/20"
+                ? "bg-gradient-to-br from-rose-50 to-pink-50 border-rose-300"
+                : "bg-white border-gray-200 hover:border-amber-300"
             }`}
           >
             {/* Badge */}
             {(pkg.bestValue || pkg.popular) && (
               <div className={`absolute top-3 right-3 px-2 py-0.5 rounded-full text-xs font-bold ${
                 pkg.bestValue
-                  ? "bg-amber-500 text-black"
-                  : "bg-purple-500 text-white"
+                  ? "bg-amber-500 text-white"
+                  : "bg-rose-500 text-white"
               }`}>
                 {pkg.bestValue ? "BEST VALUE" : "POPULAR"}
               </div>
             )}
 
             <div className="mb-4">
-              <h3 className="text-white font-semibold text-lg">{pkg.label}</h3>
+              <h3 className="text-gray-800 font-semibold text-lg">{pkg.label}</h3>
             </div>
 
             <div className="flex items-end gap-2 mb-4">
-              <span className="text-4xl font-bold text-amber-300">💎 {pkg.credits}</span>
-              <span className="text-white/40 text-sm mb-1">credits</span>
+              <span className="text-4xl font-bold text-amber-600">💎 {pkg.credits}</span>
+              <span className="text-gray-400 text-sm mb-1">credits</span>
             </div>
 
             <div className="mb-4">
-              <span className="text-3xl font-bold text-white">€{pkg.price}</span>
-              <span className="text-white/40 text-sm ml-1">
+              <span className="text-3xl font-bold text-gray-800">€{pkg.price}</span>
+              <span className="text-gray-400 text-sm ml-1">
                 (€{(pkg.price / pkg.credits).toFixed(2)}/credit)
               </span>
             </div>
 
             {/* Features */}
             <div className="space-y-2 mb-6">
-              <div className="flex items-center gap-2 text-white/70 text-sm">
-                <Check className="h-4 w-4 text-green-400" />
+              <div className="flex items-center gap-2 text-gray-600 text-sm">
+                <Check className="h-4 w-4 text-green-500" />
                 <span>Instant delivery</span>
               </div>
-              <div className="flex items-center gap-2 text-white/70 text-sm">
-                <Check className="h-4 w-4 text-green-400" />
+              <div className="flex items-center gap-2 text-gray-600 text-sm">
+                <Check className="h-4 w-4 text-green-500" />
                 <span>Never expires</span>
               </div>
               {pkg.credits >= 100 && (
-                <div className="flex items-center gap-2 text-white/70 text-sm">
-                  <Sparkles className="h-4 w-4 text-amber-400" />
+                <div className="flex items-center gap-2 text-gray-600 text-sm">
+                  <Sparkles className="h-4 w-4 text-amber-500" />
                   <span>Exclusive gifts unlocked</span>
                 </div>
               )}
@@ -109,8 +109,8 @@ export const SecretSantaCredits = () => {
               disabled={loadingPackage !== null}
               className={`w-full py-5 font-bold rounded-xl ${
                 pkg.bestValue
-                  ? "bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black"
-                  : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
+                  ? "bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg"
+                  : "bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-200"
               }`}
             >
               {loadingPackage === pkg.credits ? (
@@ -123,8 +123,8 @@ export const SecretSantaCredits = () => {
             {/* Decorative */}
             {pkg.bestValue && (
               <>
-                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl" />
-                <div className="absolute -top-10 -left-10 w-24 h-24 bg-yellow-500/20 rounded-full blur-2xl" />
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-amber-200/30 rounded-full blur-3xl" />
+                <div className="absolute -top-10 -left-10 w-24 h-24 bg-yellow-200/30 rounded-full blur-2xl" />
               </>
             )}
           </div>
@@ -132,8 +132,8 @@ export const SecretSantaCredits = () => {
       </div>
 
       {/* Info */}
-      <div className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl p-4 text-center">
-        <p className="text-white/50 text-sm">
+      <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-4 text-center shadow-sm">
+        <p className="text-gray-500 text-sm">
           💳 Secure payment via Stripe • All payments in EUR
         </p>
       </div>
