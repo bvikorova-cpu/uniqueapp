@@ -54,6 +54,7 @@
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "fabric": "^6.9.0",
+    "framer-motion": "^11.18.2",
     "hls.js": "^1.6.13",
     "html2canvas": "^1.4.1",
     "i18next": "^25.6.0",
