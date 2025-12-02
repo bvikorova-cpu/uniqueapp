@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -21,23 +22,98 @@ serve(async (req) => {
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
     
-    if (userError || !user) {
+    if (userError || !user?.email) {
       throw new Error("User not authenticated");
     }
 
-    console.log("Checking access for user:", user.id);
+    console.log("Checking subscription for user:", user.id);
 
-    const { data: accessRecord } = await supabaseClient
-      .from("anonymous_dating_access")
-      .select("*")
-      .eq("user_id", user.id)
-      .single();
+    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
+      apiVersion: "2025-08-27.basil",
+    });
 
-    const hasAccess = !!accessRecord;
-    console.log("Access check result:", hasAccess);
+    // Find Stripe customer
+    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    
+    if (customers.data.length === 0) {
+      console.log("No Stripe customer found");
+      return new Response(
+        JSON.stringify({ hasAccess: false, subscriptionEnd: null }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        }
+      );
+    }
+
+    const customerId = customers.data[0].id;
+    console.log("Found customer:", customerId);
+
+    // Check for active subscriptions
+    const subscriptions = await stripe.subscriptions.list({
+      customer: customerId,
+      status: "active",
+      limit: 1,
+    });
+
+    const hasActiveSubscription = subscriptions.data.length > 0;
+    let subscriptionEnd = null;
+    let stripeSubscriptionId = null;
+
+    if (hasActiveSubscription) {
+      const subscription = subscriptions.data[0];
+      subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+      stripeSubscriptionId = subscription.id;
+      console.log("Active subscription found:", stripeSubscriptionId);
+
+      // Update or create subscription record in database
+      const { data: existingSub } = await supabaseClient
+        .from("anonymous_dating_subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (existingSub) {
+        await supabaseClient
+          .from("anonymous_dating_subscriptions")
+          .update({
+            stripe_customer_id: customerId,
+            stripe_subscription_id: stripeSubscriptionId,
+            subscription_status: "active",
+            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_end: subscriptionEnd,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("user_id", user.id);
+      } else {
+        await supabaseClient
+          .from("anonymous_dating_subscriptions")
+          .insert({
+            user_id: user.id,
+            stripe_customer_id: customerId,
+            stripe_subscription_id: stripeSubscriptionId,
+            subscription_status: "active",
+            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
+            current_period_end: subscriptionEnd,
+          });
+      }
+    } else {
+      console.log("No active subscription found");
+      // Update status to inactive if exists
+      await supabaseClient
+        .from("anonymous_dating_subscriptions")
+        .update({
+          subscription_status: "inactive",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("user_id", user.id);
+    }
 
     return new Response(
-      JSON.stringify({ hasAccess, paidAt: accessRecord?.paid_at || null }),
+      JSON.stringify({ 
+        hasAccess: hasActiveSubscription, 
+        subscriptionEnd 
+      }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,

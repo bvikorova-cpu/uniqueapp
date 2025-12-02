@@ -35,6 +35,8 @@ export default function AnonymousDate() {
     findMatch,
   } = useAnonymousDate();
 
+  const [subscriptionEnd, setSubscriptionEnd] = useState<string | null>(null);
+
   useEffect(() => {
     const adultWarningAccepted = sessionStorage.getItem("adult_warning_accepted");
     if (!adultWarningAccepted) {
@@ -59,17 +61,17 @@ export default function AnonymousDate() {
         variant: "destructive",
       });
       setSearchParams({});
-    } else if (searchParams.get("access") === "paid") {
+    } else if (searchParams.get("subscription") === "success") {
       toast({
-        title: "Access Granted!",
-        description: "Welcome to Anonymous Date",
+        title: "Subscription Active!",
+        description: "Welcome to Anonymous Date - your monthly subscription is now active",
       });
       checkAccess();
       setSearchParams({});
-    } else if (searchParams.get("access") === "cancelled") {
+    } else if (searchParams.get("subscription") === "cancelled") {
       toast({
-        title: "Payment Canceled",
-        description: "Access payment was canceled",
+        title: "Subscription Canceled",
+        description: "Subscription payment was canceled",
         variant: "destructive",
       });
       setSearchParams({});
@@ -90,15 +92,35 @@ export default function AnonymousDate() {
       if (error) throw error;
       
       setHasAccess(data.hasAccess);
+      setSubscriptionEnd(data.subscriptionEnd);
     } catch (error) {
       console.error("Error checking access:", error);
       toast({
         title: "Error",
-        description: "Failed to verify access",
+        description: "Failed to verify subscription",
         variant: "destructive",
       });
     } finally {
       setCheckingAccess(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke("customer-portal-anonymous-date");
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (error: any) {
+      console.error("Error opening portal:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to open subscription management",
+        variant: "destructive",
+      });
     }
   };
 
@@ -211,6 +233,24 @@ export default function AnonymousDate() {
     <div className="container mx-auto px-4 py-8 space-y-8">
       <AnonymousDateHeader />
 
+      {subscriptionEnd && (
+        <div className="max-w-6xl mx-auto bg-green-50 border border-green-200 p-4 rounded-lg flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <p className="font-semibold text-green-800">Active Subscription</p>
+            <p className="text-sm text-green-700">
+              Your subscription renews on {new Date(subscriptionEnd).toLocaleDateString()}
+            </p>
+          </div>
+          <Button
+            onClick={handleManageSubscription}
+            variant="outline"
+            size="sm"
+          >
+            Manage Subscription
+          </Button>
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto space-y-8">
         <CreditPackages onPurchase={purchaseCredits} currentCredits={credits} />
 
@@ -241,23 +281,77 @@ export default function AnonymousDate() {
         <ActiveMatches matches={activeMatches} onOpenChat={handleOpenChat} />
 
         <div className="bg-card border border-border rounded-lg p-6 space-y-4">
-          <h3 className="text-xl font-bold">How Anonymous Date Works</h3>
-          <div className="space-y-3 text-sm text-muted-foreground">
-            <p>
-              <strong className="text-foreground">Step 1:</strong> Purchase credits to participate in anonymous dating.
-            </p>
-            <p>
-              <strong className="text-foreground">Step 2:</strong> Find a match (5 credits). You'll be paired with someone based on common interests.
-            </p>
-            <p>
-              <strong className="text-foreground">Step 3:</strong> Chat anonymously for 7 days. Text messages cost 1 credit, voice messages cost 3 credits.
-            </p>
-            <p>
-              <strong className="text-foreground">Step 4:</strong> After 7 days, both can reveal their identity. Or use early reveal for 15 credits.
-            </p>
-            <p>
-              <strong className="text-foreground">Premium Features:</strong> Request hints about your match (5 credits), send gifts (10 credits).
-            </p>
+          <h3 className="text-xl font-bold">How Anonymous Date Works - Complete Guide</h3>
+          <div className="space-y-4 text-sm">
+            <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-lg">
+              <p className="font-semibold text-base mb-2">💳 Monthly Subscription (€1/month)</p>
+              <p className="text-muted-foreground">
+                Your monthly subscription gives you full platform access. This includes profile creation, 
+                match viewing, and access to all features. You can cancel anytime.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="bg-white border rounded-lg p-4">
+                <p className="font-semibold mb-2">📝 Step 1: Create Your Profile</p>
+                <p className="text-muted-foreground text-xs">
+                  Set up your anonymous identity with an alias, age range, interests, and personality traits. 
+                  Your real name, photo, and contact info remain completely hidden until you choose to reveal them.
+                </p>
+              </div>
+
+              <div className="bg-white border rounded-lg p-4">
+                <p className="font-semibold mb-2">🔍 Step 2: Find a Match (5 credits)</p>
+                <p className="text-muted-foreground text-xs">
+                  Our algorithm matches you with someone based on shared interests and compatibility. 
+                  Each match costs 5 credits to start the anonymous dating experience.
+                </p>
+              </div>
+
+              <div className="bg-white border rounded-lg p-4">
+                <p className="font-semibold mb-2">💬 Step 3: Chat Anonymously (7 Days)</p>
+                <p className="text-muted-foreground text-xs">
+                  Text messages: 1 credit each • Voice messages: 3 credits each
+                  <br />Get to know each other through personality and conversation, not appearance.
+                </p>
+              </div>
+
+              <div className="bg-white border rounded-lg p-4">
+                <p className="font-semibold mb-2">👀 Step 4: Identity Reveal</p>
+                <p className="text-muted-foreground text-xs">
+                  After 7 days, both can reveal identities for FREE. 
+                  Or pay 15 credits for early reveal if there's a strong connection.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+              <p className="font-semibold mb-2">✨ Premium Features</p>
+              <ul className="space-y-1 text-xs text-muted-foreground">
+                <li>• <strong>Hints (5 credits):</strong> Get subtle clues about your match's appearance or personality</li>
+                <li>• <strong>Virtual Gifts (10 credits):</strong> Send special gifts to show interest and affection</li>
+                <li>• <strong>Voice Messages (3 credits):</strong> Add a personal, emotional touch to your conversations</li>
+                <li>• <strong>Early Reveal (15 credits):</strong> Can't wait 7 days? Reveal identities early</li>
+              </ul>
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+              <p className="font-semibold mb-1">💰 Credit Packages Available</p>
+              <p className="text-xs text-muted-foreground">
+                Credits are separate from your monthly subscription and are used for matching and messaging:
+                <br />• Basic: 10 credits for €5 • Standard: 30 credits for €12
+                <br />• Premium: 100 credits for €25 • Ultimate: 300 credits for €60
+              </p>
+            </div>
+
+            <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+              <p className="font-semibold mb-1">🎯 Why Anonymous Date?</p>
+              <p className="text-xs text-muted-foreground">
+                Connect based on personality and compatibility, not looks. Build genuine connections 
+                through conversation. No pressure from photos or social media profiles. Safe, verified 
+                community with monthly subscription ensuring real, committed users.
+              </p>
+            </div>
           </div>
         </div>
       </div>

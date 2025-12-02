@@ -803,33 +803,6 @@ export type Database = {
           },
         ]
       }
-      anonymous_dating_access: {
-        Row: {
-          amount: number
-          created_at: string
-          id: string
-          paid_at: string
-          stripe_payment_intent_id: string | null
-          user_id: string
-        }
-        Insert: {
-          amount?: number
-          created_at?: string
-          id?: string
-          paid_at?: string
-          stripe_payment_intent_id?: string | null
-          user_id: string
-        }
-        Update: {
-          amount?: number
-          created_at?: string
-          id?: string
-          paid_at?: string
-          stripe_payment_intent_id?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       anonymous_dating_credits: {
         Row: {
           created_at: string | null
@@ -975,6 +948,42 @@ export type Database = {
           looking_for?: string | null
           personality_traits?: string[] | null
           updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      anonymous_dating_subscriptions: {
+        Row: {
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

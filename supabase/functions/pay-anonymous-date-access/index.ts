@@ -7,6 +7,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const MONTHLY_SUBSCRIPTION_PRICE = "price_1SZr6QGaXSfGtYFtT7ccy644";
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -14,7 +16,7 @@ serve(async (req) => {
 
   const supabaseClient = createClient(
     Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
   );
 
   try {
@@ -26,18 +28,19 @@ serve(async (req) => {
       throw new Error("User not authenticated");
     }
 
-    console.log("Processing access payment for user:", user.id);
+    console.log("Processing subscription for user:", user.id);
 
-    // Check if user already has access
-    const { data: existingAccess } = await supabaseClient
-      .from("anonymous_dating_access")
+    // Check if user already has active subscription
+    const { data: existingSub } = await supabaseClient
+      .from("anonymous_dating_subscriptions")
       .select("*")
       .eq("user_id", user.id)
+      .eq("subscription_status", "active")
       .single();
 
-    if (existingAccess) {
+    if (existingSub) {
       return new Response(
-        JSON.stringify({ error: "You already have access to Anonymous Date" }),
+        JSON.stringify({ error: "You already have an active subscription" }),
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 400,
@@ -60,16 +63,16 @@ serve(async (req) => {
       customer_email: customerId ? undefined : user.email,
       line_items: [
         {
-          price: "price_1SZqzUGaXSfGtYFtveh9qzm8",
+          price: MONTHLY_SUBSCRIPTION_PRICE,
           quantity: 1,
         },
       ],
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/anonymous-date?access=paid`,
-      cancel_url: `${req.headers.get("origin")}/anonymous-date?access=cancelled`,
+      mode: "subscription",
+      success_url: `${req.headers.get("origin")}/anonymous-date?subscription=success`,
+      cancel_url: `${req.headers.get("origin")}/anonymous-date?subscription=cancelled`,
       metadata: {
         user_id: user.id,
-        type: "anonymous_date_access",
+        type: "anonymous_date_subscription",
       },
     });
 
