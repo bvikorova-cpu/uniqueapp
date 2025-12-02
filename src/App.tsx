@@ -300,6 +300,7 @@ import PostDetail from "./pages/PostDetail";
 import Handwriting from "./pages/Handwriting";
 import PastLife from "./pages/PastLife";
 import AnonymousDate from "./pages/AnonymousDate";
+import LieDetector from "./pages/LieDetector";
 import AdminPaymentDashboard from "./pages/AdminPaymentDashboard";
 import PaymentDocumentation from "./pages/PaymentDocumentation";
 import Navbar from "./components/Navbar";

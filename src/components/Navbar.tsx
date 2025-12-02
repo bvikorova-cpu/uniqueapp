@@ -197,6 +197,7 @@ const Navbar = () => {
     { path: "/shadow-arena", label: "Shadow Arena - Horror Platform", icon: Ghost },
     { path: "/wellness", label: "Wellness & Relaxation", icon: Heart },
     { path: "/safety-prevention", label: "Safety & Bullying Prevention", icon: Shield },
+    { path: "/lie-detector", label: "Lie Detector Chat", icon: Shield },
     { path: "/handwriting", label: "Handwriting Analyzer", icon: PenTool },
     { path: "/past-life", label: "Past Life Explorer", icon: Clock },
     { path: "/anonymous-date", label: "Anonymous Date", icon: Heart },

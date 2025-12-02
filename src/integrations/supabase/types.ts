@@ -14293,6 +14293,102 @@ export type Database = {
           },
         ]
       }
+      lie_detector_analyses: {
+        Row: {
+          analysis_type: string
+          created_at: string | null
+          credits_used: number
+          id: string
+          input_text: string
+          results: Json | null
+          truthfulness_score: number | null
+          user_id: string
+        }
+        Insert: {
+          analysis_type: string
+          created_at?: string | null
+          credits_used: number
+          id?: string
+          input_text: string
+          results?: Json | null
+          truthfulness_score?: number | null
+          user_id: string
+        }
+        Update: {
+          analysis_type?: string
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          input_text?: string
+          results?: Json | null
+          truthfulness_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_detector_credits: {
+        Row: {
+          created_at: string | null
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lie_detector_sessions: {
+        Row: {
+          created_at: string | null
+          credits_used: number
+          expires_at: string | null
+          id: string
+          messages_analyzed: number | null
+          session_data: Json | null
+          session_type: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_used?: number
+          expires_at?: string | null
+          id?: string
+          messages_analyzed?: number | null
+          session_data?: Json | null
+          session_type?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_used?: number
+          expires_at?: string | null
+          id?: string
+          messages_analyzed?: number | null
+          session_data?: Json | null
+          session_type?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       linkedin_enhancements: {
         Row: {
           created_at: string
