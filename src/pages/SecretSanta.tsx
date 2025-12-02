@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Gift, Inbox, Sparkles, Trophy, CreditCard, ArrowLeft, Award, Box, Star } from "lucide-react";
+import { Gift, Inbox, Sparkles, Trophy, CreditCard, ArrowLeft, Award, Box, Star, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { SecretSantaSendGift } from "@/components/secret-santa/SecretSantaSendGift";
@@ -12,6 +12,7 @@ import { LevelProgress } from "@/components/secret-santa/LevelProgress";
 import { BadgesDisplay } from "@/components/secret-santa/BadgesDisplay";
 import { MysteryBox } from "@/components/secret-santa/MysteryBox";
 import { LimitedEditionGifts } from "@/components/secret-santa/LimitedEditionGifts";
+import { GiftChat } from "@/components/secret-santa/GiftChat";
 import { useSecretSanta } from "@/hooks/useSecretSanta";
 import { ParticleEffect } from "@/components/secret-santa/GiftConfetti";
 
@@ -86,59 +87,66 @@ const SecretSanta = () => {
 
         {/* Main content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-4 sm:grid-cols-8 bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-1 mb-6 overflow-x-auto shadow-lg">
+          <TabsList className="w-full flex bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-1 mb-6 overflow-x-auto shadow-lg">
             <TabsTrigger
               value="send"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Gift className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Send</span>
             </TabsTrigger>
             <TabsTrigger
               value="inbox"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Inbox className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Inbox</span>
             </TabsTrigger>
             <TabsTrigger
+              value="chat"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+            >
+              <MessageCircle className="h-4 w-4 mr-1" />
+              <span className="hidden sm:inline">Chat</span>
+            </TabsTrigger>
+            <TabsTrigger
               value="mystery"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Box className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Mystery</span>
             </TabsTrigger>
             <TabsTrigger
               value="limited"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Star className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Limited</span>
             </TabsTrigger>
             <TabsTrigger
               value="badges"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Award className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Badges</span>
             </TabsTrigger>
             <TabsTrigger
               value="stories"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Sparkles className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Stories</span>
             </TabsTrigger>
             <TabsTrigger
               value="leaderboard"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <Trophy className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Top</span>
             </TabsTrigger>
             <TabsTrigger
               value="credits"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
             >
               <CreditCard className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">Shop</span>
@@ -151,6 +159,10 @@ const SecretSanta = () => {
 
           <TabsContent value="inbox" className="mt-0">
             <SecretSantaInbox />
+          </TabsContent>
+
+          <TabsContent value="chat" className="mt-0">
+            <GiftChat />
           </TabsContent>
 
           <TabsContent value="mystery" className="mt-0">
