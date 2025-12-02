@@ -297,6 +297,7 @@ import WithdrawalRequests from "./pages/admin/WithdrawalRequests";
 import Wellness from "./pages/Wellness";
 import SafetyPrevention from "./pages/SafetyPrevention";
 import PostDetail from "./pages/PostDetail";
+import Handwriting from "./pages/Handwriting";
 import AdminPaymentDashboard from "./pages/AdminPaymentDashboard";
 import PaymentDocumentation from "./pages/PaymentDocumentation";
 import Navbar from "./components/Navbar";
@@ -427,6 +428,7 @@ const App = () => {
            <Route path="/subscription-management" element={<ProtectedRoute><SubscriptionManagement /></ProtectedRoute>} />
            <Route path="/wellness" element={<Wellness />} />
            <Route path="/safety-prevention" element={<SafetyPrevention />} />
+           <Route path="/handwriting" element={<Handwriting />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />
           <Route path="/home-designer" element={<HomeDesigner />} />
