@@ -1005,3 +1005,9 @@ verify_jwt = false
 [functions.reveal-anonymous-identity]
 verify_jwt = false
 
+[functions.pay-anonymous-date-access]
+verify_jwt = true
+
+[functions.check-anonymous-date-access]
+verify_jwt = true
+

@@ -803,6 +803,33 @@ export type Database = {
           },
         ]
       }
+      anonymous_dating_access: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          paid_at: string
+          stripe_payment_intent_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          paid_at?: string
+          stripe_payment_intent_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          paid_at?: string
+          stripe_payment_intent_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       anonymous_dating_credits: {
         Row: {
           created_at: string | null
