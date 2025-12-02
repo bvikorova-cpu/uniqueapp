@@ -1011,3 +1011,6 @@ verify_jwt = true
 [functions.check-anonymous-date-access]
 verify_jwt = true
 
+[functions.customer-portal-anonymous-date]
+verify_jwt = true
+
