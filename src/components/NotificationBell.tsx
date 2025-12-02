@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Bell, Check, X } from "lucide-react";
+import { Bell, Check, X, Gift } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import {
   Popover,
   PopoverContent,
@@ -33,6 +34,7 @@ export function NotificationBell() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadNotifications();
@@ -67,7 +69,7 @@ export function NotificationBell() {
         .from("notifications")
         .select("*")
         .eq("user_id", user.id)
-        .eq("type", "tipster_application")
+        .in("type", ["tipster_application", "secret_santa_gift"])
         .order("created_at", { ascending: false })
         .limit(20);
 
@@ -232,7 +234,21 @@ export function NotificationBell() {
                         </div>
                       )}
 
-                      {notification.is_read && (
+                      {notification.type === "secret_santa_gift" && !notification.is_read && (
+                        <Button
+                          size="sm"
+                          onClick={async () => {
+                            await markAsRead(notification.id);
+                            navigate("/secret-santa");
+                          }}
+                          className="mt-3 w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                        >
+                          <Gift className="h-4 w-4 mr-1" />
+                          View Gift
+                        </Button>
+                      )}
+
+                      {notification.is_read && notification.type === "tipster_application" && (
                         <Badge variant="outline" className="mt-2">
                           Processed
                         </Badge>

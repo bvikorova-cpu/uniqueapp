@@ -183,7 +183,7 @@ export const useSecretSanta = () => {
       if (creditError) throw creditError;
 
       // Send gift
-      const { error: giftError } = await supabase.from("secret_santa_gifts").insert({
+      const { data: giftData, error: giftError } = await supabase.from("secret_santa_gifts").insert({
         sender_id: user.id,
         recipient_id: recipientId,
         gift_type: giftType,
@@ -191,9 +191,27 @@ export const useSecretSanta = () => {
         gift_value: gift.value,
         message,
         is_anonymous: isAnonymous,
-      });
+      }).select().single();
 
       if (giftError) throw giftError;
+
+      // Get sender profile for notification
+      const { data: senderProfile } = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", user.id)
+        .single();
+
+      // Create notification for recipient
+      const senderName = isAnonymous ? "Secret Santa" : (senderProfile?.full_name || "Someone");
+      await supabase.from("notifications").insert({
+        user_id: recipientId,
+        type: "secret_santa_gift",
+        title: `${gift.emoji} New Gift Received!`,
+        message: `${senderName} sent you a ${gift.label}!`,
+        related_id: giftData.id,
+        actor_id: isAnonymous ? null : user.id,
+      });
     },
     onSuccess: () => {
       toast({ title: "Gift sent successfully! 🎁" });
