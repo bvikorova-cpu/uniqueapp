@@ -2,7 +2,7 @@ import { Heart, Clock, Shield } from "lucide-react";
 
 export function AnonymousDateHeader() {
   return (
-    <div className="text-center space-y-4 mb-8">
+    <div className="text-center space-y-4 mb-8 mt-8">
       <div className="flex justify-center">
         <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-4 rounded-full">
           <Heart className="h-12 w-12 text-white" />
