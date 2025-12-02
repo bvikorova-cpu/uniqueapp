@@ -987,3 +987,21 @@ verify_jwt = true
 [functions.create-handwriting-credits-payment]
 verify_jwt = true
 
+[functions.analyze-past-life]
+verify_jwt = false
+
+[functions.create-past-life-credits-payment]
+verify_jwt = false
+
+[functions.create-anonymous-date-payment]
+verify_jwt = false
+
+[functions.find-anonymous-match]
+verify_jwt = false
+
+[functions.send-anonymous-message]
+verify_jwt = false
+
+[functions.reveal-anonymous-identity]
+verify_jwt = false
+
