@@ -77,11 +77,14 @@ export const SecretSantaSendGift = () => {
         
         <div className="relative">
           <Input
-            placeholder="Search by username..."
+            placeholder="Search users by name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="bg-white border-amber-200 text-gray-800 placeholder:text-gray-400"
           />
+          <p className="text-xs text-gray-500 mt-2">
+            Search any user on the platform by their name
+          </p>
         </div>
 
         {users.length > 0 && (
