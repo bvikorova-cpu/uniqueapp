@@ -43,10 +43,10 @@ export const HandwritingAnalysisResult = ({
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold">Analysis Results</h2>
+    <div className="space-y-4 sm:space-y-6">
+      <Card className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold">Analysis Results</h2>
           <Badge className={getTypeColor(analysis.analysis_type)}>
             {getTypeLabel(analysis.analysis_type)}
           </Badge>
@@ -63,42 +63,42 @@ export const HandwritingAnalysisResult = ({
         />
       </Card>
 
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-2 mb-4">
           <Brain className="h-5 w-5 text-purple-500" />
-          <h3 className="text-xl font-bold">Detailed Analysis</h3>
+          <h3 className="text-lg sm:text-xl font-bold">Detailed Analysis</h3>
         </div>
-        <p className="text-muted-foreground whitespace-pre-wrap">
+        <p className="text-sm sm:text-base text-muted-foreground whitespace-pre-wrap">
           {analysis.detailed_analysis}
         </p>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <Card className="p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="h-5 w-5 text-green-500" />
-            <h3 className="text-lg font-bold">Strengths</h3>
+            <h3 className="text-base sm:text-lg font-bold">Strengths</h3>
           </div>
           <ul className="space-y-2">
             {analysis.strengths?.map((strength: string, idx: number) => (
               <li key={idx} className="flex items-start gap-2">
                 <span className="text-green-500 mt-1">✓</span>
-                <span>{strength}</span>
+                <span className="text-sm sm:text-base">{strength}</span>
               </li>
             ))}
           </ul>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="h-5 w-5 text-orange-500" />
-            <h3 className="text-lg font-bold">Areas for Growth</h3>
+            <h3 className="text-base sm:text-lg font-bold">Areas for Growth</h3>
           </div>
           <ul className="space-y-2">
             {analysis.weaknesses?.map((weakness: string, idx: number) => (
               <li key={idx} className="flex items-start gap-2">
                 <span className="text-orange-500 mt-1">•</span>
-                <span>{weakness}</span>
+                <span className="text-sm sm:text-base">{weakness}</span>
               </li>
             ))}
           </ul>
@@ -186,16 +186,16 @@ export const HandwritingAnalysisResult = ({
         </Card>
       )}
 
-      <Card className="p-6">
+      <Card className="p-4 sm:p-6">
         <div className="flex items-center gap-2 mb-4">
           <Target className="h-5 w-5 text-blue-500" />
-          <h3 className="text-lg font-bold">Recommendations</h3>
+          <h3 className="text-base sm:text-lg font-bold">Recommendations</h3>
         </div>
         <ul className="space-y-2">
           {analysis.recommendations?.map((rec: string, idx: number) => (
             <li key={idx} className="flex items-start gap-2">
               <span className="text-blue-500 mt-1">→</span>
-              <span>{rec}</span>
+              <span className="text-sm sm:text-base">{rec}</span>
             </li>
           ))}
         </ul>

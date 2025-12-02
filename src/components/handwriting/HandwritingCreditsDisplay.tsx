@@ -37,22 +37,22 @@ export const HandwritingCreditsDisplay = () => {
 
   return (
     <>
-      <Card className="p-6 bg-gradient-to-r from-purple-500/10 to-indigo-500/10">
-        <div className="flex items-center justify-between">
+      <Card className="p-4 sm:p-6 bg-gradient-to-r from-purple-500/10 to-indigo-500/10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <PenTool className="h-8 w-8 text-purple-500" />
+            <PenTool className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500" />
             <div>
-              <p className="text-sm text-muted-foreground">Analysis Credits</p>
-              <p className="text-3xl font-bold">{credits?.credits_remaining || 0}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Analysis Credits</p>
+              <p className="text-2xl sm:text-3xl font-bold">{credits?.credits_remaining || 0}</p>
               <p className="text-xs text-muted-foreground mt-1">
                 Total purchased: {credits?.total_credits_purchased || 0}
               </p>
             </div>
           </div>
 
-          <Button onClick={() => setShowBuyDialog(true)} className="gap-2">
+          <Button onClick={() => setShowBuyDialog(true)} className="gap-2 w-full sm:w-auto">
             <Plus className="h-4 w-4" />
-            Buy Credits
+            <span className="text-sm sm:text-base">Buy Credits</span>
           </Button>
         </div>
       </Card>
