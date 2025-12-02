@@ -21661,6 +21661,8 @@ export type Database = {
       }
       secret_santa_gifts: {
         Row: {
+          ai_generated_image_url: string | null
+          animation_type: string | null
           created_at: string
           gift_emoji: string
           gift_type: string
@@ -21672,6 +21674,8 @@ export type Database = {
           sender_id: string
         }
         Insert: {
+          ai_generated_image_url?: string | null
+          animation_type?: string | null
           created_at?: string
           gift_emoji: string
           gift_type: string
@@ -21683,6 +21687,8 @@ export type Database = {
           sender_id: string
         }
         Update: {
+          ai_generated_image_url?: string | null
+          animation_type?: string | null
           created_at?: string
           gift_emoji?: string
           gift_type?: string
@@ -22363,6 +22369,217 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      social_gifts_ai_messages: {
+        Row: {
+          created_at: string | null
+          generated_message: string
+          id: string
+          message_type: string
+          prompt: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          generated_message: string
+          id?: string
+          message_type: string
+          prompt?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          generated_message?: string
+          id?: string
+          message_type?: string
+          prompt?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      social_gifts_badges: {
+        Row: {
+          code: string
+          created_at: string | null
+          description: string
+          icon: string
+          id: string
+          name: string
+          rarity: string | null
+          requirement_type: string
+          requirement_value: number
+          xp_reward: number | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          description: string
+          icon: string
+          id?: string
+          name: string
+          rarity?: string | null
+          requirement_type: string
+          requirement_value: number
+          xp_reward?: number | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          rarity?: string | null
+          requirement_type?: string
+          requirement_value?: number
+          xp_reward?: number | null
+        }
+        Relationships: []
+      }
+      social_gifts_mystery_boxes: {
+        Row: {
+          box_tier: string
+          cost: number
+          created_at: string | null
+          id: string
+          is_anonymous: boolean | null
+          message: string | null
+          recipient_id: string
+          revealed_gift_type: string | null
+          revealed_gift_value: number | null
+          user_id: string
+        }
+        Insert: {
+          box_tier: string
+          cost: number
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          message?: string | null
+          recipient_id: string
+          revealed_gift_type?: string | null
+          revealed_gift_value?: number | null
+          user_id: string
+        }
+        Update: {
+          box_tier?: string
+          cost?: number
+          created_at?: string | null
+          id?: string
+          is_anonymous?: boolean | null
+          message?: string | null
+          recipient_id?: string
+          revealed_gift_type?: string | null
+          revealed_gift_value?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      social_gifts_reactions: {
+        Row: {
+          created_at: string | null
+          gift_id: string
+          id: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          gift_id: string
+          id?: string
+          reaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          gift_id?: string
+          id?: string
+          reaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_gifts_reactions_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "secret_santa_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_gifts_user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_gifts_user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "social_gifts_badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_gifts_user_progress: {
+        Row: {
+          created_at: string | null
+          current_xp: number | null
+          gifts_received: number | null
+          gifts_sent: number | null
+          id: string
+          last_gift_date: string | null
+          level: number | null
+          streak_days: number | null
+          total_credits_spent: number | null
+          total_xp: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_xp?: number | null
+          gifts_received?: number | null
+          gifts_sent?: number | null
+          id?: string
+          last_gift_date?: string | null
+          level?: number | null
+          streak_days?: number | null
+          total_credits_spent?: number | null
+          total_xp?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_xp?: number | null
+          gifts_received?: number | null
+          gifts_sent?: number | null
+          id?: string
+          last_gift_date?: string | null
+          level?: number | null
+          streak_days?: number | null
+          total_credits_spent?: number | null
+          total_xp?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       soul_matches: {
         Row: {
