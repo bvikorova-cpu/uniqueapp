@@ -3,6 +3,9 @@ project_id = "jufrdzeonywluwutvyxz"
 [functions.create-secret-santa-payment]
 verify_jwt = true
 
+[functions.generate-gift-message]
+verify_jwt = true
+
 [functions.analyze-message]
 verify_jwt = true
 
