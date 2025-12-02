@@ -114,23 +114,141 @@ export const GiftAnimation = ({ emoji, label, onComplete, type = "open" }: GiftA
   );
 };
 
-// Animated gift card for display
+// Animated gift card for display with 3D rotation
 export const AnimatedGiftCard = ({ emoji, isNew }: { emoji: string; isNew?: boolean }) => {
   return (
     <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      whileHover={{ scale: 1.1, rotate: [0, -5, 5, 0] }}
-      className="relative"
+      initial={{ scale: 0.8, opacity: 0, rotateY: -180 }}
+      animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+      transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+      whileHover={{ 
+        scale: 1.15, 
+        rotateY: [0, 15, -15, 0],
+        rotateX: [0, -10, 10, 0],
+        z: 50
+      }}
+      style={{ perspective: 1000, transformStyle: "preserve-3d" }}
+      className="relative cursor-pointer"
     >
-      <span className="text-4xl block">{emoji}</span>
+      <span className="text-4xl block drop-shadow-lg">{emoji}</span>
       {isNew && (
         <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"
+          animate={{ scale: [1, 1.3, 1], rotate: [0, 180, 360] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full shadow-lg shadow-red-500/50"
         />
       )}
+    </motion.div>
+  );
+};
+
+// 3D Rotating Gift Icon with continuous animation
+export const Rotating3DGift = ({ 
+  emoji, 
+  size = "text-6xl",
+  speed = 4,
+  hover3D = true 
+}: { 
+  emoji: string; 
+  size?: string;
+  speed?: number;
+  hover3D?: boolean;
+}) => {
+  return (
+    <motion.div
+      animate={{ 
+        rotateY: [0, 360],
+      }}
+      transition={{ 
+        duration: speed, 
+        repeat: Infinity, 
+        ease: "linear" 
+      }}
+      whileHover={hover3D ? { 
+        rotateX: [0, 20, -20, 0],
+        scale: 1.2,
+        transition: { duration: 0.5 }
+      } : undefined}
+      style={{ 
+        perspective: 1000, 
+        transformStyle: "preserve-3d",
+      }}
+      className="cursor-pointer"
+    >
+      <span className={`${size} block drop-shadow-2xl`}>{emoji}</span>
+    </motion.div>
+  );
+};
+
+// 3D Flip Card Gift (front/back reveal)
+export const FlipCardGift = ({ 
+  frontEmoji, 
+  backEmoji,
+  isFlipped,
+  onFlip
+}: { 
+  frontEmoji: string; 
+  backEmoji: string;
+  isFlipped: boolean;
+  onFlip?: () => void;
+}) => {
+  return (
+    <motion.div
+      className="relative w-24 h-24 cursor-pointer"
+      style={{ perspective: 1000 }}
+      onClick={onFlip}
+    >
+      <motion.div
+        className="w-full h-full"
+        style={{ transformStyle: "preserve-3d" }}
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+      >
+        {/* Front */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center rounded-xl bg-gradient-to-br from-amber-400/20 to-orange-500/20 backdrop-blur-sm border border-amber-300/30"
+          style={{ backfaceVisibility: "hidden" }}
+        >
+          <span className="text-5xl drop-shadow-lg">{frontEmoji}</span>
+        </div>
+        {/* Back */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center rounded-xl bg-gradient-to-br from-rose-400/20 to-pink-500/20 backdrop-blur-sm border border-rose-300/30"
+          style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+        >
+          <span className="text-5xl drop-shadow-lg">{backEmoji}</span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// Floating 3D Gift with bobbing animation
+export const Floating3DGift = ({ 
+  emoji,
+  delay = 0
+}: { 
+  emoji: string;
+  delay?: number;
+}) => {
+  return (
+    <motion.div
+      initial={{ y: 0, rotateY: 0, rotateX: 0 }}
+      animate={{ 
+        y: [0, -15, 0],
+        rotateY: [0, 10, -10, 0],
+        rotateX: [0, 5, -5, 0],
+      }}
+      transition={{ 
+        duration: 3,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+      style={{ perspective: 800, transformStyle: "preserve-3d" }}
+      className="inline-block"
+    >
+      <span className="text-4xl block drop-shadow-xl">{emoji}</span>
     </motion.div>
   );
 };
