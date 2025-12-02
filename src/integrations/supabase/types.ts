@@ -21632,6 +21632,101 @@ export type Database = {
         }
         Relationships: []
       }
+      secret_santa_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      secret_santa_gifts: {
+        Row: {
+          created_at: string
+          gift_emoji: string
+          gift_type: string
+          gift_value: number
+          id: string
+          is_anonymous: boolean
+          message: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          gift_emoji: string
+          gift_type: string
+          gift_value: number
+          id?: string
+          is_anonymous?: boolean
+          message?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          gift_emoji?: string
+          gift_type?: string
+          gift_value?: number
+          id?: string
+          is_anonymous?: boolean
+          message?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      secret_santa_stories: {
+        Row: {
+          created_at: string
+          expires_at: string
+          gift_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          gift_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          gift_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "secret_santa_stories_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "secret_santa_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sent_platform_gifts: {
         Row: {
           context_id: string | null
