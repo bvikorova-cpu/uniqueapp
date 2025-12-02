@@ -91,41 +91,44 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
-      <div className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 max-w-2xl mx-auto px-2">
+      <div className="space-y-3 sm:space-y-4">
         <div>
-          <Label>Anonymous Name *</Label>
+          <Label className="text-sm sm:text-base">Anonymous Name *</Label>
           <Input
             value={anonymousName}
             onChange={(e) => setAnonymousName(e.target.value)}
             placeholder="MysteryPerson123"
             required
+            className="h-10 sm:h-auto text-sm sm:text-base"
           />
         </div>
 
         <div>
-          <Label>Age Range *</Label>
+          <Label className="text-sm sm:text-base">Age Range *</Label>
           <Input
             value={ageRange}
             onChange={(e) => setAgeRange(e.target.value)}
             placeholder="25-30"
             required
+            className="h-10 sm:h-auto text-sm sm:text-base"
           />
         </div>
 
         <div>
-          <Label>Looking For</Label>
+          <Label className="text-sm sm:text-base">Looking For</Label>
           <Textarea
             value={lookingFor}
             onChange={(e) => setLookingFor(e.target.value)}
             placeholder="What are you looking for in a connection?"
             rows={3}
+            className="text-sm sm:text-base resize-none"
           />
         </div>
 
         <div>
-          <Label>Select Interests * (Choose at least 3)</Label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+          <Label className="text-sm sm:text-base">Select Interests * (Choose at least 3)</Label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 mt-2">
             {INTERESTS.map((interest) => (
               <Button
                 key={interest}
@@ -133,7 +136,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                 variant={selectedInterests.includes(interest) ? "default" : "outline"}
                 size="sm"
                 onClick={() => toggleInterest(interest)}
-                className="text-xs"
+                className="text-xs h-8 sm:h-9"
               >
                 {interest}
               </Button>
@@ -142,8 +145,8 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
         </div>
 
         <div>
-          <Label>Personality Traits (Choose up to 5)</Label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+          <Label className="text-sm sm:text-base">Personality Traits (Choose up to 5)</Label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2 mt-2">
             {PERSONALITY_TRAITS.map((trait) => (
               <Button
                 key={trait}
@@ -152,7 +155,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
                 size="sm"
                 onClick={() => toggleTrait(trait)}
                 disabled={selectedTraits.length >= 5 && !selectedTraits.includes(trait)}
-                className="text-xs"
+                className="text-xs h-8 sm:h-9"
               >
                 {trait}
               </Button>
@@ -163,7 +166,7 @@ export function ProfileSetup({ onComplete }: { onComplete: () => void }) {
 
       <Button
         type="submit"
-        className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90"
+        className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 h-11 sm:h-12 text-sm sm:text-base"
         disabled={loading}
       >
         {loading ? "Creating Profile..." : "Create Profile & Start Matching"}
