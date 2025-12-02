@@ -128,10 +128,16 @@ export const GIFT_CATALOG = [
 ];
 
 export const CREDIT_PACKAGES = [
-  { credits: 30, price: 5, label: "Starter Pack" },
-  { credits: 80, price: 12, label: "Popular Pack", popular: true },
-  { credits: 200, price: 25, label: "Value Pack" },
-  { credits: 500, price: 50, label: "Premium Pack", bestValue: true },
+  { credits: 15, price: 5, label: "Starter Pack" },
+  { credits: 30, price: 8, label: "Basic Pack" },
+  { credits: 50, price: 12, label: "Popular Pack", popular: true },
+  { credits: 100, price: 20, label: "Value Pack" },
+  { credits: 200, price: 35, label: "Pro Pack" },
+  { credits: 350, price: 55, label: "Premium Pack" },
+  { credits: 500, price: 75, label: "Elite Pack", bestValue: true },
+  { credits: 750, price: 100, label: "Diamond Pack" },
+  { credits: 1000, price: 130, label: "Platinum Pack" },
+  { credits: 1500, price: 180, label: "Ultimate Pack" },
 ];
 
 export const useSecretSanta = () => {

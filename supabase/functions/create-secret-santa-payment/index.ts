@@ -21,10 +21,16 @@ serve(async (req) => {
 
     // Validate packages
     const validPackages = [
-      { credits: 20, price: 5 },
-      { credits: 50, price: 10 },
-      { credits: 120, price: 20 },
-      { credits: 300, price: 40 },
+      { credits: 15, price: 5 },
+      { credits: 30, price: 8 },
+      { credits: 50, price: 12 },
+      { credits: 100, price: 20 },
+      { credits: 200, price: 35 },
+      { credits: 350, price: 55 },
+      { credits: 500, price: 75 },
+      { credits: 750, price: 100 },
+      { credits: 1000, price: 130 },
+      { credits: 1500, price: 180 },
     ];
 
     const isValid = validPackages.some(p => p.credits === credits && p.price === price);

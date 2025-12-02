@@ -47,7 +47,7 @@ export const SecretSantaCredits = () => {
       </div>
 
       {/* Credit packages */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {CREDIT_PACKAGES.map((pkg) => (
           <div
             key={pkg.credits}
