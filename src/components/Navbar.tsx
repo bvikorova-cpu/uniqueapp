@@ -244,6 +244,7 @@ const Navbar = () => {
     { path: "/comedy-club", label: "Comedy Club - Stand Up", icon: Mic2 },
     { path: "/ai-tattoo", label: "AI Tattoo Designer", icon: ImageIcon },
     { path: "/mystery-box", label: "Mystery Box", icon: Gift },
+    { path: "/secret-santa", label: "Secret Santa 365", icon: Gift },
     { path: "/vacationer", label: t('navbar.vacationer'), icon: Plane },
     { path: "/dating", label: t('navbar.dating'), icon: Heart },
     { path: "/first-aid", label: t('navbar.first_aid'), icon: Activity },
