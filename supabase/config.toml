@@ -975,3 +975,9 @@ verify_jwt = false
 [functions.generate-tattoo]
 verify_jwt = true
 
+[functions.analyze-handwriting]
+verify_jwt = true
+
+[functions.create-handwriting-credits-payment]
+verify_jwt = true
+
