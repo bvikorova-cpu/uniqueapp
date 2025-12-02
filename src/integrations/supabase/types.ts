@@ -10943,6 +10943,99 @@ export type Database = {
         }
         Relationships: []
       }
+      handwriting_analyses: {
+        Row: {
+          analysis_type: string
+          communication_style: string | null
+          created_at: string | null
+          creativity_level: string | null
+          credits_used: number
+          decision_making: string | null
+          detailed_analysis: string | null
+          emotional_state: string | null
+          id: string
+          image_url: string
+          leadership_qualities: string | null
+          personality_traits: Json | null
+          recommendations: string[] | null
+          relationship_patterns: string | null
+          strengths: string[] | null
+          stress_indicators: string | null
+          user_id: string
+          weaknesses: string[] | null
+          work_approach: string | null
+        }
+        Insert: {
+          analysis_type: string
+          communication_style?: string | null
+          created_at?: string | null
+          creativity_level?: string | null
+          credits_used?: number
+          decision_making?: string | null
+          detailed_analysis?: string | null
+          emotional_state?: string | null
+          id?: string
+          image_url: string
+          leadership_qualities?: string | null
+          personality_traits?: Json | null
+          recommendations?: string[] | null
+          relationship_patterns?: string | null
+          strengths?: string[] | null
+          stress_indicators?: string | null
+          user_id: string
+          weaknesses?: string[] | null
+          work_approach?: string | null
+        }
+        Update: {
+          analysis_type?: string
+          communication_style?: string | null
+          created_at?: string | null
+          creativity_level?: string | null
+          credits_used?: number
+          decision_making?: string | null
+          detailed_analysis?: string | null
+          emotional_state?: string | null
+          id?: string
+          image_url?: string
+          leadership_qualities?: string | null
+          personality_traits?: Json | null
+          recommendations?: string[] | null
+          relationship_patterns?: string | null
+          strengths?: string[] | null
+          stress_indicators?: string | null
+          user_id?: string
+          weaknesses?: string[] | null
+          work_approach?: string | null
+        }
+        Relationships: []
+      }
+      handwriting_credits: {
+        Row: {
+          created_at: string | null
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       hashtags: {
         Row: {
           created_at: string
