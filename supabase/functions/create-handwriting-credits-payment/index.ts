@@ -9,10 +9,10 @@ const corsHeaders = {
 
 // Credit packages with Stripe price IDs
 const PRICE_IDS: Record<number, string> = {
-  10: "price_1SYO1AGaXSfGtYFtxKp5Rj8v",  // 10 credits - €5
-  25: "price_1SYO1BGaXSfGtYFthN6Qm9wX",  // 25 credits - €12
-  50: "price_1SYO1CGaXSfGtYFtL8vZk3Yr",  // 50 credits - €20
-  100: "price_1SYO1DGaXSfGtYFt9Km2Pq4s", // 100 credits - €35
+  10: "price_1SZppoGaXSfGtYFt9LcYpN4i",  // 10 credits - €5
+  25: "price_1SZppoGaXSfGtYFtj5zdmxHz",  // 25 credits - €12
+  50: "price_1SZpppGaXSfGtYFt8FztYCdY",  // 50 credits - €20
+  100: "price_1SZppqGaXSfGtYFt7w4oht6d", // 100 credits - €35
 };
 
 serve(async (req) => {
