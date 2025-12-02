@@ -114,6 +114,7 @@ import Psychology from "./pages/Psychology";
 import Quiz from "./pages/Quiz";
 import Home from "./pages/Home";
 import AIExperiences from "./pages/AIExperiences";
+import SecretSanta from "./pages/SecretSanta";
 import BrandBuilder from "./pages/BrandBuilder";
 import HomeDesigner from "./pages/HomeDesigner";
 import CharacterArena from "./pages/CharacterArena";
@@ -435,6 +436,7 @@ const App = () => {
           <Route path="/past-life" element={<PastLife />} />
           <Route path="/anonymous-date" element={<AnonymousDate />} />
           <Route path="/lie-detector" element={<LieDetector />} />
+          <Route path="/secret-santa" element={<SecretSanta />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />
           <Route path="/home-designer" element={<HomeDesigner />} />
