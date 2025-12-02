@@ -434,6 +434,7 @@ const App = () => {
            <Route path="/handwriting" element={<Handwriting />} />
           <Route path="/past-life" element={<PastLife />} />
           <Route path="/anonymous-date" element={<AnonymousDate />} />
+          <Route path="/lie-detector" element={<LieDetector />} />
             <Route path="/ai-experiences" element={<AIExperiences />} />
           <Route path="/brand-builder" element={<BrandBuilder />} />
           <Route path="/home-designer" element={<HomeDesigner />} />
