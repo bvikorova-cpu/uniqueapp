@@ -62,9 +62,9 @@ const SecretSanta = () => {
           
           <div className="text-center flex-1 pt-4">
             <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-rose-600 via-amber-600 to-orange-600 bg-clip-text text-transparent drop-shadow-sm">
-              Secret Santa 365
+              Social Gifts Hub
             </h1>
-            <p className="text-gray-600 text-sm mt-2">Send magical gifts anonymously</p>
+            <p className="text-gray-600 text-sm mt-2">Send gifts, emotions & awards to anyone</p>
           </div>
 
           {/* Credits display */}
