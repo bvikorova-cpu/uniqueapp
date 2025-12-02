@@ -1,5 +1,11 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.analyze-past-life]
+verify_jwt = true
+
+[functions.create-past-life-credits-payment]
+verify_jwt = true
+
 [functions.create-fashion-marketplace-payment]
 verify_jwt = true
 

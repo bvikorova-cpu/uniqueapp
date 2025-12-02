@@ -16714,6 +16714,81 @@ export type Database = {
         }
         Relationships: []
       }
+      past_life_credits: {
+        Row: {
+          created_at: string | null
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      past_life_readings: {
+        Row: {
+          birth_date: string
+          created_at: string | null
+          credits_used: number
+          dreams_dejavu: string | null
+          id: string
+          karmic_lessons: string | null
+          partner_birth_date: string | null
+          partner_info: string | null
+          past_lives: Json
+          reading_type: string
+          soulmate_analysis: string | null
+          talents_phobias: string | null
+          user_id: string
+        }
+        Insert: {
+          birth_date: string
+          created_at?: string | null
+          credits_used: number
+          dreams_dejavu?: string | null
+          id?: string
+          karmic_lessons?: string | null
+          partner_birth_date?: string | null
+          partner_info?: string | null
+          past_lives: Json
+          reading_type: string
+          soulmate_analysis?: string | null
+          talents_phobias?: string | null
+          user_id: string
+        }
+        Update: {
+          birth_date?: string
+          created_at?: string | null
+          credits_used?: number
+          dreams_dejavu?: string | null
+          id?: string
+          karmic_lessons?: string | null
+          partner_birth_date?: string | null
+          partner_info?: string | null
+          past_lives?: Json
+          reading_type?: string
+          soulmate_analysis?: string | null
+          talents_phobias?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       past_life_regressions: {
         Row: {
           created_at: string | null
