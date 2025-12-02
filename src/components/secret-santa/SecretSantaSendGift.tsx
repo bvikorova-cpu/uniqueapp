@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useSecretSanta, GIFT_CATALOG } from "@/hooks/useSecretSanta";
+import { useSecretSanta, GIFT_CATALOG, GIFT_CATEGORIES } from "@/hooks/useSecretSanta";
 import { Search, Send, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -38,8 +38,6 @@ export const SecretSantaSendGift = () => {
     enabled: searchQuery.length >= 2,
   });
 
-  const categories = ["all", "romantic", "flowers", "drinks", "sweets", "luxury", "special", "mythical"];
-  
   const filteredGifts = activeCategory === "all" 
     ? GIFT_CATALOG 
     : GIFT_CATALOG.filter(g => g.category === activeCategory);
@@ -137,19 +135,20 @@ export const SecretSantaSendGift = () => {
         {/* Category filters */}
         <ScrollArea className="w-full whitespace-nowrap pb-4">
           <div className="flex gap-2">
-            {categories.map((cat) => (
+            {GIFT_CATEGORIES.map((cat) => (
               <Button
-                key={cat}
+                key={cat.id}
                 variant="ghost"
                 size="sm"
-                onClick={() => setActiveCategory(cat)}
-                className={`capitalize rounded-full ${
-                  activeCategory === cat
+                onClick={() => setActiveCategory(cat.id)}
+                className={`rounded-full flex items-center gap-1 ${
+                  activeCategory === cat.id
                     ? "bg-amber-500 text-white hover:bg-amber-600"
                     : "text-gray-600 hover:text-gray-800 hover:bg-amber-100"
                 }`}
               >
-                {cat}
+                <span>{cat.emoji}</span>
+                <span className="hidden sm:inline">{cat.label}</span>
               </Button>
             ))}
           </div>
@@ -159,27 +158,46 @@ export const SecretSantaSendGift = () => {
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 sm:gap-3 mt-4">
           {filteredGifts.map((gift) => {
             const affordable = credits >= gift.value;
+            const isSelected = selectedGift === gift.type;
             return (
               <div
                 key={gift.type}
                 onClick={() => affordable && setSelectedGift(gift.type)}
-                className={`relative p-3 sm:p-4 rounded-xl text-center cursor-pointer transition-all ${
-                  selectedGift === gift.type
+                title={gift.description}
+                className={`relative p-2 sm:p-3 rounded-xl text-center cursor-pointer transition-all ${
+                  isSelected
                     ? "bg-gradient-to-br from-amber-200 to-yellow-200 border-2 border-amber-400 scale-105 shadow-md"
                     : affordable
-                    ? "bg-white hover:bg-amber-50 border border-gray-200 hover:border-amber-300 hover:shadow-sm"
+                    ? "bg-white hover:bg-amber-50 border border-gray-200 hover:border-amber-300 hover:shadow-sm hover:scale-102"
                     : "bg-gray-100 border border-gray-200 opacity-50 cursor-not-allowed"
                 }`}
               >
                 <span className="text-2xl sm:text-3xl block">{gift.emoji}</span>
-                <p className="text-gray-700 text-xs mt-1 truncate">{gift.label}</p>
-                <p className={`text-xs mt-0.5 font-medium ${affordable ? "text-amber-600" : "text-red-500"}`}>
+                <p className="text-gray-700 text-[10px] sm:text-xs mt-1 truncate font-medium">{gift.label}</p>
+                <p className={`text-[10px] sm:text-xs mt-0.5 font-semibold ${affordable ? "text-amber-600" : "text-red-500"}`}>
                   💎 {gift.value}
                 </p>
               </div>
             );
           })}
         </div>
+
+        {/* Selected gift details */}
+        {selectedGiftData && (
+          <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-amber-100 to-yellow-100 border border-amber-300">
+            <div className="flex items-center gap-3">
+              <span className="text-4xl">{selectedGiftData.emoji}</span>
+              <div className="flex-1">
+                <h4 className="font-semibold text-gray-800">{selectedGiftData.label}</h4>
+                <p className="text-gray-600 text-sm">{selectedGiftData.description}</p>
+              </div>
+              <div className="text-right">
+                <span className="text-amber-600 font-bold text-lg">💎 {selectedGiftData.value}</span>
+                <p className="text-gray-500 text-xs">credits</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Message and options */}
