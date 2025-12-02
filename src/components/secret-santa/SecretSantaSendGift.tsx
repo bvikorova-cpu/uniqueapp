@@ -8,17 +8,25 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSecretSanta, GIFT_CATALOG, GIFT_CATEGORIES } from "@/hooks/useSecretSanta";
 import { Search, Send, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { GiftConfetti } from "./GiftConfetti";
+import { SendingAnimation } from "./GiftAnimation";
+import { AIMessageGenerator } from "./AIMessageGenerator";
+import { useSocialGiftsProgress } from "@/hooks/useSocialGiftsProgress";
 
 export const SecretSantaSendGift = () => {
   const { sendGift, isSending, credits } = useSecretSanta();
+  const { addXP } = useSocialGiftsProgress();
+  const queryClient = useQueryClient();
   const [selectedGift, setSelectedGift] = useState<string | null>(null);
   const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
   const [message, setMessage] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [showSendingAnimation, setShowSendingAnimation] = useState(false);
 
   // Search users
   const { data: users = [] } = useQuery({
@@ -45,27 +53,50 @@ export const SecretSantaSendGift = () => {
   const selectedGiftData = GIFT_CATALOG.find(g => g.type === selectedGift);
   const selectedUserData = users.find(u => u.id === selectedRecipient);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!selectedGift || !selectedRecipient) return;
     
-    sendGift({
-      recipientId: selectedRecipient,
-      giftType: selectedGift,
-      message: message || undefined,
-      isAnonymous,
-    });
+    setShowSendingAnimation(true);
+    
+    try {
+      await sendGift({
+        recipientId: selectedRecipient,
+        giftType: selectedGift,
+        message: message || undefined,
+        isAnonymous,
+      });
 
-    // Reset form
-    setSelectedGift(null);
-    setSelectedRecipient(null);
-    setMessage("");
-    setSearchQuery("");
+      // Add XP for sending gift
+      addXP({ xp: 25, type: "gift_sent" });
+
+      // Show confetti after sending animation
+      setTimeout(() => {
+        setShowSendingAnimation(false);
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 100);
+      }, 1500);
+
+      // Reset form
+      setSelectedGift(null);
+      setSelectedRecipient(null);
+      setMessage("");
+      setSearchQuery("");
+      queryClient.invalidateQueries({ queryKey: ["secret-santa-credits"] });
+    } catch (error) {
+      setShowSendingAnimation(false);
+    }
   };
 
   const canAfford = selectedGiftData ? credits >= selectedGiftData.value : true;
 
   return (
     <div className="space-y-6">
+      {/* Confetti effect */}
+      <GiftConfetti trigger={showConfetti} type="send" />
+      
+      {/* Sending animation overlay */}
+      {showSendingAnimation && <SendingAnimation />}
+
       {/* Search recipient */}
       <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-4 sm:p-6 shadow-lg">
         <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -200,9 +231,17 @@ export const SecretSantaSendGift = () => {
         )}
       </div>
 
-      {/* Message and options */}
+      {/* Message section with AI Generator */}
       <div className="bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-4 sm:p-6 shadow-lg">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Add a Message (Optional)</h3>
+        
+        {/* AI Message Generator */}
+        <div className="mb-4">
+          <AIMessageGenerator 
+            onSelectMessage={(msg) => setMessage(msg)}
+            giftType={selectedGiftData?.label}
+          />
+        </div>
         
         <Textarea
           placeholder="Write a heartfelt message..."
