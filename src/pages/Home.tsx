@@ -11,10 +11,10 @@ import { useTranslation } from "react-i18next";
 import heroDating from "@/assets/hero-dating-new.jpg";
 import heroWellness from "@/assets/hero-wellness.jpg";
 import heroCooking from "@/assets/hero-cooking.jpg";
-import heroGaming from "@/assets/hero-gaming.jpg";
+import heroTravel from "@/assets/hero-travel.jpg";
 import heroSocial from "@/assets/hero-social-new.jpg";
 import heroEducation from "@/assets/hero-education.jpg";
-import heroCompetition from "@/assets/hero-competition.jpg";
+import heroMusic from "@/assets/hero-music.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -28,10 +28,10 @@ const Home = () => {
     heroDating,
     heroWellness,
     heroCooking,
-    heroGaming,
+    heroTravel,
     heroSocial,
     heroEducation,
-    heroCompetition
+    heroMusic
   ];
 
   // Typewriter effect
