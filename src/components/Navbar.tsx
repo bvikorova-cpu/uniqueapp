@@ -283,8 +283,33 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center group">
-            <span className="text-lg sm:text-xl font-medium tracking-wide text-foreground hover:text-foreground/80 transition-colors" 
+          <Link to="/" className="flex items-center gap-1.5 group">
+            {/* Stylized U icon */}
+            <svg className="w-7 h-7 sm:w-8 sm:h-8" viewBox="0 0 48 48" fill="none">
+              <defs>
+                <linearGradient id="uGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#8B5CF6" />
+                  <stop offset="100%" stopColor="#A855F7" />
+                </linearGradient>
+                <linearGradient id="uGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#EC4899" />
+                  <stop offset="100%" stopColor="#F472B6" />
+                </linearGradient>
+                <linearGradient id="uGrad3" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#A855F7" />
+                  <stop offset="100%" stopColor="#EC4899" />
+                </linearGradient>
+              </defs>
+              {/* Left flowing shape */}
+              <path d="M12 8C12 8 8 20 10 32C11 38 16 44 24 44C20 40 18 34 18 28C18 20 22 12 22 12L12 8Z" fill="url(#uGrad1)" />
+              {/* Center shape */}
+              <path d="M22 6C22 6 16 18 18 30C19 36 22 42 28 44C32 44 36 40 38 34C40 28 38 20 34 14L22 6Z" fill="url(#uGrad2)" />
+              {/* Right accent */}
+              <path d="M34 4C34 4 40 12 40 22C40 28 38 34 34 38C38 34 42 28 42 20C42 12 38 6 34 4Z" fill="url(#uGrad3)" />
+            </svg>
+            
+            {/* Gradient text */}
+            <span className="text-lg sm:text-xl font-semibold tracking-wide bg-gradient-to-r from-purple-500 via-pink-500 to-rose-400 bg-clip-text text-transparent" 
                   style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               Unique
             </span>
