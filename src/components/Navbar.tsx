@@ -283,12 +283,27 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="h-10 w-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">U</span>
-            </div>
-            <span className="text-2xl font-bold">
-              <span className="bg-gradient-to-r from-[#8B5CF6] to-[#8B5CF6] bg-clip-text text-transparent">U</span>
+          <Link to="/" className="flex items-center">
+            <span className="text-2xl sm:text-3xl font-bold tracking-tight">
+              <span className="relative inline-block">
+                <span className="bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent">U</span>
+                <svg 
+                  className="absolute -top-1 left-0.5 w-4 h-3 sm:w-5 sm:h-4" 
+                  viewBox="0 0 24 18" 
+                  fill="none"
+                >
+                  <path 
+                    d="M12 4C8 0 2 2 2 6C2 10 6 12 12 16C18 12 22 10 22 6C22 2 16 0 12 4Z" 
+                    fill="url(#wingGradient)"
+                  />
+                  <defs>
+                    <linearGradient id="wingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#8B5CF6" />
+                      <stop offset="100%" stopColor="#A855F7" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </span>
               <span className="bg-gradient-to-r from-[#A855F7] via-[#D946EF] to-[#EC4899] bg-clip-text text-transparent">nique</span>
             </span>
           </Link>
