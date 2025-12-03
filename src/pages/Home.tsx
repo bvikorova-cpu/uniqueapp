@@ -133,12 +133,28 @@ const Home = () => {
             className={`absolute inset-0 transition-opacity duration-1000 ${
               index === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
-            style={{
-              backgroundImage: `url(${image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
+          >
+            {/* Mobile: show full image */}
+            <div 
+              className="block sm:hidden absolute inset-0"
+              style={{
+                backgroundImage: `url(${image})`,
+                backgroundSize: "contain",
+                backgroundPosition: "center top",
+                backgroundRepeat: "no-repeat",
+                backgroundColor: "hsl(var(--background))",
+              }}
+            />
+            {/* Desktop: cover for better look */}
+            <div 
+              className="hidden sm:block absolute inset-0"
+              style={{
+                backgroundImage: `url(${image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          </div>
         ))}
         
         {/* Dark overlay for better text readability */}
