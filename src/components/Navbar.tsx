@@ -287,8 +287,9 @@ const Navbar = () => {
             <div className="h-10 w-10 bg-gradient-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">U</span>
             </div>
-            <span className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Unique
+            <span className="text-2xl font-bold">
+              <span className="bg-gradient-to-r from-[#8B5CF6] to-[#8B5CF6] bg-clip-text text-transparent">U</span>
+              <span className="bg-gradient-to-r from-[#A855F7] via-[#D946EF] to-[#EC4899] bg-clip-text text-transparent">nique</span>
             </span>
           </Link>
 
