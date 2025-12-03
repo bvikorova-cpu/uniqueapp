@@ -288,16 +288,26 @@ const Navbar = () => {
               <span className="relative inline-block">
                 <span className="bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent">U</span>
                 <svg 
-                  className="absolute -top-1 left-0.5 w-4 h-3 sm:w-5 sm:h-4" 
-                  viewBox="0 0 24 18" 
+                  className="absolute -top-2 -left-0.5 w-5 h-4 sm:w-6 sm:h-5" 
+                  viewBox="0 0 24 16" 
                   fill="none"
                 >
+                  {/* Left wing/leaf */}
                   <path 
-                    d="M12 4C8 0 2 2 2 6C2 10 6 12 12 16C18 12 22 10 22 6C22 2 16 0 12 4Z" 
-                    fill="url(#wingGradient)"
+                    d="M10 8C10 4 8 1 4 1C2 1 1 3 2 6C3 9 6 11 10 12V8Z" 
+                    fill="url(#wingGradientLeft)"
+                  />
+                  {/* Right wing/leaf */}
+                  <path 
+                    d="M14 8C14 4 16 1 20 1C22 1 23 3 22 6C21 9 18 11 14 12V8Z" 
+                    fill="url(#wingGradientRight)"
                   />
                   <defs>
-                    <linearGradient id="wingGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <linearGradient id="wingGradientLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#8B5CF6" />
+                      <stop offset="100%" stopColor="#A855F7" />
+                    </linearGradient>
+                    <linearGradient id="wingGradientRight" x1="100%" y1="0%" x2="0%" y2="100%">
                       <stop offset="0%" stopColor="#8B5CF6" />
                       <stop offset="100%" stopColor="#A855F7" />
                     </linearGradient>
