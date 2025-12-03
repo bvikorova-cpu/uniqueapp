@@ -292,7 +292,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-baseline space-x-1">
+          <div className="hidden lg:flex items-baseline space-x-1 -mt-1">
             {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.path;
