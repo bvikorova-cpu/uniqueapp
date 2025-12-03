@@ -285,7 +285,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center group">
             <img 
-              src="/images/unique-logo.png" 
+              src="/images/unique-logo.jpg" 
               alt="Unique" 
               className="h-9 sm:h-10 w-auto object-contain"
             />
