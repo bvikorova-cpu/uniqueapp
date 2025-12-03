@@ -286,7 +286,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
             <img src={uniqueLogo} alt="Unique Logo" className="h-8 w-8 object-contain" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#C026D3] via-[#DB2777] to-[#E11D7B] bg-clip-text text-transparent -ml-1">
+            <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent -ml-1">
               nique
             </span>
           </Link>
