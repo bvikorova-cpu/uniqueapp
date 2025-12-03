@@ -302,6 +302,7 @@ import Handwriting from "./pages/Handwriting";
 import PastLife from "./pages/PastLife";
 import AnonymousDate from "./pages/AnonymousDate";
 import LieDetector from "./pages/LieDetector";
+import CreativeForge from "./pages/CreativeForge";
 import AdminPaymentDashboard from "./pages/AdminPaymentDashboard";
 import PaymentDocumentation from "./pages/PaymentDocumentation";
 import Navbar from "./components/Navbar";
@@ -481,6 +482,7 @@ const App = () => {
           <Route path="/investment/:contentId" element={<GenericLearning />} />
           <Route path="/creative-writing" element={<CreativeWriting />} />
           <Route path="/writing/:contentId" element={<GenericLearning />} />
+          <Route path="/creative-forge" element={<ProtectedRoute><CreativeForge /></ProtectedRoute>} />
           <Route path="/coloring-pages" element={<ColoringPages />} />
           <Route path="/schools" element={<Navigate to="/coloring-pages" replace />} />
           <Route path="/healthcare" element={<Navigate to="/coloring-pages" replace />} />
