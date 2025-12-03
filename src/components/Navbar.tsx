@@ -288,28 +288,46 @@ const Navbar = () => {
               <span className="relative inline-block">
                 <span className="bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent">U</span>
                 <svg 
-                  className="absolute -top-2 -left-0.5 w-5 h-4 sm:w-6 sm:h-5" 
-                  viewBox="0 0 24 16" 
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-5 sm:w-10 sm:h-6" 
+                  viewBox="0 0 40 20" 
                   fill="none"
                 >
-                  {/* Left wing/leaf */}
+                  {/* Left wing - detailed feathers */}
                   <path 
-                    d="M10 8C10 4 8 1 4 1C2 1 1 3 2 6C3 9 6 11 10 12V8Z" 
-                    fill="url(#wingGradientLeft)"
+                    d="M18 16C16 14 12 12 8 10C4 8 1 6 1 4C1 2 3 1 5 2C7 3 10 5 12 7C10 5 7 3 5 2C3 1 2 1 3 0C5 0 9 2 12 5C10 3 8 1 7 0C8 0 10 1 12 3C14 5 16 8 17 11C17.5 13 18 15 18 16Z" 
+                    fill="url(#realWingLeft)"
                   />
-                  {/* Right wing/leaf */}
                   <path 
-                    d="M14 8C14 4 16 1 20 1C22 1 23 3 22 6C21 9 18 11 14 12V8Z" 
-                    fill="url(#wingGradientRight)"
+                    d="M17 15C15 12 11 9 7 7C5 6 3 5 2 4C3 5 5 6 8 8C11 10 15 13 17 15Z" 
+                    fill="url(#realWingLeftInner)"
+                    opacity="0.7"
+                  />
+                  {/* Right wing - detailed feathers */}
+                  <path 
+                    d="M22 16C24 14 28 12 32 10C36 8 39 6 39 4C39 2 37 1 35 2C33 3 30 5 28 7C30 5 33 3 35 2C37 1 38 1 37 0C35 0 31 2 28 5C30 3 32 1 33 0C32 0 30 1 28 3C26 5 24 8 23 11C22.5 13 22 15 22 16Z" 
+                    fill="url(#realWingRight)"
+                  />
+                  <path 
+                    d="M23 15C25 12 29 9 33 7C35 6 37 5 38 4C37 5 35 6 32 8C29 10 25 13 23 15Z" 
+                    fill="url(#realWingRightInner)"
+                    opacity="0.7"
                   />
                   <defs>
-                    <linearGradient id="wingGradientLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#8B5CF6" />
+                    <linearGradient id="realWingLeft" x1="0%" y1="50%" x2="100%" y2="50%">
+                      <stop offset="0%" stopColor="#7C3AED" />
                       <stop offset="100%" stopColor="#A855F7" />
                     </linearGradient>
-                    <linearGradient id="wingGradientRight" x1="100%" y1="0%" x2="0%" y2="100%">
+                    <linearGradient id="realWingLeftInner" x1="0%" y1="50%" x2="100%" y2="50%">
                       <stop offset="0%" stopColor="#8B5CF6" />
+                      <stop offset="100%" stopColor="#C084FC" />
+                    </linearGradient>
+                    <linearGradient id="realWingRight" x1="100%" y1="50%" x2="0%" y2="50%">
+                      <stop offset="0%" stopColor="#7C3AED" />
                       <stop offset="100%" stopColor="#A855F7" />
+                    </linearGradient>
+                    <linearGradient id="realWingRightInner" x1="100%" y1="50%" x2="0%" y2="50%">
+                      <stop offset="0%" stopColor="#8B5CF6" />
+                      <stop offset="100%" stopColor="#C084FC" />
                     </linearGradient>
                   </defs>
                 </svg>
