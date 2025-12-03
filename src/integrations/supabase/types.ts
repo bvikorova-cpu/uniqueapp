@@ -6815,6 +6815,75 @@ export type Database = {
         }
         Relationships: []
       }
+      creative_forge_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      creative_forge_projects: {
+        Row: {
+          category: string
+          created_at: string
+          credits_used: number
+          generated_content: string | null
+          id: string
+          input_data: Json | null
+          is_favorite: boolean | null
+          style_reference: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          credits_used?: number
+          generated_content?: string | null
+          id?: string
+          input_data?: Json | null
+          is_favorite?: boolean | null
+          style_reference?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          credits_used?: number
+          generated_content?: string | null
+          id?: string
+          input_data?: Json | null
+          is_favorite?: boolean | null
+          style_reference?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       creator_chat_messages: {
         Row: {
           created_at: string | null

@@ -195,6 +195,7 @@ const Navbar = () => {
   ];
 
   const otherServices = [
+    { path: "/creative-forge", label: "CreativeForge - AI Writing Studio", icon: PenTool },
     { path: "/shadow-arena", label: "Shadow Arena - Horror Platform", icon: Ghost },
     { path: "/wellness", label: "Wellness & Relaxation", icon: Heart },
     { path: "/safety-prevention", label: "Safety & Bullying Prevention", icon: Shield },
