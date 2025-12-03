@@ -8,12 +8,13 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 // Import hero images
-import heroSocial from "@/assets/hero-social.jpg";
-import heroVideos from "@/assets/hero-videos.jpg";
-import heroGames from "@/assets/hero-games.jpg";
-import heroMarketplace from "@/assets/hero-marketplace.jpg";
-import heroAi from "@/assets/hero-ai.jpg";
-import heroDating from "@/assets/hero-dating.jpg";
+import heroDating from "@/assets/hero-dating-new.jpg";
+import heroWellness from "@/assets/hero-wellness.jpg";
+import heroCooking from "@/assets/hero-cooking.jpg";
+import heroGaming from "@/assets/hero-gaming.jpg";
+import heroSocial from "@/assets/hero-social-new.jpg";
+import heroEducation from "@/assets/hero-education.jpg";
+import heroCompetition from "@/assets/hero-competition.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -24,12 +25,13 @@ const Home = () => {
   const fullText = t('home.hero_title_highlight');
 
   const heroImages = [
+    heroDating,
+    heroWellness,
+    heroCooking,
+    heroGaming,
     heroSocial,
-    heroVideos,
-    heroGames,
-    heroMarketplace,
-    heroAi,
-    heroDating
+    heroEducation,
+    heroCompetition
   ];
 
   // Typewriter effect
