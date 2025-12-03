@@ -284,43 +284,10 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center group">
-            <div className="relative">
-              {/* Subtle glow effect on hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 via-rose-400/20 to-purple-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              
-              <span className="relative flex items-center text-2xl sm:text-3xl font-light tracking-[0.2em] uppercase">
-                {/* Decorative diamond before */}
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 opacity-60" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 0L10 6L16 8L10 10L8 16L6 10L0 8L6 6L8 0Z" fill="url(#diamondGrad)" />
-                  <defs>
-                    <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#F59E0B" />
-                      <stop offset="100%" stopColor="#D97706" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                
-                {/* Main text with elegant gradient */}
-                <span className="bg-gradient-to-r from-amber-200 via-amber-100 to-amber-200 bg-clip-text text-transparent drop-shadow-sm" 
-                      style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-                  Unique
-                </span>
-                
-                {/* Decorative diamond after */}
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1 opacity-60" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 0L10 6L16 8L10 10L8 16L6 10L0 8L6 6L8 0Z" fill="url(#diamondGrad2)" />
-                  <defs>
-                    <linearGradient id="diamondGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#F59E0B" />
-                      <stop offset="100%" stopColor="#D97706" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </span>
-              
-              {/* Elegant underline */}
-              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
-            </div>
+            <span className="text-lg sm:text-xl font-medium tracking-wide text-foreground hover:text-foreground/80 transition-colors" 
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              Unique
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
