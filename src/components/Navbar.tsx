@@ -284,10 +284,10 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center">
             <img src={uniqueLogo} alt="Unique Logo" className="h-8 w-8 object-contain" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#7C3AED] via-[#C026D3] to-[#E11D7B] bg-clip-text text-transparent">
-              Unique
+            <span className="text-3xl font-bold bg-gradient-to-r from-[#7C3AED] via-[#C026D3] to-[#E11D7B] bg-clip-text text-transparent -ml-1">
+              nique
             </span>
           </Link>
 
