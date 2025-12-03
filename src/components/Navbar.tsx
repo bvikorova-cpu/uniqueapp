@@ -283,57 +283,44 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center">
-            <span className="text-2xl sm:text-3xl font-bold tracking-tight">
-              <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-[#8B5CF6] to-[#A855F7] bg-clip-text text-transparent">U</span>
-                <svg 
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-5 sm:w-10 sm:h-6" 
-                  viewBox="0 0 40 20" 
-                  fill="none"
-                >
-                  {/* Left wing - detailed feathers */}
-                  <path 
-                    d="M18 16C16 14 12 12 8 10C4 8 1 6 1 4C1 2 3 1 5 2C7 3 10 5 12 7C10 5 7 3 5 2C3 1 2 1 3 0C5 0 9 2 12 5C10 3 8 1 7 0C8 0 10 1 12 3C14 5 16 8 17 11C17.5 13 18 15 18 16Z" 
-                    fill="url(#realWingLeft)"
-                  />
-                  <path 
-                    d="M17 15C15 12 11 9 7 7C5 6 3 5 2 4C3 5 5 6 8 8C11 10 15 13 17 15Z" 
-                    fill="url(#realWingLeftInner)"
-                    opacity="0.7"
-                  />
-                  {/* Right wing - detailed feathers */}
-                  <path 
-                    d="M22 16C24 14 28 12 32 10C36 8 39 6 39 4C39 2 37 1 35 2C33 3 30 5 28 7C30 5 33 3 35 2C37 1 38 1 37 0C35 0 31 2 28 5C30 3 32 1 33 0C32 0 30 1 28 3C26 5 24 8 23 11C22.5 13 22 15 22 16Z" 
-                    fill="url(#realWingRight)"
-                  />
-                  <path 
-                    d="M23 15C25 12 29 9 33 7C35 6 37 5 38 4C37 5 35 6 32 8C29 10 25 13 23 15Z" 
-                    fill="url(#realWingRightInner)"
-                    opacity="0.7"
-                  />
+          <Link to="/" className="flex items-center group">
+            <div className="relative">
+              {/* Subtle glow effect on hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 via-rose-400/20 to-purple-500/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <span className="relative flex items-center text-2xl sm:text-3xl font-light tracking-[0.2em] uppercase">
+                {/* Decorative diamond before */}
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1 opacity-60" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 0L10 6L16 8L10 10L8 16L6 10L0 8L6 6L8 0Z" fill="url(#diamondGrad)" />
                   <defs>
-                    <linearGradient id="realWingLeft" x1="0%" y1="50%" x2="100%" y2="50%">
-                      <stop offset="0%" stopColor="#7C3AED" />
-                      <stop offset="100%" stopColor="#A855F7" />
+                    <linearGradient id="diamondGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#F59E0B" />
+                      <stop offset="100%" stopColor="#D97706" />
                     </linearGradient>
-                    <linearGradient id="realWingLeftInner" x1="0%" y1="50%" x2="100%" y2="50%">
-                      <stop offset="0%" stopColor="#8B5CF6" />
-                      <stop offset="100%" stopColor="#C084FC" />
-                    </linearGradient>
-                    <linearGradient id="realWingRight" x1="100%" y1="50%" x2="0%" y2="50%">
-                      <stop offset="0%" stopColor="#7C3AED" />
-                      <stop offset="100%" stopColor="#A855F7" />
-                    </linearGradient>
-                    <linearGradient id="realWingRightInner" x1="100%" y1="50%" x2="0%" y2="50%">
-                      <stop offset="0%" stopColor="#8B5CF6" />
-                      <stop offset="100%" stopColor="#C084FC" />
+                  </defs>
+                </svg>
+                
+                {/* Main text with elegant gradient */}
+                <span className="bg-gradient-to-r from-amber-200 via-amber-100 to-amber-200 bg-clip-text text-transparent drop-shadow-sm" 
+                      style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  Unique
+                </span>
+                
+                {/* Decorative diamond after */}
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1 opacity-60" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 0L10 6L16 8L10 10L8 16L6 10L0 8L6 6L8 0Z" fill="url(#diamondGrad2)" />
+                  <defs>
+                    <linearGradient id="diamondGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#F59E0B" />
+                      <stop offset="100%" stopColor="#D97706" />
                     </linearGradient>
                   </defs>
                 </svg>
               </span>
-              <span className="bg-gradient-to-r from-[#A855F7] via-[#D946EF] to-[#EC4899] bg-clip-text text-transparent">nique</span>
-            </span>
+              
+              {/* Elegant underline */}
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
