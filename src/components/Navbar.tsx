@@ -309,8 +309,8 @@ const Navbar = () => {
             </svg>
             
             {/* Gradient text */}
-            <span className="text-xl sm:text-2xl font-black tracking-wide bg-gradient-to-r from-purple-500 via-pink-500 to-rose-400 bg-clip-text text-transparent leading-none" 
-                  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 900 }}>
+            <span className="text-lg sm:text-xl font-black tracking-wide bg-gradient-to-r from-purple-500 via-pink-500 to-rose-400 bg-clip-text text-transparent" 
+                  style={{ fontFamily: "'Playfair Display', Georgia, serif", fontWeight: 900, lineHeight: 1 }}>
               Unique
             </span>
           </Link>
