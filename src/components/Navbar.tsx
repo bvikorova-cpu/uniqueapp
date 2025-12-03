@@ -283,12 +283,14 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center group">
-            <img 
-              src="/images/unique-logo-transparent.png" 
-              alt="Unique" 
-              className="h-20 sm:h-24 w-auto object-contain"
-            />
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="h-10 w-10 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">U</span>
+            </div>
+            <span className="text-2xl font-bold">
+              <span className="bg-gradient-to-r from-[#8B5CF6] to-[#8B5CF6] bg-clip-text text-transparent">U</span>
+              <span className="bg-gradient-to-r from-[#A855F7] via-[#D946EF] to-[#EC4899] bg-clip-text text-transparent">nique</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
