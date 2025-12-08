@@ -283,14 +283,14 @@ const Navbar = () => {
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
-    <nav className="fixed top-0 w-full border-b border-gray-200 z-50" style={{ backgroundColor: '#FFFFFF' }}>
+    <nav className="fixed top-0 w-full border-b border-gray-100 z-50 bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex items-baseline justify-between h-16 pt-4">
+        <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
             <img 
               src={uniqueLogo} 
               alt="Unique" 
-              className="h-10 object-contain" 
+              className="h-12 sm:h-14 object-contain" 
             />
           </Link>
 
