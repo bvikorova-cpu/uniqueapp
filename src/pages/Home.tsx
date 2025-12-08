@@ -124,8 +124,8 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section - Fixed height on mobile, taller on desktop */}
-      <section className="relative h-[50vh] sm:h-[70vh] md:h-screen flex items-center justify-center overflow-hidden">
+      {/* Hero Section - Full screen on all devices */}
+      <section className="relative h-[100svh] flex items-end pb-20 sm:items-center sm:pb-0 justify-center overflow-hidden">
         {/* Image Slideshow Background */}
         {heroImages.map((image, index) => (
           <div
