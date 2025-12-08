@@ -15,7 +15,7 @@ import { useTheme } from "next-themes";
 import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import megatalentLogo from "@/assets/megatalent-logo.png";
-import uniqueLogo from "@/assets/unique-logo.png";
+import uniqueLogo from "@/assets/unique-logo-transparent.png";
 import { useTranslation } from "react-i18next";
 
 interface NotificationData {
@@ -286,13 +286,11 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-baseline justify-between h-16 pt-4">
           <Link to="/" className="flex items-center">
-            <div className="h-9 w-9 flex items-center justify-center bg-white rounded-lg">
-              <img 
-                src={uniqueLogo} 
-                alt="Unique Logo" 
-                className="h-8 w-8 object-contain" 
-              />
-            </div>
+            <img 
+              src={uniqueLogo} 
+              alt="Unique Logo" 
+              className="h-9 w-9 object-contain" 
+            />
             <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent ml-1">
               nique
             </span>
