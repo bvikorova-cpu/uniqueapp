@@ -27068,6 +27068,7 @@ export type Database = {
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
       generate_referral_code: { Args: never; Returns: string }
       generate_story_share_code: { Args: never; Returns: string }
+      get_auth_uid: { Args: never; Returns: string }
       get_current_user_id: { Args: never; Returns: string }
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
@@ -27094,6 +27095,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_rls_ref: { Args: never; Returns: string }
       give_f1_starter_balance: {
         Args: { p_user_id: string }
         Returns: undefined
