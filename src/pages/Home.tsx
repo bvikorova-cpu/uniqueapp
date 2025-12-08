@@ -123,9 +123,9 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section - Full screen on all devices */}
-      <section className="relative h-[100svh] flex items-end pb-20 sm:items-center sm:pb-0 justify-center overflow-hidden">
+    <div className="min-h-screen bg-background pt-16">
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-start justify-center overflow-hidden">
         {/* Image Slideshow Background */}
         {heroImages.map((image, index) => (
           <div
@@ -134,24 +134,37 @@ const Home = () => {
               index === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
           >
+            {/* Mobile: show full image */}
             <div 
-              className="absolute inset-0 bg-cover bg-center sm:bg-center"
+              className="block sm:hidden absolute inset-0"
               style={{
                 backgroundImage: `url(${image})`,
-                backgroundPosition: "center 30%",
+                backgroundSize: "contain",
+                backgroundPosition: "center top",
+                backgroundRepeat: "no-repeat",
+                backgroundColor: "hsl(var(--background))",
+              }}
+            />
+            {/* Desktop: cover for better look */}
+            <div 
+              className="hidden sm:block absolute inset-0"
+              style={{
+                backgroundImage: `url(${image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
             />
           </div>
         ))}
         
         {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/25 to-black/35"></div>
         
         {/* Subtle animated gradient overlay for premium feel */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-transparent to-blue-900/10"></div>
         
-        <div className="relative z-10 text-center space-y-3 sm:space-y-6 px-3 sm:px-4">
-          <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-white leading-tight drop-shadow-2xl">
+        <div className="relative z-10 text-center space-y-4 sm:space-y-8 px-3 sm:px-4 pt-16 sm:pt-32">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
             {t('home.hero_title')}{" "}
             <span className="relative inline-block">
               <span className="bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500 bg-clip-text text-transparent animate-glow drop-shadow-[0_0_30px_rgba(251,191,36,0.5)]">
@@ -160,12 +173,12 @@ const Home = () => {
               </span>
             </span>
           </h1>
-          <p className="text-sm sm:text-lg md:text-xl text-white/90 max-w-3xl mx-auto drop-shadow-lg px-2">
+          <p className="text-base sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto drop-shadow-lg px-2">
             {t('home.hero_subtitle')}
           </p>
           
           {/* Search Bar */}
-          <form onSubmit={handleSearch} className="max-w-xl mx-auto px-2">
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto px-2">
             <div className="relative">
               <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
               <Input
@@ -173,7 +186,7 @@ const Home = () => {
                 placeholder={t('home.search_placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 sm:pl-12 pr-4 py-3 sm:py-5 text-sm sm:text-base text-black placeholder:text-gray-500 bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
+                className="pl-10 sm:pl-12 pr-4 py-4 sm:py-6 text-sm sm:text-lg text-black placeholder:text-gray-500 bg-white/95 backdrop-blur-sm border-2 border-white/20 focus:border-primary"
               />
             </div>
           </form>

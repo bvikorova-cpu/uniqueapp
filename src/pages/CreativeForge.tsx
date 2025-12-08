@@ -267,200 +267,190 @@ export default function CreativeForge() {
   const selectedCategoryData = CATEGORIES.find(c => c.id === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-16 sm:pt-20 pb-8 sm:pb-12">
-      <div className="container mx-auto px-2 sm:px-4 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-20 pb-12">
+      <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
-        <div className="flex items-center gap-2 sm:gap-4 mb-4 sm:mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="h-8 w-8 sm:h-10 sm:w-10">
-            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-5 w-5" />
           </Button>
-          <div className="flex-1 min-w-0">
-            <h1 className="text-xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent truncate">
+          <div className="flex-1">
+            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
               CreativeForge
             </h1>
-            <p className="text-xs sm:text-base text-muted-foreground mt-0.5 sm:mt-1 truncate">AI-Powered Creative Writing Studio</p>
+            <p className="text-muted-foreground mt-1">AI-Powered Creative Writing Studio</p>
           </div>
-          <Badge variant="outline" className="text-xs sm:text-lg px-2 sm:px-4 py-1 sm:py-2 shrink-0">
-            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-            {creditsLoading ? "..." : credits?.credits_remaining || 0}
+          <Badge variant="outline" className="text-lg px-4 py-2">
+            <Sparkles className="h-4 w-4 mr-2" />
+            {creditsLoading ? "..." : credits?.credits_remaining || 0} Credits
           </Badge>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
-          <div className="overflow-x-auto -mx-2 px-2">
-            <TabsList className="inline-flex w-auto min-w-full sm:grid sm:w-full sm:grid-cols-3 sm:max-w-md">
-              <TabsTrigger value="create" className="gap-1 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4">
-                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-                Create
-              </TabsTrigger>
-              <TabsTrigger value="history" className="gap-1 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4">
-                <History className="h-3 w-3 sm:h-4 sm:w-4" />
-                History
-              </TabsTrigger>
-              <TabsTrigger value="credits" className="gap-1 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4">
-                <CreditCard className="h-3 w-3 sm:h-4 sm:w-4" />
-                Credits
-              </TabsTrigger>
-            </TabsList>
-          </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3 max-w-md">
+            <TabsTrigger value="create" className="gap-2">
+              <Sparkles className="h-4 w-4" />
+              Create
+            </TabsTrigger>
+            <TabsTrigger value="history" className="gap-2">
+              <History className="h-4 w-4" />
+              History
+            </TabsTrigger>
+            <TabsTrigger value="credits" className="gap-2">
+              <CreditCard className="h-4 w-4" />
+              Credits
+            </TabsTrigger>
+          </TabsList>
 
           {/* Create Tab */}
-          <TabsContent value="create" className="space-y-4 sm:space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+          <TabsContent value="create" className="space-y-6">
+            <div className="grid lg:grid-cols-3 gap-6">
               {/* Category Selection */}
               <Card className="lg:col-span-1">
-                <CardHeader className="p-3 sm:p-6">
-                  <CardTitle className="text-base sm:text-lg">Content Type</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Choose what you want to create</CardDescription>
+                <CardHeader>
+                  <CardTitle className="text-lg">Content Type</CardTitle>
+                  <CardDescription>Choose what you want to create</CardDescription>
                 </CardHeader>
-                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
-                  <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 sm:space-y-2 max-h-[300px] sm:max-h-[400px] overflow-y-auto pr-1 sm:pr-4">
-                    {CATEGORIES.map((category) => {
-                      const Icon = category.icon;
-                      const isSelected = selectedCategory === category.id;
-                      return (
-                        <button
-                          key={category.id}
-                          onClick={() => setSelectedCategory(category.id as CreativeCategory)}
-                          className={`w-full p-2 sm:p-3 rounded-lg border text-left transition-all ${
-                            isSelected 
-                              ? "border-primary bg-primary/10" 
-                              : "border-border hover:border-primary/50 hover:bg-muted/50"
-                          }`}
-                        >
-                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-3">
-                            <div className={`p-1.5 sm:p-2 rounded-lg ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
-                              <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2">
-                                <span className="font-medium text-xs sm:text-sm">{category.name}</span>
-                                <Badge variant="secondary" className="text-[10px] sm:text-xs w-fit">
-                                  {CREDIT_COSTS[category.id as CreativeCategory]} cr
-                                </Badge>
+                <CardContent>
+                  <ScrollArea className="h-[400px] pr-4">
+                    <div className="space-y-2">
+                      {CATEGORIES.map((category) => {
+                        const Icon = category.icon;
+                        const isSelected = selectedCategory === category.id;
+                        return (
+                          <button
+                            key={category.id}
+                            onClick={() => setSelectedCategory(category.id as CreativeCategory)}
+                            className={`w-full p-3 rounded-lg border text-left transition-all ${
+                              isSelected 
+                                ? "border-primary bg-primary/10" 
+                                : "border-border hover:border-primary/50 hover:bg-muted/50"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                                <Icon className="h-5 w-5" />
                               </div>
-                              <p className="text-[10px] sm:text-xs text-muted-foreground truncate hidden sm:block">{category.description}</p>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium text-sm">{category.name}</span>
+                                  <Badge variant="secondary" className="text-xs">
+                                    {CREDIT_COSTS[category.id as CreativeCategory]} cr
+                                  </Badge>
+                                </div>
+                                <p className="text-xs text-muted-foreground truncate">{category.description}</p>
+                              </div>
                             </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </ScrollArea>
                 </CardContent>
               </Card>
 
               {/* Input Form */}
               <Card className="lg:col-span-1">
-                <CardHeader className="p-3 sm:p-6">
-                  <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                    {selectedCategoryData && <selectedCategoryData.icon className="h-4 w-4 sm:h-5 sm:w-5" />}
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    {selectedCategoryData && <selectedCategoryData.icon className="h-5 w-5" />}
                     {selectedCategoryData?.name}
                   </CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Describe your creative vision</CardDescription>
+                  <CardDescription>Describe your creative vision</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3 sm:space-y-4 p-3 sm:p-6 pt-0 sm:pt-0">
+                <CardContent className="space-y-4">
                   <div>
-                    <Label className="text-xs sm:text-sm">Title / Theme *</Label>
+                    <Label>Title / Theme *</Label>
                     <Input 
                       placeholder="Enter the main theme or title..."
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      className="text-sm"
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 sm:gap-4">
-                    <div>
-                      <Label className="text-xs sm:text-sm">Genre / Style</Label>
-                      <Input 
-                        placeholder="Romance, Comedy..."
-                        value={genre}
-                        onChange={(e) => setGenre(e.target.value)}
-                        className="text-sm"
-                      />
-                    </div>
-
-                    <div>
-                      <Label className="text-xs sm:text-sm">Mood / Tone</Label>
-                      <Input 
-                        placeholder="Upbeat, Dark..."
-                        value={mood}
-                        onChange={(e) => setMood(e.target.value)}
-                        className="text-sm"
-                      />
-                    </div>
+                  <div>
+                    <Label>Genre / Style</Label>
+                    <Input 
+                      placeholder="e.g., Romance, Thriller, Comedy..."
+                      value={genre}
+                      onChange={(e) => setGenre(e.target.value)}
+                    />
                   </div>
 
                   <div>
-                    <Label className="text-xs sm:text-sm">Description</Label>
+                    <Label>Mood / Tone</Label>
+                    <Input 
+                      placeholder="e.g., Melancholic, Upbeat, Dark..."
+                      value={mood}
+                      onChange={(e) => setMood(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>Description</Label>
                     <Textarea 
                       placeholder="Describe what you want in detail..."
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
-                      rows={2}
-                      className="text-sm"
+                      rows={3}
                     />
                   </div>
 
                   {(selectedCategory === "screenplay" || selectedCategory === "theater_play" || selectedCategory === "novel_chapter") && (
-                    <div className="grid grid-cols-2 gap-2 sm:gap-4">
+                    <>
                       <div>
-                        <Label className="text-xs sm:text-sm">Characters</Label>
+                        <Label>Characters</Label>
                         <Input 
-                          placeholder="Characters..."
+                          placeholder="Main characters and their traits..."
                           value={characters}
                           onChange={(e) => setCharacters(e.target.value)}
-                          className="text-sm"
                         />
                       </div>
                       <div>
-                        <Label className="text-xs sm:text-sm">Setting</Label>
+                        <Label>Setting</Label>
                         <Input 
                           placeholder="Time and place..."
                           value={setting}
                           onChange={(e) => setSetting(e.target.value)}
-                          className="text-sm"
                         />
                       </div>
-                    </div>
+                    </>
                   )}
 
-                  <div className="grid grid-cols-2 gap-2 sm:gap-4">
-                    <div>
-                      <Label className="text-xs sm:text-sm">Style Reference</Label>
-                      <Select value={styleReference} onValueChange={setStyleReference}>
-                        <SelectTrigger className="text-xs sm:text-sm">
-                          <SelectValue placeholder="Style of..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">No specific style</SelectItem>
-                          {STYLE_REFERENCES[selectedCategory]?.map((ref) => (
-                            <SelectItem key={ref} value={ref}>{ref}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div>
+                    <Label>Style Reference (Optional)</Label>
+                    <Select value={styleReference} onValueChange={setStyleReference}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Write in the style of..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">No specific style</SelectItem>
+                        {STYLE_REFERENCES[selectedCategory]?.map((ref) => (
+                          <SelectItem key={ref} value={ref}>{ref}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                    <div>
-                      <Label className="text-xs sm:text-sm">Length</Label>
-                      <Select value={contentLength} onValueChange={setContentLength}>
-                        <SelectTrigger className="text-xs sm:text-sm">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="short">Short</SelectItem>
-                          <SelectItem value="medium">Medium</SelectItem>
-                          <SelectItem value="long">Long</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div>
+                    <Label>Content Length</Label>
+                    <Select value={contentLength} onValueChange={setContentLength}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="short">Short</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="long">Long</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <Button 
                     onClick={handleGenerate} 
                     disabled={isGenerating || !title.trim()}
                     className="w-full"
-                    size="default"
+                    size="lg"
                   >
                     {isGenerating ? (
                       <>
@@ -470,7 +460,7 @@ export default function CreativeForge() {
                     ) : (
                       <>
                         <Sparkles className="mr-2 h-4 w-4" />
-                        Generate ({CREDIT_COSTS[selectedCategory]} cr)
+                        Generate ({CREDIT_COSTS[selectedCategory]} credits)
                       </>
                     )}
                   </Button>
@@ -479,43 +469,43 @@ export default function CreativeForge() {
 
               {/* Output */}
               <Card className="lg:col-span-1">
-                <CardHeader className="p-3 sm:p-6">
-                  <CardTitle className="text-base sm:text-lg">Generated Content</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Your AI-created masterpiece</CardDescription>
+                <CardHeader>
+                  <CardTitle className="text-lg">Generated Content</CardTitle>
+                  <CardDescription>Your AI-created masterpiece</CardDescription>
                 </CardHeader>
-                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+                <CardContent>
                   {generatedContent ? (
-                    <div className="space-y-3 sm:space-y-4">
-                      <ScrollArea className="h-[250px] sm:h-[350px] border rounded-lg p-2 sm:p-4 bg-muted/30">
-                        <pre className="whitespace-pre-wrap font-mono text-xs sm:text-sm">{generatedContent}</pre>
+                    <div className="space-y-4">
+                      <ScrollArea className="h-[350px] border rounded-lg p-4 bg-muted/30">
+                        <pre className="whitespace-pre-wrap font-mono text-sm">{generatedContent}</pre>
                       </ScrollArea>
                       <div className="flex gap-2">
                         <Button 
                           variant="outline" 
                           size="sm" 
                           onClick={() => copyToClipboard(generatedContent)}
-                          className="flex-1 text-xs sm:text-sm"
+                          className="flex-1"
                         >
-                          <Copy className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                          <Copy className="mr-2 h-4 w-4" />
                           Copy
                         </Button>
                         <Button 
                           variant="outline" 
                           size="sm" 
                           onClick={() => downloadContent(generatedContent, `${selectedCategory}-${title}`)}
-                          className="flex-1 text-xs sm:text-sm"
+                          className="flex-1"
                         >
-                          <Download className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                          <Download className="mr-2 h-4 w-4" />
                           Download
                         </Button>
                       </div>
                       <div className="pt-2 border-t">
-                        <Label className="text-[10px] sm:text-xs">Request Revision (3 credits)</Label>
+                        <Label className="text-xs">Request Revision (3 credits)</Label>
                         <div className="flex gap-2 mt-1">
                           <Input 
                             placeholder="What should be changed..."
                             id="revision-notes"
-                            className="text-xs sm:text-sm"
+                            className="text-sm"
                           />
                           <Button 
                             size="sm" 
@@ -526,16 +516,16 @@ export default function CreativeForge() {
                             }}
                             disabled={isGenerating}
                           >
-                            <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
+                            <RefreshCw className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="h-[200px] sm:h-[400px] flex items-center justify-center text-muted-foreground">
+                    <div className="h-[400px] flex items-center justify-center text-muted-foreground">
                       <div className="text-center">
-                        <Sparkles className="h-8 w-8 sm:h-12 sm:w-12 mx-auto mb-2 sm:mb-4 opacity-50" />
-                        <p className="text-xs sm:text-sm">Your generated content will appear here</p>
+                        <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p>Your generated content will appear here</p>
                       </div>
                     </div>
                   )}
@@ -547,34 +537,34 @@ export default function CreativeForge() {
           {/* History Tab */}
           <TabsContent value="history">
             <Card>
-              <CardHeader className="p-3 sm:p-6">
-                <CardTitle className="text-base sm:text-lg">Your Projects</CardTitle>
-                <CardDescription className="text-xs sm:text-sm">Previously generated content</CardDescription>
+              <CardHeader>
+                <CardTitle>Your Projects</CardTitle>
+                <CardDescription>Previously generated content</CardDescription>
               </CardHeader>
-              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+              <CardContent>
                 {projects && projects.length > 0 ? (
-                  <div className="space-y-3 sm:space-y-4">
+                  <div className="space-y-4">
                     {projects.map((project: any) => {
                       const category = CATEGORIES.find(c => c.id === project.category);
                       const Icon = category?.icon || Sparkles;
                       return (
-                        <Card key={project.id} className="p-2 sm:p-4">
-                          <div className="flex items-start gap-2 sm:gap-4">
-                            <div className="p-1.5 sm:p-2 bg-primary/10 rounded-lg shrink-0">
-                              <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                        <Card key={project.id} className="p-4">
+                          <div className="flex items-start gap-4">
+                            <div className="p-2 bg-primary/10 rounded-lg">
+                              <Icon className="h-5 w-5 text-primary" />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1">
-                                <h4 className="font-medium text-sm sm:text-base truncate">{project.title}</h4>
-                                <Badge variant="outline" className="text-[10px] sm:text-xs">{category?.name}</Badge>
-                                <Badge variant="secondary" className="text-[10px] sm:text-xs">{project.credits_used} cr</Badge>
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-medium">{project.title}</h4>
+                                <Badge variant="outline" className="text-xs">{category?.name}</Badge>
+                                <Badge variant="secondary" className="text-xs">{project.credits_used} cr</Badge>
                               </div>
-                              <p className="text-[10px] sm:text-xs text-muted-foreground mb-2">
+                              <p className="text-xs text-muted-foreground mb-2">
                                 {new Date(project.created_at).toLocaleDateString()}
                               </p>
-                              <ScrollArea className="h-20 sm:h-24 border rounded p-1.5 sm:p-2 bg-muted/30">
-                                <pre className="whitespace-pre-wrap text-[10px] sm:text-xs font-mono">
-                                  {project.generated_content?.substring(0, 300)}...
+                              <ScrollArea className="h-24 border rounded p-2 bg-muted/30">
+                                <pre className="whitespace-pre-wrap text-xs font-mono">
+                                  {project.generated_content?.substring(0, 500)}...
                                 </pre>
                               </ScrollArea>
                               <div className="flex gap-2 mt-2">
@@ -582,7 +572,6 @@ export default function CreativeForge() {
                                   size="sm" 
                                   variant="outline"
                                   onClick={() => copyToClipboard(project.generated_content)}
-                                  className="text-xs"
                                 >
                                   <Copy className="h-3 w-3 mr-1" />
                                   Copy
@@ -591,7 +580,6 @@ export default function CreativeForge() {
                                   size="sm" 
                                   variant="outline"
                                   onClick={() => downloadContent(project.generated_content, project.title)}
-                                  className="text-xs"
                                 >
                                   <Download className="h-3 w-3 mr-1" />
                                   Download
@@ -604,9 +592,9 @@ export default function CreativeForge() {
                     })}
                   </div>
                 ) : (
-                  <div className="text-center py-8 sm:py-12 text-muted-foreground">
-                    <History className="h-8 w-8 sm:h-12 sm:w-12 mx-auto mb-2 sm:mb-4 opacity-50" />
-                    <p className="text-sm">No projects yet. Start creating!</p>
+                  <div className="text-center py-12 text-muted-foreground">
+                    <History className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No projects yet. Start creating!</p>
                   </div>
                 )}
               </CardContent>
@@ -615,29 +603,29 @@ export default function CreativeForge() {
 
           {/* Credits Tab */}
           <TabsContent value="credits">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
               <Card>
-                <CardHeader className="p-3 sm:p-6">
-                  <CardTitle className="text-base sm:text-lg">Credit Packages</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">Purchase credits to create content</CardDescription>
+                <CardHeader>
+                  <CardTitle>Credit Packages</CardTitle>
+                  <CardDescription>Purchase credits to create content</CardDescription>
                 </CardHeader>
-                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
-                  <div className="grid gap-2 sm:gap-4">
+                <CardContent>
+                  <div className="grid gap-4">
                     {CREDIT_PACKAGES.map((pkg) => (
                       <div 
                         key={pkg.credits}
-                        className={`p-2 sm:p-4 border rounded-lg flex items-center justify-between ${
+                        className={`p-4 border rounded-lg flex items-center justify-between ${
                           pkg.popular ? "border-primary bg-primary/5" : ""
                         }`}
                       >
                         <div>
-                          <div className="flex items-center gap-1 sm:gap-2">
-                            <span className="font-bold text-sm sm:text-lg">{pkg.credits} Credits</span>
-                            {pkg.popular && <Badge className="text-[10px] sm:text-xs">Popular</Badge>}
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-lg">{pkg.credits} Credits</span>
+                            {pkg.popular && <Badge>Most Popular</Badge>}
                           </div>
-                          <p className="text-xs sm:text-sm text-muted-foreground">{pkg.label}</p>
+                          <p className="text-sm text-muted-foreground">{pkg.label} Package</p>
                         </div>
-                        <Button onClick={() => handlePurchase(pkg.credits)} size="sm" className="text-xs sm:text-sm">
+                        <Button onClick={() => handlePurchase(pkg.credits)}>
                           €{pkg.price}
                         </Button>
                       </div>
@@ -647,30 +635,30 @@ export default function CreativeForge() {
               </Card>
 
               <Card>
-                <CardHeader className="p-3 sm:p-6">
-                  <CardTitle className="text-base sm:text-lg">Credit Costs</CardTitle>
-                  <CardDescription className="text-xs sm:text-sm">How many credits each type costs</CardDescription>
+                <CardHeader>
+                  <CardTitle>Credit Costs</CardTitle>
+                  <CardDescription>How many credits each type costs</CardDescription>
                 </CardHeader>
-                <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
-                  <div className="space-y-2 sm:space-y-3">
+                <CardContent>
+                  <div className="space-y-3">
                     {CATEGORIES.map((category) => {
                       const Icon = category.icon;
                       return (
-                        <div key={category.id} className="flex items-center justify-between p-1.5 sm:p-2 border rounded">
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <Icon className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-                            <span className="text-xs sm:text-sm">{category.name}</span>
+                        <div key={category.id} className="flex items-center justify-between p-2 border rounded">
+                          <div className="flex items-center gap-3">
+                            <Icon className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">{category.name}</span>
                           </div>
-                          <Badge variant="secondary" className="text-[10px] sm:text-xs">{CREDIT_COSTS[category.id as CreativeCategory]} cr</Badge>
+                          <Badge variant="secondary">{CREDIT_COSTS[category.id as CreativeCategory]} credits</Badge>
                         </div>
                       );
                     })}
-                    <div className="flex items-center justify-between p-1.5 sm:p-2 border rounded border-dashed">
-                      <div className="flex items-center gap-2 sm:gap-3">
-                        <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-                        <span className="text-xs sm:text-sm">Revision</span>
+                    <div className="flex items-center justify-between p-2 border rounded border-dashed">
+                      <div className="flex items-center gap-3">
+                        <RefreshCw className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">Revision</span>
                       </div>
-                      <Badge variant="outline" className="text-[10px] sm:text-xs">{CREDIT_COSTS.revision} cr</Badge>
+                      <Badge variant="outline">{CREDIT_COSTS.revision} credits</Badge>
                     </div>
                   </div>
                 </CardContent>

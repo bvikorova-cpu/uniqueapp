@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import uniqueBrandLogo from "@/assets/unique-brand-logo.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
@@ -16,7 +15,7 @@ import { useTheme } from "next-themes";
 import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import megatalentLogo from "@/assets/megatalent-logo.png";
-import uniqueLogo from "@/assets/unique-brand-logo.png";
+import uniqueLogo from "@/assets/unique-logo.png";
 import { useTranslation } from "react-i18next";
 
 interface NotificationData {
@@ -283,20 +282,13 @@ const Navbar = () => {
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white shadow-sm">
+    <nav className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-50">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-baseline justify-between h-16 pt-4">
           <Link to="/" className="flex items-center">
-            <span 
-              className="text-3xl sm:text-4xl font-luxury font-bold tracking-tight"
-              style={{
-                background: 'linear-gradient(135deg, #E91E63 0%, #9C27B0 50%, #673AB7 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Unique
+            <img src={uniqueLogo} alt="Unique Logo" className="h-8 w-8 object-contain" />
+            <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent -ml-1">
+              nique
             </span>
           </Link>
 
