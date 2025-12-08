@@ -286,10 +286,14 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-baseline justify-between h-16 pt-4">
           <Link to="/" className="flex items-center">
-            <span className="text-3xl font-bold bg-gradient-to-br from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent">
-              U
-            </span>
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent -ml-0.5">
+            <div className="h-9 w-9 flex items-center justify-center bg-white rounded-lg">
+              <img 
+                src={uniqueLogo} 
+                alt="Unique Logo" 
+                className="h-8 w-8 object-contain" 
+              />
+            </div>
+            <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent ml-1">
               nique
             </span>
           </Link>
