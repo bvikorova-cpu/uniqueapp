@@ -288,7 +288,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
             <span 
-              className="text-3xl sm:text-4xl font-luxury font-semibold italic tracking-wide"
+              className="text-3xl sm:text-4xl font-luxury font-bold tracking-tight"
               style={{
                 background: 'linear-gradient(135deg, #E91E63 0%, #9C27B0 50%, #673AB7 100%)',
                 WebkitBackgroundClip: 'text',
