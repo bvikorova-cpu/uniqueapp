@@ -282,7 +282,7 @@ const Navbar = () => {
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
-    <nav className="fixed top-0 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border z-50">
+    <nav className="fixed top-0 w-full bg-background border-b border-border z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-baseline justify-between h-16 pt-4">
           <Link to="/" className="flex items-center">
