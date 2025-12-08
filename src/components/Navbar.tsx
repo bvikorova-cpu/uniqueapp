@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import uniqueBrandLogo from "@/assets/unique-brand-logo.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
@@ -15,7 +16,7 @@ import { useTheme } from "next-themes";
 import { NotificationsDropdown } from "@/components/notifications/NotificationsDropdown";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import megatalentLogo from "@/assets/megatalent-logo.png";
-import uniqueLogo from "@/assets/unique-logo.png";
+import uniqueLogo from "@/assets/unique-brand-logo.png";
 import { useTranslation } from "react-i18next";
 
 interface NotificationData {
@@ -285,15 +286,12 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full border-b border-gray-200 z-50" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="container mx-auto px-4">
         <div className="flex items-baseline justify-between h-16 pt-4">
-          <Link to="/" className="flex items-center gap-0">
+          <Link to="/" className="flex items-center">
             <img 
               src={uniqueLogo} 
-              alt="Unique Logo" 
-              className="h-9 w-9 object-contain" 
+              alt="Unique" 
+              className="h-10 object-contain" 
             />
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent -ml-1">
-              nique
-            </span>
           </Link>
 
           {/* Desktop Navigation */}
