@@ -135,11 +135,10 @@ const Home = () => {
             }`}
           >
             <div 
-              className="absolute inset-0"
+              className="absolute inset-0 bg-cover bg-center sm:bg-center"
               style={{
                 backgroundImage: `url(${image})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+                backgroundPosition: "center 30%",
               }}
             />
           </div>
