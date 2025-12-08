@@ -283,14 +283,15 @@ const Navbar = () => {
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
-    <nav className="fixed top-0 w-full border-b border-gray-100 z-50 bg-white">
+    <nav className="fixed top-0 w-full z-50 bg-white" style={{ border: 'none', boxShadow: 'none' }}>
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center">
             <img 
               src={uniqueLogo} 
               alt="Unique" 
-              className="h-12 sm:h-14 object-contain" 
+              className="h-16 sm:h-20 object-contain" 
+              style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
             />
           </Link>
 
