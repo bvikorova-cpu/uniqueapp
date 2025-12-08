@@ -283,16 +283,23 @@ const Navbar = () => {
   const isOtherServiceActive = otherServices.some(item => location.pathname === item.path);
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white" style={{ border: 'none', boxShadow: 'none' }}>
+    <nav className="fixed top-0 w-full z-50 bg-white shadow-sm">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center">
-            <img 
-              src={uniqueLogo} 
-              alt="Unique" 
-              className="h-16 sm:h-20 object-contain" 
-              style={{ border: 'none', outline: 'none', boxShadow: 'none' }}
-            />
+            <span 
+              className="text-3xl sm:text-4xl font-bold italic"
+              style={{
+                background: 'linear-gradient(135deg, #E91E63 0%, #9C27B0 50%, #673AB7 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                fontFamily: 'Georgia, serif',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              Unique
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
