@@ -285,15 +285,13 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full border-b border-gray-200 z-50" style={{ backgroundColor: '#FFFFFF' }}>
       <div className="container mx-auto px-4">
         <div className="flex items-baseline justify-between h-16 pt-4">
-          <Link to="/" className="flex items-center">
-            <div className="h-9 w-9 flex items-center justify-center bg-white rounded-lg">
-              <img 
-                src={uniqueLogo} 
-                alt="Unique Logo" 
-                className="h-8 w-8 object-contain" 
-              />
-            </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent ml-1">
+          <Link to="/" className="flex items-center gap-0">
+            <img 
+              src={uniqueLogo} 
+              alt="Unique Logo" 
+              className="h-9 w-9 object-contain" 
+            />
+            <span className="text-3xl font-bold bg-gradient-to-r from-[#6B21A8] via-[#A21CAF] to-[#DB2777] bg-clip-text text-transparent -ml-1">
               nique
             </span>
           </Link>
