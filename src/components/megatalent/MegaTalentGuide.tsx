@@ -182,28 +182,40 @@ export const MegaTalentGuide = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="referral" className="border rounded-lg px-4 bg-card/50">
+          <AccordionItem value="referral" className="border-2 border-green-500/50 rounded-lg px-4 bg-green-500/5">
             <AccordionTrigger className="hover:no-underline">
               <div className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-green-500" />
-                <span>Referral Program</span>
+                <span className="text-green-400 font-bold">Referral Program - RECURRING INCOME!</span>
               </div>
             </AccordionTrigger>
             <AccordionContent className="text-muted-foreground space-y-2">
-              <p><strong>Earn money by inviting friends!</strong></p>
+              <div className="bg-green-500/10 border border-green-500/30 p-3 rounded-lg mb-3">
+                <p className="text-green-400 font-bold text-lg mb-2">
+                  🔄 PASSIVE RECURRING INCOME - NOT A ONE-TIME BONUS!
+                </p>
+                <p>
+                  When you invite a friend and they subscribe, you earn <strong className="text-green-400">€5 EVERY SINGLE MONTH</strong> as long as they remain subscribed!
+                </p>
+              </div>
+              <p><strong>How it works:</strong></p>
               <ul className="list-disc list-inside space-y-1 ml-2">
                 <li>Get your unique referral code from the Referral tab</li>
                 <li>Share it with friends via social media or direct message</li>
-                <li>Earn commission when they subscribe</li>
+                <li className="text-green-400 font-medium">Friend subscribes in January → You get €5</li>
+                <li className="text-green-400 font-medium">Friend pays again in February → You get ANOTHER €5</li>
+                <li className="text-green-400 font-medium">Friend pays in March → ANOTHER €5... and so on!</li>
                 <li>Track your earnings and referred users in real-time</li>
-                <li>Request withdrawal once you reach the minimum threshold</li>
               </ul>
-              <div className="bg-green-500/10 p-3 rounded-lg mt-2">
+              <div className="bg-amber-500/10 p-3 rounded-lg mt-3">
                 <p className="text-sm">
-                  <strong>💰 How it works:</strong> When someone uses your referral code to subscribe, 
-                  you earn a percentage of their subscription fee. The more people you refer, 
-                  the more you earn!
+                  <strong>💰 Earnings Examples:</strong>
                 </p>
+                <ul className="list-disc list-inside space-y-1 ml-2 text-sm mt-2">
+                  <li>10 active friends = <strong className="text-green-400">€50/month</strong> passive income</li>
+                  <li>50 active friends = <strong className="text-green-400">€250/month</strong> passive income</li>
+                  <li>100 active friends = <strong className="text-amber-400">€500/month</strong> passive income</li>
+                </ul>
               </div>
             </AccordionContent>
           </AccordionItem>
