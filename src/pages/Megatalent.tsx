@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ReferralProgram } from "@/components/megatalent/ReferralProgram";
+import { MegaTalentGuide } from "@/components/megatalent/MegaTalentGuide";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -878,6 +879,8 @@ const Megatalent = () => {
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-6xl">
+        <MegaTalentGuide />
+        
         {/* Featured Categories Section */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold mb-4">Explore by Category</h2>
