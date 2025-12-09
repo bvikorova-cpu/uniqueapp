@@ -2,9 +2,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BookOpen, Brain, Send, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { BookOpen, Brain, Send, Loader2, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from 'react-markdown';
@@ -12,6 +12,9 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import QuizList from "@/components/education/QuizList";
+import { TutoringCreditsPanel } from "@/components/education/TutoringCreditsPanel";
+import { useTutoringCredits } from "@/hooks/useTutoringCredits";
+import { toast as sonnerToast } from "sonner";
 
 const quizCategories = [
   { id: "math", name: "Mathematics", icon: "📐" },
@@ -70,13 +73,44 @@ const quizCategories = [
 
 const Education = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [chatMessage, setChatMessage] = useState("");
   const [chatHistory, setChatHistory] = useState<Array<{ role: string; content: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
+  
+  const { credits, isLoading: creditsLoading, useCredit, addCredits, isUsingCredit } = useTutoringCredits();
+
+  // Handle purchase success
+  useEffect(() => {
+    const purchase = searchParams.get("purchase");
+    const creditsParam = searchParams.get("credits");
+    
+    if (purchase === "success" && creditsParam) {
+      const creditsToAdd = parseInt(creditsParam, 10);
+      if (!isNaN(creditsToAdd)) {
+        addCredits(creditsToAdd);
+        // Clear URL params
+        navigate("/education", { replace: true });
+      }
+    } else if (purchase === "canceled") {
+      sonnerToast.error("Purchase was canceled");
+      navigate("/education", { replace: true });
+    }
+  }, [searchParams, addCredits, navigate]);
 
   const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
+
+    // Check if user has credits
+    if (credits < 1) {
+      toast({
+        title: "Insufficient Credits",
+        description: "Please purchase credits to continue using tutoring.",
+        variant: "destructive"
+      });
+      return;
+    }
 
     const userMessage = chatMessage;
     setChatMessage("");
@@ -84,6 +118,9 @@ const Education = () => {
     setIsLoading(true);
 
     try {
+      // Deduct credit first
+      await useCredit();
+
       const { data, error } = await supabase.functions.invoke("tutoring-chat", {
         body: { message: userMessage, history: chatHistory }
       });
@@ -133,39 +170,54 @@ const Education = () => {
           </TabsList>
 
           <TabsContent value="tutoring">
-            <Card>
-              <CardHeader>
-                <CardTitle>Online Tutoring</CardTitle>
-                <CardDescription>
-                  Ask anything and get an instant answer
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Detailed Description */}
-                <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-300/30 rounded-xl p-4 sm:p-6 mb-4">
-                  <h3 className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-2">🎓 What is Online Tutoring?</h3>
-                  <p className="text-muted-foreground text-sm mb-3">
-                    Our AI-powered tutoring system provides instant, personalized educational support across all subjects. Whether you're struggling with algebra, learning a new language, or exploring scientific concepts, our virtual tutor is available 24/7 to help.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div className="flex items-start gap-2">
-                      <span className="text-green-500">✓</span>
-                      <span><strong>Instant Answers:</strong> Get explanations within seconds</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-green-500">✓</span>
-                      <span><strong>All Subjects:</strong> Math, science, languages, history & more</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-green-500">✓</span>
-                      <span><strong>Step-by-Step:</strong> Detailed explanations with examples</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <span className="text-green-500">✓</span>
-                      <span><strong>24/7 Available:</strong> Learn anytime, anywhere</span>
+            <div className="space-y-6">
+              {/* Credits Panel */}
+              <TutoringCreditsPanel />
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Online Tutoring</CardTitle>
+                  <CardDescription>
+                    Ask anything and get an instant answer (1 credit per message)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {/* Detailed Description */}
+                  <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-300/30 rounded-xl p-4 sm:p-6 mb-4">
+                    <h3 className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-2">🎓 What is Online Tutoring?</h3>
+                    <p className="text-muted-foreground text-sm mb-3">
+                      Our AI-powered tutoring system provides instant, personalized educational support across all subjects. Whether you're struggling with algebra, learning a new language, or exploring scientific concepts, our virtual tutor is available 24/7 to help.
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500">✓</span>
+                        <span><strong>Instant Answers:</strong> Get explanations within seconds</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500">✓</span>
+                        <span><strong>All Subjects:</strong> Math, science, languages, history & more</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500">✓</span>
+                        <span><strong>Step-by-Step:</strong> Detailed explanations with examples</span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500">✓</span>
+                        <span><strong>24/7 Available:</strong> Learn anytime, anywhere</span>
+                      </div>
                     </div>
                   </div>
-                </div>
+
+                  {/* No credits warning */}
+                  {!creditsLoading && credits < 1 && (
+                    <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 flex items-center gap-3">
+                      <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+                      <div>
+                        <p className="font-medium text-destructive">No credits available</p>
+                        <p className="text-sm text-muted-foreground">Purchase credits above to start learning with our AI tutor.</p>
+                      </div>
+                    </div>
+                  )}
 
                 <div className="min-h-[300px] max-h-[500px] overflow-y-auto space-y-4 p-4 bg-muted/50 rounded-lg">
                   {chatHistory.length === 0 ? (
@@ -220,7 +272,7 @@ const Education = () => {
                   />
                   <Button
                     onClick={handleSendMessage}
-                    disabled={isLoading || !chatMessage.trim()}
+                    disabled={isLoading || !chatMessage.trim() || credits < 1 || isUsingCredit}
                     size="icon"
                     className="h-[80px] w-[80px]"
                   >
@@ -229,6 +281,7 @@ const Education = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
           </TabsContent>
 
           <TabsContent value="quiz">
