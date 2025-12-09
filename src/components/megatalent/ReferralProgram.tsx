@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, Users, DollarSign, Share2, Facebook, Twitter, Mail } from "lucide-react";
+import { Copy, Users, DollarSign, Share2, Facebook, Twitter, Mail, RefreshCw, TrendingUp, Sparkles } from "lucide-react";
 
 export const ReferralProgram = () => {
   const [referralCode, setReferralCode] = useState<string>("");
@@ -108,6 +108,59 @@ export const ReferralProgram = () => {
 
   return (
     <div className="space-y-6">
+      {/* RECURRING INCOME HIGHLIGHT BANNER */}
+      <Card className="p-6 bg-gradient-to-r from-green-500/20 via-emerald-500/20 to-teal-500/20 border-2 border-green-500/50 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-500/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+        
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-3 bg-green-500/20 rounded-full animate-pulse">
+              <RefreshCw className="h-8 w-8 text-green-500" />
+            </div>
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-green-400">
+                RECURRING PASSIVE INCOME!
+              </h2>
+              <p className="text-green-300/80 text-sm">Earn money every single month</p>
+            </div>
+          </div>
+          
+          <div className="bg-background/50 backdrop-blur-sm rounded-xl p-4 mb-4">
+            <div className="flex items-start gap-3">
+              <Sparkles className="h-6 w-6 text-amber-400 flex-shrink-0 mt-1" />
+              <div>
+                <p className="text-lg font-semibold text-foreground mb-2">
+                  Earn €5 EVERY MONTH for each friend you invite!
+                </p>
+                <p className="text-muted-foreground">
+                  This is <span className="text-green-400 font-bold">NOT a one-time bonus</span>. 
+                  When your friend pays their subscription in January, you get €5. 
+                  When they pay again in February, you get <span className="text-green-400 font-bold">another €5</span>. 
+                  March? <span className="text-green-400 font-bold">Another €5</span>. 
+                  And so on, <span className="text-green-400 font-bold">EVERY MONTH</span> they stay subscribed!
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="bg-background/30 rounded-lg p-3 text-center">
+              <p className="text-2xl font-bold text-green-400">10 Friends</p>
+              <p className="text-sm text-muted-foreground">= €50/month passive income</p>
+            </div>
+            <div className="bg-background/30 rounded-lg p-3 text-center">
+              <p className="text-2xl font-bold text-green-400">50 Friends</p>
+              <p className="text-sm text-muted-foreground">= €250/month passive income</p>
+            </div>
+            <div className="bg-background/30 rounded-lg p-3 text-center">
+              <p className="text-2xl font-bold text-amber-400">100 Friends</p>
+              <p className="text-sm text-muted-foreground">= €500/month passive income</p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       <Card className="p-6">
         <h2 className="text-2xl font-bold mb-4">
           <span className="bg-gradient-primary bg-clip-text text-transparent">
@@ -116,7 +169,7 @@ export const ReferralProgram = () => {
         </h2>
         
         <p className="text-muted-foreground mb-6">
-          Invite friends to the contest and earn €5 monthly for each active participant!
+          Invite friends to the contest and earn <span className="text-green-400 font-bold">€5 EVERY MONTH</span> for each active participant!
         </p>
 
         <div className="bg-muted p-4 rounded-lg mb-6">
@@ -187,14 +240,18 @@ export const ReferralProgram = () => {
           </Card>
         </div>
 
-        <div className="mt-6 p-4 bg-primary/10 rounded-lg">
-          <h3 className="font-semibold mb-2">How does it work?</h3>
+        <div className="mt-6 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+          <h3 className="font-semibold mb-2 flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-green-500" />
+            How does it work?
+          </h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• Share your code with friends</li>
-            <li>• They enter your code during registration</li>
-            <li>• You earn €5 monthly for each active participant</li>
-            <li>• You receive earnings every month while they are active</li>
-            <li className="text-amber-600 font-medium">⚠️ WARNING: Only new participants can use the code! If the person is already in the contest, they cannot use a referral code and you will not receive €5 for them</li>
+            <li>• Share your unique referral code with friends</li>
+            <li>• They enter your code when they subscribe</li>
+            <li className="text-green-400 font-medium">• You earn €5 EVERY MONTH for each active subscriber you referred!</li>
+            <li className="text-green-400 font-medium">• The income is RECURRING - as long as they pay, you earn!</li>
+            <li>• Invite 10 friends = €50/month, Invite 100 friends = €500/month</li>
+            <li className="text-amber-600 font-medium mt-3">⚠️ NOTE: Only NEW participants can use referral codes. Existing members cannot apply codes retroactively.</li>
           </ul>
         </div>
       </Card>
