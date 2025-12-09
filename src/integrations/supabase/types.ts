@@ -27096,6 +27096,7 @@ export type Database = {
         }
       }
       get_rls_ref: { Args: never; Returns: string }
+      get_user_role: { Args: never; Returns: string }
       give_f1_starter_balance: {
         Args: { p_user_id: string }
         Returns: undefined
