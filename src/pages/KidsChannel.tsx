@@ -401,26 +401,6 @@ const KidsChannel = () => {
               <Badge className="bg-blue-500 text-white shadow-md">Virtual Tour</Badge>
             </div>
           </Card>
-
-          {/* 10. Toy Shop */}
-          <Card 
-            className="group overflow-hidden bg-gradient-to-br from-teal-100/95 to-emerald-100/95 backdrop-blur-sm border-4 border-white/60 hover:border-teal-400 transition-all duration-300 hover:scale-105 cursor-pointer shadow-2xl hover:shadow-teal-300/50 animate-fade-in"
-            style={{ animationDelay: "0.9s" }}
-            onClick={() => navigate('/shop')}
-          >
-            <div className="p-6 text-center">
-              <div className="bg-white rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <Play className="w-10 h-10 text-teal-500" />
-              </div>
-              <h3 className="text-xl font-bold text-teal-700 mb-2">
-                Toy Shop! 🧸
-              </h3>
-              <p className="text-gray-700 text-sm mb-3">
-                Discover and buy amazing toys for kids of all ages!
-              </p>
-              <Badge className="bg-teal-500 text-white shadow-md">Shopping</Badge>
-            </div>
-          </Card>
         </div>
       </div>
 
