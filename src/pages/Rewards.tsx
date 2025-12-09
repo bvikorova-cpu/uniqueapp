@@ -7,6 +7,7 @@ import { PointsDisplay } from "@/components/gamification/PointsDisplay";
 import BadgesDisplay from "@/components/gamification/BadgesDisplay";
 import DailyRewardButton from "@/components/gamification/DailyRewardButton";
 import Leaderboard from "@/components/gamification/Leaderboard";
+import RewardsGuide from "@/components/gamification/RewardsGuide";
 import { Crown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -50,6 +51,8 @@ export default function Rewards() {
           <PointsDisplay />
           <DailyRewardButton />
         </div>
+
+        <RewardsGuide />
 
         <Tabs defaultValue="badges" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
