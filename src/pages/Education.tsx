@@ -141,6 +141,32 @@ const Education = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Detailed Description */}
+                <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-300/30 rounded-xl p-4 sm:p-6 mb-4">
+                  <h3 className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-2">🎓 What is Online Tutoring?</h3>
+                  <p className="text-muted-foreground text-sm mb-3">
+                    Our AI-powered tutoring system provides instant, personalized educational support across all subjects. Whether you're struggling with algebra, learning a new language, or exploring scientific concepts, our virtual tutor is available 24/7 to help.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-500">✓</span>
+                      <span><strong>Instant Answers:</strong> Get explanations within seconds</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-500">✓</span>
+                      <span><strong>All Subjects:</strong> Math, science, languages, history & more</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-500">✓</span>
+                      <span><strong>Step-by-Step:</strong> Detailed explanations with examples</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span className="text-green-500">✓</span>
+                      <span><strong>24/7 Available:</strong> Learn anytime, anywhere</span>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="min-h-[300px] max-h-[500px] overflow-y-auto space-y-4 p-4 bg-muted/50 rounded-lg">
                   {chatHistory.length === 0 ? (
                     <div className="text-center text-muted-foreground py-12">
@@ -207,6 +233,32 @@ const Education = () => {
 
           <TabsContent value="quiz">
             <div className="space-y-8">
+              {/* Detailed Description */}
+              <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-300/30 rounded-xl p-4 sm:p-6">
+                <h3 className="text-lg font-bold text-amber-600 dark:text-amber-400 mb-2">📝 What are Quizzes?</h3>
+                <p className="text-muted-foreground text-sm mb-3">
+                  Challenge yourself with our comprehensive quiz system featuring 50+ categories. Each quiz contains 20 carefully crafted questions with instant AI feedback to help you learn from your mistakes and track your progress.
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500">✓</span>
+                    <span><strong>50+ Categories:</strong> From academics to pop culture</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500">✓</span>
+                    <span><strong>AI Feedback:</strong> Learn why answers are correct/wrong</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500">✓</span>
+                    <span><strong>Custom Quizzes:</strong> Create your own quizzes</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-500">✓</span>
+                    <span><strong>Track Progress:</strong> See your improvement over time</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Custom Quizzes Section */}
               <QuizList />
               
