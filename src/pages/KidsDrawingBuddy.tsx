@@ -210,12 +210,139 @@ const KidsDrawingBuddy = () => {
                     <SelectTrigger>
                       <SelectValue placeholder="Choose a topic" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="animals">Animals 🐶</SelectItem>
-                      <SelectItem value="nature">Nature 🌳</SelectItem>
-                      <SelectItem value="people">People 👨</SelectItem>
-                      <SelectItem value="vehicles">Vehicles 🚗</SelectItem>
-                      <SelectItem value="fantasy">Fantasy 🦄</SelectItem>
+                    <SelectContent className="max-h-[300px]">
+                      {/* Animals */}
+                      <SelectItem value="dog">Dog 🐶</SelectItem>
+                      <SelectItem value="cat">Cat 🐱</SelectItem>
+                      <SelectItem value="bunny">Bunny 🐰</SelectItem>
+                      <SelectItem value="elephant">Elephant 🐘</SelectItem>
+                      <SelectItem value="lion">Lion 🦁</SelectItem>
+                      <SelectItem value="tiger">Tiger 🐯</SelectItem>
+                      <SelectItem value="bear">Bear 🐻</SelectItem>
+                      <SelectItem value="panda">Panda 🐼</SelectItem>
+                      <SelectItem value="monkey">Monkey 🐵</SelectItem>
+                      <SelectItem value="penguin">Penguin 🐧</SelectItem>
+                      <SelectItem value="owl">Owl 🦉</SelectItem>
+                      <SelectItem value="dolphin">Dolphin 🐬</SelectItem>
+                      <SelectItem value="whale">Whale 🐳</SelectItem>
+                      <SelectItem value="shark">Shark 🦈</SelectItem>
+                      <SelectItem value="turtle">Turtle 🐢</SelectItem>
+                      <SelectItem value="frog">Frog 🐸</SelectItem>
+                      <SelectItem value="butterfly">Butterfly 🦋</SelectItem>
+                      <SelectItem value="bee">Bee 🐝</SelectItem>
+                      <SelectItem value="ladybug">Ladybug 🐞</SelectItem>
+                      <SelectItem value="horse">Horse 🐴</SelectItem>
+                      <SelectItem value="giraffe">Giraffe 🦒</SelectItem>
+                      <SelectItem value="zebra">Zebra 🦓</SelectItem>
+                      <SelectItem value="fox">Fox 🦊</SelectItem>
+                      <SelectItem value="wolf">Wolf 🐺</SelectItem>
+                      <SelectItem value="koala">Koala 🐨</SelectItem>
+                      <SelectItem value="dinosaur">Dinosaur 🦕</SelectItem>
+                      <SelectItem value="t-rex">T-Rex 🦖</SelectItem>
+                      
+                      {/* Fantasy */}
+                      <SelectItem value="unicorn">Unicorn 🦄</SelectItem>
+                      <SelectItem value="dragon">Dragon 🐉</SelectItem>
+                      <SelectItem value="mermaid">Mermaid 🧜‍♀️</SelectItem>
+                      <SelectItem value="fairy">Fairy 🧚</SelectItem>
+                      <SelectItem value="wizard">Wizard 🧙</SelectItem>
+                      <SelectItem value="princess">Princess 👸</SelectItem>
+                      <SelectItem value="prince">Prince 🤴</SelectItem>
+                      <SelectItem value="knight">Knight ⚔️</SelectItem>
+                      <SelectItem value="pirate">Pirate 🏴‍☠️</SelectItem>
+                      <SelectItem value="superhero">Superhero 🦸</SelectItem>
+                      <SelectItem value="robot">Robot 🤖</SelectItem>
+                      <SelectItem value="alien">Alien 👽</SelectItem>
+                      <SelectItem value="ghost">Friendly Ghost 👻</SelectItem>
+                      <SelectItem value="monster">Cute Monster 👾</SelectItem>
+                      <SelectItem value="phoenix">Phoenix 🔥</SelectItem>
+                      
+                      {/* Nature */}
+                      <SelectItem value="tree">Tree 🌳</SelectItem>
+                      <SelectItem value="flower">Flower 🌸</SelectItem>
+                      <SelectItem value="sunflower">Sunflower 🌻</SelectItem>
+                      <SelectItem value="rose">Rose 🌹</SelectItem>
+                      <SelectItem value="rainbow">Rainbow 🌈</SelectItem>
+                      <SelectItem value="sun">Sun ☀️</SelectItem>
+                      <SelectItem value="moon">Moon 🌙</SelectItem>
+                      <SelectItem value="star">Star ⭐</SelectItem>
+                      <SelectItem value="cloud">Cloud ☁️</SelectItem>
+                      <SelectItem value="mountain">Mountain ⛰️</SelectItem>
+                      <SelectItem value="ocean">Ocean 🌊</SelectItem>
+                      <SelectItem value="waterfall">Waterfall 💧</SelectItem>
+                      <SelectItem value="cactus">Cactus 🌵</SelectItem>
+                      <SelectItem value="mushroom">Mushroom 🍄</SelectItem>
+                      
+                      {/* Vehicles */}
+                      <SelectItem value="car">Car 🚗</SelectItem>
+                      <SelectItem value="truck">Truck 🚚</SelectItem>
+                      <SelectItem value="bus">Bus 🚌</SelectItem>
+                      <SelectItem value="train">Train 🚂</SelectItem>
+                      <SelectItem value="airplane">Airplane ✈️</SelectItem>
+                      <SelectItem value="helicopter">Helicopter 🚁</SelectItem>
+                      <SelectItem value="rocket">Rocket 🚀</SelectItem>
+                      <SelectItem value="boat">Boat ⛵</SelectItem>
+                      <SelectItem value="ship">Ship 🚢</SelectItem>
+                      <SelectItem value="submarine">Submarine 🛳️</SelectItem>
+                      <SelectItem value="bicycle">Bicycle 🚲</SelectItem>
+                      <SelectItem value="motorcycle">Motorcycle 🏍️</SelectItem>
+                      <SelectItem value="fire-truck">Fire Truck 🚒</SelectItem>
+                      <SelectItem value="ambulance">Ambulance 🚑</SelectItem>
+                      <SelectItem value="police-car">Police Car 🚓</SelectItem>
+                      <SelectItem value="tractor">Tractor 🚜</SelectItem>
+                      
+                      {/* Food */}
+                      <SelectItem value="pizza">Pizza 🍕</SelectItem>
+                      <SelectItem value="burger">Burger 🍔</SelectItem>
+                      <SelectItem value="ice-cream">Ice Cream 🍦</SelectItem>
+                      <SelectItem value="cupcake">Cupcake 🧁</SelectItem>
+                      <SelectItem value="cake">Birthday Cake 🎂</SelectItem>
+                      <SelectItem value="donut">Donut 🍩</SelectItem>
+                      <SelectItem value="apple">Apple 🍎</SelectItem>
+                      <SelectItem value="banana">Banana 🍌</SelectItem>
+                      <SelectItem value="watermelon">Watermelon 🍉</SelectItem>
+                      <SelectItem value="strawberry">Strawberry 🍓</SelectItem>
+                      <SelectItem value="cookie">Cookie 🍪</SelectItem>
+                      <SelectItem value="lollipop">Lollipop 🍭</SelectItem>
+                      
+                      {/* Buildings & Places */}
+                      <SelectItem value="house">House 🏠</SelectItem>
+                      <SelectItem value="castle">Castle 🏰</SelectItem>
+                      <SelectItem value="lighthouse">Lighthouse 🏝️</SelectItem>
+                      <SelectItem value="treehouse">Treehouse 🌲</SelectItem>
+                      <SelectItem value="windmill">Windmill 🌾</SelectItem>
+                      <SelectItem value="igloo">Igloo ❄️</SelectItem>
+                      
+                      {/* People & Characters */}
+                      <SelectItem value="astronaut">Astronaut 👨‍🚀</SelectItem>
+                      <SelectItem value="chef">Chef 👨‍🍳</SelectItem>
+                      <SelectItem value="firefighter">Firefighter 👨‍🚒</SelectItem>
+                      <SelectItem value="doctor">Doctor 👨‍⚕️</SelectItem>
+                      <SelectItem value="teacher">Teacher 👩‍🏫</SelectItem>
+                      <SelectItem value="ballerina">Ballerina 🩰</SelectItem>
+                      <SelectItem value="ninja">Ninja 🥷</SelectItem>
+                      <SelectItem value="cowboy">Cowboy 🤠</SelectItem>
+                      <SelectItem value="clown">Clown 🤡</SelectItem>
+                      
+                      {/* Sports & Hobbies */}
+                      <SelectItem value="soccer-ball">Soccer Ball ⚽</SelectItem>
+                      <SelectItem value="basketball">Basketball 🏀</SelectItem>
+                      <SelectItem value="football">Football 🏈</SelectItem>
+                      <SelectItem value="baseball">Baseball ⚾</SelectItem>
+                      <SelectItem value="guitar">Guitar 🎸</SelectItem>
+                      <SelectItem value="piano">Piano 🎹</SelectItem>
+                      <SelectItem value="balloon">Balloon 🎈</SelectItem>
+                      <SelectItem value="kite">Kite 🪁</SelectItem>
+                      <SelectItem value="teddy-bear">Teddy Bear 🧸</SelectItem>
+                      
+                      {/* Seasonal */}
+                      <SelectItem value="snowman">Snowman ⛄</SelectItem>
+                      <SelectItem value="christmas-tree">Christmas Tree 🎄</SelectItem>
+                      <SelectItem value="santa">Santa Claus 🎅</SelectItem>
+                      <SelectItem value="pumpkin">Pumpkin 🎃</SelectItem>
+                      <SelectItem value="easter-bunny">Easter Bunny 🐰</SelectItem>
+                      <SelectItem value="heart">Heart ❤️</SelectItem>
+                      <SelectItem value="gift">Gift Box 🎁</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
