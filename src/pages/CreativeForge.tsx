@@ -169,7 +169,7 @@ export default function CreativeForge() {
             targetAudience,
             length: contentLength,
           },
-          styleReference,
+          styleReference: styleReference === "none" ? "" : styleReference,
         },
       });
 
@@ -424,7 +424,7 @@ export default function CreativeForge() {
                         <SelectValue placeholder="Write in the style of..." />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No specific style</SelectItem>
+                        <SelectItem value="none">No specific style</SelectItem>
                         {STYLE_REFERENCES[selectedCategory]?.map((ref) => (
                           <SelectItem key={ref} value={ref}>{ref}</SelectItem>
                         ))}
