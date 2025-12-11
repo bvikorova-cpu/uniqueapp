@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
@@ -18,6 +19,8 @@ const Auth = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showSignupPassword, setShowSignupPassword] = useState(false);
+  const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [termsConsent, setTermsConsent] = useState(false);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -32,6 +35,16 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (!privacyConsent || !termsConsent) {
+      toast({
+        variant: "destructive",
+        title: "Consent Required",
+        description: "Please agree to the Privacy Policy and Terms of Use to continue.",
+      });
+      return;
+    }
+    
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -284,7 +297,31 @@ const Auth = () => {
                       </Button>
                     </div>
                   </div>
-                  <Button type="submit" className="w-full" disabled={loading}>
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-2">
+                      <Checkbox 
+                        id="privacy-consent" 
+                        checked={privacyConsent}
+                        onCheckedChange={(checked) => setPrivacyConsent(checked as boolean)}
+                      />
+                      <Label htmlFor="privacy-consent" className="text-sm leading-tight cursor-pointer">
+                        I agree to the processing of my personal data in accordance with the Privacy Policy
+                      </Label>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <Checkbox 
+                        id="terms-consent" 
+                        checked={termsConsent}
+                        onCheckedChange={(checked) => setTermsConsent(checked as boolean)}
+                      />
+                      <Label htmlFor="terms-consent" className="text-sm leading-tight cursor-pointer">
+                        I agree to the Terms of Use
+                      </Label>
+                    </div>
+                  </div>
+                  
+                  <Button type="submit" className="w-full" disabled={loading || !privacyConsent || !termsConsent}>
                     {loading ? t('auth.registering') : t('auth.sign_up')}
                   </Button>
                 </form>
