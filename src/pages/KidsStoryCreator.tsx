@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BookOpen, Wand2, Download } from "lucide-react";
+import { BookOpen, Wand2, Download, Sparkles, Lightbulb } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -89,6 +89,69 @@ const KidsStoryCreator = () => {
               Create your own magical stories with AI illustrations!
             </p>
           </div>
+
+          {/* How It Works Section */}
+          <Card className="mb-8 bg-gradient-to-br from-primary/5 to-secondary/10 border-primary/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <Lightbulb className="w-5 h-5 text-primary" />
+                How AI Story Creator Works
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground text-sm sm:text-base">
+                AI Story Creator is a magical tool that brings your imagination to life! Create personalized 
+                children's stories complete with AI-generated illustrations. Perfect for bedtime stories, 
+                creative writing, or just for fun!
+              </p>
+              
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">1</span>
+                  <div>
+                    <h4 className="font-semibold text-sm">Choose Your Title</h4>
+                    <p className="text-xs text-muted-foreground">Give your story an exciting name that captures the adventure</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">2</span>
+                  <div>
+                    <h4 className="font-semibold text-sm">Pick a Category</h4>
+                    <p className="text-xs text-muted-foreground">Adventure, Fantasy, Mystery, Space, Fairy Tale and more!</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">3</span>
+                  <div>
+                    <h4 className="font-semibold text-sm">Create Characters</h4>
+                    <p className="text-xs text-muted-foreground">Describe your heroes - knights, dragons, wizards, animals or anyone!</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">4</span>
+                  <div>
+                    <h4 className="font-semibold text-sm">Set the Scene</h4>
+                    <p className="text-xs text-muted-foreground">Describe where your story takes place - magical forests, castles, space!</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-background/50 p-3 rounded-lg border border-primary/10">
+                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  AI Illustrations & Story Library
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  Each story comes with a beautiful AI-generated illustration! Save your stories to your 
+                  personal library and download them anytime. Free users get 1 story per month, or upgrade 
+                  to Premium for unlimited story creation!
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {user && !usageLoading && (
             <div className="mb-6 space-y-4">
