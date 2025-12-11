@@ -75,10 +75,10 @@ export default function StudentSupport() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-100 via-purple-100 to-fuchsia-100 pt-24 pb-12 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 pt-24 pb-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-secondary to-secondary/60 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
             🎓 Student Support Circle
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
