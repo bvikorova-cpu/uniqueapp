@@ -125,7 +125,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-background pt-16">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-start justify-center overflow-hidden">
+      <section className="relative min-h-[50vh] sm:h-screen flex items-start justify-center overflow-hidden">
         {/* Image Slideshow Background */}
         {heroImages.map((image, index) => (
           <div
@@ -134,15 +134,13 @@ const Home = () => {
               index === currentImageIndex ? "opacity-100" : "opacity-0"
             }`}
           >
-            {/* Mobile: show full image */}
+            {/* Mobile: cover image for better display */}
             <div 
               className="block sm:hidden absolute inset-0"
               style={{
                 backgroundImage: `url(${image})`,
-                backgroundSize: "contain",
-                backgroundPosition: "center top",
-                backgroundRepeat: "no-repeat",
-                backgroundColor: "hsl(var(--background))",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
             />
             {/* Desktop: cover for better look */}
