@@ -213,13 +213,13 @@ export default function ColoringPages() {
         </Card>
 
         <Tabs defaultValue="generate" className="space-y-6">
-          <TabsList className="grid grid-cols-6 w-full">
-            <TabsTrigger value="generate">Generate</TabsTrigger>
-            <TabsTrigger value="pricing">Pricing</TabsTrigger>
-            <TabsTrigger value="my-pages">My Pages</TabsTrigger>
-            <TabsTrigger value="schools">Schools</TabsTrigger>
-            <TabsTrigger value="healthcare">Healthcare</TabsTrigger>
-            <TabsTrigger value="corporate">Corporate</TabsTrigger>
+          <TabsList className="flex flex-wrap gap-2 sm:grid sm:grid-cols-6 w-full h-auto p-2">
+            <TabsTrigger value="generate" className="px-3 py-2 text-xs sm:text-sm">Generate</TabsTrigger>
+            <TabsTrigger value="pricing" className="px-3 py-2 text-xs sm:text-sm">Pricing</TabsTrigger>
+            <TabsTrigger value="my-pages" className="px-3 py-2 text-xs sm:text-sm">My Pages</TabsTrigger>
+            <TabsTrigger value="schools" className="px-3 py-2 text-xs sm:text-sm">Schools</TabsTrigger>
+            <TabsTrigger value="healthcare" className="px-3 py-2 text-xs sm:text-sm">Healthcare</TabsTrigger>
+            <TabsTrigger value="corporate" className="px-3 py-2 text-xs sm:text-sm">Corporate</TabsTrigger>
           </TabsList>
 
           <TabsContent value="generate" className="space-y-6">
