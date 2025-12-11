@@ -275,16 +275,16 @@ export const FriendChallenges = () => {
   });
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <Swords className="h-5 w-5" />
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Swords className="h-4 w-4 sm:h-5 sm:w-5" />
             Friend Challenges
           </CardTitle>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button size="sm">
+              <Button size="sm" className="w-full sm:w-auto">
                 <UserPlus className="h-4 w-4 mr-2" />
                 Challenge Friend
               </Button>
