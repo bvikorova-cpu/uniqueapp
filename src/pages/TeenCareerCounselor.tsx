@@ -337,6 +337,70 @@ export default function TeenCareerCounselor() {
           </div>
         </div>
 
+        {/* How It Works Description */}
+        <Card className="mb-6 border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Lightbulb className="h-5 w-5 text-primary" />
+              How AI Career Counselor Works
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 px-6">
+            <p className="text-muted-foreground text-sm sm:text-base">
+              AI Career Counselor is a personalized guidance tool designed specifically for teenagers aged 13-18. 
+              Get professional-grade career advice tailored to your unique interests, strengths, and aspirations!
+            </p>
+            
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">1</div>
+                <div>
+                  <h4 className="font-medium text-sm">Share Your Interests</h4>
+                  <p className="text-xs text-muted-foreground">Tell us about your hobbies, passions, and what excites you</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">2</div>
+                <div>
+                  <h4 className="font-medium text-sm">Describe Your Strengths</h4>
+                  <p className="text-xs text-muted-foreground">What are you naturally good at? Skills, talents, abilities</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">3</div>
+                <div>
+                  <h4 className="font-medium text-sm">Set Your Goals (Optional)</h4>
+                  <p className="text-xs text-muted-foreground">Share your dreams and what you want from your future career</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm shrink-0">4</div>
+                <div>
+                  <h4 className="font-medium text-sm">Get AI Recommendations</h4>
+                  <p className="text-xs text-muted-foreground">Receive 3-5 personalized career paths with action steps</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-primary/5 rounded-lg p-4 space-y-2">
+              <h4 className="font-semibold text-sm">What You'll Receive:</h4>
+              <ul className="text-xs text-muted-foreground space-y-1">
+                <li>• <strong>Career Path Recommendations:</strong> 3-5 specific careers matching your profile</li>
+                <li>• <strong>Educational Pathways:</strong> What to study and where to go for each career</li>
+                <li>• <strong>Skills Development:</strong> Key skills you should focus on building now</li>
+                <li>• <strong>Industry Insights:</strong> Growth opportunities and realistic outlook</li>
+                <li>• <strong>Action Steps:</strong> What you can do right now to start preparing</li>
+                <li>• <strong>PDF Export:</strong> Download your complete guidance report</li>
+              </ul>
+            </div>
+
+            <p className="text-xs text-muted-foreground italic">
+              Your first career guidance session is completely FREE! Additional sessions cost just €5 each. 
+              Perfect for exploring different directions as you grow and your interests evolve.
+            </p>
+          </CardContent>
+        </Card>
+
         {/* Usage Status Card */}
         {!checkingUsage && usageData && (
           <Card className="mb-6 border-primary/20">
