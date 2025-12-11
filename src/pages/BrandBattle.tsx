@@ -221,9 +221,34 @@ export default function BrandBattle() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Brand Battle Arena
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
             Vote for your favorite brands and earn rewards. Top brands get premium placement.
           </p>
+          
+          {/* How It Works Section */}
+          <div className="bg-muted/50 rounded-xl p-4 sm:p-6 max-w-3xl mx-auto mb-6 text-left">
+            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+              <span className="text-primary">📋</span> How Brand Battle Works
+            </h3>
+            <ul className="space-y-2 text-sm sm:text-base text-muted-foreground">
+              <li className="flex items-start gap-2">
+                <span className="text-primary font-bold">1.</span>
+                <span><strong>Vote Daily:</strong> You get 1 free vote per day. Use it to support your favorite brands in the leaderboard.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary font-bold">2.</span>
+                <span><strong>Buy Extra Votes:</strong> Want to vote more? Purchase additional votes to boost brands you love.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary font-bold">3.</span>
+                <span><strong>Earn Rewards:</strong> Active voters earn points, badges, and exclusive prizes each quarter.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-primary font-bold">4.</span>
+                <span><strong>Become a Sponsor:</strong> Brands can join as sponsors to get premium visibility and compete for top positions.</span>
+              </li>
+            </ul>
+          </div>
           
           {user && (
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
