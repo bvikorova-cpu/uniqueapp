@@ -94,6 +94,68 @@ const KidsHomework = () => {
             </p>
           </div>
 
+          {/* How It Works Section */}
+          <Card className="mb-8 bg-gradient-to-br from-primary/5 to-secondary/10 border-primary/20">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+                <Lightbulb className="w-5 h-5 text-primary" />
+                How AI Homework Helper Works
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground text-sm sm:text-base">
+                AI Homework Helper is your friendly study buddy that makes learning fun and easy! 
+                Get step-by-step explanations for any homework question across different subjects.
+              </p>
+              
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">1</span>
+                  <div>
+                    <h4 className="font-semibold text-sm">Choose Your Subject</h4>
+                    <p className="text-xs text-muted-foreground">Select from Math, Science, English, History, or Geography</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">2</span>
+                  <div>
+                    <h4 className="font-semibold text-sm">Set Difficulty Level</h4>
+                    <p className="text-xs text-muted-foreground">Pick Easy, Medium, or Hard based on your grade level</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">3</span>
+                  <div>
+                    <h4 className="font-semibold text-sm">Ask Your Question</h4>
+                    <p className="text-xs text-muted-foreground">Type your homework question in detail for better answers</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 bg-background/50 rounded-lg">
+                  <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-sm shrink-0">4</span>
+                  <div>
+                    <h4 className="font-semibold text-sm">Get Smart Help</h4>
+                    <p className="text-xs text-muted-foreground">Receive clear explanations plus fun facts to boost learning</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-background/50 p-3 rounded-lg border border-primary/10">
+                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                  Earn Points & Achievements!
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  Sign in to track your progress! Every question earns you 10 points. Complete daily challenges 
+                  to earn bonus points and unlock special achievement badges. Free users get 1 question per day, 
+                  or upgrade to Premium for unlimited homework help!
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
           {!usageLoading && (
             <div className="mb-6 space-y-4">
               <HomeworkLimitBanner
