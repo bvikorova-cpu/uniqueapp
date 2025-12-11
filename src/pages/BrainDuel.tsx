@@ -275,12 +275,51 @@ const BrainDuel = () => {
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
             BrainDuel
           </h1>
-          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-2">
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-4">
             Knowledge Battle Arena • Virtual Competition
           </p>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Test Your Knowledge • Compete for Virtual Credits
-          </p>
+          
+          {/* How It Works Section */}
+          <div className="bg-muted/50 rounded-xl p-4 sm:p-6 max-w-4xl mx-auto mb-6 text-left">
+            <h3 className="font-semibold text-lg mb-3 flex items-center gap-2">
+              <span className="text-primary">🧠</span> How BrainDuel Works
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm sm:text-base text-muted-foreground">
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-primary font-bold">1.</span>
+                  <span><strong>Choose a Category:</strong> Select from 10+ knowledge categories like Science, History, Geography, Entertainment, and more.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-primary font-bold">2.</span>
+                  <span><strong>Find an Opponent:</strong> Get matched with another player in real-time for a head-to-head quiz battle.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-primary font-bold">3.</span>
+                  <span><strong>Answer Questions:</strong> Race against time to answer multiple-choice questions correctly and score points.</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <span className="text-primary font-bold">4.</span>
+                  <span><strong>Use Power-ups:</strong> Activate special abilities like 50/50, Extra Time, or Hints to gain an advantage.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-primary font-bold">5.</span>
+                  <span><strong>Win Credits:</strong> Beat your opponent to win virtual credits. The winner takes all!</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-primary font-bold">6.</span>
+                  <span><strong>Challenge Friends:</strong> Create private matches with friends and compete for bragging rights.</span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                <strong>💡 Tip:</strong> Each game costs 10 credits to enter. Win to double your credits! Purchase credit packages or earn them by winning matches.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Credits Display */}
