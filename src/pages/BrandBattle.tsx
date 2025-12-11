@@ -242,20 +242,22 @@ export default function BrandBattle() {
         </div>
 
         <Tabs defaultValue="leaderboard" className="space-y-6">
-          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3">
-            <TabsTrigger value="leaderboard">
-              <Trophy className="h-4 w-4 mr-2" />
-              Leaderboard
-            </TabsTrigger>
-            <TabsTrigger value="sponsors">
-              <Building2 className="h-4 w-4 mr-2" />
-              Become a Sponsor
-            </TabsTrigger>
-            <TabsTrigger value="rewards">
-              <Award className="h-4 w-4 mr-2" />
-              Rewards & Prizes
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+            <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-3 w-max sm:w-full sm:max-w-2xl sm:mx-auto h-auto p-2">
+              <TabsTrigger value="leaderboard" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Leaderboard
+              </TabsTrigger>
+              <TabsTrigger value="sponsors" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Building2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Become a Sponsor
+              </TabsTrigger>
+              <TabsTrigger value="rewards" className="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                <Award className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                Rewards & Prizes
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Leaderboard Tab */}
           <TabsContent value="leaderboard" className="space-y-6">
