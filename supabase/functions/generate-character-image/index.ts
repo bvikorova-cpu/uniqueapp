@@ -27,14 +27,13 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
+        model: 'google/gemini-2.5-flash-image',
         messages: [
           {
             role: 'user',
             content: prompt
           }
         ],
-        modalities: ['image', 'text']
       }),
     });
 
@@ -59,9 +58,16 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    console.log('AI response:', JSON.stringify(data, null, 2));
+    
+    // Try multiple possible response structures
+    const imageUrl = data.choices?.[0]?.message?.content?.[0]?.image_url?.url ||
+                     data.choices?.[0]?.message?.images?.[0]?.image_url?.url ||
+                     data.choices?.[0]?.message?.image_url?.url ||
+                     data.image_url;
 
     if (!imageUrl) {
+      console.error('Full response structure:', JSON.stringify(data));
       throw new Error('No image URL in response');
     }
 
