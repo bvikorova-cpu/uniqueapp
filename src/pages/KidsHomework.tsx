@@ -102,7 +102,7 @@ const KidsHomework = () => {
                 How AI Homework Helper Works
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 px-6">
               <p className="text-muted-foreground text-sm sm:text-base">
                 AI Homework Helper is your friendly study buddy that makes learning fun and easy! 
                 Get step-by-step explanations for any homework question across different subjects.

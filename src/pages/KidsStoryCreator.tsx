@@ -98,7 +98,7 @@ const KidsStoryCreator = () => {
                 How AI Story Creator Works
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 px-6">
               <p className="text-muted-foreground text-sm sm:text-base">
                 AI Story Creator is a magical tool that brings your imagination to life! Create personalized 
                 children's stories complete with AI-generated illustrations. Perfect for bedtime stories, 
