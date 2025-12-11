@@ -345,44 +345,51 @@ export default function BrandBattle() {
                   
                   return (
                     <Card key={sponsor.id}>
-                      <CardContent className="flex items-center gap-4 p-4">
-                        <div className="text-2xl font-bold text-muted-foreground w-12 text-center">
-                          #{position}
+                      <CardContent className="p-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                          <div className="flex items-center gap-3 sm:gap-4">
+                            <div className="text-xl sm:text-2xl font-bold text-muted-foreground w-8 sm:w-12 text-center flex-shrink-0">
+                              #{position}
+                            </div>
+                            <div className="flex-shrink-0">
+                              {sponsor.logo.startsWith('http') ? (
+                                <img 
+                                  src={sponsor.logo} 
+                                  alt={sponsor.name}
+                                  className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg"
+                                />
+                              ) : (
+                                <div className="text-3xl sm:text-4xl">{sponsor.logo}</div>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-sm sm:text-base truncate">{sponsor.name}</div>
+                              <div className="text-xs sm:text-sm text-muted-foreground line-clamp-2">{sponsor.description}</div>
+                              <Badge variant="secondary" className="mt-1 text-xs">
+                                {sponsor.category}
+                              </Badge>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 mt-2 sm:mt-0">
+                            <div className="text-center">
+                              <div className="text-xl sm:text-2xl font-bold text-primary">{sponsor.total_votes}</div>
+                              <div className="text-xs text-muted-foreground">votes</div>
+                            </div>
+                            <Button 
+                              onClick={() => handleVote(sponsor.id, sponsor.name)}
+                              disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
+                              className="min-h-[40px] sm:min-h-[44px] text-xs sm:text-sm px-3 sm:px-4"
+                              size="sm"
+                            >
+                              {voteMutation.isPending ? (
+                                <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2 animate-spin" />
+                              ) : (
+                                <Vote className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                              )}
+                              Vote
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex-shrink-0">
-                          {sponsor.logo.startsWith('http') ? (
-                            <img 
-                              src={sponsor.logo} 
-                              alt={sponsor.name}
-                              className="w-16 h-16 object-cover rounded-lg"
-                            />
-                          ) : (
-                            <div className="text-4xl">{sponsor.logo}</div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <div className="font-semibold">{sponsor.name}</div>
-                          <div className="text-sm text-muted-foreground">{sponsor.description}</div>
-                          <Badge variant="secondary" className="mt-1 text-xs">
-                            {sponsor.category}
-                          </Badge>
-                        </div>
-                        <div className="text-center px-4">
-                          <div className="text-2xl font-bold text-primary">{sponsor.total_votes}</div>
-                          <div className="text-xs text-muted-foreground">votes</div>
-                        </div>
-                        <Button 
-                          onClick={() => handleVote(sponsor.id, sponsor.name)}
-                          disabled={!user || voteMutation.isPending || (votes?.remaining || 0) <= 0}
-                          className="min-h-[44px]"
-                        >
-                          {voteMutation.isPending ? (
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          ) : (
-                            <Vote className="h-4 w-4 mr-2" />
-                          )}
-                          Vote
-                        </Button>
                       </CardContent>
                     </Card>
                   );
