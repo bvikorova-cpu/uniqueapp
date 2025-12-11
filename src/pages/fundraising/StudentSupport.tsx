@@ -87,14 +87,14 @@ export default function StudentSupport() {
           <Button 
             size="lg" 
             onClick={() => navigate('/fundraising/student/create')}
-            className="bg-gradient-to-r from-secondary to-secondary/80"
+            className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white"
           >
             <GraduationCap className="mr-2 h-5 w-5" />
             Request Support
           </Button>
         </div>
 
-        <Alert className="mb-8 border-secondary/20 bg-secondary/5">
+        <Alert className="mb-8 border-violet-300 bg-white/80">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-sm">
             <div className="space-y-2">
