@@ -213,14 +213,16 @@ export default function ColoringPages() {
         </Card>
 
         <Tabs defaultValue="generate" className="space-y-6">
-          <TabsList className="flex flex-wrap gap-2 sm:grid sm:grid-cols-6 w-full h-auto p-2">
-            <TabsTrigger value="generate" className="px-3 py-2 text-xs sm:text-sm">Generate</TabsTrigger>
-            <TabsTrigger value="pricing" className="px-3 py-2 text-xs sm:text-sm">Pricing</TabsTrigger>
-            <TabsTrigger value="my-pages" className="px-3 py-2 text-xs sm:text-sm">My Pages</TabsTrigger>
-            <TabsTrigger value="schools" className="px-3 py-2 text-xs sm:text-sm">Schools</TabsTrigger>
-            <TabsTrigger value="healthcare" className="px-3 py-2 text-xs sm:text-sm">Healthcare</TabsTrigger>
-            <TabsTrigger value="corporate" className="px-3 py-2 text-xs sm:text-sm">Corporate</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+            <TabsList className="inline-flex gap-2 sm:grid sm:grid-cols-6 w-max sm:w-full h-auto p-2">
+              <TabsTrigger value="generate" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Generate</TabsTrigger>
+              <TabsTrigger value="pricing" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Pricing</TabsTrigger>
+              <TabsTrigger value="my-pages" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">My Pages</TabsTrigger>
+              <TabsTrigger value="schools" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Schools</TabsTrigger>
+              <TabsTrigger value="healthcare" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Healthcare</TabsTrigger>
+              <TabsTrigger value="corporate" className="px-4 py-2 text-xs sm:text-sm whitespace-nowrap">Corporate</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="generate" className="space-y-6">
             <Card>
