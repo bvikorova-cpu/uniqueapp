@@ -110,7 +110,7 @@ export default function DreamMaker() {
           </AlertDescription>
         </Alert>
 
-        <div className="flex gap-2 mb-8 justify-center flex-wrap">
+        <div className="flex gap-2 mb-8 justify-center flex-wrap px-2 overflow-x-auto">
           <Button
             variant={filter === 'all' ? 'default' : 'outline'}
             onClick={() => setFilter('all')}
