@@ -453,17 +453,17 @@ const BrainDuel = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-3 sm:p-6">
-                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3">
                   {categories.map((category) => {
                     const Icon = category.icon;
                     return (
                       <Button
                         key={category.id}
                         variant="outline"
-                        className="h-auto py-2 sm:py-4 flex-col gap-1 sm:gap-2 px-1 sm:px-3"
+                        className="h-auto min-h-[70px] sm:min-h-[80px] py-2 sm:py-4 flex-col gap-1 sm:gap-2 px-2 sm:px-3 whitespace-normal"
                       >
-                        <Icon className={`h-4 w-4 sm:h-6 sm:w-6 ${category.color}`} />
-                        <span className="text-[10px] sm:text-xs font-medium text-center leading-tight">{category.name}</span>
+                        <Icon className={`h-4 w-4 sm:h-6 sm:w-6 flex-shrink-0 ${category.color}`} />
+                        <span className="text-[9px] sm:text-xs font-medium text-center leading-tight break-words">{category.name}</span>
                       </Button>
                     );
                   })}
