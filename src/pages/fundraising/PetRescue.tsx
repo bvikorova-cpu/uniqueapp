@@ -116,7 +116,7 @@ export default function PetRescue() {
           </AlertDescription>
         </Alert>
 
-        <div className="flex gap-2 mb-8 justify-center flex-wrap">
+        <div className="flex gap-2 mb-8 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <Button
             variant={filter === 'all' ? 'default' : 'outline'}
             onClick={() => setFilter('all')}
