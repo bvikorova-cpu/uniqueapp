@@ -13,11 +13,11 @@ export default function FriendChallengesLeaderboard() {
   const { achievements } = useFriendChallengeAchievements(user?.id);
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-3">
         <div className="space-y-3">
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Users className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             Friends Leaderboard
           </CardTitle>
           {achievements.length > 0 && (

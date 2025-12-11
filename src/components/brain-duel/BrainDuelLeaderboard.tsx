@@ -101,10 +101,10 @@ export const BrainDuelLeaderboard = () => {
 
   if (isLoading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5" />
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Trophy className="h-4 w-4 sm:h-5 sm:w-5" />
             Top Players
           </CardTitle>
         </CardHeader>
@@ -119,10 +119,10 @@ export const BrainDuelLeaderboard = () => {
 
   if (!leaderboard || leaderboard.length === 0) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Trophy className="h-5 w-5" />
+      <Card className="overflow-hidden">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+            <Trophy className="h-4 w-4 sm:h-5 sm:w-5" />
             Top Players
           </CardTitle>
         </CardHeader>
@@ -136,10 +136,10 @@ export const BrainDuelLeaderboard = () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Trophy className="h-5 w-5" />
+    <Card className="overflow-hidden">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+          <Trophy className="h-4 w-4 sm:h-5 sm:w-5" />
           Top Players
         </CardTitle>
       </CardHeader>
