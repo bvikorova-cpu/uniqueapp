@@ -336,13 +336,13 @@ export const BrainDuelGame = () => {
           <h2 className="text-2xl font-bold">Choose a Category</h2>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           {categories.map((cat) => (
             <Button
               key={cat}
               onClick={() => findMatch(cat)}
               variant="outline"
-              className="h-20 text-lg"
+              className="h-auto min-h-[72px] sm:h-24 text-sm sm:text-lg p-3 sm:p-4 whitespace-normal text-center leading-tight"
             >
               {cat}
             </Button>
