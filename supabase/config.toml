@@ -1,5 +1,14 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.create-paid-message-checkout]
+verify_jwt = true
+
+[functions.create-stream-access-checkout]
+verify_jwt = true
+
+[functions.create-merch-checkout]
+verify_jwt = true
+
 [functions.generate-creative-content]
 verify_jwt = true
 
