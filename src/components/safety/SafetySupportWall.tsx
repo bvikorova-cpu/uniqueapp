@@ -106,12 +106,12 @@ const SafetySupportWall = () => {
               
               <div className="text-center text-sm text-muted-foreground">or send quick encouragement:</div>
               
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-w-full overflow-hidden">
                 {encouragements.map((enc, index) => (
                   <Badge 
                     key={index} 
                     variant="outline" 
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors py-2 px-3"
+                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors py-2 px-2 text-xs text-center whitespace-normal h-auto justify-center"
                     onClick={() => quickEncourage(enc)}
                   >
                     {enc}
