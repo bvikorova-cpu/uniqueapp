@@ -11,8 +11,9 @@ import { CreatorMessaging } from "@/components/creator/CreatorMessaging";
 import { CreatorMediaUpload } from "@/components/creator/CreatorMediaUpload";
 import { CreatorContentPackForm } from "@/components/creator/CreatorContentPackForm";
 import { CreatorContentPacks } from "@/components/creator/CreatorContentPacks";
+import { SendCreatorGiftDialog } from "@/components/creator/SendCreatorGiftDialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter } from "lucide-react";
+import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift } from "lucide-react";
 
 interface Creator {
   id: string;
@@ -49,6 +50,7 @@ export default function CreatorProfile() {
     tier_id?: string;
     subscription_end?: string;
   }>({ subscribed: false });
+  const [giftDialogOpen, setGiftDialogOpen] = useState(false);
 
   useEffect(() => {
     loadCreatorProfile();
@@ -253,13 +255,25 @@ export default function CreatorProfile() {
                   )}
                 </div>
 
-                {/* Subscribe Badge */}
-                {userSubscription.subscribed && !isOwnProfile && (
-                  <Badge variant="secondary" className="flex items-center gap-1 text-lg px-4 py-2">
-                    <Crown className="h-5 w-5" />
-                    Subscribed
-                  </Badge>
-                )}
+                {/* Subscribe Badge & Gift Button */}
+                <div className="flex items-center gap-2">
+                  {userSubscription.subscribed && !isOwnProfile && (
+                    <Badge variant="secondary" className="flex items-center gap-1 text-lg px-4 py-2">
+                      <Crown className="h-5 w-5" />
+                      Subscribed
+                    </Badge>
+                  )}
+                  {!isOwnProfile && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setGiftDialogOpen(true)}
+                      className="flex items-center gap-2"
+                    >
+                      <Gift className="h-5 w-5" />
+                      Send Gift
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardHeader>
           </Card>
@@ -321,6 +335,14 @@ export default function CreatorProfile() {
           />
         </div>
       </div>
+
+      {/* Gift Dialog */}
+      <SendCreatorGiftDialog
+        open={giftDialogOpen}
+        onOpenChange={setGiftDialogOpen}
+        creatorId={creator.id}
+        creatorName={creator.display_name}
+      />
     </div>
   );
 }
