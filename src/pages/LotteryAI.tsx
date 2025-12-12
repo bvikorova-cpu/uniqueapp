@@ -385,8 +385,8 @@ export default function LotteryAI() {
   };
 
   // Mock hot and cold numbers
-  const hotNumbers = [7, 14, 21, 28, 35, 42];
-  const coldNumbers = [3, 9, 16, 23, 31, 44];
+  const hotNumbers = [12, 23, 34, 41, 17, 29];
+  const coldNumbers = [5, 18, 27, 36, 45, 8];
 
   return (
     <div className="min-h-screen bg-background">
@@ -485,6 +485,34 @@ export default function LotteryAI() {
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             AI generates "lucky" numbers based on historical data and your personal preferences
           </p>
+          
+          {/* Detailed Description */}
+          <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 max-w-4xl mx-auto text-left border border-border/50 mb-8">
+            <h2 className="text-xl font-bold mb-4 text-center">About Lottery AI Predictions</h2>
+            <p className="text-muted-foreground mb-4">
+              Lottery AI is an advanced analytical tool that uses machine learning algorithms to analyze historical lottery data and generate number combinations based on statistical patterns. Our AI examines millions of past draws to identify trends, frequencies, and patterns that may help inform your number selection.
+            </p>
+            
+            <h3 className="font-semibold mb-2">How to Use:</h3>
+            <ul className="text-muted-foreground space-y-2 mb-4 list-disc list-inside">
+              <li><strong>Select Lottery Type:</strong> Choose from EuroJackpot, Lotto 6/49, Powerball, or Mega Millions</li>
+              <li><strong>Generate Numbers:</strong> Click the "Generate Lucky Numbers" button to receive AI-analyzed combinations</li>
+              <li><strong>View Statistics:</strong> Explore hot/cold numbers, frequency analysis, and pattern insights</li>
+              <li><strong>Save Favorites:</strong> Store your preferred combinations for easy access later</li>
+              <li><strong>Lucky Day Alerts:</strong> Pro subscribers receive notifications on statistically favorable days</li>
+            </ul>
+            
+            <h3 className="font-semibold mb-2">Features:</h3>
+            <ul className="text-muted-foreground space-y-1 list-disc list-inside">
+              <li>Support for multiple international lottery formats</li>
+              <li>Real-time statistical analysis of historical draw data</li>
+              <li>Hot numbers (frequently drawn) and cold numbers (rarely drawn) tracking</li>
+              <li>Pattern analysis including odd/even ratio and high/low balance</li>
+              <li>Personal combination history and favorites management</li>
+              <li>Pro plan includes unlimited generations and advanced analytics</li>
+            </ul>
+          </div>
+          
           <div className="flex flex-wrap gap-4 justify-center">
             <Button 
               size="lg" 
@@ -945,14 +973,51 @@ export default function LotteryAI() {
         </div>
       </section>
 
-      {/* Disclaimer */}
-      <section className="py-8 px-4 bg-muted/50">
-        <div className="container mx-auto max-w-3xl text-center">
-          <p className="text-sm text-muted-foreground">
-            <strong>Disclaimer:</strong> This tool is for entertainment purposes only. AI predictions
-            are based on historical patterns and do not guarantee winning outcomes. Please play
-            responsibly.
+      {/* Disclaimer & Consumer Protection */}
+      <section className="py-12 px-4 bg-muted/50">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-2xl font-bold text-center mb-6">Disclaimer & Consumer Protection</h2>
+          <p className="text-sm text-muted-foreground text-center mb-6">
+            Please read the following points carefully to clearly understand the nature of this service.
           </p>
+          
+          <div className="space-y-6 text-sm text-muted-foreground">
+            <div className="bg-card p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">1. Purpose of Service</h3>
+              <p className="mb-2">
+                This tool (including AI predictions, pattern analysis, and "Lucky Day" notifications) is intended solely for entertainment, informational, and analytical purposes.
+              </p>
+              <p className="font-medium text-destructive">
+                This is NOT investment advice, financial advice, or a guaranteed path to winning in gambling.
+              </p>
+            </div>
+            
+            <div className="bg-card p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">2. About AI Predictions</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li>Machine Learning algorithms analyze exclusively historical data and patterns from past draws.</li>
+                <li>AI does NOT have the ability to predict the future or influence the random lottery drawing process.</li>
+                <li>The probability of winning the lottery is fixed, and no software predictions, patterns, or notifications can increase it. Each draw is an independent event.</li>
+              </ul>
+            </div>
+            
+            <div className="bg-card p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">3. "Lucky Day" Notifications & Subscription</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li>"Lucky Day" notifications are based on historical statistical analysis, numerological data, or personalized preferences. They do NOT represent a prediction of an actual day with a higher chance of winning.</li>
+                <li>The subscription fee ("Pro Plan") is charged for access to advanced analytical and notification software tools, NOT for an increased chance of winning.</li>
+              </ul>
+            </div>
+            
+            <div className="bg-card p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">4. Disclaimer of Liability</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li><strong>There is NO guarantee of winning.</strong> The operator provides no guarantees of success, winnings, or profit when using numbers or notifications generated by this tool.</li>
+                <li>Users are solely responsible for their gambling decisions and any financial losses that may arise from gambling.</li>
+                <li className="font-medium text-primary">Play responsibly. If you suspect a gambling problem, seek help immediately.</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
       </>
