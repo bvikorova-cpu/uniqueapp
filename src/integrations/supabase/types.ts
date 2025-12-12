@@ -7099,6 +7099,89 @@ export type Database = {
           },
         ]
       }
+      creator_gift_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          creator_id: string
+          creator_payout: number
+          gift_id: string | null
+          id: string
+          message: string | null
+          platform_fee: number
+          sender_id: string
+          status: string | null
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          creator_id: string
+          creator_payout: number
+          gift_id?: string | null
+          id?: string
+          message?: string | null
+          platform_fee: number
+          sender_id: string
+          status?: string | null
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          creator_id?: string
+          creator_payout?: number
+          gift_id?: string | null
+          id?: string
+          message?: string | null
+          platform_fee?: number
+          sender_id?: string
+          status?: string | null
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_gift_transactions_gift_id_fkey"
+            columns: ["gift_id"]
+            isOneToOne: false
+            referencedRelation: "creator_gifts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_gifts: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          price: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          price?: number
+        }
+        Relationships: []
+      }
       creator_gifts_sent: {
         Row: {
           amount_paid: number
