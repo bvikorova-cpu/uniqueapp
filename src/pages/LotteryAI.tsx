@@ -499,7 +499,7 @@ export default function LotteryAI() {
               <li><strong>Generate Numbers:</strong> Click the "Generate Lucky Numbers" button to receive AI-analyzed combinations</li>
               <li><strong>View Statistics:</strong> Explore hot/cold numbers, frequency analysis, and pattern insights</li>
               <li><strong>Save Favorites:</strong> Store your preferred combinations for easy access later</li>
-              <li><strong>Lucky Day Alerts:</strong> Pro subscribers receive notifications on statistically favorable days</li>
+              <li><strong>Save Favorites:</strong> Mark your preferred combinations for quick access</li>
             </ul>
             
             <h3 className="font-semibold mb-2">Features:</h3>
@@ -715,24 +715,6 @@ export default function LotteryAI() {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-gradient-to-br from-primary/10 to-secondary/10">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Calendar className="h-5 w-5" />
-                        Lucky Day
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Based on AI analysis, your luckiest day this week:
-                      </p>
-                      <p className="text-2xl font-bold">Friday, Dec 8</p>
-                      <Badge className="mt-2" variant="secondary">
-                        <Star className="h-3 w-3 mr-1" />
-                        83% Lucky Score
-                      </Badge>
-                    </CardContent>
-                  </Card>
                 </div>
               </div>
             </TabsContent>
@@ -947,8 +929,8 @@ export default function LotteryAI() {
               },
               {
                 icon: Calendar,
-                title: "Lucky Day Notifications",
-                description: "Get alerts on your most auspicious days to play (Pro plan)",
+                title: "Generation History",
+                description: "Track all your generated combinations with dates and statistics",
               },
               {
                 icon: Zap,
@@ -985,7 +967,7 @@ export default function LotteryAI() {
             <div className="bg-card p-4 rounded-lg border border-border">
               <h3 className="font-bold text-foreground mb-2">1. Purpose of Service</h3>
               <p className="mb-2">
-                This tool (including AI predictions, pattern analysis, and "Lucky Day" notifications) is intended solely for entertainment, informational, and analytical purposes.
+                This tool (including AI predictions, pattern analysis, and notifications) is intended solely for entertainment, informational, and analytical purposes.
               </p>
               <p className="font-medium text-destructive">
                 This is NOT investment advice, financial advice, or a guaranteed path to winning in gambling.
@@ -1002,9 +984,9 @@ export default function LotteryAI() {
             </div>
             
             <div className="bg-card p-4 rounded-lg border border-border">
-              <h3 className="font-bold text-foreground mb-2">3. "Lucky Day" Notifications & Subscription</h3>
+              <h3 className="font-bold text-foreground mb-2">3. Notifications & Subscription</h3>
               <ul className="space-y-2 list-disc list-inside">
-                <li>"Lucky Day" notifications are based on historical statistical analysis, numerological data, or personalized preferences. They do NOT represent a prediction of an actual day with a higher chance of winning.</li>
+                <li>Notifications are based on historical statistical analysis, numerological data, or personalized preferences. They do NOT represent a prediction of an actual day with a higher chance of winning.</li>
                 <li>The subscription fee ("Pro Plan") is charged for access to advanced analytical and notification software tools, NOT for an increased chance of winning.</li>
               </ul>
             </div>
@@ -1016,6 +998,79 @@ export default function LotteryAI() {
                 <li>Users are solely responsible for their gambling decisions and any financial losses that may arise from gambling.</li>
                 <li className="font-medium text-primary">Play responsibly. If you suspect a gambling problem, seek help immediately.</li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Terms of Service */}
+      <section className="py-12 px-4 bg-card border-t">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-2xl font-bold text-center mb-6">Terms of Service</h2>
+          <p className="text-sm text-muted-foreground text-center mb-6">
+            By using Lottery AI, you agree to the following terms and conditions.
+          </p>
+          
+          <div className="space-y-6 text-sm text-muted-foreground">
+            <div className="bg-muted/50 p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">1. Purpose of Service</h3>
+              <p className="mb-2">
+                This tool (including AI predictions, pattern analysis, and notifications) is intended solely for entertainment, informational, and analytical purposes.
+              </p>
+              <p className="font-medium text-destructive">
+                This is NOT investment advice, financial advice, or a guaranteed path to winning in gambling.
+              </p>
+            </div>
+            
+            <div className="bg-muted/50 p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">2. About AI Predictions</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li>Machine Learning algorithms analyze exclusively historical data and patterns from past draws.</li>
+                <li>AI does NOT have the ability to predict the future or influence the random lottery drawing process.</li>
+                <li>The probability of winning the lottery is fixed, and no software predictions, patterns, or notifications can increase it. Each draw is an independent event.</li>
+              </ul>
+            </div>
+            
+            <div className="bg-muted/50 p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">3. Notifications & Subscription</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li>Notifications are based on historical statistical analysis, numerological data, or personalized preferences. They do NOT represent a prediction of an actual day with a higher chance of winning.</li>
+                <li>The subscription fee ("Pro Plan") is charged for access to advanced analytical and notification software tools, NOT for an increased chance of winning.</li>
+              </ul>
+            </div>
+            
+            <div className="bg-muted/50 p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">4. Disclaimer of Liability</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li><strong>There is NO guarantee of winning.</strong> The operator provides no guarantees of success, winnings, or profit when using numbers or notifications generated by this tool.</li>
+                <li>Users are solely responsible for their gambling decisions and any financial losses that may arise from gambling.</li>
+                <li className="font-medium text-primary">Play responsibly. If you suspect a gambling problem, seek help immediately.</li>
+              </ul>
+            </div>
+
+            <div className="bg-muted/50 p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">5. User Responsibilities</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li>Users must be of legal gambling age in their jurisdiction to use this service.</li>
+                <li>Users are responsible for complying with all local laws and regulations regarding lottery participation.</li>
+                <li>Users agree not to misrepresent the nature of this service to others.</li>
+              </ul>
+            </div>
+
+            <div className="bg-muted/50 p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">6. Subscription & Payment Terms</h3>
+              <ul className="space-y-2 list-disc list-inside">
+                <li>Subscriptions are billed monthly and can be cancelled at any time through the customer portal.</li>
+                <li>Refunds are handled according to Stripe's refund policies.</li>
+                <li>The operator reserves the right to modify pricing with 30 days advance notice.</li>
+              </ul>
+            </div>
+
+            <div className="bg-muted/50 p-4 rounded-lg border border-border">
+              <h3 className="font-bold text-foreground mb-2">7. Acceptance of Terms</h3>
+              <p>
+                By subscribing to or using the Lottery AI service, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and the Disclaimer above. If you do not agree to these terms, please do not use this service.
+              </p>
             </div>
           </div>
         </div>
