@@ -327,18 +327,18 @@ export default function CreativeForge() {
                                 : "border-border hover:border-primary/50 hover:bg-muted/50"
                             }`}
                           >
-                            <div className="flex items-center gap-3">
-                              <div className={`p-2 rounded-lg ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                            <div className="flex items-start gap-3">
+                              <div className={`p-2 rounded-lg flex-shrink-0 ${isSelected ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
                                 <Icon className="h-5 w-5" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 flex-wrap">
                                   <span className="font-medium text-sm">{category.name}</span>
                                   <Badge variant="secondary" className="text-xs">
                                     {CREDIT_COSTS[category.id as CreativeCategory]} cr
                                   </Badge>
                                 </div>
-                                <p className="text-xs text-muted-foreground truncate">{category.description}</p>
+                                <p className="text-xs text-muted-foreground mt-0.5">{category.description}</p>
                               </div>
                             </div>
                           </button>
