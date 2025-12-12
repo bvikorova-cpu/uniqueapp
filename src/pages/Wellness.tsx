@@ -221,16 +221,43 @@ export default function Wellness() {
           </Card>
         </div>
 
+        {/* What is Wellness & How to Use */}
         <Card className="border-primary/20 bg-gradient-to-br from-primary/10 to-transparent mt-6">
           <CardContent className="pt-6">
-            <div className="flex items-start gap-4">
-              <Sparkles className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-              <div>
-                <h3 className="font-semibold text-lg mb-2">Why Use Wellness Tools?</h3>
-                <p className="text-muted-foreground mb-3">
-                  In today's fast-paced world, taking care of mental health is more important than ever. 
-                  Our tools use scientifically proven techniques of mindfulness, meditation, and relaxation.
-                </p>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <Sparkles className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="font-semibold text-lg mb-2">What is Wellness & Mental Health?</h3>
+                  <p className="text-muted-foreground mb-3">
+                    Our Wellness & Mental Health platform provides a comprehensive suite of professional-grade relaxation, mindfulness, 
+                    and mental wellbeing tools. Whether you are dealing with daily stress, anxiety, trouble sleeping, or simply want to 
+                    improve your overall mental health, our scientifically-backed techniques are designed to help you find inner peace and balance.
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-primary" />
+                  How to Use the Wellness Tools
+                </h4>
+                <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+                  <li><strong>Subscribe to a Plan:</strong> Choose Basic (€4.99/month) for core tools or Premium (€9.99/month) for full access including AI Coach and Gratitude Journal</li>
+                  <li><strong>Select a Tool:</strong> Navigate between tabs to access different wellness exercises based on your current needs</li>
+                  <li><strong>Breathing Exercises:</strong> Follow visual guides for 4-7-8 relaxation breathing or Box Breathing to reduce stress instantly</li>
+                  <li><strong>5-4-3-2-1 Grounding:</strong> Use this technique to anchor yourself in the present moment and reduce anxiety</li>
+                  <li><strong>Body Scan Meditation:</strong> Follow audio-guided progressive muscle relaxation to release tension throughout your body</li>
+                  <li><strong>Nature Sounds:</strong> Play calming rain, ocean waves, or forest ambience while working or sleeping</li>
+                  <li><strong>AI Mindfulness Coach (Premium):</strong> Chat with an empathetic AI assistant trained in therapeutic techniques 24/7</li>
+                  <li><strong>Gratitude Journal (Premium):</strong> Record daily gratitudes with AI-powered prompts and insights</li>
+                  <li><strong>Digital Mandala (Premium):</strong> Create meditative art for mindful focus and creative relaxation</li>
+                  <li><strong>Track Progress:</strong> View your wellness dashboard to monitor consistency and improvements over time</li>
+                </ol>
+              </div>
+
+              <div className="border-t pt-4">
+                <h4 className="font-semibold mb-3">Why Use Wellness Tools?</h4>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
@@ -250,6 +277,10 @@ export default function Wellness() {
                   </li>
                 </ul>
               </div>
+
+              <p className="text-xs text-muted-foreground border-t pt-3">
+                💡 <strong>Tip:</strong> For best results, use wellness tools consistently — even just 5 minutes daily can significantly improve your mental wellbeing over time.
+              </p>
             </div>
           </CardContent>
         </Card>
