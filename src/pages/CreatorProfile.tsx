@@ -12,8 +12,11 @@ import { CreatorMediaUpload } from "@/components/creator/CreatorMediaUpload";
 import { CreatorContentPackForm } from "@/components/creator/CreatorContentPackForm";
 import { CreatorContentPacks } from "@/components/creator/CreatorContentPacks";
 import { SendCreatorGiftDialog } from "@/components/creator/SendCreatorGiftDialog";
+import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
+import { CreatorLiveStreams } from "@/components/creator/CreatorLiveStreams";
+import { CreatorMerchStore } from "@/components/creator/CreatorMerchStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift } from "lucide-react";
+import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift, MessageCircle } from "lucide-react";
 
 interface Creator {
   id: string;
@@ -51,6 +54,7 @@ export default function CreatorProfile() {
     subscription_end?: string;
   }>({ subscribed: false });
   const [giftDialogOpen, setGiftDialogOpen] = useState(false);
+  const [paidMessageDialogOpen, setPaidMessageDialogOpen] = useState(false);
 
   useEffect(() => {
     loadCreatorProfile();
@@ -264,14 +268,24 @@ export default function CreatorProfile() {
                     </Badge>
                   )}
                   {!isOwnProfile && (
-                    <Button
-                      variant="outline"
-                      onClick={() => setGiftDialogOpen(true)}
-                      className="flex items-center gap-2"
-                    >
-                      <Gift className="h-5 w-5" />
-                      Send Gift
-                    </Button>
+                    <>
+                      <Button
+                        variant="outline"
+                        onClick={() => setPaidMessageDialogOpen(true)}
+                        className="flex items-center gap-2"
+                      >
+                        <MessageCircle className="h-5 w-5" />
+                        Paid DM
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setGiftDialogOpen(true)}
+                        className="flex items-center gap-2"
+                      >
+                        <Gift className="h-5 w-5" />
+                        Gift
+                      </Button>
+                    </>
                   )}
                 </div>
               </div>
@@ -291,6 +305,12 @@ export default function CreatorProfile() {
               }}
             />
           )}
+
+          {/* Live Streams */}
+          {!isOwnProfile && <CreatorLiveStreams creatorId={creatorId!} />}
+
+          {/* Merch Store */}
+          {!isOwnProfile && <CreatorMerchStore creatorId={creatorId!} />}
 
           {/* Content Packs */}
           {!isOwnProfile && (
@@ -340,6 +360,14 @@ export default function CreatorProfile() {
       <SendCreatorGiftDialog
         open={giftDialogOpen}
         onOpenChange={setGiftDialogOpen}
+        creatorId={creator.id}
+        creatorName={creator.display_name}
+      />
+
+      {/* Paid Message Dialog */}
+      <PaidMessageDialog
+        open={paidMessageDialogOpen}
+        onOpenChange={setPaidMessageDialogOpen}
         creatorId={creator.id}
         creatorName={creator.display_name}
       />

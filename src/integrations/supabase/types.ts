@@ -7236,6 +7236,98 @@ export type Database = {
           },
         ]
       }
+      creator_live_stream_access: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          creator_payout: number
+          id: string
+          platform_fee: number
+          stream_id: string | null
+          stripe_session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string
+          creator_payout: number
+          id?: string
+          platform_fee: number
+          stream_id?: string | null
+          stripe_session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          creator_payout?: number
+          id?: string
+          platform_fee?: number
+          stream_id?: string | null
+          stripe_session_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_live_stream_access_stream_id_fkey"
+            columns: ["stream_id"]
+            isOneToOne: false
+            referencedRelation: "creator_live_streams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_live_streams: {
+        Row: {
+          access_price: number | null
+          created_at: string
+          creator_id: string
+          description: string | null
+          ended_at: string | null
+          id: string
+          is_free: boolean | null
+          scheduled_at: string | null
+          started_at: string | null
+          status: string | null
+          stream_url: string | null
+          thumbnail_url: string | null
+          title: string
+          viewer_count: number | null
+        }
+        Insert: {
+          access_price?: number | null
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          is_free?: boolean | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title: string
+          viewer_count?: number | null
+        }
+        Update: {
+          access_price?: number | null
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          is_free?: boolean | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string | null
+          stream_url?: string | null
+          thumbnail_url?: string | null
+          title?: string
+          viewer_count?: number | null
+        }
+        Relationships: []
+      }
       creator_memberships: {
         Row: {
           creator_id: string
@@ -7284,6 +7376,137 @@ export type Database = {
           },
         ]
       }
+      creator_merch: {
+        Row: {
+          category: string | null
+          created_at: string
+          creator_id: string
+          description: string | null
+          digital_file_url: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_digital: boolean | null
+          name: string
+          price: number
+          stock_quantity: number | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          creator_id: string
+          description?: string | null
+          digital_file_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_digital?: boolean | null
+          name: string
+          price: number
+          stock_quantity?: number | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          creator_id?: string
+          description?: string | null
+          digital_file_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_digital?: boolean | null
+          name?: string
+          price?: number
+          stock_quantity?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      creator_merch_orders: {
+        Row: {
+          amount: number
+          buyer_id: string
+          created_at: string
+          creator_id: string
+          creator_payout: number
+          id: string
+          merch_id: string | null
+          platform_fee: number
+          quantity: number | null
+          shipping_address: Json | null
+          status: string | null
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          created_at?: string
+          creator_id: string
+          creator_payout: number
+          id?: string
+          merch_id?: string | null
+          platform_fee: number
+          quantity?: number | null
+          shipping_address?: Json | null
+          status?: string | null
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          created_at?: string
+          creator_id?: string
+          creator_payout?: number
+          id?: string
+          merch_id?: string | null
+          platform_fee?: number
+          quantity?: number | null
+          shipping_address?: Json | null
+          status?: string | null
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_merch_orders_merch_id_fkey"
+            columns: ["merch_id"]
+            isOneToOne: false
+            referencedRelation: "creator_merch"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      creator_message_settings: {
+        Row: {
+          auto_reply_message: string | null
+          created_at: string
+          creator_id: string
+          id: string
+          is_enabled: boolean | null
+          price_per_message: number | null
+          updated_at: string
+        }
+        Insert: {
+          auto_reply_message?: string | null
+          created_at?: string
+          creator_id: string
+          id?: string
+          is_enabled?: boolean | null
+          price_per_message?: number | null
+          updated_at?: string
+        }
+        Update: {
+          auto_reply_message?: string | null
+          created_at?: string
+          creator_id?: string
+          id?: string
+          is_enabled?: boolean | null
+          price_per_message?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       creator_messages: {
         Row: {
           content: string
@@ -7308,6 +7531,54 @@ export type Database = {
           is_read?: boolean | null
           receiver_id?: string
           sender_id?: string
+        }
+        Relationships: []
+      }
+      creator_paid_messages: {
+        Row: {
+          amount_paid: number
+          content: string
+          created_at: string
+          creator_id: string
+          creator_payout: number
+          id: string
+          is_read: boolean | null
+          platform_fee: number
+          replied_at: string | null
+          reply: string | null
+          sender_id: string
+          status: string | null
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount_paid: number
+          content: string
+          created_at?: string
+          creator_id: string
+          creator_payout: number
+          id?: string
+          is_read?: boolean | null
+          platform_fee: number
+          replied_at?: string | null
+          reply?: string | null
+          sender_id: string
+          status?: string | null
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount_paid?: number
+          content?: string
+          created_at?: string
+          creator_id?: string
+          creator_payout?: number
+          id?: string
+          is_read?: boolean | null
+          platform_fee?: number
+          replied_at?: string | null
+          reply?: string | null
+          sender_id?: string
+          status?: string | null
+          stripe_session_id?: string | null
         }
         Relationships: []
       }
