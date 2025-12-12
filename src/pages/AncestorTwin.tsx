@@ -123,9 +123,35 @@ const AncestorTwin = () => {
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Ancestor Twin Finder
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
             Discover your celebrity double from history! Find your lookalike among historical figures, celebrities, and famous artworks.
           </p>
+          
+          {/* Detailed Description */}
+          <div className="bg-card/50 backdrop-blur-sm rounded-xl p-6 max-w-4xl mx-auto text-left border border-border/50">
+            <h2 className="text-xl font-bold mb-4 text-center">About Ancestor Twin Finder</h2>
+            <p className="text-muted-foreground mb-4">
+              Ever wondered if you have a historical doppelgänger? Ancestor Twin Finder uses advanced AI facial recognition technology to analyze your facial features and match them with thousands of historical figures, celebrities, and famous artworks from throughout history.
+            </p>
+            
+            <h3 className="font-semibold mb-2">How to Use:</h3>
+            <ul className="text-muted-foreground space-y-2 mb-4 list-disc list-inside">
+              <li><strong>Upload a Photo:</strong> Take or upload a clear, front-facing photo of yourself with good lighting</li>
+              <li><strong>Choose a Package:</strong> Select from Basic (1 match), Extended (10 matches), or DNA Heritage (20+ matches with ancestry analysis)</li>
+              <li><strong>Get Your Matches:</strong> Our AI analyzes your facial structure, features, and characteristics to find your historical lookalikes</li>
+              <li><strong>View Results:</strong> See your matches with similarity percentages, historical biographies, and downloadable photos</li>
+            </ul>
+            
+            <h3 className="font-semibold mb-2">Features:</h3>
+            <ul className="text-muted-foreground space-y-1 list-disc list-inside">
+              <li>Match with famous historical figures, royalty, artists, and celebrities</li>
+              <li>Get detailed similarity scores and facial feature analysis</li>
+              <li>Learn about your matches through historical biographies</li>
+              <li>Download high-quality comparison images</li>
+              <li>Optional: Order a Renaissance-style art print of yourself on canvas</li>
+              <li>Premium subscribers get weekly new matches and AI avatars in historical costumes</li>
+            </ul>
+          </div>
           
           <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
             {subscription?.hasSubscription && (
