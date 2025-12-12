@@ -267,8 +267,8 @@ export default function CreativeForge() {
   const selectedCategoryData = CATEGORIES.find(c => c.id === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-20 pb-12">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-20 pb-12 overflow-x-hidden">
+      <div className="w-full max-w-7xl mx-auto px-3 sm:px-4">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
@@ -280,8 +280,8 @@ export default function CreativeForge() {
             </h1>
             <p className="text-muted-foreground mt-1">AI-Powered Creative Writing Studio</p>
           </div>
-          <Badge variant="outline" className="text-lg px-4 py-2">
-            <Sparkles className="h-4 w-4 mr-2" />
+          <Badge variant="outline" className="text-sm sm:text-lg px-2 sm:px-4 py-1 sm:py-2 flex-shrink-0">
+            <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
             {creditsLoading ? "..." : credits?.credits_remaining || 0} Credits
           </Badge>
         </div>
@@ -304,9 +304,9 @@ export default function CreativeForge() {
 
           {/* Create Tab */}
           <TabsContent value="create" className="space-y-6">
-            <div className="grid lg:grid-cols-3 gap-6">
+            <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
               {/* Category Selection */}
-              <Card className="lg:col-span-1">
+              <Card className="lg:col-span-1 overflow-hidden">
                 <CardHeader>
                   <CardTitle className="text-lg">Content Type</CardTitle>
                   <CardDescription>Choose what you want to create</CardDescription>
@@ -350,7 +350,7 @@ export default function CreativeForge() {
               </Card>
 
               {/* Input Form */}
-              <Card className="lg:col-span-1">
+              <Card className="lg:col-span-1 overflow-hidden">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     {selectedCategoryData && <selectedCategoryData.icon className="h-5 w-5" />}
@@ -468,7 +468,7 @@ export default function CreativeForge() {
               </Card>
 
               {/* Output */}
-              <Card className="lg:col-span-1">
+              <Card className="lg:col-span-1 overflow-hidden">
                 <CardHeader>
                   <CardTitle className="text-lg">Generated Content</CardTitle>
                   <CardDescription>Your AI-created masterpiece</CardDescription>
@@ -536,7 +536,7 @@ export default function CreativeForge() {
 
           {/* History Tab */}
           <TabsContent value="history">
-            <Card>
+            <Card className="overflow-hidden">
               <CardHeader>
                 <CardTitle>Your Projects</CardTitle>
                 <CardDescription>Previously generated content</CardDescription>
@@ -603,8 +603,8 @@ export default function CreativeForge() {
 
           {/* Credits Tab */}
           <TabsContent value="credits">
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card>
+            <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
+              <Card className="overflow-hidden">
                 <CardHeader>
                   <CardTitle>Credit Packages</CardTitle>
                   <CardDescription>Purchase credits to create content</CardDescription>
@@ -634,7 +634,7 @@ export default function CreativeForge() {
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="overflow-hidden">
                 <CardHeader>
                   <CardTitle>Credit Costs</CardTitle>
                   <CardDescription>How many credits each type costs</CardDescription>
