@@ -181,11 +181,11 @@ export default function MembershipCommunity() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
           <div className="p-6 rounded-lg bg-card border">
-            <div className="text-3xl font-bold text-primary mb-1">15-20%</div>
+            <div className="text-3xl font-bold text-primary mb-1">10%</div>
             <div className="text-sm text-muted-foreground">Platform Fee</div>
           </div>
           <div className="p-6 rounded-lg bg-card border">
-            <div className="text-3xl font-bold text-primary mb-1">80-85%</div>
+            <div className="text-3xl font-bold text-primary mb-1">90%</div>
             <div className="text-sm text-muted-foreground">You Keep</div>
           </div>
           <div className="p-6 rounded-lg bg-card border">
@@ -197,6 +197,89 @@ export default function MembershipCommunity() {
             <div className="text-sm text-muted-foreground">Community Chat</div>
           </div>
         </div>
+      </section>
+
+      {/* About Section - What is Membership Community */}
+      <section className="container mx-auto px-4 py-16">
+        <Card className="border-2">
+          <CardHeader>
+            <CardTitle className="text-2xl">What is Membership Community?</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-muted-foreground">
+              Membership Community is a premium subscription platform similar to Patreon or OnlyFans (SFW version), 
+              designed for creators who want to monetize their content and build dedicated fan communities. 
+              Whether you're a fitness coach, educator, artist, musician, or business mentor, our platform 
+              provides all the tools you need to earn recurring revenue from your most loyal supporters.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <Crown className="h-5 w-5 text-primary" />
+                  For Creators: How to Start Earning
+                </h3>
+                <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                  <li><strong>Sign in</strong> to your account or create a new one</li>
+                  <li>Click <strong>"Become a Creator"</strong> button to set up your profile</li>
+                  <li>Customize your <strong>creator profile</strong> with a bio and avatar</li>
+                  <li>Create <strong>subscription tiers</strong> with different price points (e.g., €5, €15, €50/month)</li>
+                  <li>Define <strong>exclusive benefits</strong> for each tier (content access, direct messages, shoutouts)</li>
+                  <li>Start posting <strong>exclusive content</strong> for your subscribers</li>
+                  <li>Engage with your community through <strong>real-time group chats</strong></li>
+                  <li><strong>Receive monthly payouts</strong> - you keep 90% of all earnings!</li>
+                </ol>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <Heart className="h-5 w-5 text-primary" />
+                  For Fans: How to Support Creators
+                </h3>
+                <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                  <li><strong>Browse creators</strong> in the discovery section below</li>
+                  <li>Use the <strong>search bar</strong> to find creators by name or topic</li>
+                  <li>Click <strong>"View"</strong> to see a creator's profile and content preview</li>
+                  <li>Choose a <strong>subscription tier</strong> that fits your budget</li>
+                  <li>Complete payment via <strong>secure Stripe checkout</strong></li>
+                  <li>Access <strong>exclusive content</strong> immediately after subscribing</li>
+                  <li>Join <strong>community chats</strong> and interact with the creator and other fans</li>
+                  <li>Send <strong>tips and gifts</strong> to show extra appreciation</li>
+                </ol>
+              </div>
+            </div>
+
+            <div className="bg-secondary/30 rounded-lg p-6 space-y-4">
+              <h3 className="font-semibold text-lg">Creator Revenue Model</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="space-y-2">
+                  <div className="font-medium text-primary">You Keep 90%</div>
+                  <p className="text-muted-foreground">Industry-leading payout rate. For every €100 in subscriptions, you receive €90 directly to your account.</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-medium text-primary">Monthly Payouts</div>
+                  <p className="text-muted-foreground">Automatic monthly payments to your bank account or PayPal. No minimum threshold required.</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-medium text-primary">Multiple Revenue Streams</div>
+                  <p className="text-muted-foreground">Earn from subscriptions, tips, gifts, and exclusive paid content. Maximize your income potential.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-primary/5 rounded-lg p-6">
+              <h3 className="font-semibold text-lg mb-3">Content You Can Share</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>• Posts & Articles:</strong> Text updates, behind-the-scenes stories, exclusive announcements</li>
+                <li><strong>• Photos & Videos:</strong> Premium visual content available only to subscribers</li>
+                <li><strong>• Live Sessions:</strong> Host live streams and Q&A sessions for your community</li>
+                <li><strong>• Courses & Tutorials:</strong> Educational content, workout plans, cooking recipes, business advice</li>
+                <li><strong>• Community Chats:</strong> Discord-style group conversations with different access levels per tier</li>
+                <li><strong>• Direct Messages:</strong> Personal 1-on-1 communication with top-tier subscribers</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
       </section>
 
       {/* Features Section */}
@@ -329,7 +412,7 @@ export default function MembershipCommunity() {
             </div>
             <h3 className="text-xl font-semibold mb-2">Earn Recurring Revenue</h3>
             <p className="text-muted-foreground">
-              Get paid monthly as your community grows. Keep 80-85% of all subscription revenue
+              Get paid monthly as your community grows. Keep 90% of all subscription revenue
             </p>
           </div>
         </div>
