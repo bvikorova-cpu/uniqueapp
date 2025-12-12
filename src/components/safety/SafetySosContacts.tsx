@@ -147,33 +147,55 @@ const SafetySosContacts = () => {
             <CardContent>
               <div className="space-y-3">
                 {region.contacts.map((contact, index) => (
-                  <div key={index} className="flex items-start justify-between p-3 rounded-lg border hover:bg-accent/50 transition-colors">
-                    <div className="flex items-start gap-3">
-                      <div className="mt-1">{getTypeIcon(contact.type)}</div>
-                      <div>
-                        <p className="font-semibold">{contact.name}</p>
-                        <p className="text-sm text-muted-foreground">{contact.description}</p>
+                  <div key={index} className="p-3 rounded-lg border hover:bg-accent/50 transition-colors">
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="mt-1 shrink-0">{getTypeIcon(contact.type)}</div>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold break-words">{contact.name}</p>
+                        <p className="text-sm text-muted-foreground break-words">{contact.description}</p>
                         {contact.number && (
-                          <p className="text-sm font-mono mt-1">{contact.number}</p>
+                          <p className="text-sm font-mono mt-1 break-words">{contact.number}</p>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       {getTypeBadge(contact.type)}
-                      {contact.url ? (
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={contact.url} target="_blank" rel="noopener noreferrer">
+                      {contact.url && (
+                        <a 
+                          href={contact.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex"
+                        >
+                          <Button variant="outline" size="sm">
                             <ExternalLink className="h-3 w-3 mr-1" />
                             Visit
-                          </a>
-                        </Button>
-                      ) : contact.number && (
-                        <Button variant="outline" size="sm" asChild>
-                          <a href={`tel:${contact.number.replace(/[^0-9+]/g, '')}`}>
+                          </Button>
+                        </a>
+                      )}
+                      {contact.number && contact.type === "phone" && (
+                        <a href={`tel:${contact.number.replace(/[^0-9+]/g, '')}`} className="inline-flex">
+                          <Button variant="outline" size="sm">
                             <Phone className="h-3 w-3 mr-1" />
                             Call
-                          </a>
-                        </Button>
+                          </Button>
+                        </a>
+                      )}
+                      {contact.number && contact.type === "emergency" && (
+                        <a href="tel:112" className="inline-flex">
+                          <Button variant="destructive" size="sm">
+                            <Phone className="h-3 w-3 mr-1" />
+                            Call
+                          </Button>
+                        </a>
+                      )}
+                      {contact.number && contact.type === "text" && (
+                        <a href="sms:741741?body=HOME" className="inline-flex">
+                          <Button variant="outline" size="sm">
+                            <MessageCircle className="h-3 w-3 mr-1" />
+                            Text
+                          </Button>
+                        </a>
                       )}
                     </div>
                   </div>
