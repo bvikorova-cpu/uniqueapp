@@ -205,7 +205,7 @@ const Navbar = () => {
     { path: "/skill-swap", label: "Global Skill Swap", icon: Globe },
     { path: "/ancestor-twin", label: "Ancestor Twin Finder", icon: Users },
     { path: "/lottery-ai", label: "Lottery Numbers - AI Predictions", icon: Sparkles },
-    { path: "/sports-predictor", label: "Sports Match Predictions", icon: Trophy },
+    
     { path: "/property-marketplace", label: "Property Marketplace", icon: Building2 },
     { path: "/membership-community", label: "Membership Community", icon: Users },
     { path: "/crystal-energy-network", label: "Crystal & Energy Network", icon: Gem },
