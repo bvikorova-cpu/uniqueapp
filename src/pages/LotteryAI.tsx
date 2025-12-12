@@ -69,7 +69,7 @@ const PRICING_TIERS = [
     price: "9.99",
     period: "month",
     features: [
-      "30 generations per day",
+      "30 generations per month",
       "Advanced analytics",
       "Pattern notifications",
       "Save unlimited combinations",
