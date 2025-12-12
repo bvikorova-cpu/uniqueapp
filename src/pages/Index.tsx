@@ -143,15 +143,6 @@ const Index = () => {
       gradient: "from-blue-600 to-indigo-600"
     },
     {
-      title: "⚽ Sports Match Predictions",
-      description: "Expert tipsters + AI predictions for sports betting with win rate stats",
-      icon: TrendingUp,
-      path: "/sports-predictor",
-      badge: "Sports",
-      badgeColor: "bg-green-600",
-      gradient: "from-green-600 to-emerald-600"
-    },
-    {
       title: "🎭 Shadow Arena",
       description: "Horror storytelling platform with creator battles & AI-enhanced stories",
       icon: Ghost,

@@ -545,11 +545,6 @@ const App = () => {
               <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
           <Route path="/lottery-ai" element={<LotteryAI />} />
-          <Route path="/sports-predictor" element={<SportsPredictor />} />
-           <Route path="/my-purchased-tips" element={<ProtectedRoute><MyPurchasedTips /></ProtectedRoute>} />
-           <Route path="/tipster-dashboard" element={<ProtectedRoute><TipsterDashboard /></ProtectedRoute>} />
-           <Route path="/sports-admin" element={<ProtectedRoute requireAdmin={true}><SportsAdmin /></ProtectedRoute>} />
-           <Route path="/admin/sports-matches" element={<ProtectedRoute requireAdmin={true}><AdminSportsMatches /></ProtectedRoute>} />
           <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/stock-content-library" element={<StockContentLibrary />} />
           <Route path="/tutorial-platform" element={<TutorialPlatform />} />
