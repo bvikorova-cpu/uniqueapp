@@ -21,7 +21,10 @@ const legalInfo = [
         content: "Right to a safe school environment, right to report without retaliation, right to accommodations if bullying affects learning."
       }
     ],
-    resources: ["StopBullying.gov", "US Department of Education"]
+    resources: [
+      { name: "StopBullying.gov", url: "https://www.stopbullying.gov" },
+      { name: "US Department of Education", url: "https://www.ed.gov" }
+    ]
   },
   {
     country: "United Kingdom",
@@ -40,7 +43,10 @@ const legalInfo = [
         content: "Right to complain to school governors, right to involve local authority if school doesn't act."
       }
     ],
-    resources: ["Anti-Bullying Alliance", "Childline UK"]
+    resources: [
+      { name: "Anti-Bullying Alliance", url: "https://anti-bullyingalliance.org.uk" },
+      { name: "Childline UK", url: "https://www.childline.org.uk" }
+    ]
   },
   {
     country: "European Union",
@@ -59,7 +65,10 @@ const legalInfo = [
         content: "Each EU country has specific anti-bullying legislation. Many have criminal penalties for severe bullying."
       }
     ],
-    resources: ["EU Kids Online", "Better Internet for Kids"]
+    resources: [
+      { name: "EU Kids Online", url: "https://www.lse.ac.uk/media-and-communications/research/research-projects/eu-kids-online" },
+      { name: "Better Internet for Kids", url: "https://www.betterinternetforkids.eu" }
+    ]
   },
   {
     country: "Canada",
@@ -78,7 +87,10 @@ const legalInfo = [
         content: "Right to safe learning environment, right to report to police if criminal, right to human rights complaint if discrimination-based."
       }
     ],
-    resources: ["PREVNet", "Kids Help Phone"]
+    resources: [
+      { name: "PREVNet", url: "https://www.prevnet.ca" },
+      { name: "Kids Help Phone", url: "https://kidshelpphone.ca" }
+    ]
   },
   {
     country: "Australia",
@@ -97,7 +109,10 @@ const legalInfo = [
         content: "Right to report to eSafety Commissioner, right to safe workplace under Work Health and Safety Act."
       }
     ],
-    resources: ["eSafety Commissioner", "Bullying. No Way!"]
+    resources: [
+      { name: "eSafety Commissioner", url: "https://www.esafety.gov.au" },
+      { name: "Bullying. No Way!", url: "https://bullyingnoway.gov.au" }
+    ]
   }
 ];
 
@@ -160,10 +175,18 @@ const SafetyLegalInfo = () => {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {country.resources.map((resource, index) => (
-                    <Badge key={index} variant="outline" className="cursor-pointer">
-                      <ExternalLink className="h-3 w-3 mr-1" />
-                      {resource}
-                    </Badge>
+                    <a
+                      key={index}
+                      href={resource.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex"
+                    >
+                      <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 transition-colors">
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        {resource.name}
+                      </Badge>
+                    </a>
                   ))}
                 </div>
               </div>
