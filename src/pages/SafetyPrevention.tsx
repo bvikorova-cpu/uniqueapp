@@ -382,21 +382,21 @@ const SafetyPrevention = () => {
               <CardContent>
                 <ScrollArea className="h-[400px] border rounded-lg p-4 mb-4 bg-muted/30">
                   {messages.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-8">
+                    <div className="text-center text-muted-foreground py-8 px-2 overflow-hidden">
                       <Heart className="h-12 w-12 mx-auto mb-4 text-primary/50" />
-                      <p className="text-lg font-medium">You're not alone.</p>
-                      <p className="mt-2">Start a conversation whenever you're ready. I'm here to listen and help.</p>
-                      <div className="mt-4 flex flex-wrap justify-center gap-2">
-                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10" onClick={() => setInput("I'm being bullied at school and don't know what to do")}>
+                      <p className="text-lg font-medium break-words">You're not alone.</p>
+                      <p className="mt-2 break-words text-sm sm:text-base">Start a conversation whenever you're ready. I'm here to listen and help.</p>
+                      <div className="mt-4 grid grid-cols-2 gap-2 max-w-full">
+                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 text-xs sm:text-sm whitespace-normal h-auto py-2 px-2 justify-center text-center" onClick={() => setInput("I'm being bullied at school and don't know what to do")}>
                           I'm being bullied
                         </Badge>
-                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10" onClick={() => setInput("My friend is being bullied, how can I help?")}>
+                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 text-xs sm:text-sm whitespace-normal h-auto py-2 px-2 justify-center text-center" onClick={() => setInput("My friend is being bullied, how can I help?")}>
                           My friend is being bullied
                         </Badge>
-                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10" onClick={() => setInput("I'm feeling overwhelmed and anxious")}>
+                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 text-xs sm:text-sm whitespace-normal h-auto py-2 px-2 justify-center text-center" onClick={() => setInput("I'm feeling overwhelmed and anxious")}>
                           I'm feeling anxious
                         </Badge>
-                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10" onClick={() => setInput("How do I report cyberbullying?")}>
+                        <Badge variant="outline" className="cursor-pointer hover:bg-primary/10 text-xs sm:text-sm whitespace-normal h-auto py-2 px-2 justify-center text-center" onClick={() => setInput("How do I report cyberbullying?")}>
                           Cyberbullying help
                         </Badge>
                       </div>
