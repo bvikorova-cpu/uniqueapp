@@ -286,6 +286,39 @@ export default function CreativeForge() {
           </Badge>
         </div>
 
+        {/* About Section */}
+        <Card className="mb-6 bg-gradient-to-r from-primary/5 via-purple-500/5 to-pink-500/5 border-primary/20">
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                  What is CreativeForge?
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  CreativeForge is an AI-powered creative writing studio that helps you generate professional-quality content across multiple formats. Whether you need song lyrics, screenplays, novels, poetry, stand-up comedy scripts, podcast content, or advertising copy — our AI assistant creates compelling content tailored to your vision.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-md font-semibold mb-2">How to Use</h3>
+                <ol className="text-sm text-muted-foreground space-y-1.5 list-decimal list-inside">
+                  <li><strong>Choose Content Type:</strong> Select the type of content you want to create (Song Lyrics, Screenplay, Novel, etc.)</li>
+                  <li><strong>Describe Your Vision:</strong> Enter your title/theme, genre, mood, and any additional details</li>
+                  <li><strong>Optional Style Reference:</strong> Choose to write in the style of famous artists or writers</li>
+                  <li><strong>Generate:</strong> Click the Generate button — the AI will create your content instantly</li>
+                  <li><strong>Revise if Needed:</strong> Request revisions to fine-tune your content (costs 3 credits)</li>
+                  <li><strong>Download or Copy:</strong> Save your masterpiece to your device or clipboard</li>
+                </ol>
+              </div>
+
+              <p className="text-xs text-muted-foreground border-t pt-3">
+                <strong>Credits:</strong> Each generation costs credits based on content type. Purchase credit packages in the Credits tab. Your generated projects are saved in History for easy access anytime.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3 max-w-md">
             <TabsTrigger value="create" className="gap-2">
