@@ -300,6 +300,79 @@ export default function PropertyMarketplace() {
           </Button>
         </div>
 
+        {/* About Section */}
+        <Card className="mb-12">
+          <CardHeader>
+            <CardTitle className="text-2xl">What is Property Marketplace?</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-muted-foreground">
+              Property Marketplace is a comprehensive real estate platform designed for both professional agents and private sellers. 
+              Whether you're looking to buy your dream home, sell a property, or expand your real estate portfolio, our platform 
+              provides all the tools you need for a successful transaction.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-primary" />
+                  How to List Your Property
+                </h3>
+                <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                  <li><strong>Sign in</strong> to your account or create a new one</li>
+                  <li>Click <strong>"Add Listing"</strong> button above</li>
+                  <li>Fill in property details: location, price, area, rooms, and description</li>
+                  <li>Upload <strong>high-quality photos</strong> of your property</li>
+                  <li>Choose a <strong>listing package</strong> (Basic, Premium, or Featured)</li>
+                  <li>Complete payment and your listing goes live immediately</li>
+                </ol>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg flex items-center gap-2">
+                  <MapPin className="h-5 w-5 text-primary" />
+                  How to Find a Property
+                </h3>
+                <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+                  <li>Use the <strong>search filters</strong> below to narrow your search</li>
+                  <li>Filter by <strong>location, price range, area, and number of rooms</strong></li>
+                  <li>Browse through available listings in the <strong>property grid</strong></li>
+                  <li>Click on any property to view <strong>full details and photos</strong></li>
+                  <li>Contact the seller directly through the <strong>built-in messaging system</strong></li>
+                  <li>Save favorite properties to your <strong>wishlist</strong> for later</li>
+                </ol>
+              </div>
+            </div>
+
+            <div className="bg-secondary/30 rounded-lg p-6 space-y-4">
+              <h3 className="font-semibold text-lg">Listing Package Benefits</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div className="space-y-2">
+                  <div className="font-medium text-primary">Basic (€29)</div>
+                  <p className="text-muted-foreground">30-day listing with photo gallery, property description, and email notifications. Perfect for private sellers.</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-medium text-primary">Premium (€79)</div>
+                  <p className="text-muted-foreground">60-day listing with video tours, top search placement, 3D virtual walkthrough, featured badge, and priority support.</p>
+                </div>
+                <div className="space-y-2">
+                  <div className="font-medium text-primary">Featured (€149)</div>
+                  <p className="text-muted-foreground">90-day listing with homepage banner, social media tools, 3D tours, premium placement, and advanced analytics dashboard.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-primary/5 rounded-lg p-6">
+              <h3 className="font-semibold text-lg mb-3">Additional Services</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><strong>• Virtual Tour Hosting (€99):</strong> Add interactive 3D virtual tours to attract more buyers</li>
+                <li><strong>• Lead Boost (€19):</strong> Push your listing to 1000+ potential buyers via email marketing</li>
+                <li><strong>• Home Decor Marketplace (€7.99/month):</strong> AI-powered room design with AR preview for decorations</li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Advanced Search */}
         <Card className="mb-12">
           <CardHeader>
