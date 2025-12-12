@@ -157,10 +157,10 @@ const SafetyPrevention = () => {
               While our tools can provide support and education, they are not a substitute for professional mental health services.
               If you are experiencing severe distress, thoughts of self-harm, or are in immediate danger, please contact emergency services or a mental health professional immediately.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Badge variant="destructive">Not Medical Advice</Badge>
-              <Badge variant="destructive">Educational Only</Badge>
-              <Badge variant="destructive">Seek Professional Help for Serious Issues</Badge>
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <Badge variant="destructive" className="text-center justify-center py-2 h-auto whitespace-normal">Not Medical Advice</Badge>
+              <Badge variant="destructive" className="text-center justify-center py-2 h-auto whitespace-normal">Educational Only</Badge>
+              <Badge variant="destructive" className="text-center justify-center py-2 h-auto whitespace-normal">Seek Professional Help for Serious Issues</Badge>
             </div>
           </CardContent>
         </Card>
