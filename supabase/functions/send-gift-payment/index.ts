@@ -35,9 +35,9 @@ serve(async (req) => {
 
     if (!gift) throw new Error("Gift not found");
 
-    // Calculate fees (20% platform fee)
+    // Calculate fees (10% platform fee)
     const amountPaid = Number(gift.price);
-    const platformFee = amountPaid * 0.20;
+    const platformFee = amountPaid * 0.10;
     const creatorEarning = amountPaid - platformFee;
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
