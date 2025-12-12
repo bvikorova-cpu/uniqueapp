@@ -69,9 +69,9 @@ const PRICING_TIERS = [
     price: "9.99",
     period: "month",
     features: [
-      "Unlimited generations",
+      "30 generations per day",
       "Advanced analytics",
-      "Lucky day notifications",
+      "Pattern notifications",
       "Save unlimited combinations",
       "Historical pattern analysis",
       "Priority AI processing",
