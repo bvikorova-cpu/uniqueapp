@@ -437,9 +437,9 @@ const PhobiaTrading = () => {
                 </li>
               </ul>
               
-              <div className="p-3 bg-amber-900/30 border border-amber-600/50 rounded-lg">
-                <p className="text-xs text-amber-500 dark:text-amber-300">
-                  <strong className="text-amber-600 dark:text-amber-200">Disclaimer:</strong> This platform is designed for entertainment and self-improvement purposes. It does not replace professional psychological or psychiatric treatment. If you experience severe anxiety or phobias, please consult a qualified mental health professional.
+              <div className="p-3 bg-slate-800 border border-slate-600 rounded-lg">
+                <p className="text-xs text-slate-100">
+                  <strong className="text-white">Disclaimer:</strong> This platform is designed for entertainment and self-improvement purposes. It does not replace professional psychological or psychiatric treatment. If you experience severe anxiety or phobias, please consult a qualified mental health professional.
                 </p>
               </div>
             </CardContent>
