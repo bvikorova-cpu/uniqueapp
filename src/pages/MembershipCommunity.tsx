@@ -38,10 +38,31 @@ export default function MembershipCommunity() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCreators, setFilteredCreators] = useState<Creator[]>([]);
   const [loadingCreators, setLoadingCreators] = useState(true);
+  const [myCreatorProfile, setMyCreatorProfile] = useState<Creator | null>(null);
 
   useEffect(() => {
     loadCreators();
+    checkMyCreatorProfile();
   }, []);
+
+  const checkMyCreatorProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from("creator_profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (data) {
+        setMyCreatorProfile(data);
+      }
+    } catch (error) {
+      console.error("Error checking creator profile:", error);
+    }
+  };
 
   useEffect(() => {
     if (searchTerm) {
@@ -128,20 +149,27 @@ export default function MembershipCommunity() {
       }
 
       // Create creator profile
-      const { error } = await supabase
+      const { data: newProfile, error } = await supabase
         .from("creator_profiles")
         .insert({
           user_id: user.id,
           display_name: user.email?.split("@")[0] || "Creator",
           bio: "New creator on the platform",
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
       toast({
         title: "Success!",
-        description: "Your creator profile has been created. Start building your community!",
+        description: "Your creator profile has been created. Redirecting to your profile...",
       });
+
+      // Redirect to the new creator profile
+      if (newProfile) {
+        navigate(`/creator/${newProfile.id}`);
+      }
     } catch (error: any) {
       toast({
         title: "Error",
@@ -172,10 +200,17 @@ export default function MembershipCommunity() {
         </p>
 
         <div className="flex flex-wrap gap-4 justify-center mb-12">
-          <Button size="lg" onClick={handleBecomeCreator} disabled={loading}>
-            <Crown className="mr-2 h-5 w-5" />
-            Become a Creator
-          </Button>
+          {myCreatorProfile ? (
+            <Button size="lg" onClick={() => navigate(`/creator/${myCreatorProfile.id}`)}>
+              <Crown className="mr-2 h-5 w-5" />
+              My Creator Profile
+            </Button>
+          ) : (
+            <Button size="lg" onClick={handleBecomeCreator} disabled={loading}>
+              <Crown className="mr-2 h-5 w-5" />
+              Become a Creator
+            </Button>
+          )}
         </div>
 
         {/* Stats */}
