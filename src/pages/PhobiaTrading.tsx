@@ -409,24 +409,59 @@ const PhobiaTrading = () => {
             Detect, trade, and overcome your fears with AI-powered tools
           </p>
 
+          {/* Feature Description */}
+          <Card className="mb-8 border-cyan-500/30 bg-gradient-to-br from-cyan-950/20 to-background">
+            <CardContent className="p-6">
+              <h3 className="text-xl font-bold text-cyan-400 mb-4">What is Phobia Trading Network?</h3>
+              <p className="text-muted-foreground mb-4 leading-relaxed">
+                Phobia Trading Network is the world's first AI-powered platform for detecting, understanding, trading, and overcoming your fears. Using advanced machine learning algorithms and evidence-based therapeutic techniques, we help you identify your phobias and provide personalized paths to recovery.
+              </p>
+              
+              <h4 className="font-semibold text-foreground mb-3">How to Use:</h4>
+              <ul className="space-y-2 text-muted-foreground text-sm mb-4">
+                <li className="flex items-start gap-2">
+                  <span className="text-cyan-400 font-bold">1.</span>
+                  <span><strong>Detect Phobia:</strong> Use our AI-powered detection tool to identify your specific fears through a series of questions and behavioral analysis.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-cyan-400 font-bold">2.</span>
+                  <span><strong>My Phobias:</strong> View and manage your detected phobias, track your progress, and access personalized insights about each fear.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-cyan-400 font-bold">3.</span>
+                  <span><strong>Marketplace:</strong> Browse the global phobia exchange to trade fears with others, discover rare phobias, and connect with people facing similar challenges.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-cyan-400 font-bold">4.</span>
+                  <span><strong>Cure Dashboard:</strong> Access AI-powered therapy sessions, VR exposure therapy, personalized treatment plans, and track your journey to recovery.</span>
+                </li>
+              </ul>
+              
+              <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                <p className="text-xs text-amber-200">
+                  <strong>Disclaimer:</strong> This platform is designed for entertainment and self-improvement purposes. It does not replace professional psychological or psychiatric treatment. If you experience severe anxiety or phobias, please consult a qualified mental health professional.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
           <Tabs defaultValue="detect" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
-              <TabsTrigger value="detect" className="text-base">
-                <Brain className="w-4 h-4 mr-2" />
+            <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full h-auto gap-2 p-2 mb-8">
+              <TabsTrigger value="detect" className="text-xs sm:text-sm py-2">
+                <Brain className="w-4 h-4 mr-1 sm:mr-2" />
                 Detect Phobia
               </TabsTrigger>
-              <TabsTrigger value="my-phobias" className="text-base">
-                <Brain className="w-4 h-4 mr-2" />
+              <TabsTrigger value="my-phobias" className="text-xs sm:text-sm py-2">
+                <Brain className="w-4 h-4 mr-1 sm:mr-2" />
                 My Phobias
               </TabsTrigger>
-              <TabsTrigger value="marketplace" className="text-base">
-                <ShoppingCart className="w-4 h-4 mr-2" />
+              <TabsTrigger value="marketplace" className="text-xs sm:text-sm py-2">
+                <ShoppingCart className="w-4 h-4 mr-1 sm:mr-2" />
                 Marketplace
               </TabsTrigger>
-              <TabsTrigger value="cure" className="text-base">
-                <HeartPulse className="w-4 h-4 mr-2" />
-                Cure Dashboard
-              </TabsTrigger>
+              <TabsTrigger value="cure" className="text-xs sm:text-sm py-2">
+                <HeartPulse className="w-4 h-4 mr-1 sm:mr-2" />
+                Cure</TabsTrigger>
             </TabsList>
 
             <TabsContent value="detect">
