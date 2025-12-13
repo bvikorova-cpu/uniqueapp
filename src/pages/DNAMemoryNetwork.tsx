@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Dna, Users, Heart, Baby, Sparkles, Shield, Award } from "lucide-react";
+import { Dna, Users, Heart, Baby, Sparkles, Shield, Award, Check } from "lucide-react";
 import { DNAUploadSection } from "@/components/dna/DNAUploadSection";
 import { AncestralMemoryViewer } from "@/components/dna/AncestralMemoryViewer";
 import { GeneticDatingSection } from "@/components/dna/GeneticDatingSection";
@@ -143,7 +143,7 @@ const DNAMemoryNetwork = () => {
               Unlock the secrets encoded in your DNA. Connect with your ancestral past, 
               find genetically compatible partners, and create your digital legacy.
             </p>
-            <div className="flex flex-wrap gap-6 justify-center text-sm">
+            <div className="flex flex-wrap gap-6 justify-center text-sm mb-10">
               <div className="flex items-center gap-2">
                 <Award className="w-5 h-5 text-primary" />
                 <span>AI-Powered Analysis</span>
@@ -157,6 +157,68 @@ const DNAMemoryNetwork = () => {
                 <span>10K+ Users</span>
               </div>
             </div>
+            
+            {/* Detailed Description Card */}
+            <Card className="max-w-4xl mx-auto text-left bg-card/80 backdrop-blur-sm border-primary/20">
+              <CardContent className="p-6 md:p-8">
+                <h2 className="text-2xl font-bold mb-4 text-primary">What is DNA Social Memory Network?</h2>
+                <p className="text-muted-foreground mb-6">
+                  DNA Social Memory Network is a revolutionary AI-powered platform that combines cutting-edge genetic analysis with artificial intelligence to help you discover your ancestral heritage, find genetically compatible partners, and create a lasting digital legacy. Our advanced algorithms reconstruct ancestral memories and provide deep insights into your genetic makeup.
+                </p>
+                
+                <h3 className="text-xl font-semibold mb-3">How to Use This Service:</h3>
+                <ul className="space-y-3 text-muted-foreground mb-6">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary font-bold">1.</span>
+                    <span><strong>DNA Analysis (€99):</strong> Upload your genetic data or order a test kit. Receive complete sequencing, ancestral memory reconstruction, and an interactive family tree.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary font-bold">2.</span>
+                    <span><strong>Ancestral Memories (€12/month):</strong> Access AI-generated stories and memories of your ancestors, including photo restoration and voice synthesis.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary font-bold">3.</span>
+                    <span><strong>Genetic Dating (€15/month):</strong> Find your perfect DNA-compatible partner through AI matching, health trait compatibility, and offspring predictions.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary font-bold">4.</span>
+                    <span><strong>Digital Offspring (€149):</strong> Create a fully interactive AI personality that inherits your genetic traits with voice and appearance generation.</span>
+                  </li>
+                </ul>
+                
+                <h3 className="text-xl font-semibold mb-3">Key Features:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+                  <div className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <span>Complete genetic sequencing analysis</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <span>AI-reconstructed ancestral memories</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <span>Photo restoration & colorization</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <span>Voice synthesis of ancestors</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <span>Genetic compatibility matching</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <span>Bank-level data security</span>
+                  </div>
+                </div>
+                
+                <p className="text-xs text-muted-foreground mt-6 italic">
+                  Disclaimer: DNA Social Memory Network provides entertainment and educational insights based on genetic data analysis. Results are AI-generated interpretations and should not be used for medical decisions. This service does not replace professional genetic counseling.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
