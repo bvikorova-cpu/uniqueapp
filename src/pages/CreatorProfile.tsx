@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { PaidMessageDialog } from "@/components/creator/PaidMessageDialog";
 import { CreatorLiveStreams } from "@/components/creator/CreatorLiveStreams";
 import { CreatorMerchStore } from "@/components/creator/CreatorMerchStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift, MessageCircle } from "lucide-react";
+import { Users, CheckCircle2, Crown, ShieldAlert, Instagram, Twitter, Gift, MessageCircle, Camera, ImagePlus } from "lucide-react";
 
 interface Creator {
   id: string;
@@ -55,6 +55,10 @@ export default function CreatorProfile() {
   }>({ subscribed: false });
   const [giftDialogOpen, setGiftDialogOpen] = useState(false);
   const [paidMessageDialogOpen, setPaidMessageDialogOpen] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadCreatorProfile();
@@ -167,6 +171,94 @@ export default function CreatorProfile() {
 
   const isOwnProfile = currentUserId === creatorId;
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !creator) return;
+
+    setUploadingAvatar(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${creator.id}-avatar-${Date.now()}.${fileExt}`;
+      const filePath = `creator-avatars/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('creator-media')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('creator-media')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('creator_profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', creator.id);
+
+      if (updateError) throw updateError;
+
+      setCreator({ ...creator, avatar_url: publicUrl });
+      toast({
+        title: "Avatar Updated",
+        description: "Your profile photo has been changed.",
+      });
+    } catch (error: any) {
+      console.error('Error uploading avatar:', error);
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: error.message || "Failed to upload avatar",
+      });
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !creator) return;
+
+    setUploadingCover(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${creator.id}-cover-${Date.now()}.${fileExt}`;
+      const filePath = `creator-covers/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('creator-media')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('creator-media')
+        .getPublicUrl(filePath);
+
+      const { error: updateError } = await supabase
+        .from('creator_profiles')
+        .update({ cover_image_url: publicUrl })
+        .eq('id', creator.id);
+
+      if (updateError) throw updateError;
+
+      setCreator({ ...creator, cover_image_url: publicUrl });
+      toast({
+        title: "Cover Updated",
+        description: "Your cover photo has been changed.",
+      });
+    } catch (error: any) {
+      console.error('Error uploading cover:', error);
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: error.message || "Failed to upload cover",
+      });
+    } finally {
+      setUploadingCover(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -185,16 +277,39 @@ export default function CreatorProfile() {
   return (
     <div className="min-h-screen bg-background">
       {/* Cover Image */}
-      {creator.cover_image_url && (
-        <div className="h-64 w-full relative">
+      <div className="h-64 w-full relative bg-gradient-to-br from-primary/20 to-primary/5">
+        {creator.cover_image_url && (
           <img
             src={creator.cover_image_url}
             alt="Cover"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
-        </div>
-      )}
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
+        
+        {/* Cover Upload Button */}
+        {isOwnProfile && (
+          <>
+            <input
+              ref={coverInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleCoverUpload}
+            />
+            <Button
+              variant="secondary"
+              size="sm"
+              className="absolute bottom-4 right-4"
+              onClick={() => coverInputRef.current?.click()}
+              disabled={uploadingCover}
+            >
+              <ImagePlus className="h-4 w-4 mr-2" />
+              {uploadingCover ? "Uploading..." : "Change Cover"}
+            </Button>
+          </>
+        )}
+      </div>
 
       <div className="container mx-auto px-4 relative">
         {/* Profile Header */}
@@ -203,12 +318,36 @@ export default function CreatorProfile() {
             <CardHeader>
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                 {/* Avatar */}
-                <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
-                  <AvatarImage src={creator.avatar_url || undefined} />
-                  <AvatarFallback className="text-4xl bg-gradient-to-br from-primary to-purple-500 text-white">
-                    {creator.display_name.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
+                    <AvatarImage src={creator.avatar_url || undefined} />
+                    <AvatarFallback className="text-4xl bg-gradient-to-br from-primary to-purple-500 text-white">
+                      {creator.display_name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  {/* Avatar Upload Button */}
+                  {isOwnProfile && (
+                    <>
+                      <input
+                        ref={avatarInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleAvatarUpload}
+                      />
+                      <Button
+                        variant="secondary"
+                        size="icon"
+                        className="absolute bottom-0 right-0 rounded-full h-10 w-10"
+                        onClick={() => avatarInputRef.current?.click()}
+                        disabled={uploadingAvatar}
+                      >
+                        <Camera className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
+                </div>
 
                 {/* Info */}
                 <div className="flex-1">
