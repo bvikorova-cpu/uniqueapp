@@ -1,0 +1,1 @@
+DELETE FROM creator_profiles WHERE id = '63dca1a2-3dec-40b4-85b4-81ddbf9c485e';
