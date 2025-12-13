@@ -204,7 +204,7 @@ const ReincarnationSocial = () => {
           <div className="max-w-5xl mx-auto text-center space-y-8">
             <Sparkles className="w-20 h-20 mx-auto text-primary mb-6 animate-pulse" />
             
-            <h1 className="text-6xl md:text-8xl font-bold leading-tight">
+            <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold leading-tight">
               <span className="bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
                 Reincarnation
               </span>
@@ -238,12 +238,12 @@ const ReincarnationSocial = () => {
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-7xl">
           <Tabs defaultValue="services" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 mb-8 h-auto p-1">
-              <TabsTrigger value="services">Services</TabsTrigger>
-              <TabsTrigger value="regression"><Eye className="w-4 h-4 mr-2" />Past Lives</TabsTrigger>
-              <TabsTrigger value="karma"><Infinity className="w-4 h-4 mr-2" />Karma</TabsTrigger>
-              <TabsTrigger value="soulmates"><Heart className="w-4 h-4 mr-2" />Soulmates</TabsTrigger>
-              <TabsTrigger value="plan"><Crown className="w-4 h-4 mr-2" />Next Life</TabsTrigger>
+            <TabsList className="flex flex-wrap w-full mb-8 h-auto p-1 gap-1">
+              <TabsTrigger value="services" className="flex-1 min-w-[calc(33%-0.25rem)] sm:min-w-0">Services</TabsTrigger>
+              <TabsTrigger value="regression" className="flex-1 min-w-[calc(33%-0.25rem)] sm:min-w-0"><Eye className="w-4 h-4 mr-1 sm:mr-2" /><span className="text-xs sm:text-sm">Past Lives</span></TabsTrigger>
+              <TabsTrigger value="karma" className="flex-1 min-w-[calc(33%-0.25rem)] sm:min-w-0"><Infinity className="w-4 h-4 mr-1 sm:mr-2" /><span className="text-xs sm:text-sm">Karma</span></TabsTrigger>
+              <TabsTrigger value="soulmates" className="flex-1 min-w-[calc(50%-0.25rem)] sm:min-w-0"><Heart className="w-4 h-4 mr-1 sm:mr-2" /><span className="text-xs sm:text-sm">Soulmates</span></TabsTrigger>
+              <TabsTrigger value="plan" className="flex-1 min-w-[calc(50%-0.25rem)] sm:min-w-0"><Crown className="w-4 h-4 mr-1 sm:mr-2" /><span className="text-xs sm:text-sm">Next Life</span></TabsTrigger>
             </TabsList>
 
             <TabsContent value="services" className="space-y-8">
