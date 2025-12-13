@@ -99,7 +99,7 @@ export default function DiscoverCreators() {
                 <Card 
                   key={creator.id}
                   className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-                  onClick={() => navigate(`/creator/${creator.user_id}`)}
+                  onClick={() => navigate(`/creator/${creator.id}`)}
                 >
                   <div className="relative h-32 bg-gradient-to-br from-primary/20 to-primary/5">
                     {creator.cover_image_url && (
