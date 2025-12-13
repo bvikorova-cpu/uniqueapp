@@ -236,11 +236,11 @@ const BlockchainConfessions = () => {
       <section className="py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <Tabs defaultValue="wall" className="w-full">
-            <TabsList className="flex flex-wrap justify-center gap-2 h-auto p-2 mb-8">
-              <TabsTrigger value="wall" className="min-w-[120px]">Confession Wall</TabsTrigger>
-              <TabsTrigger value="post" className="min-w-[120px]">Post Confession</TabsTrigger>
-              <TabsTrigger value="redemption" className="min-w-[100px]">Redemption</TabsTrigger>
-              <TabsTrigger value="services" className="min-w-[80px]">Services</TabsTrigger>
+            <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full h-auto gap-2 p-2 mb-8">
+              <TabsTrigger value="wall" className="text-xs sm:text-sm">Confession Wall</TabsTrigger>
+              <TabsTrigger value="post" className="text-xs sm:text-sm">Post Confession</TabsTrigger>
+              <TabsTrigger value="redemption" className="text-xs sm:text-sm">Redemption</TabsTrigger>
+              <TabsTrigger value="services" className="text-xs sm:text-sm">Services</TabsTrigger>
             </TabsList>
 
             <TabsContent value="wall" className="space-y-6">
