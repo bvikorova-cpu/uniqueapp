@@ -129,9 +129,75 @@ export default function CrystalEnergyNetwork() {
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-violet-500 via-pink-500 to-violet-600 bg-clip-text text-transparent">
             AI-Powered Energy & Crystal Healing
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-8">
             Discover your energy levels through AI analysis. Get personalized crystal recommendations and healing guidance.
           </p>
+          
+          {/* Detailed Description Section */}
+          <Card className="max-w-4xl mx-auto text-left bg-card/80 backdrop-blur-sm border-violet-500/20">
+            <CardContent className="p-6 md:p-8">
+              <h2 className="text-2xl font-bold mb-4 text-violet-600 dark:text-violet-400">What is Crystal & Energy Network?</h2>
+              <p className="text-muted-foreground mb-6">
+                Crystal & Energy Network is an innovative AI-powered platform that combines ancient crystal healing wisdom with modern artificial intelligence technology. Our system analyzes your personal energy patterns through photos and provides tailored crystal recommendations to help balance and enhance your wellbeing.
+              </p>
+              
+              <h3 className="text-xl font-semibold mb-3">How to Use This Service:</h3>
+              <ul className="space-y-3 text-muted-foreground mb-6">
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-600 font-bold">1.</span>
+                  <span><strong>Choose Your Service:</strong> Select from AI Energy Reading (€3), Energy Healing Session (€20), Chakra Balancing Program (€30), or Premium Crystal Encyclopedia (€7/month).</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-600 font-bold">2.</span>
+                  <span><strong>Upload Your Photo:</strong> Share a clear photo of yourself or your crystals for AI analysis.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-600 font-bold">3.</span>
+                  <span><strong>Receive AI Analysis:</strong> Our advanced AI examines your energy levels, aura patterns, and chakra alignment.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-600 font-bold">4.</span>
+                  <span><strong>Get Personalized Recommendations:</strong> Receive crystal suggestions tailored specifically to your energy needs.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-600 font-bold">5.</span>
+                  <span><strong>Shop Authentic Crystals:</strong> Browse our marketplace to find verified crystals with AI authenticity certificates.</span>
+                </li>
+              </ul>
+              
+              <h3 className="text-xl font-semibold mb-3">Key Features:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+                <div className="flex items-start gap-2">
+                  <Check className="h-5 w-5 text-violet-600 shrink-0 mt-0.5" />
+                  <span>AI-powered energy detection from photos</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="h-5 w-5 text-violet-600 shrink-0 mt-0.5" />
+                  <span>Personalized crystal recommendations</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="h-5 w-5 text-violet-600 shrink-0 mt-0.5" />
+                  <span>7-day chakra balancing programs</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="h-5 w-5 text-violet-600 shrink-0 mt-0.5" />
+                  <span>500+ crystal encyclopedia entries</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="h-5 w-5 text-violet-600 shrink-0 mt-0.5" />
+                  <span>Verified crystal marketplace</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="h-5 w-5 text-violet-600 shrink-0 mt-0.5" />
+                  <span>Daily AI coaching & progress tracking</span>
+                </div>
+              </div>
+              
+              <p className="text-xs text-muted-foreground mt-6 italic">
+                Disclaimer: Crystal healing is used for relaxation and wellness purposes. This service does not replace professional medical advice, diagnosis, or treatment.
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 mb-16">
