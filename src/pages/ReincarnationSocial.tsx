@@ -235,6 +235,46 @@ const ReincarnationSocial = () => {
         </div>
       </section>
 
+      {/* Detailed Description Section */}
+      <section className="py-8 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-4xl">
+          <Card className="border-primary/20">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-2xl font-bold text-primary">What is Reincarnation Social?</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Reincarnation Social is an AI-powered spiritual platform that helps you explore your past lives, 
+                understand your karmic patterns, find soulmate connections, and plan your spiritual journey. 
+                Using advanced AI analysis, we provide deep insights into your soul's journey across multiple lifetimes.
+              </p>
+              
+              <h3 className="text-xl font-semibold mt-4">How to Use:</h3>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                <li><strong>Past Lives:</strong> Upload your photo or provide birth details to receive AI-generated past life readings and discover who you were in previous incarnations.</li>
+                <li><strong>Karma Analysis:</strong> Understand your karmic debts, lessons, and patterns that influence your current life circumstances.</li>
+                <li><strong>Soulmate Finder:</strong> Connect with souls you have shared past lives with and discover deep spiritual connections.</li>
+                <li><strong>Next Life Planning:</strong> Receive guidance on spiritual growth and prepare for your soul's future journey.</li>
+              </ul>
+              
+              <h3 className="text-xl font-semibold mt-4">Key Features:</h3>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                <li>AI-powered past life regression analysis</li>
+                <li>Detailed karma balance and healing recommendations</li>
+                <li>Soulmate and twin flame compatibility matching</li>
+                <li>Personalized spiritual growth guidance</li>
+                <li>Community of like-minded spiritual seekers</li>
+              </ul>
+              
+              <div className="mt-4 p-4 bg-primary/10 rounded-lg border border-primary/20">
+                <p className="text-sm text-muted-foreground italic">
+                  <strong>Disclaimer:</strong> This service is for entertainment and spiritual exploration purposes only. 
+                  Past life readings are AI-generated interpretations and should not replace professional psychological or medical advice.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       <section className="py-12 px-4">
         <div className="container mx-auto max-w-7xl">
           <Tabs defaultValue="services" className="w-full">
