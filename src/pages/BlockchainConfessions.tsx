@@ -192,15 +192,55 @@ const BlockchainConfessions = () => {
         </div>
       </section>
 
+      {/* Detailed Description Section */}
+      <section className="py-8 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-4xl">
+          <Card className="border-primary/20">
+            <CardContent className="p-6 space-y-4">
+              <h2 className="text-2xl font-bold text-primary">What is Blockchain Confessions?</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Blockchain Confessions is a revolutionary anonymous confession and redemption platform. 
+                Share your burdens anonymously, receive community absolution through voting, and track your 
+                spiritual journey with AI-powered guidance. All confessions are securely stored with complete privacy.
+              </p>
+              
+              <h3 className="text-xl font-semibold mt-4">How to Use:</h3>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                <li><strong>Confession Wall:</strong> Browse anonymous confessions from the community and vote to absolve or condemn using your tokens.</li>
+                <li><strong>Post Confession:</strong> Share your own confession anonymously. AI will analyze and categorize your confession by sin type and severity.</li>
+                <li><strong>Redemption:</strong> Track your redemption progress, view your karma balance, and follow personalized guidance for spiritual growth.</li>
+                <li><strong>Services:</strong> Purchase absolution tokens, premium features, and specialized redemption programs.</li>
+              </ul>
+              
+              <h3 className="text-xl font-semibold mt-4">Key Features:</h3>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+                <li>100% anonymous confession posting with encryption</li>
+                <li>Community voting system for absolution</li>
+                <li>AI-powered sin categorization and severity assessment</li>
+                <li>Personalized redemption path recommendations</li>
+                <li>Token-based economy for community participation</li>
+              </ul>
+              
+              <div className="mt-4 p-4 bg-primary/10 rounded-lg border border-primary/20">
+                <p className="text-sm text-muted-foreground italic">
+                  <strong>Disclaimer:</strong> This platform is for entertainment and community support purposes only. 
+                  It does not replace professional psychological, religious, or spiritual counseling services.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* Main Content Tabs */}
       <section className="py-12 px-4">
         <div className="max-w-7xl mx-auto">
           <Tabs defaultValue="wall" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
-              <TabsTrigger value="wall">Confession Wall</TabsTrigger>
-              <TabsTrigger value="post">Post Confession</TabsTrigger>
-              <TabsTrigger value="redemption">Redemption</TabsTrigger>
-              <TabsTrigger value="services">Services</TabsTrigger>
+            <TabsList className="flex flex-wrap justify-center gap-2 h-auto p-2 mb-8">
+              <TabsTrigger value="wall" className="min-w-[120px]">Confession Wall</TabsTrigger>
+              <TabsTrigger value="post" className="min-w-[120px]">Post Confession</TabsTrigger>
+              <TabsTrigger value="redemption" className="min-w-[100px]">Redemption</TabsTrigger>
+              <TabsTrigger value="services" className="min-w-[80px]">Services</TabsTrigger>
             </TabsList>
 
             <TabsContent value="wall" className="space-y-6">
