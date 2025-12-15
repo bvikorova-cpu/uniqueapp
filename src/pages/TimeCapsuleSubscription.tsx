@@ -162,6 +162,52 @@ export default function TimeCapsuleSubscription() {
           </p>
         </div>
 
+        {/* Detailed Description Section */}
+        <div className="mb-16 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-blue-950/60 to-cyan-950/60 border border-blue-500/30">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">What is Time Capsule 2.0?</h2>
+          <p className="text-gray-200 mb-6 leading-relaxed">
+            Time Capsule 2.0 is a revolutionary digital platform that allows you to send messages, videos, photos, and letters into the future. Whether you want to leave a heartfelt message for your future self, create a surprise for loved ones on a special anniversary, or preserve memories for the next generation, our platform ensures your messages are delivered exactly when they're meant to be received. With military-grade encryption and guaranteed storage, your precious moments are safe for years to come.
+          </p>
+          
+          <h3 className="text-xl font-bold text-yellow-300 mb-4">How to Use:</h3>
+          <ul className="text-gray-200 space-y-3 mb-6">
+            <li className="flex items-start gap-2">
+              <span className="text-blue-400 font-bold">1.</span>
+              <span><strong>Choose Your Capsule:</strong> Select a time capsule plan based on how far into the future you want your message delivered - from 1 year to 20 years, or get unlimited capsules with Premium.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-400 font-bold">2.</span>
+              <span><strong>Create Your Content:</strong> Write a letter, record a video message, attach photos, or combine multiple formats. Express yourself in whatever way feels most meaningful.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-400 font-bold">3.</span>
+              <span><strong>Set the Recipient:</strong> Send the capsule to yourself or specify a loved one's email address. You can also set specific delivery conditions.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-400 font-bold">4.</span>
+              <span><strong>Schedule Delivery:</strong> Choose the exact date or let our AI suggest the perfect moment based on the content of your message.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-blue-400 font-bold">5.</span>
+              <span><strong>Secure & Forget:</strong> Your capsule is encrypted and stored securely. On the delivery date, the recipient receives an email with a link to unlock and view the time capsule.</span>
+            </li>
+          </ul>
+
+          <h3 className="text-xl font-bold text-yellow-300 mb-4">Key Features:</h3>
+          <ul className="text-gray-200 space-y-2 mb-6">
+            <li>• <strong>Multiple Formats:</strong> Send text messages, video recordings, photos, letters, and file attachments</li>
+            <li>• <strong>Secure Storage:</strong> Military-grade encryption protects your memories for decades</li>
+            <li>• <strong>Flexible Delivery:</strong> Choose delivery dates from 1 year to 20+ years in the future</li>
+            <li>• <strong>AI-Powered Timing:</strong> Our AI can suggest the perfect delivery moment based on your content</li>
+            <li>• <strong>Email Notifications:</strong> Recipients are notified when their capsule is ready to open</li>
+            <li>• <strong>HD Video Support:</strong> Upload high-quality videos up to 5GB depending on your plan</li>
+          </ul>
+
+          <p className="text-gray-400 text-sm italic">
+            Note: All capsules are stored with guaranteed delivery. We maintain backup systems and legal provisions to ensure your messages reach their destination even decades in the future.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {(Object.keys(CAPSULE_PLANS) as Array<keyof typeof CAPSULE_PLANS>).map((planKey) => {
             const plan = CAPSULE_PLANS[planKey];
