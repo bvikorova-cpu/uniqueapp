@@ -230,7 +230,7 @@ const MultiverseNetwork = () => {
               <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
             </div>
             
-            <h1 className="text-7xl md:text-9xl font-bold mb-8 leading-none">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-9xl font-bold mb-8 leading-none px-2">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-purple-400 to-fuchsia-400 animate-gradient">
                 Multiverse
               </span>
@@ -240,10 +240,67 @@ const MultiverseNetwork = () => {
               </span>
             </h1>
             
-            <p className="text-xl md:text-3xl text-muted-foreground mb-12 leading-relaxed max-w-4xl mx-auto">
+            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed max-w-4xl mx-auto px-4">
               One user, infinite versions across parallel worlds. Explore alternate realities, 
               compare different life paths, and discover your best possible self across the multiverse.
             </p>
+
+            {/* Detailed How It Works Description */}
+            <div className="bg-gradient-to-br from-violet-900/30 to-purple-900/30 border border-violet-500/30 rounded-2xl p-6 md:p-8 mb-10 max-w-4xl mx-auto backdrop-blur-sm text-left">
+              <h2 className="text-xl md:text-2xl font-bold text-violet-300 mb-4 text-center">What is Multiverse Profile Network?</h2>
+              <p className="text-sm md:text-base text-muted-foreground mb-4 leading-relaxed">
+                The Multiverse Profile Network is an AI-powered platform that allows you to explore infinite versions of yourself across parallel universes. 
+                Using advanced AI algorithms, we generate alternate realities based on different life choices, paths, and possibilities you could have taken.
+              </p>
+              
+              <h3 className="text-lg font-semibold text-purple-300 mb-3">How to Use:</h3>
+              <ul className="space-y-2 text-sm md:text-base text-muted-foreground mb-4">
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-400 font-bold">1.</span>
+                  <span><strong>Create Universe:</strong> Define a divergence point in your life (a decision you could have made differently) and let AI generate an alternate reality version of you.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-400 font-bold">2.</span>
+                  <span><strong>My Universes:</strong> Browse and manage all your created parallel universes, view success scores, and explore different life paths.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-400 font-bold">3.</span>
+                  <span><strong>Timeline Merger:</strong> Combine the best traits and achievements from multiple universes into an optimized version of yourself.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-violet-400 font-bold">4.</span>
+                  <span><strong>Best Self Finder:</strong> AI analyzes all your parallel versions and identifies your most successful self across all dimensions.</span>
+                </li>
+              </ul>
+
+              <h3 className="text-lg font-semibold text-purple-300 mb-3">Key Features:</h3>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                  <span>AI-generated alternate realities</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Globe className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                  <span>Unlimited universe exploration</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                  <span>Timeline merging capabilities</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Crown className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                  <span>Best self identification</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Shield className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                  <span>Secure & private data</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-violet-400 flex-shrink-0" />
+                  <span>Real-time AI analysis</span>
+                </li>
+              </ul>
+            </div>
             
             <div className="flex flex-wrap gap-6 justify-center text-sm mb-12">
               <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-violet-900/30 backdrop-blur-sm border border-violet-500/30 shadow-lg">
