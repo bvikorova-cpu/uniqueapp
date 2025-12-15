@@ -348,11 +348,11 @@ export default function F1RacingArena() {
                         </p>
                       </div>
                       
-                      <div className="flex gap-2">
-                        <Button onClick={() => setSelectedRace(race.id)} className="bg-red-600 hover:bg-red-700">
+                      <div className="flex gap-2 flex-wrap">
+                        <Button onClick={() => setSelectedRace(race.id)} className="bg-red-600 hover:bg-red-700 text-white">
                           View Race
                         </Button>
-                        <Button variant="outline" onClick={() => handleJoinRace(race.id)} className="border-red-500 text-white">
+                        <Button onClick={() => handleJoinRace(race.id)} className="bg-red-700 hover:bg-red-800 text-white border-none">
                           Join Race
                         </Button>
                       </div>
@@ -435,13 +435,128 @@ export default function F1RacingArena() {
 
           <TabsContent value="shop" className="space-y-4">
             <Card className="p-6 bg-black/80 border-red-500/50">
-              <h2 className="text-2xl font-bold mb-4 text-white">Livery Shop</h2>
-              <p className="text-gray-400 mb-6">Customize your car's appearance with gems!</p>
+              <h2 className="text-2xl font-bold mb-4 text-white">🛒 Performance Shop</h2>
+              <p className="text-gray-400 mb-6">Upgrade your car with special items to dominate the track!</p>
               
-              <Button onClick={() => setShowShop(true)} disabled={!cars || cars.length === 0} className="bg-red-600 hover:bg-red-700">
-                <Sparkles className="mr-2 h-4 w-4" />
-                Change Car Livery (50 Gems)
-              </Button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {/* Engines */}
+                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
+                  <div className="text-2xl mb-2">🔥</div>
+                  <h3 className="font-bold text-white">Turbo Engine V8</h3>
+                  <p className="text-sm text-gray-400 mb-2">+15 Engine Power</p>
+                  <p className="text-yellow-500 font-bold">150 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
+                  <div className="text-2xl mb-2">⚡</div>
+                  <h3 className="font-bold text-white">Hybrid Power Unit</h3>
+                  <p className="text-sm text-gray-400 mb-2">+20 Engine Power, +5 Efficiency</p>
+                  <p className="text-yellow-500 font-bold">250 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-red-950/50 rounded-lg border border-purple-500/50">
+                  <div className="text-2xl mb-2">💎</div>
+                  <h3 className="font-bold text-white">Nuclear Fusion Core</h3>
+                  <p className="text-sm text-gray-400 mb-2">+30 Engine Power</p>
+                  <p className="text-purple-400 font-bold">100 Gems</p>
+                </div>
+                
+                {/* Aerodynamics */}
+                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
+                  <div className="text-2xl mb-2">🌬️</div>
+                  <h3 className="font-bold text-white">Carbon Fiber Wing</h3>
+                  <p className="text-sm text-gray-400 mb-2">+10 Aerodynamics</p>
+                  <p className="text-yellow-500 font-bold">100 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
+                  <div className="text-2xl mb-2">🛸</div>
+                  <h3 className="font-bold text-white">DRS+ System</h3>
+                  <p className="text-sm text-gray-400 mb-2">+18 Aerodynamics, +5 Speed</p>
+                  <p className="text-yellow-500 font-bold">200 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-red-950/50 rounded-lg border border-purple-500/50">
+                  <div className="text-2xl mb-2">🚀</div>
+                  <h3 className="font-bold text-white">Active Aero Kit</h3>
+                  <p className="text-sm text-gray-400 mb-2">+25 Aerodynamics</p>
+                  <p className="text-purple-400 font-bold">80 Gems</p>
+                </div>
+                
+                {/* Tires */}
+                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
+                  <div className="text-2xl mb-2">🛞</div>
+                  <h3 className="font-bold text-white">Soft Compound Tires</h3>
+                  <p className="text-sm text-gray-400 mb-2">+12 Grip, +8 Handling</p>
+                  <p className="text-yellow-500 font-bold">120 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
+                  <div className="text-2xl mb-2">🏁</div>
+                  <h3 className="font-bold text-white">Slick Racing Tires</h3>
+                  <p className="text-sm text-gray-400 mb-2">+20 Grip</p>
+                  <p className="text-yellow-500 font-bold">180 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-red-950/50 rounded-lg border border-purple-500/50">
+                  <div className="text-2xl mb-2">✨</div>
+                  <h3 className="font-bold text-white">Quantum Grip Tires</h3>
+                  <p className="text-sm text-gray-400 mb-2">+30 Grip, +15 Handling</p>
+                  <p className="text-purple-400 font-bold">120 Gems</p>
+                </div>
+                
+                {/* Handling */}
+                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
+                  <div className="text-2xl mb-2">🎯</div>
+                  <h3 className="font-bold text-white">Precision Steering</h3>
+                  <p className="text-sm text-gray-400 mb-2">+15 Handling</p>
+                  <p className="text-yellow-500 font-bold">130 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-red-950/50 rounded-lg border border-red-500/30">
+                  <div className="text-2xl mb-2">⚙️</div>
+                  <h3 className="font-bold text-white">Advanced Suspension</h3>
+                  <p className="text-sm text-gray-400 mb-2">+18 Handling, +8 Stability</p>
+                  <p className="text-yellow-500 font-bold">200 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-red-950/50 rounded-lg border border-purple-500/50">
+                  <div className="text-2xl mb-2">🤖</div>
+                  <h3 className="font-bold text-white">AI Assist System</h3>
+                  <p className="text-sm text-gray-400 mb-2">+25 Handling, Auto-correction</p>
+                  <p className="text-purple-400 font-bold">90 Gems</p>
+                </div>
+                
+                {/* Special Items */}
+                <div className="p-4 bg-gradient-to-br from-yellow-900/50 to-orange-900/50 rounded-lg border border-yellow-500/50">
+                  <div className="text-2xl mb-2">🏆</div>
+                  <h3 className="font-bold text-yellow-300">Champion's Nitro Boost</h3>
+                  <p className="text-sm text-gray-300 mb-2">+10% Race Speed Bonus</p>
+                  <p className="text-yellow-400 font-bold">300 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-gradient-to-br from-blue-900/50 to-cyan-900/50 rounded-lg border border-blue-500/50">
+                  <div className="text-2xl mb-2">❄️</div>
+                  <h3 className="font-bold text-blue-300">Cryo Cooling System</h3>
+                  <p className="text-sm text-gray-300 mb-2">Prevents overheating, +5 All Stats</p>
+                  <p className="text-yellow-400 font-bold">350 Coins</p>
+                </div>
+                
+                <div className="p-4 bg-gradient-to-br from-purple-900/50 to-pink-900/50 rounded-lg border border-purple-500/50">
+                  <div className="text-2xl mb-2">⭐</div>
+                  <h3 className="font-bold text-purple-300">Legendary Engine Swap</h3>
+                  <p className="text-sm text-gray-300 mb-2">+50 All Stats, Legendary Tier</p>
+                  <p className="text-purple-400 font-bold">500 Gems</p>
+                </div>
+              </div>
+              
+              <div className="mt-6 pt-6 border-t border-red-500/30">
+                <h3 className="text-xl font-bold text-white mb-4">🎨 Livery Shop</h3>
+                <Button onClick={() => setShowShop(true)} disabled={!cars || cars.length === 0} className="bg-red-600 hover:bg-red-700 text-white">
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Change Car Livery (50 Gems)
+                </Button>
+              </div>
             </Card>
           </TabsContent>
 
