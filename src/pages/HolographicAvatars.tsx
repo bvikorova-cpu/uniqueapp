@@ -147,6 +147,52 @@ export default function HolographicAvatars() {
           </p>
         </div>
 
+        {/* Detailed Description Section */}
+        <div className="mb-16 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-purple-950/60 to-pink-950/60 border border-purple-500/30">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">What are AI-Powered Holographic Avatars?</h2>
+          <p className="text-gray-200 mb-6 leading-relaxed">
+            Holographic Avatars is a revolutionary platform where you can create stunning 3D digital beings that come to life with artificial intelligence. Unlike traditional static avatars, our holographic avatars are autonomous entities that learn, evolve, and develop unique personalities over time. Each avatar exists in a virtual world where they can interact with other avatars, form relationships, compete in battles, and even breed to create entirely new unique offspring.
+          </p>
+          
+          <h3 className="text-xl font-bold text-yellow-300 mb-4">How to Use:</h3>
+          <ul className="text-gray-200 space-y-3 mb-6">
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">1.</span>
+              <span><strong>Create Your Avatar:</strong> Start by purchasing a Premium AI Avatar subscription or basic customization pack. Design your avatar's appearance, choose personality traits, and give it a unique name.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">2.</span>
+              <span><strong>Customize & Personalize:</strong> Use our customization packs to unlock hundreds of appearance options, clothing items, accessories, voice settings, and custom animations.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">3.</span>
+              <span><strong>Watch It Evolve:</strong> Your avatar's AI learns from interactions and develops its own behaviors, preferences, and personality quirks over time.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">4.</span>
+              <span><strong>Battle Other Avatars:</strong> Enter the battle arena to compete against other users' avatars. Win prizes, climb rankings, and prove your avatar's strength.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">5.</span>
+              <span><strong>Breed Unique Offspring:</strong> Combine two avatars to create new generations with inherited traits, abilities, and genetic combinations.</span>
+            </li>
+          </ul>
+
+          <h3 className="text-xl font-bold text-yellow-300 mb-4">Key Features:</h3>
+          <ul className="text-gray-200 space-y-2 mb-6">
+            <li>• <strong>Advanced AI Personalities:</strong> Each avatar develops unique behaviors and emotional responses</li>
+            <li>• <strong>3D Holographic Rendering:</strong> Stunning visual representation with lifelike animations</li>
+            <li>• <strong>Autonomous Living:</strong> Avatars continue to live and interact even when you're offline</li>
+            <li>• <strong>Competitive Battles:</strong> Real-time arena battles with ranking systems and rewards</li>
+            <li>• <strong>Genetic Breeding System:</strong> Create rare trait combinations through avatar breeding</li>
+            <li>• <strong>Daily Evolution:</strong> Your avatar grows and changes every day based on its experiences</li>
+          </ul>
+
+          <p className="text-gray-400 text-sm italic">
+            Note: This is an entertainment platform. All avatars exist in a virtual environment and are powered by AI algorithms designed for engagement and fun.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {(Object.keys(FEATURES) as Array<keyof typeof FEATURES>).map((featureKey) => {
             const feature = FEATURES[featureKey];
