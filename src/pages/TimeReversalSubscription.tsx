@@ -216,8 +216,8 @@ export default function TimeReversalSubscription() {
               >
                 {feature.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                      Most Popular - Save €2!
+                    <span className="bg-purple-500 text-white px-4 py-1 rounded-full text-sm font-semibold whitespace-nowrap">
+                      Best Value
                     </span>
                   </div>
                 )}
