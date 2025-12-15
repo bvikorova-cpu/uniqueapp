@@ -200,7 +200,7 @@ export default function F1RacingArena() {
       <div className="max-w-7xl mx-auto space-y-6 pt-20">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white">🏎️ F1 Racing Arena</h1>
+            <h1 className="text-4xl font-bold text-white">🏎️ GP Racing Arena</h1>
             <p className="text-gray-400 mt-2">
               Build your car • Upgrade parts • Race to win
             </p>
@@ -230,7 +230,7 @@ export default function F1RacingArena() {
 
           <TabsContent value="garage" className="space-y-4">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-white">Your F1 Cars</h2>
+              <h2 className="text-2xl font-bold text-white">Your Racing Cars</h2>
               <Button onClick={() => setShowBuyCar(true)} className="bg-red-600 hover:bg-red-700">
                 <Zap className="mr-2 h-4 w-4" />
                 Buy New Car (75 Coins)

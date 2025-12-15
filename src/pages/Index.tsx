@@ -25,8 +25,8 @@ const Index = () => {
 
   const services = [
     {
-      title: "🏎️ F1 Fantasy Racing",
-      description: "Premium 3D F1 racing platform with fantasy teams & live competitions",
+      title: "🏎️ GP Fantasy Racing",
+      description: "Premium 3D racing platform with fantasy teams & live competitions",
       icon: Car,
       path: "/f1-subscription",
       badge: "Premium",

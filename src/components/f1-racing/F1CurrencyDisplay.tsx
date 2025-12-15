@@ -68,9 +68,9 @@ export function F1CurrencyDisplay() {
         </DialogTrigger>
         <DialogContent className="max-w-2xl bg-black/95 border-red-500">
           <DialogHeader>
-            <DialogTitle className="text-white">🏎️ F1 Racing Shop</DialogTitle>
+            <DialogTitle className="text-white">🏎️ GP Racing Shop</DialogTitle>
             <DialogDescription>
-              Purchase coins and gems for your F1 racing career
+              Purchase coins and gems for your racing career
             </DialogDescription>
           </DialogHeader>
 

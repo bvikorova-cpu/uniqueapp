@@ -122,7 +122,7 @@ export const useUserCars = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
       queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
-      toast.success("New F1 car acquired! 🏎️");
+      toast.success("New racing car acquired! 🏎️");
     },
     onError: (error: Error) => {
       toast.error(error.message);
@@ -218,7 +218,7 @@ export const useJoinF1Race = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["active-f1-races"] });
       queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
-      toast.success("Joined F1 race! 🏁");
+      toast.success("Joined the race! 🏁");
     },
     onError: (error: Error) => {
       toast.error(error.message);
