@@ -156,6 +156,52 @@ export default function TimeReversalSubscription() {
           </p>
         </div>
 
+        {/* Detailed Description Section */}
+        <div className="mb-16 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-purple-950/60 to-blue-950/60 border border-purple-500/30">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">What is Time Reversal Social?</h2>
+          <p className="text-gray-200 mb-6 leading-relaxed">
+            Time Reversal Social is a revolutionary social platform where you experience life in reverse. Instead of aging forward like traditional social media, you start as an 80-year-old version of yourself and get younger every day through AI-powered age transformation. Your followers watch your unique journey backwards through time, experiencing your life milestones in reverse order. It's a creative, entertaining way to share your life story and connect with others who are curious about the concept of living life backwards.
+          </p>
+          
+          <h3 className="text-xl font-bold text-yellow-300 mb-4">How to Use:</h3>
+          <ul className="text-gray-200 space-y-3 mb-6">
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">1.</span>
+              <span><strong>Upload Your Photo:</strong> Start by uploading a current photo of yourself. Our AI will transform it into an 80-year-old version to begin your reverse journey.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">2.</span>
+              <span><strong>Daily Age Transformation:</strong> Every day, our AI automatically makes you younger. Watch as wrinkles disappear and your appearance transforms back through time.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">3.</span>
+              <span><strong>Share Posts from Any Age:</strong> Create content from different points in your reverse timeline. Post memories, thoughts, and experiences as if you're living that age.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">4.</span>
+              <span><strong>Build Your Following:</strong> Connect with others who appreciate your unique journey. Follow other users and watch their reverse transformations.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-purple-400 font-bold">5.</span>
+              <span><strong>Unlock Premium Features:</strong> Speed up your aging reversal, lock at your perfect age, preview future transformations, or create time paradox posts across timelines.</span>
+            </li>
+          </ul>
+
+          <h3 className="text-xl font-bold text-yellow-300 mb-4">Key Features:</h3>
+          <ul className="text-gray-200 space-y-2 mb-6">
+            <li>• <strong>AI Age Transformation:</strong> Advanced AI technology creates realistic age progressions and regressions</li>
+            <li>• <strong>Reverse Timeline:</strong> Experience your life story in reverse chronological order</li>
+            <li>• <strong>Age Lock Points:</strong> Freeze your appearance at any age you want for as long as you want</li>
+            <li>• <strong>Future Glimpse:</strong> Preview what you'll look like at any future age with AI-generated photos</li>
+            <li>• <strong>Time Paradox Posts:</strong> Create unique content that exists across multiple timelines</li>
+            <li>• <strong>Social Interactions:</strong> Follow others, comment, like, and share reverse journey experiences</li>
+          </ul>
+
+          <p className="text-gray-400 text-sm italic">
+            Note: This is an entertainment platform. All age transformations are AI-generated simulations and do not represent actual physical changes. The platform is designed for creative expression and social fun.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {(Object.keys(FEATURES) as Array<keyof typeof FEATURES>).map((featureKey) => {
             const feature = FEATURES[featureKey];
