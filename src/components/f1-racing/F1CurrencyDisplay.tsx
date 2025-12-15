@@ -9,12 +9,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const packages = [
-  { id: "coins_100", name: "100 Coins", coins: 100, gems: 0, price: 1.99 },
-  { id: "coins_500", name: "500 Coins", coins: 500, gems: 0, price: 7.99 },
-  { id: "coins_1000", name: "1000 Coins", coins: 1000, gems: 0, price: 14.99 },
-  { id: "gems_50", name: "50 Gems", coins: 0, gems: 50, price: 4.99 },
-  { id: "gems_200", name: "200 Gems", coins: 0, gems: 200, price: 14.99 },
-  { id: "bundle_starter", name: "Starter Bundle", coins: 500, gems: 100, price: 9.99 },
+  { id: "coins_100", name: "100 Coins", coins: 100, gems: 0, price: 5.99 },
+  { id: "coins_500", name: "500 Coins", coins: 500, gems: 0, price: 12.99 },
+  { id: "coins_1000", name: "1000 Coins", coins: 1000, gems: 0, price: 22.99 },
+  { id: "gems_50", name: "50 Gems", coins: 0, gems: 50, price: 8.99 },
+  { id: "gems_200", name: "200 Gems", coins: 0, gems: 200, price: 24.99 },
+  { id: "bundle_starter", name: "Starter Bundle", coins: 500, gems: 100, price: 15.99 },
 ];
 
 export function F1CurrencyDisplay() {
