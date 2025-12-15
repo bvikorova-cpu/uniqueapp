@@ -9,12 +9,12 @@ const corsHeaders = {
 
 // Package definitions with prices
 const PACKAGES = {
-  coins_100: { name: "100 F1 Coins", coins: 100, gems: 0, priceInCents: 199 },
-  coins_500: { name: "500 F1 Coins", coins: 500, gems: 0, priceInCents: 799 },
-  coins_1000: { name: "1000 F1 Coins", coins: 1000, gems: 0, priceInCents: 1499 },
-  gems_50: { name: "50 F1 Gems", coins: 0, gems: 50, priceInCents: 499 },
-  gems_200: { name: "200 F1 Gems", coins: 0, gems: 200, priceInCents: 1499 },
-  bundle_starter: { name: "F1 Starter Bundle", coins: 500, gems: 100, priceInCents: 999 },
+  coins_100: { name: "100 GP Coins", coins: 100, gems: 0, priceInCents: 599 },
+  coins_500: { name: "500 GP Coins", coins: 500, gems: 0, priceInCents: 1299 },
+  coins_1000: { name: "1000 GP Coins", coins: 1000, gems: 0, priceInCents: 2299 },
+  gems_50: { name: "50 GP Gems", coins: 0, gems: 50, priceInCents: 899 },
+  gems_200: { name: "200 GP Gems", coins: 0, gems: 200, priceInCents: 2499 },
+  bundle_starter: { name: "GP Starter Bundle", coins: 500, gems: 100, priceInCents: 1599 },
 };
 
 const logStep = (step: string, details?: any) => {
