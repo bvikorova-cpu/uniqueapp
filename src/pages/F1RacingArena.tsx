@@ -10,11 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { F1CurrencyDisplay } from "@/components/f1-racing/F1CurrencyDisplay";
 import { F1Leaderboard } from "@/components/f1-racing/F1Leaderboard";
-import { useUserCars, useF1Races, useJoinF1Race, useUpgradeCar, usePurchaseCarColor } from "@/hooks/useF1Racing";
-import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car } from "lucide-react";
+import { useUserCars, useF1Races, useJoinF1Race, useUpgradeCar, usePurchaseCarColor, useF1Currency } from "@/hooks/useF1Racing";
+import { Trophy, Wrench, Sparkles, Zap, TrendingUp, Car, LogIn, Info } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 // 3D F1 Car Component
 function F1Car3D({ position, color }: { position: [number, number, number]; color: string }) {
@@ -92,13 +94,88 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
   );
 }
 
+// Demo data for unauthenticated users
+const demoCars = [
+  {
+    id: "demo-1",
+    name: "Speed Demon",
+    team: "Thunder Racing",
+    color: "#e10600",
+    level: 5,
+    engine_stat: 65,
+    aero_stat: 55,
+    tires_stat: 60,
+    handling_stat: 58,
+    total_races: 24,
+    total_wins: 8
+  },
+  {
+    id: "demo-2",
+    name: "Blue Lightning",
+    team: "Phoenix Team",
+    color: "#00d2be",
+    level: 3,
+    engine_stat: 45,
+    aero_stat: 50,
+    tires_stat: 48,
+    handling_stat: 52,
+    total_races: 12,
+    total_wins: 3
+  }
+];
+
+const demoRaces = [
+  {
+    id: "demo-race-1",
+    track_name: "American Coastal Speedway",
+    distance: 5410,
+    entry_fee_coins: 24,
+    max_participants: 8,
+    weather: "sunny",
+    track_condition: "dry",
+    status: "open",
+    f1_race_participants: []
+  },
+  {
+    id: "demo-race-2",
+    track_name: "Monaco Grand Circuit",
+    distance: 3340,
+    entry_fee_coins: 50,
+    max_participants: 6,
+    weather: "cloudy",
+    track_condition: "dry",
+    status: "open",
+    f1_race_participants: []
+  },
+  {
+    id: "demo-race-3",
+    track_name: "Tokyo Drift Arena",
+    distance: 4200,
+    entry_fee_coins: 35,
+    max_participants: 10,
+    weather: "rainy",
+    track_condition: "wet",
+    status: "open",
+    f1_race_participants: []
+  }
+];
+
 export default function F1RacingArena() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { cars, createCar } = useUserCars();
-  const { races } = useF1Races();
+  const { currency } = useF1Currency();
+  const { cars: userCars, createCar } = useUserCars();
+  const { races: userRaces } = useF1Races();
   const joinRace = useJoinF1Race();
   const upgradeCar = useUpgradeCar();
   const purchaseColor = usePurchaseCarColor();
+  
+  // Use demo data for unauthenticated users
+  const cars = user ? userCars : demoCars;
+  const races = user ? userRaces : demoRaces;
+  const displayCoins = user ? (currency?.coins || 0) : 500;
+  const displayGems = user ? (currency?.gems || 0) : 50;
   
   const [showBuyCar, setShowBuyCar] = useState(false);
   const [showJoinRace, setShowJoinRace] = useState(false);
@@ -112,6 +189,7 @@ export default function F1RacingArena() {
   const [showShop, setShowShop] = useState(false);
   const [selectedCarForShop, setSelectedCarForShop] = useState("");
   const [shopColor, setShopColor] = useState("#e10600");
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -128,6 +206,14 @@ export default function F1RacingArena() {
       window.history.replaceState({}, "", "/f1-racing-arena");
     }
   }, [queryClient]);
+
+  const requireAuth = (action: () => void) => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
+    action();
+  };
 
   const handleBuyCar = () => {
     if (!carName) {
@@ -198,16 +284,94 @@ export default function F1RacingArena() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-red-950/20 to-black p-6">
       <div className="max-w-7xl mx-auto space-y-6 pt-20">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-white">🏎️ GP Racing Arena</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-white">🏎️ GP Racing Arena</h1>
             <p className="text-gray-400 mt-2">
               Build your car • Upgrade parts • Race to win
             </p>
           </div>
+          {!user && (
+            <Button 
+              onClick={() => navigate('/auth')} 
+              className="bg-red-600 hover:bg-red-700 text-white"
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              Login to Play
+            </Button>
+          )}
         </div>
 
-        <F1CurrencyDisplay />
+        {/* Feature Description */}
+        <Card className="p-4 sm:p-6 bg-gradient-to-r from-red-900/30 to-black/50 border-red-500/50">
+          <div className="flex items-start gap-3">
+            <Info className="h-6 w-6 text-red-400 flex-shrink-0 mt-1" />
+            <div className="space-y-3 text-sm sm:text-base">
+              <h3 className="font-bold text-white text-lg">Welcome to GP Racing Arena!</h3>
+              <p className="text-gray-300">
+                Experience the ultimate virtual racing simulation. Build your dream car, compete in thrilling races, 
+                and climb the global leaderboard to become the ultimate champion.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-red-400">🚗 How to Get Started:</h4>
+                  <ul className="text-gray-400 space-y-1 text-sm">
+                    <li>1. Buy your first racing car (75 Coins)</li>
+                    <li>2. Customize your car name, team, and color</li>
+                    <li>3. Join available races with entry fees</li>
+                    <li>4. Win races to earn coins and climb rankings</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-red-400">⚙️ Key Features:</h4>
+                  <ul className="text-gray-400 space-y-1 text-sm">
+                    <li>• Upgrade engine, aero, tires & handling</li>
+                    <li>• Choose race strategies (aggressive/balanced/safe)</li>
+                    <li>• Buy special items and mystery boxes</li>
+                    <li>• Compete on global leaderboard</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-yellow-900/30 rounded-lg border border-yellow-500/30">
+                <p className="text-yellow-300 text-sm">
+                  <strong>💡 Pro Tip:</strong> Upgrade your car stats before joining high-stakes races. 
+                  Weather and track conditions affect performance - choose your strategy wisely!
+                </p>
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* Currency Display */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-red-900/50 to-black rounded-lg border border-red-500">
+          <div className="flex items-center gap-2">
+            <div className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500">🪙</div>
+            <span className="font-bold text-lg sm:text-xl text-white">{displayCoins}</span>
+            <span className="text-gray-300 text-sm sm:text-base">Coins</span>
+          </div>
+
+          <div className="w-px h-6 sm:h-8 bg-gray-600" />
+
+          <div className="flex items-center gap-2">
+            <div className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500">💎</div>
+            <span className="font-bold text-lg sm:text-xl text-white">{displayGems}</span>
+            <span className="text-gray-300 text-sm sm:text-base">Gems</span>
+          </div>
+
+          <Button 
+            variant="default" 
+            size="sm" 
+            className="ml-auto bg-red-600 hover:bg-red-700 text-xs sm:text-sm"
+            onClick={() => requireAuth(() => {
+              // Open purchase modal - handled by F1CurrencyDisplay when logged in
+              toast.info("Click Buy to purchase coins and gems");
+            })}
+          >
+            🪙 Buy
+          </Button>
+        </div>
+
+        {user && <F1CurrencyDisplay />}
 
         <Tabs defaultValue="garage" className="w-full">
           <TabsList className="flex w-full overflow-x-auto bg-black/50 border border-red-500/50">
@@ -229,9 +393,12 @@ export default function F1RacingArena() {
           </TabsList>
 
           <TabsContent value="garage" className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-white">Your Racing Cars</h2>
-              <Button onClick={() => setShowBuyCar(true)} className="bg-red-600 hover:bg-red-700">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+              <h2 className="text-xl sm:text-2xl font-bold text-white">Your Racing Cars</h2>
+              <Button 
+                onClick={() => requireAuth(() => setShowBuyCar(true))} 
+                className="bg-red-600 hover:bg-red-700"
+              >
                 <Zap className="mr-2 h-4 w-4" />
                 Buy New Car (75 Coins)
               </Button>
@@ -279,10 +446,20 @@ export default function F1RacingArena() {
                 </Card>
               ))}
             </div>
+
+            {!user && (
+              <Card className="p-6 bg-gradient-to-r from-red-900/30 to-black/50 border-red-500/50 text-center">
+                <p className="text-gray-300 mb-4">These are demo cars. Login to build your own racing machines!</p>
+                <Button onClick={() => navigate('/auth')} className="bg-red-600 hover:bg-red-700">
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Login to Start Racing
+                </Button>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="racing" className="space-y-4">
-            <h2 className="text-2xl font-bold text-white">Racing Arena</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">Racing Arena</h2>
             
             {selectedRace && activeRace ? (
               <div className="space-y-4">
@@ -299,7 +476,7 @@ export default function F1RacingArena() {
                 
                 <Button 
                   className="w-full bg-red-600 hover:bg-red-700"
-                  onClick={async () => {
+                  onClick={() => requireAuth(async () => {
                     try {
                       const { data, error } = await supabase.functions.invoke(
                         "calculate-f1-race-results",
@@ -325,7 +502,7 @@ export default function F1RacingArena() {
                     queryClient.invalidateQueries({ queryKey: ["user-f1-cars"] });
                     queryClient.invalidateQueries({ queryKey: ["f1-currency"] });
                     setSelectedRace(null);
-                  }}
+                  })}
                 >
                   Start Race 🏁
                 </Button>
@@ -352,7 +529,10 @@ export default function F1RacingArena() {
                         <Button onClick={() => setSelectedRace(race.id)} className="w-full bg-red-600 hover:bg-red-700 text-white">
                           View Race
                         </Button>
-                        <Button onClick={() => handleJoinRace(race.id)} className="w-full bg-red-700 hover:bg-red-800 text-white border-none">
+                        <Button 
+                          onClick={() => requireAuth(() => handleJoinRace(race.id))} 
+                          className="w-full bg-red-700 hover:bg-red-800 text-white border-none"
+                        >
                           Join Race
                         </Button>
                       </div>
@@ -365,7 +545,7 @@ export default function F1RacingArena() {
 
           <TabsContent value="upgrades" className="space-y-4">
             <Card className="p-6 bg-black/80 border-red-500/50">
-              <h2 className="text-2xl font-bold mb-4 text-white">Upgrade Center</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 text-white">Upgrade Center</h2>
               <p className="text-gray-400 mb-6">Upgrade your car's parts to improve performance! (25 Coins per upgrade)</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -396,7 +576,7 @@ export default function F1RacingArena() {
                     <div className="grid grid-cols-2 gap-2">
                       <Button
                         size="sm"
-                        onClick={() => handleUpgradeCar(car.id, 'engine')}
+                        onClick={() => requireAuth(() => handleUpgradeCar(car.id, 'engine'))}
                         disabled={upgradeCar.isPending || car.engine_stat >= 100}
                         className="bg-red-600 hover:bg-red-700"
                       >
@@ -404,7 +584,7 @@ export default function F1RacingArena() {
                       </Button>
                       <Button
                         size="sm"
-                        onClick={() => handleUpgradeCar(car.id, 'aero')}
+                        onClick={() => requireAuth(() => handleUpgradeCar(car.id, 'aero'))}
                         disabled={upgradeCar.isPending || car.aero_stat >= 100}
                         className="bg-red-600 hover:bg-red-700"
                       >
@@ -412,7 +592,7 @@ export default function F1RacingArena() {
                       </Button>
                       <Button
                         size="sm"
-                        onClick={() => handleUpgradeCar(car.id, 'tires')}
+                        onClick={() => requireAuth(() => handleUpgradeCar(car.id, 'tires'))}
                         disabled={upgradeCar.isPending || car.tires_stat >= 100}
                         className="bg-red-600 hover:bg-red-700"
                       >
@@ -420,7 +600,7 @@ export default function F1RacingArena() {
                       </Button>
                       <Button
                         size="sm"
-                        onClick={() => handleUpgradeCar(car.id, 'handling')}
+                        onClick={() => requireAuth(() => handleUpgradeCar(car.id, 'handling'))}
                         disabled={upgradeCar.isPending || car.handling_stat >= 100}
                         className="bg-red-600 hover:bg-red-700"
                       >
@@ -435,7 +615,7 @@ export default function F1RacingArena() {
 
           <TabsContent value="shop" className="space-y-4">
             <Card className="p-6 bg-black/80 border-red-500/50">
-              <h2 className="text-2xl font-bold mb-4 text-white">🛒 Performance Shop</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 text-white">🛒 Performance Shop</h2>
               <p className="text-gray-400 mb-6">Upgrade your car with special items to dominate the track!</p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -551,83 +731,53 @@ export default function F1RacingArena() {
               </div>
               
               {/* Mystery Boxes */}
-              <div className="col-span-full mt-6">
+              <div className="mt-6">
                 <h3 className="text-xl font-bold text-white mb-4">🎁 Mystery Boxes</h3>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-amber-900/50 to-yellow-900/50 rounded-lg border border-amber-500/50">
-                <div className="text-2xl mb-2">📦</div>
-                <h3 className="font-bold text-amber-300">Bronze Box</h3>
-                <p className="text-sm text-gray-300 mb-2">Random +5-15 stats boost</p>
-                <p className="text-yellow-400 font-bold">50 Coins</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-gray-600/50 to-gray-400/50 rounded-lg border border-gray-400/50">
-                <div className="text-2xl mb-2">🎁</div>
-                <h3 className="font-bold text-gray-200">Silver Box</h3>
-                <p className="text-sm text-gray-300 mb-2">Random +10-25 stats boost</p>
-                <p className="text-yellow-400 font-bold">100 Coins</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-yellow-600/50 to-amber-500/50 rounded-lg border border-yellow-400/50">
-                <div className="text-2xl mb-2">✨</div>
-                <h3 className="font-bold text-yellow-300">Gold Box</h3>
-                <p className="text-sm text-gray-300 mb-2">Random +20-40 stats boost</p>
-                <p className="text-yellow-400 font-bold">200 Coins</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-purple-700/50 to-violet-600/50 rounded-lg border border-purple-400/50">
-                <div className="text-2xl mb-2">💎</div>
-                <h3 className="font-bold text-purple-300">Diamond Box</h3>
-                <p className="text-sm text-gray-300 mb-2">Random +30-60 stats boost</p>
-                <p className="text-purple-400 font-bold">50 Gems</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-red-700/50 to-orange-600/50 rounded-lg border border-red-400/50">
-                <div className="text-2xl mb-2">🔥</div>
-                <h3 className="font-bold text-red-300">Inferno Box</h3>
-                <p className="text-sm text-gray-300 mb-2">+50 Engine guaranteed + bonus</p>
-                <p className="text-purple-400 font-bold">80 Gems</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-cyan-700/50 to-blue-600/50 rounded-lg border border-cyan-400/50">
-                <div className="text-2xl mb-2">❄️</div>
-                <h3 className="font-bold text-cyan-300">Frost Box</h3>
-                <p className="text-sm text-gray-300 mb-2">+50 Aero guaranteed + bonus</p>
-                <p className="text-purple-400 font-bold">80 Gems</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-green-700/50 to-emerald-600/50 rounded-lg border border-green-400/50">
-                <div className="text-2xl mb-2">🌿</div>
-                <h3 className="font-bold text-green-300">Nature Box</h3>
-                <p className="text-sm text-gray-300 mb-2">+50 Tires guaranteed + bonus</p>
-                <p className="text-purple-400 font-bold">80 Gems</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-pink-700/50 to-rose-600/50 rounded-lg border border-pink-400/50">
-                <div className="text-2xl mb-2">🌸</div>
-                <h3 className="font-bold text-pink-300">Sakura Box</h3>
-                <p className="text-sm text-gray-300 mb-2">+50 Handling guaranteed + bonus</p>
-                <p className="text-purple-400 font-bold">80 Gems</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-indigo-800/50 to-purple-900/50 rounded-lg border border-indigo-400/50">
-                <div className="text-2xl mb-2">🌌</div>
-                <h3 className="font-bold text-indigo-300">Galaxy Box</h3>
-                <p className="text-sm text-gray-300 mb-2">Rare car skin + random boost</p>
-                <p className="text-purple-400 font-bold">150 Gems</p>
-              </div>
-              
-              <div className="p-4 bg-gradient-to-br from-yellow-500/60 via-orange-500/60 to-red-600/60 rounded-lg border-2 border-yellow-300/70 animate-pulse">
-                <div className="text-2xl mb-2">👑</div>
-                <h3 className="font-bold text-yellow-200">Legendary Box</h3>
-                <p className="text-sm text-gray-200 mb-2">+100 All Stats + Legendary Skin</p>
-                <p className="text-yellow-300 font-bold">300 Gems</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="p-4 bg-gradient-to-br from-amber-900/50 to-yellow-900/50 rounded-lg border border-amber-500/50">
+                    <div className="text-2xl mb-2">📦</div>
+                    <h3 className="font-bold text-amber-300">Bronze Box</h3>
+                    <p className="text-sm text-gray-300 mb-2">Random +5-15 stats boost</p>
+                    <p className="text-yellow-400 font-bold">50 Coins</p>
+                  </div>
+                  
+                  <div className="p-4 bg-gradient-to-br from-gray-600/50 to-gray-400/50 rounded-lg border border-gray-400/50">
+                    <div className="text-2xl mb-2">🎁</div>
+                    <h3 className="font-bold text-gray-200">Silver Box</h3>
+                    <p className="text-sm text-gray-300 mb-2">Random +10-25 stats boost</p>
+                    <p className="text-yellow-400 font-bold">100 Coins</p>
+                  </div>
+                  
+                  <div className="p-4 bg-gradient-to-br from-yellow-600/50 to-amber-500/50 rounded-lg border border-yellow-400/50">
+                    <div className="text-2xl mb-2">✨</div>
+                    <h3 className="font-bold text-yellow-300">Gold Box</h3>
+                    <p className="text-sm text-gray-300 mb-2">Random +20-40 stats boost</p>
+                    <p className="text-yellow-400 font-bold">200 Coins</p>
+                  </div>
+                  
+                  <div className="p-4 bg-gradient-to-br from-purple-700/50 to-violet-600/50 rounded-lg border border-purple-400/50">
+                    <div className="text-2xl mb-2">💎</div>
+                    <h3 className="font-bold text-purple-300">Diamond Box</h3>
+                    <p className="text-sm text-gray-300 mb-2">Random +30-60 stats boost</p>
+                    <p className="text-purple-400 font-bold">50 Gems</p>
+                  </div>
+                  
+                  <div className="p-4 bg-gradient-to-br from-yellow-500/60 via-orange-500/60 to-red-600/60 rounded-lg border-2 border-yellow-300/70 animate-pulse">
+                    <div className="text-2xl mb-2">👑</div>
+                    <h3 className="font-bold text-yellow-200">Legendary Box</h3>
+                    <p className="text-sm text-gray-200 mb-2">+100 All Stats + Legendary Skin</p>
+                    <p className="text-yellow-300 font-bold">300 Gems</p>
+                  </div>
+                </div>
               </div>
               
               <div className="mt-6 pt-6 border-t border-red-500/30">
                 <h3 className="text-xl font-bold text-white mb-4">🎨 Livery Shop</h3>
-                <Button onClick={() => setShowShop(true)} disabled={!cars || cars.length === 0} className="bg-red-600 hover:bg-red-700 text-white">
+                <Button 
+                  onClick={() => requireAuth(() => setShowShop(true))} 
+                  disabled={!cars || cars.length === 0} 
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
                   <Sparkles className="mr-2 h-4 w-4" />
                   Change Car Livery (50 Gems)
                 </Button>
@@ -701,7 +851,7 @@ export default function F1RacingArena() {
                   <SelectValue placeholder="Choose a car" />
                 </SelectTrigger>
                 <SelectContent>
-                  {cars?.map((car) => (
+                  {(user ? userCars : [])?.map((car) => (
                     <SelectItem key={car.id} value={car.id}>
                       {car.name} (Level {car.level})
                     </SelectItem>
@@ -743,7 +893,7 @@ export default function F1RacingArena() {
                   <SelectValue placeholder="Choose a car" />
                 </SelectTrigger>
                 <SelectContent>
-                  {cars?.map((car) => (
+                  {(user ? userCars : [])?.map((car) => (
                     <SelectItem key={car.id} value={car.id}>
                       {car.name}
                     </SelectItem>
@@ -763,6 +913,39 @@ export default function F1RacingArena() {
             <Button onClick={handlePurchaseColor} className="w-full bg-red-600 hover:bg-red-700" disabled={purchaseColor.isPending}>
               {purchaseColor.isPending ? "Changing..." : "Change Livery (50 Gems)"}
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Login Prompt Dialog */}
+      <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
+        <DialogContent className="bg-black/95 border-red-500">
+          <DialogHeader>
+            <DialogTitle className="text-white">🔐 Login Required</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 text-center">
+            <p className="text-gray-300">
+              You need to be logged in to perform this action. Create an account to start building your racing career!
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button 
+                onClick={() => {
+                  setShowLoginPrompt(false);
+                  navigate('/auth');
+                }} 
+                className="bg-red-600 hover:bg-red-700"
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                Login / Sign Up
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setShowLoginPrompt(false)}
+                className="border-red-500 text-white hover:bg-red-900/50"
+              >
+                Continue Browsing
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

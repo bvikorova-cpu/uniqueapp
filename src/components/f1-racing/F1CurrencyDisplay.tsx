@@ -5,6 +5,8 @@ import { useF1Currency } from "@/hooks/useF1Racing";
 import { useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const packages = [
   { id: "coins_100", name: "100 Coins", coins: 100, gems: 0, price: 1.99 },
@@ -16,10 +18,18 @@ const packages = [
 ];
 
 export function F1CurrencyDisplay() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const { currency, isLoading } = useF1Currency();
   const [purchasing, setPurchasing] = useState(false);
 
   const handlePurchase = async (packageId: string) => {
+    if (!user) {
+      toast.error("Please login to purchase");
+      navigate('/auth');
+      return;
+    }
+
     setPurchasing(true);
     try {
       const { data, error } = await supabase.functions.invoke(
@@ -39,8 +49,13 @@ export function F1CurrencyDisplay() {
     }
   };
 
-  if (isLoading) {
+  if (isLoading && user) {
     return <div className="h-12 bg-muted animate-pulse rounded-lg" />;
+  }
+
+  // Don't render if not logged in (the parent component handles demo display)
+  if (!user) {
+    return null;
   }
 
   return (
@@ -100,7 +115,7 @@ export function F1CurrencyDisplay() {
                   onClick={() => handlePurchase(pkg.id)}
                   disabled={purchasing}
                 >
-                  ${pkg.price}
+                  €{pkg.price}
                 </Button>
               </div>
             ))}
