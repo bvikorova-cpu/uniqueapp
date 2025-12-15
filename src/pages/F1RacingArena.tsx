@@ -210,25 +210,20 @@ export default function F1RacingArena() {
         <F1CurrencyDisplay />
 
         <Tabs defaultValue="garage" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 bg-black/50 border border-red-500/50">
-            <TabsTrigger value="garage" className="data-[state=active]:bg-red-600">
-              <Car className="mr-2 h-4 w-4" />
+          <TabsList className="flex w-full overflow-x-auto bg-black/50 border border-red-500/50">
+            <TabsTrigger value="garage" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
               Garage
             </TabsTrigger>
-            <TabsTrigger value="racing" className="data-[state=active]:bg-red-600">
-              <Trophy className="mr-2 h-4 w-4" />
+            <TabsTrigger value="racing" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
               Racing
             </TabsTrigger>
-            <TabsTrigger value="upgrades" className="data-[state=active]:bg-red-600">
-              <Wrench className="mr-2 h-4 w-4" />
+            <TabsTrigger value="upgrades" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
               Upgrades
             </TabsTrigger>
-            <TabsTrigger value="shop" className="data-[state=active]:bg-red-600">
-              <Sparkles className="mr-2 h-4 w-4" />
+            <TabsTrigger value="shop" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
               Shop
             </TabsTrigger>
-            <TabsTrigger value="leaderboard" className="data-[state=active]:bg-red-600">
-              <TrendingUp className="mr-2 h-4 w-4" />
+            <TabsTrigger value="leaderboard" className="flex-1 min-w-fit text-xs sm:text-sm data-[state=active]:bg-red-600 text-white">
               Leaderboard
             </TabsTrigger>
           </TabsList>

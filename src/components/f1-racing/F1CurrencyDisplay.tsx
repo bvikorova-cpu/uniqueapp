@@ -44,26 +44,26 @@ export function F1CurrencyDisplay() {
   }
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-red-900/50 to-black rounded-lg border border-red-500">
+    <div className="flex flex-wrap items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-red-900/50 to-black rounded-lg border border-red-500">
       <div className="flex items-center gap-2">
-        <Coins className="h-6 w-6 text-yellow-500" />
-        <span className="font-bold text-xl text-white">{currency?.coins || 0}</span>
-        <span className="text-muted-foreground">Coins</span>
+        <Coins className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
+        <span className="font-bold text-lg sm:text-xl text-white">{currency?.coins || 0}</span>
+        <span className="text-gray-300 text-sm sm:text-base">Coins</span>
       </div>
 
-      <div className="w-px h-8 bg-border" />
+      <div className="w-px h-6 sm:h-8 bg-gray-600" />
 
       <div className="flex items-center gap-2">
-        <Gem className="h-6 w-6 text-purple-500" />
-        <span className="font-bold text-xl text-white">{currency?.gems || 0}</span>
-        <span className="text-muted-foreground">Gems</span>
+        <Gem className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500" />
+        <span className="font-bold text-lg sm:text-xl text-white">{currency?.gems || 0}</span>
+        <span className="text-gray-300 text-sm sm:text-base">Gems</span>
       </div>
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="default" className="ml-auto bg-red-600 hover:bg-red-700">
-            <Coins className="mr-2 h-4 w-4" />
-            Buy Currency
+          <Button variant="default" size="sm" className="ml-auto bg-red-600 hover:bg-red-700 text-xs sm:text-sm">
+            <Coins className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+            Buy
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-2xl bg-black/95 border-red-500">
