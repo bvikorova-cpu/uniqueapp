@@ -333,8 +333,8 @@ export default function F1RacingArena() {
             ) : (
               <div className="grid grid-cols-1 gap-4">
                 {races?.map((race) => (
-                  <Card key={race.id} className="p-6 bg-black/80 border-red-500/50">
-                    <div className="flex items-center justify-between">
+                  <Card key={race.id} className="p-4 bg-black/80 border-red-500/50">
+                    <div className="space-y-3">
                       <div>
                         <h3 className="font-bold text-lg text-white">{race.track_name}</h3>
                         <p className="text-sm text-gray-400">
@@ -348,11 +348,11 @@ export default function F1RacingArena() {
                         </p>
                       </div>
                       
-                      <div className="flex gap-2 flex-wrap">
-                        <Button onClick={() => setSelectedRace(race.id)} className="bg-red-600 hover:bg-red-700 text-white">
+                      <div className="flex flex-col gap-2">
+                        <Button onClick={() => setSelectedRace(race.id)} className="w-full bg-red-600 hover:bg-red-700 text-white">
                           View Race
                         </Button>
-                        <Button onClick={() => handleJoinRace(race.id)} className="bg-red-700 hover:bg-red-800 text-white border-none">
+                        <Button onClick={() => handleJoinRace(race.id)} className="w-full bg-red-700 hover:bg-red-800 text-white border-none">
                           Join Race
                         </Button>
                       </div>
@@ -548,6 +548,81 @@ export default function F1RacingArena() {
                   <p className="text-sm text-gray-300 mb-2">+50 All Stats, Legendary Tier</p>
                   <p className="text-purple-400 font-bold">500 Gems</p>
                 </div>
+              </div>
+              
+              {/* Mystery Boxes */}
+              <div className="col-span-full mt-6">
+                <h3 className="text-xl font-bold text-white mb-4">🎁 Mystery Boxes</h3>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-amber-900/50 to-yellow-900/50 rounded-lg border border-amber-500/50">
+                <div className="text-2xl mb-2">📦</div>
+                <h3 className="font-bold text-amber-300">Bronze Box</h3>
+                <p className="text-sm text-gray-300 mb-2">Random +5-15 stats boost</p>
+                <p className="text-yellow-400 font-bold">50 Coins</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-gray-600/50 to-gray-400/50 rounded-lg border border-gray-400/50">
+                <div className="text-2xl mb-2">🎁</div>
+                <h3 className="font-bold text-gray-200">Silver Box</h3>
+                <p className="text-sm text-gray-300 mb-2">Random +10-25 stats boost</p>
+                <p className="text-yellow-400 font-bold">100 Coins</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-yellow-600/50 to-amber-500/50 rounded-lg border border-yellow-400/50">
+                <div className="text-2xl mb-2">✨</div>
+                <h3 className="font-bold text-yellow-300">Gold Box</h3>
+                <p className="text-sm text-gray-300 mb-2">Random +20-40 stats boost</p>
+                <p className="text-yellow-400 font-bold">200 Coins</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-purple-700/50 to-violet-600/50 rounded-lg border border-purple-400/50">
+                <div className="text-2xl mb-2">💎</div>
+                <h3 className="font-bold text-purple-300">Diamond Box</h3>
+                <p className="text-sm text-gray-300 mb-2">Random +30-60 stats boost</p>
+                <p className="text-purple-400 font-bold">50 Gems</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-red-700/50 to-orange-600/50 rounded-lg border border-red-400/50">
+                <div className="text-2xl mb-2">🔥</div>
+                <h3 className="font-bold text-red-300">Inferno Box</h3>
+                <p className="text-sm text-gray-300 mb-2">+50 Engine guaranteed + bonus</p>
+                <p className="text-purple-400 font-bold">80 Gems</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-cyan-700/50 to-blue-600/50 rounded-lg border border-cyan-400/50">
+                <div className="text-2xl mb-2">❄️</div>
+                <h3 className="font-bold text-cyan-300">Frost Box</h3>
+                <p className="text-sm text-gray-300 mb-2">+50 Aero guaranteed + bonus</p>
+                <p className="text-purple-400 font-bold">80 Gems</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-green-700/50 to-emerald-600/50 rounded-lg border border-green-400/50">
+                <div className="text-2xl mb-2">🌿</div>
+                <h3 className="font-bold text-green-300">Nature Box</h3>
+                <p className="text-sm text-gray-300 mb-2">+50 Tires guaranteed + bonus</p>
+                <p className="text-purple-400 font-bold">80 Gems</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-pink-700/50 to-rose-600/50 rounded-lg border border-pink-400/50">
+                <div className="text-2xl mb-2">🌸</div>
+                <h3 className="font-bold text-pink-300">Sakura Box</h3>
+                <p className="text-sm text-gray-300 mb-2">+50 Handling guaranteed + bonus</p>
+                <p className="text-purple-400 font-bold">80 Gems</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-indigo-800/50 to-purple-900/50 rounded-lg border border-indigo-400/50">
+                <div className="text-2xl mb-2">🌌</div>
+                <h3 className="font-bold text-indigo-300">Galaxy Box</h3>
+                <p className="text-sm text-gray-300 mb-2">Rare car skin + random boost</p>
+                <p className="text-purple-400 font-bold">150 Gems</p>
+              </div>
+              
+              <div className="p-4 bg-gradient-to-br from-yellow-500/60 via-orange-500/60 to-red-600/60 rounded-lg border-2 border-yellow-300/70 animate-pulse">
+                <div className="text-2xl mb-2">👑</div>
+                <h3 className="font-bold text-yellow-200">Legendary Box</h3>
+                <p className="text-sm text-gray-200 mb-2">+100 All Stats + Legendary Skin</p>
+                <p className="text-yellow-300 font-bold">300 Gems</p>
               </div>
               
               <div className="mt-6 pt-6 border-t border-red-500/30">
