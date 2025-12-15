@@ -94,35 +94,7 @@ function RaceTrack3D({ participants, isRacing }: { participants: any[]; isRacing
   );
 }
 
-// Demo data for unauthenticated users
-const demoCars = [
-  {
-    id: "demo-1",
-    name: "Speed Demon",
-    team: "Thunder Racing",
-    color: "#e10600",
-    level: 5,
-    engine_stat: 65,
-    aero_stat: 55,
-    tires_stat: 60,
-    handling_stat: 58,
-    total_races: 24,
-    total_wins: 8
-  },
-  {
-    id: "demo-2",
-    name: "Blue Lightning",
-    team: "Phoenix Team",
-    color: "#00d2be",
-    level: 3,
-    engine_stat: 45,
-    aero_stat: 50,
-    tires_stat: 48,
-    handling_stat: 52,
-    total_races: 12,
-    total_wins: 3
-  }
-];
+// Demo races for unauthenticated users to see available tracks
 
 const demoRaces = [
   {
@@ -171,11 +143,11 @@ export default function F1RacingArena() {
   const upgradeCar = useUpgradeCar();
   const purchaseColor = usePurchaseCarColor();
   
-  // Use demo data for unauthenticated users
-  const cars = user ? userCars : demoCars;
+  // Use demo races for unauthenticated users, no demo cars or currency
+  const cars = user ? userCars : [];
   const races = user ? userRaces : demoRaces;
-  const displayCoins = user ? (currency?.coins || 0) : 500;
-  const displayGems = user ? (currency?.gems || 0) : 50;
+  const displayCoins = currency?.coins || 0;
+  const displayGems = currency?.gems || 0;
   
   const [showBuyCar, setShowBuyCar] = useState(false);
   const [showJoinRace, setShowJoinRace] = useState(false);
@@ -189,7 +161,7 @@ export default function F1RacingArena() {
   const [showShop, setShowShop] = useState(false);
   const [selectedCarForShop, setSelectedCarForShop] = useState("");
   const [shopColor, setShopColor] = useState("#e10600");
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -209,7 +181,7 @@ export default function F1RacingArena() {
 
   const requireAuth = (action: () => void) => {
     if (!user) {
-      setShowLoginPrompt(true);
+      navigate('/auth');
       return;
     }
     action();
@@ -303,7 +275,7 @@ export default function F1RacingArena() {
         </div>
 
         {/* Feature Description */}
-        <Card className="p-4 sm:p-6 bg-gradient-to-r from-red-900/30 to-black/50 border-red-500/50">
+        <Card className="p-4 sm:p-6 bg-black/80 border-red-500/50">
           <div className="flex items-start gap-3">
             <Info className="h-6 w-6 text-red-400 flex-shrink-0 mt-1" />
             <div className="space-y-3 text-sm sm:text-base">
@@ -314,8 +286,8 @@ export default function F1RacingArena() {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-red-400">🚗 How to Get Started:</h4>
-                  <ul className="text-gray-400 space-y-1 text-sm">
+                  <h4 className="font-semibold text-white">🚗 How to Get Started:</h4>
+                  <ul className="text-gray-300 space-y-1 text-sm">
                     <li>1. Buy your first racing car (75 Coins)</li>
                     <li>2. Customize your car name, team, and color</li>
                     <li>3. Join available races with entry fees</li>
@@ -323,8 +295,8 @@ export default function F1RacingArena() {
                   </ul>
                 </div>
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-red-400">⚙️ Key Features:</h4>
-                  <ul className="text-gray-400 space-y-1 text-sm">
+                  <h4 className="font-semibold text-white">⚙️ Key Features:</h4>
+                  <ul className="text-gray-300 space-y-1 text-sm">
                     <li>• Upgrade engine, aero, tires & handling</li>
                     <li>• Choose race strategies (aggressive/balanced/safe)</li>
                     <li>• Buy special items and mystery boxes</li>
@@ -332,8 +304,8 @@ export default function F1RacingArena() {
                   </ul>
                 </div>
               </div>
-              <div className="mt-4 p-3 bg-yellow-900/30 rounded-lg border border-yellow-500/30">
-                <p className="text-yellow-300 text-sm">
+              <div className="mt-4 p-3 bg-black/50 rounded-lg border border-yellow-500/50">
+                <p className="text-yellow-400 text-sm">
                   <strong>💡 Pro Tip:</strong> Upgrade your car stats before joining high-stakes races. 
                   Weather and track conditions affect performance - choose your strategy wisely!
                 </p>
@@ -448,8 +420,8 @@ export default function F1RacingArena() {
             </div>
 
             {!user && (
-              <Card className="p-6 bg-gradient-to-r from-red-900/30 to-black/50 border-red-500/50 text-center">
-                <p className="text-gray-300 mb-4">These are demo cars. Login to build your own racing machines!</p>
+              <Card className="p-6 bg-black/80 border-red-500/50 text-center">
+                <p className="text-gray-300 mb-4">Login to buy your first car and start racing!</p>
                 <Button onClick={() => navigate('/auth')} className="bg-red-600 hover:bg-red-700">
                   <LogIn className="mr-2 h-4 w-4" />
                   Login to Start Racing
@@ -917,38 +889,6 @@ export default function F1RacingArena() {
         </DialogContent>
       </Dialog>
 
-      {/* Login Prompt Dialog */}
-      <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
-        <DialogContent className="bg-black/95 border-red-500">
-          <DialogHeader>
-            <DialogTitle className="text-white">🔐 Login Required</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 text-center">
-            <p className="text-gray-300">
-              You need to be logged in to perform this action. Create an account to start building your racing career!
-            </p>
-            <div className="flex gap-3 justify-center">
-              <Button 
-                onClick={() => {
-                  setShowLoginPrompt(false);
-                  navigate('/auth');
-                }} 
-                className="bg-red-600 hover:bg-red-700"
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                Login / Sign Up
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => setShowLoginPrompt(false)}
-                className="border-red-500 text-white hover:bg-red-900/50"
-              >
-                Continue Browsing
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
