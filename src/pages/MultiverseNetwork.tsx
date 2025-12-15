@@ -246,57 +246,57 @@ const MultiverseNetwork = () => {
             </p>
 
             {/* Detailed How It Works Description */}
-            <div className="bg-gradient-to-br from-red-900/30 to-rose-900/30 border border-red-500/30 rounded-2xl p-6 md:p-8 mb-10 max-w-4xl mx-auto backdrop-blur-sm text-left">
-              <h2 className="text-xl md:text-2xl font-bold text-red-300 mb-4 text-center">What is Multiverse Profile Network?</h2>
-              <p className="text-sm md:text-base text-foreground mb-4 leading-relaxed">
+            <div className="bg-gradient-to-br from-red-950/60 to-rose-950/60 border border-red-500/40 rounded-2xl p-6 md:p-8 mb-10 max-w-4xl mx-auto backdrop-blur-sm text-left shadow-xl">
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-4 text-center drop-shadow-lg">What is Multiverse Profile Network?</h2>
+              <p className="text-sm md:text-base text-white/90 mb-4 leading-relaxed">
                 The Multiverse Profile Network is an AI-powered platform that allows you to explore infinite versions of yourself across parallel universes. 
                 Using advanced AI algorithms, we generate alternate realities based on different life choices, paths, and possibilities you could have taken.
               </p>
               
-              <h3 className="text-lg font-semibold text-rose-300 mb-3">How to Use:</h3>
-              <ul className="space-y-2 text-sm md:text-base text-foreground mb-4">
+              <h3 className="text-lg font-bold text-yellow-300 mb-3 drop-shadow-md">How to Use:</h3>
+              <ul className="space-y-2 text-sm md:text-base text-white/90 mb-4">
                 <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold">1.</span>
-                  <span><strong>Create Universe:</strong> Define a divergence point in your life (a decision you could have made differently) and let AI generate an alternate reality version of you.</span>
+                  <span className="text-yellow-400 font-bold">1.</span>
+                  <span><strong className="text-white">Create Universe:</strong> Define a divergence point in your life (a decision you could have made differently) and let AI generate an alternate reality version of you.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold">2.</span>
-                  <span><strong>My Universes:</strong> Browse and manage all your created parallel universes, view success scores, and explore different life paths.</span>
+                  <span className="text-yellow-400 font-bold">2.</span>
+                  <span><strong className="text-white">My Universes:</strong> Browse and manage all your created parallel universes, view success scores, and explore different life paths.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold">3.</span>
-                  <span><strong>Timeline Merger:</strong> Combine the best traits and achievements from multiple universes into an optimized version of yourself.</span>
+                  <span className="text-yellow-400 font-bold">3.</span>
+                  <span><strong className="text-white">Timeline Merger:</strong> Combine the best traits and achievements from multiple universes into an optimized version of yourself.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-red-400 font-bold">4.</span>
-                  <span><strong>Best Self Finder:</strong> AI analyzes all your parallel versions and identifies your most successful self across all dimensions.</span>
+                  <span className="text-yellow-400 font-bold">4.</span>
+                  <span><strong className="text-white">Best Self Finder:</strong> AI analyzes all your parallel versions and identifies your most successful self across all dimensions.</span>
                 </li>
               </ul>
 
-              <h3 className="text-lg font-semibold text-rose-300 mb-3">Key Features:</h3>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-foreground">
+              <h3 className="text-lg font-bold text-yellow-300 mb-3 drop-shadow-md">Key Features:</h3>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-white/90">
                 <li className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <Sparkles className="w-4 h-4 text-yellow-400 flex-shrink-0" />
                   <span>AI-generated alternate realities</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <Globe className="w-4 h-4 text-yellow-400 flex-shrink-0" />
                   <span>Unlimited universe exploration</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <Layers className="w-4 h-4 text-yellow-400 flex-shrink-0" />
                   <span>Timeline merging capabilities</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Crown className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <Crown className="w-4 h-4 text-yellow-400 flex-shrink-0" />
                   <span>Best self identification</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <Shield className="w-4 h-4 text-yellow-400 flex-shrink-0" />
                   <span>Secure & private data</span>
                 </li>
                 <li className="flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-red-400 flex-shrink-0" />
+                  <Zap className="w-4 h-4 text-yellow-400 flex-shrink-0" />
                   <span>Real-time AI analysis</span>
                 </li>
               </ul>
