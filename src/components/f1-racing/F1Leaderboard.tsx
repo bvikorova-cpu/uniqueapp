@@ -44,50 +44,52 @@ export function F1Leaderboard() {
 
   return (
     <div className="space-y-3">
-      <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-        <Trophy className="h-6 w-6 text-yellow-500" />
+      <h2 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
+        <Trophy className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
         Top Racing Cars
       </h2>
       
-      {cars.map((car, index) => {
-        const medal = getMedalEmoji(index);
-        const winRate = car.total_races > 0 
-          ? Math.round((car.total_wins / car.total_races) * 100) 
-          : 0;
-          
-        return (
-          <div
-            key={car.id}
-            className={`flex items-center gap-4 p-4 rounded-lg border ${
-              index < 3 
-                ? "bg-gradient-to-r from-red-900/50 to-black border-red-500" 
-                : "bg-black/50 border-gray-700"
-            }`}
-          >
-            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-black/50 text-lg font-bold text-white">
-              {medal || index + 1}
-            </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+        {cars.map((car, index) => {
+          const medal = getMedalEmoji(index);
+          const winRate = car.total_races > 0 
+            ? Math.round((car.total_wins / car.total_races) * 100) 
+            : 0;
             
+          return (
             <div
-              className="w-12 h-12 rounded-lg border-4"
-              style={{ 
-                backgroundColor: car.color,
-                borderColor: index < 3 ? '#ef4444' : '#374151'
-              }}
-            />
-            
-            <div className="flex-1">
-              <p className="font-bold text-white">{car.name}</p>
-              <p className="text-sm text-gray-400">{car.team}</p>
+              key={car.id}
+              className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border ${
+                index < 3 
+                  ? "bg-gradient-to-r from-red-900/50 to-black border-red-500" 
+                  : "bg-black/50 border-gray-700"
+              }`}
+            >
+              <div className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black/50 text-sm sm:text-base font-bold text-white shrink-0">
+                {medal || index + 1}
+              </div>
+              
+              <div
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border-2 sm:border-4 shrink-0"
+                style={{ 
+                  backgroundColor: car.color,
+                  borderColor: index < 3 ? '#ef4444' : '#374151'
+                }}
+              />
+              
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-white text-sm sm:text-base truncate">{car.name}</p>
+                <p className="text-xs sm:text-sm text-gray-400 truncate">{car.team}</p>
+              </div>
+              
+              <div className="text-right shrink-0">
+                <p className="font-bold text-yellow-500 text-xs sm:text-sm">{car.total_wins} Wins</p>
+                <p className="text-xs text-gray-400">{winRate}%</p>
+              </div>
             </div>
-            
-            <div className="text-right">
-              <p className="font-bold text-yellow-500">{car.total_wins} Wins</p>
-              <p className="text-sm text-gray-400">{winRate}% win rate</p>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -53,16 +53,23 @@ export function F1CurrencyDisplay() {
     return <div className="h-12 bg-muted animate-pulse rounded-lg" />;
   }
 
-  // Don't render if not logged in (the parent component handles demo display)
-  if (!user) {
-    return null;
-  }
+  // Demo values for non-logged users
+  const displayCoins = user ? (currency?.coins || 0) : 500;
+  const displayGems = user ? (currency?.gems || 0) : 50;
+
+  const handleBuyClick = () => {
+    if (!user) {
+      toast.error("Please login to purchase");
+      navigate('/auth');
+      return;
+    }
+  };
 
   return (
     <div className="flex flex-wrap items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-red-900/50 to-black rounded-lg border border-red-500">
       <div className="flex items-center gap-2">
         <Coins className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
-        <span className="font-bold text-lg sm:text-xl text-white">{currency?.coins || 0}</span>
+        <span className="font-bold text-lg sm:text-xl text-white">{displayCoins}</span>
         <span className="text-gray-300 text-sm sm:text-base">Coins</span>
       </div>
 
@@ -70,58 +77,70 @@ export function F1CurrencyDisplay() {
 
       <div className="flex items-center gap-2">
         <Gem className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500" />
-        <span className="font-bold text-lg sm:text-xl text-white">{currency?.gems || 0}</span>
+        <span className="font-bold text-lg sm:text-xl text-white">{displayGems}</span>
         <span className="text-gray-300 text-sm sm:text-base">Gems</span>
       </div>
 
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="default" size="sm" className="ml-auto bg-red-600 hover:bg-red-700 text-xs sm:text-sm">
-            <Coins className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-            Buy
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-2xl bg-black/95 border-red-500">
-          <DialogHeader>
-            <DialogTitle className="text-white">🏎️ GP Racing Shop</DialogTitle>
-            <DialogDescription>
-              Purchase coins and gems for your racing career
-            </DialogDescription>
-          </DialogHeader>
+      {user ? (
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="default" size="sm" className="ml-auto bg-red-600 hover:bg-red-700 text-xs sm:text-sm">
+              <Coins className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              Buy
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl bg-black/95 border-red-500">
+            <DialogHeader>
+              <DialogTitle className="text-white">🏎️ GP Racing Shop</DialogTitle>
+              <DialogDescription>
+                Purchase coins and gems for your racing career
+              </DialogDescription>
+            </DialogHeader>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-            {packages.map((pkg) => (
-              <div
-                key={pkg.id}
-                className="p-4 border border-red-500/50 rounded-lg bg-gradient-to-b from-red-900/30 to-black hover:border-red-500 transition-colors"
-              >
-                <h3 className="font-bold text-lg text-white">{pkg.name}</h3>
-                <div className="flex flex-col gap-1 mt-2 text-sm">
-                  {pkg.coins > 0 && (
-                    <div className="flex items-center gap-1">
-                      <Coins className="h-4 w-4 text-yellow-500" />
-                      <span className="text-white">{pkg.coins} Coins</span>
-                    </div>
-                  )}
-                  {pkg.gems > 0 && (
-                    <div className="flex items-center gap-1">
-                      <Gem className="h-4 w-4 text-purple-500" />
-                      <span className="text-white">{pkg.gems} Gems</span>
-                    </div>
-                  )}
-                </div>
-                <Button
-                  className="w-full mt-3 bg-red-600 hover:bg-red-700"
-                  onClick={() => handlePurchase(pkg.id)}
-                  disabled={purchasing}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+              {packages.map((pkg) => (
+                <div
+                  key={pkg.id}
+                  className="p-4 border border-red-500/50 rounded-lg bg-gradient-to-b from-red-900/30 to-black hover:border-red-500 transition-colors"
                 >
-                  €{pkg.price}
-                </Button>
-              </div>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
+                  <h3 className="font-bold text-lg text-white">{pkg.name}</h3>
+                  <div className="flex flex-col gap-1 mt-2 text-sm">
+                    {pkg.coins > 0 && (
+                      <div className="flex items-center gap-1">
+                        <Coins className="h-4 w-4 text-yellow-500" />
+                        <span className="text-white">{pkg.coins} Coins</span>
+                      </div>
+                    )}
+                    {pkg.gems > 0 && (
+                      <div className="flex items-center gap-1">
+                        <Gem className="h-4 w-4 text-purple-500" />
+                        <span className="text-white">{pkg.gems} Gems</span>
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    className="w-full mt-3 bg-red-600 hover:bg-red-700"
+                    onClick={() => handlePurchase(pkg.id)}
+                    disabled={purchasing}
+                  >
+                    €{pkg.price}
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Button 
+          variant="default" 
+          size="sm" 
+          className="ml-auto bg-red-600 hover:bg-red-700 text-xs sm:text-sm"
+          onClick={handleBuyClick}
+        >
+          <Coins className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+          Buy
+        </Button>
+      )}
     </div>
   );
 }
