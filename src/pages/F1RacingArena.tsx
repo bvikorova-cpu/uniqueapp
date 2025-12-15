@@ -315,35 +315,7 @@ export default function F1RacingArena() {
         </Card>
 
         {/* Currency Display */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-red-900/50 to-black rounded-lg border border-red-500">
-          <div className="flex items-center gap-2">
-            <div className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500">🪙</div>
-            <span className="font-bold text-lg sm:text-xl text-white">{displayCoins}</span>
-            <span className="text-gray-300 text-sm sm:text-base">Coins</span>
-          </div>
-
-          <div className="w-px h-6 sm:h-8 bg-gray-600" />
-
-          <div className="flex items-center gap-2">
-            <div className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500">💎</div>
-            <span className="font-bold text-lg sm:text-xl text-white">{displayGems}</span>
-            <span className="text-gray-300 text-sm sm:text-base">Gems</span>
-          </div>
-
-          <Button 
-            variant="default" 
-            size="sm" 
-            className="ml-auto bg-red-600 hover:bg-red-700 text-xs sm:text-sm"
-            onClick={() => requireAuth(() => {
-              // Open purchase modal - handled by F1CurrencyDisplay when logged in
-              toast.info("Click Buy to purchase coins and gems");
-            })}
-          >
-            🪙 Buy
-          </Button>
-        </div>
-
-        {user && <F1CurrencyDisplay />}
+        <F1CurrencyDisplay />
 
         <Tabs defaultValue="garage" className="w-full">
           <TabsList className="flex w-full overflow-x-auto bg-black/50 border border-red-500/50">
