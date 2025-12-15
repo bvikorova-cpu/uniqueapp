@@ -147,6 +147,52 @@ export default function MasterChefSubscription() {
           </Card>
         </div>
 
+        {/* Detailed Description Section */}
+        <div className="mb-16 p-6 md:p-8 rounded-2xl bg-gradient-to-br from-orange-950/60 to-red-950/60 border border-orange-500/30">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">What is MasterChef Platform?</h2>
+          <p className="text-gray-200 mb-6 leading-relaxed">
+            MasterChef Platform is an online cooking competition where home cooks and professional chefs compete against each other in exciting culinary battles. Upload videos of your cooking creations, participate in live cooking challenges, and let the community vote for the best dishes. Whether you're a passionate home cook or an aspiring professional chef, this platform gives you the opportunity to showcase your skills, learn from others, and win amazing prizes.
+          </p>
+          
+          <h3 className="text-xl font-bold text-yellow-300 mb-4">How to Use:</h3>
+          <ul className="text-gray-200 space-y-3 mb-6">
+            <li className="flex items-start gap-2">
+              <span className="text-orange-400 font-bold">1.</span>
+              <span><strong>Create Your Profile:</strong> Sign up and choose your subscription tier based on how competitive you want to be - from Amateur to Elite levels.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-orange-400 font-bold">2.</span>
+              <span><strong>Join Competitions:</strong> Browse available cooking competitions by category (appetizers, main courses, desserts, etc.) and enter the ones that match your skills.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-orange-400 font-bold">3.</span>
+              <span><strong>Submit Your Entry:</strong> Record a video of yourself cooking the dish, upload photos, and share your recipe. Show off your techniques and presentation skills.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-orange-400 font-bold">4.</span>
+              <span><strong>Get Community Votes:</strong> Other users and viewers watch your submission and vote for their favorites. The more impressive your dish, the more votes you'll receive.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-orange-400 font-bold">5.</span>
+              <span><strong>Win Rewards:</strong> Top performers earn XP, climb the leaderboard, unlock achievements, and win prizes including cash rewards for Elite members.</span>
+            </li>
+          </ul>
+
+          <h3 className="text-xl font-bold text-yellow-300 mb-4">Key Features:</h3>
+          <ul className="text-gray-200 space-y-2 mb-6">
+            <li>• <strong>Live Cooking Battles:</strong> Real-time competitions where chefs cook simultaneously and viewers vote live</li>
+            <li>• <strong>Mystery Box Challenges:</strong> Surprise ingredient challenges that test your creativity and improvisation</li>
+            <li>• <strong>Community Voting:</strong> Fair, transparent voting system where the community decides the winners</li>
+            <li>• <strong>Recipe Sharing:</strong> Access exclusive recipes from professional chefs and competition winners</li>
+            <li>• <strong>Leaderboard Rankings:</strong> Track your progress and compete for top positions on global rankings</li>
+            <li>• <strong>Professional Mentoring:</strong> Elite members get personal guidance from renowned chefs</li>
+          </ul>
+
+          <p className="text-gray-400 text-sm italic">
+            Note: Free users can view all competitions and vote for their favorites. Subscribe to participate as a competitor and unlock premium features.
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {(Object.keys(TIERS) as Array<keyof typeof TIERS>).map((tierKey) => {
             const tier = TIERS[tierKey];
