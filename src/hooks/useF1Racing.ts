@@ -149,7 +149,7 @@ export const useF1Races = () => {
             f1_cars(name, team, engine_stat, aero_stat, color)
           )
         `)
-        .in("status", ["waiting", "starting", "running"])
+        .in("status", ["open", "waiting", "starting", "running"])
         .order("created_at", { ascending: false });
 
       if (error) throw error;
