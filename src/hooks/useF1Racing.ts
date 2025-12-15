@@ -9,7 +9,7 @@ export const useF1Currency = () => {
     queryKey: ["f1-currency"],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      if (!user) return null; // Return null instead of throwing for unauthenticated users
 
       const { data, error } = await supabase
         .from("f1_currency")
