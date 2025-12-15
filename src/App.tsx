@@ -571,7 +571,7 @@ const App = () => {
                 <SubscriptionGuard 
                   checkFunction="check-f1-subscription" 
                   redirectTo="/f1-subscription"
-                  serviceName="F1 Racing"
+                  serviceName="GP Racing"
                 >
                   <F1Racing />
                 </SubscriptionGuard>
@@ -581,7 +581,7 @@ const App = () => {
                 <SubscriptionGuard 
                   checkFunction="check-f1-subscription" 
                   redirectTo="/f1-subscription"
-                  serviceName="F1 Racing"
+                  serviceName="GP Racing"
                 >
                   <F1FantasyTeam />
                 </SubscriptionGuard>
@@ -590,7 +590,7 @@ const App = () => {
                 <SubscriptionGuard 
                   checkFunction="check-f1-subscription" 
                   redirectTo="/f1-subscription"
-                  serviceName="F1 Racing"
+                  serviceName="GP Racing"
                 >
                   <F1Leaderboard />
                 </SubscriptionGuard>

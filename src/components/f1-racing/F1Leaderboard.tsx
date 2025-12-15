@@ -46,7 +46,7 @@ export function F1Leaderboard() {
     <div className="space-y-3">
       <h2 className="text-2xl font-bold text-white flex items-center gap-2">
         <Trophy className="h-6 w-6 text-yellow-500" />
-        Top F1 Cars
+        Top Racing Cars
       </h2>
       
       {cars.map((car, index) => {

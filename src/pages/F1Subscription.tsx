@@ -161,7 +161,7 @@ const F1Subscription = () => {
             🏎️ Choose Your Plan
           </h1>
           <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-4">
-            Premium-Only F1 Fantasy Racing Platform
+            Premium-Only GP Fantasy Racing Platform
           </p>
           {isSubscribed && (
             <Badge className="bg-green-500 text-white text-sm sm:text-xl px-4 sm:px-6 py-2 sm:py-3">

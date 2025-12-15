@@ -90,7 +90,7 @@ const F1Leaderboard = () => {
           <h1 className="text-6xl font-bold text-white mb-2 animate-fade-in">
             🏆 Global Leaderboard
           </h1>
-          <p className="text-2xl text-gray-300">Top F1 Fantasy Racing Players</p>
+          <p className="text-2xl text-gray-300">Top GP Fantasy Racing Players</p>
         </div>
 
         {/* Top 3 Podium */}

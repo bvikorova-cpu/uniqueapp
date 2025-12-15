@@ -227,11 +227,11 @@ const F1Racing = () => {
         <Card className="max-w-2xl border-4 border-red-500 bg-black/80 text-white z-10 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-4xl text-center text-red-500">
-              🏎️ F1 Fantasy Racing
+              🏎️ GP Fantasy Racing
             </CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-6">
-            <p className="text-xl">Subscribe to access the F1 Fantasy Racing platform!</p>
+            <p className="text-xl">Subscribe to access the GP Fantasy Racing platform!</p>
             <Button
               onClick={() => navigate('/f1-subscription')}
               className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-xl"
@@ -301,7 +301,7 @@ const F1Racing = () => {
 
         <div className="text-center mb-4 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-2 animate-fade-in">
-            🏎️ F1 Fantasy Racing
+            🏎️ GP Fantasy Racing
           </h1>
           <p className="text-lg sm:text-xl lg:text-2xl text-gray-300">Build Your Dream Team & Compete!</p>
         </div>

@@ -170,7 +170,7 @@ const F1FantasyTeam = () => {
           <h1 className="text-6xl font-bold text-white mb-2 animate-fade-in">
             🏁 Fantasy Team Manager
           </h1>
-          <p className="text-2xl text-gray-300">Build Your Dream F1 Team</p>
+          <p className="text-2xl text-gray-300">Build Your Dream Racing Team</p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
