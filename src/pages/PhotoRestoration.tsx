@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Upload, Sparkles, Wand2, Image as ImageIcon } from "lucide-react";
+import { Upload, Sparkles, Wand2, Image as ImageIcon, Info, Star, Zap, CheckCircle } from "lucide-react";
 import { usePhotoCredits } from "@/hooks/usePhotoCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -73,9 +73,9 @@ const PhotoRestoration = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-20 px-4">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12 mt-12">
-          <h1 className="text-4xl font-bold mb-4">AI Photo Restoration</h1>
-          <p className="text-muted-foreground text-lg">
+        <div className="text-center mb-8 mt-12">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4">AI Photo Restoration</h1>
+          <p className="text-muted-foreground text-base sm:text-lg">
             Bring your old memories back to life with artificial intelligence
           </p>
           <div className="mt-4 inline-block px-6 py-2 bg-primary/10 rounded-full">
@@ -84,6 +84,48 @@ const PhotoRestoration = () => {
             </p>
           </div>
         </div>
+
+        <Card className="p-4 sm:p-6 mb-8 bg-gradient-to-r from-purple-500/10 via-primary/10 to-purple-500/10 border-primary/20">
+          <div className="flex items-start gap-3 mb-4">
+            <Info className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-base sm:text-lg mb-2">What is AI Photo Restoration?</h3>
+              <p className="text-sm text-muted-foreground">
+                AI Photo Restoration uses advanced artificial intelligence to breathe new life into your old, damaged, or faded photographs. Whether you have precious family memories in black and white, photos with scratches and tears, or images that have lost their sharpness over time, our AI can help restore them to their former glory.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Star className="h-4 w-4 text-yellow-500" />
+                How to Use
+              </h4>
+              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                <li>• Choose a restoration type (Colorize, Repair, or Enhance)</li>
+                <li>• Upload your old or damaged photo</li>
+                <li>• Click "Restore Photo" to process</li>
+                <li>• Download your restored image</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Zap className="h-4 w-4 text-purple-500" />
+                Restoration Types
+              </h4>
+              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Colorization: Add realistic colors to B&W photos</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Repair: Remove scratches, tears, and damage</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Enhancement: Improve clarity and sharpness</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
+            <strong>Key Features:</strong> AI-powered restoration • Automatic colorization • Scratch and damage removal • Quality enhancement • Download restored photos • All restoration types cost just 1 credit
+          </div>
+        </Card>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
           <Card 
