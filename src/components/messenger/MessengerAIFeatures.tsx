@@ -2,7 +2,14 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Languages, FileText, Sparkles, Coins, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  Languages, FileText, Sparkles, Coins, Loader2, 
+  Clock, Cloud, Zap, Heart, Wand2 
+} from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -16,12 +23,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface MessengerAIFeaturesProps {
   userId: string;
   selectedText?: string;
   messages: Array<{ sender_id: string; content: string; sender_name?: string }>;
   onInsertText: (text: string) => void;
+  recipientId?: string;
+  recipientName?: string;
 }
 
 const LANGUAGES = [
@@ -35,11 +51,22 @@ const CREDIT_PACKAGES = [
   { credits: 150, price: 25 },
 ];
 
+const WEATHER_ICONS: Record<string, string> = {
+  sunny: "☀️",
+  cloudy: "☁️",
+  rainy: "🌧️",
+  stormy: "⛈️",
+  rainbow: "🌈",
+  foggy: "🌫️",
+};
+
 export const MessengerAIFeatures = ({
   userId,
   selectedText,
   messages,
   onInsertText,
+  recipientId,
+  recipientName,
 }: MessengerAIFeaturesProps) => {
   const { toast } = useToast();
   const [credits, setCredits] = useState(0);
@@ -49,6 +76,28 @@ export const MessengerAIFeatures = ({
   const [showSmartReplies, setShowSmartReplies] = useState(false);
   const [summary, setSummary] = useState("");
   const [showSummary, setShowSummary] = useState(false);
+  
+  // New feature states
+  const [showTimeCapsule, setShowTimeCapsule] = useState(false);
+  const [timeCapsuleMessage, setTimeCapsuleMessage] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState("");
+  
+  const [showEmotionalWeather, setShowEmotionalWeather] = useState(false);
+  const [emotionalAnalysis, setEmotionalAnalysis] = useState<any>(null);
+  
+  const [showQuantumMessage, setShowQuantumMessage] = useState(false);
+  const [quantumOriginal, setQuantumOriginal] = useState("");
+  const [quantumType, setQuantumType] = useState("mood");
+  const [quantumVariations, setQuantumVariations] = useState<any[]>([]);
+  
+  const [showCompliment, setShowCompliment] = useState(false);
+  const [complimentContext, setComplimentContext] = useState("");
+  const [complimentStyle, setComplimentStyle] = useState("heartfelt");
+  const [generatedCompliment, setGeneratedCompliment] = useState<any>(null);
+  
+  const [showWhatIf, setShowWhatIf] = useState(false);
+  const [whatIfScenario, setWhatIfScenario] = useState("");
+  const [whatIfStory, setWhatIfStory] = useState<any>(null);
 
   useEffect(() => {
     fetchCredits();
@@ -171,6 +220,178 @@ export const MessengerAIFeatures = ({
     }
   };
 
+  const handleTimeCapsule = async () => {
+    if (!timeCapsuleMessage || !deliveryDate || !recipientId) {
+      toast({ title: "Fill all fields", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("messenger-ai-time-capsule", {
+        body: { 
+          message: timeCapsuleMessage, 
+          deliveryDate, 
+          recipientId,
+          generateImage: true 
+        },
+      });
+
+      if (error) throw error;
+      if (data.error) {
+        if (data.error.includes("Insufficient credits")) {
+          setShowCreditsDialog(true);
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+
+      setShowTimeCapsule(false);
+      setTimeCapsuleMessage("");
+      setDeliveryDate("");
+      await fetchCredits();
+      toast({ title: "⏰ Time Capsule Created!", description: `Will be delivered on ${deliveryDate}` });
+    } catch (error: any) {
+      toast({ title: "Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmotionalWeather = async () => {
+    if (messages.length < 3) {
+      toast({ title: "Need more messages to analyze", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const formattedMessages = messages.slice(-15).map(m => ({
+        sender: m.sender_name || (m.sender_id === userId ? "Me" : "Them"),
+        content: m.content,
+      }));
+
+      const { data, error } = await supabase.functions.invoke("messenger-ai-emotional-weather", {
+        body: { messages: formattedMessages },
+      });
+
+      if (error) throw error;
+      if (data.error) {
+        if (data.error.includes("Insufficient credits")) {
+          setShowCreditsDialog(true);
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+
+      setEmotionalAnalysis(data.analysis);
+      setShowEmotionalWeather(true);
+      await fetchCredits();
+      toast({ title: "Analysis ready!", description: `${data.creditsUsed} credits used` });
+    } catch (error: any) {
+      toast({ title: "Analysis failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleQuantumMessage = async () => {
+    if (!quantumOriginal) {
+      toast({ title: "Enter a message first", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("messenger-ai-quantum-message", {
+        body: { originalMessage: quantumOriginal, variationType: quantumType },
+      });
+
+      if (error) throw error;
+      if (data.error) {
+        if (data.error.includes("Insufficient credits")) {
+          setShowCreditsDialog(true);
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+
+      setQuantumVariations(data.variations?.variations || []);
+      await fetchCredits();
+      toast({ title: "Variations ready!", description: `${data.creditsUsed} credits used` });
+    } catch (error: any) {
+      toast({ title: "Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAnonymousCompliment = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("messenger-ai-anonymous-compliment", {
+        body: { 
+          recipientName: recipientName || "someone special", 
+          context: complimentContext,
+          style: complimentStyle 
+        },
+      });
+
+      if (error) throw error;
+      if (data.error) {
+        if (data.error.includes("Insufficient credits")) {
+          setShowCreditsDialog(true);
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+
+      setGeneratedCompliment(data);
+      await fetchCredits();
+      toast({ title: "Compliment ready!", description: `${data.creditsUsed} credits used` });
+    } catch (error: any) {
+      toast({ title: "Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleWhatIf = async () => {
+    if (!whatIfScenario) {
+      toast({ title: "Enter a scenario", variant: "destructive" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("messenger-ai-what-if", {
+        body: { scenario: whatIfScenario },
+      });
+
+      if (error) throw error;
+      if (data.error) {
+        if (data.error.includes("Insufficient credits")) {
+          setShowCreditsDialog(true);
+        } else {
+          throw new Error(data.error);
+        }
+        return;
+      }
+
+      setWhatIfStory(data);
+      await fetchCredits();
+      toast({ title: "Story ready!", description: `${data.creditsUsed} credits used` });
+    } catch (error: any) {
+      toast({ title: "Failed", description: error.message, variant: "destructive" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleBuyCredits = async (credits: number) => {
     try {
       const { data, error } = await supabase.functions.invoke("create-messenger-ai-credits-payment", {
@@ -187,7 +408,7 @@ export const MessengerAIFeatures = ({
   };
 
   return (
-    <div className="flex items-center gap-1">
+    <div className="flex items-center gap-1 flex-wrap">
       {/* Credits display */}
       <Dialog open={showCreditsDialog} onOpenChange={setShowCreditsDialog}>
         <DialogTrigger asChild>
@@ -201,9 +422,19 @@ export const MessengerAIFeatures = ({
             <DialogTitle>Buy AI Credits</DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              Credits for AI features: Translation (2), Summary (5), Smart Reply (1)
-            </p>
+            <div className="text-sm text-muted-foreground space-y-1">
+              <p className="font-medium">Credit costs:</p>
+              <ul className="text-xs grid grid-cols-2 gap-1">
+                <li>🌐 Translate: 2</li>
+                <li>📝 Summary: 5</li>
+                <li>✨ Smart Reply: 1</li>
+                <li>⏰ Time Capsule: 5</li>
+                <li>🌤️ Emotional Weather: 3</li>
+                <li>⚡ Quantum Message: 10</li>
+                <li>💜 Anonymous Compliment: 2</li>
+                <li>🔮 What If Story: 15</li>
+              </ul>
+            </div>
             <div className="grid gap-2">
               {CREDIT_PACKAGES.map((pkg) => (
                 <Button
@@ -287,6 +518,304 @@ export const MessengerAIFeatures = ({
               </Button>
             ))}
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Time Capsule */}
+      <Dialog open={showTimeCapsule} onOpenChange={setShowTimeCapsule}>
+        <DialogTrigger asChild>
+          <Button variant="ghost" size="icon" title="Time Capsule (5 credits)">
+            <Clock className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>⏰ Time Capsule Message</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Send a message to the future! It will be delivered on the date you choose.
+            </p>
+            <div className="space-y-2">
+              <Label>Message</Label>
+              <Textarea
+                value={timeCapsuleMessage}
+                onChange={(e) => setTimeCapsuleMessage(e.target.value)}
+                placeholder="Write your message for the future..."
+                rows={4}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Delivery Date</Label>
+              <Input
+                type="date"
+                value={deliveryDate}
+                onChange={(e) => setDeliveryDate(e.target.value)}
+                min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
+              />
+            </div>
+            <Button onClick={handleTimeCapsule} disabled={isLoading} className="w-full">
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Create Time Capsule (5 credits)
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Emotional Weather */}
+      <Dialog open={showEmotionalWeather} onOpenChange={setShowEmotionalWeather}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleEmotionalWeather}
+          disabled={isLoading}
+          title="Emotional Weather (3 credits)"
+        >
+          <Cloud className="h-4 w-4" />
+        </Button>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>🌤️ Emotional Weather Report</DialogTitle>
+          </DialogHeader>
+          {emotionalAnalysis && (
+            <div className="space-y-4">
+              <div className="text-center p-4 bg-muted rounded-lg">
+                <span className="text-6xl">
+                  {WEATHER_ICONS[emotionalAnalysis.weather] || emotionalAnalysis.emoji || "🌈"}
+                </span>
+                <p className="text-lg font-medium mt-2 capitalize">
+                  {emotionalAnalysis.weather} & {emotionalAnalysis.temperature}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Positivity Score: {emotionalAnalysis.emotionalScore}/100
+                </p>
+              </div>
+              <div className="space-y-2">
+                <p className="font-medium">Dominant Emotions:</p>
+                <div className="flex flex-wrap gap-1">
+                  {emotionalAnalysis.dominantEmotions?.map((emotion: string, i: number) => (
+                    <span key={i} className="px-2 py-1 bg-primary/10 rounded text-xs">
+                      {emotion}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {emotionalAnalysis.dynamics && (
+                <div>
+                  <p className="font-medium">Dynamics:</p>
+                  <p className="text-sm text-muted-foreground">{emotionalAnalysis.dynamics}</p>
+                </div>
+              )}
+              {emotionalAnalysis.advice && (
+                <div className="p-3 bg-primary/5 rounded-lg">
+                  <p className="font-medium">💡 Advice:</p>
+                  <p className="text-sm">{emotionalAnalysis.advice}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Quantum Message */}
+      <Dialog open={showQuantumMessage} onOpenChange={setShowQuantumMessage}>
+        <DialogTrigger asChild>
+          <Button variant="ghost" size="icon" title="Quantum Message (10 credits)">
+            <Zap className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>⚡ Quantum Message</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Create 5 variations of your message for different contexts!
+            </p>
+            <div className="space-y-2">
+              <Label>Your Message</Label>
+              <Textarea
+                value={quantumOriginal}
+                onChange={(e) => setQuantumOriginal(e.target.value)}
+                placeholder="Enter your message..."
+                rows={2}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Variation Type</Label>
+              <Select value={quantumType} onValueChange={setQuantumType}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mood">By Mood</SelectItem>
+                  <SelectItem value="time">By Time of Day</SelectItem>
+                  <SelectItem value="personality">By Personality</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={handleQuantumMessage} disabled={isLoading} className="w-full">
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Generate Variations (10 credits)
+            </Button>
+            {quantumVariations.length > 0 && (
+              <ScrollArea className="h-48">
+                <div className="space-y-2">
+                  {quantumVariations.map((v, i) => (
+                    <Button
+                      key={i}
+                      variant="outline"
+                      className="w-full justify-start text-left h-auto py-2"
+                      onClick={() => {
+                        onInsertText(v.message);
+                        setShowQuantumMessage(false);
+                      }}
+                    >
+                      <span className="mr-2">{v.emoji}</span>
+                      <span className="flex-1">
+                        <span className="text-xs text-muted-foreground block">{v.type}</span>
+                        {v.message}
+                      </span>
+                    </Button>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Anonymous Compliment */}
+      <Dialog open={showCompliment} onOpenChange={setShowCompliment}>
+        <DialogTrigger asChild>
+          <Button variant="ghost" size="icon" title="Anonymous Compliment (2 credits)">
+            <Heart className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>💜 Anonymous Compliment</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Generate a beautiful anonymous compliment for {recipientName || "your friend"}!
+            </p>
+            <div className="space-y-2">
+              <Label>Context (optional)</Label>
+              <Input
+                value={complimentContext}
+                onChange={(e) => setComplimentContext(e.target.value)}
+                placeholder="e.g., always supportive, great listener..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Style</Label>
+              <Select value={complimentStyle} onValueChange={setComplimentStyle}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="heartfelt">Heartfelt</SelectItem>
+                  <SelectItem value="poetic">Poetic</SelectItem>
+                  <SelectItem value="funny">Funny</SelectItem>
+                  <SelectItem value="motivational">Motivational</SelectItem>
+                  <SelectItem value="creative">Creative</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button onClick={handleAnonymousCompliment} disabled={isLoading} className="w-full">
+              {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              Generate Compliment (2 credits)
+            </Button>
+            {generatedCompliment && (
+              <div className="p-4 bg-primary/5 rounded-lg space-y-2">
+                <p className="text-lg">{generatedCompliment.emoji} {generatedCompliment.compliment}</p>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => {
+                    onInsertText(`💜 Anonymous compliment: ${generatedCompliment.compliment}`);
+                    setShowCompliment(false);
+                  }}
+                >
+                  Send as Anonymous
+                </Button>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* What If Story */}
+      <Dialog open={showWhatIf} onOpenChange={setShowWhatIf}>
+        <DialogTrigger asChild>
+          <Button variant="ghost" size="icon" title="What If Story (15 credits)">
+            <Wand2 className="h-4 w-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-2xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>🔮 What If Story Generator</DialogTitle>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="space-y-4 pr-4">
+              <p className="text-sm text-muted-foreground">
+                Generate an AI story about an alternative life path!
+              </p>
+              <div className="space-y-2">
+                <Label>Scenario</Label>
+                <Textarea
+                  value={whatIfScenario}
+                  onChange={(e) => setWhatIfScenario(e.target.value)}
+                  placeholder="e.g., What if I had studied abroad? What if I had started my business earlier?"
+                  rows={2}
+                />
+              </div>
+              <Button onClick={handleWhatIf} disabled={isLoading} className="w-full">
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                Generate Story (15 credits)
+              </Button>
+              {whatIfStory && (
+                <div className="space-y-4">
+                  {whatIfStory.imageUrl && (
+                    <img 
+                      src={whatIfStory.imageUrl} 
+                      alt="What If visualization" 
+                      className="w-full rounded-lg"
+                    />
+                  )}
+                  <h3 className="text-lg font-bold">{whatIfStory.title}</h3>
+                  <p className="text-sm whitespace-pre-wrap">{whatIfStory.story}</p>
+                  {whatIfStory.keyMoments && (
+                    <div>
+                      <p className="font-medium">Key Moments:</p>
+                      <ul className="list-disc list-inside text-sm">
+                        {whatIfStory.keyMoments.map((m: string, i: number) => (
+                          <li key={i}>{m}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {whatIfStory.lifeLesson && (
+                    <div className="p-3 bg-primary/10 rounded-lg">
+                      <p className="font-medium">💡 Life Lesson:</p>
+                      <p className="text-sm">{whatIfStory.lifeLesson}</p>
+                    </div>
+                  )}
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      onInsertText(`🔮 What If Story: "${whatIfStory.title}"\n\n${whatIfStory.story?.substring(0, 200)}...`);
+                      setShowWhatIf(false);
+                    }}
+                  >
+                    Share Preview in Chat
+                  </Button>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
         </DialogContent>
       </Dialog>
     </div>
