@@ -28,27 +28,27 @@ serve(async (req) => {
 
     const { journalContent, mood } = await req.json();
 
-    // Mock journal analysis - no AI API needed
+    // Mock journal analysis - English responses
     const moodEmotions: Record<string, string[]> = {
-      happy: ["radosť", "spokojnosť", "optimizmus"],
-      sad: ["smútok", "zamyslenie", "spracovanie"],
-      anxious: ["napätie", "obavy", "potreba upokojenia"],
-      calm: ["pokoj", "vyrovnanosť", "vnútorná harmónia"],
-      energetic: ["energia", "motivácia", "nadšenie"]
+      happy: ["joy", "contentment", "optimism"],
+      sad: ["self-awareness", "reflection", "growth"],
+      anxious: ["awareness", "processing", "resilience"],
+      calm: ["peace", "balance", "inner harmony"],
+      energetic: ["energy", "motivation", "enthusiasm"]
     };
 
     const insightsData = {
-      insights: `Váš denníkový záznam ukazuje ${mood || "zaujímavý"} emočný stav. Písanie denníka je skvelý spôsob, ako spracovať svoje myšlienky a emócie. Pokračujte v tejto zdravej zvyklosti.`,
-      emotions: moodEmotions[mood as string] || ["sebapoznanie", "reflexia", "rast"],
+      insights: `Your journal entry shows a ${mood || "thoughtful"} emotional state. Journaling is a great way to process your thoughts and emotions. Keep up this healthy habit.`,
+      emotions: moodEmotions[mood as string] || ["self-discovery", "reflection", "growth"],
       suggestions: [
-        "Pokračujte v pravidelnom písaní denníka",
-        "Všímajte si pozitívne momenty v každom dni",
-        "Buďte k sebe láskavý a trpezlivý",
-        "Venujte si čas na aktivity, ktoré vás napĺňajú"
+        "Continue journaling regularly",
+        "Notice the positive moments in each day",
+        "Be kind and patient with yourself",
+        "Make time for activities that fulfill you"
       ],
       affirmations: [
-        "Ste na dobrej ceste. Vaše myšlienky a pocity sú dôležité.",
-        "Zaslúžite si lásku a porozumenie."
+        "You are on the right path. Your thoughts and feelings matter.",
+        "You deserve love and understanding."
       ]
     };
 
