@@ -14,6 +14,7 @@ import { useOnlineStatus } from "@/hooks/useOnlineStatus";
 import { OnlineIndicator } from "@/components/messenger/OnlineIndicator";
 import { SelfDestructingMessage } from "@/components/messenger/SelfDestructingMessage";
 import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
+import { MessengerAIFeatures } from "@/components/messenger/MessengerAIFeatures";
 import {
   Popover,
   PopoverContent,
@@ -108,6 +109,7 @@ const Messenger = () => {
   const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
   const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
   const [activeTab, setActiveTab] = useState<"direct" | "groups">("direct");
+  const [selectedMessageText, setSelectedMessageText] = useState<string>("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -1093,6 +1095,20 @@ const Messenger = () => {
                     isActive={selfDestructDuration !== null && selfDestructDuration > 0}
                     duration={selfDestructDuration}
                   />
+                  
+                  {/* AI Features */}
+                  {user && (
+                    <MessengerAIFeatures
+                      userId={user.id}
+                      selectedText={selectedMessageText}
+                      messages={messages.map(m => ({
+                        sender_id: m.sender_id,
+                        content: m.content,
+                        sender_name: m.sender_profile?.full_name || undefined,
+                      }))}
+                      onInsertText={(text) => setNewMessage(text)}
+                    />
+                  )}
                   
                   {/* Voice recording button */}
                   <Button
