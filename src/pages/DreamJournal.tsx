@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Moon, BookOpen, TrendingUp, Sparkles } from "lucide-react";
+import { Moon, BookOpen, TrendingUp, Sparkles, Info, Star, Zap, CheckCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DreamEntryForm from "@/components/dream-journal/DreamEntryForm";
@@ -23,35 +23,78 @@ const DreamJournal = () => {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-purple-500/5">
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 pt-24 pb-12 max-w-7xl">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+      <main className="flex-1 container mx-auto px-3 sm:px-4 pt-24 pb-12 max-w-7xl">
+        <div className="text-center mb-6">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4">
             <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
               Dream Analyzer & Journal 💭
             </span>
           </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto">
             Unlock your subconscious, track your emotions, and discover patterns in your mental journey
           </p>
         </div>
 
+        <Card className="p-4 sm:p-6 mb-6 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 border-purple-500/20">
+          <div className="flex items-start gap-3 mb-4">
+            <Info className="h-5 w-5 text-purple-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-base sm:text-lg mb-2">What is Dream Analyzer & Journal?</h3>
+              <p className="text-sm text-muted-foreground">
+                Dream Analyzer & Journal is your personal mental wellness companion. Record and analyze your dreams with AI-powered interpretations, keep a daily journal to express your thoughts, track your mood patterns over time, and discover insights about your emotional well-being.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Star className="h-4 w-4 text-yellow-500" />
+                How to Use
+              </h4>
+              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                <li>• <strong>Dreams:</strong> Record dreams and get AI analysis</li>
+                <li>• <strong>Journal:</strong> Write daily thoughts and reflections</li>
+                <li>• <strong>Mood:</strong> Track daily mood, energy & stress</li>
+                <li>• <strong>Trends:</strong> View patterns and insights over time</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Zap className="h-4 w-4 text-purple-500" />
+                Key Features
+              </h4>
+              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> AI-powered dream interpretation</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Private and secure journaling</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Mood and energy tracking</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Pattern analysis and trends</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
+            <strong>Tip:</strong> For best results, record your dreams immediately after waking up while details are fresh. Regular journaling helps AI provide more accurate mood trend analysis.
+          </div>
+        </Card>
+
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="dreams" className="flex items-center gap-2">
-              <Moon className="w-4 h-4" />
-              <span className="hidden sm:inline">Dreams</span>
+          <TabsList className="grid w-full grid-cols-4 mb-6 h-auto">
+            <TabsTrigger value="dreams" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Moon className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Dreams</span>
             </TabsTrigger>
-            <TabsTrigger value="journal" className="flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              <span className="hidden sm:inline">Journal</span>
+            <TabsTrigger value="journal" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <BookOpen className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Journal</span>
             </TabsTrigger>
-            <TabsTrigger value="mood" className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
-              <span className="hidden sm:inline">Mood</span>
+            <TabsTrigger value="mood" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Mood</span>
             </TabsTrigger>
-            <TabsTrigger value="trends" className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              <span className="hidden sm:inline">Trends</span>
+            <TabsTrigger value="trends" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Trends</span>
             </TabsTrigger>
           </TabsList>
 
