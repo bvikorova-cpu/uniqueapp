@@ -99,28 +99,24 @@ export default function Collectibles() {
         </Card>
 
         <Tabs defaultValue="generate" className="space-y-6">
-          <TabsList className="grid grid-cols-3 sm:grid-cols-5 gap-2 h-auto p-2">
-            <TabsTrigger value="generate" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+          <TabsList className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-1 h-auto p-1">
+            <TabsTrigger value="generate" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2">
               <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden xs:inline">Generate</span>
-              <span className="xs:hidden">Gen</span>
+              Generate
             </TabsTrigger>
-            <TabsTrigger value="collection" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+            <TabsTrigger value="collection" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2">
               <Box className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">My Collection</span>
-              <span className="sm:hidden">Collection</span>
+              Collection
             </TabsTrigger>
-            <TabsTrigger value="mystery" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+            <TabsTrigger value="mystery" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2">
               <Store className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Mystery Boxes</span>
-              <span className="sm:hidden">Mystery</span>
+              Mystery
             </TabsTrigger>
-            <TabsTrigger value="marketplace" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+            <TabsTrigger value="marketplace" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2">
               <Users className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Marketplace</span>
-              <span className="sm:hidden">Market</span>
+              Market
             </TabsTrigger>
-            <TabsTrigger value="vip" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2 col-span-3 sm:col-span-1">
+            <TabsTrigger value="vip" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2 px-2">
               <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
               VIP
             </TabsTrigger>
