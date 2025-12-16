@@ -1083,3 +1083,14 @@ verify_jwt = true
 [functions.messenger-ai-what-if]
 verify_jwt = true
 
+[functions.check-psychology-subscription]
+verify_jwt = true
+
+[functions.create-psychology-checkout]
+verify_jwt = true
+
+[functions.psychology-customer-portal]
+verify_jwt = true
+
+[functions.psychology-chat]
+verify_jwt = false
