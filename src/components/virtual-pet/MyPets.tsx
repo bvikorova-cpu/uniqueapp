@@ -36,7 +36,7 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
       const { data, error } = await supabase
         .from('pet_types')
         .select('*')
-        .order('is_premium');
+        .order('price', { ascending: true });
       if (error) throw error;
       return data;
     }
@@ -397,7 +397,7 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
                   <SelectTrigger>
                     <SelectValue placeholder="Choose a pet type..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-60">
                     {petTypes?.map((type) => (
                       <SelectItem key={type.id} value={type.id}>
                         {type.name} {type.is_premium && '⭐'} {type.price > 0 && `(${type.price} credits)`}
