@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Upload, Sparkles, Home, ShoppingCart, Search, Store, ShoppingBag, CheckCircle } from "lucide-react";
+import { Loader2, Upload, Sparkles, Home, ShoppingCart, Search, Store, ShoppingBag, CheckCircle, Info, Star, Zap, Palette, Image } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Badge } from "@/components/ui/badge";
@@ -217,13 +217,13 @@ const HomeDesigner = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 flex items-center gap-2">
-            <Home className="h-8 w-8 text-primary" />
+      <div className="container mx-auto px-4 pt-20 sm:pt-24 pb-8">
+        <div className="mb-6">
+          <h1 className="text-2xl sm:text-4xl font-bold mb-2 flex items-center gap-2">
+            <Home className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
             Home Designer & Marketplace
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-sm sm:text-lg">
             Design your space with AI or browse marketplace items
           </p>
           
@@ -240,18 +240,66 @@ const HomeDesigner = () => {
           )}
         </div>
 
+        {/* Description Card */}
+        <Card className="mb-6 bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Info className="h-5 w-5 text-primary" />
+              What is Home Designer & Marketplace?
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Home Designer & Marketplace is your all-in-one platform for interior design and home decor shopping. 
+              Use AI to visualize room designs based on your photos, browse unique decor items from other users, 
+              or sell your own home decor pieces to the community.
+            </p>
+            
+            <div className="space-y-2">
+              <h4 className="font-semibold flex items-center gap-2 text-sm">
+                <Star className="h-4 w-4 text-primary" />
+                How to Use
+              </h4>
+              <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
+                <li><strong>AI Designer:</strong> Upload a photo of your room and select a style - AI will generate design suggestions</li>
+                <li><strong>Marketplace:</strong> Browse and purchase unique home decor items listed by other users</li>
+                <li><strong>Sell Items:</strong> List your own furniture and decor for sale with photos and descriptions</li>
+              </ul>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span>AI Room Design</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
+                <Store className="h-4 w-4 text-primary" />
+                <span>Buy & Sell</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
+                <Palette className="h-4 w-4 text-primary" />
+                <span>Multiple Styles</span>
+              </div>
+              <div className="flex items-center gap-2 text-xs sm:text-sm">
+                <Image className="h-4 w-4 text-primary" />
+                <span>Photo Upload</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Tabs defaultValue="designer" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="designer" className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              AI Designer
+          <TabsList className="w-full grid grid-cols-3">
+            <TabsTrigger value="designer" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">AI</span> Designer
             </TabsTrigger>
-            <TabsTrigger value="marketplace" className="flex items-center gap-2">
-              <Store className="h-4 w-4" />
+            <TabsTrigger value="marketplace" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Store className="h-3 w-3 sm:h-4 sm:w-4" />
               Marketplace
             </TabsTrigger>
-            <TabsTrigger value="sell" className="flex items-center gap-2">
-              <ShoppingBag className="h-4 w-4" />
+            <TabsTrigger value="sell" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4" />
               Sell Items
             </TabsTrigger>
           </TabsList>
