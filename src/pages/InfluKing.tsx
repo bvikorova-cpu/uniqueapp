@@ -577,6 +577,70 @@ const InfluKing = () => {
             Become a TOP influencer in the world!
           </p>
 
+          {/* Detailed Description Section */}
+          <Card className="max-w-4xl mx-auto mb-8 text-left">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                What is Influ-King?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">
+                <strong>Influ-King</strong> is your ultimate platform to build and grow your influencer career. 
+                Create your professional profile, share engaging content, attract followers, and climb the leaderboard 
+                to become a TOP influencer recognized worldwide.
+              </p>
+              
+              <div className="space-y-3">
+                <h4 className="font-semibold text-foreground">How to Get Started:</h4>
+                <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
+                  <li><strong>Create Your Profile</strong> – Click "Become an Influencer" to set up your professional influencer profile with bio, photos, and social media links.</li>
+                  <li><strong>Share Content</strong> – Post photos and videos to engage your audience. Use the "Add Post" button to upload or record content directly.</li>
+                  <li><strong>Grow Your Following</strong> – The more engaging your content, the more followers you will attract. Your rank improves as your follower count increases.</li>
+                  <li><strong>Go Live</strong> – Start live streams to interact with your fans in real-time and boost engagement.</li>
+                  <li><strong>Receive Gifts & Tips</strong> – Your followers can send you virtual gifts and tips as appreciation for your content.</li>
+                  <li><strong>Track Earnings</strong> – Monitor your earnings from gifts, tips, and sponsorships in your personal dashboard.</li>
+                  <li><strong>Withdraw Earnings</strong> – Request withdrawals when your balance reaches the minimum threshold (€50).</li>
+                </ul>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold text-foreground">Key Features:</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Crown className="h-4 w-4 text-yellow-500" />
+                    <span>Leaderboard ranking system</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-primary" />
+                    <span>Follower management</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Gift className="h-4 w-4 text-pink-500" />
+                    <span>Gift & tip monetization</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Camera className="h-4 w-4 text-blue-500" />
+                    <span>Live streaming capability</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <span>Earnings tracking & withdrawal</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-500" />
+                    <span>Verified influencer badges</span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-xs text-muted-foreground border-t pt-3">
+                <strong>Tip:</strong> Consistency is key! Post regularly, engage with your followers, and use trending topics to maximize your reach and earnings potential.
+              </p>
+            </CardContent>
+          </Card>
+
           {myProfile ? (
             <div className="flex items-center justify-center gap-4">
               <Dialog open={showPostDialog} onOpenChange={setShowPostDialog}>
