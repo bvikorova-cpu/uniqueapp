@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useAICredits } from "@/hooks/useAICredits";
 import { 
   Utensils, Camera, Trophy, Store, Dumbbell, Apple, 
-  Sparkles, ShoppingBag, Target
+  Sparkles, ShoppingBag, Target, Info, Star, Zap, CheckCircle
 } from "lucide-react";
 import MealPlannerGenerator from "@/components/nutrition/MealPlannerGenerator";
 import FoodScanner from "@/components/nutrition/FoodScanner";
@@ -68,6 +68,56 @@ export default function NutritionHub() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Description Section */}
+      <div className="container mx-auto px-3 sm:px-4 py-4">
+        <Card className="p-4 sm:p-6 bg-gradient-to-r from-green-500/10 via-blue-500/10 to-purple-500/10 border-green-500/20">
+          <div className="flex items-start gap-3 mb-4">
+            <Info className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-base sm:text-lg mb-2">What is AI Nutrition Hub?</h3>
+              <p className="text-sm text-muted-foreground">
+                AI Nutrition Hub is your all-in-one platform for healthy living. Use advanced AI to generate personalized meal plans, scan food for nutritional information, track your macros and calories, analyze restaurant menus, complete fitness quests, and find workouts matched to your goals. All powered by cutting-edge artificial intelligence.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Star className="h-4 w-4 text-yellow-500" />
+                How to Use
+              </h4>
+              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                <li>• <strong>Meal Planner:</strong> Generate AI-powered weekly meal plans</li>
+                <li>• <strong>Food Scanner:</strong> Scan food to get nutritional info</li>
+                <li>• <strong>Macro Tracker:</strong> Track daily calories and macros</li>
+                <li>• <strong>Restaurant:</strong> Analyze menu items before ordering</li>
+                <li>• <strong>Quests:</strong> Complete fitness challenges for rewards</li>
+                <li>• <strong>Workout:</strong> Get AI-matched exercise routines</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Zap className="h-4 w-4 text-blue-500" />
+                Key Features
+              </h4>
+              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> AI-generated personalized meal plans</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Instant food nutrition scanning</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Complete macro and calorie tracking</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Restaurant menu analysis</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Gamified fitness quests</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> AI workout recommendations</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
+            <strong>Tip:</strong> Start with the Meal Planner to get a personalized weekly plan, then use the Macro Tracker to log your meals and stay on track with your nutrition goals.
+          </div>
+        </Card>
       </div>
 
       {/* Main Content */}
