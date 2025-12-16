@@ -1103,3 +1103,6 @@ verify_jwt = true
 
 [functions.companions-customer-portal]
 verify_jwt = true
+
+[functions.battle-pets]
+verify_jwt = true

@@ -56,7 +56,7 @@ const VirtualPet = () => {
               <div>
                 <h3 className="font-semibold text-base sm:text-lg mb-2">What is Virtual Pet Companion?</h3>
                 <p className="text-sm text-muted-foreground">
-                  Virtual Pet Companion is your ultimate digital pet experience! Adopt adorable virtual pets, care for them daily, watch them evolve, customize their appearance with accessories, play fun mini-games to earn rewards, and trade rare pets with other users. Build your collection and become the ultimate pet master!
+                  Virtual Pet Companion is your ultimate digital pet experience! Adopt adorable virtual pets, care for them daily, watch them evolve, customize their appearance with accessories, play fun mini-games to earn rewards, battle against AI opponents, and trade rare pets with other users. Build your collection and become the ultimate pet master!
                 </p>
               </div>
             </div>
@@ -69,6 +69,7 @@ const VirtualPet = () => {
                 </h4>
                 <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
                   <li>• <strong>My Pets:</strong> View and care for your adopted pets</li>
+                  <li>• <strong>Battle:</strong> Select up to 4 pets and fight AI opponents! Power = Level×10 + Happiness/2 + Energy/2</li>
                   <li>• <strong>Shop:</strong> Buy accessories and items for your pets</li>
                   <li>• <strong>Customize:</strong> Personalize your pets with accessories</li>
                   <li>• <strong>Trading:</strong> Trade pets with other users</li>
@@ -82,8 +83,8 @@ const VirtualPet = () => {
                 </h4>
                 <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
                   <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Multiple pet species to adopt</li>
+                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Pet Battle Arena (win XP!)</li>
                   <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Pet evolution system (level up!)</li>
-                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Customizable accessories & outfits</li>
                   <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Fun mini-games with rewards</li>
                   <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Player-to-player trading system</li>
                   <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Rare and legendary pets</li>
@@ -92,7 +93,7 @@ const VirtualPet = () => {
             </div>
 
             <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
-              <strong>Tip:</strong> Start by adopting a Cat or Dog (20 credits each), then feed and play with them daily to level up. As your pet evolves, unlock new customization options and rarer pets!
+              <strong>Tip:</strong> Start by adopting a Cat or Dog (20 credits each), then feed and play with them daily to level up. Battle with your pets to earn extra XP - winners get +25-40 XP per pet, even losers get +10-20 XP! Higher level pets with good happiness and energy have more battle power.
             </div>
           </Card>
 
