@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Palette, Lightbulb, Share2, Sparkles, Download, Target, TrendingUp } from "lucide-react";
+import { Loader2, Palette, Lightbulb, Share2, Sparkles, Download, Target, TrendingUp, Info, Star, Zap, CheckCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAICredits } from "@/hooks/useAICredits";
@@ -120,7 +120,7 @@ const BrandBuilder = () => {
       
       <div className="container mx-auto px-3 sm:px-4 pt-16 sm:pt-24 pb-8 sm:pb-12 max-w-7xl">
         {/* Header */}
-        <div className="text-center mb-8 sm:mb-12">
+        <div className="text-center mb-6 sm:mb-8">
           <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4">
             <Sparkles className="h-8 w-8 sm:h-12 sm:w-12 text-primary animate-pulse" />
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
@@ -134,6 +134,78 @@ const BrandBuilder = () => {
             Your Credits: {typeof credits === 'number' ? credits : credits.credits_remaining} | Cost: 15 credits per brand kit
           </Badge>
         </div>
+
+        {/* Description Card */}
+        <Card className="mb-8 bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Info className="h-5 w-5 text-primary" />
+              What is Brand Builder?
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              Brand Builder is an AI-powered tool that creates complete, professional brand identities for your business. 
+              Whether you are launching a startup, rebranding an existing company, or exploring new business ideas, 
+              our AI generates everything you need to establish a strong brand presence.
+            </p>
+            
+            <div className="space-y-2">
+              <h4 className="font-semibold flex items-center gap-2">
+                <Star className="h-4 w-4 text-primary" />
+                How to Use
+              </h4>
+              <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
+                <li><strong>Enter Business Details:</strong> Provide your business name and type (required fields)</li>
+                <li><strong>Define Your Audience:</strong> Optionally specify who your target customers are</li>
+                <li><strong>Set Brand Values:</strong> Add keywords that represent your brand personality and mission</li>
+                <li><strong>Generate Kit:</strong> Click generate and receive a complete brand identity in seconds</li>
+                <li><strong>View History:</strong> Access all your previously created brand kits in the My Brand Kits tab</li>
+              </ul>
+            </div>
+
+            <div className="space-y-2">
+              <h4 className="font-semibold flex items-center gap-2">
+                <Zap className="h-4 w-4 text-primary" />
+                What You Get
+              </h4>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>AI Logo Design</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Color Palette</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Slogan & Tagline</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Social Strategy</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Typography Guide</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Imagery Style</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Brand Tone</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Visual Identity</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Tabs defaultValue="create" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6 sm:mb-8">
