@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Globe, History, Clock, Sparkles, MapPin, User, ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
+import { Loader2, Globe, History, Clock, Sparkles, MapPin, User, ChevronLeft, ChevronRight, Play, Pause, Trophy, Star, Zap, CheckCircle, Info } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAICredits } from "@/hooks/useAICredits";
@@ -27,6 +27,8 @@ const AIExperiences = () => {
   const [selectedTour, setSelectedTour] = useState<any | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [tourPoints, setTourPoints] = useState(0);
+  const [visitedDestinations, setVisitedDestinations] = useState<string[]>([]);
 
   const destinations = [
     { name: "Paris", image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop", credits: 15 },
@@ -97,12 +99,22 @@ const AIExperiences = () => {
   };
 
   const loadTours = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
     const { data } = await supabase
       .from('virtual_tours')
       .select('*')
-      .order('created_at', { ascending: false })
-      .limit(6);
-    if (data) setTours(data);
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    
+    if (data) {
+      setTours(data);
+      // Calculate unique destinations for points
+      const uniqueDestinations = [...new Set(data.map(tour => tour.destination))];
+      setVisitedDestinations(uniqueDestinations);
+      setTourPoints(uniqueDestinations.length);
+    }
   };
 
   const loadProgressions = async () => {
@@ -275,7 +287,7 @@ const AIExperiences = () => {
       
       <div className="container mx-auto px-4 pt-24 pb-12 max-w-7xl">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Sparkles className="h-12 w-12 text-primary animate-pulse" />
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
@@ -285,10 +297,65 @@ const AIExperiences = () => {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Explore virtual worlds and see your future
           </p>
-          <Badge variant="secondary" className="mt-4">
-            Your Credits: {typeof credits === 'number' ? credits : credits.credits_remaining}
-          </Badge>
+          <div className="flex items-center justify-center gap-4 mt-4 flex-wrap">
+            <Badge variant="secondary">
+              Your Credits: {typeof credits === 'number' ? credits : credits.credits_remaining}
+            </Badge>
+            <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white border-0">
+              <Trophy className="h-4 w-4 mr-1" />
+              Tour Points: {tourPoints}
+            </Badge>
+          </div>
         </div>
+
+        {/* Description Card */}
+        <Card className="mb-8 bg-gradient-to-br from-primary/5 to-purple-500/5 border-primary/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Info className="h-5 w-5 text-primary" />
+              What is Exclusive Experiences?
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              Exclusive Experiences is your gateway to AI-powered virtual adventures and future visualizations. 
+              Explore stunning destinations around the world through immersive AI-generated virtual tours, 
+              or glimpse into your future with our age progression technology.
+            </p>
+            
+            <div className="space-y-2">
+              <h4 className="font-semibold flex items-center gap-2">
+                <Star className="h-4 w-4 text-primary" />
+                How to Use
+              </h4>
+              <ul className="text-sm text-muted-foreground space-y-1 ml-6 list-disc">
+                <li><strong>Virtual Tours:</strong> Choose any destination from our collection and generate an immersive AI tour with multiple scenes</li>
+                <li><strong>Future Preview:</strong> Upload your photo and see how you'll look 10-50 years in the future</li>
+                <li><strong>Earn Points:</strong> Each unique destination you visit earns you 1 tour point - collect them all!</li>
+                <li><strong>View History:</strong> Access your previous tours and age progressions anytime</li>
+              </ul>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+              <div className="flex items-center gap-2 text-sm">
+                <Globe className="h-4 w-4 text-primary" />
+                <span>33 Destinations</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <Zap className="h-4 w-4 text-primary" />
+                <span>15 Credits/Tour</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <Trophy className="h-4 w-4 text-primary" />
+                <span>1 Point/Destination</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="h-4 w-4 text-primary" />
+                <span>{tourPoints}/{destinations.length} Visited</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Tabs defaultValue="tours" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
@@ -316,35 +383,53 @@ const AIExperiences = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {destinations.map((dest) => (
-                    <Card key={dest.name} className="hover:shadow-xl transition-all hover:scale-105 overflow-hidden group">
-                      <div className="relative h-48 overflow-hidden">
-                        <img 
-                          src={dest.image} 
-                          alt={dest.name}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <h3 className="absolute bottom-4 left-4 font-bold text-xl text-white">{dest.name}</h3>
-                      </div>
-                      <CardContent className="pt-4">
-                        <div className="space-y-3">
-                          <Badge variant="secondary" className="w-full justify-center">{dest.credits} credits</Badge>
-                          <Button
-                            onClick={() => handleVirtualTour(dest.name, dest.credits)}
-                            disabled={loading}
-                            className="w-full"
-                          >
-                            {loading ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              "Start Tour"
-                            )}
-                          </Button>
+                  {destinations.map((dest) => {
+                    const isVisited = visitedDestinations.includes(dest.name);
+                    return (
+                      <Card key={dest.name} className={`hover:shadow-xl transition-all hover:scale-105 overflow-hidden group ${isVisited ? 'ring-2 ring-green-500/50' : ''}`}>
+                        <div className="relative h-48 overflow-hidden">
+                          <img 
+                            src={dest.image} 
+                            alt={dest.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                          <h3 className="absolute bottom-4 left-4 font-bold text-xl text-white">{dest.name}</h3>
+                          {isVisited && (
+                            <Badge className="absolute top-2 right-2 bg-green-500 text-white border-0">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Visited
+                            </Badge>
+                          )}
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        <CardContent className="pt-4">
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <Badge variant="secondary">{dest.credits} credits</Badge>
+                              {isVisited && (
+                                <Badge variant="outline" className="text-green-600 border-green-500">
+                                  +1 Point Earned
+                                </Badge>
+                              )}
+                            </div>
+                            <Button
+                              onClick={() => handleVirtualTour(dest.name, dest.credits)}
+                              disabled={loading}
+                              className="w-full"
+                            >
+                              {loading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : isVisited ? (
+                                "Visit Again"
+                              ) : (
+                                "Start Tour (+1 Point)"
+                              )}
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
 
                 {tours.length > 0 && (
