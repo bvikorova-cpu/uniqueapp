@@ -1,0 +1,1 @@
+DELETE FROM journal_entries WHERE id = '2be692a5-fac1-4ff4-a3e7-1a753b84e83e';
