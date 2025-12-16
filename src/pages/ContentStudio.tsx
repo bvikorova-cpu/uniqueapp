@@ -17,6 +17,11 @@ import {
   Download,
   Copy,
   Loader2,
+  Star,
+  Zap,
+  Clock,
+  CheckCircle,
+  PenTool,
 } from "lucide-react";
 
 const CONTENT_TYPES = [
@@ -224,6 +229,91 @@ const ContentStudio = () => {
             </Button>
           </div>
         </div>
+
+        {/* Detailed Description Section */}
+        <Card className="max-w-4xl mx-auto mb-8 text-left">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="h-5 w-5 text-yellow-500" />
+              What is Content Studio?
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-muted-foreground">
+              <strong>Premium Content Studio</strong> is your AI-powered content generation platform designed for creators, 
+              marketers, and professionals. Generate high-quality, professional content instantly using advanced AI technology. 
+              From social media posts to professional CVs, create compelling content in seconds.
+            </p>
+            
+            <div className="space-y-3">
+              <h4 className="font-semibold text-foreground">How to Use:</h4>
+              <ul className="list-disc list-inside space-y-2 text-muted-foreground text-sm">
+                <li><strong>Select Content Type</strong> – Choose from 6 different content types based on your needs (Social Media Post, Blog Article, Video Script, CV/Resume, Cover Letter, Business Document).</li>
+                <li><strong>Enter Title & Prompt</strong> – Provide a descriptive title and detailed prompt explaining what content you want to generate.</li>
+                <li><strong>Generate Content</strong> – Click the Generate button. AI will create professional, tailored content based on your input.</li>
+                <li><strong>Add Image (Optional)</strong> – Generate an accompanying AI image for your content (+2 credits).</li>
+                <li><strong>Copy & Use</strong> – Copy the generated content to clipboard and use it anywhere you need.</li>
+                <li><strong>Access History</strong> – View and reuse your previously generated content from the Recent Content section.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-foreground">Content Types & Pricing:</h4>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-primary" />
+                  <span>Social Post: 1 credit</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-blue-500" />
+                  <span>Blog Article: 3 credits</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Video className="h-4 w-4 text-red-500" />
+                  <span>Video Script: 2 credits</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Briefcase className="h-4 w-4 text-emerald-500" />
+                  <span>CV/Resume: 2 credits</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <PenTool className="h-4 w-4 text-purple-500" />
+                  <span>Cover Letter: 1 credit</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-orange-500" />
+                  <span>Business Doc: 2 credits</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="font-semibold text-foreground">Key Features:</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-yellow-500" />
+                  <span>Instant AI-powered generation</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>SEO-optimized content</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ImageIcon className="h-4 w-4 text-pink-500" />
+                  <span>AI image generation</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-blue-500" />
+                  <span>Content history & reuse</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-xs text-muted-foreground border-t pt-3">
+              <strong>Tip:</strong> Be specific in your prompts for better results. Include target audience, tone, key points, and any specific requirements for the most relevant content output.
+            </p>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Content Type Selection */}
