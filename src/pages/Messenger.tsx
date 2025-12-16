@@ -6,9 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import VideoCall from "@/components/messenger/VideoCall";
+import { useOnlineStatus } from "@/hooks/useOnlineStatus";
+import { OnlineIndicator } from "@/components/messenger/OnlineIndicator";
+import { SelfDestructingMessage } from "@/components/messenger/SelfDestructingMessage";
+import { GroupChatDialog } from "@/components/messenger/GroupChatDialog";
 import {
   Popover,
   PopoverContent,
@@ -33,6 +38,7 @@ interface Message {
   attachment_url?: string | null;
   attachment_type?: string | null;
   voice_duration?: number | null;
+  expires_at?: string | null;
 }
 
 interface MessageReaction {
@@ -46,6 +52,15 @@ interface MessageWithProfile extends Message {
   sender_profile: Profile;
   reactions?: MessageReaction[];
   reply_to?: Message | null;
+}
+
+interface GroupChat {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+  created_by: string;
+  updated_at: string;
+  member_count?: number;
 }
 
 interface Conversation {
@@ -90,6 +105,9 @@ const Messenger = () => {
   const [recordingDuration, setRecordingDuration] = useState(0);
   const [showGifPicker, setShowGifPicker] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
+  const [selfDestructDuration, setSelfDestructDuration] = useState<number | null>(null);
+  const [groupChats, setGroupChats] = useState<GroupChat[]>([]);
+  const [activeTab, setActiveTab] = useState<"direct" | "groups">("direct");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -97,6 +115,9 @@ const Messenger = () => {
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
+
+  // Online status hook
+  const { isUserOnline } = useOnlineStatus(user?.id || null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -124,8 +145,17 @@ const Messenger = () => {
     if (user) {
       fetchConversations();
       fetchAllUsers();
+      fetchGroupChats();
     }
   }, [user]);
+
+  const fetchGroupChats = async () => {
+    const { data } = await supabase
+      .from("group_chats")
+      .select("*")
+      .order("updated_at", { ascending: false });
+    setGroupChats(data || []);
+  };
 
   useEffect(() => {
     if (selectedConversation) {
@@ -492,11 +522,16 @@ const Messenger = () => {
       clearTimeout(typingTimeoutRef.current);
     }
 
+    const expiresAt = selfDestructDuration && selfDestructDuration > 0
+      ? new Date(Date.now() + selfDestructDuration * 1000).toISOString()
+      : null;
+
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,
       sender_id: user.id,
       content: newMessage.trim(),
       reply_to_id: replyingTo?.id || null,
+      expires_at: expiresAt,
     });
 
     if (error) {
@@ -716,9 +751,12 @@ const Messenger = () => {
       <div className="container mx-auto px-4 h-[calc(100vh-8rem)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-full">
           <Card className="col-span-1 p-4 flex flex-col">
-            <div className="flex items-center gap-2 mb-4">
-              <MessageCircle className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-bold">Messages</h2>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <MessageCircle className="h-6 w-6 text-primary" />
+                <h2 className="text-xl font-bold">Messages</h2>
+              </div>
+              <GroupChatDialog userId={user?.id} allUsers={allUsers} onGroupCreated={fetchGroupChats} />
             </div>
 
             <div className="relative mb-4">
@@ -763,9 +801,14 @@ const Messenger = () => {
                           : "hover:bg-accent"
                       }`}
                     >
-                      <Avatar>
+                      <Avatar className="relative">
                         <AvatarImage src={conv.otherUser?.avatar_url || undefined} />
                         <AvatarFallback>{conv.otherUser?.full_name?.[0] || "U"}</AvatarFallback>
+                        {conv.otherUser && (
+                          <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-background ${
+                            isUserOnline(conv.otherUser.id) ? "bg-green-500" : "bg-muted-foreground/50"
+                          }`} />
+                        )}
                       </Avatar>
                       <div className="flex-1 overflow-hidden">
                         <p className="font-medium truncate">
@@ -804,9 +847,12 @@ const Messenger = () => {
                       <h3 className="text-xl font-semibold">
                         {otherUser?.full_name || "User"}
                       </h3>
-                      {otherUserTyping && (
-                        <p className="text-sm text-muted-foreground animate-pulse">typing...</p>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {otherUser && <OnlineIndicator isOnline={isUserOnline(otherUser.id)} showLabel />}
+                        {otherUserTyping && (
+                          <span className="text-sm text-muted-foreground animate-pulse">typing...</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   {otherUser && (
@@ -1040,6 +1086,13 @@ const Messenger = () => {
                       </div>
                     </PopoverContent>
                   </Popover>
+                  
+                  {/* Self-destructing message toggle */}
+                  <SelfDestructingMessage
+                    onSelectDuration={(duration) => setSelfDestructDuration(duration === 0 ? null : duration)}
+                    isActive={selfDestructDuration !== null && selfDestructDuration > 0}
+                    duration={selfDestructDuration}
+                  />
                   
                   {/* Voice recording button */}
                   <Button
