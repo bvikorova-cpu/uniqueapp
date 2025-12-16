@@ -464,12 +464,12 @@ const Megaforum = () => {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Category</label>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                     {categories.map((cat) => (
                       <Badge
                         key={cat}
                         variant={selectedCategory === cat ? "default" : "outline"}
-                        className="cursor-pointer"
+                        className="cursor-pointer text-center justify-center"
                         onClick={() => setSelectedCategory(cat)}
                       >
                         {cat}
