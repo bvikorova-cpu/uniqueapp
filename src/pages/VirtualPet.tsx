@@ -1,16 +1,22 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { MyPets } from "@/components/virtual-pet/MyPets";
 import { PetShop } from "@/components/virtual-pet/PetShop";
 import { PetCustomization } from "@/components/virtual-pet/PetCustomization";
 import { PetTrading } from "@/components/virtual-pet/PetTrading";
 import { MiniGames } from "@/components/virtual-pet/MiniGames";
-import { Heart, Store, Palette, ArrowLeftRight, Gamepad2 } from "lucide-react";
+import { Heart, Store, Palette, ArrowLeftRight, Gamepad2, Coins, CreditCard, Info, Star, Zap, CheckCircle } from "lucide-react";
+import { useAICredits } from "@/hooks/useAICredits";
 
 const VirtualPet = () => {
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+  const { credits } = useAICredits();
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-muted/20">
@@ -25,7 +31,69 @@ const VirtualPet = () => {
             <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto px-2">
               Adopt, raise, and evolve your virtual companion. Play mini-games, customize, breed, and trade!
             </p>
+            
+            {/* Credits Display and Buy Button */}
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <div className="flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full">
+                <Coins className="h-5 w-5 text-yellow-500" />
+                <span className="font-semibold">{credits.credits_remaining} Credits</span>
+              </div>
+              <Button 
+                onClick={() => navigate('/ai-credits-store')}
+                className="gap-2"
+              >
+                <CreditCard className="h-4 w-4" />
+                Buy Credits
+              </Button>
+            </div>
           </div>
+
+          {/* Description Section */}
+          <Card className="p-4 sm:p-6 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-blue-500/10 border-pink-500/20">
+            <div className="flex items-start gap-3 mb-4">
+              <Info className="h-5 w-5 text-pink-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-base sm:text-lg mb-2">What is Virtual Pet Companion?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Virtual Pet Companion is your ultimate digital pet experience! Adopt adorable virtual pets, care for them daily, watch them evolve, customize their appearance with accessories, play fun mini-games to earn rewards, and trade rare pets with other users. Build your collection and become the ultimate pet master!
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div>
+                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                  <Star className="h-4 w-4 text-yellow-500" />
+                  How to Use
+                </h4>
+                <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                  <li>• <strong>My Pets:</strong> View and care for your adopted pets</li>
+                  <li>• <strong>Shop:</strong> Buy accessories and items for your pets</li>
+                  <li>• <strong>Customize:</strong> Personalize your pets with accessories</li>
+                  <li>• <strong>Trading:</strong> Trade pets with other users</li>
+                  <li>• <strong>Games:</strong> Play mini-games to earn rewards</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-blue-500" />
+                  Key Features
+                </h4>
+                <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Multiple pet species to adopt</li>
+                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Pet evolution system (level up!)</li>
+                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Customizable accessories & outfits</li>
+                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Fun mini-games with rewards</li>
+                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Player-to-player trading system</li>
+                  <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Rare and legendary pets</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
+              <strong>Tip:</strong> Start by adopting a Cat or Dog (20 credits each), then feed and play with them daily to level up. As your pet evolves, unlock new customization options and rarer pets!
+            </div>
+          </Card>
 
           <Tabs defaultValue="pets" className="w-full">
             <div className="overflow-x-auto">
