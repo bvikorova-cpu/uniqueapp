@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Moon, BookOpen, TrendingUp, Sparkles, Info, Star, Zap, CheckCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Moon, BookOpen, TrendingUp, Sparkles, Info, Star, Zap, CheckCircle, CreditCard, Coins } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAICredits } from "@/hooks/useAICredits";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DreamEntryForm from "@/components/dream-journal/DreamEntryForm";
@@ -14,6 +17,8 @@ import TrendsAnalysis from "@/components/dream-journal/TrendsAnalysis";
 const DreamJournal = () => {
   const [activeTab, setActiveTab] = useState("dreams");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const navigate = useNavigate();
+  const { credits } = useAICredits();
 
   const handleRefresh = () => {
     setRefreshTrigger(prev => prev + 1);
@@ -24,15 +29,31 @@ const DreamJournal = () => {
       <Navbar />
       
       <main className="flex-1 container mx-auto px-3 sm:px-4 pt-24 pb-12 max-w-7xl">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
-              Dream Analyzer & Journal 💭
-            </span>
-          </h1>
-          <p className="text-muted-foreground text-sm sm:text-lg max-w-2xl mx-auto">
-            Unlock your subconscious, track your emotions, and discover patterns in your mental journey
-          </p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div className="text-center sm:text-left">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold mb-2">
+              <span className="bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+                Dream Analyzer & Journal 💭
+              </span>
+            </h1>
+            <p className="text-muted-foreground text-sm sm:text-lg max-w-2xl">
+              Unlock your subconscious, track your emotions, and discover patterns in your mental journey
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex items-center gap-2 bg-purple-500/10 px-3 py-2 rounded-lg">
+              <Coins className="h-4 w-4 text-purple-500" />
+              <span className="font-semibold">{credits.credits_remaining} Credits</span>
+            </div>
+            <Button 
+              onClick={() => navigate("/ai-credits-store")}
+              className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600"
+            >
+              <CreditCard className="h-4 w-4 mr-2" />
+              Buy Credits
+            </Button>
+          </div>
         </div>
 
         <Card className="p-4 sm:p-6 mb-6 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 border-purple-500/20">
