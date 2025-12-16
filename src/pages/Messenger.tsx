@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -6,9 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Search, MessageCircle } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import VideoCall from "@/components/messenger/VideoCall";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface Profile {
   id: string;
@@ -22,10 +27,22 @@ interface Message {
   sender_id: string;
   created_at: string;
   story_id?: string | null;
+  reply_to_id?: string | null;
+  is_read?: boolean;
+  read_at?: string | null;
+}
+
+interface MessageReaction {
+  id: string;
+  message_id: string;
+  user_id: string;
+  reaction: string;
 }
 
 interface MessageWithProfile extends Message {
   sender_profile: Profile;
+  reactions?: MessageReaction[];
+  reply_to?: Message | null;
 }
 
 interface Conversation {
@@ -34,6 +51,8 @@ interface Conversation {
   otherUser: Profile | null;
   lastMessage?: Message;
 }
+
+const REACTIONS = ["❤️", "👍", "😂", "😮", "😢", "🔥"];
 
 const Messenger = () => {
   const navigate = useNavigate();
@@ -46,7 +65,11 @@ const Messenger = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [allUsers, setAllUsers] = useState<Profile[]>([]);
   const [profilesCache, setProfilesCache] = useState<Map<string, Profile>>(new Map());
+  const [isTyping, setIsTyping] = useState(false);
+  const [otherUserTyping, setOtherUserTyping] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<MessageWithProfile | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -80,7 +103,14 @@ const Messenger = () => {
   useEffect(() => {
     if (selectedConversation) {
       fetchMessages();
-      subscribeToMessages();
+      const unsubscribeMessages = subscribeToMessages();
+      const unsubscribeTyping = subscribeToTyping();
+      markMessagesAsRead();
+      
+      return () => {
+        unsubscribeMessages?.();
+        unsubscribeTyping?.();
+      };
     }
   }, [selectedConversation]);
 
@@ -135,7 +165,7 @@ const Messenger = () => {
 
         const { data: messagesData } = await supabase
           .from("messages")
-          .select("id, content, sender_id, created_at, story_id")
+          .select("id, content, sender_id, created_at, story_id, is_read")
           .eq("conversation_id", conv.id)
           .order("created_at", { ascending: false })
           .limit(1);
@@ -170,7 +200,7 @@ const Messenger = () => {
 
     const { data, error } = await supabase
       .from("messages")
-      .select("id, content, sender_id, created_at, story_id")
+      .select("id, content, sender_id, created_at, story_id, reply_to_id, is_read, read_at")
       .eq("conversation_id", selectedConversation)
       .order("created_at", { ascending: true });
 
@@ -179,17 +209,49 @@ const Messenger = () => {
       return;
     }
 
+    // Fetch reactions for all messages
+    const messageIds = (data || []).map(m => m.id);
+    const { data: reactionsData } = await supabase
+      .from("message_reactions")
+      .select("*")
+      .in("message_id", messageIds);
+
     const messagesWithProfiles = await Promise.all(
       (data || []).map(async (msg) => {
         const profile = await getProfile(msg.sender_id);
+        const reactions = reactionsData?.filter(r => r.message_id === msg.id) || [];
+        
+        // Get reply-to message if exists
+        let replyTo = null;
+        if (msg.reply_to_id) {
+          const replyMsg = data?.find(m => m.id === msg.reply_to_id);
+          if (replyMsg) {
+            const replyProfile = await getProfile(replyMsg.sender_id);
+            replyTo = { ...replyMsg, sender_profile: replyProfile };
+          }
+        }
+        
         return {
           ...msg,
           sender_profile: profile || { id: msg.sender_id, full_name: null, avatar_url: null },
+          reactions,
+          reply_to: replyTo,
         };
       })
     );
 
     setMessages(messagesWithProfiles);
+  };
+
+  const markMessagesAsRead = async () => {
+    if (!selectedConversation || !user) return;
+
+    await supabase
+      .from("messages")
+      .update({ is_read: true, read_at: new Date().toISOString() })
+      .eq("conversation_id", selectedConversation)
+      .neq("sender_id", user.id)
+      .eq("is_read", false);
   };
 
   const subscribeToMessages = () => {
@@ -216,8 +278,25 @@ const Messenger = () => {
                 full_name: null,
                 avatar_url: null,
               },
+              reactions: [],
             } as MessageWithProfile,
           ]);
+          
+          // Mark as read if it's from other user
+          if (payload.new.sender_id !== user.id) {
+            markMessagesAsRead();
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "message_reactions",
+        },
+        () => {
+          fetchMessages(); // Refresh to get updated reactions
         }
       )
       .subscribe();
@@ -225,6 +304,98 @@ const Messenger = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+  };
+
+  const subscribeToTyping = () => {
+    if (!selectedConversation) return;
+
+    const channel = supabase
+      .channel(`typing:${selectedConversation}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "typing_indicators",
+          filter: `conversation_id=eq.${selectedConversation}`,
+        },
+        (payload) => {
+          if (payload.new && (payload.new as any).user_id !== user.id) {
+            setOtherUserTyping((payload.new as any).is_typing);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  };
+
+  const updateTypingStatus = useCallback(async (typing: boolean) => {
+    if (!selectedConversation || !user) return;
+
+    try {
+      await supabase
+        .from("typing_indicators")
+        .upsert({
+          conversation_id: selectedConversation,
+          user_id: user.id,
+          is_typing: typing,
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'conversation_id,user_id'
+        });
+    } catch (error) {
+      console.error("Error updating typing status:", error);
+    }
+  }, [selectedConversation, user]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value);
+    
+    if (!isTyping) {
+      setIsTyping(true);
+      updateTypingStatus(true);
+    }
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+      updateTypingStatus(false);
+    }, 2000);
+  };
+
+  const addReaction = async (messageId: string, reaction: string) => {
+    try {
+      const { data: existing } = await supabase
+        .from("message_reactions")
+        .select("id")
+        .eq("message_id", messageId)
+        .eq("user_id", user.id)
+        .eq("reaction", reaction)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from("message_reactions")
+          .delete()
+          .eq("id", existing.id);
+      } else {
+        await supabase
+          .from("message_reactions")
+          .insert({
+            message_id: messageId,
+            user_id: user.id,
+            reaction,
+          });
+      }
+    } catch (error) {
+      console.error("Error adding reaction:", error);
+    }
   };
 
   const createConversation = async (otherUserId: string) => {
@@ -287,10 +458,18 @@ const Messenger = () => {
   const sendMessage = async () => {
     if (!newMessage.trim() || !selectedConversation) return;
 
+    // Stop typing indicator
+    setIsTyping(false);
+    updateTypingStatus(false);
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
     const { error } = await supabase.from("messages").insert({
       conversation_id: selectedConversation,
       sender_id: user.id,
       content: newMessage.trim(),
+      reply_to_id: replyingTo?.id || null,
     });
 
     if (error) {
@@ -303,6 +482,7 @@ const Messenger = () => {
     }
 
     setNewMessage("");
+    setReplyingTo(null);
   };
 
   const filteredUsers = allUsers.filter((u) =>
@@ -311,6 +491,14 @@ const Messenger = () => {
 
   const selectedConvData = conversations.find((c) => c.id === selectedConversation);
   const otherUser = selectedConvData?.otherUser;
+
+  const getReactionCount = (reactions: MessageReaction[] | undefined, reaction: string) => {
+    return reactions?.filter(r => r.reaction === reaction).length || 0;
+  };
+
+  const hasUserReacted = (reactions: MessageReaction[] | undefined, reaction: string) => {
+    return reactions?.some(r => r.reaction === reaction && r.user_id === user?.id) || false;
+  };
 
   return (
     <div className="min-h-screen bg-background pt-20 pb-12">
@@ -373,7 +561,16 @@ const Messenger = () => {
                           {conv.otherUser?.full_name || "User"}
                         </p>
                         {conv.lastMessage && (
-                          <p className="text-sm opacity-70 truncate">{conv.lastMessage.content}</p>
+                          <div className="flex items-center gap-1">
+                            <p className="text-sm opacity-70 truncate flex-1">{conv.lastMessage.content}</p>
+                            {conv.lastMessage.sender_id === user?.id && (
+                              conv.lastMessage.is_read ? (
+                                <CheckCheck className="h-3 w-3 text-blue-500 flex-shrink-0" />
+                              ) : (
+                                <Check className="h-3 w-3 opacity-50 flex-shrink-0" />
+                              )
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -392,9 +589,14 @@ const Messenger = () => {
                       <AvatarImage src={otherUser?.avatar_url || undefined} />
                       <AvatarFallback>{otherUser?.full_name?.[0] || "U"}</AvatarFallback>
                     </Avatar>
-                    <h3 className="text-xl font-semibold">
-                      {otherUser?.full_name || "User"}
-                    </h3>
+                    <div>
+                      <h3 className="text-xl font-semibold">
+                        {otherUser?.full_name || "User"}
+                      </h3>
+                      {otherUserTyping && (
+                        <p className="text-sm text-muted-foreground animate-pulse">typing...</p>
+                      )}
+                    </div>
                   </div>
                   {otherUser && (
                     <VideoCall
@@ -411,7 +613,7 @@ const Messenger = () => {
                     {messages.map((msg) => (
                       <div
                         key={msg.id}
-                        className={`flex items-start gap-2 ${
+                        className={`flex items-start gap-2 group ${
                           msg.sender_id === user.id ? "flex-row-reverse" : ""
                         }`}
                       >
@@ -419,25 +621,101 @@ const Messenger = () => {
                           <AvatarImage src={msg.sender_profile?.avatar_url || undefined} />
                           <AvatarFallback>{msg.sender_profile?.full_name?.[0] || "U"}</AvatarFallback>
                         </Avatar>
-                         <div
-                          className={`max-w-[70%] rounded-lg p-3 ${
+                        <div className="flex flex-col gap-1 max-w-[70%]">
+                          {/* Reply reference */}
+                          {msg.reply_to && (
+                            <div className={`text-xs px-2 py-1 rounded bg-muted/50 border-l-2 border-primary ${
+                              msg.sender_id === user.id ? "ml-auto" : ""
+                            }`}>
+                              <span className="font-medium">{(msg.reply_to as any).sender_profile?.full_name || "User"}</span>
+                              <p className="truncate opacity-70">{msg.reply_to.content}</p>
+                            </div>
+                          )}
+                          
+                          <div className={`relative rounded-lg p-3 ${
                             msg.sender_id === user.id
                               ? "bg-primary text-primary-foreground"
                               : "bg-muted"
-                          }`}
-                        >
-                          {msg.story_id && (
-                            <div className="text-xs opacity-70 mb-2 pb-2 border-b border-current/20">
-                              📷 Odpoveď na story
+                          }`}>
+                            {msg.story_id && (
+                              <div className="text-xs opacity-70 mb-2 pb-2 border-b border-current/20">
+                                📷 Story reply
+                              </div>
+                            )}
+                            <p className="break-words">{msg.content}</p>
+                            <div className="flex items-center justify-between mt-1 gap-2">
+                              <span className="text-xs opacity-70">
+                                {new Date(msg.created_at).toLocaleTimeString("en-US", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                              {msg.sender_id === user.id && (
+                                msg.is_read ? (
+                                  <CheckCheck className="h-3 w-3 text-blue-400" />
+                                ) : (
+                                  <Check className="h-3 w-3 opacity-50" />
+                                )
+                              )}
                             </div>
-                          )}
-                          <p className="break-words">{msg.content}</p>
-                          <span className="text-xs opacity-70 mt-1 block">
-                            {new Date(msg.created_at).toLocaleTimeString("sk-SK", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </span>
+                            
+                            {/* Reactions display */}
+                            {msg.reactions && msg.reactions.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-2 -mb-1">
+                                {REACTIONS.map(reaction => {
+                                  const count = getReactionCount(msg.reactions, reaction);
+                                  if (count === 0) return null;
+                                  return (
+                                    <button
+                                      key={reaction}
+                                      onClick={() => addReaction(msg.id, reaction)}
+                                      className={`text-xs px-1.5 py-0.5 rounded-full ${
+                                        hasUserReacted(msg.reactions, reaction)
+                                          ? "bg-primary/20"
+                                          : "bg-background/50"
+                                      }`}
+                                    >
+                                      {reaction} {count}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Action buttons */}
+                          <div className={`flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity ${
+                            msg.sender_id === user.id ? "justify-end" : ""
+                          }`}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6"
+                              onClick={() => setReplyingTo(msg)}
+                            >
+                              <Reply className="h-3 w-3" />
+                            </Button>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-6 w-6">
+                                  😊
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-2">
+                                <div className="flex gap-1">
+                                  {REACTIONS.map(reaction => (
+                                    <button
+                                      key={reaction}
+                                      onClick={() => addReaction(msg.id, reaction)}
+                                      className="text-xl hover:scale-125 transition-transform p-1"
+                                    >
+                                      {reaction}
+                                    </button>
+                                  ))}
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -445,11 +723,30 @@ const Messenger = () => {
                   </div>
                 </ScrollArea>
 
-                <div className="flex items-center gap-2 pt-4 border-t">
+                {/* Reply preview */}
+                {replyingTo && (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-t-lg border-l-2 border-primary">
+                    <Reply className="h-4 w-4 text-muted-foreground" />
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-xs font-medium">{replyingTo.sender_profile.full_name || "User"}</p>
+                      <p className="text-xs text-muted-foreground truncate">{replyingTo.content}</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => setReplyingTo(null)}
+                    >
+                      <X className="h-3 w-3" />
+                    </Button>
+                  </div>
+                )}
+
+                <div className={`flex items-center gap-2 pt-4 ${replyingTo ? "" : "border-t"}`}>
                   <Input
                     placeholder="Write a message..."
                     value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
+                    onChange={handleInputChange}
                     onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                   />
                   <Button onClick={sendMessage} size="icon">
