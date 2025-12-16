@@ -1056,3 +1056,15 @@ verify_jwt = true
 [functions.customer-portal-anonymous-date]
 verify_jwt = true
 
+[functions.messenger-ai-translate]
+verify_jwt = true
+
+[functions.messenger-ai-summarize]
+verify_jwt = true
+
+[functions.messenger-ai-smart-reply]
+verify_jwt = true
+
+[functions.create-messenger-ai-credits-payment]
+verify_jwt = true
+
