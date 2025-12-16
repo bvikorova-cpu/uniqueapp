@@ -1094,3 +1094,12 @@ verify_jwt = true
 
 [functions.psychology-chat]
 verify_jwt = false
+
+[functions.check-companions-subscription]
+verify_jwt = true
+
+[functions.create-companions-checkout]
+verify_jwt = true
+
+[functions.companions-customer-portal]
+verify_jwt = true
