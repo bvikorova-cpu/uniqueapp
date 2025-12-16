@@ -10,7 +10,8 @@ import { PetShop } from "@/components/virtual-pet/PetShop";
 import { PetCustomization } from "@/components/virtual-pet/PetCustomization";
 import { PetTrading } from "@/components/virtual-pet/PetTrading";
 import { MiniGames } from "@/components/virtual-pet/MiniGames";
-import { Heart, Store, Palette, ArrowLeftRight, Gamepad2, Coins, CreditCard, Info, Star, Zap, CheckCircle } from "lucide-react";
+import { PetBattle } from "@/components/virtual-pet/PetBattle";
+import { Heart, Store, Palette, ArrowLeftRight, Gamepad2, Coins, CreditCard, Info, Star, Zap, CheckCircle, Swords } from "lucide-react";
 import { useAICredits } from "@/hooks/useAICredits";
 
 const VirtualPet = () => {
@@ -97,11 +98,16 @@ const VirtualPet = () => {
 
           <Tabs defaultValue="pets" className="w-full">
             <div className="overflow-x-auto">
-              <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-5 mb-6 sm:mb-8">
+              <TabsList className="inline-flex w-max min-w-full sm:grid sm:w-full sm:grid-cols-6 mb-6 sm:mb-8">
                 <TabsTrigger value="pets" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                   <Heart className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">My Pets</span>
                   <span className="sm:hidden">Pets</span>
+                </TabsTrigger>
+                <TabsTrigger value="battle" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+                  <Swords className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Battle</span>
+                  <span className="sm:hidden">Battle</span>
                 </TabsTrigger>
                 <TabsTrigger value="shop" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
                   <Store className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -128,6 +134,10 @@ const VirtualPet = () => {
 
             <TabsContent value="pets" className="space-y-4">
               <MyPets onSelectPet={setSelectedPetId} />
+            </TabsContent>
+
+            <TabsContent value="battle" className="space-y-4">
+              <PetBattle />
             </TabsContent>
 
             <TabsContent value="shop" className="space-y-4">

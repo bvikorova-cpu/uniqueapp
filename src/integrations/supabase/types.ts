@@ -17983,6 +17983,54 @@ export type Database = {
           },
         ]
       }
+      pet_battles: {
+        Row: {
+          battle_log: Json | null
+          battle_type: string
+          challenger_id: string
+          challenger_pets: string[]
+          challenger_power: number
+          created_at: string | null
+          credits_bet: number | null
+          id: string
+          opponent_id: string | null
+          opponent_pets: string[]
+          opponent_power: number
+          winner_id: string | null
+          xp_earned: number | null
+        }
+        Insert: {
+          battle_log?: Json | null
+          battle_type?: string
+          challenger_id: string
+          challenger_pets: string[]
+          challenger_power?: number
+          created_at?: string | null
+          credits_bet?: number | null
+          id?: string
+          opponent_id?: string | null
+          opponent_pets: string[]
+          opponent_power?: number
+          winner_id?: string | null
+          xp_earned?: number | null
+        }
+        Update: {
+          battle_log?: Json | null
+          battle_type?: string
+          challenger_id?: string
+          challenger_pets?: string[]
+          challenger_power?: number
+          created_at?: string | null
+          credits_bet?: number | null
+          id?: string
+          opponent_id?: string | null
+          opponent_pets?: string[]
+          opponent_power?: number
+          winner_id?: string | null
+          xp_earned?: number | null
+        }
+        Relationships: []
+      }
       pet_breeding: {
         Row: {
           breeding_completed_at: string | null
@@ -18252,6 +18300,8 @@ export type Database = {
       }
       pets: {
         Row: {
+          battle_losses: number | null
+          battle_wins: number | null
           birthday: string
           created_at: string
           customization: Json | null
@@ -18275,6 +18325,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          battle_losses?: number | null
+          battle_wins?: number | null
           birthday?: string
           created_at?: string
           customization?: Json | null
@@ -18298,6 +18350,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          battle_losses?: number | null
+          battle_wins?: number | null
           birthday?: string
           created_at?: string
           customization?: Json | null
