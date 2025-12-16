@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench, ExternalLink } from "lucide-react";
+import { Upload, Sparkles, Search, Shield, BookOpen, TrendingUp, Wrench, ExternalLink, Info, Star, Zap, CheckCircle } from "lucide-react";
 import { useAntiqueCredits } from "@/hooks/useAntiqueCredits";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -186,7 +186,7 @@ const AntiqueAppraisal = () => {
       </AlertDialog>
 
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8 sm:mb-12 mt-8 sm:mt-12">
+        <div className="text-center mb-6 sm:mb-8 mt-8 sm:mt-12">
           <h1 className="text-2xl sm:text-4xl font-bold mb-3 sm:mb-4">AI Antique Appraisal</h1>
           <p className="text-muted-foreground text-base sm:text-lg px-2">
             Discover the history and value of your antiques with AI
@@ -197,6 +197,49 @@ const AntiqueAppraisal = () => {
             </p>
           </div>
         </div>
+
+        <Card className="p-4 sm:p-6 mb-6 sm:mb-8 bg-gradient-to-r from-amber-500/10 via-primary/10 to-amber-500/10 border-amber-500/20">
+          <div className="flex items-start gap-3 mb-4">
+            <Info className="h-5 w-5 text-amber-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-base sm:text-lg mb-2">What is AI Antique Appraisal?</h3>
+              <p className="text-sm text-muted-foreground">
+                AI Antique Appraisal uses advanced artificial intelligence to analyze your antiques, collectibles, and vintage items. Get instant identification, market valuations, authenticity verification, and historical context for your treasured possessions.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Star className="h-4 w-4 text-yellow-500" />
+                How to Use
+              </h4>
+              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                <li>• Select an analysis type from the options below</li>
+                <li>• Upload a clear photo of your antique item</li>
+                <li>• Click "Analyze" to start AI appraisal</li>
+                <li>• View detailed results and save to your collection</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                <Zap className="h-4 w-4 text-purple-500" />
+                Analysis Types
+              </h4>
+              <ul className="text-xs sm:text-sm text-muted-foreground space-y-1">
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Basic ID: Item, period & style (3 credits)</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Market Valuation: Price estimate (10 credits)</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Expert Report: Full analysis (15 credits)</li>
+                <li className="flex items-center gap-1"><CheckCircle className="h-3 w-3 text-green-500" /> Authenticity Check: Verify items (20 credits)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-xs text-muted-foreground bg-background/50 rounded-lg p-3">
+            <strong>Key Features:</strong> AI-powered identification • Market value estimates • Authenticity verification • Historical narratives • Restoration advice • Build your digital collection
+          </div>
+        </Card>
 
         <Tabs defaultValue="analyze" className="mb-8 sm:mb-12">
           <TabsList className="grid w-full grid-cols-2">
