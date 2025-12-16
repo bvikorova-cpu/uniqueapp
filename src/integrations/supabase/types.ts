@@ -18130,6 +18130,39 @@ export type Database = {
           },
         ]
       }
+      pet_mystery_boxes: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          image_emoji: string | null
+          name: string
+          possible_rewards: Json
+          price: number
+          rarity: string
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_emoji?: string | null
+          name: string
+          possible_rewards?: Json
+          price: number
+          rarity?: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_emoji?: string | null
+          name?: string
+          possible_rewards?: Json
+          price?: number
+          rarity?: string
+        }
+        Relationships: []
+      }
       pet_rescue_campaigns: {
         Row: {
           created_at: string | null
@@ -27978,6 +28011,12 @@ export type Database = {
         | "toy"
         | "background"
         | "effect"
+        | "armor"
+        | "weapon"
+        | "helmet"
+        | "boots"
+        | "amulet"
+        | "shield"
       app_role: "admin" | "moderator" | "user" | "employer"
       clothing_category:
         | "tops"
@@ -28261,6 +28300,12 @@ export const Constants = {
         "toy",
         "background",
         "effect",
+        "armor",
+        "weapon",
+        "helmet",
+        "boots",
+        "amulet",
+        "shield",
       ],
       app_role: ["admin", "moderator", "user", "employer"],
       clothing_category: [
