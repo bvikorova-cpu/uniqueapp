@@ -74,36 +74,39 @@ serve(async (req) => {
       throw new Error("Character ID does not match conversation");
     }
 
-    // Check message limits for free users
+    // Check companions subscription for non-premium characters
+    const { data: companionsSub } = await supabaseClient
+      .from("companions_subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    // Get character to check if premium
+    const { data: charCheck } = await supabaseClient
+      .from("ai_characters")
+      .select("is_premium")
+      .eq("id", characterId)
+      .single();
+
+    // For non-premium characters (Max, Alex), check subscription
+    if (charCheck && !charCheck.is_premium) {
+      const isSubscribed = companionsSub?.subscription_status === "active";
+      const freeMessagesUsed = companionsSub?.free_messages_used || 0;
+      
+      if (!isSubscribed && freeMessagesUsed >= 5) {
+        return new Response(
+          JSON.stringify({ error: "Free message limit reached. Subscribe for unlimited conversations." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    // Check message limits for free users (legacy system)
     const { data: limits } = await supabaseClient
       .from("user_message_limits")
       .select("*")
       .eq("user_id", user.id)
       .maybeSingle();
-
-    if (!limits) {
-      // Create initial limits
-      await supabaseClient.from("user_message_limits").insert({
-        user_id: user.id,
-        messages_used_today: 0,
-        is_premium: false,
-      });
-    } else if (!limits.is_premium) {
-      // Check daily limit (20 messages for free users)
-      const today = new Date().toISOString().split('T')[0];
-      if (limits.last_reset_date !== today) {
-        // Reset counter
-        await supabaseClient
-          .from("user_message_limits")
-          .update({ messages_used_today: 0, last_reset_date: today })
-          .eq("user_id", user.id);
-      } else if (limits.messages_used_today >= 20) {
-        return new Response(
-          JSON.stringify({ error: "Daily message limit reached. Upgrade to premium for unlimited messages." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-    }
 
     // Get character details
     const { data: character } = await supabaseClient
@@ -223,6 +226,14 @@ serve(async (req) => {
       await supabaseClient
         .from("user_message_limits")
         .update({ messages_used_today: limits.messages_used_today + 1 })
+        .eq("user_id", user.id);
+    }
+
+    // Increment free messages used for companions subscription (non-premium characters)
+    if (charCheck && !charCheck.is_premium && companionsSub && companionsSub.subscription_status !== "active") {
+      await supabaseClient
+        .from("companions_subscriptions")
+        .update({ free_messages_used: (companionsSub.free_messages_used || 0) + 1 })
         .eq("user_id", user.id);
     }
 
