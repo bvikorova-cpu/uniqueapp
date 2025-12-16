@@ -16505,6 +16505,8 @@ export type Database = {
       }
       messages: {
         Row: {
+          attachment_type: string | null
+          attachment_url: string | null
           content: string
           conversation_id: string
           created_at: string
@@ -16516,8 +16518,11 @@ export type Database = {
           sender_id: string
           story_id: string | null
           updated_at: string
+          voice_duration: number | null
         }
         Insert: {
+          attachment_type?: string | null
+          attachment_url?: string | null
           content: string
           conversation_id: string
           created_at?: string
@@ -16529,8 +16534,11 @@ export type Database = {
           sender_id: string
           story_id?: string | null
           updated_at?: string
+          voice_duration?: number | null
         }
         Update: {
+          attachment_type?: string | null
+          attachment_url?: string | null
           content?: string
           conversation_id?: string
           created_at?: string
@@ -16542,6 +16550,7 @@ export type Database = {
           sender_id?: string
           story_id?: string | null
           updated_at?: string
+          voice_duration?: number | null
         }
         Relationships: [
           {

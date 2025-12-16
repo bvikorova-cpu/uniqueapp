@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply } from "lucide-react";
+import { Send, Search, MessageCircle, Check, CheckCheck, X, Reply, Mic, Image, Smile, Square, Play, Pause } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import VideoCall from "@/components/messenger/VideoCall";
 import {
@@ -30,6 +30,9 @@ interface Message {
   reply_to_id?: string | null;
   is_read?: boolean;
   read_at?: string | null;
+  attachment_url?: string | null;
+  attachment_type?: string | null;
+  voice_duration?: number | null;
 }
 
 interface MessageReaction {
@@ -54,6 +57,21 @@ interface Conversation {
 
 const REACTIONS = ["❤️", "👍", "😂", "😮", "😢", "🔥"];
 
+const POPULAR_GIFS = [
+  "https://media.giphy.com/media/l0MYGb1LuZ3n7dRnO/giphy.gif",
+  "https://media.giphy.com/media/xT5LMHxhOfscxPfIfm/giphy.gif",
+  "https://media.giphy.com/media/3o7TKz2fKpYhu3i168/giphy.gif",
+  "https://media.giphy.com/media/xT0xezQGU5xCDJuCPe/giphy.gif",
+  "https://media.giphy.com/media/l41lGvinEgARjB2HC/giphy.gif",
+  "https://media.giphy.com/media/3ohzdIuqJoo8QdKlnW/giphy.gif",
+  "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
+  "https://media.giphy.com/media/26u4cqiYI30juCOGY/giphy.gif",
+  "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",
+  "https://media.giphy.com/media/l0HlvtIPzPdt2usKs/giphy.gif",
+  "https://media.giphy.com/media/3o7abKhOpu0NwenH3O/giphy.gif",
+  "https://media.giphy.com/media/l4FGuhL4U2WyjdkaY/giphy.gif",
+];
+
 const Messenger = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -68,8 +86,17 @@ const Messenger = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [otherUserTyping, setOtherUserTyping] = useState(false);
   const [replyingTo, setReplyingTo] = useState<MessageWithProfile | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [showGifPicker, setShowGifPicker] = useState(false);
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const audioRefs = useRef<Map<string, HTMLAudioElement>>(new Map());
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -485,6 +512,190 @@ const Messenger = () => {
     setReplyingTo(null);
   };
 
+  // Voice recording functions
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        await uploadVoiceMessage(audioBlob, recordingDuration);
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+      setRecordingDuration(0);
+
+      recordingIntervalRef.current = setInterval(() => {
+        setRecordingDuration(prev => prev + 1);
+      }, 1000);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not access microphone",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
+    }
+  };
+
+  const uploadVoiceMessage = async (blob: Blob, duration: number) => {
+    if (!selectedConversation || !user) return;
+
+    const fileName = `${user.id}/${Date.now()}.webm`;
+    
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('messenger-attachments')
+      .upload(fileName, blob);
+
+    if (uploadError) {
+      toast({
+        title: "Error",
+        description: "Failed to upload voice message",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('messenger-attachments')
+      .getPublicUrl(fileName);
+
+    const { error } = await supabase.from("messages").insert({
+      conversation_id: selectedConversation,
+      sender_id: user.id,
+      content: "🎤 Voice message",
+      attachment_url: urlData.publicUrl,
+      attachment_type: "voice",
+      voice_duration: duration,
+      reply_to_id: replyingTo?.id || null,
+    });
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send voice message",
+        variant: "destructive",
+      });
+    }
+    setReplyingTo(null);
+  };
+
+  // Image upload
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedConversation || !user) return;
+
+    const fileName = `${user.id}/${Date.now()}_${file.name}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('messenger-attachments')
+      .upload(fileName, file);
+
+    if (uploadError) {
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('messenger-attachments')
+      .getPublicUrl(fileName);
+
+    const { error } = await supabase.from("messages").insert({
+      conversation_id: selectedConversation,
+      sender_id: user.id,
+      content: "📷 Image",
+      attachment_url: urlData.publicUrl,
+      attachment_type: "image",
+      reply_to_id: replyingTo?.id || null,
+    });
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send image",
+        variant: "destructive",
+      });
+    }
+    setReplyingTo(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  // GIF sending
+  const sendGif = async (gifUrl: string) => {
+    if (!selectedConversation || !user) return;
+
+    const { error } = await supabase.from("messages").insert({
+      conversation_id: selectedConversation,
+      sender_id: user.id,
+      content: "GIF",
+      attachment_url: gifUrl,
+      attachment_type: "gif",
+      reply_to_id: replyingTo?.id || null,
+    });
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send GIF",
+        variant: "destructive",
+      });
+    }
+    setShowGifPicker(false);
+    setReplyingTo(null);
+  };
+
+  // Audio playback
+  const toggleAudioPlayback = (messageId: string, audioUrl: string) => {
+    let audio = audioRefs.current.get(messageId);
+    
+    if (!audio) {
+      audio = new Audio(audioUrl);
+      audio.onended = () => setPlayingAudio(null);
+      audioRefs.current.set(messageId, audio);
+    }
+
+    if (playingAudio === messageId) {
+      audio.pause();
+      setPlayingAudio(null);
+    } else {
+      // Stop any currently playing audio
+      if (playingAudio) {
+        const currentAudio = audioRefs.current.get(playingAudio);
+        currentAudio?.pause();
+      }
+      audio.play();
+      setPlayingAudio(messageId);
+    }
+  };
+
+  const formatDuration = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const filteredUsers = allUsers.filter((u) =>
     u.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -642,7 +853,53 @@ const Messenger = () => {
                                 📷 Story reply
                               </div>
                             )}
-                            <p className="break-words">{msg.content}</p>
+                            
+                            {/* Voice message */}
+                            {msg.attachment_type === "voice" && msg.attachment_url && (
+                              <div className="flex items-center gap-2 mb-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                  onClick={() => toggleAudioPlayback(msg.id, msg.attachment_url!)}
+                                >
+                                  {playingAudio === msg.id ? (
+                                    <Pause className="h-4 w-4" />
+                                  ) : (
+                                    <Play className="h-4 w-4" />
+                                  )}
+                                </Button>
+                                <div className="flex-1 h-1 bg-background/30 rounded-full">
+                                  <div className="h-full w-0 bg-current rounded-full" />
+                                </div>
+                                <span className="text-xs">{formatDuration(msg.voice_duration || 0)}</span>
+                              </div>
+                            )}
+                            
+                            {/* Image */}
+                            {msg.attachment_type === "image" && msg.attachment_url && (
+                              <img
+                                src={msg.attachment_url}
+                                alt="Shared image"
+                                className="rounded-lg max-w-full max-h-64 object-cover mb-2 cursor-pointer"
+                                onClick={() => window.open(msg.attachment_url!, '_blank')}
+                              />
+                            )}
+                            
+                            {/* GIF */}
+                            {msg.attachment_type === "gif" && msg.attachment_url && (
+                              <img
+                                src={msg.attachment_url}
+                                alt="GIF"
+                                className="rounded-lg max-w-full max-h-48 object-cover mb-2"
+                              />
+                            )}
+                            
+                            {/* Text content (hide for voice-only messages) */}
+                            {msg.attachment_type !== "voice" && msg.attachment_type !== "image" && msg.attachment_type !== "gif" && (
+                              <p className="break-words">{msg.content}</p>
+                            )}
+                            
                             <div className="flex items-center justify-between mt-1 gap-2">
                               <span className="text-xs opacity-70">
                                 {new Date(msg.created_at).toLocaleTimeString("en-US", {
@@ -743,13 +1000,75 @@ const Messenger = () => {
                 )}
 
                 <div className={`flex items-center gap-2 pt-4 ${replyingTo ? "" : "border-t"}`}>
+                  {/* Hidden file input */}
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageUpload}
+                  />
+                  
+                  {/* Image upload button */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isRecording}
+                  >
+                    <Image className="h-4 w-4" />
+                  </Button>
+                  
+                  {/* GIF picker */}
+                  <Popover open={showGifPicker} onOpenChange={setShowGifPicker}>
+                    <PopoverTrigger asChild>
+                      <Button variant="ghost" size="icon" disabled={isRecording}>
+                        <Smile className="h-4 w-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-2">
+                      <div className="grid grid-cols-3 gap-2 max-h-60 overflow-y-auto">
+                        {POPULAR_GIFS.map((gif, index) => (
+                          <img
+                            key={index}
+                            src={gif}
+                            alt="GIF"
+                            className="w-full h-20 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => sendGif(gif)}
+                          />
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  
+                  {/* Voice recording button */}
+                  <Button
+                    variant={isRecording ? "destructive" : "ghost"}
+                    size="icon"
+                    onClick={isRecording ? stopRecording : startRecording}
+                  >
+                    {isRecording ? (
+                      <Square className="h-4 w-4" />
+                    ) : (
+                      <Mic className="h-4 w-4" />
+                    )}
+                  </Button>
+                  
+                  {isRecording && (
+                    <span className="text-sm text-destructive animate-pulse">
+                      {formatDuration(recordingDuration)}
+                    </span>
+                  )}
+                  
                   <Input
                     placeholder="Write a message..."
                     value={newMessage}
                     onChange={handleInputChange}
                     onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                    disabled={isRecording}
+                    className="flex-1"
                   />
-                  <Button onClick={sendMessage} size="icon">
+                  <Button onClick={sendMessage} size="icon" disabled={isRecording || !newMessage.trim()}>
                     <Send className="h-4 w-4" />
                   </Button>
                 </div>
