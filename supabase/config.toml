@@ -1068,3 +1068,18 @@ verify_jwt = true
 [functions.create-messenger-ai-credits-payment]
 verify_jwt = true
 
+[functions.messenger-ai-time-capsule]
+verify_jwt = true
+
+[functions.messenger-ai-emotional-weather]
+verify_jwt = true
+
+[functions.messenger-ai-quantum-message]
+verify_jwt = true
+
+[functions.messenger-ai-anonymous-compliment]
+verify_jwt = true
+
+[functions.messenger-ai-what-if]
+verify_jwt = true
+
