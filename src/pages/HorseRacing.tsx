@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HorseCurrencyDisplay } from "@/components/horse-racing/HorseCurrencyDisplay";
 import { HorseLeaderboard } from "@/components/horse-racing/HorseLeaderboard";
 import { HorseMarketplace } from "@/components/horse-racing/HorseMarketplace";
+import { HorseShop } from "@/components/horse-racing/HorseShop";
 import { useUserHorses, useRaces, useJoinRace, useTrainHorse, useBreedHorses, usePurchaseHorseColor } from "@/hooks/useHorseRacing";
 import { RaceTrack3D } from "@/components/horse-racing/RaceTrack3D";
 import { Trophy, Dumbbell, Heart, Sparkles, Zap, TrendingUp, ShoppingCart } from "lucide-react";
@@ -420,15 +421,7 @@ export default function HorseRacing() {
           </TabsContent>
 
           <TabsContent value="shop" className="space-y-4">
-            <Card className="p-6">
-              <h2 className="text-2xl font-bold mb-4">Cosmetics Shop</h2>
-              <p className="text-muted-foreground mb-6">Customize your horse's appearance with gems!</p>
-              
-              <Button onClick={() => setShowShop(true)} disabled={!horses || horses.length === 0}>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Change Horse Color (50 Gems)
-              </Button>
-            </Card>
+            <HorseShop />
           </TabsContent>
 
           <TabsContent value="leaderboard" className="space-y-4">
