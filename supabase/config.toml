@@ -1,5 +1,8 @@
 project_id = "jufrdzeonywluwutvyxz"
 
+[functions.create-astrology-checkout]
+verify_jwt = true
+
 [functions.create-paid-message-checkout]
 verify_jwt = true
 
