@@ -1,18 +1,76 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const CREDIT_COST = 1;
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+  );
+
   try {
-    const { messages } = await req.json();
+    const { messages, deductCredit } = await req.json();
+    
+    // Authenticate user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("No authorization header");
+    }
+    
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
+    
+    if (userError || !userData.user) {
+      throw new Error("Not authenticated");
+    }
+    
+    const userId = userData.user.id;
+    
+    // Check and deduct credits if requested
+    if (deductCredit) {
+      // Get current credits
+      const { data: creditsData, error: creditsError } = await supabaseClient
+        .from("astrology_credits")
+        .select("credits_remaining")
+        .eq("user_id", userId)
+        .single();
+      
+      if (creditsError || !creditsData) {
+        throw new Error("Could not fetch credits. Please purchase credits first.");
+      }
+      
+      if (creditsData.credits_remaining < CREDIT_COST) {
+        throw new Error(`Insufficient credits. You need ${CREDIT_COST} credit per message.`);
+      }
+      
+      // Deduct credit
+      const { error: updateError } = await supabaseClient
+        .from("astrology_credits")
+        .update({ 
+          credits_remaining: creditsData.credits_remaining - CREDIT_COST,
+          updated_at: new Date().toISOString()
+        })
+        .eq("user_id", userId);
+      
+      if (updateError) {
+        console.error("Error deducting credits:", updateError);
+        throw new Error("Failed to deduct credits");
+      }
+      
+      console.log(`[ASTROLOGY-CHAT] Deducted ${CREDIT_COST} credit from user ${userId}`);
+    }
+    
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
     if (!LOVABLE_API_KEY) {

@@ -21,6 +21,7 @@ export const CREDIT_COSTS = {
   yes_no: 2,
   birth_chart: 20,
   rune: 1,
+  mystic_chat: 1,
 } as const;
 
 export type ReadingType = keyof typeof CREDIT_COSTS;
