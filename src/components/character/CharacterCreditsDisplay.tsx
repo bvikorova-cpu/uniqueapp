@@ -19,8 +19,8 @@ export const CharacterCreditsDisplay = () => {
   }
 
   return (
-    <Card className="p-6">
-      <div className="flex items-center justify-between">
+    <Card className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
           <Coins className="h-8 w-8 text-yellow-500" />
           <div>
@@ -31,10 +31,11 @@ export const CharacterCreditsDisplay = () => {
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Button
             onClick={() => handlePurchase(50)}
             variant="outline"
+            className="w-full sm:w-auto text-sm"
           >
             <Plus className="mr-2 h-4 w-4" />
             50 Credits - €9.99
@@ -42,6 +43,7 @@ export const CharacterCreditsDisplay = () => {
           <Button
             variant="outline"
             onClick={() => console.log("Purchase 200 credits")}
+            className="w-full sm:w-auto text-sm"
           >
             <Plus className="mr-2 h-4 w-4" />
             200 Credits - €29.99
