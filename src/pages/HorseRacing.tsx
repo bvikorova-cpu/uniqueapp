@@ -169,38 +169,77 @@ export default function HorseRacing() {
         <HorseCurrencyDisplay />
 
         {/* Detailed Description */}
-        <Card className="p-6 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/30">
-          <h2 className="text-2xl font-bold mb-4 text-amber-400">What is Virtual Horse Racing Arena?</h2>
-          <p className="text-muted-foreground mb-4">
-            Virtual Horse Racing Arena is a skill-based horse management and racing simulation platform. Build your stable, train champions, breed elite bloodlines, and compete in thrilling races. This is a 100% skill-based virtual economy with no gambling involved.
-          </p>
-          
-          <h3 className="text-lg font-semibold mb-3 text-amber-300">How to Get Started:</h3>
-          <ol className="list-decimal list-inside space-y-2 text-muted-foreground mb-4">
-            <li><strong>Buy Currency:</strong> Purchase Coins and Gems to start your journey. All new users start with 0 balance.</li>
-            <li><strong>Acquire Horses:</strong> Visit "My Stable" and buy your first horse (50 Coins) to begin.</li>
-            <li><strong>Train Your Horses:</strong> Improve speed, stamina, acceleration, and temperament stats (20 Coins/session).</li>
-            <li><strong>Enter Races:</strong> Join races with entry fees and compete against other players' horses.</li>
-            <li><strong>Breed Champions:</strong> Combine two horses to create offspring with inherited traits (100 Coins).</li>
-            <li><strong>Shop for Upgrades:</strong> Buy cosmetics, boosters, equipment, and mystery boxes to enhance your horses.</li>
-          </ol>
-
-          <h3 className="text-lg font-semibold mb-3 text-amber-300">Key Features:</h3>
-          <ul className="list-disc list-inside space-y-1 text-muted-foreground mb-4">
-            <li><strong>My Stable:</strong> View and manage all your horses with detailed stats and race history.</li>
-            <li><strong>Racing:</strong> Compete in 3D animated races with real-time results and prize pools.</li>
-            <li><strong>Training:</strong> Systematically improve horse attributes to gain competitive advantage.</li>
-            <li><strong>Breeding:</strong> Create unique offspring with combined genetics from parent horses.</li>
-            <li><strong>Shop:</strong> 40+ items including cosmetics, stat boosters, premium equipment, and mystery boxes.</li>
-            <li><strong>Leaderboard:</strong> Track top trainers, horses, and breeders across the platform.</li>
-            <li><strong>Marketplace:</strong> Buy and sell horses with other players.</li>
-          </ul>
-
-          <div className="bg-amber-500/10 rounded-lg p-4 border border-amber-500/20">
-            <p className="text-sm text-amber-200">
-              <strong>💡 Tip:</strong> Start by purchasing a currency package, then acquire your first horse. Train consistently to build competitive stats before entering high-stakes races. Breeding can produce horses with superior combined genetics!
+        <Card className="p-6 bg-card border">
+          <header className="space-y-2">
+            <h2 className="text-2xl font-bold text-foreground">
+              What is Virtual Horse Racing Arena?
+            </h2>
+            <p className="text-muted-foreground">
+              Virtual Horse Racing Arena is a skill-based horse management and racing simulation.
+              Build your stable, train champions, breed elite bloodlines, and compete in races.
+              This is a virtual economy (no gambling).
             </p>
-          </div>
+          </header>
+
+          <section className="mt-6">
+            <h3 className="text-lg font-semibold text-foreground">
+              How to Get Started
+            </h3>
+            <ol className="mt-3 list-decimal list-inside space-y-2 text-foreground">
+              <li>
+                <strong>Buy Currency:</strong> Start at 0 coins and 0 gems, then purchase a package.
+              </li>
+              <li>
+                <strong>Acquire Horses:</strong> Go to “My Stable” and buy your first horse.
+              </li>
+              <li>
+                <strong>Train:</strong> Improve speed, stamina, acceleration, and temperament.
+              </li>
+              <li>
+                <strong>Race:</strong> Join races and win prizes based on performance.
+              </li>
+              <li>
+                <strong>Breed:</strong> Combine two horses to create an offspring with inherited stats.
+              </li>
+              <li>
+                <strong>Shop:</strong> Purchase upgrades, cosmetics, boosters, and mystery boxes.
+              </li>
+            </ol>
+          </section>
+
+          <section className="mt-6">
+            <h3 className="text-lg font-semibold text-foreground">Key Features</h3>
+            <ul className="mt-3 list-disc list-inside space-y-1 text-foreground">
+              <li>
+                <strong>My Stable:</strong> Manage your horses, stats, and race history.
+              </li>
+              <li>
+                <strong>Racing:</strong> Participate in races and view results.
+              </li>
+              <li>
+                <strong>Training:</strong> Spend coins to increase key stats.
+              </li>
+              <li>
+                <strong>Breeding:</strong> Create unique offspring and grow your bloodline.
+              </li>
+              <li>
+                <strong>Shop:</strong> 40+ paid items with real effects (not decorative).
+              </li>
+              <li>
+                <strong>Leaderboard:</strong> Compare top trainers and horses.
+              </li>
+              <li>
+                <strong>Marketplace:</strong> Buy and sell horses with other players.
+              </li>
+            </ul>
+          </section>
+
+          <aside className="mt-6 rounded-lg border bg-muted p-4">
+            <p className="text-sm text-foreground">
+              <strong>Tip:</strong> Buy currency first → get a horse → train consistently → then enter
+              higher-entry races.
+            </p>
+          </aside>
         </Card>
 
         <Tabs defaultValue="stable" className="w-full">
