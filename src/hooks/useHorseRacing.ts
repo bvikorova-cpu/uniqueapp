@@ -460,3 +460,104 @@ export const usePurchaseHorseColor = () => {
     },
   });
 };
+
+// Shop - Purchase Item
+export const usePurchaseShopItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ 
+      itemId, 
+      horseId, 
+      costCoins, 
+      costGems,
+      statBoost 
+    }: { 
+      itemId: string; 
+      horseId?: string;
+      costCoins?: number;
+      costGems?: number;
+      statBoost?: {
+        speed?: number;
+        stamina?: number;
+        acceleration?: number;
+        temperament?: number;
+      };
+    }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      // Check currency
+      const { data: currency } = await supabase
+        .from("horse_currency")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!currency) throw new Error("Currency not found");
+
+      if (costCoins && currency.coins < costCoins) {
+        throw new Error("Insufficient coins");
+      }
+
+      if (costGems && currency.gems < costGems) {
+        throw new Error("Insufficient gems");
+      }
+
+      // Apply stat boost if applicable
+      if (statBoost && horseId) {
+        const { data: horse } = await supabase
+          .from("horses")
+          .select("*")
+          .eq("id", horseId)
+          .single();
+
+        if (!horse) throw new Error("Horse not found");
+
+        const updates: Record<string, number> = {};
+        if (statBoost.speed) updates.speed_stat = Math.min(100, (horse.speed_stat || 0) + statBoost.speed);
+        if (statBoost.stamina) updates.stamina_stat = Math.min(100, (horse.stamina_stat || 0) + statBoost.stamina);
+        if (statBoost.acceleration) updates.acceleration_stat = Math.min(100, (horse.acceleration_stat || 0) + statBoost.acceleration);
+        if (statBoost.temperament) updates.temperament_stat = Math.min(100, (horse.temperament_stat || 0) + statBoost.temperament);
+
+        if (Object.keys(updates).length > 0) {
+          await supabase
+            .from("horses")
+            .update(updates)
+            .eq("id", horseId);
+        }
+      }
+
+      // Deduct currency
+      const currencyUpdate: Record<string, number> = {};
+      if (costCoins) currencyUpdate.coins = currency.coins - costCoins;
+      if (costGems) currencyUpdate.gems = currency.gems - costGems;
+
+      await supabase
+        .from("horse_currency")
+        .update(currencyUpdate)
+        .eq("user_id", user.id);
+
+      // Record purchase
+      await supabase
+        .from("horse_shop_purchases")
+        .insert({
+          user_id: user.id,
+          item_id: itemId,
+          horse_id: horseId || null,
+          cost_coins: costCoins || 0,
+          cost_gems: costGems || 0,
+        });
+
+      return { itemId, horseId };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-horses"] });
+      queryClient.invalidateQueries({ queryKey: ["horse-currency"] });
+      toast.success("Item purchased successfully!");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+};

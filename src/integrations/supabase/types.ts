@@ -12489,6 +12489,36 @@ export type Database = {
           },
         ]
       }
+      horse_shop_purchases: {
+        Row: {
+          cost_coins: number | null
+          cost_gems: number | null
+          created_at: string
+          horse_id: string | null
+          id: string
+          item_id: string
+          user_id: string
+        }
+        Insert: {
+          cost_coins?: number | null
+          cost_gems?: number | null
+          created_at?: string
+          horse_id?: string | null
+          id?: string
+          item_id: string
+          user_id: string
+        }
+        Update: {
+          cost_coins?: number | null
+          cost_gems?: number | null
+          created_at?: string
+          horse_id?: string | null
+          id?: string
+          item_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       horse_training: {
         Row: {
           created_at: string
