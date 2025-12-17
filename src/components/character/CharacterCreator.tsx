@@ -126,11 +126,12 @@ export const CharacterCreator = () => {
           />
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-4">
           <Button
             onClick={() => setIsPremium(false)}
             variant={!isPremium ? "default" : "outline"}
             disabled={createCharacter.isPending}
+            className="text-xs sm:text-sm"
           >
             Basic (5 credits)
           </Button>
@@ -138,8 +139,9 @@ export const CharacterCreator = () => {
             onClick={() => setIsPremium(true)}
             variant={isPremium ? "default" : "outline"}
             disabled={createCharacter.isPending}
+            className="text-xs sm:text-sm"
           >
-            <Wand2 className="mr-2 h-4 w-4" />
+            <Wand2 className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
             Premium (15 credits)
           </Button>
         </div>
