@@ -26,13 +26,13 @@ export const TournamentHub = () => {
 
   return (
     <div>
-      <Card className="p-6 mb-6">
-        <div className="flex items-center justify-between">
+      <Card className="p-4 sm:p-6 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-semibold mb-2">Tournament Hub 🏆</h2>
-            <p className="text-muted-foreground">Compete in epic tournaments for glory and prizes</p>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-2">Tournament Hub 🏆</h2>
+            <p className="text-muted-foreground text-sm sm:text-base">Compete in epic tournaments for glory and prizes</p>
           </div>
-          <Button>
+          <Button className="w-full sm:w-auto">
             Create Tournament
           </Button>
         </div>
