@@ -13,10 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAICredits } from "@/hooks/useAICredits";
 import { useNavigate } from "react-router-dom";
-import puppyImg from "@/assets/pets/cute-puppy.png";
-import kittenImg from "@/assets/pets/cute-kitten.png";
-import bunnyImg from "@/assets/pets/cute-bunny.png";
-import hamsterImg from "@/assets/pets/cute-hamster.png";
+import { petImages } from "@/data/petImages";
 
 interface MyPetsProps {
   onSelectPet: (petId: string) => void;
@@ -351,13 +348,27 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
     return emojiMap[species] || '🐾';
   };
 
-  const getPetImage = (petTypeName: string) => {
+  const getPetImage = (petTypeName: string, species: string) => {
     const name = petTypeName?.toLowerCase() || '';
-    if (name.includes('puppy') || name.includes('dog')) return puppyImg;
-    if (name.includes('kitten') || name.includes('cat')) return kittenImg;
-    if (name.includes('bunny') || name.includes('rabbit')) return bunnyImg;
-    if (name.includes('hamster')) return hamsterImg;
-    return null; // Return null for species without specific images
+    const speciesLower = species?.toLowerCase() || '';
+    
+    // Check species first for exact match
+    if (petImages[speciesLower]) return petImages[speciesLower];
+    
+    // Fallback mappings
+    if (name.includes('puppy') || name.includes('dog')) return petImages.puppy;
+    if (name.includes('kitten') || name.includes('cat')) return petImages.kitten;
+    if (name.includes('bunny') || name.includes('rabbit')) return petImages.bunny;
+    if (name.includes('hamster')) return petImages.bunny;
+    if (name.includes('dragon')) return petImages.dragon;
+    if (name.includes('unicorn')) return petImages.unicorn;
+    if (name.includes('phoenix')) return petImages.phoenix;
+    if (name.includes('griffin')) return petImages.griffin;
+    if (name.includes('kitsune') || name.includes('fox')) return petImages.kitsune;
+    if (name.includes('parrot') || name.includes('toucan')) return petImages.parrot;
+    if (name.includes('turtle')) return petImages.turtle;
+    
+    return null;
   };
 
   if (isLoading) {
