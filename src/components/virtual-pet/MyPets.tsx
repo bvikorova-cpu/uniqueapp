@@ -451,9 +451,9 @@ export const MyPets = ({ onSelectPet }: MyPetsProps) => {
             <Card key={pet.id} className="p-6 space-y-4 hover:shadow-lg transition-all duration-300 cursor-pointer group" onClick={() => onSelectPet(pet.id)}>
               <div className="flex flex-col items-center mb-4">
                 <div className="relative w-32 h-32 mb-4 flex items-center justify-center">
-                  {getPetImage(pet.pet_types?.name) ? (
+                  {getPetImage(pet.pet_types?.name || '', pet.pet_types?.species || '') ? (
                     <img 
-                      src={getPetImage(pet.pet_types?.name)!} 
+                      src={getPetImage(pet.pet_types?.name || '', pet.pet_types?.species || '')!}
                       alt={pet.name}
                       className="w-full h-full object-contain animate-[bounce_3s_ease-in-out_infinite] group-hover:animate-[bounce_1s_ease-in-out_infinite]"
                     />
