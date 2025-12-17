@@ -36,30 +36,30 @@ export const HorseCurrencyDisplay = () => {
   };
 
   return (
-    <Card className="p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex gap-6">
-          <div className="flex items-center gap-3">
-            <Coins className="h-8 w-8 text-yellow-500" />
+    <Card className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex gap-4 sm:gap-6">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Coins className="h-6 w-6 sm:h-8 sm:w-8 text-yellow-500" />
             <div>
-              <p className="text-sm text-muted-foreground">Coins</p>
-              <p className="text-2xl font-bold">{currency?.coins || 0}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Coins</p>
+              <p className="text-xl sm:text-2xl font-bold">{currency?.coins || 0}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <Gem className="h-8 w-8 text-primary" />
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Gem className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
             <div>
-              <p className="text-sm text-muted-foreground">Gems</p>
-              <p className="text-2xl font-bold">{currency?.gems || 0}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground">Gems</p>
+              <p className="text-xl sm:text-2xl font-bold">{currency?.gems || 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Dialog open={showBuyCoins} onOpenChange={setShowBuyCoins}>
             <DialogTrigger asChild>
-              <Button variant="outline">
+              <Button variant="outline" className="w-full sm:w-auto text-sm">
                 <Coins className="mr-2 h-4 w-4" />
                 Buy Coins
               </Button>
@@ -109,7 +109,7 @@ export const HorseCurrencyDisplay = () => {
 
           <Dialog open={showBuyGems} onOpenChange={setShowBuyGems}>
             <DialogTrigger asChild>
-              <Button>
+              <Button className="w-full sm:w-auto text-sm">
                 <Gem className="mr-2 h-4 w-4" />
                 Buy Gems
               </Button>

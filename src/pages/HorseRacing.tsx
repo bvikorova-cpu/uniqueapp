@@ -168,34 +168,34 @@ export default function HorseRacing() {
         <HorseCurrencyDisplay />
 
         <Tabs defaultValue="stable" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="stable">
-              <Zap className="mr-2 h-4 w-4" />
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 h-auto gap-1 p-1">
+            <TabsTrigger value="stable" className="text-xs sm:text-sm py-2">
+              <Zap className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               My Stable
             </TabsTrigger>
-            <TabsTrigger value="racing">
-              <Trophy className="mr-2 h-4 w-4" />
-              Racing Arena
+            <TabsTrigger value="racing" className="text-xs sm:text-sm py-2">
+              <Trophy className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              Racing
             </TabsTrigger>
-            <TabsTrigger value="training">
-              <Dumbbell className="mr-2 h-4 w-4" />
+            <TabsTrigger value="training" className="text-xs sm:text-sm py-2">
+              <Dumbbell className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               Training
             </TabsTrigger>
-            <TabsTrigger value="breeding">
-              <Heart className="mr-2 h-4 w-4" />
+            <TabsTrigger value="breeding" className="text-xs sm:text-sm py-2">
+              <Heart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               Breeding
             </TabsTrigger>
-            <TabsTrigger value="shop">
-              <Sparkles className="mr-2 h-4 w-4" />
+            <TabsTrigger value="shop" className="text-xs sm:text-sm py-2">
+              <Sparkles className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               Shop
             </TabsTrigger>
-            <TabsTrigger value="leaderboard">
-              <TrendingUp className="mr-2 h-4 w-4" />
+            <TabsTrigger value="leaderboard" className="text-xs sm:text-sm py-2">
+              <TrendingUp className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
               Leaderboard
             </TabsTrigger>
-            <TabsTrigger value="marketplace">
-              <ShoppingCart className="mr-2 h-4 w-4" />
-              Marketplace
+            <TabsTrigger value="marketplace" className="text-xs sm:text-sm py-2">
+              <ShoppingCart className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+              Market
             </TabsTrigger>
           </TabsList>
 
