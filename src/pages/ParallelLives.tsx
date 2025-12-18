@@ -55,33 +55,92 @@ export default function ParallelLives() {
           </div>
         </div>
 
+        {/* How It Works Section */}
+        <Card className="max-w-4xl mx-auto border-primary/20 bg-gradient-to-br from-background to-muted/30">
+          <CardHeader>
+            <CardTitle className="text-2xl flex items-center gap-2">
+              <Sparkles className="h-6 w-6 text-primary" />
+              How Parallel Lives Works
+            </CardTitle>
+            <CardDescription className="text-base">
+              Your complete guide to living multiple realities simultaneously
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-muted-foreground">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                  <Users className="h-4 w-4 text-primary" /> My Lives
+                </h4>
+                <p className="text-sm">
+                  View and manage all your parallel identities. Each life has its own profile, followers, and content - completely separated from your other realities.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-primary" /> Create Life
+                </h4>
+                <p className="text-sm">
+                  Build a new alternate version of yourself. Choose a persona (CEO, Artist, Traveler, etc.), customize your profile, and start living that reality.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-primary" /> Explore
+                </h4>
+                <p className="text-sm">
+                  Discover other users' parallel lives. Follow them in specific realities - you'll only see their content from that particular life.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                  <GitBranch className="h-4 w-4 text-primary" /> Cross-Reality Reveal
+                </h4>
+                <p className="text-sm">
+                  Dramatically reveal to your followers that you're the same person living multiple lives. Create epic "plot twist" moments!
+                </p>
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <h4 className="font-semibold text-foreground flex items-center gap-2">
+                  <Merge className="h-4 w-4 text-primary" /> Reality Merge
+                </h4>
+                <p className="text-sm">
+                  Combine two or more of your parallel lives into one unified identity. All followers from merged realities will see your combined content going forward.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 mt-8">
-          <TabsList className="grid w-full grid-cols-6 max-w-5xl mx-auto">
-            <TabsTrigger value="my-lives">
-              <Users className="h-4 w-4 mr-2" />
-              My Lives
-            </TabsTrigger>
-            <TabsTrigger value="create">
-              <Sparkles className="h-4 w-4 mr-2" />
-              Create Life
-            </TabsTrigger>
-            <TabsTrigger value="explore">
-              <Globe className="h-4 w-4 mr-2" />
-              Explore
-            </TabsTrigger>
-            <TabsTrigger value="reveal">
-              <GitBranch className="h-4 w-4 mr-2" />
-              Reveal
-            </TabsTrigger>
-            <TabsTrigger value="merge">
-              <Merge className="h-4 w-4 mr-2" />
-              Merge
-            </TabsTrigger>
-            <TabsTrigger value="subscription">
-              Subscription
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
+            <TabsList className="inline-flex w-max md:grid md:w-full md:grid-cols-6 max-w-5xl mx-auto gap-1">
+              <TabsTrigger value="my-lives" className="whitespace-nowrap px-3 md:px-4">
+                <Users className="h-4 w-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">My </span>Lives
+              </TabsTrigger>
+              <TabsTrigger value="create" className="whitespace-nowrap px-3 md:px-4">
+                <Sparkles className="h-4 w-4 mr-1 md:mr-2" />
+                Create
+              </TabsTrigger>
+              <TabsTrigger value="explore" className="whitespace-nowrap px-3 md:px-4">
+                <Globe className="h-4 w-4 mr-1 md:mr-2" />
+                Explore
+              </TabsTrigger>
+              <TabsTrigger value="reveal" className="whitespace-nowrap px-3 md:px-4">
+                <GitBranch className="h-4 w-4 mr-1 md:mr-2" />
+                Reveal
+              </TabsTrigger>
+              <TabsTrigger value="merge" className="whitespace-nowrap px-3 md:px-4">
+                <Merge className="h-4 w-4 mr-1 md:mr-2" />
+                Merge
+              </TabsTrigger>
+              <TabsTrigger value="subscription" className="whitespace-nowrap px-3 md:px-4">
+                Sub
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="my-lives" className="space-y-6">
             <MyLives />
