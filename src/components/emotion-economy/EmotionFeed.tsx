@@ -76,8 +76,8 @@ export function EmotionFeed() {
       if (data) {
         setCredits(data);
       } else {
-        // Default new user credits
-        setCredits({ credits_remaining: 10, total_credits_purchased: 0, total_credits_used: 0 });
+        // No free credits - users must purchase
+        setCredits({ credits_remaining: 0, total_credits_purchased: 0, total_credits_used: 0 });
       }
     } catch (error) {
       console.error('Error fetching credits:', error);
