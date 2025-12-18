@@ -5,18 +5,86 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, MessageCircle, Eye, Sparkles, RefreshCw } from "lucide-react";
+import { Heart, MessageCircle, Eye, Sparkles, RefreshCw, Coins, AlertCircle } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+
+interface EmotionCredits {
+  credits_remaining: number;
+  total_credits_purchased: number;
+  total_credits_used: number;
+}
 
 export function EmotionFeed() {
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
   const [content, setContent] = useState("");
   const [isPosting, setIsPosting] = useState(false);
   const [posts, setPosts] = useState<any[]>([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [credits, setCredits] = useState<EmotionCredits | null>(null);
+  const [isLoadingCredits, setIsLoadingCredits] = useState(true);
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+    fetchCredits();
+    
+    // Handle payment callback
+    const payment = searchParams.get('payment');
+    const creditsParam = searchParams.get('credits');
+    
+    if (payment === 'success' && creditsParam) {
+      handlePaymentSuccess(parseInt(creditsParam, 10));
+    }
+  }, [searchParams]);
+
+  const handlePaymentSuccess = async (creditsToAdd: number) => {
+    try {
+      const { error } = await supabase.functions.invoke('verify-emotion-credits-payment', {
+        body: { credits: creditsToAdd }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Credits Added! 🎉",
+        description: `${creditsToAdd} AI analysis credits have been added to your account`
+      });
+
+      await fetchCredits();
+      
+      // Clear URL params
+      window.history.replaceState({}, '', '/emotion-economy');
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+    }
+  };
+
+  const fetchCredits = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setIsLoadingCredits(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('emotion_credits')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setCredits(data);
+      } else {
+        // Default new user credits
+        setCredits({ credits_remaining: 10, total_credits_purchased: 0, total_credits_used: 0 });
+      }
+    } catch (error) {
+      console.error('Error fetching credits:', error);
+    } finally {
+      setIsLoadingCredits(false);
+    }
+  };
 
   const fetchPosts = async () => {
     try {
@@ -36,11 +104,43 @@ export function EmotionFeed() {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await fetchPosts();
+    await fetchCredits();
     setIsRefreshing(false);
     toast({
       title: "Feed Refreshed",
       description: "Latest posts loaded"
     });
+  };
+
+  const handleBuyCredits = async (packageId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to purchase credits",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-emotion-credits-payment', {
+        body: { packageId }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error creating payment:', error);
+      toast({
+        title: "Error",
+        description: "Failed to initiate payment",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleLike = async (postId: string) => {
@@ -86,27 +186,43 @@ export function EmotionFeed() {
         return;
       }
 
-      // Simulate AI emotion detection
-      const detectedEmotions = {
-        joy: Math.floor(Math.random() * 100),
-        motivation: Math.floor(Math.random() * 100),
-        love: Math.floor(Math.random() * 100)
-      };
+      // Call AI emotion analysis
+      const { data: analysisData, error: analysisError } = await supabase.functions.invoke('analyze-emotion', {
+        body: { content }
+      });
 
+      if (analysisError) {
+        if (analysisData?.needs_purchase) {
+          toast({
+            title: "No Credits Remaining",
+            description: "Please purchase more AI analysis credits to continue",
+            variant: "destructive"
+          });
+          return;
+        }
+        throw analysisError;
+      }
+
+      // Create post with AI-detected emotions
       const { error } = await supabase
         .from('emotion_posts')
         .insert({
           user_id: user.id,
           content: content,
-          ai_detected_emotions: detectedEmotions,
-          emotion_reward: { joy: 5, motivation: 3 }
+          ai_detected_emotions: analysisData.emotions,
+          emotion_reward: analysisData.emotion_reward
         });
 
       if (error) throw error;
 
+      // Update local credits
+      if (analysisData.credits_remaining !== undefined) {
+        setCredits(prev => prev ? { ...prev, credits_remaining: analysisData.credits_remaining } : null);
+      }
+
       toast({
         title: "Post Created! 💚",
-        description: "AI detected your emotions and rewarded you"
+        description: `AI detected: ${analysisData.emotions.dominant_emotion}. 1 credit used.`
       });
 
       setContent("");
@@ -125,11 +241,45 @@ export function EmotionFeed() {
 
   return (
     <div className="space-y-6">
+      {/* AI Credits Status */}
+      <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Coins className="h-5 w-5 text-primary" />
+              AI Analysis Credits
+            </CardTitle>
+            <Badge variant={credits && credits.credits_remaining > 0 ? "default" : "destructive"}>
+              {isLoadingCredits ? "..." : credits?.credits_remaining ?? 0} credits
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {credits && credits.credits_remaining < 5 && (
+            <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 mb-3">
+              <AlertCircle className="h-4 w-4" />
+              Low credits! Buy more to continue AI emotion analysis.
+            </div>
+          )}
+          <div className="grid grid-cols-3 gap-2">
+            <Button variant="outline" size="sm" onClick={() => handleBuyCredits('10')}>
+              10 Credits - €2.99
+            </Button>
+            <Button variant="default" size="sm" onClick={() => handleBuyCredits('50')}>
+              50 Credits - €9.99
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => handleBuyCredits('100')}>
+              100 Credits - €14.99
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Share Your Emotions</CardTitle>
           <CardDescription>
-            AI will detect your emotions and reward you accordingly
+            AI will analyze and detect real emotions from your text (uses 1 credit)
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -142,10 +292,13 @@ export function EmotionFeed() {
           <div className="flex items-center justify-between">
             <div className="flex gap-2 text-sm text-muted-foreground">
               <Sparkles className="h-4 w-4" />
-              <span>AI will analyze your post</span>
+              <span>Powered by OpenAI GPT-4</span>
             </div>
-            <Button onClick={handlePost} disabled={isPosting}>
-              {isPosting ? "Posting..." : "Post"}
+            <Button 
+              onClick={handlePost} 
+              disabled={isPosting || (credits?.credits_remaining ?? 0) < 1}
+            >
+              {isPosting ? "Analyzing..." : "Post (1 credit)"}
             </Button>
           </div>
         </CardContent>
@@ -176,14 +329,32 @@ export function EmotionFeed() {
                         <p className="text-sm">{post.content}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 mb-3 flex-wrap">
-                      {post.ai_detected_emotions && Object.entries(post.ai_detected_emotions).map(([emotion, value]) => (
-                        <Badge key={emotion} variant="outline" className="gap-1">
-                          <Heart className="h-3 w-3" />
-                          {emotion}: {value as number}
-                        </Badge>
-                      ))}
+                    <div className="flex items-center gap-2 mb-3 flex-wrap">
+                      {post.ai_detected_emotions && (
+                        <>
+                          {post.ai_detected_emotions.dominant_emotion && (
+                            <Badge className="bg-primary/20 text-primary">
+                              {post.ai_detected_emotions.dominant_emotion}
+                            </Badge>
+                          )}
+                          {Object.entries(post.ai_detected_emotions)
+                            .filter(([key]) => !['dominant_emotion', 'emotional_summary'].includes(key))
+                            .filter(([_, value]) => typeof value === 'number' && (value as number) > 30)
+                            .slice(0, 4)
+                            .map(([emotion, value]) => (
+                              <Badge key={emotion} variant="outline" className="gap-1 text-xs">
+                                <Heart className="h-3 w-3" />
+                                {emotion}: {value as number}
+                              </Badge>
+                            ))}
+                        </>
+                      )}
                     </div>
+                    {post.ai_detected_emotions?.emotional_summary && (
+                      <p className="text-xs text-muted-foreground italic mb-3">
+                        AI Summary: {post.ai_detected_emotions.emotional_summary}
+                      </p>
+                    )}
                     <div className="flex gap-6 text-sm text-muted-foreground">
                       <button 
                         className="flex items-center gap-1 hover:text-foreground transition-colors" 

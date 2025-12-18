@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Smile, Zap, ThumbsUp, Frown, AlertTriangle, Sparkles, Cloud } from "lucide-react";
+import { Heart, Smile, Zap, ThumbsUp, Frown, AlertTriangle, Sparkles, Cloud, Coins } from "lucide-react";
 
 const emotionIcons: Record<string, any> = {
   joy: Smile,
@@ -32,14 +32,41 @@ interface Wallet {
   is_premium: boolean;
 }
 
+interface Credits {
+  credits_remaining: number;
+  total_credits_purchased: number;
+  total_credits_used: number;
+}
+
 export function EmotionWallet() {
   const { toast } = useToast();
   const [wallet, setWallet] = useState<Wallet | null>(null);
+  const [credits, setCredits] = useState<Credits | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchWallet();
+    fetchCredits();
   }, []);
+
+  const fetchCredits = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data } = await supabase
+        .from('emotion_credits')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (data) {
+        setCredits(data);
+      }
+    } catch (error) {
+      console.error('Error fetching credits:', error);
+    }
+  };
 
   const fetchWallet = async () => {
     try {
@@ -72,6 +99,37 @@ export function EmotionWallet() {
     }
   };
 
+  const handleBuyCredits = async (packageId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to purchase credits",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('create-emotion-credits-payment', {
+        body: { packageId }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error creating payment:', error);
+      toast({
+        title: "Error",
+        description: "Failed to initiate payment",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (isLoading || !wallet) {
     return <div className="text-center py-8">Loading your emotion wallet...</div>;
   }
@@ -89,6 +147,52 @@ export function EmotionWallet() {
 
   return (
     <div className="space-y-6">
+      {/* AI Credits Card */}
+      <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Coins className="h-5 w-5 text-primary" />
+              AI Analysis Credits
+            </CardTitle>
+            <Badge variant="default" className="text-lg px-3 py-1">
+              {credits?.credits_remaining ?? 10} credits
+            </Badge>
+          </div>
+          <CardDescription>
+            Used for AI emotion detection when posting. Each post uses 1 credit.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <Card className="border-dashed cursor-pointer hover:border-primary transition-colors" onClick={() => handleBuyCredits('10')}>
+              <CardContent className="pt-4 text-center">
+                <p className="text-2xl font-bold">10</p>
+                <p className="text-sm text-muted-foreground">credits</p>
+                <p className="text-lg font-semibold text-primary mt-2">€2.99</p>
+              </CardContent>
+            </Card>
+            <Card className="border-primary border-2 cursor-pointer hover:bg-primary/5 transition-colors" onClick={() => handleBuyCredits('50')}>
+              <CardContent className="pt-4 text-center relative">
+                <Badge className="absolute -top-2 left-1/2 -translate-x-1/2">Popular</Badge>
+                <p className="text-2xl font-bold">50</p>
+                <p className="text-sm text-muted-foreground">credits</p>
+                <p className="text-lg font-semibold text-primary mt-2">€9.99</p>
+                <p className="text-xs text-green-600">Save 33%</p>
+              </CardContent>
+            </Card>
+            <Card className="border-dashed cursor-pointer hover:border-primary transition-colors" onClick={() => handleBuyCredits('100')}>
+              <CardContent className="pt-4 text-center">
+                <p className="text-2xl font-bold">100</p>
+                <p className="text-sm text-muted-foreground">credits</p>
+                <p className="text-lg font-semibold text-primary mt-2">€14.99</p>
+                <p className="text-xs text-green-600">Best Value - Save 50%</p>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -102,17 +206,17 @@ export function EmotionWallet() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {emotions.map((emotion) => {
               const Icon = emotionIcons[emotion.key.replace('_balance', '')];
               const balance = wallet[emotion.key as keyof Wallet] as number;
               
               return (
                 <Card key={emotion.key} className={emotion.bg}>
-                  <CardContent className="pt-6">
+                  <CardContent className="pt-4 pb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <Icon className={`h-6 w-6 ${emotion.color}`} />
-                      <span className={`text-2xl font-bold ${emotion.color}`}>{balance}</span>
+                      <Icon className={`h-5 w-5 ${emotion.color}`} />
+                      <span className={`text-xl font-bold ${emotion.color}`}>{balance}</span>
                     </div>
                     <p className="text-sm font-medium mb-2">{emotion.name}</p>
                     <Progress value={Math.min((balance / 100) * 100, 100)} className="h-2" />
@@ -145,26 +249,13 @@ export function EmotionWallet() {
           </CardContent>
         </Card>
 
-        <Card className="border-yellow-500/20">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Upgrade to Premium</CardTitle>
+            <CardTitle className="text-lg">Credits Used</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground mb-3">€9.99/month</p>
-            <Button 
-              className="w-full" 
-              disabled={wallet.is_premium}
-              onClick={() => {
-                if (!wallet.is_premium) {
-                  toast({
-                    title: "Upgrade to Premium",
-                    description: "Redirecting to payment... (€9.99/month)"
-                  });
-                }
-              }}
-            >
-              {wallet.is_premium ? 'Active' : 'Upgrade Now'}
-            </Button>
+            <p className="text-3xl font-bold">{credits?.total_credits_used ?? 0}</p>
+            <p className="text-sm text-muted-foreground">AI analyses performed</p>
           </CardContent>
         </Card>
       </div>
