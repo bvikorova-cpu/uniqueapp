@@ -52,35 +52,36 @@ export const CoffeeCreditsDisplay = () => {
   if (!profile) return null;
 
   return (
-    <Card className="p-6">
-      <div className="flex items-center justify-between">
+    <Card className="p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex items-center gap-3">
-          <Coffee className="h-8 w-8 text-primary" />
+          <Coffee className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
           <div>
-            <p className="text-sm text-muted-foreground">Subscription</p>
-            <p className="text-2xl font-bold capitalize">{profile.subscription_tier}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Subscription</p>
+            <p className="text-lg sm:text-2xl font-bold capitalize">{profile.subscription_tier}</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-4 sm:ml-auto">
           <div className="text-center">
-            <p className="text-sm text-muted-foreground">Points</p>
-            <p className="text-2xl font-bold">{profile.total_points}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Points</p>
+            <p className="text-lg sm:text-2xl font-bold">{profile.total_points}</p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-muted-foreground">Matches Left</p>
-            <p className="text-2xl font-bold">{profile.matches_remaining}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Matches Left</p>
+            <p className="text-lg sm:text-2xl font-bold">{profile.matches_remaining}</p>
           </div>
-          <div className="flex gap-2">
-            <Button onClick={() => handleUpgrade('Basic')} variant="outline">
-              <Plus className="mr-2 h-4 w-4" />
-              €4.99/mo
-            </Button>
-            <Button onClick={() => handleUpgrade('Premium')}>
-              <Plus className="mr-2 h-4 w-4" />
-              €9.99/mo
-            </Button>
-          </div>
+        </div>
+
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button onClick={() => handleUpgrade('Basic')} variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
+            <Plus className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+            €4.99/mo
+          </Button>
+          <Button onClick={() => handleUpgrade('Premium')} size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm">
+            <Plus className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+            €9.99/mo
+          </Button>
         </div>
       </div>
 
