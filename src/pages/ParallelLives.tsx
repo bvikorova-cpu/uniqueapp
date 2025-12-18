@@ -114,33 +114,31 @@ export default function ParallelLives() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 mt-8">
-          <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
-            <TabsList className="inline-flex w-max md:grid md:w-full md:grid-cols-6 max-w-5xl mx-auto gap-1">
-              <TabsTrigger value="my-lives" className="whitespace-nowrap px-3 md:px-4">
-                <Users className="h-4 w-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">My </span>Lives
-              </TabsTrigger>
-              <TabsTrigger value="create" className="whitespace-nowrap px-3 md:px-4">
-                <Sparkles className="h-4 w-4 mr-1 md:mr-2" />
-                Create
-              </TabsTrigger>
-              <TabsTrigger value="explore" className="whitespace-nowrap px-3 md:px-4">
-                <Globe className="h-4 w-4 mr-1 md:mr-2" />
-                Explore
-              </TabsTrigger>
-              <TabsTrigger value="reveal" className="whitespace-nowrap px-3 md:px-4">
-                <GitBranch className="h-4 w-4 mr-1 md:mr-2" />
-                Reveal
-              </TabsTrigger>
-              <TabsTrigger value="merge" className="whitespace-nowrap px-3 md:px-4">
-                <Merge className="h-4 w-4 mr-1 md:mr-2" />
-                Merge
-              </TabsTrigger>
-              <TabsTrigger value="subscription" className="whitespace-nowrap px-3 md:px-4">
-                Sub
-              </TabsTrigger>
-            </TabsList>
-          </div>
+          <TabsList className="grid grid-cols-3 md:grid-cols-6 w-full max-w-5xl mx-auto gap-1 h-auto p-1">
+            <TabsTrigger value="my-lives" className="px-2 py-2 text-xs sm:text-sm">
+              <Users className="h-4 w-4 mr-1" />
+              Lives
+            </TabsTrigger>
+            <TabsTrigger value="create" className="px-2 py-2 text-xs sm:text-sm">
+              <Sparkles className="h-4 w-4 mr-1" />
+              Create
+            </TabsTrigger>
+            <TabsTrigger value="explore" className="px-2 py-2 text-xs sm:text-sm">
+              <Globe className="h-4 w-4 mr-1" />
+              Explore
+            </TabsTrigger>
+            <TabsTrigger value="reveal" className="px-2 py-2 text-xs sm:text-sm">
+              <GitBranch className="h-4 w-4 mr-1" />
+              Reveal
+            </TabsTrigger>
+            <TabsTrigger value="merge" className="px-2 py-2 text-xs sm:text-sm">
+              <Merge className="h-4 w-4 mr-1" />
+              Merge
+            </TabsTrigger>
+            <TabsTrigger value="subscription" className="px-2 py-2 text-xs sm:text-sm">
+              Sub
+            </TabsTrigger>
+          </TabsList>
 
           <TabsContent value="my-lives" className="space-y-6">
             <MyLives />
