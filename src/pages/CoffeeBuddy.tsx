@@ -14,16 +14,16 @@ const CoffeeBuddy = () => {
       </div>
 
       {/* Feature Description */}
-      <div className="mb-8 p-6 bg-gradient-to-r from-amber-900/20 via-orange-800/20 to-amber-900/20 rounded-xl border border-amber-700/30">
-        <h2 className="text-2xl font-bold text-amber-200 mb-4">What is Coffee Buddy?</h2>
-        <p className="text-gray-300 mb-4">
+      <div className="mb-8 p-6 bg-black/80 rounded-xl border border-amber-600/50">
+        <h3 className="text-xl font-bold text-amber-400 mb-3">What is Coffee Buddy?</h3>
+        <p className="text-white mb-4">
           Coffee Buddy is a social matching platform designed for coffee enthusiasts who want to connect with like-minded people. 
           Whether you're looking for a coffee tasting partner, someone to explore new cafés with, or just a friend who shares your 
           passion for the perfect brew, Coffee Buddy helps you find your ideal match.
         </p>
         
-        <h3 className="text-xl font-semibold text-amber-300 mb-3">How to Use</h3>
-        <ul className="text-gray-300 space-y-2 mb-4">
+        <h4 className="text-lg font-semibold text-amber-400 mb-2">How to Use</h4>
+        <ul className="text-white space-y-2 mb-4">
           <li className="flex items-start gap-2">
             <span className="text-amber-400 font-bold">1.</span>
             <span><strong>Set Your Preferences:</strong> Go to the Preferences tab to specify your favorite coffee types, brewing methods, and what you're looking for in a coffee buddy.</span>
@@ -42,8 +42,8 @@ const CoffeeBuddy = () => {
           </li>
         </ul>
 
-        <h3 className="text-xl font-semibold text-amber-300 mb-3">Key Features</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-300">
+        <h4 className="text-lg font-semibold text-amber-400 mb-2">Key Features</h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-white">
           <div className="flex items-center gap-2">
             <span className="text-amber-400">☕</span>
             <span>AI-powered matching based on coffee preferences</span>
