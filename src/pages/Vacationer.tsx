@@ -280,7 +280,7 @@ const Vacationer = () => {
     <div className="min-h-screen bg-background pt-20 pb-12">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header */}
-        <div className="text-center space-y-4 mb-12">
+        <div className="text-center space-y-4 mb-8">
           <Badge className="bg-primary text-primary-foreground">
             <Plane className="h-4 w-4 mr-1" />
             Holiday Destinations
@@ -291,6 +291,47 @@ const Vacationer = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Discover amazing holiday destinations and share your experiences
           </p>
+        </div>
+
+        {/* Description */}
+        <Card className="mb-8 bg-gradient-to-br from-orange-500/10 via-amber-500/10 to-yellow-500/10 border-orange-500/20">
+          <CardHeader>
+            <CardTitle className="text-xl text-orange-400">What is Vacationer?</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 text-muted-foreground">
+            <p>
+              Vacationer is a community-driven travel platform where users can discover, share, and review holiday destinations from around the world. Whether you're planning your next vacation or want to share your travel experiences with others, Vacationer connects travelers and helps everyone find their perfect getaway.
+            </p>
+            
+            <div>
+              <h3 className="font-semibold text-foreground mb-2">How to Use:</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li><strong>Add Destination:</strong> Share your favorite travel spots by clicking "Add Destination" - include name, location, description, and up to 5 photos/videos</li>
+                <li><strong>Browse Destinations:</strong> Explore destinations added by other travelers and get inspired for your next trip</li>
+                <li><strong>View Details:</strong> Click on any destination to see full description, all photos, and community reviews</li>
+                <li><strong>Write Reviews:</strong> Rate and review destinations you've visited to help other travelers make informed decisions</li>
+                <li><strong>Discover Hidden Gems:</strong> Find unique places recommended by real travelers, not just popular tourist spots</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-foreground mb-2">Key Features:</h3>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>Photo & video uploads to showcase destinations</li>
+                <li>5-star rating system with detailed reviews</li>
+                <li>Location-based destination browsing</li>
+                <li>Community-driven content and recommendations</li>
+                <li>Mobile-friendly design for on-the-go access</li>
+              </ul>
+            </div>
+
+            <p className="text-xs text-muted-foreground/70 italic">
+              💡 Tip: The best destination reviews include specific details about when you visited, what you enjoyed most, and practical tips for future travelers!
+            </p>
+          </CardContent>
+        </Card>
+
+        <div className="text-center mb-8">
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button variant="hero" size="lg">
