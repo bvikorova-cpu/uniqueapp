@@ -8,9 +8,9 @@ import { CoffeePreferences } from '@/components/coffee/CoffeePreferences';
 const CoffeeBuddy = () => {
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold mb-2">Coffee Buddy Matching</h1>
-        <p className="text-muted-foreground">Connect with coffee lovers who share your taste</p>
+      <div className="mb-6 mt-4 sm:mt-0">
+        <h1 className="text-2xl sm:text-4xl font-bold mb-2">Coffee Buddy Matching</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">Connect with coffee lovers who share your taste</p>
       </div>
 
       {/* Feature Description */}
