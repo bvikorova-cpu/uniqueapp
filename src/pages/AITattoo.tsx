@@ -184,6 +184,33 @@ const AITattoo = () => {
           </div>
         </div>
 
+        {/* Detailed Description */}
+        <Card className="p-6 mb-8 max-w-4xl mx-auto bg-card text-card-foreground">
+          <h2 className="text-2xl font-bold mb-4 text-foreground">What is AI Tattoo Designer?</h2>
+          <p className="text-muted-foreground mb-4">
+            AI Tattoo Designer is an innovative tool that uses artificial intelligence to create unique, 
+            custom tattoo designs based on your description. Whether you're looking for a realistic portrait, 
+            tribal patterns, watercolor effects, or minimalist designs, our AI generates high-quality artwork 
+            tailored to your vision.
+          </p>
+          
+          <h3 className="text-xl font-semibold mb-3 text-foreground">How to Use</h3>
+          <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
+            <li><strong>Generate Tab:</strong> Describe your tattoo idea, select style, color scheme, placement, and size, then generate your design (8 credits per generation)</li>
+            <li><strong>Placement Preview:</strong> Upload a photo of your body part and overlay your generated design to see how it will look</li>
+            <li><strong>My Designs:</strong> View all your previously generated designs, mark favorites, and download high-resolution images</li>
+          </ul>
+          
+          <h3 className="text-xl font-semibold mb-3 text-foreground">Key Features</h3>
+          <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+            <li><strong>8 Unique Styles:</strong> Realistic, Tribal, Watercolor, Geometric, Blackwork, Traditional, Japanese, Minimalist</li>
+            <li><strong>Color Options:</strong> Black & Grey or Full Color designs</li>
+            <li><strong>Body Placement:</strong> Arm, Shoulder, Back, Chest, Leg, Wrist, Ankle, Neck</li>
+            <li><strong>Interactive Preview:</strong> Drag and resize your design on your photo</li>
+            <li><strong>High-Resolution Downloads:</strong> Save your designs for tattoo artist consultations</li>
+          </ul>
+        </Card>
+
         <Tabs defaultValue="generate" className="space-y-6" onValueChange={(v) => v === "gallery" && loadDesigns()}>
           <TabsList className="grid w-full grid-cols-3 max-w-3xl mx-auto">
             <TabsTrigger value="generate">Generate</TabsTrigger>
