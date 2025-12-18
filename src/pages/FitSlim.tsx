@@ -966,25 +966,6 @@ const FitSlim = () => {
       ],
       instructions: "1. Blend banana with eggs.\n2. Add protein powder, oat flakes and cinnamon.\n3. Mix into a smooth batter.\n4. Heat coconut oil in a pan.\n5. Cook pancakes on both sides until golden.\n6. Serve with maple syrup and fresh fruit."
     },
-    {
-      id: 18,
-      title: "Roasted Root Vegetable Mix with Olive Oil",
-      calories: "400 kcal",
-      benefit: "Healthy fats and minerals",
-      time: "45 min",
-      image: "https://images.unsplash.com/photo-1608039829572-78524f79c661?w=800&auto=format&fit=crop",
-      ingredients: [
-        "200g carrots",
-        "200g parsnips",
-        "200g celery root",
-        "2 red onions",
-        "4 tablespoons olive oil",
-        "rosemary, thyme",
-        "salt, pepper",
-        "feta cheese"
-      ],
-      instructions: "1. Preheat oven to 200°C.\n2. Peel all vegetables and cut into larger pieces.\n3. Toss with olive oil and herbs.\n4. Spread on a baking sheet and season.\n5. Bake for 40-45 minutes, stirring occasionally.\n6. Serve with feta cheese."
-    },
   ];
 
   return (
