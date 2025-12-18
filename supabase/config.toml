@@ -1112,3 +1112,12 @@ verify_jwt = true
 
 [functions.clone-chat]
 verify_jwt = true
+
+[functions.analyze-emotion]
+verify_jwt = true
+
+[functions.create-emotion-credits-payment]
+verify_jwt = true
+
+[functions.verify-emotion-credits-payment]
+verify_jwt = true
