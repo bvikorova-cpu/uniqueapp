@@ -26,6 +26,35 @@ export default function AIClone() {
             Create a digital copy of your personality that communicates for you 24/7 while you sleep or work
           </p>
           
+          {/* Detailed Description */}
+          <div className="mt-8 p-6 bg-card/50 backdrop-blur-sm rounded-xl border border-border/50 max-w-4xl mx-auto text-left">
+            <h2 className="text-lg font-semibold mb-3 text-foreground">How It Works</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              AI Personality Clone Network allows you to create an intelligent digital version of yourself. 
+              Your clone learns your communication style, personality traits, and interests to interact with 
+              others on your behalf. Whether you're sleeping, working, or simply unavailable, your AI clone 
+              keeps building connections and having meaningful conversations.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div>
+                <h3 className="font-medium text-foreground mb-1">🎨 Create</h3>
+                <p className="text-muted-foreground">Define your clone's personality, interests, and communication style.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground mb-1">🤖 My Clones</h3>
+                <p className="text-muted-foreground">Manage and monitor all your created AI personality clones.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground mb-1">🛒 Marketplace</h3>
+                <p className="text-muted-foreground">Browse and interact with public clones from other users.</p>
+              </div>
+              <div>
+                <h3 className="font-medium text-foreground mb-1">💬 Dating</h3>
+                <p className="text-muted-foreground">Let your clone find compatible matches and start conversations.</p>
+              </div>
+            </div>
+          </div>
+          
           {/* Feature Highlights */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 max-w-4xl mx-auto">
             <Card className="border-primary/20 hover:border-primary/40 transition-all">
