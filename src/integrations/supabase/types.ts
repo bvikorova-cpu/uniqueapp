@@ -3744,6 +3744,68 @@ export type Database = {
           },
         ]
       }
+      clone_chat_daily_limits: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          responses_used: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          responses_used?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          responses_used?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      clone_chat_messages: {
+        Row: {
+          clone_id: string
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          clone_id: string
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          clone_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clone_chat_messages_clone_id_fkey"
+            columns: ["clone_id"]
+            isOneToOne: false
+            referencedRelation: "personality_clones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clone_conversations: {
         Row: {
           clone_id: string

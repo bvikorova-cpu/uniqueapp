@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Bot, Search, MessageCircle, Star } from "lucide-react";
+import { CloneChatDialog } from "./CloneChatDialog";
 
 interface Clone {
   id: string;
@@ -19,6 +20,8 @@ export function CloneMarketplace() {
   const { toast } = useToast();
   const [clones, setClones] = useState<Clone[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClone, setSelectedClone] = useState<Clone | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     fetchPublicClones();
@@ -41,6 +44,22 @@ export function CloneMarketplace() {
     }
   };
 
+  const handleStartChat = async (clone: Clone) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to chat with AI clones",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setSelectedClone(clone);
+    setChatOpen(true);
+  };
+
   const filteredClones = clones.filter(clone =>
     clone.clone_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -51,7 +70,7 @@ export function CloneMarketplace() {
         <CardHeader>
           <CardTitle>Explore AI Clones</CardTitle>
           <CardDescription>
-            Chat with personality clones from around the world
+            Chat with personality clones from around the world (20 AI responses/day limit)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -94,12 +113,7 @@ export function CloneMarketplace() {
               <Button 
                 className="w-full" 
                 variant="outline"
-                onClick={() => {
-                  toast({
-                    title: "Chat Started",
-                    description: `Starting conversation with ${clone.clone_name}...`
-                  });
-                }}
+                onClick={() => handleStartChat(clone)}
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
                 Start Chat
@@ -117,6 +131,12 @@ export function CloneMarketplace() {
           </CardContent>
         </Card>
       )}
+
+      <CloneChatDialog
+        open={chatOpen}
+        onOpenChange={setChatOpen}
+        clone={selectedClone}
+      />
     </div>
   );
 }

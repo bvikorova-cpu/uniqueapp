@@ -1109,3 +1109,6 @@ verify_jwt = true
 
 [functions.battle-pets]
 verify_jwt = true
+
+[functions.clone-chat]
+verify_jwt = true
