@@ -186,13 +186,13 @@ const FirstAid = () => {
 
         {/* First Aid Categories */}
         <Tabs defaultValue="cpr" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-7 mb-8">
+          <TabsList className="grid w-full grid-cols-4 sm:grid-cols-7 gap-1 h-auto mb-8">
             {firstAidCategories.map((category) => {
               const Icon = category.icon;
               return (
-                <TabsTrigger key={category.id} value={category.id} className="flex-col h-auto py-3">
-                  <Icon className={`h-5 w-5 mb-1 ${category.color}`} />
-                  <span className="text-xs">{category.title.split(" ")[0]}</span>
+                <TabsTrigger key={category.id} value={category.id} className="flex-col h-auto py-2 px-1">
+                  <Icon className={`h-4 w-4 sm:h-5 sm:w-5 mb-1 ${category.color}`} />
+                  <span className="text-[10px] sm:text-xs leading-tight">{category.title.split(" ")[0]}</span>
                 </TabsTrigger>
               );
             })}
