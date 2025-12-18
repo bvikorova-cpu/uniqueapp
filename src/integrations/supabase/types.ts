@@ -9381,6 +9381,36 @@ export type Database = {
         }
         Relationships: []
       }
+      emotion_credits: {
+        Row: {
+          created_at: string
+          credits_remaining: number
+          id: string
+          total_credits_purchased: number
+          total_credits_used: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          total_credits_used?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          credits_remaining?: number
+          id?: string
+          total_credits_purchased?: number
+          total_credits_used?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       emotion_drop_participants: {
         Row: {
           amount_received: number
