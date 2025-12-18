@@ -18,6 +18,18 @@ interface MysteryBox {
   icon: string;
 }
 
+const defaultBoxes: MysteryBox[] = [
+  { id: 'basic', name: 'Basic Mystery Box', description: 'A basic mystery box with random collectibles. Good chance for common and uncommon items.', price: 50, icon: '📦' },
+  { id: 'silver', name: 'Silver Mystery Box', description: 'Enhanced mystery box with better drop rates. Higher chance for rare items.', price: 100, icon: '🥈' },
+  { id: 'gold', name: 'Gold Mystery Box', description: 'Premium mystery box with guaranteed rare or better. Includes bonus rewards.', price: 200, icon: '🥇' },
+  { id: 'platinum', name: 'Platinum Mystery Box', description: 'Elite mystery box with epic drop rates. Contains exclusive limited items.', price: 350, icon: '💎' },
+  { id: 'diamond', name: 'Diamond Mystery Box', description: 'Luxury mystery box with legendary chances. Ultra-rare exclusive content.', price: 500, icon: '💠' },
+  { id: 'cosmic', name: 'Cosmic Mystery Box', description: 'Mythical mystery box with the best odds. Guaranteed epic or legendary item.', price: 750, icon: '🌟' },
+  { id: 'supreme', name: 'Supreme Mystery Box', description: 'The ultimate mystery box experience. Multiple legendary items possible.', price: 1000, icon: '👑' },
+  { id: 'celestial', name: 'Celestial Mystery Box', description: 'Divine mystery box with celestial rewards. Exclusive limited edition content.', price: 1500, icon: '✨' },
+  { id: 'universe', name: 'Universe Mystery Box', description: 'The rarest box in existence. Contains universe-exclusive items and mega rewards.', price: 2500, icon: '🌌' },
+];
+
 interface UserBox {
   id: string;
   box_id: string;
@@ -69,11 +81,16 @@ const MysteryBox = () => {
         supabase.from('mystery_box_rewards').select('*, mystery_box_items(*)').eq('is_active', true),
       ]);
 
-      if (boxesRes.data) setBoxes(boxesRes.data);
+      if (boxesRes.data && boxesRes.data.length > 0) {
+        setBoxes(boxesRes.data);
+      } else {
+        setBoxes(defaultBoxes);
+      }
       if (userBoxesRes.data) setUserBoxes(userBoxesRes.data);
       if (rewardsRes.data) setRewards(rewardsRes.data);
     } catch (error) {
       console.error('Error loading data:', error);
+      setBoxes(defaultBoxes);
     } finally {
       setLoading(false);
     }
@@ -229,6 +246,36 @@ const MysteryBox = () => {
             <span className="text-sm font-medium">Gacha-style system for rare items</span>
           </div>
         </div>
+
+        {/* Detailed Description */}
+        <Card className="p-6 mb-8 max-w-4xl mx-auto bg-card text-card-foreground">
+          <h2 className="text-2xl font-bold mb-4 text-foreground">What is Mystery Box?</h2>
+          <p className="text-muted-foreground mb-4">
+            Mystery Box is an exciting gacha-style feature where you can purchase mystery boxes containing 
+            random digital collectibles, rewards, and exclusive items. Each box has different rarity tiers 
+            and drop rates, offering everything from common items to ultra-rare legendary rewards.
+          </p>
+          
+          <h3 className="text-xl font-semibold mb-3 text-foreground">How to Use</h3>
+          <ul className="list-disc list-inside space-y-2 text-muted-foreground mb-4">
+            <li><strong>Choose a Box:</strong> Select from 9 different mystery box tiers (50 - 2500 credits) based on your budget and desired rarity chances</li>
+            <li><strong>Purchase:</strong> Use your credits to buy the mystery box - higher priced boxes have better drop rates for rare items</li>
+            <li><strong>Open:</strong> Click "Open Box" on your purchased boxes to reveal your random reward</li>
+            <li><strong>Collect:</strong> View your active items and rewards in your collection</li>
+          </ul>
+          
+          <h3 className="text-xl font-semibold mb-3 text-foreground">Rarity Tiers</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
+            <div className="flex items-center gap-2"><Badge className="bg-gray-500">Common</Badge></div>
+            <div className="flex items-center gap-2"><Badge className="bg-blue-500">Rare</Badge></div>
+            <div className="flex items-center gap-2"><Badge className="bg-purple-500">Epic</Badge></div>
+            <div className="flex items-center gap-2"><Badge className="bg-yellow-500">Legendary</Badge></div>
+          </div>
+          
+          <p className="text-xs text-muted-foreground mt-4">
+            💡 Tip: Higher-tier boxes (Cosmic, Supreme, Celestial, Universe) guarantee epic or legendary items!
+          </p>
+        </Card>
 
         {/* Revealed Reward Modal */}
         {revealedReward && (
