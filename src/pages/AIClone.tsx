@@ -56,26 +56,26 @@ export default function AIClone() {
 
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8 mt-8">
-          <TabsList className="grid w-full grid-cols-5 max-w-4xl mx-auto">
-            <TabsTrigger value="create">
-              <Sparkles className="h-4 w-4 mr-2" />
-              Create Clone
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 h-auto max-w-4xl mx-auto p-2">
+            <TabsTrigger value="create" className="flex items-center justify-center gap-1 py-2 text-xs sm:text-sm">
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>Create</span>
             </TabsTrigger>
-            <TabsTrigger value="my-clones">
-              <Bot className="h-4 w-4 mr-2" />
-              My Clones
+            <TabsTrigger value="my-clones" className="flex items-center justify-center gap-1 py-2 text-xs sm:text-sm">
+              <Bot className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>My Clones</span>
             </TabsTrigger>
-            <TabsTrigger value="marketplace">
-              <Users className="h-4 w-4 mr-2" />
-              Marketplace
+            <TabsTrigger value="marketplace" className="flex items-center justify-center gap-1 py-2 text-xs sm:text-sm">
+              <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>Market</span>
             </TabsTrigger>
-            <TabsTrigger value="dating">
-              <MessageCircle className="h-4 w-4 mr-2" />
-              Clone Dating
+            <TabsTrigger value="dating" className="flex items-center justify-center gap-1 py-2 text-xs sm:text-sm">
+              <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>Dating</span>
             </TabsTrigger>
-            <TabsTrigger value="subscription">
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Subscription
+            <TabsTrigger value="subscription" className="flex items-center justify-center gap-1 py-2 text-xs sm:text-sm col-span-2 sm:col-span-1">
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>Subscription</span>
             </TabsTrigger>
           </TabsList>
 
