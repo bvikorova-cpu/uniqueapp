@@ -129,69 +129,60 @@ const SecretSanta = () => {
 
         {/* Main content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full flex bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-1 mb-6 overflow-x-auto shadow-lg">
+          <TabsList className="w-full grid grid-cols-5 sm:grid-cols-9 gap-1 bg-white/80 backdrop-blur-xl border border-amber-200 rounded-2xl p-2 mb-6 shadow-lg h-auto">
             <TabsTrigger
               value="send"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <Gift className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Send</span>
+              <Gift className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger
               value="inbox"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <Inbox className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Inbox</span>
+              <Inbox className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger
               value="chat"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <MessageCircle className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Chat</span>
+              <MessageCircle className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger
               value="mystery"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <Box className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Mystery</span>
+              <Box className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger
               value="limited"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <Star className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Limited</span>
+              <Star className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger
               value="badges"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <Award className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Badges</span>
+              <Award className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger
               value="stories"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <Sparkles className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Stories</span>
+              <Sparkles className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger
               value="leaderboard"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <Trophy className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Top</span>
+              <Trophy className="h-4 w-4" />
             </TabsTrigger>
             <TabsTrigger
               value="credits"
-              className="flex-1 min-w-fit data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs sm:text-sm font-medium"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-md text-gray-600 rounded-xl transition-all text-xs font-medium py-2"
             >
-              <CreditCard className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">Shop</span>
+              <CreditCard className="h-4 w-4" />
             </TabsTrigger>
           </TabsList>
 
