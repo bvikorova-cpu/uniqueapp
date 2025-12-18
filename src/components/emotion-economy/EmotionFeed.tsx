@@ -261,14 +261,14 @@ export function EmotionFeed() {
               Low credits! Buy more to continue AI emotion analysis.
             </div>
           )}
-          <div className="grid grid-cols-3 gap-2">
-            <Button variant="outline" size="sm" onClick={() => handleBuyCredits('10')}>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button variant="outline" size="sm" className="flex-1" onClick={() => handleBuyCredits('10')}>
               10 Credits - €2.99
             </Button>
-            <Button variant="default" size="sm" onClick={() => handleBuyCredits('50')}>
+            <Button variant="default" size="sm" className="flex-1" onClick={() => handleBuyCredits('50')}>
               50 Credits - €9.99
             </Button>
-            <Button variant="outline" size="sm" onClick={() => handleBuyCredits('100')}>
+            <Button variant="outline" size="sm" className="flex-1" onClick={() => handleBuyCredits('100')}>
               100 Credits - €14.99
             </Button>
           </div>
@@ -289,11 +289,7 @@ export function EmotionFeed() {
             onChange={(e) => setContent(e.target.value)}
             rows={4}
           />
-          <div className="flex items-center justify-between">
-            <div className="flex gap-2 text-sm text-muted-foreground">
-              <Sparkles className="h-4 w-4" />
-              <span>Powered by OpenAI GPT-4</span>
-            </div>
+          <div className="flex items-center justify-end">
             <Button 
               onClick={handlePost} 
               disabled={isPosting || (credits?.credits_remaining ?? 0) < 1}
