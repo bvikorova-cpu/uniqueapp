@@ -45,7 +45,7 @@ export function EmotionMarket() {
     });
   };
 
-  const handleBuyEmotion = async (emotionType: string, amount: number, pricePerUnit: number) => {
+  const handleBuyEmotion = async (emotionType: string, amount: number, pricePerUnit: number, listingId?: string) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -57,71 +57,27 @@ export function EmotionMarket() {
         return;
       }
 
-      const totalPrice = amount * pricePerUnit;
-
-      // Create transaction
-      const { error: transactionError } = await supabase
-        .from('emotion_transactions')
-        .insert({
-          buyer_id: user.id,
-          emotion_type: emotionType,
-          amount: amount,
-          price: totalPrice,
-          transaction_type: 'buy',
-          status: 'completed'
-        });
-
-      if (transactionError) throw transactionError;
-
-      // Get current wallet or create one
-      let { data: currentWallet, error: walletFetchError } = await supabase
-        .from('emotion_wallets')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      // If wallet doesn't exist, create it
-      if (!currentWallet && !walletFetchError) {
-        const { data: newWallet, error: walletCreateError } = await supabase
-          .from('emotion_wallets')
-          .insert({ user_id: user.id })
-          .select()
-          .single();
-        
-        if (walletCreateError) throw walletCreateError;
-        currentWallet = newWallet;
-      }
-
-      if (walletFetchError) throw walletFetchError;
-
-      if (currentWallet) {
-        const balanceKey = `${emotionType}_balance` as keyof typeof currentWallet;
-        const currentBalance = (currentWallet[balanceKey] as number) || 0;
-        const newBalance = currentBalance + amount;
-
-        // Update wallet with new balance
-        const { error: walletError } = await supabase
-          .from('emotion_wallets')
-          .update({
-            [balanceKey]: newBalance,
-            total_traded: (currentWallet.total_traded || 0) + 1
-          })
-          .eq('user_id', user.id);
-
-        if (walletError) throw walletError;
-      }
-
       toast({
-        title: "Purchase Successful! 🎉",
-        description: `You bought ${amount} ${emotionType} for €${totalPrice.toFixed(2)}`
+        title: "Redirecting to payment...",
+        description: "Please wait while we prepare your checkout"
       });
 
-      fetchListings();
+      const { data, error } = await supabase.functions.invoke('create-emotion-market-checkout', {
+        body: { emotionType, amount, pricePerUnit, listingId }
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      } else {
+        throw new Error('No checkout URL returned');
+      }
     } catch (error) {
       console.error('Error buying emotion:', error);
       toast({
         title: "Error",
-        description: "Failed to complete purchase",
+        description: "Failed to initiate purchase",
         variant: "destructive"
       });
     }

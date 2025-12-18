@@ -1121,3 +1121,6 @@ verify_jwt = true
 
 [functions.verify-emotion-credits-payment]
 verify_jwt = true
+
+[functions.create-emotion-market-checkout]
+verify_jwt = true
