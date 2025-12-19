@@ -47,9 +47,11 @@ serve(async (req) => {
       });
     }
 
-    // Generate AI design using Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    // Generate AI design using OpenAI
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+
+    const systemPrompt = "You are an expert interior designer specializing in various design styles. Provide detailed, actionable design recommendations.";
 
     const aiPrompt = `Create a beautiful ${style} style room design suggestion. ${roomDescription ? `Room details: ${roomDescription}` : ''}
     
@@ -62,39 +64,32 @@ serve(async (req) => {
     
     Format the response as a structured design plan.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
-          { 
-            role: "system", 
-            content: "You are an expert interior designer specializing in various design styles. Provide detailed, actionable design recommendations."
-          },
+          { role: "system", content: systemPrompt },
           { role: "user", content: aiPrompt }
         ],
       }),
     });
 
-    if (response.status === 429) {
-      return new Response(JSON.stringify({ error: "AI service rate limited. Please try again later." }), {
-        status: 429,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    if (response.status === 402) {
-      return new Response(JSON.stringify({ error: "AI credits depleted. Please add credits." }), {
-        status: 402,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("OpenAI API error:", response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ error: "AI service rate limited. Please try again later." }), {
+          status: 429,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      
       throw new Error("AI gateway error");
     }
 
@@ -106,7 +101,7 @@ serve(async (req) => {
       .from("ai_room_designs")
       .insert({
         user_id: user.id,
-        room_image_url: "placeholder", // Would be actual uploaded image URL
+        room_image_url: "placeholder",
         style: style,
         ai_design_url: designSuggestion,
         is_saved: true,

@@ -47,20 +47,20 @@ serve(async (req) => {
       .map((msg: any, idx: number) => `Message ${idx + 1}: ${msg.text}`)
       .join("\n\n");
 
-    // Call Lovable AI for analysis
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY not configured");
+    // Call OpenAI for analysis
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY not configured");
     }
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -86,18 +86,16 @@ Be thorough, professional, and provide actionable psychological insights.`
             content: `Create a deep psychological profile based on these messages${context ? ` (Context: ${context})` : ''}:\n\n${conversationText}`
           }
         ],
+        response_format: { type: "json_object" }
       }),
     });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error("AI API error:", aiResponse.status, errorText);
+      console.error("OpenAI API error:", aiResponse.status, errorText);
       
       if (aiResponse.status === 429) {
         throw new Error("Rate limit exceeded. Please try again later.");
-      }
-      if (aiResponse.status === 402) {
-        throw new Error("AI service unavailable. Please contact support.");
       }
       throw new Error("AI analysis failed");
     }
@@ -108,12 +106,7 @@ Be thorough, professional, and provide actionable psychological insights.`
     // Parse JSON from AI response
     let results;
     try {
-      const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        results = JSON.parse(jsonMatch[0]);
-      } else {
-        results = { raw_analysis: analysisText };
-      }
+      results = JSON.parse(analysisText);
     } catch {
       results = { raw_analysis: analysisText };
     }

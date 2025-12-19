@@ -17,9 +17,9 @@ serve(async (req) => {
       throw new Error("Missing required fields");
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
     const systemPrompt = `You are a friendly art teacher for kids aged 6-12. 
@@ -48,14 +48,15 @@ Create 5-8 steps depending on the difficulty level.`;
 
 Please create a step-by-step tutorial that's appropriate for the ${difficulty} level!`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Generate tutorial text
+    const textResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
@@ -64,44 +65,41 @@ Please create a step-by-step tutorial that's appropriate for the ${difficulty} l
       }),
     });
 
-    if (!response.ok) {
-      if (response.status === 429) {
+    if (!textResponse.ok) {
+      const errorText = await textResponse.text();
+      console.error("OpenAI text API error:", textResponse.status, errorText);
+      
+      if (textResponse.status === 429) {
         throw new Error("Too many requests. Please try again in a moment.");
       }
-      if (response.status === 402) {
-        throw new Error("AI credits depleted. Please add more credits to continue.");
-      }
-      const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
       throw new Error("Failed to get AI response");
     }
 
-    const data = await response.json();
-    const content = data.choices[0].message.content;
+    const textData = await textResponse.json();
+    const content = textData.choices[0].message.content;
     const result = JSON.parse(content);
 
-    // Generate images for each step using AI
+    // Generate images for each step using OpenAI
     console.log("Generating images for", result.steps.length, "steps...");
     const stepsWithImages = await Promise.all(
       result.steps.map(async (step: any, index: number) => {
         try {
           const imagePrompt = `Simple, kid-friendly line drawing showing step ${index + 1} of drawing a ${topic}. ${step.instruction}. Clean, clear lines on white background, suitable for children aged 6-12 to copy. Style: educational illustration, simple cartoon style.`;
           
-          const imageResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+          const imageResponse = await fetch("https://api.openai.com/v1/images/generations", {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${LOVABLE_API_KEY}`,
+              "Authorization": `Bearer ${OPENAI_API_KEY}`,
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              model: "google/gemini-2.5-flash-image-preview",
-              messages: [
-                {
-                  role: "user",
-                  content: imagePrompt
-                }
-              ],
-              modalities: ["image", "text"]
+              model: "gpt-image-1",
+              prompt: imagePrompt,
+              n: 1,
+              size: "1024x1024",
+              quality: "medium",
+              output_format: "webp",
+              output_compression: 85,
             }),
           });
 
@@ -114,11 +112,18 @@ Please create a step-by-step tutorial that's appropriate for the ${difficulty} l
           }
 
           const imageData = await imageResponse.json();
-          const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          const base64Image = imageData.data?.[0]?.b64_json;
+
+          if (!base64Image) {
+            return {
+              ...step,
+              image: `https://placehold.co/400x300/5b21b6/white?text=Step+${index + 1}`
+            };
+          }
 
           return {
             ...step,
-            image: imageUrl || `https://placehold.co/400x300/5b21b6/white?text=Step+${index + 1}`
+            image: `data:image/webp;base64,${base64Image}`
           };
         } catch (error) {
           console.error(`Error generating image for step ${index + 1}:`, error);
