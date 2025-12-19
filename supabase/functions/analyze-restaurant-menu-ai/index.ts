@@ -69,8 +69,12 @@ serve(async (req) => {
       menuImageUrl = publicUrl;
     }
 
-    // Call Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    // Call OpenAI
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openaiApiKey) {
+      throw new Error('OPENAI_API_KEY not configured');
+    }
+
     const prompt = `Analyze the menu of restaurant "${restaurant_name}" and return JSON:
 {
   "menu_items": [
@@ -107,15 +111,16 @@ serve(async (req) => {
         }]
       : [{ role: 'user', content: prompt }];
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages,
+        max_tokens: 1500,
       }),
     });
 

@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
@@ -12,6 +13,11 @@ serve(async (req) => {
   }
 
   try {
+    const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openaiApiKey) {
+      throw new Error("OPENAI_API_KEY is not configured");
+    }
+
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
@@ -26,30 +32,68 @@ serve(async (req) => {
 
     const { imageUrl } = await req.json();
 
-    // Simulate AI analysis (in production, use actual AI service)
-    const energyLevel = Math.floor(Math.random() * 30) + 70; // 70-100
-    const crystalTypes = [
-      "Amethyst", "Rose Quartz", "Clear Quartz", "Citrine", 
-      "Black Tourmaline", "Selenite", "Labradorite"
-    ];
-    
-    const recommendedCrystals = [
-      crystalTypes[Math.floor(Math.random() * crystalTypes.length)],
-      crystalTypes[Math.floor(Math.random() * crystalTypes.length)]
-    ];
+    console.log("[CRYSTAL-ENERGY] Analyzing crystal image with OpenAI");
 
-    const energyAnalysis = `Your crystal exhibits a strong energy signature with a reading of ${energyLevel}%. 
-    
-The energy patterns suggest:
-• High vibrational frequency indicating purity
-• Strong alignment with crown and heart chakras
-• Excellent for meditation and spiritual work
-• Natural amplification properties detected
-• Protective energy shield present
+    // Use OpenAI to analyze the crystal
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${openaiApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are an expert crystal healer and energy reader. Analyze crystal images and provide detailed energy readings.
+            
+Return ONLY a valid JSON object with this structure:
+{
+  "energyLevel": number (70-100),
+  "energyAnalysis": "detailed multi-paragraph analysis of the crystal's energy properties",
+  "recommendedCrystals": ["crystal1", "crystal2"]
+}`
+          },
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "Analyze this crystal's energy and provide a detailed reading."
+              },
+              {
+                type: "image_url",
+                image_url: { url: imageUrl }
+              }
+            ]
+          }
+        ],
+        max_tokens: 1000,
+      }),
+    });
 
-This crystal appears to be genuine and possesses excellent metaphysical properties. The energy resonance suggests it has been naturally formed and contains minimal artificial enhancements.
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("[CRYSTAL-ENERGY] OpenAI error:", response.status, errorText);
+      throw new Error("AI analysis failed");
+    }
 
-Recommended complementary crystals: ${recommendedCrystals.join(", ")}`;
+    const aiData = await response.json();
+    const content = aiData.choices[0].message.content;
+
+    let analysisResult;
+    try {
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      analysisResult = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+    } catch (e) {
+      console.error("[CRYSTAL-ENERGY] Parse error:", e);
+      analysisResult = null;
+    }
+
+    const energyLevel = analysisResult?.energyLevel || Math.floor(Math.random() * 30) + 70;
+    const energyAnalysis = analysisResult?.energyAnalysis || content;
+    const recommendedCrystals = analysisResult?.recommendedCrystals || ["Amethyst", "Rose Quartz"];
 
     // Store the reading
     const { data: reading, error } = await supabaseClient
