@@ -217,7 +217,6 @@ import PropertySubmission from "./pages/PropertySubmission";
 import MyProperties from "./pages/MyProperties";
 import HomeDecorMarketplace from "./pages/HomeDecorMarketplace";
 import HomeDecorSubscription from "./pages/HomeDecorSubscription";
-import BrandCollaboration from "./pages/BrandCollaboration";
 import BrandDashboard from "./pages/BrandDashboard";
 import StockContentLibrary from "./pages/StockContentLibrary";
 import TutorialPlatform from "./pages/TutorialPlatform";
@@ -546,7 +545,6 @@ const App = () => {
               <Route path="/course/:courseId" element={<CourseDetailPage />} />
           <Route path="/course/:courseId/learn" element={<CourseLearnPage />} />
           <Route path="/lottery-ai" element={<LotteryAI />} />
-          <Route path="/brand-collaboration" element={<BrandCollaboration />} />
           <Route path="/brand-dashboard" element={<ProtectedRoute><BrandDashboard /></ProtectedRoute>} />
           <Route path="/stock-content-library" element={<StockContentLibrary />} />
           <Route path="/tutorial-platform" element={<TutorialPlatform />} />

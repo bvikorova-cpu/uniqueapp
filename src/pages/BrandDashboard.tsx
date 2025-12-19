@@ -273,9 +273,6 @@ export default function BrandDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button asChild variant="outline">
-            <Link to="/brand-collaboration">Späť na kampane</Link>
-          </Button>
           <CreateCampaignDialog onCreated={() => queryClient.invalidateQueries({ queryKey: ["brand-campaigns"] })} />
         </div>
       </header>
@@ -353,11 +350,6 @@ export default function BrandDashboard() {
                           </div>
                         </div>
 
-                        <div className="pt-2">
-                          <Button asChild variant="outline" size="sm">
-                            <Link to={`/brand-collaboration#campaigns`}>Zobraziť v zozname kampaní</Link>
-                          </Button>
-                        </div>
                       </CardContent>
                     </Card>
                   ))}
