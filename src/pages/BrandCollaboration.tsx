@@ -6,11 +6,12 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Handshake, DollarSign, Star, TrendingUp, Plus, RefreshCw } from "lucide-react";
+import { Handshake, DollarSign, Star, TrendingUp, Plus, RefreshCw, LogIn, UserPlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
-
+import { Link } from "react-router-dom";
+import { User } from "@supabase/supabase-js";
 interface Campaign {
   id: string;
   brand_name: string;
@@ -31,7 +32,22 @@ const BrandCollaboration = () => {
   const [applicationMessage, setApplicationMessage] = useState("");
   const [portfolioLink, setPortfolioLink] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const fetchCampaigns = async () => {
     setLoading(true);
@@ -149,6 +165,36 @@ const BrandCollaboration = () => {
               </p>
             </div>
           </div>
+
+          {/* Login/Register Section */}
+          {!user ? (
+            <Card className="max-w-md mx-auto p-6 mt-8 bg-primary/5 border-primary/20">
+              <h3 className="text-lg font-semibold mb-3 text-center">Get Started</h3>
+              <p className="text-sm text-muted-foreground text-center mb-4">
+                Log in or create an account to apply for brand campaigns
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button asChild className="flex-1">
+                  <Link to="/auth">
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Login
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="flex-1">
+                  <Link to="/auth?tab=signup">
+                    <UserPlus className="h-4 w-4 mr-2" />
+                    Register
+                  </Link>
+                </Button>
+              </div>
+            </Card>
+          ) : (
+            <Card className="max-w-md mx-auto p-4 mt-8 bg-green-500/10 border-green-500/20">
+              <p className="text-sm text-center text-green-700 dark:text-green-400">
+                ✓ Logged in as {user.email} - You can apply to campaigns!
+              </p>
+            </Card>
+          )}
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-12">
