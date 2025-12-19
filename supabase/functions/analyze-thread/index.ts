@@ -51,20 +51,20 @@ serve(async (req) => {
       .map((msg: any, idx: number) => `Message ${idx + 1}: ${msg.text}`)
       .join("\n\n");
 
-    // Call Lovable AI for analysis
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY not configured");
+    // Call OpenAI for analysis
+    const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openaiApiKey) {
+      throw new Error("OPENAI_API_KEY not configured");
     }
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${openaiApiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -87,6 +87,7 @@ Be thorough and provide actionable insights.`
             content: `Analyze this conversation thread for truthfulness and deception:\n\n${conversationText}`
           }
         ],
+        max_tokens: 2000,
       }),
     });
 

@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
@@ -12,7 +13,11 @@ serve(async (req) => {
   }
 
   try {
-    // Use ANON KEY - RLS policies will enforce access control
+    const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
+    if (!openaiApiKey) {
+      throw new Error("OPENAI_API_KEY is not configured");
+    }
+
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
@@ -28,29 +33,60 @@ serve(async (req) => {
 
     const { journalContent, mood } = await req.json();
 
-    // Mock journal analysis - English responses
-    const moodEmotions: Record<string, string[]> = {
-      happy: ["joy", "contentment", "optimism"],
-      sad: ["self-awareness", "reflection", "growth"],
-      anxious: ["awareness", "processing", "resilience"],
-      calm: ["peace", "balance", "inner harmony"],
-      energetic: ["energy", "motivation", "enthusiasm"]
-    };
+    console.log("[ANALYZE-JOURNAL] Analyzing journal with OpenAI");
 
-    const insightsData = {
-      insights: `Your journal entry shows a ${mood || "thoughtful"} emotional state. Journaling is a great way to process your thoughts and emotions. Keep up this healthy habit.`,
-      emotions: moodEmotions[mood as string] || ["self-discovery", "reflection", "growth"],
-      suggestions: [
-        "Continue journaling regularly",
-        "Notice the positive moments in each day",
-        "Be kind and patient with yourself",
-        "Make time for activities that fulfill you"
-      ],
-      affirmations: [
-        "You are on the right path. Your thoughts and feelings matter.",
-        "You deserve love and understanding."
-      ]
-    };
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${openaiApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: `You are an empathetic journal therapist. Analyze journal entries and provide supportive insights.
+            
+Return ONLY a valid JSON object:
+{
+  "insights": "detailed analysis of the emotional content and themes",
+  "emotions": ["emotion1", "emotion2", "emotion3"],
+  "suggestions": ["suggestion1", "suggestion2", "suggestion3", "suggestion4"],
+  "affirmations": ["affirmation1", "affirmation2"]
+}`
+          },
+          {
+            role: "user",
+            content: `Analyze this journal entry. Current mood: ${mood || "unspecified"}\n\nJournal content:\n${journalContent}`
+          }
+        ],
+        max_tokens: 800,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("[ANALYZE-JOURNAL] OpenAI error:", response.status, errorText);
+      throw new Error("AI analysis failed");
+    }
+
+    const aiData = await response.json();
+    const content = aiData.choices[0].message.content;
+
+    let insightsData;
+    try {
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      insightsData = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+    } catch (e) {
+      console.error("[ANALYZE-JOURNAL] Parse error:", e);
+      insightsData = {
+        insights: content,
+        emotions: ["reflection", "growth"],
+        suggestions: ["Continue journaling regularly"],
+        affirmations: ["You are on the right path."]
+      };
+    }
 
     return new Response(
       JSON.stringify(insightsData),

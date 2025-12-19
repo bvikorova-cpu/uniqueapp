@@ -57,8 +57,8 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openaiApiKey) throw new Error('OPENAI_API_KEY not configured');
 
     // Generate past life reading
     const numberOfLives = readingType === 'basic' ? 1 : 3;
@@ -85,18 +85,19 @@ Create ${numberOfLives} past life ${numberOfLives === 1 ? 'story' : 'stories'} i
   ${readingType === 'soulmate' ? ', "soulmateConnection": "Detailed analysis of past life connections with partner, including which lives you were together and your relationship dynamics"' : ''}
 }`;
 
-    const textResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const textResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${openaiApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
+        max_tokens: 3000,
       }),
     });
 
@@ -118,31 +119,39 @@ Create ${numberOfLives} past life ${numberOfLives === 1 ? 'story' : 'stories'} i
     
     const parsedReading = JSON.parse(reading);
 
-    // Generate illustrations for full and soulmate readings
+    // Generate illustrations for full and soulmate readings using OpenAI
     if (readingType === 'full' || readingType === 'soulmate') {
       for (let i = 0; i < parsedReading.pastLives.length; i++) {
         const life = parsedReading.pastLives[i];
         const imagePrompt = `Create a mystical, artistic illustration of ${life.name}, a ${life.profession} in ${life.period} at ${life.location}. Style: ethereal, dreamlike, soft colors, spiritual atmosphere, ancient and mystical feel. Include period-appropriate clothing and environment. High quality, detailed artwork.`;
 
-        const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
-            messages: [{ role: 'user', content: imagePrompt }],
-            modalities: ['image', 'text']
-          }),
-        });
+        try {
+          const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${openaiApiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'gpt-image-1',
+              prompt: imagePrompt,
+              n: 1,
+              size: '1024x1024',
+              quality: 'high',
+              output_format: 'webp',
+              output_compression: 85,
+            }),
+          });
 
-        if (imageResponse.ok) {
-          const imageData = await imageResponse.json();
-          const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-          if (imageUrl) {
-            parsedReading.pastLives[i].illustration = imageUrl;
+          if (imageResponse.ok) {
+            const imageData = await imageResponse.json();
+            const base64Image = imageData.data?.[0]?.b64_json;
+            if (base64Image) {
+              parsedReading.pastLives[i].illustration = `data:image/webp;base64,${base64Image}`;
+            }
           }
+        } catch (imgError) {
+          console.error('Image generation error:', imgError);
         }
       }
     }
