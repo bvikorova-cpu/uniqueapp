@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Library, Upload, Download, DollarSign, Euro } from "lucide-react";
+import { Library, Upload, Download, DollarSign, Euro, ShoppingBag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { UploadContentDialog } from "@/components/stock-library/UploadContentDialog";
 import { ContentGrid } from "@/components/stock-library/ContentGrid";
+import { MyPurchases } from "@/components/stock-library/MyPurchases";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const StockContentLibrary = () => {
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [allContent, setAllContent] = useState<any[]>([]);
@@ -18,6 +21,23 @@ const StockContentLibrary = () => {
   const [myEarnings, setMyEarnings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+
+  // Check for purchase success
+  useEffect(() => {
+    const purchaseStatus = searchParams.get("purchase");
+    if (purchaseStatus === "success") {
+      toast({
+        title: "Purchase Successful!",
+        description: "Your content is now available in 'My Purchases' tab",
+      });
+    } else if (purchaseStatus === "cancelled") {
+      toast({
+        title: "Purchase Cancelled",
+        description: "Your payment was cancelled",
+        variant: "destructive"
+      });
+    }
+  }, [searchParams, toast]);
 
   useEffect(() => {
     loadData();
@@ -121,6 +141,10 @@ const StockContentLibrary = () => {
             <TabsTrigger value="browse">Browse Content</TabsTrigger>
             {userId && (
               <>
+                <TabsTrigger value="purchases">
+                  <ShoppingBag className="w-4 h-4 mr-1" />
+                  My Purchases
+                </TabsTrigger>
                 <TabsTrigger value="mycontent">My Content ({myContent.length})</TabsTrigger>
                 <TabsTrigger value="earnings">My Earnings</TabsTrigger>
               </>
@@ -137,6 +161,10 @@ const StockContentLibrary = () => {
 
           {userId && (
             <>
+              <TabsContent value="purchases">
+                <MyPurchases />
+              </TabsContent>
+
               <TabsContent value="mycontent">
                 {loading ? (
                   <div className="text-center py-12">Loading your content...</div>
