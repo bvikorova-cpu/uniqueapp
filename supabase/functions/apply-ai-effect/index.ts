@@ -6,6 +6,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -34,7 +45,6 @@ serve(async (req) => {
       );
     }
 
-    // Check AI credits
     const { data: credits } = await supabaseClient
       .from('ai_credits')
       .select('credits_remaining')
@@ -48,12 +58,11 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
-    // Define effect prompts with detailed, specific instructions for better AI results
     const effectPrompts: Record<string, string> = {
       'kungfu-club': 'Transform into a dynamic kung-fu action pose with martial arts stance, energy effects, and action movie fighting atmosphere',
       'holy-wings': 'Add beautiful large angel wings sprouting from the person\'s back with divine glow, feathers, and celestial holy atmosphere',
@@ -112,134 +121,113 @@ serve(async (req) => {
       'confetti-blast': 'Create explosion of colorful confetti celebrating festive moment',
       'laser-eyes': 'Add laser beams shooting from eyes with intense energy effects',
       'fire-breath': 'Show fire breathing from mouth with dragon-like flame effects',
-      'water-splash': 'Create dynamic water splash with the person in action, liquid droplets flying around them, aquatic motion, and refreshing splash effect',
-      'thunder-storm': 'Add dramatic thunder and lightning storm with the person standing dramatically in the scene, electric bolts illuminating them, stormy atmosphere',
-      'cherry-blossom': 'Show the person surrounded by delicate pink cherry blossom petals floating all around them in gentle spring breeze, romantic sakura atmosphere',
-      'autumn-leaves': 'Show the person surrounded by falling autumn leaves in vibrant red, orange, yellow colors swirling around them, creating cozy seasonal atmosphere',
-      'tropical-paradise': 'Transform into tropical paradise scene with the person relaxing on a beautiful beach, surrounded by palm trees, crystal clear turquoise water, white sand, and exotic tropical flowers',
-      'northern-lights': 'Show the person standing beneath spectacular aurora borealis northern lights, with green and purple waves dancing across the night sky above them',
-      'shooting-star': 'Show the person watching a magical shooting star streaking across the sky, with them in silhouette making a wish under the starry night',
-      'crown-jewels': 'Add royal crown with precious jewels and diamonds on the person\'s head, transforming them into regal royalty with majestic appearance',
-      'earth-zoom-out': 'Create a dramatic zoom-out perspective effect showing the person from increasingly high altitude, as if viewed from space, with Earth\'s curvature visible in the background',
-      'earth-zoom-in': 'Create a dramatic zoom-in perspective effect approaching the person from space, with Earth\'s atmosphere and clouds visible in the background',
-      'minecraft': 'Transform the entire image into Minecraft aesthetic - convert the person into blocky, pixelated cubic forms with distinct Minecraft game textures and block-based appearance',
-      'box-me': 'Transform the person into a simplified box-like geometric cartoon character with clean edges, flat colors, and cubic proportions',
-      'paper-fall': 'Add colorful paper confetti falling all around the person, with varied shapes and colors of paper pieces floating and falling through the air creating a celebratory atmosphere',
-      'style-me': 'Apply a fashionable style transformation with enhanced vibrant colors, modern trendy clothing, stylish accessories, and overall contemporary aesthetic improvements',
-      'ghibli': 'Transform into authentic Studio Ghibli anime art style with characteristic soft watercolor tones, gentle shading, whimsical atmosphere, and dreamy hand-painted quality',
-      'ai-couple-hugging': 'Create a warm, romantic scene showing two people in a tender embrace with soft ambient lighting, intimate pose, and affectionate atmosphere',
-      'nap-me': 'Transform into a peaceful sleeping or napping scene with the person in a relaxed resting position, soft dreamy lighting, and calm serene atmosphere',
-      'spin-360': 'Create a dynamic 360-degree spinning rotation effect showing multiple perspectives of the person as if rotating in a circular motion',
-      'sexy-me': 'Apply an attractive, confident transformation with enhanced facial features, glamorous styling, alluring expression, and sophisticated appearance',
-      'gender-swap': 'Transform the person to opposite gender appearance while maintaining recognizable facial features - swap masculine features to feminine or vice versa with appropriate hairstyle and features',
-      'smile': 'Transform the facial expression to show a bright, genuine, warm smile with happy eyes and joyful demeanor',
-      'melt': 'Create a surreal melting effect where the person appears to be liquefying or melting like wax, with distorted flowing forms',
-      'bloom-magic': 'Add magical blooming flowers appearing and growing around the person, with petals floating in the air and a fairy-tale enchanted garden atmosphere',
-      'paperman': 'Transform into a paper-cut art style character with flat layered appearance, clean cut edges, and artistic paper craft aesthetic',
-      'pet-lovers': 'Add adorable pets (dogs, cats, or other cute animals) interacting lovingly with the person, showing affection and playful interaction',
-      'send-roses': 'Create a romantic scene with beautiful red roses being sent, held, or floating around the person with rose petals in the air',
-      'finger-heart': 'Add a cute Korean-style finger heart gesture with the person\'s hands forming a small heart shape, expressing affection',
-      'cartoon-doll': 'Transform into an adorable cartoon doll character with big expressive eyes, cute proportions, and toy-like charming appearance',
-      'beast-companion': 'Add a magical fantasy beast or mythical creature companion standing protectively next to the person with an epic heroic atmosphere',
-      'bloom-doorobear': 'Add a cute Doraemon-style cartoon bear character with blooming flowers and magical effects in a whimsical scene',
-      'french-kiss': 'Create a romantic intimate kissing scene with two people in a passionate French kiss embrace with romantic atmosphere',
-      'whos-arrested': 'Create a playful "getting arrested" scene with the person in handcuffs or police situation in a humorous, lighthearted way',
-      'warmth-of-jesus': 'Create a spiritual, divine scene with holy warm light emanating from above, angelic atmosphere, and peaceful sacred feeling',
-      'wild-laugh': 'Transform the expression into an exaggerated, wild, uncontrollable laughing face with intense joy and humor',
-      'surprised': 'Transform the expression into a highly surprised, shocked face with wide eyes, open mouth, and dramatic astonished reaction',
-      'ai-kiss': 'Create a romantic AI-generated kissing scene between two people with soft lighting and affectionate intimate atmosphere',
-      'watercolor': 'Transform into beautiful watercolor painting style with soft blended colors, artistic brush strokes, and dreamy aquarelle aesthetic',
-      'pop-art': 'Transform into bold pop art style with bright vibrant colors, Ben-Day dots, thick outlines, and Andy Warhol-inspired aesthetic',
-      'angel-wings': 'Add magnificent white feathered angel wings extending from the back with divine glow and heavenly appearance',
-      'demon-wings': 'Add dramatic dark bat-like demon wings extending from the back with gothic shadows and infernal atmosphere',
-      'knight-armor': 'Transform into a medieval knight wearing full plate armor, helmet, with sword and shield in heroic noble stance',
-      'samurai-armor': 'Transform into a samurai warrior wearing traditional Japanese armor with kabuto helmet and katana sword',
-      'viking-warrior': 'Transform into a Viking warrior with horned helmet, fur cloak, battle axe, and Norse warrior aesthetic',
-      'pharaoh-gold': 'Transform into an ancient Egyptian pharaoh with golden headdress, ornate jewelry, and royal regalia',
-      'greek-statue': 'Transform into a classical Greek marble statue with white stone texture, perfect proportions, and ancient sculpture aesthetic',
-      'bronze-statue': 'Transform into a bronze statue with metallic patina, oxidized green-brown surface, and classical monument appearance',
-      'ice-sculpture': 'Transform into a translucent ice sculpture with frozen crystalline texture, light refraction, and winter art appearance',
-      'stained-glass': 'Transform into beautiful stained glass window art with colorful glass pieces, lead lines, and cathedral window aesthetic',
-      'mosaic-tiles': 'Transform into mosaic tile art with small colored tile pieces forming the image in Byzantine or Roman style',
-      'origami-fold': 'Transform into origami paper folding art with visible creases, geometric folds, and Japanese paper craft aesthetic',
-      'paper-cutout': 'Transform into paper cutout silhouette art with layered paper shadows and artistic cut paper design',
-      'glitter-bomb': 'Surround with explosion of colorful glitter particles, sparkles, and shimmering confetti in celebratory burst',
-      'cotton-candy': 'Surround with fluffy pink and blue cotton candy clouds creating sweet carnival fairground atmosphere',
-      'masquerade': 'Add elegant Venetian masquerade mask with ornate decorations, feathers, and mysterious ball atmosphere',
-      'tiki-mask': 'Add tribal tiki mask with carved wood texture, bold geometric patterns, and Polynesian island aesthetic',
-      'sugar-skull': 'Transform into Mexican Día de los Muertos sugar skull with colorful floral patterns and traditional calavera design',
-      'gothic-castle': 'Place person in front of dark Gothic castle with spires, gargoyles, misty atmosphere, and medieval fortress',
-      'medusa-gaze': 'Transform hair into writhing snakes like Medusa with serpent hair and mythological Greek monster appearance',
-      'kawaii-anime': 'Transform into adorable kawaii anime style with big sparkling eyes, cute chibi proportions, pastel colors, and Japanese manga aesthetic',
-      'underwater-dream': 'Create underwater scene with the person swimming gracefully, surrounded by bubbles, colorful coral reef, tropical fish, and dreamy oceanic atmosphere',
-      'golden-touch': 'Transform the person into solid gold statue with shiny metallic golden surface like King Midas touch effect',
-      'time-traveler': 'Show the person as time traveler with clock gears swirling around them, temporal distortion effects, and sci-fi time machine aesthetic',
-      'neon-city': 'Place the person in futuristic neon city at night, surrounded by glowing neon signs, cyberpunk urban landscape, and vibrant cityscape lights',
-      'crystal-wings': 'Add transparent crystalline wings with faceted gem surfaces and magical prismatic light effects',
-      'shadow-clone': 'Create multiple shadow duplicates of the person in different positions creating ninja clone jutsu effect',
-      'flower-power': 'Surround with abundant colorful flowers blooming everywhere creating hippie flower child aesthetic',
-      'storm-warrior': 'Transform into storm warrior with lightning powers, dramatic clouds, and elemental weather control',
-      'desert-mirage': 'Create desert mirage effect with heat waves, sand dunes, and shimmering optical illusion',
-      'ocean-wave': 'Show the person interacting with large ocean wave, with dramatic water spray, powerful surf crashing around them, beach atmosphere',
-      'cosmic-energy': 'Show the person with cosmic energy aura emanating from their body, surrounded by stars, nebula clouds, and universal power',
-      'fire-dragon': 'Add fire dragon companion with blazing scales, wings, and majestic mythical beast',
-      'ice-dragon': 'Add ice dragon companion with frozen scales, frost breath, and Arctic mythical creature',
-      'lightning-strike': 'Add dramatic lightning bolt striking with electric energy and thunder storm power',
-      'mystic-portal': 'Create swirling magical portal with mystical energy and dimensional gateway effects',
-      'ancient-warrior': 'Transform into ancient warrior with battle scars, tribal armor, and historical fighter appearance',
-      'future-soldier': 'Transform into futuristic soldier with advanced armor, high-tech weapons, and sci-fi military gear',
-      'fairy-tale': 'Create enchanted fairy tale scene with magical forest, fantasy creatures, and storybook atmosphere',
-      'wild-west': 'Transform into Wild West cowboy with hat, boots, desert backdrop, and frontier outlaw aesthetic',
-      'space-explorer': 'Transform into space explorer with astronaut suit, alien planets, and cosmic adventure',
-      'deep-sea': 'Show the person in deep sea underwater scene, surrounded by glowing bioluminescent creatures, mysterious ocean depths, and fascinating marine life',
-      'mountain-peak': 'Show the person standing triumphantly on mountain peak summit with breathtaking alpine landscape, clouds below, and majestic vista',
-      'forest-spirit': 'Transform the person into mystical forest spirit with nature elements growing around them, woodland creatures, and druid appearance',
-      'city-lights': 'Show the person surrounded by glowing city lights at night with urban skyline behind them and metropolitan illumination',
-      'sunset-glow': 'Show the person bathed in warm sunset glow with golden hour lighting creating romantic silhouette against beautiful evening sky',
-      'moonlight': 'Show the person illuminated by soft moonlight with silvery glow highlighting their features in peaceful nighttime atmosphere',
-      'starlight': 'Show the person under twinkling starlight with night sky full of stars creating magical celestial sparkle around them',
-      'rainbow-bridge': 'Show the person standing on or near colorful rainbow bridge arcing across the sky with vibrant spectrum and magical pathway',
-      'cloud-nine': 'Show the person floating peacefully on fluffy white clouds in dreamy sky with heavenly atmosphere',
-      'vintage-photo': 'Transform into vintage photograph with sepia tones, aged paper texture, and nostalgic old photo aesthetic'
+      'water-splash': 'Create dynamic water splash with the person in action, liquid droplets flying around them',
+      'thunder-storm': 'Add dramatic thunder and lightning storm with electric bolts illuminating them',
+      'cherry-blossom': 'Show the person surrounded by delicate pink cherry blossom petals floating in gentle spring breeze',
+      'autumn-leaves': 'Show the person surrounded by falling autumn leaves in vibrant red, orange, yellow colors',
+      'tropical-paradise': 'Transform into tropical paradise scene with palm trees, crystal clear turquoise water',
+      'northern-lights': 'Show the person beneath spectacular aurora borealis northern lights',
+      'shooting-star': 'Show the person watching a magical shooting star streaking across the sky',
+      'crown-jewels': 'Add royal crown with precious jewels and diamonds transforming them into royalty',
+      'earth-zoom-out': 'Create dramatic zoom-out perspective showing the person from space altitude',
+      'earth-zoom-in': 'Create dramatic zoom-in perspective approaching the person from space',
+      'minecraft': 'Transform into Minecraft aesthetic with blocky, pixelated cubic forms',
+      'box-me': 'Transform the person into a simplified box-like geometric cartoon character',
+      'paper-fall': 'Add colorful paper confetti falling all around creating celebratory atmosphere',
+      'style-me': 'Apply fashionable style transformation with enhanced vibrant colors and trendy clothing',
+      'ghibli': 'Transform into authentic Studio Ghibli anime art style with characteristic soft watercolor tones',
+      'ai-couple-hugging': 'Create a warm, romantic scene showing two people in a tender embrace',
+      'nap-me': 'Transform into a peaceful sleeping or napping scene with relaxed resting position',
+      'spin-360': 'Create dynamic 360-degree spinning rotation effect showing multiple perspectives',
+      'sexy-me': 'Apply attractive, confident transformation with enhanced facial features and glamorous styling',
+      'gender-swap': 'Transform to opposite gender appearance while maintaining recognizable facial features',
+      'smile': 'Transform the facial expression to show a bright, genuine, warm smile',
+      'melt': 'Create surreal melting effect where the person appears to be liquefying',
+      'bloom-magic': 'Add magical blooming flowers appearing and growing around the person',
+      'paperman': 'Transform into paper-cut art style character with flat layered appearance',
+      'pet-lovers': 'Add adorable pets interacting lovingly with the person',
+      'send-roses': 'Create romantic scene with beautiful red roses being sent or floating around',
+      'finger-heart': 'Add cute Korean-style finger heart gesture forming a small heart shape',
+      'cartoon-doll': 'Transform into adorable cartoon doll character with big expressive eyes',
+      'beast-companion': 'Add magical fantasy beast or mythical creature companion',
+      'bloom-doorobear': 'Add cute Doraemon-style cartoon bear with blooming flowers',
+      'french-kiss': 'Create romantic intimate kissing scene with passionate embrace',
+      'whos-arrested': 'Create playful "getting arrested" scene in humorous way',
+      'warmth-of-jesus': 'Create spiritual, divine scene with holy warm light and angelic atmosphere',
+      'wild-laugh': 'Transform into exaggerated, wild, uncontrollable laughing face',
+      'surprised': 'Transform into highly surprised, shocked face with wide eyes',
+      'ai-kiss': 'Create romantic AI-generated kissing scene with soft lighting',
+      'watercolor': 'Transform into beautiful watercolor painting style with soft blended colors',
+      'pop-art': 'Transform into bold pop art style with bright vibrant colors and Ben-Day dots',
+      'angel-wings': 'Add magnificent white feathered angel wings with divine glow',
+      'demon-wings': 'Add dramatic dark bat-like demon wings with gothic shadows',
+      'knight-armor': 'Transform into medieval knight wearing full plate armor',
+      'samurai-armor': 'Transform into samurai warrior with traditional Japanese armor',
+      'viking-warrior': 'Transform into Viking warrior with horned helmet and fur cloak',
+      'pharaoh-gold': 'Transform into ancient Egyptian pharaoh with golden headdress',
+      'greek-statue': 'Transform into classical Greek marble statue with white stone texture',
+      'bronze-statue': 'Transform into bronze statue with metallic patina',
+      'ice-sculpture': 'Transform into translucent ice sculpture with frozen crystalline texture',
+      'stained-glass': 'Transform into beautiful stained glass window art with colorful glass pieces',
+      'mosaic-tiles': 'Transform into mosaic tile art with small colored pieces',
+      'origami-fold': 'Transform into origami paper folding art with visible creases',
+      'paper-cutout': 'Transform into paper cutout silhouette art with layered shadows',
+      'glitter-bomb': 'Surround with explosion of colorful glitter particles and sparkles',
+      'cotton-candy': 'Surround with fluffy pink and blue cotton candy clouds',
+      'masquerade': 'Add elegant Venetian masquerade mask with ornate decorations',
+      'tiki-mask': 'Add tribal tiki mask with carved wood texture',
+      'sugar-skull': 'Transform into Mexican Día de los Muertos sugar skull',
+      'gothic-castle': 'Place person in front of dark Gothic castle with spires',
+      'medusa-gaze': 'Transform hair into writhing snakes like Medusa',
+      'kawaii-anime': 'Transform into adorable kawaii anime style with big sparkling eyes',
+      'underwater-dream': 'Create underwater scene surrounded by bubbles and coral reef',
+      'golden-touch': 'Transform into solid gold statue with shiny metallic golden surface',
+      'time-traveler': 'Show as time traveler with clock gears swirling around',
+      'neon-city': 'Place in futuristic neon city at night with glowing neon signs',
+      'crystal-wings': 'Add transparent crystalline wings with faceted gem surfaces',
+      'shadow-clone': 'Create multiple shadow duplicates in different positions',
+      'flower-power': 'Surround with abundant colorful flowers blooming everywhere',
+      'storm-warrior': 'Transform into storm warrior with lightning powers',
+      'desert-mirage': 'Create desert mirage effect with heat waves and sand dunes',
+      'ocean-wave': 'Show interacting with large ocean wave and dramatic water spray',
+      'cosmic-energy': 'Show with cosmic energy aura surrounded by stars and nebula',
+      'starlight': 'Show under twinkling starlight with magical celestial sparkle',
+      'rainbow-bridge': 'Show standing on colorful rainbow bridge arcing across the sky',
+      'cloud-nine': 'Show floating peacefully on fluffy white clouds in dreamy sky',
+      'vintage-photo': 'Transform into vintage photograph with sepia tones and aged paper texture'
     };
 
-    const prompt = effectPrompts[effectId] || `Apply ${effectName} effect to this image`;
+    const prompt = effectPrompts[effectId] || `Apply ${effectName} effect to this image. Keep the person's face exactly the same.`;
 
     console.log('Applying effect:', effectId, 'with prompt:', prompt);
 
-    // Call Lovable AI for image editing
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
+    console.log("Fetching original image...");
+    const imageBase64 = await fetchImageAsBase64(imageUrl);
+
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
+    
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'image.png');
+    formData.append('prompt', prompt);
+    formData.append('model', 'gpt-image-1');
+    formData.append('size', '1024x1024');
+
+    const response = await fetch("https://api.openai.com/v1/images/edits", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: prompt
-              },
-              {
-                type: 'image_url',
-                image_url: {
-                  url: imageUrl
-                }
-              }
-            ]
-          }
-        ],
-        modalities: ['image', 'text']
-      })
+      body: formData,
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
+      console.error('OpenAI API error:', response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
@@ -247,27 +235,21 @@ serve(async (req) => {
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'Payment required. Please add credits to your Lovable AI workspace.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
 
-      throw new Error(`AI gateway error: ${response.status}`);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const data = await response.json();
-    const imageUrl_result = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = data.data?.[0]?.b64_json;
 
-    if (!imageUrl_result) {
+    if (!base64Image) {
       throw new Error('No image generated');
     }
 
+    const imageUrl_result = `data:image/png;base64,${base64Image}`;
+
     console.log('Effect applied successfully');
 
-    // Deduct credits
     await supabaseClient
       .from('ai_credits')
       .update({ 
@@ -276,7 +258,6 @@ serve(async (req) => {
       })
       .eq('user_id', user.id);
 
-    // Log usage
     await supabaseClient
       .from('ai_usage_history')
       .insert({

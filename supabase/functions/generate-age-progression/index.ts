@@ -6,6 +6,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -30,7 +41,6 @@ serve(async (req) => {
       throw new Error('Not authenticated');
     }
 
-    // Check credits
     const { data: creditsData } = await supabase
       .from('ai_credits')
       .select('credits_remaining')
@@ -46,84 +56,88 @@ serve(async (req) => {
       );
     }
 
-    // Generate age progression description using Lovable AI
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
-    const descResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert in age progression analysis. Describe how a person might look in the future based on natural aging processes.'
+    // Generate description using Lovable AI
+    let description = `Age progression +${yearsForward} years: Natural aging with subtle wrinkles, gray hair, mature facial features.`;
+    
+    if (LOVABLE_API_KEY) {
+      try {
+        const descResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
           },
-          {
-            role: 'user',
-            content: `Describe how a person might look ${yearsForward} years in the future. Include details about skin, hair, facial features, and overall appearance. Be realistic but kind. Keep it under 150 words.`
-          }
-        ],
-      }),
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are an expert in age progression analysis. Describe how a person might look in the future based on natural aging processes.'
+              },
+              {
+                role: 'user',
+                content: `Describe how a person might look ${yearsForward} years in the future. Include details about skin, hair, facial features, and overall appearance. Be realistic but kind. Keep it under 150 words.`
+              }
+            ],
+          }),
+        });
+
+        if (descResponse.ok) {
+          const descData = await descResponse.json();
+          description = descData.choices[0].message.content;
+        }
+      } catch (e) {
+        console.error('Description generation error:', e);
+      }
+    }
+
+    // Generate aged image using OpenAI
+    const imgPrompt = `Age this person by ${yearsForward} years. Show natural aging: subtle wrinkles, gray hair, mature facial features. Photorealistic, professional portrait, dignified aging. Keep the person recognizable.`;
+    
+    console.log("Fetching original image...");
+    const imageBase64 = await fetchImageAsBase64(imageUrl);
+
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
+    
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'image.png');
+    formData.append('prompt', imgPrompt);
+    formData.append('model', 'gpt-image-1');
+    formData.append('size', '1024x1024');
+
+    const imgResponse = await fetch("https://api.openai.com/v1/images/edits", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: formData,
     });
 
-    if (!descResponse.ok) {
-      throw new Error(`AI API error: ${descResponse.status}`);
-    }
-
-    const descData = await descResponse.json();
-    const description = descData.choices[0].message.content;
-
-    // Generate aged image using AI image editing
-    const imgPrompt = `Age this person by ${yearsForward} years. Show natural aging: subtle wrinkles, gray hair, mature facial features. Photorealistic, professional portrait, dignified aging.`;
-    
     let agedImageUrl = null;
     
-    try {
-      const imgResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'google/gemini-2.5-flash-image-preview',
-          messages: [
-            {
-              role: 'user',
-              content: [
-                {
-                  type: 'text',
-                  text: imgPrompt
-                },
-                {
-                  type: 'image_url',
-                  image_url: {
-                    url: imageUrl
-                  }
-                }
-              ]
-            }
-          ],
-          modalities: ['image', 'text']
-        }),
-      });
-
-      if (imgResponse.ok) {
-        const imgData = await imgResponse.json();
-        agedImageUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    if (imgResponse.ok) {
+      const imgData = await imgResponse.json();
+      const base64Image = imgData.data?.[0]?.b64_json;
+      if (base64Image) {
+        agedImageUrl = `data:image/png;base64,${base64Image}`;
       }
-    } catch (imgError) {
-      console.error('Image generation error:', imgError);
+    } else {
+      const errorText = await imgResponse.text();
+      console.error('OpenAI image error:', imgResponse.status, errorText);
     }
 
-    // Save age progression to database
     const { data: progression, error: progError } = await supabase
       .from('age_progressions')
       .insert({
@@ -139,7 +153,6 @@ serve(async (req) => {
 
     if (progError) throw progError;
 
-    // Deduct credits
     await supabase
       .from('ai_credits')
       .update({ 

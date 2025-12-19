@@ -6,6 +6,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -30,7 +41,6 @@ serve(async (req) => {
       )
     }
 
-    // Check subscription and limits
     const { data: subscription } = await supabaseClient
       .from('decor_subscriptions')
       .select('*')
@@ -38,7 +48,6 @@ serve(async (req) => {
       .single()
 
     if (!subscription) {
-      // Create free subscription
       await supabaseClient
         .from('decor_subscriptions')
         .insert({
@@ -67,133 +76,91 @@ serve(async (req) => {
       )
     }
 
-    console.log('Generating room design with Lovable AI...')
+    console.log('Generating room design with OpenAI...')
 
-    // Generate design using Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured')
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured')
     }
 
     const designPrompt = `Create a beautiful ${stylePreference} style ${roomType.replace('-', ' ')} interior design. 
     ${customPrompt ? `Additional requirements: ${customPrompt}` : ''}
-    
-    The design should include:
-    - Furniture placement recommendations
-    - Color palette suggestions
-    - Lighting recommendations
-    - 3-5 specific product suggestions with names, categories, and estimated prices
-    
-    Make it practical, modern, and achievable.`
+    Professional interior design with furniture, proper lighting, elegant decor. Ultra high resolution.`
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
+    console.log("Fetching original image...");
+    const imageBase64 = await fetchImageAsBase64(originalImageUrl);
+
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
+    
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'image.png');
+    formData.append('prompt', designPrompt);
+    formData.append('model', 'gpt-image-1');
+    formData.append('size', '1024x1024');
+
+    const aiResponse = await fetch("https://api.openai.com/v1/images/edits", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: `${designPrompt}\n\nYou MUST respond with a valid JSON object in this exact format:
-{
-  "description": "Detailed description of the redesigned room",
-  "colorPalette": ["color1", "color2", "color3"],
-  "furnitureSuggestions": ["suggestion1", "suggestion2"],
-  "lightingSuggestions": "Lighting recommendations",
-  "products": [
-    {"name": "Product Name", "category": "Category", "price": "€XX.XX"}
-  ]
-}`
-              },
-              {
-                type: 'image_url',
-                image_url: { url: originalImageUrl }
-              }
-            ]
-          }
-        ],
-        modalities: ['image', 'text']
-      })
-    })
+      body: formData,
+    });
 
     if (!aiResponse.ok) {
+      const errorText = await aiResponse.text();
+      console.error('OpenAI API error:', aiResponse.status, errorText);
+      
       if (aiResponse.status === 429) {
         return new Response(
-          JSON.stringify({ error: 'AI rate limit exceeded. Please try again later.' }),
+          JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
       }
-      if (aiResponse.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI credits depleted. Please add credits to workspace.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
-      const errorText = await aiResponse.text()
-      console.error('AI API error:', aiResponse.status, errorText)
+      
       throw new Error('AI generation failed')
     }
 
     const aiData = await aiResponse.json()
-    console.log('AI Response:', JSON.stringify(aiData, null, 2))
+    const base64Image = aiData.data?.[0]?.b64_json;
     
-    // Extract generated image if available
-    const generatedImageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url
-    
-    // Parse AI response
-    const aiMessage = aiData.choices?.[0]?.message?.content || ''
-    let designData: any = {}
-    
-    try {
-      // Try to extract JSON from the response
-      const jsonMatch = aiMessage.match(/\{[\s\S]*\}/)
-      if (jsonMatch) {
-        designData = JSON.parse(jsonMatch[0])
-      } else {
-        // Fallback if no JSON found
-        designData = {
-          description: aiMessage,
-          colorPalette: [],
-          furnitureSuggestions: [],
-          lightingSuggestions: '',
-          products: []
-        }
-      }
-    } catch (e) {
-      console.error('Failed to parse AI response:', e)
-      designData = {
-        description: aiMessage,
-        colorPalette: [],
-        furnitureSuggestions: [],
-        lightingSuggestions: '',
-        products: []
-      }
+    if (!base64Image) {
+      throw new Error('No image generated');
     }
 
-    // Save design to database
+    const generatedImageUrl = `data:image/png;base64,${base64Image}`;
+    
+    const designData = {
+      description: `Beautiful ${stylePreference} ${roomType} design`,
+      colorPalette: [],
+      furnitureSuggestions: [],
+      lightingSuggestions: '',
+      products: [
+        { name: 'Modern Sofa', category: 'Furniture', price: '€599' },
+        { name: 'Designer Lamp', category: 'Lighting', price: '€149' },
+        { name: 'Decorative Cushions', category: 'Accessories', price: '€39' }
+      ]
+    }
+
     const { data: design, error: designError } = await supabaseClient
       .from('ai_room_designs')
       .insert({
         user_id: user.id,
-        original_image_url: originalImageUrl,
-        redesigned_image_url: generatedImageUrl || originalImageUrl,
-        room_type: roomType,
-        style_preference: stylePreference,
-        custom_prompt: customPrompt,
-        product_suggestions: designData.products || []
+        room_image_url: originalImageUrl,
+        ai_design_url: generatedImageUrl,
+        style: stylePreference,
+        suggested_products: designData.products.map(p => p.name),
+        is_saved: true
       })
       .select()
       .single()
 
     if (designError) throw designError
 
-    // Increment designs used
     await supabaseClient
       .from('decor_subscriptions')
       .update({ 
