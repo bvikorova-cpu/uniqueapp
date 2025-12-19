@@ -97,8 +97,8 @@ serve(async (req) => {
     
     if (!user) throw new Error('Not authenticated');
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
 
     // Check user credits and tier
     const { data: creditsData, error: creditsError } = await supabaseClient
@@ -141,9 +141,7 @@ serve(async (req) => {
     }
 
     // Select AI model based on analysis type
-    const aiModel = analysisType === 'expert' 
-      ? 'google/gemini-2.5-pro' 
-      : 'google/gemini-2.5-flash';
+    const aiModel = analysisType === 'expert' ? 'gpt-4o' : 'gpt-4o-mini';
 
     // Get category-specific prompt
     const categoryPrompt = CATEGORY_PROMPTS[category as keyof typeof CATEGORY_PROMPTS] 
@@ -172,12 +170,12 @@ Return the analysis in the following JSON format:
   }
 }`;
 
-    console.log('Calling AI API with model:', aiModel);
+    console.log('Calling OpenAI API with model:', aiModel);
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -191,20 +189,19 @@ Return the analysis in the following JSON format:
             ]
           }
         ],
+        max_tokens: 2000,
       }),
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
-      
       if (response.status === 429) {
         return new Response(
           JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
       throw new Error('Failed to analyze image');
     }
 

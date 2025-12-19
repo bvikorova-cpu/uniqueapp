@@ -26,8 +26,8 @@ serve(async (req) => {
     
     if (!user) throw new Error('Not authenticated');
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
 
     const creditsRequired = 5;
 
@@ -45,7 +45,7 @@ serve(async (req) => {
       );
     }
 
-    // Diagnose plant disease using AI with vision
+    // Diagnose plant disease using OpenAI GPT-4o with vision
     const diagnosisPrompt = `Analyze this plant image for diseases or health issues.
 ${symptoms ? `User reported symptoms: ${symptoms}` : ''}
 
@@ -58,18 +58,18 @@ Provide:
 
 Format as JSON with keys: healthAssessment, possibleDiseases (array), severityLevel, treatmentSteps (array), preventionTips (array)`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           { 
             role: 'system',
-            content: 'You are an expert plant pathologist. Analyze plant images and provide accurate disease diagnosis and treatment recommendations.'
+            content: 'You are an expert plant pathologist. Analyze plant images and provide accurate disease diagnosis and treatment recommendations. Always respond with valid JSON.'
           },
           { 
             role: 'user', 
@@ -79,12 +79,19 @@ Format as JSON with keys: healthAssessment, possibleDiseases (array), severityLe
             ]
           }
         ],
+        max_tokens: 1500,
       }),
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
+      console.error('OpenAI API error:', response.status, errorText);
       throw new Error('Failed to diagnose plant');
     }
 
@@ -94,7 +101,10 @@ Format as JSON with keys: healthAssessment, possibleDiseases (array), severityLe
     // Parse the JSON response
     let diagnosisInfo;
     try {
-      diagnosisInfo = JSON.parse(content);
+      // Extract JSON from response (might be wrapped in markdown code blocks)
+      const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/```\s*([\s\S]*?)\s*```/);
+      const jsonString = jsonMatch ? jsonMatch[1] : content;
+      diagnosisInfo = JSON.parse(jsonString);
     } catch {
       // If not valid JSON, create a structured response from the text
       diagnosisInfo = {

@@ -64,8 +64,10 @@ serve(async (req) => {
       .from('media')
       .getPublicUrl(filename);
 
-    // Call Lovable AI with vision
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    // Call OpenAI with vision
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
+
     const prompt = `Analyze this food and return JSON:
 {
   "recognized_items": [
@@ -83,14 +85,14 @@ serve(async (req) => {
   ]
 }`;
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [{
           role: 'user',
           content: [
@@ -98,6 +100,7 @@ serve(async (req) => {
             { type: 'image_url', image_url: { url: publicUrl } }
           ]
         }],
+        max_tokens: 1000,
       }),
     });
 
@@ -108,7 +111,7 @@ serve(async (req) => {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-      throw new Error(`AI API error: ${aiResponse.status}`);
+      throw new Error(`OpenAI API error: ${aiResponse.status}`);
     }
 
     const aiData = await aiResponse.json();

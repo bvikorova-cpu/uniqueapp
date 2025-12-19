@@ -12,7 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    // Use ANON KEY - RLS policies will enforce access control
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
@@ -28,26 +27,67 @@ serve(async (req) => {
 
     const { dreamContent } = await req.json();
 
-    // Mock dream analysis - no AI API needed
-    const analysisData = {
-      analysis: "Váš sen obsahuje zaujímavé symboly a témy. Sny často odrážajú naše denné skúsenosti, emócie a podvedomé myšlienky. Tento konkrétny sen môže naznačovať váš aktuálny emocionálny stav a to, čo vás v živote zaujíma.",
-      themes: [
-        "Každodenné zážitky",
-        "Emočné spracovanie",
-        "Podvedomé myšlienky"
-      ],
-      emotions: [
-        "Zvedavosť",
-        "Sebaobjavovanie",
-        "Vnútorný pokoj"
-      ],
-      symbols: [
-        {
-          symbol: "Hlavné symboly sna",
-          meaning: "Symboly vo vašom sne môžu reprezentovať rôzne aspekty vášho života a vnútorného sveta. Každý symbol má osobný význam založený na vašich skúsenostiach."
-        }
-      ]
-    };
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY not configured");
+
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content: "Si odborník na analýzu snov a symboliku. Analyzuj sny a poskytni hlbokú interpretáciu. Odpovedaj v slovenčine ako JSON."
+          },
+          {
+            role: "user",
+            content: `Analyzuj tento sen a poskytni detailnú interpretáciu:
+
+"${dreamContent}"
+
+Odpovedaj ako JSON s týmito kľúčmi:
+- analysis: celková analýza sna (text)
+- themes: pole hlavných tém (pole stringov)
+- emotions: pole identifikovaných emócií (pole stringov)
+- symbols: pole objektov s kľúčmi "symbol" a "meaning"`
+          }
+        ],
+        max_tokens: 1000,
+      }),
+    });
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      const errorText = await response.text();
+      console.error("OpenAI API error:", response.status, errorText);
+      throw new Error("Failed to analyze dream");
+    }
+
+    const aiData = await response.json();
+    const content = aiData.choices[0].message.content;
+
+    let analysisData;
+    try {
+      const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/) || content.match(/\{[\s\S]*\}/);
+      const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : content;
+      analysisData = JSON.parse(jsonString);
+    } catch {
+      analysisData = {
+        analysis: content,
+        themes: ["Každodenné zážitky", "Emočné spracovanie"],
+        emotions: ["Zvedavosť", "Sebaobjavovanie"],
+        symbols: [{ symbol: "Sen", meaning: content }]
+      };
+    }
 
     return new Response(
       JSON.stringify(analysisData),
