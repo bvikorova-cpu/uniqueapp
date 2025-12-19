@@ -6,6 +6,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -27,7 +38,6 @@ serve(async (req) => {
 
     const { imageUrl, transformationType, styleApplied } = await req.json();
 
-    // Check AI credits
     const { data: credits } = await supabaseClient
       .from('ai_credits')
       .select('credits_remaining')
@@ -41,12 +51,11 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is not configured');
     }
 
-    // Create transformation prompt based on type
     let prompt = '';
     if (transformationType === 'makeup') {
       if (styleApplied === 'glam') {
@@ -74,42 +83,45 @@ serve(async (req) => {
       prompt = `Apply a complete beauty transformation with ${styleApplied} style - including makeup, hairstyle, and overall look. Keep the person recognizable but enhanced.`;
     }
 
-    // Generate transformation using AI
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
+    console.log("Fetching original image...");
+    const imageBase64 = await fetchImageAsBase64(imageUrl);
+
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
+    
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'image.png');
+    formData.append('prompt', prompt);
+    formData.append('model', 'gpt-image-1');
+    formData.append('size', '1024x1024');
+
+    const response = await fetch("https://api.openai.com/v1/images/edits", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              { type: 'text', text: prompt },
-              { type: 'image_url', image_url: { url: imageUrl } }
-            ]
-          }
-        ],
-        modalities: ['image', 'text']
-      }),
+      body: formData,
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI Gateway error:', response.status, errorText);
-      throw new Error(`AI Gateway error: ${response.status}`);
+      console.error('OpenAI API error:', response.status, errorText);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const data = await response.json();
-    const transformedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = data.data?.[0]?.b64_json;
 
-    if (!transformedImageUrl) {
+    if (!base64Image) {
       throw new Error('No image generated');
     }
 
-    // Save transformation to database
+    const transformedImageUrl = `data:image/png;base64,${base64Image}`;
+
     const { error: saveError } = await supabaseClient
       .from('beauty_transformations')
       .insert({
@@ -125,13 +137,11 @@ serve(async (req) => {
       console.error('Error saving transformation:', saveError);
     }
 
-    // Deduct credits
     await supabaseClient
       .from('ai_credits')
       .update({ credits_remaining: credits.credits_remaining - 5 })
       .eq('user_id', user.id);
 
-    // Log usage
     await supabaseClient
       .from('ai_usage_history')
       .insert({

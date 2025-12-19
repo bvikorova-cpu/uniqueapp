@@ -44,7 +44,6 @@ serve(async (req) => {
 
     console.log('Generating design for user:', user.id);
 
-    // Check and deduct AI credits based on quality
     const creditsMap: Record<string, number> = { basic: 5, detailed: 10, premium: 15, collection: 15 };
     const creditsNeeded = creditsMap[qualityLevel as string] || 5;
 
@@ -61,7 +60,6 @@ serve(async (req) => {
       });
     }
 
-    // Deduct credits
     const { error: deductError } = await supabaseClient
       .from('ai_credits')
       .update({ 
@@ -78,7 +76,6 @@ serve(async (req) => {
       });
     }
 
-    // Log usage
     await supabaseClient
       .from('ai_usage_history')
       .insert({
@@ -120,41 +117,38 @@ serve(async (req) => {
 
     const prompt = `Design a ${style?.name || 'modern'} style ${category?.name || 'clothing'} piece made of ${material?.name || 'fabric'}. ${description || ''}. ${colorString} ${detailsString} ${qualityModifier} Fashion illustration, professional design, centered composition, white background.`;
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
       return new Response(JSON.stringify({ error: 'API key not configured' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [{ role: 'user', content: prompt }],
-        modalities: ['image', 'text']
+        model: 'gpt-image-1',
+        prompt: prompt,
+        n: 1,
+        size: '1024x1024',
+        quality: 'high',
+        output_format: 'webp',
+        output_compression: 90,
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI error:', response.status, errorText);
+      console.error('OpenAI API error:', response.status, errorText);
       
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: 'Rate limit exceeded. Try again later.' }), {
           status: 429,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: 'API credits insufficient. Contact support.' }), {
-          status: 402,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
@@ -166,14 +160,16 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = data.data?.[0]?.b64_json;
     
-    if (!imageUrl) {
+    if (!base64Image) {
       return new Response(JSON.stringify({ error: 'No image generated' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
+
+    const imageUrl = `data:image/webp;base64,${base64Image}`;
 
     const { data: design, error: designError } = await supabaseClient
       .from('fashion_designs')

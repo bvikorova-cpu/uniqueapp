@@ -5,6 +5,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -12,41 +23,37 @@ serve(async (req) => {
 
   try {
     const { imageUrl } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
     console.log("Removing text from image:", imageUrl);
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const prompt = "Remove all text and titles from this image. Keep the characters, design, and visual elements exactly the same, but remove any written words, movie titles, or text overlays. The image should look clean and natural without any text.";
+
+    const imageBase64 = await fetchImageAsBase64(imageUrl);
+
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
+    
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'image.png');
+    formData.append('prompt', prompt);
+    formData.append('model', 'gpt-image-1');
+    formData.append('size', '1024x1024');
+
+    const response = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Remove all text and titles from this image. Keep the characters, design, and visual elements exactly the same, but remove any written words, movie titles, or text overlays. The image should look clean and natural without any text.",
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: imageUrl,
-                },
-              },
-            ],
-          },
-        ],
-        modalities: ["image", "text"],
-      }),
+      body: formData,
     });
 
     if (!response.ok) {
@@ -59,28 +66,21 @@ serve(async (req) => {
           }
         );
       }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Payment required. Please add credits to your workspace." }),
-          {
-            status: 402,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
-      }
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("OpenAI API error:", response.status, errorText);
       throw new Error("Failed to remove text from image");
     }
 
     const data = await response.json();
     console.log("Image processing response received");
 
-    const editedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = data.data?.[0]?.b64_json;
 
-    if (!editedImageUrl) {
+    if (!base64Image) {
       throw new Error("No edited image generated");
     }
+
+    const editedImageUrl = `data:image/png;base64,${base64Image}`;
 
     return new Response(JSON.stringify({ editedImageUrl }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

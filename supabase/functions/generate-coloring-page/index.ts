@@ -6,6 +6,17 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -29,7 +40,6 @@ serve(async (req) => {
     const { imageUrl, difficulty = 'medium' } = await req.json();
     console.log("Generating coloring page for user:", user.id);
 
-    // Check if user is admin
     const { data: adminCheck, error: adminError } = await supabaseClient
       .from("user_roles")
       .select("role")
@@ -48,7 +58,6 @@ serve(async (req) => {
     const isAdmin = !!adminCheck;
     console.log("User is admin:", isAdmin);
 
-    // Check credits (skip for admin)
     let creditsData;
     if (!isAdmin) {
       const { data, error: creditsError } = await supabaseClient
@@ -73,21 +82,18 @@ serve(async (req) => {
       }
       creditsData = data;
     } else {
-      // Admin má neobmedzené kredity
       creditsData = {
         tier: 'premium',
         credits_remaining: 999999
       };
     }
 
-    // Check if premium tier for quality
     const isUltraHD = creditsData.tier === 'premium';
     const resolution = isUltraHD ? 2048 : 1024;
 
-    // Generate coloring page using Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      console.error("LOVABLE_API_KEY not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      console.error("OPENAI_API_KEY not configured");
       return new Response(
         JSON.stringify({ error: "AI service not configured. Please contact support." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
@@ -98,45 +104,42 @@ serve(async (req) => {
     Create a ${difficulty} difficulty level with ${difficulty === 'easy' ? 'simple, bold lines' : difficulty === 'medium' ? 'moderate detail' : 'intricate, detailed lines'}. 
     Make it perfect for printing and coloring. Black and white only, no shading, just clean outlines.`;
 
-    console.log("Calling AI Gateway with image URL:", imageUrl);
+    console.log("Fetching original image...");
+    const imageBase64 = await fetchImageAsBase64(imageUrl);
 
-    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
+    
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'image.png');
+    formData.append('prompt', prompt);
+    formData.append('model', 'gpt-image-1');
+    formData.append('size', '1024x1024');
+
+    console.log("Calling OpenAI API...");
+
+    const aiResponse = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: [
-              { type: "text", text: prompt },
-              { type: "image_url", image_url: { url: imageUrl } }
-            ]
-          }
-        ],
-        modalities: ["image", "text"]
-      })
+      body: formData,
     });
 
-    console.log("AI Gateway response status:", aiResponse.status);
+    console.log("OpenAI response status:", aiResponse.status);
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error("AI Gateway error:", aiResponse.status, errorText);
+      console.error("OpenAI API error:", aiResponse.status, errorText);
       
       if (aiResponse.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 429 }
-        );
-      }
-      if (aiResponse.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "AI service payment required. Please contact support." }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 402 }
         );
       }
       return new Response(
@@ -146,21 +149,21 @@ serve(async (req) => {
     }
 
     const aiData = await aiResponse.json();
-    console.log("AI response received, checking for image URL");
+    console.log("OpenAI response received");
     
-    const generatedImageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = aiData.data?.[0]?.b64_json;
 
-    if (!generatedImageUrl) {
-      console.error("No image URL in AI response:", JSON.stringify(aiData));
+    if (!base64Image) {
+      console.error("No image in OpenAI response:", JSON.stringify(aiData));
       return new Response(
         JSON.stringify({ error: "Failed to generate image. Please try again." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
       );
     }
 
-    console.log("Generated image URL:", generatedImageUrl);
+    const generatedImageUrl = `data:image/png;base64,${base64Image}`;
+    console.log("Generated coloring page successfully");
 
-    // Create coloring page record
     const { data: coloringPage, error: pageError } = await supabaseClient
       .from("coloring_pages")
       .insert({
@@ -180,7 +183,6 @@ serve(async (req) => {
       throw pageError;
     }
 
-    // Deduct credit (unless unlimited premium or admin)
     if (creditsData.tier !== 'premium' && !isAdmin) {
       const { error: updateError } = await supabaseClient
         .from("coloring_credits")
@@ -192,7 +194,6 @@ serve(async (req) => {
       }
     }
 
-    // Log usage
     await supabaseClient
       .from("ai_usage_history")
       .insert({

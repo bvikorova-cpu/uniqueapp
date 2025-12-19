@@ -6,6 +6,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -30,7 +41,6 @@ serve(async (req) => {
     const { imageUrl, restorationType } = await req.json();
     console.log('Restoring photo:', { imageUrl, restorationType, userId: user.id });
 
-    // Check user credits
     const { data: creditsData, error: creditsError } = await supabaseClient
       .from('photo_credits')
       .select('credits_remaining')
@@ -49,7 +59,6 @@ serve(async (req) => {
       );
     }
 
-    // Prepare AI prompt based on restoration type
     let prompt = '';
     switch (restorationType) {
       case 'colorize':
@@ -65,37 +74,39 @@ serve(async (req) => {
         prompt = 'Restore and enhance this old photo. Repair any damage, improve quality, and colorize if it\'s black and white.';
     }
 
-    // Call Lovable AI Gateway for image editing
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
-    console.log('Calling AI Gateway for restoration...');
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
+    console.log('Fetching original image...');
+    const imageBase64 = await fetchImageAsBase64(imageUrl);
+
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
+    
+    const formData = new FormData();
+    formData.append('image', imageBlob, 'image.png');
+    formData.append('prompt', prompt);
+    formData.append('model', 'gpt-image-1');
+    formData.append('size', '1024x1024');
+
+    console.log('Calling OpenAI API for restoration...');
+    const aiResponse = await fetch("https://api.openai.com/v1/images/edits", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              { type: 'text', text: prompt },
-              { type: 'image_url', image_url: { url: imageUrl } }
-            ]
-          }
-        ],
-        modalities: ['image', 'text']
-      }),
+      body: formData,
     });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error('AI Gateway error:', aiResponse.status, errorText);
+      console.error('OpenAI API error:', aiResponse.status, errorText);
       
       if (aiResponse.status === 429) {
         return new Response(
@@ -104,27 +115,20 @@ serve(async (req) => {
         );
       }
       
-      if (aiResponse.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI service credits exhausted. Please contact support.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      
-      throw new Error(`AI Gateway error: ${aiResponse.status}`);
+      throw new Error(`OpenAI API error: ${aiResponse.status}`);
     }
 
     const aiData = await aiResponse.json();
-    const restoredImageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = aiData.data?.[0]?.b64_json;
 
-    if (!restoredImageUrl) {
-      console.error('No image in AI response:', JSON.stringify(aiData));
+    if (!base64Image) {
+      console.error('No image in OpenAI response:', JSON.stringify(aiData));
       throw new Error('Failed to generate restored image');
     }
 
+    const restoredImageUrl = `data:image/png;base64,${base64Image}`;
     console.log('Image restored successfully');
 
-    // Deduct credit
     const { error: updateError } = await supabaseClient
       .from('photo_credits')
       .update({ 

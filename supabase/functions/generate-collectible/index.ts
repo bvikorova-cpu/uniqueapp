@@ -29,7 +29,6 @@ serve(async (req) => {
 
     const { prompt, categoryId, rarityLevel } = await req.json();
 
-    // Check AI credits
     const { data: credits } = await supabaseClient
       .from('ai_credits')
       .select('credits_remaining')
@@ -43,51 +42,49 @@ serve(async (req) => {
       );
     }
 
-    // Generate image using Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiResponse = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: `Generate a collectible item image: ${prompt}. Make it unique and visually appealing for a digital collection.`
-          }
-        ],
-        modalities: ['image', 'text']
-      })
+        model: 'gpt-image-1',
+        prompt: `Generate a collectible item image: ${prompt}. Make it unique and visually appealing for a digital collection.`,
+        n: 1,
+        size: '1024x1024',
+        quality: 'high',
+        output_format: 'webp',
+        output_compression: 90,
+      }),
     });
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text();
-      console.error('AI generation error:', errorText);
+      console.error('OpenAI API error:', errorText);
       throw new Error('Failed to generate collectible image');
     }
 
     const aiData = await aiResponse.json();
-    const imageUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = aiData.data?.[0]?.b64_json;
 
-    if (!imageUrl) {
+    if (!base64Image) {
       throw new Error('No image generated');
     }
 
-    // Get rarity
+    const imageUrl = `data:image/webp;base64,${base64Image}`;
+
     const { data: rarity } = await supabaseClient
       .from('collectible_rarities')
       .select('*')
       .eq('level', rarityLevel || 1)
       .single();
 
-    // Create collectible template
     const { data: collectible, error: collectibleError } = await supabaseClient
       .from('collectibles')
       .insert({
@@ -103,7 +100,6 @@ serve(async (req) => {
 
     if (collectibleError) throw collectibleError;
 
-    // Create user collectible
     const { data: userCollectible, error: userCollectibleError } = await supabaseClient
       .from('user_collectibles')
       .insert({
@@ -116,13 +112,11 @@ serve(async (req) => {
 
     if (userCollectibleError) throw userCollectibleError;
 
-    // Deduct credits
     await supabaseClient.rpc('decrement_ai_credits', {
       user_id: user.id,
       amount: 10
     });
 
-    // Log usage
     await supabaseClient.from('ai_usage_history').insert({
       user_id: user.id,
       usage_type: 'collectible_generation',
