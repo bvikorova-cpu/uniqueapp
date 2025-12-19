@@ -12,27 +12,15 @@ serve(async (req) => {
 
   try {
     const { title, description } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
     
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
     console.log(`Generating paint-by-numbers for: ${title}`);
 
-    // Generate detailed template with numbers
-    const templateResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: `Detailed paint-by-numbers coloring page: ${title}${description ? ` - ${description}` : ''}.
+    const prompt = `Detailed paint-by-numbers coloring page: ${title}${description ? ` - ${description}` : ''}.
 
 REQUIREMENTS:
 - BLACK thick outlines on WHITE background
@@ -42,25 +30,47 @@ REQUIREMENTS:
 - Intricate patterns and details
 - Professional coloring book quality
 - Child-friendly but detailed
-- 1024x1024 pixels
-- Each number (1-8) appears multiple times across different regions`
-          }
-        ],
-        modalities: ["image", "text"]
+- Each number (1-8) appears multiple times across different regions
+- Ultra high resolution`;
+
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-image-1',
+        prompt: prompt,
+        n: 1,
+        size: '1024x1024',
+        quality: 'high',
+        output_format: 'png',
       }),
     });
 
-    if (!templateResponse.ok) {
-      throw new Error(`Template error: ${templateResponse.status}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenAI API error:', response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 }
+        );
+      }
+      
+      throw new Error(`Template error: ${response.status}`);
     }
 
-    const templateData = await templateResponse.json();
-    const templateImageUrl = templateData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const data = await response.json();
+    const base64Image = data.data?.[0]?.b64_json;
 
-    if (!templateImageUrl) {
+    if (!base64Image) {
       throw new Error("No template generated");
     }
 
+    const templateImageUrl = `data:image/png;base64,${base64Image}`;
     console.log("Detailed template generated!");
 
     return new Response(

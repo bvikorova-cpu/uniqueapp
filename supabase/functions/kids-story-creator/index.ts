@@ -54,7 +54,7 @@ serve(async (req) => {
 
     // Check monthly limit for free users
     if (!isPremium) {
-      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+      const currentMonth = new Date().toISOString().slice(0, 7);
       const { data: usageData, error: usageError } = await supabaseClient
         .from('kids_story_usage')
         .select('*')
@@ -73,9 +73,9 @@ serve(async (req) => {
       }
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
     // Generate story text
@@ -91,14 +91,14 @@ Format your response as JSON:
   "story": "The complete story text here"
 }`;
 
-    const storyResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const storyResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: "You are a creative children's story writer. Create engaging, fun, and age-appropriate stories." },
           { role: "user", content: storyPrompt }
@@ -108,44 +108,49 @@ Format your response as JSON:
     });
 
     if (!storyResponse.ok) {
+      const errorText = await storyResponse.text();
+      console.error("OpenAI API error:", storyResponse.status, errorText);
+      
       if (storyResponse.status === 429) {
         throw new Error("Too many requests. Please try again in a moment.");
       }
-      if (storyResponse.status === 402) {
-        throw new Error("AI credits depleted. Please add more credits to continue.");
-      }
-      const errorText = await storyResponse.text();
-      console.error("AI gateway error:", storyResponse.status, errorText);
       throw new Error("Failed to get AI response");
     }
 
     const storyData = await storyResponse.json();
     const storyContent = JSON.parse(storyData.choices[0].message.content);
 
-    // Generate illustration
-    const illustrationPrompt = `Create a colorful, child-friendly illustration for this story: ${title}. Theme: ${theme}. Characters: ${characters}. Make it magical, vibrant, and fun for kids aged 6-12.`;
-
-    const imageResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          { role: "user", content: illustrationPrompt }
-        ]
-      }),
-    });
+    // Generate illustration with OpenAI
+    const illustrationPrompt = `Create a colorful, child-friendly illustration for this story: ${title}. Theme: ${theme}. Characters: ${characters}. Make it magical, vibrant, and fun for kids aged 6-12. Ultra high resolution.`;
 
     let illustrationUrl = null;
-    if (imageResponse.ok) {
-      const imageData = await imageResponse.json();
-      const images = imageData.choices[0]?.message?.images;
-      if (images && images.length > 0) {
-        illustrationUrl = images[0]?.image_url?.url;
+    try {
+      const imageResponse = await fetch("https://api.openai.com/v1/images/generations", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-image-1",
+          prompt: illustrationPrompt,
+          n: 1,
+          size: "1024x1024",
+          quality: "high",
+          output_format: "webp",
+          output_compression: 90,
+        }),
+      });
+
+      if (imageResponse.ok) {
+        const imageData = await imageResponse.json();
+        const base64Image = imageData.data?.[0]?.b64_json;
+        if (base64Image) {
+          illustrationUrl = `data:image/webp;base64,${base64Image}`;
+        }
       }
+    } catch (imgError) {
+      console.error("Error generating illustration:", imgError);
     }
 
     // Save story to library

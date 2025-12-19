@@ -12,34 +12,36 @@ serve(async (req) => {
 
   try {
     const { characterName, characterType } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
 
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is not configured');
     }
 
-    const prompt = `Create an adorable, highly expressive cartoon character image of ${characterName}, a ${characterType}. Style: Disney/Pixar 3D animated character with big expressive eyes, exaggerated proportions for cuteness, smooth rounded shapes, vibrant saturated colors, and a joyful friendly smile. The character should have a dynamic playful pose with personality, glossy cartoon shading, and be placed on a simple colorful gradient background. Make it look like a professional animated movie character - cheerful, energetic, and irresistibly cute!`;
+    const prompt = `Create an adorable, highly expressive cartoon character image of ${characterName}, a ${characterType}. Style: Disney/Pixar 3D animated character with big expressive eyes, exaggerated proportions for cuteness, smooth rounded shapes, vibrant saturated colors, and a joyful friendly smile. The character should have a dynamic playful pose with personality, glossy cartoon shading, and be placed on a simple colorful gradient background. Make it look like a professional animated movie character - cheerful, energetic, and irresistibly cute! Ultra high resolution.`;
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    console.log('Generating character image with OpenAI:', characterName);
+
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
+        model: 'gpt-image-1',
+        prompt: prompt,
+        n: 1,
+        size: '1024x1024',
+        quality: 'high',
+        output_format: 'webp',
+        output_compression: 90,
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
+      console.error('OpenAI API error:', response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
@@ -47,29 +49,22 @@ serve(async (req) => {
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'Not enough Lovable AI credits. Please add credits in Settings → Cloud → AI Usage.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
       
       throw new Error(`Failed to generate image: ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('AI response:', JSON.stringify(data, null, 2));
+    console.log('OpenAI response received');
     
-    // Try multiple possible response structures
-    const imageUrl = data.choices?.[0]?.message?.content?.[0]?.image_url?.url ||
-                     data.choices?.[0]?.message?.images?.[0]?.image_url?.url ||
-                     data.choices?.[0]?.message?.image_url?.url ||
-                     data.image_url;
+    const base64Image = data.data?.[0]?.b64_json;
 
-    if (!imageUrl) {
-      console.error('Full response structure:', JSON.stringify(data));
-      throw new Error('No image URL in response');
+    if (!base64Image) {
+      console.error('No image in response:', data);
+      throw new Error('No image generated');
     }
+
+    const imageUrl = `data:image/webp;base64,${base64Image}`;
+    console.log('Character image generated successfully');
 
     return new Response(
       JSON.stringify({ imageUrl }),
