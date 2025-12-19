@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Handshake, DollarSign, Star, TrendingUp, Plus, RefreshCw, LogIn, UserPlus } from "lucide-react";
+import { Handshake, DollarSign, Star, TrendingUp, Plus, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
@@ -137,63 +137,102 @@ const BrandCollaboration = () => {
           <Handshake className="w-16 h-16 mx-auto mb-4 text-primary" />
           <h1 className="text-4xl font-bold mb-4">Brand Collaboration Hub</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-6">
-            Connect with brands for sponsored content. Platform takes 20% of deals.
+            Connect brands with talented creators. Platform takes 20% of deals.
           </p>
+          
+          {/* Main CTA Buttons */}
+          {!user ? (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <Button asChild size="lg" className="text-lg px-8">
+                <Link to="/auth?tab=signup&role=creator">
+                  <Star className="h-5 w-5 mr-2" />
+                  I'm a Creator
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="text-lg px-8">
+                <Link to="/auth?tab=signup&role=brand">
+                  <Handshake className="h-5 w-5 mr-2" />
+                  I'm a Brand
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <Button asChild size="lg" className="text-lg px-8">
+                <a href="#campaigns">
+                  <Star className="h-5 w-5 mr-2" />
+                  Browse Campaigns
+                </a>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="text-lg px-8">
+                <Link to="/brand-dashboard">
+                  <Plus className="h-5 w-5 mr-2" />
+                  Post a Campaign
+                </Link>
+              </Button>
+            </div>
+          )}
           
           <div className="max-w-4xl mx-auto bg-card border rounded-lg p-6 text-left space-y-4">
             <h2 className="text-xl font-semibold">How It Works</h2>
             
-            <div className="space-y-3 text-sm text-muted-foreground">
-              <p>
-                <strong className="text-foreground">For Creators:</strong> Browse active brand campaigns looking for influencers and content creators. Each campaign shows the brand name, campaign details, budget range (in EUR), deadline, and required tags/categories.
-              </p>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <h3 className="text-foreground font-semibold flex items-center gap-2">
+                  <Star className="h-4 w-4 text-primary" />
+                  For Creators
+                </h3>
+                <ul className="space-y-2 list-disc list-inside">
+                  <li>Browse active brand campaigns</li>
+                  <li>Apply with your portfolio</li>
+                  <li>Get paid for collaborations</li>
+                  <li>Keep 80% of every deal</li>
+                </ul>
+                {!user && (
+                  <Button asChild variant="link" className="p-0 h-auto">
+                    <Link to="/auth?tab=signup&role=creator">
+                      Sign up as Creator →
+                    </Link>
+                  </Button>
+                )}
+              </div>
               
-              <p>
-                <strong className="text-foreground">Apply to Campaigns:</strong> Click "Apply Now" to submit your application. Include a personalized message explaining why you're a great fit and optionally add a portfolio link showcasing your previous work.
-              </p>
-              
-              <p>
-                <strong className="text-foreground">Platform Commission:</strong> When you land a collaboration, you keep 80% of the agreed payment. The platform takes a 20% commission for connecting you with brands and handling the transaction.
-              </p>
-              
-              <p>
-                <strong className="text-foreground">For Brands:</strong> Post campaigns to reach talented creators. Set your budget range, deadline, campaign requirements, and relevant tags. Track how many creators have applied to your opportunity.
-              </p>
-              
-              <p>
-                <strong className="text-foreground">Build Your Portfolio:</strong> Successful collaborations help you build credibility and reputation on the platform, making it easier to land future high-paying brand deals.
-              </p>
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <h3 className="text-foreground font-semibold flex items-center gap-2">
+                  <Handshake className="h-4 w-4 text-primary" />
+                  For Brands
+                </h3>
+                <ul className="space-y-2 list-disc list-inside">
+                  <li>Post your campaign</li>
+                  <li>Reach talented creators</li>
+                  <li>Review applications</li>
+                  <li>Collaborate on content</li>
+                </ul>
+                {!user ? (
+                  <Button asChild variant="link" className="p-0 h-auto">
+                    <Link to="/auth?tab=signup&role=brand">
+                      Sign up as Brand →
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button asChild variant="link" className="p-0 h-auto">
+                    <Link to="/brand-dashboard">
+                      Go to Brand Dashboard →
+                    </Link>
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
 
-          {/* Login/Register Section */}
-          {!user ? (
-            <Card className="max-w-md mx-auto p-6 mt-8 bg-primary/5 border-primary/20">
-              <h3 className="text-lg font-semibold mb-3 text-center">Get Started</h3>
-              <p className="text-sm text-muted-foreground text-center mb-4">
-                Log in or create an account to apply for brand campaigns
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button asChild className="flex-1">
-                  <Link to="/auth">
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Login
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="flex-1">
-                  <Link to="/auth?tab=signup">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Register
-                  </Link>
-                </Button>
-              </div>
-            </Card>
-          ) : (
-            <Card className="max-w-md mx-auto p-4 mt-8 bg-green-500/10 border-green-500/20">
-              <p className="text-sm text-center text-green-700 dark:text-green-400">
-                ✓ Logged in as {user.email} - You can apply to campaigns!
-              </p>
-            </Card>
+          {/* Login prompt for non-logged users */}
+          {!user && (
+            <p className="text-sm text-muted-foreground mt-6">
+              Already have an account?{" "}
+              <Link to="/auth" className="text-primary hover:underline font-medium">
+                Log in here
+              </Link>
+            </p>
           )}
         </div>
 
@@ -215,9 +254,9 @@ const BrandCollaboration = () => {
           </Card>
         </div>
 
-        <div className="space-y-6">
+        <div id="campaigns" className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold">Available Opportunities</h2>
+            <h2 className="text-2xl font-bold">Available Campaigns</h2>
             <Button variant="outline" size="sm" onClick={fetchCampaigns} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
               Refresh
