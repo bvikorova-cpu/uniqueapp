@@ -1124,3 +1124,15 @@ verify_jwt = true
 
 [functions.create-emotion-market-checkout]
 verify_jwt = true
+
+[functions.stock-content-webhook]
+verify_jwt = false
+
+[functions.verify-stock-purchase]
+verify_jwt = true
+
+[functions.get-my-stock-purchases]
+verify_jwt = true
+
+[functions.purchase-stock-content]
+verify_jwt = false
