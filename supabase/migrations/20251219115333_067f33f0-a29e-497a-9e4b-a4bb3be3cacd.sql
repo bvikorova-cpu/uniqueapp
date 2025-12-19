@@ -1,0 +1,23 @@
+-- Update more Slovak recipes to English (batch 4)
+UPDATE recipes SET title = 'Bianca Pizza', description = 'White pizza without tomatoes' WHERE id = 'b2b22b79-aed2-4c97-926a-33aa7b0c84c3';
+UPDATE recipes SET title = 'Quattro Formaggi', description = 'Four cheese pizza' WHERE id = '5c3276aa-3606-4410-8daa-4924efe1558e';
+UPDATE recipes SET title = 'Margherita Pizza', description = 'Classic Italian pizza' WHERE id = '5a52a286-d0c7-4bd5-bbc1-9760c6968161';
+UPDATE recipes SET title = 'Diavola Pizza', description = 'Spicy pizza with sausage' WHERE id = 'dd65d8d7-2ab1-458b-befe-d234ed5dbe36';
+UPDATE recipes SET title = 'Vegan Burger', description = 'Black bean burger' WHERE id = 'b41fc13d-359c-4790-ad76-fe7070910146';
+UPDATE recipes SET title = 'Falafel', description = 'Middle Eastern chickpea balls' WHERE id = '60fcfbb2-d841-4a69-bf55-6f059eb1b9b4';
+UPDATE recipes SET title = 'Vegan Chilli', description = 'Spicy bean chilli' WHERE id = '907097d0-947a-4b54-9fc6-60bcb6063034';
+UPDATE recipes SET title = 'Beef Bourguignon', description = 'French braised beef' WHERE id = '3b3f6723-47db-4a9a-8902-0ef3fa0ee5c9';
+UPDATE recipes SET title = 'Paella', description = 'Spanish rice dish' WHERE id = '552fd588-f3dd-46df-a2b5-87cdd9e54704';
+UPDATE recipes SET title = 'Ramen', description = 'Japanese noodle soup' WHERE id = 'f6df61f3-6349-4310-b04d-d1d49613d4b3';
+UPDATE recipes SET title = 'Cheesecake', description = 'American cheese cake' WHERE id = 'a5441342-77c6-42b6-a9c7-5c191b064339';
+UPDATE recipes SET title = 'Profiteroles', description = 'French cream puffs' WHERE id = '24e253c1-809d-45a3-8759-47f1048115c5';
+UPDATE recipes SET title = 'Bolognese', description = 'Classic Italian meat sauce' WHERE id = '1fea550b-bd4a-4306-bfb3-ec988712ca0e';
+UPDATE recipes SET title = 'Vanilla Cream Slice', description = 'Vanilla cream cake' WHERE id = '66daa7d8-faa9-4685-9790-fcd0482ac333';
+UPDATE recipes SET title = 'Cream Puff', description = 'Cream filled pastry' WHERE id = '271c0c91-1275-4e6c-8c51-11bae62c95a1';
+UPDATE recipes SET title = 'Honey Cake', description = 'Honey layered cake' WHERE id = '40c384ec-b346-4140-acca-b11ba8d004e6';
+UPDATE recipes SET title = 'Lasagne', description = 'Italian baked pasta' WHERE id = '740ce83a-ae70-4e00-9991-aad50cc31278';
+UPDATE recipes SET title = 'Crème Brûlée', description = 'French creamy dessert' WHERE id = '1111e80c-ad88-4d5f-b4b3-c2f4f0692806';
+UPDATE recipes SET title = 'Macarons', description = 'French almond meringue cookies' WHERE id = '9b6f015d-8c54-43d7-9820-4858f0b13309';
+UPDATE recipes SET title = 'Baklava', description = 'Turkish nut pastry' WHERE id = '9fd94846-b194-454b-991d-0cb328f626b8';
+UPDATE recipes SET title = 'Goulash Soup', description = 'Hearty Hungarian soup' WHERE id = '618168ad-10e1-464c-8127-c365b7b7435b';
+UPDATE recipes SET title = 'Vegan Lasagne', description = 'Vegetable lasagne' WHERE id = '4d9e8fe3-fb21-4075-a1c2-7fbf01eace56';
