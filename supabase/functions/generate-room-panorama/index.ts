@@ -20,12 +20,11 @@ serve(async (req) => {
 
     console.log(`Generating panorama for ${roomName} in ${castleName}`);
 
-    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
-    if (!lovableApiKey) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
-    // Create detailed 360° panorama prompt
     const prompt = `Create a stunning 360-degree panoramic view of ${roomName} from ${castleName}. 
 ${description}
 
@@ -40,52 +39,45 @@ This should be a complete 360° equirectangular panorama that shows:
 Style: Disney theme park quality, magical, enchanting, child-friendly, detailed and vibrant.
 Format: 360-degree equirectangular projection for VR/panorama viewers.`;
 
-    console.log('Calling AI image generation API...');
+    console.log('Calling OpenAI API...');
 
-    // Generate panorama using Nano banana (Gemini 2.5 Flash)
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        modalities: ['image', 'text']
-      })
+        model: 'gpt-image-1',
+        prompt: prompt,
+        n: 1,
+        size: '1536x1024',
+        quality: 'high',
+        output_format: 'png',
+      }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      console.error('AI API error:', error);
+      console.error('OpenAI API error:', error);
       throw new Error(`Failed to generate panorama: ${error}`);
     }
 
     const data = await response.json();
     console.log('Image generated successfully');
 
-    const imageData = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    if (!imageData) {
+    const base64Image = data.data?.[0]?.b64_json;
+    if (!base64Image) {
       throw new Error('No image data returned from AI');
     }
 
-    // Upload to Supabase Storage
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    // Extract base64 data
-    const base64Data = imageData.replace(/^data:image\/\w+;base64,/, '');
-    const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+    const imageBuffer = Uint8Array.from(atob(base64Image), c => c.charCodeAt(0));
 
-    // Sanitize filename
     const sanitize = (str: string) => str
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
@@ -110,14 +102,12 @@ Format: 360-degree equirectangular projection for VR/panorama viewers.`;
       throw new Error(`Failed to upload image: ${uploadError.message}`);
     }
 
-    // Get public URL
     const { data: { publicUrl } } = supabase.storage
       .from('castle-images')
       .getPublicUrl(filePath);
 
     console.log(`Image uploaded successfully: ${publicUrl}`);
 
-    // Update room with panorama URL
     const { error: updateError } = await supabase
       .from('disney_castle_rooms')
       .update({ panorama_url: publicUrl })

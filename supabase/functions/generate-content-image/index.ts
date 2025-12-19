@@ -12,7 +12,6 @@ serve(async (req) => {
   }
 
   try {
-    // Use ANON KEY - RLS policies will enforce access control
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
@@ -30,9 +29,8 @@ serve(async (req) => {
 
     const { prompt, contentId } = await req.json();
     
-    const creditsNeeded = 2; // Image generation costs 2 credits
+    const creditsNeeded = 2;
 
-    // Check and deduct credits
     const { data: creditData } = await supabaseClient
       .from("ai_credits")
       .select("credits_remaining")
@@ -46,44 +44,43 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY not configured");
     }
 
-    // Generate image using Nano banana
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: `Create a professional, eye-catching image for: ${prompt}`,
-          },
-        ],
-        modalities: ["image", "text"],
+        model: "gpt-image-1",
+        prompt: `Create a professional, eye-catching image for: ${prompt}`,
+        n: 1,
+        size: "1024x1024",
+        quality: "high",
+        output_format: "webp",
+        output_compression: 90,
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI API error:", response.status, errorText);
+      console.error("OpenAI API error:", response.status, errorText);
       throw new Error("Failed to generate image");
     }
 
     const data = await response.json();
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = data.data?.[0]?.b64_json;
 
-    if (!imageUrl) {
+    if (!base64Image) {
       throw new Error("No image generated");
     }
 
-    // Deduct credits
+    const imageUrl = `data:image/webp;base64,${base64Image}`;
+
     await supabaseClient
       .from("ai_credits")
       .update({ 
@@ -92,7 +89,6 @@ serve(async (req) => {
       })
       .eq("user_id", user.id);
 
-    // Log usage
     await supabaseClient
       .from("ai_usage_history")
       .insert({
@@ -102,7 +98,6 @@ serve(async (req) => {
         description: `Generated image: ${prompt}`,
       });
 
-    // Update content with image
     if (contentId) {
       await supabaseClient
         .from("ai_generated_content")
