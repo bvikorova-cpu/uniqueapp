@@ -62,20 +62,20 @@ const TRANSFORMATION_PROMPTS: Record<string, string> = {
   "glamour-red-dress-gift": "Transform this person into elegant Christmas portrait wearing sparkly red sequin dress, holding green gift box with red bow, standing by decorated Christmas tree, fireplace with red candles in background. Keep the person's face exactly the same.",
   "glamour-baby-sled": "Transform this person into adorable Christmas baby portrait wearing cute red Santa dress, sitting on wooden sled in snowy scene, decorated Christmas house with lights and wreath in background, magical winter atmosphere. Keep the person's face exactly the same.",
   "glamour-gift-box": "Transform this person emerging from giant red gift box, wearing red sequin dress, Merry Christmas neon sign above, decorated Christmas trees with gold and red ornaments on sides, festive celebration portrait. Keep the person's face exactly the same.",
-"glamour-rose-wreath": "Transform this person into elegant Christmas portrait sitting with giant rose wreath frame around them, wearing red embroidered gown, golden sparkle curtain background, red gift boxes around, teddy bear, luxurious holiday portrait. Keep the person's face exactly the same. Ensure hands look natural with correct anatomy - five fingers, proper proportions.",
-  "glamour-champagne-tree": "Transform this person into elegant Christmas portrait sitting on brown leather couch, wearing beautiful floral satin dress, elegantly holding champagne glass with natural hand position, decorated Christmas tree with red ornaments in background, Mickey Mouse Santa plush, nutcracker decoration, warm festive lighting. Keep the person's face exactly the same. Ensure hands look natural with correct anatomy - five fingers, proper proportions, relaxed grip on glass.",
-  "glamour-gingerbread-girl": "Transform this person into cozy Christmas portrait wearing red Santa outfit with white fur trim, lying on luxurious red satin sheets, gently holding cute gingerbread plush toy against chest, Christmas tree with warm lights in background, glamorous holiday atmosphere. Keep the person's face exactly the same. Ensure hands look natural with correct anatomy - five fingers, proper proportions.",
-  "glamour-santa-lollipop": "Transform this person into festive Christmas portrait wearing elegant red off-shoulder top, delicately holding Christmas lollipop near face with natural hand position, gold Christmas tree with ornaments in background, city lights bokeh, red lipstick, glamorous winter makeup. Keep the person's face exactly the same. Ensure hands look natural with correct anatomy - five fingers, proper proportions.",
+  "glamour-rose-wreath": "Transform this person into elegant Christmas portrait sitting with giant rose wreath frame around them, wearing red embroidered gown, golden sparkle curtain background, red gift boxes around, teddy bear, luxurious holiday portrait. Keep the person's face exactly the same.",
+  "glamour-champagne-tree": "Transform this person into elegant Christmas portrait sitting on brown leather couch, wearing beautiful floral satin dress, elegantly holding champagne glass, decorated Christmas tree with red ornaments in background, Mickey Mouse Santa plush, nutcracker decoration, warm festive lighting. Keep the person's face exactly the same.",
+  "glamour-gingerbread-girl": "Transform this person into cozy Christmas portrait wearing red Santa outfit with white fur trim, lying on luxurious red satin sheets, gently holding cute gingerbread plush toy against chest, Christmas tree with warm lights in background, glamorous holiday atmosphere. Keep the person's face exactly the same.",
+  "glamour-santa-lollipop": "Transform this person into festive Christmas portrait wearing elegant red off-shoulder top, delicately holding Christmas lollipop near face, gold Christmas tree with ornaments in background, city lights bokeh, red lipstick, glamorous winter makeup. Keep the person's face exactly the same.",
   
   // Atlantis Mermaid styles
-  "atlantis-seaflora": "Transform this person into beautiful pink mermaid underwater portrait, flowing pink hair, pink iridescent seashell top, surrounded by pink coral reef, tropical fish swimming around, magical underwater glow, ethereal fantasy atmosphere. Keep the person's face exactly the same. Ensure any visible hands look natural with correct anatomy.",
-  "atlantis-sunwave": "Transform this person into majestic golden mermaid queen underwater, wearing ornate golden seashell crown with pearls, gold jewelry necklace and earrings, golden light rays streaming from above, shimmering gold tail, magical underwater palace atmosphere. Keep the person's face exactly the same. Ensure any visible hands look natural with correct anatomy.",
-  "atlantis-nyxelle": "Transform this person into enchanting purple mermaid underwater, beautiful iridescent purple tail, pearl necklace, surrounded by colorful fish and coral, magical underwater light rays, serene ocean goddess pose. Keep the person's face exactly the same. Ensure any visible hands look natural with correct anatomy - five fingers, graceful positioning.",
+  "atlantis-seaflora": "Transform this person into beautiful pink mermaid underwater portrait, flowing pink hair, pink iridescent seashell top, surrounded by pink coral reef, tropical fish swimming around, magical underwater glow, ethereal fantasy atmosphere. Keep the person's face exactly the same.",
+  "atlantis-sunwave": "Transform this person into majestic golden mermaid queen underwater, wearing ornate golden seashell crown with pearls, gold jewelry necklace and earrings, golden light rays streaming from above, shimmering gold tail, magical underwater palace atmosphere. Keep the person's face exactly the same.",
+  "atlantis-nyxelle": "Transform this person into enchanting purple mermaid underwater, beautiful iridescent purple tail, pearl necklace, surrounded by colorful fish and coral, magical underwater light rays, serene ocean goddess pose. Keep the person's face exactly the same.",
   
   // Creative Studio styles
-  "creative-sunflower": "Transform this person into bright cheerful portrait holding large beautiful bouquet of sunflowers, elegant casual outfit, soft studio lighting, simple light background, professional photography style, warm sunny atmosphere. Keep the person's face exactly the same. Ensure hands look natural with correct anatomy - five fingers holding flower stems properly.",
+  "creative-sunflower": "Transform this person into bright cheerful portrait holding large beautiful bouquet of sunflowers, elegant casual outfit, soft studio lighting, simple light background, professional photography style, warm sunny atmosphere. Keep the person's face exactly the same.",
   "creative-giant": "Transform this person into surreal giant statue monument towering over city buildings, scaffolding around them, construction workers for scale, dramatic low angle perspective, impressive monument style, creative photo manipulation effect. Keep the person's face exactly the same.",
-  "creative-desert": "Transform this person into Arabian desert queen portrait with majestic horse beside them, wearing elegant blue hijab and traditional embroidered dress, golden sand dunes in background, beautiful sunset, cinematic Middle Eastern atmosphere. Keep the person's face exactly the same. Ensure any visible hands look natural with correct anatomy.",
+  "creative-desert": "Transform this person into Arabian desert queen portrait with majestic horse beside them, wearing elegant blue hijab and traditional embroidered dress, golden sand dunes in background, beautiful sunset, cinematic Middle Eastern atmosphere. Keep the person's face exactly the same.",
   "creative-graffiti": "Transform this person's portrait into giant colorful street art mural painted on building wall, vibrant graffiti style, urban city street with motorcycles passing below, street photography perspective, impressive mural art effect. Keep the person's face exactly the same.",
   
   // Chibi Champs styles
@@ -105,98 +105,26 @@ const TRANSFORMATION_PROMPTS: Record<string, string> = {
   
   // Nature themes
   "nature-forest": "Transform this person into an enchanted forest scene. Dress in flowing ethereal outfit, magical forest with sunbeams through trees, butterflies and mystical atmosphere. Keep the person's face exactly the same.",
-  "nature-mountain": "Transform this person into an epic mountain peak scene. Place them at summit with epic landscape view, dramatic sunset clouds, adventurer outdoor atmosphere. Keep the person's face exactly the same.",
-  "summer-beach": "Transform this into a tropical beach paradise scene. Add golden sunset, palm trees, ocean waves, summer vacation vibes, warm golden lighting. Keep the person's face exactly the same.",
-  "winter-snow": "Transform this into an elegant winter wonderland portrait. Dress in luxurious white fur coat, surrounded by falling snowflakes, frozen trees, magical icy blue lighting. Keep the person's face exactly the same.",
+  "nature-underwater": "Transform this person into an underwater paradise. Add beautiful coral reef, tropical fish, sunlight filtering through water. Serene underwater atmosphere. Keep the person's face exactly the same.",
+  "nature-mountain": "Transform this person into a majestic mountain scene. Place them on mountain peak with stunning sunrise/sunset view, dramatic epic landscape. Keep the person's face exactly the same.",
   
-  // Sports themes
-  "sports-fitness": "Transform this person into a fitness athlete in a modern gym. Add athletic sportswear, powerful pose, professional gym background, motivational fitness atmosphere. Keep the person's face exactly the same.",
-  "sports-champion": "Transform this person into a sports champion. Add football/soccer uniform, holding golden trophy, stadium full of cheering fans, champion celebration confetti. Keep the person's face exactly the same.",
+  // Sci-Fi themes
+  "scifi-cyberpunk": "Transform this person into a cyberpunk character. Add neon city background, cybernetic enhancements, futuristic LED lights, dark urban atmosphere. Keep the person's face exactly the same.",
+  "scifi-space": "Transform this person into an astronaut or space explorer. Add space suit elements, galaxy/nebula background, floating in space with stars. Keep the person's face exactly the same.",
+  "scifi-matrix": "Transform this person into a Matrix character. Add green digital code rain, black leather trench coat, dramatic Matrix movie atmosphere. Keep the person's face exactly the same.",
   
-  // Art themes
-  "art-painting": "Transform this into a classical Renaissance oil painting style portrait. Add ornate golden frame, museum quality masterpiece look, classic artistic style. Keep the person's face recognizable.",
-  "art-popart": "Transform this into an Andy Warhol style pop art portrait. Bold vibrant colors, comic book dots pattern, graphic art style. Keep the person's face recognizable.",
-  "art-anime": "Transform this person into a beautiful anime character. Japanese animation style, colorful manga aesthetic, anime eyes and styling. Keep basic features recognizable.",
+  // Historical themes
+  "historical-ancient": "Transform this person into ancient royalty (Egyptian, Roman, or Greek). Add period-appropriate attire, golden jewelry, ancient palace or temple background. Keep the person's face exactly the same.",
+  "historical-medieval": "Transform this person into medieval nobility. Add rich velvet robes, golden crown or circlet, medieval castle throne room background. Keep the person's face exactly the same.",
+  "historical-renaissance": "Transform this person into a Renaissance painting style portrait. Add period clothing, oil painting texture, dramatic baroque lighting. Keep the person's face exactly the same.",
   
-  // Travel themes
-  "travel-paris": "Transform this person into a romantic Paris scene. Place at Eiffel Tower with romantic sunset, elegant French style outfit, dreamy Parisian atmosphere. Keep the person's face exactly the same.",
-  "travel-safari": "Transform this person into an African safari adventure. Add safari hat, African savanna background with elephants and giraffes, golden sunset, adventure explorer vibes. Keep the person's face exactly the same.",
+  // Seasonal themes
+  "seasonal-autumn": "Transform this person into a beautiful autumn scene. Add fall colors, falling golden leaves, cozy sweater, warm autumn lighting. Keep the person's face exactly the same.",
+  "seasonal-winter": "Transform this person into a magical winter wonderland. Add snowy landscape, winter clothing, soft snowfall, cozy winter atmosphere. Keep the person's face exactly the same.",
+  "seasonal-spring": "Transform this person into a spring bloom scene. Add cherry blossoms, fresh flowers, butterflies, soft spring lighting. Keep the person's face exactly the same.",
+  "seasonal-summer": "Transform this person into a tropical summer paradise. Add beach setting, palm trees, sunset, summer vibes. Keep the person's face exactly the same.",
   
-  // Party themes
-  "party-birthday": "Transform this person into a fun birthday party scene. Add colorful party hat, balloons, confetti, birthday cake with candles, celebration atmosphere. Keep the person's face exactly the same.",
-  "party-club": "Transform this person into a VIP nightclub party scene. Add glamorous outfit, neon club lights, champagne, exclusive party atmosphere. Keep the person's face exactly the same.",
-  
-  // Wedding themes
-  "wedding-bride": "Transform this person into a beautiful bride. Add stunning white wedding dress with veil and tiara, romantic flower garden background, dreamy wedding day lighting. Keep the person's face exactly the same.",
-  "wedding-groom": "Transform this person into an elegant groom. Add black tuxedo with bow tie, romantic venue with candles, sophisticated wedding atmosphere. Keep the person's face exactly the same.",
-  
-  // Futuristic themes
-  "future-cyberpunk": "Transform this person into a cyberpunk character. Add neon cyberpunk style, holographic elements, futuristic city background, sci-fi atmosphere. Keep the person's face exactly the same.",
-  "future-space": "Transform this person into an astronaut in space. Add astronaut suit, space station background, Earth visible through window, cosmic atmosphere. Keep the person's face exactly the same.",
-  "future-robot": "Transform this person into a futuristic android robot with metallic skin, glowing eyes, high-tech cybernetic elements. Keep the person's face recognizable.",
-  "future-matrix": "Transform this person into a Matrix-style scene with green digital rain, holographic neon world, virtual reality aesthetic. Keep the person's face exactly the same.",
-  
-  // Music themes
-  "music-dj": "Transform this person into a famous DJ at an EDM music festival. Add DJ equipment, headphones, neon lights, crowd in background, electronic music atmosphere. Keep the person's face exactly the same.",
-  "music-rockstar": "Transform this person into a rock star on concert stage. Add electric guitar, leather jacket, dramatic stage lighting, rock band aesthetic. Keep the person's face exactly the same.",
-  "music-country": "Transform this person into a country music star on stage. Add acoustic guitar, cowboy hat, Nashville stage lighting. Keep the person's face exactly the same.",
-  "music-orchestra": "Transform this person into an elegant orchestra conductor. Add tuxedo, symphony hall background, conducting baton. Keep the person's face exactly the same.",
-  
-  // Pets themes
-  "pets-dog": "Transform this person into a cute portrait holding an adorable golden retriever puppy. Add warm lighting, cozy atmosphere, pet photography style. Keep the person's face exactly the same.",
-  "pets-cat": "Transform this person into a cute portrait holding a fluffy white cat. Add cozy home setting, warm lighting, pet lover aesthetic. Keep the person's face exactly the same.",
-  "pets-bunny": "Transform this person holding a cute fluffy bunny rabbit. Add soft lighting, adorable pet photography style. Keep the person's face exactly the same.",
-  "pets-horse": "Transform this person riding a majestic white horse. Add beautiful nature background, equestrian style. Keep the person's face exactly the same.",
-  
-  // Gothic themes
-  "gothic-dark": "Transform this person into a gothic dark queen or king. Add dark elegant crown, ravens, dark castle background, mysterious purple and black atmosphere, dramatic lighting. Keep the person's face exactly the same.",
-  "gothic-angel": "Transform this person into a gothic angel with black wings. Add dark cathedral background, mysterious atmosphere. Keep the person's face exactly the same.",
-  "gothic-romantic": "Transform this person into romantic gothic style. Add velvet Victorian dress, red roses, moonlight, romantic gothic atmosphere. Keep the person's face exactly the same.",
-  "gothic-vampire": "Transform this person into a vampire lord on gothic throne. Add dramatic red and black colors, castle throne room, dark elegance. Keep the person's face exactly the same.",
-  
-  // Steampunk themes
-  "steampunk-inventor": "Transform this person into a steampunk Victorian inventor. Add brass goggles, gears and cogs, steam-powered machinery background, Victorian steampunk fashion. Keep the person's face exactly the same.",
-  "steampunk-pilot": "Transform this person into a steampunk airship pilot. Add aviator goggles, leather flight gear, airship background. Keep the person's face exactly the same.",
-  "steampunk-lady": "Transform this person into an elegant steampunk Victorian lady. Add clockwork accessories, Victorian dress, tea party setting. Keep the person's face exactly the same.",
-  "steampunk-explorer": "Transform this person into a steampunk explorer. Add compass, maps, Victorian adventure gear, explorer aesthetic. Keep the person's face exactly the same.",
-  
-  // Historical warriors
-  "viking-warrior": "Transform this person into a fierce Viking warrior. Add braided hair, fur cloak, battle axes, Nordic mountain landscape background, warrior aesthetic. Keep the person's face exactly the same.",
-  "pirate-captain": "Transform this person into a pirate captain on ship deck. Add pirate tricorn hat, captain's coat, treasure chest, Caribbean sea and ship in background. Keep the person's face exactly the same.",
-  "warrior-spartan": "Transform this person into an ancient Greek Spartan warrior. Add spartan helmet, armor, shield, epic battle background. Keep the person's face exactly the same.",
-  "warrior-samurai": "Transform this person into a Japanese samurai warrior. Add traditional samurai armor, katana sword, cherry blossoms background. Keep the person's face exactly the same.",
-  
-  // Western themes
-  "western-cowboy": "Transform this person into a Western cowboy or cowgirl. Add cowboy hat, desert sunset background with horse, wild west aesthetic, warm golden lighting. Keep the person's face exactly the same.",
-  "western-sheriff": "Transform this person into a Wild West sheriff. Add sheriff badge, cowboy hat, western town background. Keep the person's face exactly the same.",
-  "western-rodeo": "Transform this person into a rodeo rider. Add rodeo arena, bull riding action, western atmosphere. Keep the person's face exactly the same.",
-  "western-saloon": "Transform this person into a Wild West saloon scene. Add vintage saloon interior, western costume. Keep the person's face exactly the same.",
-  
-  // Culinary themes
-  "chef-gourmet": "Transform this person into a professional gourmet chef. Add white chef uniform with hat, elegant restaurant kitchen background, culinary excellence atmosphere. Keep the person's face exactly the same.",
-  "chef-pastry": "Transform this person into a pastry chef decorating cakes. Add pastry kitchen, beautiful desserts, bakery setting. Keep the person's face exactly the same.",
-  "chef-sushi": "Transform this person into a Japanese sushi chef. Add sushi bar, fresh sushi rolls, traditional Japanese restaurant. Keep the person's face exactly the same.",
-  "chef-bbq": "Transform this person into a BBQ pitmaster. Add smoker grill, outdoor cooking setup, rustic BBQ atmosphere. Keep the person's face exactly the same.",
-  
-  // Zen & Spiritual themes
-  "zen-meditation": "Transform this person into a peaceful meditation scene. Add white flowing robes, Japanese zen garden with cherry blossoms, peaceful spiritual atmosphere. Keep the person's face exactly the same.",
-  "underwater-diver": "Transform this person into a deep sea diver exploring underwater ruins. Add diving suit, tropical fish, coral reef, magical underwater lighting with sun rays. Keep the person's face exactly the same.",
-  "zen-taichi": "Transform this person doing tai chi in misty mountains. Add flowing white clothes, peaceful morning mist, martial arts atmosphere. Keep the person's face exactly the same.",
-  "zen-monk": "Transform this person into a Buddhist monk. Add orange robes, ancient temple background, peaceful spiritual atmosphere. Keep the person's face exactly the same.",
-  
-  // Easter additional
-  "easter-chick": "Transform this person with cute yellow Easter chick. Add Easter eggs, spring meadow, pastel colors. Keep the person's face exactly the same.",
-  "easter-basket": "Transform this person with Easter basket full of colorful eggs. Add spring flowers, pastel colors, Easter celebration. Keep the person's face exactly the same.",
-  
-  // Halloween additional
-  "halloween-zombie": "Transform this person into a scary zombie. Add torn clothes, graveyard background, fog, horror atmosphere. Keep the person's face recognizable but zombified.",
-  "halloween-ghost": "Transform this person into an ethereal ghost. Add white flowing dress, haunted mansion, spooky atmosphere. Keep the person's face exactly the same.",
-  
-  // Additional styles
-  "luxury-yacht": "Transform this person into a billionaire on a luxury yacht. Add champagne, gold jewelry, ocean background, wealthy lifestyle. Keep the person's face exactly the same.",
-  "portrait-fashion": "Transform this into an elegant fashion magazine cover portrait. Add high fashion styling, professional studio lighting. Keep the person's face exactly the same.",
-  "star-grammy": "Transform this person into a Grammy award winner on stage. Add microphone, award trophy, red carpet lighting. Keep the person's face exactly the same.",
-  "star-runway": "Transform this person into a runway model at fashion week. Add haute couture outfit, runway catwalk, fashion show lighting. Keep the person's face exactly the same.",
+  // Additional themes
   "super-heroine": "Transform this person into a powerful female superhero. Add superhero costume with cape, flying over city, powerful pose. Keep the person's face exactly the same.",
   "super-villain": "Transform this person into a dramatic supervillain. Add dark costume, lightning, powerful evil aesthetic. Keep the person's face exactly the same.",
   "super-comic": "Transform this person into a comic book superhero. Add comic art style, action pose, superhero suit. Keep the person's face recognizable.",
@@ -213,6 +141,17 @@ const TRANSFORMATION_PROMPTS: Record<string, string> = {
   "wedding-dance": "Transform this person into a romantic first dance at wedding. Add elegant ballroom, wedding reception, romantic lighting. Keep the person's face exactly the same.",
 };
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -228,9 +167,9 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
+    if (!OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not configured");
     }
 
     const supabaseClient = createClient(
@@ -278,30 +217,40 @@ serve(async (req) => {
     const prompt = TRANSFORMATION_PROMPTS[transformationType] || "Transform this photo into a beautiful artistic portrait with enhanced lighting and magical atmosphere. Keep the person exactly the same.";
     console.log(`Transforming image with type: ${transformationType}`);
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // For image editing with OpenAI, we need to use gpt-image-1 with the edit endpoint
+    // But since we're doing style transfer, we'll use the generation endpoint with a detailed prompt
+    const fullPrompt = `Based on this reference photo, create a new image: ${prompt}. The result should maintain the person's likeness while applying the transformation.`;
+
+    // Download the original image and convert to base64
+    console.log("Fetching original image...");
+    const imageBase64 = await fetchImageAsBase64(imageUrl);
+
+    // Use OpenAI's image edit API
+    const formData = new FormData();
+    
+    // Convert base64 to blob
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
+    formData.append('image', imageBlob, 'image.png');
+    formData.append('prompt', prompt);
+    formData.append('model', 'gpt-image-1');
+    formData.append('size', '1024x1024');
+
+    const response = await fetch("https://api.openai.com/v1/images/edits", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: [
-              { type: "text", text: prompt },
-              { type: "image_url", image_url: { url: imageUrl } }
-            ]
-          }
-        ],
-        modalities: ["image", "text"]
-      }),
+      body: formData,
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("OpenAI API error:", response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
@@ -309,22 +258,18 @@ serve(async (req) => {
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "AI service unavailable. Please contact support." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
       
       throw new Error("Failed to transform image");
     }
 
     const data = await response.json();
-    const transformedImageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    const base64Image = data.data?.[0]?.b64_json;
 
-    if (!transformedImageUrl) {
+    if (!base64Image) {
       throw new Error("No transformed image generated");
     }
+
+    const transformedImageUrl = `data:image/png;base64,${base64Image}`;
 
     const { error: updateError } = await supabaseClient
       .from("ai_studio_credits")
