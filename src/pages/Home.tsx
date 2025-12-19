@@ -100,7 +100,6 @@ const Home = () => {
     { name: "Virtual Influencer Agency", path: "/virtual-influencer-agency", keywords: ["virtual", "influencer", "ai", "content", "earning", "money"] },
     { name: "AI Content Marketplace", path: "/ai-content-marketplace", keywords: ["content", "marketplace", "sell", "ai"] },
     { name: "Print on Demand", path: "/print-on-demand", keywords: ["print", "demand", "tshirt", "products", "design"] },
-    { name: "Brand Collaboration", path: "/brand-collaboration", keywords: ["brand", "collaboration", "sponsored"] },
     { name: "Custom Commissions", path: "/custom-commissions", keywords: ["commission", "custom", "service"] },
     { name: "Stock Content Library", path: "/stock-content-library", keywords: ["stock", "content", "library", "licensing"] },
     { name: "Tutorial Platform", path: "/tutorial-platform", keywords: ["tutorial", "course", "teaching", "education"] },

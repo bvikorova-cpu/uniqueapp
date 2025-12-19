@@ -257,7 +257,6 @@ const Navbar = () => {
     { path: "/emotion-economy", label: "Emotion Economy", icon: Heart },
     { path: "/quantum-social", label: "Quantum Social Network", icon: Zap },
     { path: "/virtual-influencer-agency", label: "Virtual Influencer Agency", icon: Users },
-    { path: "/brand-collaboration", label: "Brand Collaboration Hub", icon: Briefcase },
     { path: "/stock-content-library", label: "Stock Content Library", icon: ImageIcon },
     { path: "/tutorial-platform", label: "Tutorial & Course Platform", icon: GraduationCap },
     { path: "/virtual-escape-room", label: "Virtual Escape Room", icon: Lock },
