@@ -46,26 +46,26 @@ const QuantumSocial = () => {
       </div>
 
       <Tabs defaultValue="feed" className="w-full">
-        <TabsList className="flex flex-wrap h-auto gap-2 p-2 mb-8">
-          <TabsTrigger value="feed" className="flex items-center gap-2 px-4 py-2">
+        <TabsList className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 w-full h-auto gap-2 p-2 mb-8">
+          <TabsTrigger value="feed" className="flex items-center justify-center gap-2 px-3 py-3 text-sm">
             <FileText className="h-4 w-4" />
-            Feed
+            <span>Feed</span>
           </TabsTrigger>
-          <TabsTrigger value="profile" className="flex items-center gap-2 px-4 py-2">
+          <TabsTrigger value="profile" className="flex items-center justify-center gap-2 px-3 py-3 text-sm">
             <Settings className="h-4 w-4" />
-            My Profile
+            <span>My Profile</span>
           </TabsTrigger>
-          <TabsTrigger value="observer" className="flex items-center gap-2 px-4 py-2">
+          <TabsTrigger value="observer" className="flex items-center justify-center gap-2 px-3 py-3 text-sm">
             <Eye className="h-4 w-4" />
-            Observer Mode
+            <span>Observer</span>
           </TabsTrigger>
-          <TabsTrigger value="entanglements" className="flex items-center gap-2 px-4 py-2">
+          <TabsTrigger value="entanglements" className="flex items-center justify-center gap-2 px-3 py-3 text-sm">
             <Users className="h-4 w-4" />
-            Entanglements
+            <span>Entangle</span>
           </TabsTrigger>
-          <TabsTrigger value="subscriptions" className="flex items-center gap-2 px-4 py-2">
+          <TabsTrigger value="subscriptions" className="flex items-center justify-center gap-2 px-3 py-3 text-sm col-span-2 sm:col-span-1">
             <Zap className="h-4 w-4" />
-            Subscriptions
+            <span>Subscribe</span>
           </TabsTrigger>
         </TabsList>
 
