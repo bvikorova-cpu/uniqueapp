@@ -32,12 +32,12 @@ serve(async (req) => {
 
     // Define credit costs for different analysis types
     const creditCosts: Record<string, number> = {
-      'basic': 3,        // Basic identification
-      'valuation': 10,   // Market valuation
-      'expert': 15,      // Complete expert report
-      'authenticity': 20, // Authenticity analysis
-      'history': 3,      // Historical story
-      'restoration': 3   // Restoration advice
+      'basic': 3,
+      'valuation': 10,
+      'expert': 15,
+      'authenticity': 20,
+      'history': 3,
+      'restoration': 3
     };
 
     const creditsRequired = creditCosts[analysisType] || 3;
@@ -127,21 +127,21 @@ Format as JSON with keys: condition, priority, cleaning, repairs, preservation, 
         prompt = 'Identify this antique item and provide basic information.';
     }
 
-    // Call Lovable AI Gateway
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    // Call OpenAI API
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
-    console.log('Calling AI Gateway for antique analysis...');
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    console.log('Calling OpenAI API for antique analysis...');
+    const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'user',
@@ -150,29 +150,21 @@ Format as JSON with keys: condition, priority, cleaning, repairs, preservation, 
               { type: 'image_url', image_url: { url: imageUrl } }
             ]
           }
-        ]
+        ],
+        max_tokens: 1500,
       }),
     });
 
     if (!aiResponse.ok) {
-      const errorText = await aiResponse.text();
-      console.error('AI Gateway error:', aiResponse.status, errorText);
-      
       if (aiResponse.status === 429) {
         return new Response(
           JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }),
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      
-      if (aiResponse.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI service credits exhausted. Please contact support.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      
-      throw new Error(`AI Gateway error: ${aiResponse.status}`);
+      const errorText = await aiResponse.text();
+      console.error('OpenAI API error:', aiResponse.status, errorText);
+      throw new Error(`OpenAI API error: ${aiResponse.status}`);
     }
 
     const aiData = await aiResponse.json();
@@ -186,9 +178,8 @@ Format as JSON with keys: condition, priority, cleaning, repairs, preservation, 
     // Parse JSON from response
     let analysisResult;
     try {
-      // Try to extract JSON from markdown code blocks if present
-      const jsonMatch = analysisText.match(/```json\n([\s\S]*?)\n```/);
-      const jsonString = jsonMatch ? jsonMatch[1] : analysisText;
+      const jsonMatch = analysisText.match(/```json\n([\s\S]*?)\n```/) || analysisText.match(/\{[\s\S]*\}/);
+      const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : analysisText;
       analysisResult = JSON.parse(jsonString);
     } catch (e) {
       console.error('Failed to parse JSON, using raw text:', e);
