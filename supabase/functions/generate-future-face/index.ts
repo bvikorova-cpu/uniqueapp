@@ -6,6 +6,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const response = await fetch(url);
+  const arrayBuffer = await response.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8Array.length; i++) {
+    binary += String.fromCharCode(uint8Array[i]);
+  }
+  return btoa(binary);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -30,52 +41,54 @@ serve(async (req) => {
       throw new Error('Not authenticated');
     }
 
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
+
+    console.log("Fetching original image...");
+    const imageBase64 = await fetchImageAsBase64(imageUrl);
+
+    const binaryString = atob(imageBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const imageBlob = new Blob([bytes], { type: 'image/png' });
 
     // Generate healthy lifestyle version
     const healthyPrompt = `Age this person by ${yearsForward} years with HEALTHY LIFESTYLE: 
     Show natural, graceful aging with glowing skin, minimal wrinkles, vibrant appearance, healthy hair with natural graying, 
-    fit physique, bright eyes, and youthful energy. This is the result of good nutrition, exercise, sleep, and stress management. 
-    Photorealistic, professional portrait, dignified and vibrant aging.`;
+    fit physique, bright eyes, and youthful energy. Keep the person recognizable.`;
     
     let healthyImageUrl = null;
     
     try {
-      const healthyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-        method: 'POST',
+      const formData = new FormData();
+      formData.append('image', imageBlob, 'image.png');
+      formData.append('prompt', healthyPrompt);
+      formData.append('model', 'gpt-image-1');
+      formData.append('size', '1024x1024');
+
+      const healthyResponse = await fetch("https://api.openai.com/v1/images/edits", {
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${OPENAI_API_KEY}`,
         },
-        body: JSON.stringify({
-          model: 'google/gemini-2.5-flash-image-preview',
-          messages: [
-            {
-              role: 'user',
-              content: [
-                {
-                  type: 'text',
-                  text: healthyPrompt
-                },
-                {
-                  type: 'image_url',
-                  image_url: {
-                    url: imageUrl
-                  }
-                }
-              ]
-            }
-          ],
-          modalities: ['image', 'text']
-        }),
+        body: formData,
       });
 
       if (healthyResponse.ok) {
         const healthyData = await healthyResponse.json();
-        healthyImageUrl = healthyData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const base64Image = healthyData.data?.[0]?.b64_json;
+        if (base64Image) {
+          healthyImageUrl = `data:image/png;base64,${base64Image}`;
+        }
+      } else {
+        const errorText = await healthyResponse.text();
+        console.error('Healthy image error:', healthyResponse.status, errorText);
       }
     } catch (imgError) {
       console.error('Healthy image generation error:', imgError);
@@ -87,74 +100,73 @@ serve(async (req) => {
     if (includeComparison) {
       const unhealthyPrompt = `Age this person by ${yearsForward} years with UNHEALTHY LIFESTYLE: 
       Show accelerated aging with dull, sagging skin, deep wrinkles, tired appearance, thinning gray hair, 
-      less toned physique, tired eyes with bags, and worn look. This is the result of poor diet, lack of exercise, 
-      poor sleep, smoking, excessive alcohol, and high stress. Photorealistic, professional portrait, showing effects of neglect.`;
+      less toned physique, tired eyes with bags, and worn look. Keep the person recognizable.`;
       
       try {
-        const unhealthyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-          method: 'POST',
+        const formData2 = new FormData();
+        formData2.append('image', imageBlob, 'image.png');
+        formData2.append('prompt', unhealthyPrompt);
+        formData2.append('model', 'gpt-image-1');
+        formData2.append('size', '1024x1024');
+
+        const unhealthyResponse = await fetch("https://api.openai.com/v1/images/edits", {
+          method: "POST",
           headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${OPENAI_API_KEY}`,
           },
-          body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
-            messages: [
-              {
-                role: 'user',
-                content: [
-                  {
-                    type: 'text',
-                    text: unhealthyPrompt
-                  },
-                  {
-                    type: 'image_url',
-                    image_url: {
-                      url: imageUrl
-                    }
-                  }
-                ]
-              }
-            ],
-            modalities: ['image', 'text']
-          }),
+          body: formData2,
         });
 
         if (unhealthyResponse.ok) {
           const unhealthyData = await unhealthyResponse.json();
-          unhealthyImageUrl = unhealthyData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          const base64Image = unhealthyData.data?.[0]?.b64_json;
+          if (base64Image) {
+            unhealthyImageUrl = `data:image/png;base64,${base64Image}`;
+          }
+        } else {
+          const errorText = await unhealthyResponse.text();
+          console.error('Unhealthy image error:', unhealthyResponse.status, errorText);
         }
       } catch (imgError) {
         console.error('Unhealthy image generation error:', imgError);
       }
     }
 
-    // Generate anti-aging tips
-    const tipsResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert in healthy aging and anti-aging strategies. Provide practical, evidence-based advice.'
+    // Generate anti-aging tips using Lovable AI
+    let antiAgingTips = 'Maintain a healthy lifestyle with proper nutrition, regular exercise, good sleep, and stress management.';
+    
+    if (LOVABLE_API_KEY) {
+      try {
+        const tipsResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
           },
-          {
-            role: 'user',
-            content: `Provide 5 key anti-aging tips to maintain youthful appearance and health over the next ${yearsForward} years. Include diet, exercise, skincare, lifestyle and mental health advice. Keep it under 200 words, actionable and motivating.`
-          }
-        ],
-      }),
-    });
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are an expert in healthy aging and anti-aging strategies. Provide practical, evidence-based advice.'
+              },
+              {
+                role: 'user',
+                content: `Provide 5 key anti-aging tips to maintain youthful appearance and health over the next ${yearsForward} years. Include diet, exercise, skincare, lifestyle and mental health advice. Keep it under 200 words, actionable and motivating.`
+              }
+            ],
+          }),
+        });
 
-    const tipsData = await tipsResponse.json();
-    const antiAgingTips = tipsData.choices[0].message.content;
+        if (tipsResponse.ok) {
+          const tipsData = await tipsResponse.json();
+          antiAgingTips = tipsData.choices[0].message.content;
+        }
+      } catch (e) {
+        console.error('Tips generation error:', e);
+      }
+    }
 
-    // Save to database
     const { data: progression, error: progError } = await supabase
       .from('future_face_progressions')
       .insert({
