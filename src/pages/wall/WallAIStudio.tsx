@@ -655,8 +655,14 @@ export default function WallAIStudio() {
         body: { imageUrl: finalImageUrl, transformationType: selectedTransformation }
       });
 
-      if (error) throw error;
-      if (data.error) throw new Error(data.error);
+      if (error) {
+        // Check if response contains error message
+        if (data?.error) {
+          throw new Error(data.error);
+        }
+        throw error;
+      }
+      if (data?.error) throw new Error(data.error);
       
       return data;
     },
