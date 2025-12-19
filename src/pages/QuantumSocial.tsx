@@ -46,28 +46,65 @@ const QuantumSocial = () => {
       </div>
 
       <Tabs defaultValue="feed" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 mb-8">
-          <TabsTrigger value="feed" className="gap-2">
+        <TabsList className="flex flex-wrap h-auto gap-2 p-2 mb-8">
+          <TabsTrigger value="feed" className="flex items-center gap-2 px-4 py-2">
             <FileText className="h-4 w-4" />
             Feed
           </TabsTrigger>
-          <TabsTrigger value="profile" className="gap-2">
+          <TabsTrigger value="profile" className="flex items-center gap-2 px-4 py-2">
             <Settings className="h-4 w-4" />
             My Profile
           </TabsTrigger>
-          <TabsTrigger value="observer" className="gap-2">
+          <TabsTrigger value="observer" className="flex items-center gap-2 px-4 py-2">
             <Eye className="h-4 w-4" />
             Observer Mode
           </TabsTrigger>
-          <TabsTrigger value="entanglements" className="gap-2">
+          <TabsTrigger value="entanglements" className="flex items-center gap-2 px-4 py-2">
             <Users className="h-4 w-4" />
             Entanglements
           </TabsTrigger>
-          <TabsTrigger value="subscriptions" className="gap-2">
+          <TabsTrigger value="subscriptions" className="flex items-center gap-2 px-4 py-2">
             <Zap className="h-4 w-4" />
             Subscriptions
           </TabsTrigger>
         </TabsList>
+
+        {/* Tab Descriptions */}
+        <div className="mb-8 bg-card border rounded-lg p-4">
+          <h3 className="font-semibold mb-3">Tab Guide</h3>
+          <div className="grid gap-3 text-sm text-muted-foreground">
+            <div className="flex items-start gap-3">
+              <FileText className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+              <div>
+                <strong className="text-foreground">Feed:</strong> Browse and create quantum posts. Each post you create will be split into multiple personality versions (professional, casual, humorous) that different followers see randomly.
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Settings className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+              <div>
+                <strong className="text-foreground">My Profile:</strong> Manage your quantum profile settings. Enable multiple reality versions of your profile so different followers see different aspects of your personality.
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Eye className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+              <div>
+                <strong className="text-foreground">Observer Mode:</strong> Subscribe to see ALL quantum versions of any post. Discover how content appears differently to various audiences and understand quantum dynamics.
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Users className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+              <div>
+                <strong className="text-foreground">Entanglements:</strong> Create quantum connections with special people. When entangled, you both always see the exact same versions of posts, creating a shared reality experience.
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <Zap className="h-4 w-4 mt-0.5 text-primary shrink-0" />
+              <div>
+                <strong className="text-foreground">Subscriptions:</strong> Manage your premium subscriptions. Upgrade to access Observer Mode, Quantum Entanglements, Quantum Profiles, and the ability to collapse post quantum states.
+              </div>
+            </div>
+          </div>
+        </div>
 
         <TabsContent value="feed">
           <QuantumFeed />
