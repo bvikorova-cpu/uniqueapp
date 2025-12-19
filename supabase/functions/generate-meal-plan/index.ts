@@ -94,22 +94,22 @@ Also provide a shopping list organized by category (vegetables, proteins, grains
 
 Format the response as JSON.`;
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      return new Response(JSON.stringify({ error: 'API key not configured' }), {
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      return new Response(JSON.stringify({ error: 'OPENAI_API_KEY not configured' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: 'You are a professional nutritionist. Always respond with valid JSON only.' },
           { role: 'user', content: prompt }
@@ -120,7 +120,7 @@ Format the response as JSON.`;
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('AI error:', response.status, errorText);
+      console.error('OpenAI API error:', response.status, errorText);
       return new Response(JSON.stringify({ error: 'Error generating meal plan' }), {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
