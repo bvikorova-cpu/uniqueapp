@@ -15,9 +15,9 @@ serve(async (req) => {
     
     console.log('Generating tattoo with params:', { prompt, style, colorScheme, placement, size });
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is not configured');
     }
 
     // Build detailed prompt for tattoo generation
@@ -29,21 +29,20 @@ serve(async (req) => {
 
     console.log('Full prompt:', fullPrompt);
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: fullPrompt
-          }
-        ],
-        modalities: ['image', 'text']
+        model: 'gpt-image-1',
+        prompt: fullPrompt,
+        n: 1,
+        size: '1024x1024',
+        quality: 'high',
+        output_format: 'webp',
+        output_compression: 90,
       }),
     });
 
@@ -54,27 +53,21 @@ serve(async (req) => {
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
       const errorText = await response.text();
-      console.error('AI gateway error:', response.status, errorText);
-      throw new Error(`AI gateway error: ${response.status}`);
+      console.error('OpenAI API error:', response.status, errorText);
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('AI response received');
+    console.log('OpenAI response received');
 
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    
-    if (!imageUrl) {
+    const base64Image = data.data?.[0]?.b64_json;
+    if (!base64Image) {
       console.error('No image in response:', data);
       throw new Error('No image generated');
     }
 
+    const imageUrl = `data:image/webp;base64,${base64Image}`;
     console.log('Tattoo generated successfully');
 
     return new Response(
