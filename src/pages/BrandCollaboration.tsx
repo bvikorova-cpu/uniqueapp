@@ -179,8 +179,8 @@ const BrandCollaboration = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3 text-sm text-muted-foreground">
                 <h3 className="text-foreground font-semibold flex items-center gap-2">
-                  <Star className="h-4 w-4 text-primary" />
-                  For Creators
+                  <Star className="h-4 w-4 shrink-0 text-primary" />
+                  <span>For Creators</span>
                 </h3>
                 <ul className="space-y-2 list-disc list-inside">
                   <li>Browse active brand campaigns</li>
@@ -199,8 +199,8 @@ const BrandCollaboration = () => {
               
               <div className="space-y-3 text-sm text-muted-foreground">
                 <h3 className="text-foreground font-semibold flex items-center gap-2">
-                  <Handshake className="h-4 w-4 text-primary" />
-                  For Brands
+                  <Handshake className="h-4 w-4 shrink-0 text-primary" />
+                  <span>For Brands</span>
                 </h3>
                 <ul className="space-y-2 list-disc list-inside">
                   <li>Post your campaign</li>
