@@ -22717,6 +22717,118 @@ export type Database = {
           },
         ]
       }
+      service_order_messages: {
+        Row: {
+          attachment_url: string | null
+          created_at: string
+          id: string
+          is_delivery: boolean | null
+          is_read: boolean | null
+          message: string
+          order_id: string
+          sender_id: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          created_at?: string
+          id?: string
+          is_delivery?: boolean | null
+          is_read?: boolean | null
+          message: string
+          order_id: string
+          sender_id: string
+        }
+        Update: {
+          attachment_url?: string | null
+          created_at?: string
+          id?: string
+          is_delivery?: boolean | null
+          is_read?: boolean | null
+          message?: string
+          order_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_order_messages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "service_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_orders: {
+        Row: {
+          buyer_id: string
+          commission_amount: number
+          commission_rate: number
+          completed_at: string | null
+          created_at: string
+          delivered_at: string | null
+          delivery_deadline: string
+          id: string
+          offering_id: string
+          payment_completed_at: string | null
+          requirements: string
+          seller_id: string
+          seller_payout: number
+          status: string
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          commission_amount: number
+          commission_rate?: number
+          completed_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          delivery_deadline: string
+          id?: string
+          offering_id: string
+          payment_completed_at?: string | null
+          requirements: string
+          seller_id: string
+          seller_payout: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          commission_amount?: number
+          commission_rate?: number
+          completed_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          delivery_deadline?: string
+          id?: string
+          offering_id?: string
+          payment_completed_at?: string | null
+          requirements?: string
+          seller_id?: string
+          seller_payout?: number
+          status?: string
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_orders_offering_id_fkey"
+            columns: ["offering_id"]
+            isOneToOne: false
+            referencedRelation: "skill_offerings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       session_players: {
         Row: {
           id: string

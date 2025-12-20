@@ -394,22 +394,64 @@ const Marketplace = () => {
                 Skills Marketplace
               </h1>
               <p className="text-muted-foreground text-sm sm:text-base mb-4">Find skilled professionals or offer your services</p>
-              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-3 sm:p-6 space-y-2 sm:space-y-3">
+              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-3 sm:p-6 space-y-3 sm:space-y-4">
                 <h2 className="text-base sm:text-lg font-semibold">How It Works</h2>
-                <ul className="space-y-2 text-muted-foreground text-xs sm:text-sm">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span>
-                    <span><strong>Post Your Skills:</strong> Subscribe for €2/month to create unlimited service offerings.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span>
-                    <span><strong>Find Professionals:</strong> Browse by category to find the perfect match.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span>
-                    <span><strong>Connect Directly:</strong> Send messages to service providers.</span>
-                  </li>
-                </ul>
+                <p className="text-muted-foreground text-xs sm:text-sm">
+                  Our Skills Marketplace connects service providers with clients looking for professional help. 
+                  Whether you offer translation services, graphic design, tutoring, home repairs, or any other skill — 
+                  this is the place to monetize your expertise and find trusted professionals.
+                </p>
+                
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="bg-primary/5 rounded-lg p-3">
+                    <h3 className="font-semibold text-sm mb-2">For Service Providers</h3>
+                    <ul className="space-y-1.5 text-muted-foreground text-xs">
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-0.5">1.</span>
+                        <span><strong>Create Your Offering:</strong> Describe your service, set your price, and specify delivery time.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-0.5">2.</span>
+                        <span><strong>Receive Orders:</strong> Clients purchase your service and describe their requirements.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-0.5">3.</span>
+                        <span><strong>Communicate & Deliver:</strong> Chat with clients, clarify details, and deliver within the deadline.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-0.5">4.</span>
+                        <span><strong>Get Paid:</strong> Receive 85% of the payment (15% platform fee) after client approval.</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div className="bg-secondary/50 rounded-lg p-3">
+                    <h3 className="font-semibold text-sm mb-2">For Clients</h3>
+                    <ul className="space-y-1.5 text-muted-foreground text-xs">
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-0.5">1.</span>
+                        <span><strong>Browse Services:</strong> Find the perfect professional for your needs.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-0.5">2.</span>
+                        <span><strong>Place an Order:</strong> Describe your requirements and pay securely.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-0.5">3.</span>
+                        <span><strong>Collaborate:</strong> Use the built-in chat to communicate with the provider.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-primary mt-0.5">4.</span>
+                        <span><strong>Approve & Complete:</strong> Review the delivered work and confirm completion.</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                
+                <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
+                  <strong>Secure Payments:</strong> All transactions are processed through Stripe. Funds are held securely 
+                  until you approve the delivered work. Platform commission (15%) is automatically deducted.
+                </div>
               </div>
             </div>
             <Button onClick={() => setShowCreateForm(!showCreateForm)} className="w-full sm:w-auto">
