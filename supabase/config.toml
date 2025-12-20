@@ -1142,3 +1142,12 @@ verify_jwt = true
 
 [functions.request-instructor-withdrawal]
 verify_jwt = true
+
+[functions.create-connect-account]
+verify_jwt = true
+
+[functions.check-connect-status]
+verify_jwt = true
+
+[functions.create-connect-login-link]
+verify_jwt = true
