@@ -72,6 +72,15 @@ export const ContentGrid = ({ items, onPurchase }: ContentGridProps) => {
                 <ImageIcon className="w-12 h-12 text-muted-foreground" />
               </div>
             )}
+            {/* Watermark overlay */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="transform rotate-[-25deg] opacity-40">
+                <span className="text-4xl font-bold text-foreground tracking-widest select-none"
+                  style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+                  UNIQUE
+                </span>
+              </div>
+            </div>
             <div className="absolute top-2 right-2">
               <Badge variant="secondary">{item.content_type}</Badge>
             </div>
