@@ -46,20 +46,20 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
     // Generate brand strategy
-    const strategyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const strategyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -145,32 +145,33 @@ Format as JSON with keys: slogan, tagline, colors (array), socialStrategy (objec
       };
     }
 
-    // Generate logo
+    // Generate logo using OpenAI
     const logoPrompt = `Modern, professional logo for ${businessName}, ${businessType} business. ${brandStrategy.colors[0].hex} color scheme. Clean, minimalist design. High quality, 1024x1024.`;
     
     let logoUrl = null;
     try {
-      const logoResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const logoResponse = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash-image-preview',
-          messages: [
-            {
-              role: 'user',
-              content: logoPrompt
-            }
-          ],
-          modalities: ['image', 'text']
+          model: 'gpt-image-1',
+          prompt: logoPrompt,
+          n: 1,
+          size: '1024x1024',
+          quality: 'high',
+          output_format: 'webp',
         }),
       });
 
       if (logoResponse.ok) {
         const logoData = await logoResponse.json();
-        logoUrl = logoData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const base64Image = logoData.data?.[0]?.b64_json;
+        if (base64Image) {
+          logoUrl = `data:image/webp;base64,${base64Image}`;
+        }
       }
     } catch (logoError) {
       console.error('Logo generation error:', logoError);
