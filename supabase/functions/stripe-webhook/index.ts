@@ -294,8 +294,15 @@ serve(async (req) => {
       }
 
       if (paymentStatus === "paid" && userId && credits > 0) {
-        const creditType = metadata.type || "ai_credits";
-        const tableName = creditType === "photo_credits" ? "photo_credits" : "ai_credits";
+        const creditType = metadata.credit_type || metadata.type || "ai_credits";
+        
+        // Map credit types to table names
+        let tableName = "ai_credits";
+        if (creditType === "photo_credits") {
+          tableName = "photo_credits";
+        } else if (creditType === "analyzer_credits") {
+          tableName = "analyzer_credits";
+        }
         
         // Get current credits
         const { data: currentCredits } = await supabaseAdmin
@@ -319,14 +326,20 @@ serve(async (req) => {
             throw error;
           }
         } else {
-          // Create new record
+          // Create new record with tier for analyzer_credits
+          const insertData: any = {
+            user_id: userId,
+            credits_remaining: credits,
+            total_credits_purchased: credits,
+          };
+          
+          if (tableName === "analyzer_credits") {
+            insertData.tier = "basic";
+          }
+          
           const { error } = await supabaseAdmin
             .from(tableName)
-            .insert({
-              user_id: userId,
-              credits_remaining: credits,
-              total_credits_purchased: credits,
-            });
+            .insert(insertData);
 
           if (error) {
             console.error(`Error creating ${tableName}:`, error);
