@@ -468,22 +468,61 @@ const Bazaar = () => {
               <p className="text-base sm:text-xl text-muted-foreground mt-2 mb-3 sm:mb-4">
                 Buy and sell with confidence in our community
               </p>
-              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-4 sm:p-6 space-y-2 sm:space-y-3">
+              <div className="bg-card/50 backdrop-blur-sm border rounded-lg p-4 sm:p-6 space-y-3 sm:space-y-4">
                 <h2 className="text-base sm:text-lg font-semibold">How It Works</h2>
-                <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span>
-                    <span><strong>List Items:</strong> Create listings to sell or trade items. Upload photos, set prices in EUR (€).</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span>
-                    <span><strong>Browse & Search:</strong> Filter by category, search by keywords.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-0.5">•</span>
-                    <span><strong>Connect & Buy:</strong> Message sellers directly. Complete purchases securely via Stripe.</span>
-                  </li>
-                </ul>
+                
+                {/* For Sellers */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-primary">For Sellers</h3>
+                  <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">1.</span>
+                      <span><strong>Create a Listing:</strong> Upload photos, write a description, and set your price in EUR (€). The price must include shipping costs - you are responsible for packaging and sending the item.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">2.</span>
+                      <span><strong>Receive Orders:</strong> When someone purchases your item, you'll receive a notification with their shipping address and any notes.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">3.</span>
+                      <span><strong>Ship the Item:</strong> Package and ship the item to the buyer. Click "Mark as Shipped" to update the order status.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">4.</span>
+                      <span><strong>Get Paid:</strong> Once the buyer confirms delivery, you receive your payout (price minus 10% platform commission).</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* For Buyers */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-primary">For Buyers</h3>
+                  <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">1.</span>
+                      <span><strong>Browse & Search:</strong> Filter items by category, search by keywords, and find exactly what you need.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">2.</span>
+                      <span><strong>Contact or Buy:</strong> Message the seller with questions, or click "Buy Now" to purchase immediately. The displayed price includes shipping.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">3.</span>
+                      <span><strong>Secure Payment:</strong> Pay securely via Stripe. Your payment is held safely until delivery is confirmed.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-primary mt-0.5">4.</span>
+                      <span><strong>Confirm Delivery:</strong> Once you receive the item, click "Confirm Received" to complete the transaction. The listing is then automatically removed.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Important Notes */}
+                <div className="mt-3 pt-3 border-t border-border/50">
+                  <p className="text-xs text-muted-foreground">
+                    <strong>Note:</strong> All prices include shipping. A 10% commission is deducted from the seller's payout. Communicate with the seller via the built-in chat for any questions or special requests.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
