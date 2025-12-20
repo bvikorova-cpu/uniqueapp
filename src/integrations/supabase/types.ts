@@ -1721,6 +1721,160 @@ export type Database = {
           },
         ]
       }
+      bazaar_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+          order_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+          order_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+          order_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bazaar_order_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_read: boolean
+          order_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          order_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          order_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_order_messages_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bazaar_orders: {
+        Row: {
+          amount: number
+          buyer_id: string
+          buyer_notes: string | null
+          commission_amount: number
+          completed_at: string | null
+          created_at: string
+          delivered_at: string | null
+          id: string
+          item_id: string
+          paid_at: string | null
+          seller_id: string
+          seller_payout: number
+          shipped_at: string | null
+          shipping_address: string | null
+          status: string
+          stripe_session_id: string | null
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          buyer_notes?: string | null
+          commission_amount: number
+          completed_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          item_id: string
+          paid_at?: string | null
+          seller_id: string
+          seller_payout: number
+          shipped_at?: string | null
+          shipping_address?: string | null
+          status?: string
+          stripe_session_id?: string | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          buyer_notes?: string | null
+          commission_amount?: number
+          completed_at?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          id?: string
+          item_id?: string
+          paid_at?: string | null
+          seller_id?: string
+          seller_payout?: number
+          shipped_at?: string | null
+          shipping_address?: string | null
+          status?: string
+          stripe_session_id?: string | null
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_orders_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bazaar_orders_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bazaar_transactions: {
         Row: {
           amount: number
