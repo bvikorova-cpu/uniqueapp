@@ -86,22 +86,29 @@ serve(async (req) => {
   try {
     const { imageUrl, category, analysisType = 'basic' } = await req.json();
     
-    const supabaseClient = createClient(
+    // Use service role for database operations to bypass RLS
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+    
+    // Use anon key for auth verification
+    const supabaseAuth = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
     const authHeader = req.headers.get('Authorization')!;
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user } } = await supabaseClient.auth.getUser(token);
+    const { data: { user } } = await supabaseAuth.auth.getUser(token);
     
     if (!user) throw new Error('Not authenticated');
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
 
-    // Check user credits and tier
-    const { data: creditsData, error: creditsError } = await supabaseClient
+    // Check user credits and tier using admin client
+    const { data: creditsData, error: creditsError } = await supabaseAdmin
       .from('analyzer_credits')
       .select('*')
       .eq('user_id', user.id)
@@ -110,8 +117,9 @@ serve(async (req) => {
     if (creditsError) throw creditsError;
 
     // Create credits record if doesn't exist
-    if (!creditsData) {
-      const { data: newCredits, error: insertError } = await supabaseClient
+    let credits = creditsData;
+    if (!credits) {
+      const { data: newCredits, error: insertError } = await supabaseAdmin
         .from('analyzer_credits')
         .insert({
           user_id: user.id,
@@ -123,10 +131,10 @@ serve(async (req) => {
         .single();
       
       if (insertError) throw insertError;
+      credits = newCredits;
     }
 
     // Check if user has enough credits
-    const credits = creditsData || { credits_remaining: 1, tier: 'free' };
     const creditsRequired = analysisType === 'expert' ? 2 : 1;
 
     if (credits.credits_remaining < creditsRequired) {
@@ -252,8 +260,8 @@ Return the analysis in the following JSON format:
       };
     }
 
-    // Save analysis to database
-    const { data: savedAnalysis, error: saveError } = await supabaseClient
+    // Save analysis to database using admin client
+    const { data: savedAnalysis, error: saveError } = await supabaseAdmin
       .from('vision_analyses')
       .insert({
         user_id: user.id,
@@ -274,8 +282,8 @@ Return the analysis in the following JSON format:
       throw saveError;
     }
 
-    // Deduct credits
-    await supabaseClient
+    // Deduct credits using admin client
+    await supabaseAdmin
       .from('analyzer_credits')
       .update({ 
         credits_remaining: credits.credits_remaining - creditsRequired,
