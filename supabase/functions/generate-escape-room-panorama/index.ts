@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -22,9 +23,9 @@ serve(async (req) => {
 
     console.log(`Generating escape room panorama for: ${roomName} (${theme})`);
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
     // Theme-specific prompts for immersive escape room environments
@@ -38,46 +39,29 @@ serve(async (req) => {
 
     const themeStyle = themePrompts[theme] || themePrompts.mystery;
 
-    const prompt = `Create a stunning photorealistic 360-degree equirectangular panoramic view of "${roomName}" - an immersive escape room environment.
+    const prompt = `A stunning photorealistic 360-degree equirectangular panoramic view of "${roomName}" - an immersive escape room environment. ${themeStyle}. ${description || ''} Full 360° equirectangular projection suitable for VR/panorama viewers. Highly detailed, photorealistic quality with dramatic atmospheric lighting. Include interactive elements like drawers, safes, books, mysterious objects. Rich textures and immersive escape room atmosphere with puzzles and clues subtly visible. Professional theme park quality visuals, ultra high resolution, cinematic lighting.`;
 
-Scene details: ${themeStyle}
-${description ? `Additional details: ${description}` : ''}
+    console.log('Calling OpenAI DALL-E with prompt...');
 
-Requirements:
-- Full 360° equirectangular projection suitable for VR/panorama viewers
-- Highly detailed, photorealistic quality
-- Dramatic atmospheric lighting with depth
-- Include interactive-looking elements (drawers, safes, books, mysterious objects)
-- Rich textures and materials
-- Immersive escape room atmosphere with puzzles and clues subtly visible
-- Professional theme park quality visuals
-- Ultra high resolution, cinematic lighting
-
-Style: Photorealistic escape room interior, immersive, mysterious, detailed props and decorations.`;
-
-    console.log('Calling Lovable AI with prompt...');
-
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        modalities: ['image', 'text']
+        model: 'gpt-image-1',
+        prompt: prompt,
+        n: 1,
+        size: '1536x1024',
+        quality: 'high',
+        output_format: 'png'
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Lovable AI API error:', response.status, errorText);
+      console.error('OpenAI API error:', response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
@@ -85,27 +69,22 @@ Style: Photorealistic escape room interior, immersive, mysterious, detailed prop
           { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI credits exhausted. Please add more credits.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
 
-      throw new Error(`Lovable AI API error: ${response.status} - ${errorText}`);
+      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('Lovable AI response received');
+    console.log('OpenAI response received');
 
-    // Extract image from response
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    // Extract base64 image from response
+    const base64Image = data.data?.[0]?.b64_json;
     
-    if (!imageUrl) {
+    if (!base64Image) {
       console.error('No image in response:', JSON.stringify(data));
       throw new Error('No image generated in response');
     }
+
+    const imageUrl = `data:image/png;base64,${base64Image}`;
 
     console.log('Panorama generated successfully');
 
