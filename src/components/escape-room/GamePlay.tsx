@@ -7,8 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Clock, Lightbulb, Boxes, Map } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Room3D from "./Room3D";
-import PanoramaEscapeRoom from "./PanoramaEscapeRoom";
-import { getRoomsForTheme } from "./puzzleRooms";
+import { PanoramaEscapeRoom } from "./PanoramaEscapeRoom";
+import { getRoomsForTheme, RoomData } from "./puzzleRooms";
 
 interface GamePlayProps {
   roomId: string;
@@ -177,13 +177,29 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   const currentPuzzle = puzzles[currentPuzzleIndex];
   const progress = rooms.length > 0 ? ((currentRoomIndex + 1) / rooms.length) * 100 : 0;
 
+  // State for panorama rooms with AI-generated URLs
+  const [panoramaRooms, setPanoramaRooms] = useState<RoomData[]>(() => 
+    getRoomsForTheme(room?.theme || "mystery")
+  );
+
+  // Update panorama rooms when theme changes
+  useEffect(() => {
+    setPanoramaRooms(getRoomsForTheme(room?.theme || "mystery"));
+  }, [room?.theme]);
+
+  // Callback to update a room's panorama URL
+  const handleUpdateRoomPanorama = (roomIndex: number, newUrl: string) => {
+    setPanoramaRooms(prev => prev.map((r, idx) => 
+      idx === roomIndex ? { ...r, panoramaUrl: newUrl } : r
+    ));
+  };
+
   // Panorama mode - hlavný herný režim
   if (gameMode === "panorama") {
-    const puzzleRooms = getRoomsForTheme(room?.theme || "mystery");
     return (
       <PanoramaEscapeRoom
         theme={room?.theme || "mystery"}
-        rooms={puzzleRooms}
+        rooms={panoramaRooms}
         onComplete={(score, time) => {
           toast({
             title: "🎉 Gratulujem!",
@@ -192,6 +208,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
           setTimeout(onExit, 3000);
         }}
         onExit={onExit}
+        onUpdateRoomPanorama={handleUpdateRoomPanorama}
       />
     );
   }
