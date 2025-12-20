@@ -20,15 +20,15 @@ export const useAnalyzerCredits = () => {
 
       if (error) throw error;
       
-      // If no credits record exists, create one with basic tier
+      // If no credits record exists, create one (no free trial / no free credits)
       if (!data) {
         const { data: newData, error: insertError } = await supabase
           .from("analyzer_credits")
           .insert({
             user_id: user.id,
-            credits_remaining: 10,
-            total_credits_purchased: 10,
-            tier: 'basic'
+            credits_remaining: 0,
+            total_credits_purchased: 0,
+            tier: "basic",
           })
           .select()
           .single();
