@@ -86,29 +86,33 @@ serve(async (req) => {
   try {
     const { imageUrl, category, analysisType = 'basic' } = await req.json();
     
-    // Use service role for database operations to bypass RLS
-    const supabaseAdmin = createClient(
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // User-scoped client (RLS enforced) - prevents accidental cross-user reads/writes
+    const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    );
-    
-    // Use anon key for auth verification
-    const supabaseAuth = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        auth: { persistSession: false },
+        global: { headers: { Authorization: authHeader } },
+      }
     );
 
-    const authHeader = req.headers.get('Authorization')!;
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user } } = await supabaseAuth.auth.getUser(token);
+    const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) throw new Error('Not authenticated');
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
 
-    // Check user credits and tier using admin client
-    const { data: creditsData, error: creditsError } = await supabaseAdmin
+    // Check user credits and tier
+    const { data: creditsData, error: creditsError } = await supabase
       .from('analyzer_credits')
       .select('*')
       .eq('user_id', user.id)
@@ -116,20 +120,20 @@ serve(async (req) => {
 
     if (creditsError) throw creditsError;
 
-    // Create credits record if doesn't exist
+    // IMPORTANT: no free credits. Create record with 0 credits if it doesn't exist.
     let credits = creditsData;
     if (!credits) {
-      const { data: newCredits, error: insertError } = await supabaseAdmin
+      const { data: newCredits, error: insertError } = await supabase
         .from('analyzer_credits')
         .insert({
           user_id: user.id,
-          credits_remaining: 1,
-          total_credits_purchased: 1,
-          tier: 'free'
+          credits_remaining: 0,
+          total_credits_purchased: 0,
+          tier: 'basic'
         })
         .select()
         .single();
-      
+
       if (insertError) throw insertError;
       credits = newCredits;
     }
@@ -260,8 +264,8 @@ Return the analysis in the following JSON format:
       };
     }
 
-    // Save analysis to database using admin client
-    const { data: savedAnalysis, error: saveError } = await supabaseAdmin
+    // Save analysis to database
+    const { data: savedAnalysis, error: saveError } = await supabase
       .from('vision_analyses')
       .insert({
         user_id: user.id,
@@ -282,10 +286,10 @@ Return the analysis in the following JSON format:
       throw saveError;
     }
 
-    // Deduct credits using admin client
-    await supabaseAdmin
+    // Deduct credits
+    await supabase
       .from('analyzer_credits')
-      .update({ 
+      .update({
         credits_remaining: credits.credits_remaining - creditsRequired,
       })
       .eq('user_id', user.id);
