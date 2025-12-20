@@ -1139,3 +1139,6 @@ verify_jwt = false
 
 [functions.request-stock-withdrawal]
 verify_jwt = true
+
+[functions.request-instructor-withdrawal]
+verify_jwt = true
