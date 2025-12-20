@@ -333,56 +333,285 @@ const Marketplace = () => {
 
   if (!isSubscribed) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pt-24 pb-12">
-        <div className="container max-w-4xl mx-auto px-4">
-          <Card className="border-primary/20">
-            <CardHeader className="text-center space-y-4">
-              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                <Briefcase className="w-8 h-8 text-primary" />
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+        {/* Hero Section */}
+        <div className="pt-24 pb-16 px-4">
+          <div className="container max-w-6xl mx-auto text-center">
+            <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center mb-6 shadow-lg">
+              <Briefcase className="w-10 h-10 text-primary-foreground" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Skills Marketplace
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
+              Connect with skilled professionals or monetize your expertise. 
+              From translations to repairs — find the perfect match for any project.
+            </p>
+            
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-12">
+              <div className="bg-card/80 backdrop-blur-sm border rounded-lg p-4">
+                <p className="text-2xl md:text-3xl font-bold text-primary">{offerings.length}+</p>
+                <p className="text-xs text-muted-foreground">Active Services</p>
               </div>
-              <CardTitle className="text-4xl font-bold">Skills Marketplace</CardTitle>
-              <CardDescription className="text-lg">
-                Offer your skills to the world
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="bg-primary/5 rounded-lg p-6 space-y-4">
-                <h3 className="text-xl font-semibold">What you get for 2 EUR/month:</h3>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">✓</span>
-                    <span>Create unlimited service offers</span>
+              <div className="bg-card/80 backdrop-blur-sm border rounded-lg p-4">
+                <p className="text-2xl md:text-3xl font-bold text-primary">15%</p>
+                <p className="text-xs text-muted-foreground">Low Commission</p>
+              </div>
+              <div className="bg-card/80 backdrop-blur-sm border rounded-lg p-4">
+                <p className="text-2xl md:text-3xl font-bold text-primary">24h</p>
+                <p className="text-xs text-muted-foreground">Avg. Response</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* How It Works */}
+        <div className="bg-card/50 py-16 px-4">
+          <div className="container max-w-6xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">How It Works</h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-background rounded-xl p-6 border shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Store className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold">For Service Providers</h3>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium shrink-0">1</span>
+                    <div>
+                      <p className="font-medium">Create Your Offering</p>
+                      <p className="text-sm text-muted-foreground">Describe your service, set pricing, and upload portfolio images.</p>
+                    </div>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">✓</span>
-                    <span>Reach thousands of potential customers</span>
+                  <li className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium shrink-0">2</span>
+                    <div>
+                      <p className="font-medium">Receive Orders</p>
+                      <p className="text-sm text-muted-foreground">Get notified instantly when clients order your service.</p>
+                    </div>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">✓</span>
-                    <span>Full control over prices and availability</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">✓</span>
-                    <span>Present yourself professionally</span>
+                  <li className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium shrink-0">3</span>
+                    <div>
+                      <p className="font-medium">Deliver & Get Paid</p>
+                      <p className="text-sm text-muted-foreground">Complete work, get client approval, and receive 85% of payment.</p>
+                    </div>
                   </li>
                 </ul>
               </div>
+              
+              <div className="bg-background rounded-xl p-6 border shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                    <ShoppingBag className="w-5 h-5 text-primary" />
+                  </div>
+                  <h3 className="text-xl font-semibold">For Clients</h3>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-sm font-medium shrink-0">1</span>
+                    <div>
+                      <p className="font-medium">Browse Services</p>
+                      <p className="text-sm text-muted-foreground">Find verified professionals across multiple categories.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-sm font-medium shrink-0">2</span>
+                    <div>
+                      <p className="font-medium">Order & Pay Securely</p>
+                      <p className="text-sm text-muted-foreground">Pay through Stripe — funds held until work is approved.</p>
+                    </div>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="w-6 h-6 rounded-full bg-secondary text-secondary-foreground flex items-center justify-center text-sm font-medium shrink-0">3</span>
+                    <div>
+                      <p className="font-medium">Collaborate & Approve</p>
+                      <p className="text-sm text-muted-foreground">Chat with providers, review work, and confirm completion.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
 
-              <div className="text-center space-y-4">
-                <p className="text-3xl font-bold text-primary">€2 / month</p>
-                <Button 
-                  onClick={handleSubscribe}
-                  size="lg" 
-                  className="w-full max-w-md"
-                >
-                  Activate Subscription
-                </Button>
+        {/* Sample Services Preview */}
+        {offerings.length > 0 && (
+          <div className="py-16 px-4">
+            <div className="container max-w-6xl mx-auto">
+              <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">Featured Services</h2>
+              <p className="text-muted-foreground text-center mb-8">Browse available services from our community</p>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {offerings.slice(0, 6).map((offering) => (
+                  <Card key={offering.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                    {offering.image_url && (
+                      <div className="aspect-video overflow-hidden">
+                        <img 
+                          src={offering.image_url} 
+                          alt={offering.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <CardContent className="p-4">
+                      <Badge variant="secondary" className="mb-2 text-xs">
+                        {CATEGORIES[offering.category as keyof typeof CATEGORIES] || offering.category}
+                      </Badge>
+                      <h3 className="font-semibold line-clamp-1">{offering.title}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{offering.description}</p>
+                      <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                            <span className="text-xs font-medium">{offering.profiles?.full_name?.[0] || "?"}</span>
+                          </div>
+                          <span className="text-xs text-muted-foreground">{offering.profiles?.full_name || "Provider"}</span>
+                        </div>
+                        {offering.price_per_hour && (
+                          <span className="text-sm font-semibold text-primary">€{offering.price_per_hour}/hr</span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Testimonials */}
+        <div className="bg-card/50 py-16 px-4">
+          <div className="container max-w-4xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">What Our Users Say</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="bg-background rounded-xl p-6 border">
+                <div className="flex gap-1 mb-3">
+                  {[1,2,3,4,5].map(i => <span key={i} className="text-yellow-500">★</span>)}
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  "Found an amazing translator for my business documents. Quick delivery and professional quality!"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="font-medium">M</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Martin K.</p>
+                    <p className="text-sm text-muted-foreground">Client</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-background rounded-xl p-6 border">
+                <div className="flex gap-1 mb-3">
+                  {[1,2,3,4,5].map(i => <span key={i} className="text-yellow-500">★</span>)}
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  "As a freelance designer, this platform helped me find consistent work. The payment system is reliable."
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="font-medium">S</span>
+                  </div>
+                  <div>
+                    <p className="font-medium">Sarah L.</p>
+                    <p className="text-sm text-muted-foreground">Service Provider</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Subscription CTA */}
+        <div className="py-16 px-4">
+          <div className="container max-w-xl mx-auto">
+            <Card className="border-primary/20 overflow-hidden">
+              <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-1" />
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl">Start Selling Your Services</CardTitle>
+                <CardDescription>Join our marketplace for just €2/month</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-primary text-xs">✓</span>
+                    </span>
+                    <span>Create unlimited service offerings</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-primary text-xs">✓</span>
+                    </span>
+                    <span>Reach thousands of potential customers</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-primary text-xs">✓</span>
+                    </span>
+                    <span>Secure payments with only 15% commission</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-primary text-xs">✓</span>
+                    </span>
+                    <span>Built-in chat and order management</span>
+                  </li>
+                </ul>
+
+                <div className="text-center pt-4">
+                  <p className="text-4xl font-bold text-primary mb-4">€2<span className="text-lg font-normal text-muted-foreground">/month</span></p>
+                  <Button 
+                    onClick={handleSubscribe}
+                    size="lg" 
+                    className="w-full"
+                  >
+                    Activate Subscription
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-3">
+                    Cancel anytime • Secure payment via Stripe
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* FAQ */}
+        <div className="bg-card/50 py-16 px-4">
+          <div className="container max-w-3xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
+            <div className="space-y-4">
+              <div className="bg-background rounded-lg p-5 border">
+                <h3 className="font-semibold mb-2">How does payment work?</h3>
                 <p className="text-sm text-muted-foreground">
-                  Payment gateway will be connected later
+                  Clients pay upfront through Stripe. The money is held securely until the work is delivered and approved. 
+                  After approval, 85% goes to the service provider (15% platform fee).
                 </p>
               </div>
-            </CardContent>
-          </Card>
+              <div className="bg-background rounded-lg p-5 border">
+                <h3 className="font-semibold mb-2">What if I'm not satisfied with the work?</h3>
+                <p className="text-sm text-muted-foreground">
+                  You can communicate with the provider through our built-in chat to request revisions. 
+                  If issues persist, contact our support team for dispute resolution.
+                </p>
+              </div>
+              <div className="bg-background rounded-lg p-5 border">
+                <h3 className="font-semibold mb-2">Can I browse services without subscribing?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Yes! Browsing and ordering services is free. The €2/month subscription is only for those who want to offer their own services.
+                </p>
+              </div>
+              <div className="bg-background rounded-lg p-5 border">
+                <h3 className="font-semibold mb-2">How do I get paid as a service provider?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Once the client approves your delivered work, the payment (minus 15% commission) is processed to your account within 3-5 business days.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
