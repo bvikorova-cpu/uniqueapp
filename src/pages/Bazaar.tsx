@@ -6,14 +6,15 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2, Crown, AlertCircle, ShoppingCart } from "lucide-react";
+import { Plus, Search, MapPin, Clock, User, MessageCircle, Upload, X, Trash2, Crown, AlertCircle, ShoppingCart, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSubscription } from "@/hooks/useSubscription";
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
+import MyBazaarOrders from "@/components/bazaar/MyBazaarOrders";
+import BazaarPurchaseDialog from "@/components/bazaar/BazaarPurchaseDialog";
 interface BazaarItem {
   id: string;
   title: string;
@@ -42,6 +43,8 @@ const Bazaar = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
+  const [isOrdersDialogOpen, setIsOrdersDialogOpen] = useState(false);
+  const [isPurchaseDialogOpen, setIsPurchaseDialogOpen] = useState(false);
   const [contactMessage, setContactMessage] = useState("");
   const [selectedItem, setSelectedItem] = useState<BazaarItem | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -68,9 +71,41 @@ const Bazaar = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment');
     const sessionId = urlParams.get('session_id');
+    const orderId = urlParams.get('order_id');
     const transactionId = urlParams.get('transaction_id');
 
-    if (paymentStatus === 'success' && sessionId && transactionId) {
+    // Handle new order system
+    if (paymentStatus === 'success' && sessionId && orderId) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        const { data, error } = await supabase.functions.invoke('verify-bazaar-order-payment', {
+          body: { sessionId, orderId },
+          headers: session?.access_token ? {
+            Authorization: `Bearer ${session.access_token}`
+          } : undefined
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Order confirmed! 🎉",
+          description: "Your order has been placed. The seller will ship it soon.",
+        });
+
+        window.history.replaceState({}, '', window.location.pathname);
+        loadItems();
+      } catch (error) {
+        console.error('Error verifying order payment:', error);
+        toast({
+          title: "Error",
+          description: "Failed to verify payment. Please contact support.",
+          variant: "destructive",
+        });
+      }
+    }
+    // Handle legacy transaction system
+    else if (paymentStatus === 'success' && sessionId && transactionId) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         
@@ -88,10 +123,7 @@ const Bazaar = () => {
           description: "Your purchase was processed successfully.",
         });
 
-        // Remove URL parameters
         window.history.replaceState({}, '', window.location.pathname);
-        
-        // Reload items to reflect changes
         loadItems();
       } catch (error) {
         console.error('Error verifying payment:', error);
@@ -388,8 +420,15 @@ const Bazaar = () => {
     }
   };
 
-  const handleBuyItem = async () => {
-    if (!selectedItem || !currentUserId) return;
+  const handleBuyItem = () => {
+    if (!selectedItem || !currentUserId) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to purchase items.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     if (selectedItem.is_sold) {
       toast({
@@ -400,35 +439,17 @@ const Bazaar = () => {
       return;
     }
 
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const { data, error } = await supabase.functions.invoke('create-bazaar-checkout', {
-        body: { itemId: selectedItem.id },
-        headers: session?.access_token ? {
-          Authorization: `Bearer ${session.access_token}`
-        } : undefined
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        // Open Stripe checkout in new tab
-        window.open(data.url, '_blank');
-        
-        toast({
-          title: "Redirecting to payment",
-          description: "Stripe payment gateway opened in a new window.",
-        });
-      }
-    } catch (error) {
-      console.error('Buy item error:', error);
+    if (selectedItem.user_id === currentUserId) {
       toast({
         title: "Error",
-        description: "Failed to initialize payment.",
+        description: "You cannot buy your own item.",
         variant: "destructive",
       });
+      return;
     }
+
+    setIsDetailOpen(false);
+    setIsPurchaseDialogOpen(true);
   };
 
   return (
@@ -482,13 +503,21 @@ const Bazaar = () => {
                 </Alert>
               )}
               
-              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="hero" size="lg">
-                  <Plus className="h-5 w-5 mr-2" />
-                  Add Listing
-                </Button>
-              </DialogTrigger>
+              <div className="flex gap-2">
+                {currentUserId && (
+                  <Button variant="outline" size="lg" onClick={() => setIsOrdersDialogOpen(true)}>
+                    <Package className="h-5 w-5 mr-2" />
+                    My Orders
+                  </Button>
+                )}
+                
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="hero" size="lg">
+                    <Plus className="h-5 w-5 mr-2" />
+                    Add Listing
+                  </Button>
+                </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
                   <DialogTitle>New Listing</DialogTitle>
@@ -621,9 +650,9 @@ const Bazaar = () => {
               </div>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
       </div>
-
       {/* Search and Filter */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">
@@ -923,6 +952,23 @@ const Bazaar = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* My Orders Dialog */}
+        <Dialog open={isOrdersDialogOpen} onOpenChange={setIsOrdersDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>My Orders</DialogTitle>
+            </DialogHeader>
+            {currentUserId && <MyBazaarOrders userId={currentUserId} />}
+          </DialogContent>
+        </Dialog>
+
+        {/* Purchase Dialog */}
+        <BazaarPurchaseDialog
+          item={selectedItem}
+          open={isPurchaseDialogOpen}
+          onOpenChange={setIsPurchaseDialogOpen}
+        />
       </div>
     </div>
   );
