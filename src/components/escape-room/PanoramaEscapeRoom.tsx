@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, useTexture, Html } from "@react-three/drei";
+import { motion, AnimatePresence } from "framer-motion";
 import * as THREE from "three";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,9 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useEscapeRoomSounds } from "./useEscapeRoomSounds";
+import { EscapeRoomTutorial } from "./EscapeRoomTutorial";
+import { StoryNarrative } from "./StoryNarrative";
 
 // Types
 interface InventoryItem {
@@ -26,7 +30,7 @@ interface InventoryItem {
 interface Hotspot {
   id: string;
   position: [number, number, number];
-  type: "puzzle" | "item" | "door" | "clue" | "lock";
+  type: "puzzle" | "item" | "door" | "clue" | "lock" | "hidden";
   label: string;
   description?: string;
   puzzle?: PuzzleData;
@@ -34,6 +38,7 @@ interface Hotspot {
   requiredItem?: string;
   nextRoom?: number;
   solved?: boolean;
+  isHidden?: boolean;
 }
 
 interface PuzzleData {
@@ -77,7 +82,7 @@ function PanoramaSphere({ imageUrl }: { imageUrl: string }) {
   );
 }
 
-// Interactive Hotspot Marker
+// Interactive Hotspot Marker with animations
 function HotspotMarker({ 
   hotspot, 
   onClick,
@@ -88,15 +93,27 @@ function HotspotMarker({
   isSolved: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
+  const [pulse, setPulse] = useState(1);
+
+  // Pulsing animation
+  useEffect(() => {
+    if (isSolved || hotspot.isHidden) return;
+    const interval = setInterval(() => {
+      setPulse(p => p === 1 ? 1.2 : 1);
+    }, 800);
+    return () => clearInterval(interval);
+  }, [isSolved, hotspot.isHidden]);
 
   const getColor = () => {
-    if (isSolved) return "#22c55e"; // green
+    if (isSolved) return "#22c55e";
+    if (hotspot.isHidden) return "#ffffff";
     switch (hotspot.type) {
-      case "puzzle": return "#f59e0b"; // amber
-      case "item": return "#3b82f6"; // blue
-      case "door": return "#8b5cf6"; // purple
-      case "clue": return "#06b6d4"; // cyan
-      case "lock": return "#ef4444"; // red
+      case "puzzle": return "#f59e0b";
+      case "item": return "#3b82f6";
+      case "door": return "#8b5cf6";
+      case "clue": return "#06b6d4";
+      case "lock": return "#ef4444";
+      case "hidden": return "#ffffff";
       default: return "#ffffff";
     }
   };
@@ -108,9 +125,14 @@ function HotspotMarker({
       case "door": return "🚪";
       case "clue": return "🔍";
       case "lock": return isSolved ? "🔓" : "🔒";
+      case "hidden": return "✨";
       default: return "❓";
     }
   };
+
+  // Hidden hotspots are smaller and less visible
+  const baseSize = hotspot.isHidden ? 1.5 : 3;
+  const opacity = hotspot.isHidden ? (hovered ? 0.8 : 0.3) : (hovered ? 1 : 0.8);
 
   return (
     <group position={hotspot.position}>
@@ -121,18 +143,18 @@ function HotspotMarker({
         }}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
-        scale={hovered ? 4 : 3}
+        scale={hovered ? baseSize * 1.3 : baseSize * pulse}
       >
         <sphereGeometry args={[1, 16, 16]} />
         <meshBasicMaterial 
           color={getColor()} 
           transparent 
-          opacity={hovered ? 1 : 0.8}
+          opacity={opacity}
         />
       </mesh>
       
-      {/* Pulsing ring */}
-      {!isSolved && (
+      {/* Pulsing ring - not for hidden or solved */}
+      {!isSolved && !hotspot.isHidden && (
         <mesh scale={[5, 5, 0.1]}>
           <ringGeometry args={[0.8, 1, 32]} />
           <meshBasicMaterial color={getColor()} transparent opacity={0.3} />
@@ -142,10 +164,15 @@ function HotspotMarker({
       {/* Label on hover */}
       {hovered && (
         <Html center position={[0, 6, 0]}>
-          <div className="bg-black/80 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-black/80 text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap shadow-lg"
+          >
             <span className="mr-2">{getIcon()}</span>
             {hotspot.label}
-          </div>
+            {hotspot.isHidden && <span className="ml-2 text-yellow-400">⭐ Skrytý!</span>}
+          </motion.div>
         </Html>
       )}
     </group>
@@ -171,6 +198,9 @@ export function PanoramaEscapeRoom({
   onUpdateRoomPanorama
 }: PanoramaEscapeRoomProps) {
   const { toast } = useToast();
+  const sounds = useEscapeRoomSounds(theme);
+  
+  // Game states
   const [currentRoomIndex, setCurrentRoomIndex] = useState(0);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [solvedHotspots, setSolvedHotspots] = useState<Set<string>>(new Set());
@@ -181,6 +211,14 @@ export function PanoramaEscapeRoom({
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   const [isGeneratingPanorama, setIsGeneratingPanorama] = useState(false);
   const [localRooms, setLocalRooms] = useState(rooms);
+  const [isMuted, setIsMuted] = useState(false);
+  const [foundHiddenItems, setFoundHiddenItems] = useState(0);
+  
+  // UI states
+  const [showTutorial, setShowTutorial] = useState(true);
+  const [showStory, setShowStory] = useState(false);
+  const [storyRoomIndex, setStoryRoomIndex] = useState(-1);
+  const [gameStarted, setGameStarted] = useState(false);
   
   // Dialog states
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(null);
@@ -189,10 +227,86 @@ export function PanoramaEscapeRoom({
 
   const currentRoom = localRooms[currentRoomIndex];
 
-  // Sync rooms when prop changes
+  // Add hidden items to each room
   useEffect(() => {
-    setLocalRooms(rooms);
+    const roomsWithHidden = rooms.map(room => ({
+      ...room,
+      hotspots: [
+        ...room.hotspots,
+        // Add 2-3 hidden items per room
+        {
+          id: `hidden-${room.id}-1`,
+          position: [Math.random() * 100 - 50, Math.random() * 30 - 15, -Math.random() * 100] as [number, number, number],
+          type: "hidden" as const,
+          label: "Skrytý poklad",
+          isHidden: true,
+          item: {
+            id: `secret-gem-${room.id}`,
+            name: "Tajný drahokam",
+            icon: "💎",
+            description: "Vzácny skrytý drahokam! +50 bonusových bodov."
+          }
+        },
+        {
+          id: `hidden-${room.id}-2`,
+          position: [Math.random() * 100 - 50, Math.random() * 20 - 10, Math.random() * 100 - 50] as [number, number, number],
+          type: "hidden" as const,
+          label: "Tajná minca",
+          isHidden: true,
+          item: {
+            id: `secret-coin-${room.id}`,
+            name: "Zlatá minca",
+            icon: "🪙",
+            description: "Stará zlatá minca! +25 bonusových bodov."
+          }
+        }
+      ]
+    }));
+    setLocalRooms(roomsWithHidden);
   }, [rooms]);
+
+  // Handle tutorial completion
+  const handleTutorialComplete = () => {
+    setShowTutorial(false);
+    setShowStory(true);
+    setStoryRoomIndex(-1);
+    sounds.playAmbient();
+  };
+
+  // Handle story continue
+  const handleStoryContinue = () => {
+    if (storyRoomIndex === -1) {
+      // After intro, show first room
+      setShowStory(false);
+      setGameStarted(true);
+      setStoryRoomIndex(0);
+    } else {
+      setShowStory(false);
+    }
+  };
+
+  // Show story when entering new room
+  const enterRoom = (roomIdx: number) => {
+    sounds.playEffect('door');
+    setCurrentRoomIndex(roomIdx);
+    setStoryRoomIndex(roomIdx);
+    setShowStory(true);
+  };
+
+  // Timer
+  useEffect(() => {
+    if (!gameStarted) return;
+    const timer = setInterval(() => {
+      setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [startTime, gameStarted]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   // Generate AI panorama for current room
   const generateAIPanorama = async () => {
@@ -214,7 +328,6 @@ export function PanoramaEscapeRoom({
       if (error) throw error;
 
       if (data?.imageUrl) {
-        // Update local rooms with new panorama
         setLocalRooms(prev => prev.map((room, idx) => 
           idx === currentRoomIndex 
             ? { ...room, panoramaUrl: data.imageUrl }
@@ -222,6 +335,7 @@ export function PanoramaEscapeRoom({
         ));
         
         onUpdateRoomPanorama?.(currentRoomIndex, data.imageUrl);
+        sounds.playEffect('success');
         
         toast({
           title: "✨ Panoráma vygenerovaná!",
@@ -230,6 +344,7 @@ export function PanoramaEscapeRoom({
       }
     } catch (err) {
       console.error('Failed to generate panorama:', err);
+      sounds.playEffect('error');
       toast({
         title: "Chyba pri generovaní",
         description: "Skúste to znova neskôr",
@@ -240,29 +355,16 @@ export function PanoramaEscapeRoom({
     }
   };
 
-  // Timer
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [startTime]);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
   const addToInventory = useCallback((item: InventoryItem) => {
     if (!inventory.find(i => i.id === item.id)) {
       setInventory(prev => [...prev, item]);
+      sounds.playEffect('pickup');
       toast({
         title: `📦 Nový predmet!`,
         description: `${item.name} bol pridaný do inventára`,
       });
     }
-  }, [inventory, toast]);
+  }, [inventory, toast, sounds]);
 
   const removeFromInventory = useCallback((itemId: string) => {
     setInventory(prev => prev.filter(i => i.id !== itemId));
@@ -270,6 +372,7 @@ export function PanoramaEscapeRoom({
 
   const handleHotspotClick = useCallback((hotspot: Hotspot) => {
     const hotspotKey = `${currentRoomIndex}-${hotspot.id}`;
+    sounds.playEffect('click');
     
     // Already solved
     if (solvedHotspots.has(hotspotKey) && hotspot.type !== "door") {
@@ -281,10 +384,19 @@ export function PanoramaEscapeRoom({
     }
 
     switch (hotspot.type) {
+      case "hidden":
       case "item":
         if (hotspot.item) {
           addToInventory(hotspot.item);
           setSolvedHotspots(prev => new Set([...prev, hotspotKey]));
+          if (hotspot.isHidden) {
+            setFoundHiddenItems(prev => prev + 1);
+            sounds.playEffect('success');
+            toast({
+              title: "🎉 Skrytý predmet nájdený!",
+              description: "+50 bonusových bodov!",
+            });
+          }
         }
         break;
         
@@ -302,11 +414,13 @@ export function PanoramaEscapeRoom({
           setSolvedHotspots(prev => new Set([...prev, hotspotKey]));
           removeFromInventory(selectedItem.id);
           setSelectedItem(null);
+          sounds.playEffect('unlock');
           toast({
             title: "🔓 Odomknuté!",
             description: hotspot.description || "Zámok sa otvoril!",
           });
         } else if (hotspot.requiredItem) {
+          sounds.playEffect('error');
           toast({
             title: "🔒 Zamknuté",
             description: "Potrebuješ správny predmet z inventára",
@@ -326,17 +440,21 @@ export function PanoramaEscapeRoom({
         
         if (allLocksOpen || lockHotspots.length === 0) {
           if (hotspot.nextRoom !== undefined && hotspot.nextRoom < rooms.length) {
-            setCurrentRoomIndex(hotspot.nextRoom);
+            enterRoom(hotspot.nextRoom);
             toast({
               title: "🚪 Nová miestnosť!",
               description: `Vstupuješ do: ${rooms[hotspot.nextRoom].name}`,
             });
-          } else if (currentRoomIndex === rooms.length - 1) {
+          } else if (currentRoomIndex === rooms.length - 1 || hotspot.nextRoom === 999) {
             // Last room - complete!
-            const score = Math.max(0, 1000 - (elapsedTime * 2) - (hintsUsed * 100));
-            onComplete(score, elapsedTime);
+            sounds.playEffect('complete');
+            const baseScore = Math.max(0, 1000 - (elapsedTime * 2) - (hintsUsed * 100));
+            const hiddenBonus = foundHiddenItems * 50;
+            const finalScore = baseScore + hiddenBonus;
+            onComplete(finalScore, elapsedTime);
           }
         } else {
+          sounds.playEffect('error');
           toast({
             title: "🚪 Dvere sú zamknuté",
             description: "Najprv musíš vyriešiť všetky hádanky v tejto miestnosti",
@@ -345,7 +463,7 @@ export function PanoramaEscapeRoom({
         }
         break;
     }
-  }, [currentRoomIndex, solvedHotspots, selectedItem, addToInventory, removeFromInventory, rooms, currentRoom, toast, elapsedTime, hintsUsed, onComplete]);
+  }, [currentRoomIndex, solvedHotspots, selectedItem, addToInventory, removeFromInventory, rooms, currentRoom, toast, elapsedTime, hintsUsed, onComplete, sounds, foundHiddenItems]);
 
   const handlePuzzleSubmit = useCallback(() => {
     if (!activeHotspot?.puzzle) return;
@@ -356,6 +474,7 @@ export function PanoramaEscapeRoom({
     if (isCorrect) {
       const hotspotKey = `${currentRoomIndex}-${activeHotspot.id}`;
       setSolvedHotspots(prev => new Set([...prev, hotspotKey]));
+      sounds.playEffect('success');
       
       if (activeHotspot.puzzle.reward) {
         addToInventory(activeHotspot.puzzle.reward);
@@ -369,30 +488,66 @@ export function PanoramaEscapeRoom({
       setActiveHotspot(null);
       setPuzzleAnswer("");
     } else {
+      sounds.playEffect('error');
       toast({
         title: "❌ Nesprávne",
         description: "Skús to znova",
         variant: "destructive",
       });
     }
-  }, [activeHotspot, puzzleAnswer, currentRoomIndex, addToInventory, toast]);
+  }, [activeHotspot, puzzleAnswer, currentRoomIndex, addToInventory, toast, sounds]);
 
   const useHint = useCallback(() => {
     if (activeHotspot?.puzzle) {
       setHintsUsed(prev => prev + 1);
+      sounds.playEffect('hint');
       toast({
         title: "💡 Nápoveda",
         description: activeHotspot.puzzle.hint,
       });
     }
-  }, [activeHotspot, toast]);
+  }, [activeHotspot, toast, sounds]);
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    sounds.setMuted(!isMuted);
+  };
 
   // Count progress
   const totalPuzzles = rooms.reduce((acc, room) => 
     acc + room.hotspots.filter(h => h.type === "puzzle" || h.type === "lock").length, 0
   );
-  const solvedPuzzles = solvedHotspots.size;
-  const progress = totalPuzzles > 0 ? (solvedPuzzles / totalPuzzles) * 100 : 0;
+  const solvedPuzzles = [...solvedHotspots].filter(key => 
+    !key.includes('hidden')
+  ).length;
+  const progress = totalPuzzles > 0 ? Math.min(100, (solvedPuzzles / totalPuzzles) * 100) : 0;
+
+  // Show tutorial first
+  if (showTutorial) {
+    return (
+      <EscapeRoomTutorial 
+        onComplete={handleTutorialComplete}
+        onSkip={() => {
+          setShowTutorial(false);
+          setShowStory(true);
+          setStoryRoomIndex(-1);
+          sounds.playAmbient();
+        }}
+      />
+    );
+  }
+
+  // Show story narrative
+  if (showStory && currentRoom) {
+    return (
+      <StoryNarrative
+        theme={theme}
+        roomIndex={storyRoomIndex}
+        roomName={currentRoom?.name || ""}
+        onContinue={handleStoryContinue}
+      />
+    );
+  }
 
   if (!currentRoom) {
     return <div className="min-h-screen flex items-center justify-center">Načítava sa...</div>;
@@ -425,8 +580,13 @@ export function PanoramaEscapeRoom({
         />
       </Canvas>
 
-      {/* Top HUD */}
-      <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none">
+      {/* Top HUD with animations */}
+      <motion.div 
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none"
+      >
         {/* Left - Room info */}
         <Card className="bg-black/80 border-white/20 text-white pointer-events-auto max-w-xs">
           <CardHeader className="py-3 px-4">
@@ -441,6 +601,11 @@ export function PanoramaEscapeRoom({
               <Badge variant="outline" className="border-white/30">
                 Miestnosť {currentRoomIndex + 1}/{rooms.length}
               </Badge>
+              {foundHiddenItems > 0 && (
+                <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                  ✨ {foundHiddenItems} skrytých
+                </Badge>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -457,6 +622,14 @@ export function PanoramaEscapeRoom({
                 <Lightbulb className="h-4 w-4" />
                 <span>{hintsUsed}</span>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleMute}
+                className="text-white p-1 h-auto"
+              >
+                {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+              </Button>
             </CardContent>
           </Card>
           
@@ -485,23 +658,35 @@ export function PanoramaEscapeRoom({
             Ukončiť
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Progress bar */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-64 pointer-events-none">
+      <motion.div 
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.4 }}
+        className="absolute top-20 left-1/2 -translate-x-1/2 w-64 pointer-events-none"
+      >
         <div className="bg-black/60 rounded-full p-1">
-          <div 
-            className="h-2 bg-gradient-to-r from-green-500 to-emerald-400 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
+          <motion.div 
+            className="h-2 bg-gradient-to-r from-green-500 to-emerald-400 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.5 }}
           />
         </div>
         <p className="text-center text-white/80 text-xs mt-1">
           Postup: {Math.round(progress)}%
         </p>
-      </div>
+      </motion.div>
 
-      {/* Bottom - Inventory */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto">
+      {/* Bottom - Inventory with animation */}
+      <motion.div 
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto"
+      >
         <Card className="bg-black/80 border-white/20">
           <CardContent className="py-2 px-4">
             <div className="flex items-center gap-3">
@@ -515,44 +700,74 @@ export function PanoramaEscapeRoom({
                 Inventár ({inventory.length})
               </Button>
               
-              {showInventory && (
-                <div className="flex gap-2">
-                  {inventory.map(item => (
-                    <Button
-                      key={item.id}
-                      variant={selectedItem?.id === item.id ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setSelectedItem(
-                        selectedItem?.id === item.id ? null : item
-                      )}
-                      className="text-lg"
-                      title={item.name}
-                    >
-                      {item.icon}
-                    </Button>
-                  ))}
-                  {inventory.length === 0 && (
-                    <span className="text-gray-400 text-sm px-2">Prázdny</span>
-                  )}
-                </div>
-              )}
+              <AnimatePresence>
+                {showInventory && (
+                  <motion.div 
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: "auto", opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    className="flex gap-2 overflow-hidden"
+                  >
+                    {inventory.map(item => (
+                      <motion.div
+                        key={item.id}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                      >
+                        <Button
+                          variant={selectedItem?.id === item.id ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedItem(
+                            selectedItem?.id === item.id ? null : item
+                          )}
+                          className="text-lg"
+                          title={item.name}
+                        >
+                          {item.icon}
+                        </Button>
+                      </motion.div>
+                    ))}
+                    {inventory.length === 0 && (
+                      <span className="text-gray-400 text-sm px-2">Prázdny</span>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             
-            {selectedItem && (
-              <div className="mt-2 text-xs text-gray-300 border-t border-white/20 pt-2">
-                <strong>{selectedItem.name}:</strong> {selectedItem.description}
-                <br />
-                <span className="text-yellow-400">Klikni na objekt pre použitie</span>
-              </div>
-            )}
+            <AnimatePresence>
+              {selectedItem && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="mt-2 text-xs text-gray-300 border-t border-white/20 pt-2 overflow-hidden"
+                >
+                  <strong>{selectedItem.name}:</strong> {selectedItem.description}
+                  <br />
+                  <span className="text-yellow-400">Klikni na objekt pre použitie</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* Controls hint */}
       <div className="absolute bottom-4 right-4 text-white/60 text-xs pointer-events-none">
         🖱️ Ťahaj pre rozhliadanie • 🔍 Scroll pre zoom • Klikni na objekty
       </div>
+
+      {/* Hidden items hint */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-4 left-4 text-yellow-400/60 text-xs pointer-events-none"
+      >
+        ✨ Hľadaj skryté predmety pre bonus body!
+      </motion.div>
 
       {/* Puzzle Dialog */}
       <Dialog open={!!activeHotspot} onOpenChange={() => setActiveHotspot(null)}>
