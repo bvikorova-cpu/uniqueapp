@@ -6,11 +6,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// OpenAI TTS voices - using alloy as default multilingual voice
 const LANGUAGE_VOICES: Record<string, string> = {
-  'en-US': '9BWtsMINqrJLrRacOk9x', // Aria
-  'sk-SK': 'EXAVITQu4vr4xnSDxMaL', // Sarah
-  'fr-FR': 'FGY2WhTYpPnrIDTdsKH5', // Laura
-  'es-ES': 'XB0fDUnXU5powFXDhCwa', // Charlotte
+  'en-US': 'nova',
+  'sk-SK': 'alloy',
+  'fr-FR': 'shimmer',
+  'es-ES': 'nova',
 }
 
 const LANGUAGE_NAMES: Record<string, string> = {
@@ -32,26 +33,26 @@ serve(async (req) => {
       throw new Error('Text and language are required')
     }
 
+    const openaiApiKey = Deno.env.get('OPENAI_API_KEY')
+    if (!openaiApiKey) {
+      throw new Error('OPENAI_API_KEY not configured')
+    }
+
     console.log('Generating audio for language:', language)
 
     // Translate text if not English
     let translatedText = text
     if (language !== 'en-US') {
       console.log('Translating text to', LANGUAGE_NAMES[language])
-      
-      const lovableApiKey = Deno.env.get('LOVABLE_API_KEY')
-      if (!lovableApiKey) {
-        throw new Error('LOVABLE_API_KEY not configured')
-      }
 
-      const translationResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const translationResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${lovableApiKey}`,
+          'Authorization': `Bearer ${openaiApiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model: 'gpt-4o-mini',
           messages: [
             {
               role: 'system',
@@ -76,49 +77,33 @@ serve(async (req) => {
       console.log('Translation completed')
     }
 
-    // Generate audio using ElevenLabs
-    const voiceId = LANGUAGE_VOICES[language] || LANGUAGE_VOICES['en-US']
-    console.log('Generating audio with voice:', voiceId)
+    // Generate audio using OpenAI TTS
+    const voice = LANGUAGE_VOICES[language] || LANGUAGE_VOICES['en-US']
+    console.log('Generating audio with OpenAI TTS, voice:', voice)
 
-    const elevenLabsResponse = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
-      {
-        method: 'POST',
-        headers: {
-          'xi-api-key': Deno.env.get('ELEVENLABS_API_KEY') || '',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: translatedText,
-          model_id: 'eleven_multilingual_v2',
-          voice_settings: {
-            stability: 0.6,
-            similarity_boost: 0.8,
-            style: 0.3,
-            use_speaker_boost: true,
-          },
-        }),
-      }
-    )
+    const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openaiApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'tts-1',
+        input: translatedText,
+        voice: voice,
+        response_format: 'mp3',
+      }),
+    })
 
-    if (!elevenLabsResponse.ok) {
-      const errorText = await elevenLabsResponse.text()
-      console.error('ElevenLabs TTS error:', elevenLabsResponse.status, errorText)
+    if (!ttsResponse.ok) {
+      const errorText = await ttsResponse.text()
+      console.error('OpenAI TTS error:', ttsResponse.status, errorText)
       throw new Error(`Failed to generate audio: ${errorText}`)
     }
 
-    // Get audio as base64 - process in chunks to avoid stack overflow
-    const audioArrayBuffer = await elevenLabsResponse.arrayBuffer()
-    const bytes = new Uint8Array(audioArrayBuffer)
-    
-    // Convert to base64 in chunks to avoid "Maximum call stack size exceeded"
-    let binary = '';
-    const chunkSize = 8192;
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-      const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
-      binary += String.fromCharCode(...chunk);
-    }
-    const base64Audio = btoa(binary);
+    // Get audio as base64
+    const audioArrayBuffer = await ttsResponse.arrayBuffer()
+    const base64Audio = base64Encode(audioArrayBuffer)
 
     console.log('Audio generated successfully, size:', audioArrayBuffer.byteLength)
 
