@@ -54,24 +54,24 @@ const VirtualEscapeRoom = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 max-w-3xl mx-auto">
-            <TabsTrigger value="browse" className="gap-2">
+          <TabsList className="flex flex-wrap justify-center gap-2 h-auto p-2 bg-muted/50 max-w-4xl mx-auto">
+            <TabsTrigger value="browse" className="gap-2 px-4 py-2">
               <Lock className="h-4 w-4" />
               Browse Rooms
             </TabsTrigger>
-            <TabsTrigger value="create" className="gap-2">
+            <TabsTrigger value="create" className="gap-2 px-4 py-2">
               <Users className="h-4 w-4" />
               Create Room
             </TabsTrigger>
-            <TabsTrigger value="leaderboard" className="gap-2">
+            <TabsTrigger value="leaderboard" className="gap-2 px-4 py-2">
               <Trophy className="h-4 w-4" />
               Leaderboard
             </TabsTrigger>
-            <TabsTrigger value="subscription" className="gap-2">
+            <TabsTrigger value="subscription" className="gap-2 px-4 py-2">
               <GraduationCap className="h-4 w-4" />
               Premium
             </TabsTrigger>
-            <TabsTrigger value="corporate" className="gap-2">
+            <TabsTrigger value="corporate" className="gap-2 px-4 py-2">
               <Briefcase className="h-4 w-4" />
               Corporate
             </TabsTrigger>

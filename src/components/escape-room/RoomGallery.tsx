@@ -222,18 +222,20 @@ const RoomGallery = ({ onSelectRoom }: RoomGalleryProps) => {
 
   return (
     <div className="space-y-6">
-      <div className="flex gap-2 flex-wrap justify-center">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
         <Button
           variant={selectedTheme === "all" ? "default" : "outline"}
           onClick={() => setSelectedTheme("all")}
+          className="h-12"
         >
-          All Themes
+          🎯 All Themes
         </Button>
         {Object.keys(themeIcons).map((theme) => (
           <Button
             key={theme}
             variant={selectedTheme === theme ? "default" : "outline"}
             onClick={() => setSelectedTheme(theme)}
+            className="h-12 capitalize"
           >
             {themeIcons[theme as keyof typeof themeIcons]} {theme}
           </Button>
