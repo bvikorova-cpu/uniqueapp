@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
-import { ArrowLeft, Clock, Lightbulb, Boxes } from "lucide-react";
+import { ArrowLeft, Clock, Lightbulb, Boxes, Map } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Room3D from "./Room3D";
+import PanoramaEscapeRoom from "./PanoramaEscapeRoom";
+import { getRoomsForTheme } from "./puzzleRooms";
 
 interface GamePlayProps {
   roomId: string;
@@ -26,7 +28,7 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   const [startTime] = useState<number>(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
   const [hintsUsed, setHintsUsed] = useState(0);
-  const [mode3D, setMode3D] = useState(true);
+  const [gameMode, setGameMode] = useState<"panorama" | "3d" | "classic">("panorama");
 
   useEffect(() => {
     loadRoom();
@@ -175,7 +177,27 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
   const currentPuzzle = puzzles[currentPuzzleIndex];
   const progress = rooms.length > 0 ? ((currentRoomIndex + 1) / rooms.length) * 100 : 0;
 
-  if (mode3D && currentRoom) {
+  // Panorama mode - hlavný herný režim
+  if (gameMode === "panorama") {
+    const puzzleRooms = getRoomsForTheme(room?.theme || "mystery");
+    return (
+      <PanoramaEscapeRoom
+        theme={room?.theme || "mystery"}
+        rooms={puzzleRooms}
+        onComplete={(score, time) => {
+          toast({
+            title: "🎉 Gratulujem!",
+            description: `Unikol si za ${Math.floor(time / 60)}:${(time % 60).toString().padStart(2, '0')} so skóre ${score}!`
+          });
+          setTimeout(onExit, 3000);
+        }}
+        onExit={onExit}
+      />
+    );
+  }
+
+  // 3D mode
+  if (gameMode === "3d" && currentRoom) {
     return (
       <Room3D
         theme={room?.theme || "mystery"}
@@ -198,9 +220,13 @@ const GamePlay = ({ roomId, onExit }: GamePlayProps) => {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Exit Room
             </Button>
-            <Button variant="outline" onClick={() => setMode3D(!mode3D)}>
+            <Button variant="outline" onClick={() => setGameMode("panorama")}>
+              <Map className="h-4 w-4 mr-2" />
+              Panoráma
+            </Button>
+            <Button variant="outline" onClick={() => setGameMode("3d")}>
               <Boxes className="h-4 w-4 mr-2" />
-              Switch to 3D
+              3D Mode
             </Button>
           </div>
           <div className="flex items-center gap-4 text-sm">
