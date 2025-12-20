@@ -6,11 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2 } from "lucide-react";
+import { Briefcase, MapPin, Clock, Euro, Upload, X, Send, Trash2, ShoppingBag, Store } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { ServiceOrderDialog } from "@/components/marketplace/ServiceOrderDialog";
+import { MyOrders } from "@/components/marketplace/MyOrders";
 
 interface Profile {
   full_name: string | null;
@@ -50,9 +53,11 @@ const Marketplace = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedOffering, setSelectedOffering] = useState<SkillOffering | null>(null);
+  const [orderOffering, setOrderOffering] = useState<SkillOffering | null>(null);
   const [responseMessage, setResponseMessage] = useState("");
   const [isSendingResponse, setIsSendingResponse] = useState(false);
   const [offeringToDelete, setOfferingToDelete] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("browse");
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -454,9 +459,17 @@ const Marketplace = () => {
                 </div>
               </div>
             </div>
-            <Button onClick={() => setShowCreateForm(!showCreateForm)} className="w-full sm:w-auto">
-              {showCreateForm ? "Cancel" : "Add Offering"}
-            </Button>
+            <div className="flex gap-2 w-full sm:w-auto">
+              {user && (
+                <Button variant="outline" onClick={() => setActiveTab("orders")}>
+                  <ShoppingBag className="h-4 w-4 mr-2" />
+                  My Orders
+                </Button>
+              )}
+              <Button onClick={() => setShowCreateForm(!showCreateForm)} className="flex-1 sm:flex-none">
+                {showCreateForm ? "Cancel" : "Add Offering"}
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -628,13 +641,25 @@ const Marketplace = () => {
                     <span>{new Date(offering.created_at).toLocaleDateString('en-US')}</span>
                   </div>
                 </div>
-                <Button 
-                  className="w-full mt-2" 
-                  onClick={() => setSelectedOffering(offering)}
-                >
-                  <Send className="w-4 h-4 mr-2" />
-                  Respond to Offer
-                </Button>
+                <div className="flex gap-2 mt-2">
+                  <Button 
+                    className="flex-1" 
+                    onClick={() => setSelectedOffering(offering)}
+                    variant="outline"
+                  >
+                    <Send className="w-4 h-4 mr-2" />
+                    Message
+                  </Button>
+                  {user && offering.user_id !== user.id && (
+                    <Button 
+                      className="flex-1"
+                      onClick={() => setOrderOffering(offering)}
+                    >
+                      <ShoppingBag className="w-4 h-4 mr-2" />
+                      Order
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -754,6 +779,27 @@ const Marketplace = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Order Dialog */}
+      {orderOffering && (
+        <ServiceOrderDialog
+          open={!!orderOffering}
+          onOpenChange={(open) => !open && setOrderOffering(null)}
+          offering={orderOffering}
+        />
+      )}
+
+      {/* My Orders Section - accessible via tab or URL param */}
+      {user && activeTab === "orders" && (
+        <Dialog open={activeTab === "orders"} onOpenChange={() => setActiveTab("browse")}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>My Orders</DialogTitle>
+            </DialogHeader>
+            <MyOrders userId={user.id} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
