@@ -1151,3 +1151,6 @@ verify_jwt = true
 
 [functions.create-connect-login-link]
 verify_jwt = true
+
+[functions.generate-escape-room-panorama]
+verify_jwt = false

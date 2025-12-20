@@ -1,7 +1,9 @@
 // Sample escape room data with real puzzles
 // These can be replaced with AI-generated panoramas
 
-interface InventoryItem {
+import { supabase } from "@/integrations/supabase/client";
+
+export interface InventoryItem {
   id: string;
   name: string;
   icon: string;
@@ -9,7 +11,7 @@ interface InventoryItem {
   usableOn?: string[];
 }
 
-interface PuzzleData {
+export interface PuzzleData {
   type: "code" | "riddle" | "sequence" | "cipher" | "combination";
   question: string;
   hint: string;
@@ -17,7 +19,7 @@ interface PuzzleData {
   reward?: InventoryItem;
 }
 
-interface Hotspot {
+export interface Hotspot {
   id: string;
   position: [number, number, number];
   type: "puzzle" | "item" | "door" | "clue" | "lock";
@@ -30,7 +32,7 @@ interface Hotspot {
   solved?: boolean;
 }
 
-interface RoomData {
+export interface RoomData {
   id: number;
   name: string;
   description: string;
@@ -39,7 +41,7 @@ interface RoomData {
 }
 
 // Helper to calculate 3D position from angles
-const angleToPosition = (yaw: number, pitch: number, distance: number = 50): [number, number, number] => {
+export const angleToPosition = (yaw: number, pitch: number, distance: number = 50): [number, number, number] => {
   const yawRad = (yaw * Math.PI) / 180;
   const pitchRad = (pitch * Math.PI) / 180;
   
@@ -48,6 +50,29 @@ const angleToPosition = (yaw: number, pitch: number, distance: number = 50): [nu
     Math.sin(pitchRad) * distance,
     -Math.cos(yawRad) * Math.cos(pitchRad) * distance
   ];
+};
+
+// Function to generate AI panorama for a room
+export const generateRoomPanorama = async (
+  roomName: string, 
+  theme: string, 
+  description?: string
+): Promise<string | null> => {
+  try {
+    const { data, error } = await supabase.functions.invoke('generate-escape-room-panorama', {
+      body: { roomName, theme, description }
+    });
+
+    if (error) {
+      console.error('Error generating panorama:', error);
+      return null;
+    }
+
+    return data?.imageUrl || null;
+  } catch (err) {
+    console.error('Failed to generate panorama:', err);
+    return null;
+  }
 };
 
 // Mystery Detective Office Escape Room

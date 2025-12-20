@@ -9,9 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { 
   ArrowLeft, Clock, Lightbulb, Package, Eye, Lock, Unlock, 
-  Key, Search, X, Check, MapPin, Volume2, VolumeX
+  Key, Search, X, Check, MapPin, Volume2, VolumeX, Wand2, Loader2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 // Types
 interface InventoryItem {
@@ -57,6 +58,7 @@ interface PanoramaEscapeRoomProps {
   rooms: RoomData[];
   onComplete: (score: number, time: number) => void;
   onExit: () => void;
+  onUpdateRoomPanorama?: (roomIndex: number, newUrl: string) => void;
 }
 
 // Panorama Sphere Component
@@ -165,7 +167,8 @@ export function PanoramaEscapeRoom({
   theme, 
   rooms, 
   onComplete, 
-  onExit 
+  onExit,
+  onUpdateRoomPanorama
 }: PanoramaEscapeRoomProps) {
   const { toast } = useToast();
   const [currentRoomIndex, setCurrentRoomIndex] = useState(0);
@@ -176,13 +179,66 @@ export function PanoramaEscapeRoom({
   const [hintsUsed, setHintsUsed] = useState(0);
   const [showInventory, setShowInventory] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  const [isGeneratingPanorama, setIsGeneratingPanorama] = useState(false);
+  const [localRooms, setLocalRooms] = useState(rooms);
   
   // Dialog states
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(null);
   const [puzzleAnswer, setPuzzleAnswer] = useState("");
   const [showClue, setShowClue] = useState<string | null>(null);
 
-  const currentRoom = rooms[currentRoomIndex];
+  const currentRoom = localRooms[currentRoomIndex];
+
+  // Sync rooms when prop changes
+  useEffect(() => {
+    setLocalRooms(rooms);
+  }, [rooms]);
+
+  // Generate AI panorama for current room
+  const generateAIPanorama = async () => {
+    setIsGeneratingPanorama(true);
+    toast({
+      title: "🎨 Generujem AI panorámu...",
+      description: "Toto môže trvať niekoľko sekúnd",
+    });
+
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-escape-room-panorama', {
+        body: { 
+          roomName: currentRoom.name, 
+          theme: theme,
+          description: currentRoom.description 
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.imageUrl) {
+        // Update local rooms with new panorama
+        setLocalRooms(prev => prev.map((room, idx) => 
+          idx === currentRoomIndex 
+            ? { ...room, panoramaUrl: data.imageUrl }
+            : room
+        ));
+        
+        onUpdateRoomPanorama?.(currentRoomIndex, data.imageUrl);
+        
+        toast({
+          title: "✨ Panoráma vygenerovaná!",
+          description: "Nová AI panoráma bola aplikovaná",
+        });
+      }
+    } catch (err) {
+      console.error('Failed to generate panorama:', err);
+      toast({
+        title: "Chyba pri generovaní",
+        description: "Skúste to znova neskôr",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingPanorama(false);
+    }
+  };
 
   // Timer
   useEffect(() => {
@@ -403,6 +459,21 @@ export function PanoramaEscapeRoom({
               </div>
             </CardContent>
           </Card>
+          
+          <Button 
+            variant="secondary" 
+            size="sm"
+            onClick={generateAIPanorama}
+            disabled={isGeneratingPanorama}
+            className="w-full"
+          >
+            {isGeneratingPanorama ? (
+              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+            ) : (
+              <Wand2 className="h-4 w-4 mr-1" />
+            )}
+            AI Panoráma
+          </Button>
           
           <Button 
             variant="destructive" 
