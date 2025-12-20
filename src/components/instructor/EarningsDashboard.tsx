@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { DollarSign, TrendingUp, Wallet, ArrowUpRight } from "lucide-react";
+import { DollarSign, TrendingUp, Wallet, ArrowUpRight, ExternalLink, CheckCircle, AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { WithdrawalRequestDialog } from "./WithdrawalRequestDialog";
 import { PayoutHistory } from "./PayoutHistory";
-
+import { useStripeConnect } from "@/hooks/useStripeConnect";
 interface InstructorStats {
   pending_balance: number;
   lifetime_earnings: number;
@@ -16,16 +16,36 @@ interface InstructorStats {
   active_courses: number;
 }
 
+interface ConnectStatus {
+  hasAccount: boolean;
+  onboardingComplete: boolean;
+  payoutsEnabled: boolean;
+}
+
 export function EarningsDashboard() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<InstructorStats | null>(null);
   const [instructorId, setInstructorId] = useState<string | null>(null);
   const [showWithdrawalDialog, setShowWithdrawalDialog] = useState(false);
+  const [connectStatus, setConnectStatus] = useState<ConnectStatus | null>(null);
+  const { startOnboarding, openDashboard, loading: connectLoading } = useStripeConnect();
 
   useEffect(() => {
     loadEarningsData();
+    loadConnectStatus();
   }, []);
+
+  const loadConnectStatus = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('check-connect-status');
+      if (!error && data) {
+        setConnectStatus(data);
+      }
+    } catch (err) {
+      console.error("Error loading connect status:", err);
+    }
+  };
 
   const loadEarningsData = async () => {
     try {
@@ -164,6 +184,59 @@ export function EarningsDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Stripe Connect Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            Stripe Connect
+            {connectStatus?.onboardingComplete ? (
+              <CheckCircle className="h-5 w-5 text-green-500" />
+            ) : (
+              <AlertCircle className="h-5 w-5 text-yellow-500" />
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!connectStatus?.hasAccount ? (
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Pripojte svoj Stripe účet pre priame výplaty. Stripe spracuje vaše platby a pošle zisky priamo na váš bankový účet.
+              </p>
+              <Button onClick={startOnboarding} disabled={connectLoading}>
+                {connectLoading ? "Načítava sa..." : "Pripojiť Stripe účet"}
+              </Button>
+            </div>
+          ) : !connectStatus.onboardingComplete ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-yellow-600">
+                <AlertCircle className="h-4 w-4" />
+                <span className="text-sm font-medium">Onboarding nie je dokončený</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Dokončite nastavenie vášho Stripe účtu pre prijímanie platieb.
+              </p>
+              <Button onClick={startOnboarding} disabled={connectLoading}>
+                {connectLoading ? "Načítava sa..." : "Dokončiť nastavenie"}
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-green-600">
+                <CheckCircle className="h-4 w-4" />
+                <span className="text-sm font-medium">Účet je aktívny</span>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Váš Stripe účet je pripojený a pripravený prijímať platby.
+              </p>
+              <Button variant="outline" onClick={openDashboard} disabled={connectLoading}>
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Otvoriť Stripe Dashboard
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Withdrawal Section */}
       <Card>
