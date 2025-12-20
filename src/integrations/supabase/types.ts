@@ -24214,6 +24214,161 @@ export type Database = {
         }
         Relationships: []
       }
+      stock_content_sales: {
+        Row: {
+          amount_paid: number
+          buyer_email: string | null
+          buyer_id: string | null
+          content_id: string
+          created_at: string | null
+          creator_earning: number
+          creator_id: string
+          id: string
+          platform_fee: number
+          status: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string | null
+        }
+        Insert: {
+          amount_paid: number
+          buyer_email?: string | null
+          buyer_id?: string | null
+          content_id: string
+          created_at?: string | null
+          creator_earning: number
+          creator_id: string
+          id?: string
+          platform_fee: number
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+        }
+        Update: {
+          amount_paid?: number
+          buyer_email?: string | null
+          buyer_id?: string | null
+          content_id?: string
+          created_at?: string | null
+          creator_earning?: number
+          creator_id?: string
+          id?: string
+          platform_fee?: number
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_content_sales_content_id_fkey"
+            columns: ["content_id"]
+            isOneToOne: false
+            referencedRelation: "stock_content_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stock_creator_earnings: {
+        Row: {
+          created_at: string | null
+          creator_id: string
+          id: string
+          pending_balance: number | null
+          total_earnings: number | null
+          total_withdrawn: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          pending_balance?: number | null
+          total_earnings?: number | null
+          total_withdrawn?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          pending_balance?: number | null
+          total_earnings?: number | null
+          total_withdrawn?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      stock_notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          related_id: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          related_id?: string | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          related_id?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      stock_withdrawal_requests: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string | null
+          creator_id: string
+          id: string
+          payment_details: Json
+          payment_method: string
+          processed_at: string | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string | null
+          creator_id: string
+          id?: string
+          payment_details: Json
+          payment_method: string
+          processed_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string | null
+          creator_id?: string
+          id?: string
+          payment_details?: Json
+          payment_method?: string
+          processed_at?: string | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       stories: {
         Row: {
           caption: string | null

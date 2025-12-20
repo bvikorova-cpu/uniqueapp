@@ -1136,3 +1136,6 @@ verify_jwt = true
 
 [functions.purchase-stock-content]
 verify_jwt = false
+
+[functions.request-stock-withdrawal]
+verify_jwt = true
