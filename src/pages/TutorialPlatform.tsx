@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { GraduationCap, Plus, TrendingUp, Users, Video } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
+import { GraduationCap, Plus, TrendingUp, Users, Video, ShoppingBag, Euro } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,14 +10,34 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { MyCourseEnrollments } from "@/components/tutorial-platform/MyCourseEnrollments";
+import { MyInstructorEarnings } from "@/components/tutorial-platform/MyInstructorEarnings";
 
 const TutorialPlatform = () => {
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [courses, setCourses] = useState<any[]>([]);
   const [myCourses, setMyCourses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+
+  // Check for enrollment success
+  useEffect(() => {
+    const enrollStatus = searchParams.get("enrolled");
+    if (enrollStatus === "success") {
+      toast({
+        title: "Enrollment Successful!",
+        description: "Your course is now available in 'My Enrollments' tab",
+      });
+    } else if (enrollStatus === "cancelled") {
+      toast({
+        title: "Enrollment Cancelled",
+        description: "Your payment was cancelled",
+        variant: "destructive"
+      });
+    }
+  }, [searchParams, toast]);
 
   useEffect(() => {
     loadCourses();
@@ -168,7 +189,17 @@ const TutorialPlatform = () => {
           <TabsList>
             <TabsTrigger value="all">All Courses ({courses.length})</TabsTrigger>
             {userId && (
-              <TabsTrigger value="mycourses">My Courses ({myCourses.length})</TabsTrigger>
+              <>
+                <TabsTrigger value="enrollments">
+                  <ShoppingBag className="w-4 h-4 mr-1" />
+                  My Enrollments
+                </TabsTrigger>
+                <TabsTrigger value="mycourses">My Courses ({myCourses.length})</TabsTrigger>
+                <TabsTrigger value="earnings">
+                  <Euro className="w-4 h-4 mr-1" />
+                  My Earnings
+                </TabsTrigger>
+              </>
             )}
           </TabsList>
 
@@ -190,26 +221,36 @@ const TutorialPlatform = () => {
           </TabsContent>
 
           {userId && (
-            <TabsContent value="mycourses">
-              {loading ? (
-                <div className="text-center py-12">Loading your courses...</div>
-              ) : myCourses.length === 0 ? (
-                <div className="text-center py-12">
-                  <GraduationCap className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground mb-4">You haven't created any courses yet</p>
-                  <Button onClick={handleCreateCourse}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Your First Course
-                  </Button>
-                </div>
-              ) : (
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {myCourses.map((course) => (
-                    <CourseCard key={course.id} course={course} isMyCourse />
-                  ))}
-                </div>
-              )}
-            </TabsContent>
+            <>
+              <TabsContent value="enrollments">
+                <MyCourseEnrollments />
+              </TabsContent>
+
+              <TabsContent value="mycourses">
+                {loading ? (
+                  <div className="text-center py-12">Loading your courses...</div>
+                ) : myCourses.length === 0 ? (
+                  <div className="text-center py-12">
+                    <GraduationCap className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground mb-4">You haven't created any courses yet</p>
+                    <Button onClick={handleCreateCourse}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Your First Course
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {myCourses.map((course) => (
+                      <CourseCard key={course.id} course={course} isMyCourse />
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="earnings">
+                <MyInstructorEarnings />
+              </TabsContent>
+            </>
           )}
         </Tabs>
       </main>
