@@ -29,8 +29,8 @@ serve(async (req) => {
 
     const { type, title, description, genre, mood, tempo, originalSong, remixStyle, instructions } = await req.json();
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
 
     const creditsRequired = type === 'generate' ? 15 : 20;
 
@@ -60,14 +60,14 @@ Tempo: ${tempo} BPM
 
 Create full song lyrics with verses, chorus, and bridge. Format with clear sections.`;
 
-      const lyricsResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const lyricsResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: 'You are a professional songwriter. Create compelling, well-structured song lyrics.' },
             { role: 'user', content: lyricsPrompt }
@@ -83,26 +83,26 @@ Create full song lyrics with verses, chorus, and bridge. Format with clear secti
       // Generate cover art
       const artPrompt = `Create album cover art for a ${genre} song titled "${title}". Style: ${mood}, professional music album cover, vibrant colors, artistic`;
 
-      const artResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const artResponse = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash-image-preview',
-          messages: [
-            { role: 'user', content: artPrompt }
-          ],
-          modalities: ['image', 'text']
+          model: 'dall-e-3',
+          prompt: artPrompt,
+          n: 1,
+          size: '1024x1024',
+          response_format: 'url'
         }),
       });
 
       if (artResponse.ok) {
         const artData = await artResponse.json();
-        const imageData = artData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-        if (imageData) {
-          coverArtUrl = imageData;
+        const imageUrl = artData.data?.[0]?.url;
+        if (imageUrl) {
+          coverArtUrl = imageUrl;
         }
       }
     } else if (type === 'remix') {
@@ -112,14 +112,14 @@ Additional instructions: ${instructions || 'None'}
 
 Provide detailed remix notes including arrangement changes, instrumentation, and style transformation.`;
 
-      const remixResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const remixResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: 'You are a professional music producer specializing in remixes.' },
             { role: 'user', content: remixPrompt }
