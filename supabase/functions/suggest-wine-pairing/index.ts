@@ -52,8 +52,8 @@ serve(async (req) => {
     const { dish_name, price_range } = await req.json();
     console.log('Suggesting wine pairing for:', dish_name);
 
-    // Call Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    // Call OpenAI
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     const prompt = `Recommend wine/drinks for the dish "${dish_name}".
 ${price_range ? `Price range: ${price_range}` : ''}
 
@@ -71,14 +71,14 @@ Return JSON:
   ]
 }`;
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
       }),
     });

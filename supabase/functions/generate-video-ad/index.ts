@@ -14,9 +14,9 @@ serve(async (req) => {
   try {
     const { productService, targetAudience, keyMessage, tone, duration, platform, premiumFeatures } = await req.json();
     
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY is not configured');
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openAIApiKey) {
+      throw new Error('OPENAI_API_KEY is not configured');
     }
 
     // Auth user
@@ -75,14 +75,14 @@ Generate: title, script, scenes (duration, description, voiceover, visuals), cal
       prompt += `\n\nAdd performance predictions (reach, engagement, conversion) in English.`;
     }
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: 'You are a professional video advertising expert. Create engaging video ad scripts in ENGLISH. Always respond with valid JSON format. All content must be in English language.' },
           { role: 'user', content: prompt }
