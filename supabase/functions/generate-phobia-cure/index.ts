@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2'
 
@@ -41,19 +42,19 @@ serve(async (req) => {
 
     console.log('Generating cure plan for phobia:', phobia.phobia_name)
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured')
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
+    if (!openAIApiKey) {
+      throw new Error('OPENAI_API_KEY not configured')
     }
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -64,12 +65,13 @@ serve(async (req) => {
             content: `Create a personalized treatment plan for: ${phobia.phobia_name} (Type: ${phobia.phobia_type}, Severity: ${phobia.severity}/10). Description: ${phobia.description}. Current analysis: ${JSON.stringify(phobia.ai_analysis)}`
           }
         ],
+        response_format: { type: "json_object" }
       }),
     })
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('AI API error:', response.status, errorText)
+      console.error('OpenAI API error:', response.status, errorText)
       throw new Error('AI cure generation failed')
     }
 
