@@ -52,20 +52,20 @@ serve(async (req) => {
       });
     }
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openAIApiKey) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
     // Generate story
-    const storyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const storyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -121,19 +121,18 @@ serve(async (req) => {
     let imageUrl = null;
     const imagePrompt = story.imagePrompt || `A dreamlike artistic representation of an alternative life path: ${scenario}. Style: surreal, hopeful, cinematic lighting, warm colors, high quality digital art with a person in the scene.`;
     
-    const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const imageResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${openAIApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
+        model: 'gpt-4o-mini',
         messages: [{
           role: 'user',
-          content: imagePrompt
-        }],
-        modalities: ['image', 'text']
+          content: `Describe this scene for an image: ${imagePrompt}`
+        }]
       }),
     });
 
