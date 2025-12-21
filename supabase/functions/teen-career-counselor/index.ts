@@ -12,23 +12,31 @@ serve(async (req) => {
   }
 
   try {
-    // First authenticate with anon key
-    const supabaseAuth = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-    );
-
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData } = await supabaseAuth.auth.getUser(token);
-    const user = userData.user;
-    if (!user) throw new Error("Unauthorized");
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Authorization required' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     // Use service role for database operations to bypass RLS
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData, error: authError } = await supabaseClient.auth.getUser(token);
+    
+    if (authError || !userData.user) {
+      return new Response(JSON.stringify({ error: 'User not authenticated' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    const user = userData.user;
 
     const { interests, strengths, goals } = await req.json();
 

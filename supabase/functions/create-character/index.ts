@@ -18,11 +18,25 @@ serve(async (req) => {
   );
 
   try {
-    const authHeader = req.headers.get('Authorization')!;
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: 'Authorization required' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const token = authHeader.replace('Bearer ', '');
-    const { data: userData } = await supabaseClient.auth.getUser(token);
+    const { data: userData, error: authError } = await supabaseClient.auth.getUser(token);
+    
+    if (authError || !userData.user) {
+      return new Response(JSON.stringify({ error: 'User not authenticated' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
     const user = userData.user;
-    if (!user) throw new Error('Not authenticated');
 
     const { 
       name, 

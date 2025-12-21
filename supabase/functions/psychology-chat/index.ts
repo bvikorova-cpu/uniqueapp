@@ -23,58 +23,76 @@ serve(async (req) => {
 
     // Check subscription status
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
+    const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    
     const authHeader = req.headers.get("Authorization");
-    if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data: { user } } = await supabase.auth.getUser(token);
-
-      if (user) {
-        // Get or create subscription record
-        let { data: subData } = await supabase
-          .from('psychology_subscriptions')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (!subData) {
-          const { data: newSub } = await supabase
-            .from('psychology_subscriptions')
-            .insert({ user_id: user.id, free_messages_used: 0 })
-            .select()
-            .single();
-          subData = newSub;
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: "Authorization required" }), 
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
+      );
+    }
+    
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      global: { headers: { Authorization: authHeader } }
+    });
 
-        const isSubscribed = subData?.subscription_status === 'active' && 
-                            subData?.subscription_end && 
-                            new Date(subData.subscription_end) > new Date();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      return new Response(
+        JSON.stringify({ error: "User not authenticated" }), 
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
 
-        if (!isSubscribed) {
-          const freeMessagesUsed = subData?.free_messages_used || 0;
-          
-          if (freeMessagesUsed >= FREE_MESSAGE_LIMIT) {
-            return new Response(
-              JSON.stringify({ 
-                error: "Free messages limit reached", 
-                requiresSubscription: true 
-              }), 
-              {
-                status: 402,
-                headers: { ...corsHeaders, "Content-Type": "application/json" },
-              }
-            );
+    // Get or create subscription record
+    let { data: subData } = await supabase
+      .from('psychology_subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (!subData) {
+      const { data: newSub } = await supabase
+        .from('psychology_subscriptions')
+        .insert({ user_id: user.id, free_messages_used: 0 })
+        .select()
+        .single();
+      subData = newSub;
+    }
+
+    const isSubscribed = subData?.subscription_status === 'active' && 
+                        subData?.subscription_end && 
+                        new Date(subData.subscription_end) > new Date();
+
+    if (!isSubscribed) {
+      const freeMessagesUsed = subData?.free_messages_used || 0;
+      
+      if (freeMessagesUsed >= FREE_MESSAGE_LIMIT) {
+        return new Response(
+          JSON.stringify({ 
+            error: "Free messages limit reached", 
+            requiresSubscription: true 
+          }), 
+          {
+            status: 402,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
           }
-
-          // Increment free messages used
-          await supabase
-            .from('psychology_subscriptions')
-            .update({ free_messages_used: freeMessagesUsed + 1 })
-            .eq('user_id', user.id);
-        }
+        );
       }
+
+      // Increment free messages used
+      await supabase
+        .from('psychology_subscriptions')
+        .update({ free_messages_used: freeMessagesUsed + 1 })
+        .eq('user_id', user.id);
     }
 
     const systemPrompt = `You are an empathetic and professional online psychologist. Your role is to:
