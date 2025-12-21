@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -38,7 +39,6 @@ serve(async (req) => {
       });
     }
 
-    // Check credits
     const { data: credits, error: creditsError } = await supabase
       .from('messenger_ai_credits')
       .select('credits_remaining')
@@ -54,40 +54,35 @@ serve(async (req) => {
 
     let futureImageUrl = null;
 
-    // Generate AI "future you" image if requested
     if (generateImage) {
-      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-      if (LOVABLE_API_KEY) {
-        const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+      if (openAIApiKey) {
+        const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Authorization': `Bearer ${openAIApiKey}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
-            messages: [{
-              role: 'user',
-              content: `Generate a beautiful, hopeful artistic image representing a time capsule message being opened in the future. The image should show a warm, nostalgic scene with soft golden light, perhaps showing hands opening a glowing envelope or a magical time capsule. Style: dreamy, ethereal, warm colors, high quality digital art. Include subtle sparkles and light rays to convey the magic of receiving a message from the past.`
-            }],
-            modalities: ['image', 'text']
+            model: 'gpt-image-1',
+            prompt: `Generate a beautiful, hopeful artistic image representing a time capsule message being opened in the future. The image should show a warm, nostalgic scene with soft golden light, perhaps showing hands opening a glowing envelope or a magical time capsule. Style: dreamy, ethereal, warm colors, high quality digital art. Include subtle sparkles and light rays to convey the magic of receiving a message from the past.`,
+            n: 1,
+            size: '1024x1024'
           }),
         });
 
         if (imageResponse.ok) {
           const imageData = await imageResponse.json();
-          futureImageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          futureImageUrl = imageData.data?.[0]?.url;
         }
       }
     }
 
-    // Deduct credits
     await supabase
       .from('messenger_ai_credits')
       .update({ credits_remaining: credits.credits_remaining - CREDIT_COST })
       .eq('user_id', user.id);
 
-    // Store time capsule in messages with scheduled delivery
     const { error: insertError } = await supabase
       .from('messages')
       .insert({
