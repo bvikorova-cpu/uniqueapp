@@ -12,11 +12,6 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-  );
-
   try {
     const { contentId } = await req.json();
     
@@ -31,9 +26,14 @@ serve(async (req) => {
     let userEmail = null;
     const authHeader = req.headers.get("Authorization");
     
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      authHeader ? { global: { headers: { Authorization: authHeader } } } : {}
+    );
+
     if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data } = await supabaseClient.auth.getUser(token);
+      const { data } = await supabaseClient.auth.getUser();
       userId = data.user?.id || null;
       userEmail = data.user?.email || null;
       console.log("[PURCHASE-STOCK] User authenticated:", userId);
