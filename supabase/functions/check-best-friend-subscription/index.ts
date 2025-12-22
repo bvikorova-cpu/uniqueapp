@@ -13,39 +13,26 @@ serve(async (req) => {
   try {
     log("Function started");
     const { userId } = await authenticateUser(req);
-    log("User authenticated", { userId });
-
     const supabase = createSupabaseAdminClient();
 
-    const { data: subData, error: subError } = await supabase
+    // UPSERT to prevent race condition - creates record if not exists
+    await supabase
+      .from("best_friend_subscriptions")
+      .upsert(
+        { user_id: userId, free_messages_used: 0 },
+        { onConflict: "user_id", ignoreDuplicates: true }
+      );
+
+    const { data: subData, error } = await supabase
       .from("best_friend_subscriptions")
       .select("*")
       .eq("user_id", userId)
-      .maybeSingle();
+      .single();
 
-    if (subError && subError.code !== "PGRST116") {
-      throw subError;
-    }
-
-    if (!subData) {
-      const { error: insertError } = await supabase
-        .from("best_friend_subscriptions")
-        .insert({ user_id: userId, free_messages_used: 0 });
-
-      if (insertError) throw insertError;
-
-      return new Response(JSON.stringify({
-        subscribed: false,
-        free_messages_used: 0,
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    if (error) throw error;
 
     const isSubscribed = subData.subscription_status === "active" && 
                         new Date(subData.subscription_end) > new Date();
-
-    log("Subscription status checked", { isSubscribed });
 
     return new Response(JSON.stringify({
       subscribed: isSubscribed,
@@ -54,9 +41,8 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    log("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    log("ERROR", { message: error instanceof Error ? error.message : String(error) });
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : String(error) }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
