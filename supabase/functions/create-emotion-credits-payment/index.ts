@@ -59,8 +59,7 @@ serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
+    const { data } = await supabaseClient.auth.getUser();
     const user = data.user;
     
     if (!user?.email) {
