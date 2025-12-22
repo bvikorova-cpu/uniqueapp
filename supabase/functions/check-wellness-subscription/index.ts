@@ -1,15 +1,17 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { corsHeaders } from "../_shared/cors.ts";
+import { authenticateUser } from "../_shared/supabaseClient.ts";
+import { createStripeClient } from "../_shared/stripe.ts";
+import { createLogger } from "../_shared/logger.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const log = createLogger("check-wellness-subscription");
 
-const logStep = (step: string, details?: any) => {
-  const detailsStr = details ? ` - ${JSON.stringify(details)}` : '';
-  console.log(`[CHECK-WELLNESS-SUBSCRIPTION] ${step}${detailsStr}`);
+// Wellness product IDs
+const WELLNESS_PRODUCTS = {
+  basicMonthly: "prod_TNALdOZ4pthZnd",
+  premiumMonthly: "prod_TNAMLqWEGvN9tJ",
+  basicLifetime: "prod_TNANc4Yy4ZJ5Tq",
+  premiumLifetime: "prod_TNANi5KMiaZSnI",
 };
 
 serve(async (req) => {
@@ -17,48 +19,27 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-  );
-
   try {
-    logStep("Function started");
+    log("Function started");
+    const { user } = await authenticateUser(req);
+    log("User authenticated", { userId: user.id });
 
-    const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
-    if (!stripeKey) throw new Error("STRIPE_SECRET_KEY is not set");
-    logStep("Stripe key verified");
-
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("No authorization header provided");
-    logStep("Authorization header found");
-
-    const token = authHeader.replace("Bearer ", "");
-    logStep("Authenticating user with token");
-    
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
-    logStep("User authenticated", { userId: user.id, email: user.email });
-
-    const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const stripe = createStripeClient();
+    const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
     
     if (customers.data.length === 0) {
-      logStep("No customer found, returning unsubscribed state");
+      log("No customer found");
       return new Response(JSON.stringify({ 
         subscribed: false,
         tier: null,
         subscription_end: null
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 200,
       });
     }
 
     const customerId = customers.data[0].id;
-    logStep("Found Stripe customer", { customerId });
+    log("Found customer", { customerId });
 
     // Check for active subscriptions
     const subscriptions = await stripe.subscriptions.list({
@@ -77,27 +58,19 @@ serve(async (req) => {
     let subscriptionEnd = null;
     let isLifetime = false;
 
-    // Wellness product IDs
-    const wellnessProducts = {
-      basicMonthly: "prod_TNALdOZ4pthZnd",
-      premiumMonthly: "prod_TNAMLqWEGvN9tJ",
-      basicLifetime: "prod_TNANc4Yy4ZJ5Tq",
-      premiumLifetime: "prod_TNANi5KMiaZSnI",
-    };
-
     // Check active subscriptions first
     for (const subscription of subscriptions.data) {
       const productId = subscription.items.data[0].price.product as string;
       
-      if (productId === wellnessProducts.premiumMonthly) {
+      if (productId === WELLNESS_PRODUCTS.premiumMonthly) {
         tier = "premium";
         subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
-        logStep("Active Premium Monthly subscription found", { subscriptionId: subscription.id });
+        log("Active Premium Monthly found");
         break;
-      } else if (productId === wellnessProducts.basicMonthly) {
+      } else if (productId === WELLNESS_PRODUCTS.basicMonthly) {
         tier = "basic";
         subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
-        logStep("Active Basic Monthly subscription found", { subscriptionId: subscription.id });
+        log("Active Basic Monthly found");
         break;
       }
     }
@@ -109,17 +82,17 @@ serve(async (req) => {
           const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
           
           for (const item of lineItems.data) {
-            const productId = typeof item.price?.product === 'string' ? item.price.product : null;
+            const productId = typeof item.price?.product === "string" ? item.price.product : null;
             
-            if (productId === wellnessProducts.premiumLifetime) {
+            if (productId === WELLNESS_PRODUCTS.premiumLifetime) {
               tier = "premium";
               isLifetime = true;
-              logStep("Premium Lifetime purchase found", { sessionId: session.id });
+              log("Premium Lifetime found");
               break;
-            } else if (productId === wellnessProducts.basicLifetime) {
+            } else if (productId === WELLNESS_PRODUCTS.basicLifetime) {
               tier = "basic";
               isLifetime = true;
-              logStep("Basic Lifetime purchase found", { sessionId: session.id });
+              log("Basic Lifetime found");
               break;
             }
           }
@@ -130,7 +103,7 @@ serve(async (req) => {
     }
 
     const hasAccess = !!tier;
-    logStep("Final access status", { hasAccess, tier, isLifetime });
+    log("Final status", { hasAccess, tier, isLifetime });
 
     return new Response(JSON.stringify({
       subscribed: hasAccess,
@@ -139,11 +112,10 @@ serve(async (req) => {
       is_lifetime: isLifetime
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in check-wellness-subscription", { message: errorMessage });
+    log("ERROR", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

@@ -1,42 +1,31 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { corsHeaders } from "../_shared/cors.ts";
+import { authenticateUser, createSupabaseAdminClient } from "../_shared/supabaseClient.ts";
+import { createLogger } from "../_shared/logger.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const log = createLogger("check-coloring-subscription");
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-  );
-
   try {
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
-    const user = data.user;
-    
-    if (!user?.email) {
-      throw new Error("User not authenticated");
-    }
+    log("Function started");
+    const { userId } = await authenticateUser(req);
+    log("User authenticated", { userId });
 
-    console.log("Checking coloring subscription for user:", user.id);
+    const supabase = createSupabaseAdminClient();
 
     // Get current credits
-    const { data: credits, error: creditsError } = await supabaseClient
+    const { data: credits, error: creditsError } = await supabase
       .from("coloring_credits")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
 
     if (creditsError) {
-      console.error("Error fetching credits:", creditsError);
+      log("Error fetching credits", { error: creditsError });
       throw creditsError;
     }
 
@@ -45,41 +34,40 @@ serve(async (req) => {
       const expiryDate = new Date(credits.expires_at);
       const now = new Date();
       
-      if (expiryDate < now && credits.tier !== 'none') {
+      if (expiryDate < now && credits.tier !== "none") {
         // Subscription expired, reset to none
-        await supabaseClient
+        await supabase
           .from("coloring_credits")
           .update({ 
-            tier: 'none',
+            tier: "none",
             credits_remaining: 0,
             expires_at: null
           })
-          .eq("user_id", user.id);
+          .eq("user_id", userId);
           
-        return new Response(
-          JSON.stringify({ 
-            status: "expired",
-            message: "Subscription has expired"
-          }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-        );
+        log("Subscription expired, reset tier");
+        return new Response(JSON.stringify({ 
+          status: "expired",
+          message: "Subscription has expired"
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
       }
     }
 
-    return new Response(
-      JSON.stringify({ 
-        status: "active",
-        credits: credits || { tier: 'none', credits_remaining: 0 }
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-    );
-
+    log("Subscription active or none");
+    return new Response(JSON.stringify({ 
+      status: "active",
+      credits: credits || { tier: "none", credits_remaining: 0 }
+    }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.error("Error in check-coloring-subscription:", error);
-    const errorMessage = error instanceof Error ? error.message : "Failed to check subscription";
-    return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-    );
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    log("ERROR", { message: errorMessage });
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
+    });
   }
 });
