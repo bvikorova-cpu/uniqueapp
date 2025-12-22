@@ -1610,6 +1610,128 @@ export type Database = {
           },
         ]
       }
+      bazaar_disputes: {
+        Row: {
+          admin_id: string | null
+          admin_notes: string | null
+          created_at: string | null
+          description: string | null
+          escrow_id: string | null
+          evidence_urls: string[] | null
+          id: string
+          opened_by: string
+          order_id: string
+          reason: string
+          resolution_amount: number | null
+          resolved_at: string | null
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          admin_id?: string | null
+          admin_notes?: string | null
+          created_at?: string | null
+          description?: string | null
+          escrow_id?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          opened_by: string
+          order_id: string
+          reason: string
+          resolution_amount?: number | null
+          resolved_at?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          admin_id?: string | null
+          admin_notes?: string | null
+          created_at?: string | null
+          description?: string | null
+          escrow_id?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          opened_by?: string
+          order_id?: string
+          reason?: string
+          resolution_amount?: number | null
+          resolved_at?: string | null
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_disputes_escrow_id_fkey"
+            columns: ["escrow_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_escrow"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bazaar_disputes_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bazaar_escrow: {
+        Row: {
+          amount: number
+          auto_release_at: string
+          commission_amount: number
+          created_at: string | null
+          held_at: string | null
+          id: string
+          order_id: string
+          refunded_at: string | null
+          released_at: string | null
+          seller_payout: number
+          status: string
+          stripe_transfer_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          auto_release_at: string
+          commission_amount?: number
+          created_at?: string | null
+          held_at?: string | null
+          id?: string
+          order_id: string
+          refunded_at?: string | null
+          released_at?: string | null
+          seller_payout: number
+          status?: string
+          stripe_transfer_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          auto_release_at?: string
+          commission_amount?: number
+          created_at?: string | null
+          held_at?: string | null
+          id?: string
+          order_id?: string
+          refunded_at?: string | null
+          released_at?: string | null
+          seller_payout?: number
+          status?: string
+          stripe_transfer_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bazaar_escrow_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "bazaar_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bazaar_items: {
         Row: {
           category: string
@@ -1806,6 +1928,7 @@ export type Database = {
           completed_at: string | null
           created_at: string
           delivered_at: string | null
+          escrow_status: string | null
           id: string
           item_id: string
           paid_at: string | null
@@ -1826,6 +1949,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           delivered_at?: string | null
+          escrow_status?: string | null
           id?: string
           item_id: string
           paid_at?: string | null
@@ -1846,6 +1970,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           delivered_at?: string | null
+          escrow_status?: string | null
           id?: string
           item_id?: string
           paid_at?: string | null
