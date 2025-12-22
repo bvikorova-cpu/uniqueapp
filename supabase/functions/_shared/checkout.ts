@@ -339,3 +339,150 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) {
     }
   };
 }
+
+export interface ServiceCheckoutConfig {
+  /** Function name for logging */
+  functionName: string;
+  /** Map of service type to price ID */
+  servicePrices: Record<string, string>;
+  /** Service types that are subscriptions (others are payments) */
+  subscriptionServices?: string[];
+  /** Success path */
+  successPath: string;
+  /** Cancel path */
+  cancelPath: string;
+  /** Key name for service type in body (default: "serviceType") */
+  serviceKey?: string;
+}
+
+/**
+ * Creates a service checkout handler with dynamic mode based on service type
+ */
+export function createServiceCheckoutHandler(config: ServiceCheckoutConfig) {
+  const log = createLogger(config.functionName);
+  const serviceKey = config.serviceKey || "serviceType";
+
+  return async (req: Request): Promise<Response> => {
+    if (req.method === "OPTIONS") {
+      return handleCors();
+    }
+
+    try {
+      log("Function started");
+
+      const { userId, email } = await authenticateUser(req);
+      if (!email) throw new Error("User email not available");
+      log("User authenticated", { userId, email });
+
+      const body = await req.json();
+      const serviceType = body[serviceKey];
+      
+      const priceId = config.servicePrices[serviceType];
+      if (!priceId) {
+        const validServices = Object.keys(config.servicePrices).join(", ");
+        throw new Error(`Invalid ${serviceKey}: ${serviceType}. Valid options: ${validServices}`);
+      }
+
+      log("Selected service", { serviceType, priceId });
+
+      const stripe = createStripeClient();
+      const customerId = await getStripeCustomer(stripe, email);
+      log("Stripe customer lookup", { customerId: customerId || "new" });
+
+      const origin = req.headers.get("origin") || "";
+      
+      // Determine mode based on subscription services list
+      const mode = config.subscriptionServices?.includes(serviceType) ? "subscription" : "payment";
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode,
+        success_url: `${origin}${config.successPath}`,
+        cancel_url: `${origin}${config.cancelPath}`,
+        metadata: { user_id: userId, service_type: serviceType },
+      });
+
+      log("Checkout session created", { sessionId: session.id, serviceType, mode });
+      return successResponse({ url: session.url, session_id: session.id });
+    } catch (error) {
+      log("ERROR", { message: error instanceof Error ? error.message : String(error) });
+      return errorResponse(error);
+    }
+  };
+}
+
+export interface PackageCheckoutConfig {
+  /** Function name for logging */
+  functionName: string;
+  /** Map of package type to { credits, priceId } */
+  packages: Record<string, { credits: number; price: string }>;
+  /** Success path */
+  successPath: string;
+  /** Cancel path */
+  cancelPath: string;
+  /** Metadata type */
+  metadataType: string;
+  /** Package key in body (default: "packageType") */
+  packageKey?: string;
+}
+
+/**
+ * Creates a package checkout handler for credits packages
+ */
+export function createPackageCheckoutHandler(config: PackageCheckoutConfig) {
+  const log = createLogger(config.functionName);
+  const packageKey = config.packageKey || "packageType";
+
+  return async (req: Request): Promise<Response> => {
+    if (req.method === "OPTIONS") {
+      return handleCors();
+    }
+
+    try {
+      log("Function started");
+
+      const { userId, email } = await authenticateUser(req);
+      if (!email) throw new Error("User email not available");
+      log("User authenticated", { userId, email });
+
+      const body = await req.json();
+      const packageType = body[packageKey];
+      
+      const selectedPackage = config.packages[packageType];
+      if (!selectedPackage) {
+        const validPackages = Object.keys(config.packages).join(", ");
+        throw new Error(`Invalid ${packageKey}: ${packageType}. Valid options: ${validPackages}`);
+      }
+
+      log("Selected package", { packageType, credits: selectedPackage.credits });
+
+      const stripe = createStripeClient();
+      const customerId = await getStripeCustomer(stripe, email);
+
+      const origin = req.headers.get("origin") || "";
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: selectedPackage.price, quantity: 1 }],
+        mode: "payment",
+        success_url: `${origin}${config.successPath}`,
+        cancel_url: `${origin}${config.cancelPath}`,
+        metadata: {
+          user_id: userId,
+          package_type: packageType,
+          credits: selectedPackage.credits.toString(),
+          type: config.metadataType,
+        },
+      });
+
+      log("Checkout session created", { sessionId: session.id, packageType });
+      return successResponse({ url: session.url, session_id: session.id });
+    } catch (error) {
+      log("ERROR", { message: error instanceof Error ? error.message : String(error) });
+      return errorResponse(error);
+    }
+  };
+}
