@@ -1,18 +1,32 @@
 import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createStripeClient, getStripeCustomer, getOrCreateStripeCustomer } from "./stripe.ts";
+import { createStripeClient, getStripeCustomer } from "./stripe.ts";
 import { authenticateUser } from "./supabaseClient.ts";
-import { corsHeaders, successResponse, errorResponse, handleCors } from "./response.ts";
+import { successResponse, errorResponse, handleCors } from "./response.ts";
 import { createLogger } from "./logger.ts";
 
 export interface CheckoutConfig {
-  /** Price ID from Stripe */
-  priceId: string;
+  /** Function name for logging */
+  functionName: string;
+  /** Price ID from Stripe (if known) */
+  priceId?: string;
+  /** Lookup key to find or create price */
+  lookupKey?: string;
+  /** Product name for dynamic price creation */
+  productName?: string;
+  /** Product description */
+  productDescription?: string;
+  /** Price amount in cents */
+  priceAmount?: number;
+  /** Currency */
+  currency?: string;
+  /** Recurring interval */
+  recurringInterval?: "day" | "week" | "month" | "year";
   /** "subscription" or "payment" */
   mode: "subscription" | "payment";
-  /** URL to redirect after successful payment */
-  successUrl: string;
-  /** URL to redirect if payment is cancelled */
-  cancelUrl: string;
+  /** Success path (origin will be prepended) */
+  successPath: string;
+  /** Cancel path (origin will be prepended) */
+  cancelPath: string;
   /** Optional metadata to attach to the session */
   metadata?: Record<string, string>;
   /** Quantity (default: 1) */
@@ -22,27 +36,37 @@ export interface CheckoutConfig {
 }
 
 export interface DynamicCheckoutConfig {
+  /** Function name for logging */
+  functionName: string;
   /** Map of tier/type to price ID */
-  priceIds: Record<string, string>;
+  tierPrices: Record<string, string>;
   /** "subscription" or "payment" */
   mode: "subscription" | "payment";
-  /** Base success URL (tier will be appended as query param) */
-  successUrlBase: string;
-  /** Base cancel URL */
-  cancelUrlBase: string;
-  /** Name of the tier parameter in request body (default: "tier") */
-  tierParam?: string;
+  /** Success path */
+  successPath: string;
+  /** Cancel path */
+  cancelPath: string;
+  /** Name of the tier key in request body (default: "tier") */
+  tierKey?: string;
   /** Additional metadata */
   metadata?: Record<string, string>;
+  /** Function to generate metadata from body */
+  metadataFn?: (body: Record<string, unknown>) => Record<string, string>;
 }
 
 export interface FlexibleCheckoutConfig {
-  /** Base success URL */
-  successUrl: string;
-  /** Base cancel URL */
-  cancelUrl: string;
+  /** Function name for logging */
+  functionName: string;
+  /** Success path */
+  successPath: string;
+  /** Cancel path */
+  cancelPath: string;
+  /** Key to get priceId from body */
+  priceIdFromBody?: string;
   /** Default mode if not specified in request */
   defaultMode?: "subscription" | "payment";
+  /** Default mode */
+  mode?: "subscription" | "payment";
   /** Additional static metadata */
   metadata?: Record<string, string>;
   /** Fields to extract from body to metadata */
@@ -52,8 +76,8 @@ export interface FlexibleCheckoutConfig {
 /**
  * Creates a simple checkout handler for a single price
  */
-export function createCheckoutHandler(config: CheckoutConfig, functionName: string) {
-  const log = createLogger(functionName);
+export function createCheckoutHandler(config: CheckoutConfig) {
+  const log = createLogger(config.functionName);
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -63,7 +87,7 @@ export function createCheckoutHandler(config: CheckoutConfig, functionName: stri
     try {
       log("Function started");
 
-      const { user, userId, email } = await authenticateUser(req);
+      const { userId, email } = await authenticateUser(req);
       if (!email) throw new Error("User email not available");
       log("User authenticated", { userId, email });
 
@@ -73,26 +97,49 @@ export function createCheckoutHandler(config: CheckoutConfig, functionName: stri
 
       const origin = req.headers.get("origin") || "";
       
+      // Determine priceId
+      let priceId = config.priceId;
+      
+      if (!priceId && config.lookupKey) {
+        // Try to find by lookup key
+        const prices = await stripe.prices.list({ lookup_keys: [config.lookupKey], limit: 1 });
+        if (prices.data.length > 0) {
+          priceId = prices.data[0].id;
+        }
+      }
+      
+      // Create price dynamically if not found
+      if (!priceId && config.productName && config.priceAmount) {
+        const product = await stripe.products.create({
+          name: config.productName,
+          description: config.productDescription,
+        });
+        
+        const priceData: Stripe.PriceCreateParams = {
+          product: product.id,
+          unit_amount: config.priceAmount,
+          currency: config.currency || "eur",
+          lookup_key: config.lookupKey,
+        };
+        
+        if (config.mode === "subscription" && config.recurringInterval) {
+          priceData.recurring = { interval: config.recurringInterval };
+        }
+        
+        const price = await stripe.prices.create(priceData);
+        priceId = price.id;
+      }
+      
+      if (!priceId) throw new Error("Could not determine price ID");
+      
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
-        line_items: [
-          {
-            price: config.priceId,
-            quantity: config.quantity || 1,
-          },
-        ],
+        line_items: [{ price: priceId, quantity: config.quantity || 1 }],
         mode: config.mode,
-        success_url: config.successUrl.startsWith("http") 
-          ? config.successUrl 
-          : `${origin}${config.successUrl}`,
-        cancel_url: config.cancelUrl.startsWith("http") 
-          ? config.cancelUrl 
-          : `${origin}${config.cancelUrl}`,
-        metadata: {
-          user_id: userId,
-          ...config.metadata,
-        },
+        success_url: `${origin}${config.successPath}`,
+        cancel_url: `${origin}${config.cancelPath}`,
+        metadata: { user_id: userId, ...config.metadata },
         allow_promotion_codes: config.allowPromotionCodes,
       });
 
@@ -108,9 +155,9 @@ export function createCheckoutHandler(config: CheckoutConfig, functionName: stri
 /**
  * Creates a dynamic checkout handler that accepts tier/type from request body
  */
-export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig, functionName: string) {
-  const log = createLogger(functionName);
-  const tierParam = config.tierParam || "tier";
+export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig) {
+  const log = createLogger(config.functionName);
+  const tierKey = config.tierKey || "tier";
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -120,19 +167,19 @@ export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig, func
     try {
       log("Function started");
 
-      const { user, userId, email } = await authenticateUser(req);
+      const { userId, email } = await authenticateUser(req);
       if (!email) throw new Error("User email not available");
       log("User authenticated", { userId, email });
 
       const body = await req.json();
-      const tier = body[tierParam];
+      const tier = body[tierKey];
       
-      if (!tier || !config.priceIds[tier]) {
-        const validTiers = Object.keys(config.priceIds).join(", ");
-        throw new Error(`Invalid ${tierParam}: ${tier}. Valid options: ${validTiers}`);
+      if (!tier || !config.tierPrices[tier]) {
+        const validTiers = Object.keys(config.tierPrices).join(", ");
+        throw new Error(`Invalid ${tierKey}: ${tier}. Valid options: ${validTiers}`);
       }
 
-      const priceId = config.priceIds[tier];
+      const priceId = config.tierPrices[tier];
       log("Selected tier", { tier, priceId });
 
       const stripe = createStripeClient();
@@ -141,23 +188,20 @@ export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig, func
 
       const origin = req.headers.get("origin") || "";
       
+      // Build metadata
+      let metadata: Record<string, string> = { user_id: userId, tier, ...config.metadata };
+      if (config.metadataFn) {
+        metadata = { ...metadata, ...config.metadataFn(body) };
+      }
+      
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
-        line_items: [
-          {
-            price: priceId,
-            quantity: 1,
-          },
-        ],
+        line_items: [{ price: priceId, quantity: 1 }],
         mode: config.mode,
-        success_url: `${origin}${config.successUrlBase}?success=true&tier=${tier}`,
-        cancel_url: `${origin}${config.cancelUrlBase}?canceled=true`,
-        metadata: {
-          user_id: userId,
-          tier,
-          ...config.metadata,
-        },
+        success_url: `${origin}${config.successPath}`,
+        cancel_url: `${origin}${config.cancelPath}`,
+        metadata,
       });
 
       log("Checkout session created", { sessionId: session.id, tier });
@@ -174,8 +218,8 @@ export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig, func
  */
 export function createCreditsCheckoutHandler(
   priceIds: Record<number, string>,
-  successUrl: string,
-  cancelUrl: string,
+  successPath: string,
+  cancelPath: string,
   metadataType: string,
   functionName: string
 ) {
@@ -189,7 +233,7 @@ export function createCreditsCheckoutHandler(
     try {
       log("Function started");
 
-      const { user, userId, email } = await authenticateUser(req);
+      const { userId, email } = await authenticateUser(req);
       if (!email) throw new Error("User email not available");
       log("User authenticated", { userId, email });
 
@@ -210,15 +254,10 @@ export function createCreditsCheckoutHandler(
       const session = await stripe.checkout.sessions.create({
         customer: customerId || undefined,
         customer_email: customerId ? undefined : email,
-        line_items: [
-          {
-            price: priceIds[credits],
-            quantity: 1,
-          },
-        ],
+        line_items: [{ price: priceIds[credits], quantity: 1 }],
         mode: "payment",
-        success_url: `${origin}${successUrl}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}${cancelUrl}?payment=canceled`,
+        success_url: `${origin}${successPath}?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}${cancelPath}?payment=canceled`,
         metadata: {
           user_id: userId,
           credits: credits.toString(),
@@ -237,10 +276,10 @@ export function createCreditsCheckoutHandler(
 
 /**
  * Creates a flexible checkout handler that accepts priceId and optional mode from body
- * Supports: priceId, tier, isLifetime flags from request body
  */
-export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig, functionName: string) {
-  const log = createLogger(functionName);
+export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) {
+  const log = createLogger(config.functionName);
+  const priceIdKey = config.priceIdFromBody || "priceId";
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
@@ -250,12 +289,13 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig, fu
     try {
       log("Function started");
 
-      const { user, userId, email } = await authenticateUser(req);
+      const { userId, email } = await authenticateUser(req);
       if (!email) throw new Error("User email not available");
       log("User authenticated", { userId, email });
 
       const body = await req.json();
-      const { priceId, tier, isLifetime } = body;
+      const priceId = body[priceIdKey];
+      const { tier, isLifetime } = body;
       
       if (!priceId) throw new Error("Price ID is required");
       log("Received request", { priceId, tier, isLifetime });
@@ -264,20 +304,15 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig, fu
       const customerId = await getStripeCustomer(stripe, email);
       log("Stripe customer lookup", { customerId: customerId || "new" });
 
-      // Determine mode: isLifetime=true means one-time payment
-      const mode = isLifetime ? "payment" : (config.defaultMode || "subscription");
+      // Determine mode
+      const mode = isLifetime ? "payment" : (config.mode || config.defaultMode || "subscription");
       const origin = req.headers.get("origin") || "";
 
       // Build metadata
-      const metadata: Record<string, string> = {
-        user_id: userId,
-        ...(config.metadata || {}),
-      };
-      
+      const metadata: Record<string, string> = { user_id: userId, ...(config.metadata || {}) };
       if (tier) metadata.tier = tier;
       if (isLifetime !== undefined) metadata.is_lifetime = String(isLifetime);
       
-      // Add additional fields from body to metadata
       if (config.metadataFields) {
         for (const field of config.metadataFields) {
           if (body[field] !== undefined) {
@@ -291,8 +326,8 @@ export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig, fu
         customer_email: customerId ? undefined : email,
         line_items: [{ price: priceId, quantity: 1 }],
         mode,
-        success_url: `${origin}${config.successUrl}`,
-        cancel_url: `${origin}${config.cancelUrl}`,
+        success_url: `${origin}${config.successPath}`,
+        cancel_url: `${origin}${config.cancelPath}`,
         metadata,
       });
 
