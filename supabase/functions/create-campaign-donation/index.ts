@@ -20,11 +20,6 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-    );
-
     // Get authenticated user (optional for donations)
     let user = null;
     let userEmail = null;
@@ -32,8 +27,13 @@ serve(async (req) => {
     
     const authHeader = req.headers.get("Authorization");
     if (authHeader) {
-      const token = authHeader.replace("Bearer ", "");
-      const { data } = await supabaseClient.auth.getUser(token);
+      const supabaseClient = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+        { global: { headers: { Authorization: authHeader } } }
+      );
+
+      const { data } = await supabaseClient.auth.getUser();
       user = data.user;
       userEmail = user?.email;
       logStep("User authenticated", { userId: user?.id, email: userEmail });
