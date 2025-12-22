@@ -308,6 +308,7 @@ import PaymentDocumentation from "./pages/PaymentDocumentation";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import SkipLink from "./components/SkipLink";
+import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding";
 
 const queryClient = new QueryClient();
 
@@ -327,6 +328,7 @@ const App = () => {
             <AnimationProvider>
               <TooltipProvider delayDuration={0}>
               <SkipLink />
+              <ProgressiveOnboarding />
               <Toaster />
               <Sonner />
               <div className="flex flex-col min-h-screen">
