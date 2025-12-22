@@ -1,53 +1,36 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.0";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { corsHeaders } from "../_shared/cors.ts";
+import { authenticateUser, createSupabaseAdminClient } from "../_shared/supabaseClient.ts";
+import { createLogger } from "../_shared/logger.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+const log = createLogger("check-best-friend-subscription");
 
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    log("Function started");
+    const { userId } = await authenticateUser(req);
+    log("User authenticated", { userId });
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Missing authorization header" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-
-    if (userError || !user) {
-      return new Response(JSON.stringify({ error: "Invalid token" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const supabase = createSupabaseAdminClient();
 
     const { data: subData, error: subError } = await supabase
-      .from('best_friend_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
+      .from("best_friend_subscriptions")
+      .select("*")
+      .eq("user_id", userId)
       .maybeSingle();
 
-    if (subError && subError.code !== 'PGRST116') {
+    if (subError && subError.code !== "PGRST116") {
       throw subError;
     }
 
     if (!subData) {
       const { error: insertError } = await supabase
-        .from('best_friend_subscriptions')
-        .insert({ user_id: user.id, free_messages_used: 0 });
+        .from("best_friend_subscriptions")
+        .insert({ user_id: userId, free_messages_used: 0 });
 
       if (insertError) throw insertError;
 
@@ -59,8 +42,10 @@ serve(async (req) => {
       });
     }
 
-    const isSubscribed = subData.subscription_status === 'active' && 
+    const isSubscribed = subData.subscription_status === "active" && 
                         new Date(subData.subscription_end) > new Date();
+
+    log("Subscription status checked", { isSubscribed });
 
     return new Response(JSON.stringify({
       subscribed: isSubscribed,
@@ -69,10 +54,11 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Error:", error);
-    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
-      status: 500,
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    log("ERROR", { message: errorMessage });
+    return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
     });
   }
 });
