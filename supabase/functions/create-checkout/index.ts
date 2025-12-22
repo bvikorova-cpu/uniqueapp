@@ -1,98 +1,17 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { createCreditsCheckoutHandler } from "../_shared/checkout.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-// Price IDs for antique credit packages
 const PRICE_IDS: Record<number, string> = {
-  10: "price_1SOII2GaXSfGtYFtPltUZvxb",    // Starter - 5 EUR
-  25: "price_1SOIIMGaXSfGtYFtonaY4jqs",    // Basic - 10 EUR
-  60: "price_1SOIItGaXSfGtYFtvHTuEutU",    // Pro - 20 EUR
-  150: "price_1SOIJE0QTWhd4oRpow80Xeyd",   // Ultimate - 40 EUR
+  10: "price_1SOII2GaXSfGtYFtPltUZvxb",
+  25: "price_1SOIIMGaXSfGtYFtonaY4jqs",
+  60: "price_1SOIItGaXSfGtYFtvHTuEutU",
+  150: "price_1SOIJE0QTWhd4oRpow80Xeyd",
 };
 
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-  );
-
-  try {
-    console.log("Starting antique credits checkout creation");
-    
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data } = await supabaseClient.auth.getUser(token);
-    const user = data.user;
-    if (!user?.email) throw new Error("User not authenticated");
-
-    console.log("User authenticated:", user.id);
-
-    const { credits } = await req.json();
-
-    if (!credits) {
-      throw new Error("Credits amount is required");
-    }
-
-    if (!PRICE_IDS[credits]) {
-      throw new Error(`Invalid credit amount: ${credits}. Available amounts: 10, 25, 60, 150`);
-    }
-
-    console.log("Creating checkout for credits:", credits);
-
-    const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
-      apiVersion: "2025-08-27.basil",
-    });
-
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-      console.log("Found existing customer:", customerId);
-    } else {
-      console.log("No existing customer found, will create new one in checkout");
-    }
-
-    // Create a checkout session
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price: PRICE_IDS[credits],
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `${req.headers.get("origin")}/antique-appraisal?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get("origin")}/antique-appraisal?payment=canceled`,
-      metadata: {
-        user_id: user.id,
-        credits: credits.toString(),
-        type: "antique_credits",
-      },
-    });
-
-    console.log("Checkout session created:", session.id, "URL:", session.url);
-
-    return new Response(JSON.stringify({ url: session.url, session_id: session.id }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 200,
-    });
-  } catch (error) {
-    console.error("Antique credits checkout error:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 500,
-    });
-  }
-});
+serve(createCreditsCheckoutHandler(
+  PRICE_IDS,
+  "/antique-appraisal",
+  "/antique-appraisal",
+  "antique_credits",
+  "CREATE-CHECKOUT"
+));
