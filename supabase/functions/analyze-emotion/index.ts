@@ -24,6 +24,12 @@ serve(async (req) => {
       });
     }
 
+    // Initialize Supabase client
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
     // Get authenticated user
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
@@ -33,14 +39,8 @@ serve(async (req) => {
       });
     }
 
-    // Initialize Supabase client with user's auth
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token);
     
     if (userError || !user) {
       return new Response(JSON.stringify({ error: 'User not authenticated' }), {
@@ -51,18 +51,23 @@ serve(async (req) => {
 
     console.log(`[ANALYZE-EMOTION] User ${user.id} requesting emotion analysis`);
 
-    // Check user credits
-    let { data: credits, error: creditsError } = await supabaseClient
+    // Check user credits using service role for admin operations
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    let { data: credits, error: creditsError } = await supabaseAdmin
       .from('emotion_credits')
       .select('*')
       .eq('user_id', user.id)
       .single();
 
-    // Create credits record if doesn't exist
+    // Create credits record if doesn't exist (with 10 free credits)
     if (!credits) {
-      const { data: newCredits, error: insertError } = await supabaseClient
+      const { data: newCredits, error: insertError } = await supabaseAdmin
         .from('emotion_credits')
-        .insert({ user_id: user.id, credits_remaining: 0, total_credits_purchased: 0 })
+        .insert({ user_id: user.id, credits_remaining: 10, total_credits_purchased: 0 })
         .select()
         .single();
       
@@ -170,7 +175,7 @@ Analyze the text thoroughly and provide accurate scores based on emotional inten
     }
 
     // Deduct credit
-    const { error: updateError } = await supabaseClient
+    const { error: updateError } = await supabaseAdmin
       .from('emotion_credits')
       .update({ 
         credits_remaining: credits.credits_remaining - 1,

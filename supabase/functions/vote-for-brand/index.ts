@@ -28,7 +28,8 @@ serve(async (req) => {
       }
     );
 
-    const { data } = await supabaseClient.auth.getUser();
+    const token = authHeader.replace("Bearer ", "");
+    const { data } = await supabaseClient.auth.getUser(token);
     const user = data.user;
     if (!user) throw new Error("User not authenticated");
 

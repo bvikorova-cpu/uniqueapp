@@ -86,25 +86,14 @@ serve(async (req) => {
   try {
     const { imageUrl, category, analysisType = 'basic' } = await req.json();
     
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    // User-scoped client (RLS enforced) - prevents accidental cross-user reads/writes
-    const supabase = createClient(
+    const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        auth: { persistSession: false },
-        global: { headers: { Authorization: authHeader } },
-      }
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
-    const { data: { user } } = await supabase.auth.getUser();
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user } } = await supabaseClient.auth.getUser(token);
     
     if (!user) throw new Error('Not authenticated');
 
@@ -112,7 +101,7 @@ serve(async (req) => {
     if (!OPENAI_API_KEY) throw new Error('OPENAI_API_KEY not configured');
 
     // Check user credits and tier
-    const { data: creditsData, error: creditsError } = await supabase
+    const { data: creditsData, error: creditsError } = await supabaseClient
       .from('analyzer_credits')
       .select('*')
       .eq('user_id', user.id)
@@ -120,25 +109,24 @@ serve(async (req) => {
 
     if (creditsError) throw creditsError;
 
-    // IMPORTANT: no free credits. Create record with 0 credits if it doesn't exist.
-    let credits = creditsData;
-    if (!credits) {
-      const { data: newCredits, error: insertError } = await supabase
+    // Create credits record if doesn't exist
+    if (!creditsData) {
+      const { data: newCredits, error: insertError } = await supabaseClient
         .from('analyzer_credits')
         .insert({
           user_id: user.id,
-          credits_remaining: 0,
-          total_credits_purchased: 0,
-          tier: 'basic'
+          credits_remaining: 1,
+          total_credits_purchased: 1,
+          tier: 'free'
         })
         .select()
         .single();
-
+      
       if (insertError) throw insertError;
-      credits = newCredits;
     }
 
     // Check if user has enough credits
+    const credits = creditsData || { credits_remaining: 1, tier: 'free' };
     const creditsRequired = analysisType === 'expert' ? 2 : 1;
 
     if (credits.credits_remaining < creditsRequired) {
@@ -265,7 +253,7 @@ Return the analysis in the following JSON format:
     }
 
     // Save analysis to database
-    const { data: savedAnalysis, error: saveError } = await supabase
+    const { data: savedAnalysis, error: saveError } = await supabaseClient
       .from('vision_analyses')
       .insert({
         user_id: user.id,
@@ -287,9 +275,9 @@ Return the analysis in the following JSON format:
     }
 
     // Deduct credits
-    await supabase
+    await supabaseClient
       .from('analyzer_credits')
-      .update({
+      .update({ 
         credits_remaining: credits.credits_remaining - creditsRequired,
       })
       .eq('user_id', user.id);

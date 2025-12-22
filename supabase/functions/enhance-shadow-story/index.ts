@@ -26,8 +26,8 @@ serve(async (req) => {
     const { title, content } = await req.json();
     if (!title || !content) throw new Error("Title and content required");
 
-    const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openAIApiKey) throw new Error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     // Generate atmospheric AI images
     const imagePrompts = [
@@ -40,20 +40,21 @@ serve(async (req) => {
 
     for (const prompt of imagePrompts) {
       try {
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${openAIApiKey}`,
+            Authorization: `Bearer ${LOVABLE_API_KEY}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model: "google/gemini-2.5-flash-image-preview",
             messages: [
               {
                 role: "user",
-                content: `Describe this horror scene in detail: ${prompt}`
+                content: prompt
               }
-            ]
+            ],
+            modalities: ["image", "text"]
           })
         });
 

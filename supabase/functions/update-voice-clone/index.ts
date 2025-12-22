@@ -13,18 +13,16 @@ serve(async (req) => {
 
   try {
     const authHeader = req.headers.get('Authorization')
-    if (!authHeader) throw new Error('Unauthorized')
+    if (!authHeader) throw new Error('No authorization header')
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        auth: { persistSession: false },
-        global: { headers: { Authorization: authHeader } },
-      }
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     )
 
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    )
     if (userError || !user) throw new Error('Unauthorized')
 
     const { voiceCloneId, name, description } = await req.json()

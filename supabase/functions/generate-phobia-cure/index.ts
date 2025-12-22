@@ -1,4 +1,3 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2'
 
@@ -18,11 +17,12 @@ serve(async (req) => {
 
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
+      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     )
 
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser()
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
+      authHeader.replace('Bearer ', '')
+    )
     if (userError || !user) throw new Error('Unauthorized')
 
     const { phobiaId } = await req.json()
@@ -42,19 +42,19 @@ serve(async (req) => {
 
     console.log('Generating cure plan for phobia:', phobia.phobia_name)
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
-    if (!openAIApiKey) {
-      throw new Error('OPENAI_API_KEY not configured')
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY')
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured')
     }
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           {
             role: 'system',
@@ -65,13 +65,12 @@ serve(async (req) => {
             content: `Create a personalized treatment plan for: ${phobia.phobia_name} (Type: ${phobia.phobia_type}, Severity: ${phobia.severity}/10). Description: ${phobia.description}. Current analysis: ${JSON.stringify(phobia.ai_analysis)}`
           }
         ],
-        response_format: { type: "json_object" }
       }),
     })
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('OpenAI API error:', response.status, errorText)
+      console.error('AI API error:', response.status, errorText)
       throw new Error('AI cure generation failed')
     }
 

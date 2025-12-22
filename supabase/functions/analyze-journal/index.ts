@@ -18,21 +18,16 @@ serve(async (req) => {
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("Unauthorized");
-    }
-
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      {
-        auth: { persistSession: false },
-        global: { headers: { Authorization: authHeader } },
-      }
+      { auth: { persistSession: false } }
     );
 
-    const { data: { user } } = await supabaseClient.auth.getUser();
+    const authHeader = req.headers.get("Authorization")!;
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData } = await supabaseClient.auth.getUser(token);
+    const user = userData.user;
 
     if (!user) throw new Error("Unauthorized");
 

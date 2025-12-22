@@ -12,12 +12,9 @@ serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      authHeader ? { global: { headers: { Authorization: authHeader } } } : undefined
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
     const { cvText } = await req.json();
@@ -52,9 +49,9 @@ serve(async (req) => {
       );
     }
 
-    const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openAIApiKey) {
-      throw new Error("OPENAI_API_KEY not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY not configured");
     }
 
     const systemPrompt = `You are an expert career advisor and job matching assistant. Analyze the provided CV and match it with the available job listings. For each relevant job, provide:
@@ -97,14 +94,14 @@ Analyze the CV and provide job matches as a JSON array with this structure:
 
 Return only the top 10 most relevant matches, sorted by score (highest first). Only include jobs with score >= 50.`;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${openAIApiKey}`,
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }

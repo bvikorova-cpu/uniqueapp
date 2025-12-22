@@ -45,8 +45,8 @@ serve(async (req) => {
     const { ingredients, dietary_preferences } = await req.json();
     console.log('Generating recipes for:', { ingredients, dietary_preferences });
 
-    // Call OpenAI
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    // Call Lovable AI
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const prompt = `Generate 3 recipes from these ingredients: ${ingredients.join(', ')}.
 ${dietary_preferences?.length > 0 ? `Dietary preferences: ${dietary_preferences.join(', ')}.` : ''}
 
@@ -67,14 +67,14 @@ Return JSON in this format:
   ]
 }`;
 
-    const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [{ role: 'user', content: prompt }],
       }),
     });

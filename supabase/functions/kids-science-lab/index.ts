@@ -1,4 +1,3 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -23,6 +22,7 @@ serve(async (req) => {
   try {
     const { category, hypothesis, observations } = await req.json();
     
+    // Get user from auth header
     const authHeader = req.headers.get("Authorization");
     let userId: string | null = null;
     
@@ -36,9 +36,9 @@ serve(async (req) => {
       throw new Error("Missing required fields");
     }
 
-    const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openAIApiKey) {
-      throw new Error("OPENAI_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     const systemPrompt = `You are a friendly science teacher for kids aged 6-12. 
@@ -63,14 +63,14 @@ Observations: ${observations}
 
 Please analyze this science experiment and help me understand what happened!`;
 
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${openAIApiKey}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
@@ -87,7 +87,7 @@ Please analyze this science experiment and help me understand what happened!`;
         throw new Error("AI credits depleted. Please add more credits to continue.");
       }
       const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
+      console.error("AI gateway error:", response.status, errorText);
       throw new Error("Failed to get AI response");
     }
 
@@ -95,6 +95,7 @@ Please analyze this science experiment and help me understand what happened!`;
     const content = data.choices[0].message.content;
     const result = JSON.parse(content);
 
+    // Increment usage counter if user is authenticated
     if (userId && supabaseClient) {
       try {
         const { data: currentUsage } = await supabaseClient
@@ -112,6 +113,7 @@ Please analyze this science experiment and help me understand what happened!`;
           }, { onConflict: 'user_id' });
       } catch (usageError) {
         console.error("Error updating usage:", usageError);
+        // Don't fail the request if usage update fails
       }
     }
 

@@ -12,31 +12,33 @@ serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("No authorization header");
-    }
-
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
-    if (userError || !user) throw new Error("User not authenticated");
+    const authHeader = req.headers.get("Authorization")!;
+    const token = authHeader.replace("Bearer ", "");
+    const { data } = await supabaseClient.auth.getUser(token);
+    const user = data.user;
+    if (!user) throw new Error("User not authenticated");
+
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
     const { birthDate, dreamsDejavu, talentsPhobias, readingType, partnerBirthDate, partnerInfo } = await req.json();
 
     // Check credits
-    let { data: credits, error: creditsError } = await supabaseClient
+    let { data: credits, error: creditsError } = await supabaseAdmin
       .from("past_life_credits")
       .select("*")
       .eq("user_id", user.id)
       .single();
 
     if (creditsError && creditsError.code === "PGRST116") {
-      const { data: newCredits, error: insertError } = await supabaseClient
+      const { data: newCredits, error: insertError } = await supabaseAdmin
         .from("past_life_credits")
         .insert({ user_id: user.id })
         .select()
@@ -155,7 +157,7 @@ Create ${numberOfLives} past life ${numberOfLives === 1 ? 'story' : 'stories'} i
     }
 
     // Save reading to database
-    const { error: insertError } = await supabaseClient
+    const { error: insertError } = await supabaseAdmin
       .from("past_life_readings")
       .insert({
         user_id: user.id,
@@ -174,7 +176,7 @@ Create ${numberOfLives} past life ${numberOfLives === 1 ? 'story' : 'stories'} i
     if (insertError) throw insertError;
 
     // Deduct credits
-    await supabaseClient
+    await supabaseAdmin
       .from("past_life_credits")
       .update({ credits_remaining: credits.credits_remaining - cost })
       .eq("user_id", user.id);

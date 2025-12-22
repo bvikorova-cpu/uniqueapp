@@ -11,20 +11,18 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const supabaseClient = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } }
+  );
+
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) throw new Error("No authorization header");
 
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-      { 
-        auth: { persistSession: false },
-        global: { headers: { Authorization: authHeader } }
-      }
-    );
-
-    const { data: userData } = await supabaseClient.auth.getUser();
+    const token = authHeader.replace("Bearer ", "");
+    const { data: userData } = await supabaseClient.auth.getUser(token);
     const user = userData.user;
     if (!user) throw new Error("User not authenticated");
 
@@ -53,31 +51,32 @@ serve(async (req) => {
       }
     }
 
-    // Generate coloring page using OpenAI
-    const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
-    if (!openAIApiKey) throw new Error("OPENAI_API_KEY not set");
+    // Generate coloring page using Lovable AI
+    const lovableApiKey = Deno.env.get("LOVABLE_API_KEY");
+    if (!lovableApiKey) throw new Error("LOVABLE_API_KEY not set");
 
     const coloringPrompt = `Generate a simple black and white line art coloring page suitable for children. 
 The image should have clear, bold outlines with no shading or colors, ready to be printed and colored.
 Theme: ${prompt}
 Style: Simple, child-friendly, clean lines, suitable for ages 4-10, educational`;
 
-    console.log("Calling OpenAI with prompt:", coloringPrompt);
+    console.log("Calling Lovable AI with prompt:", coloringPrompt);
 
-    const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${openAIApiKey}`,
+        "Authorization": `Bearer ${lovableApiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: "google/gemini-2.5-flash-image-preview",
         messages: [
           {
             role: "user",
             content: coloringPrompt
           }
-        ]
+        ],
+        modalities: ["image", "text"]
       })
     });
 
