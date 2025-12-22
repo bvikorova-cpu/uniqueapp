@@ -1160,3 +1160,33 @@ verify_jwt = true
 
 [functions.verify-bazaar-order-payment]
 verify_jwt = true
+
+[functions.create-bazaar-checkout]
+verify_jwt = true
+
+[functions.bazaar-stripe-webhook]
+verify_jwt = false
+
+[functions.bazaar-auto-release-escrow]
+verify_jwt = false
+
+[functions.bazaar-notify-escrow]
+verify_jwt = false
+
+[functions.bazaar-mark-shipped]
+verify_jwt = true
+
+[functions.bazaar-confirm-delivery]
+verify_jwt = true
+
+[functions.escrow-release]
+verify_jwt = true
+
+[functions.escrow-refund]
+verify_jwt = true
+
+[functions.open-dispute]
+verify_jwt = true
+
+[functions.resolve-dispute]
+verify_jwt = true
