@@ -50,6 +50,9 @@ export async function getStripeCustomer(
   return customers.data.length > 0 ? customers.data[0].id : null;
 }
 
+// Alias for compatibility
+export const findOrCreateCustomer = getStripeCustomer;
+
 /**
  * Checks if customer has an active subscription for given price IDs
  */

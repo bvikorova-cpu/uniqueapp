@@ -1,5 +1,5 @@
 import Stripe from "https://esm.sh/stripe@18.5.0";
-import { createStripeClient, getStripeCustomer } from "./stripe.ts";
+import { createStripeClient, getStripeCustomer, getOrCreateStripeCustomer } from "./stripe.ts";
 import { authenticateUser } from "./supabaseClient.ts";
 import { corsHeaders, successResponse, errorResponse, handleCors } from "./response.ts";
 import { createLogger } from "./logger.ts";
@@ -34,6 +34,19 @@ export interface DynamicCheckoutConfig {
   tierParam?: string;
   /** Additional metadata */
   metadata?: Record<string, string>;
+}
+
+export interface FlexibleCheckoutConfig {
+  /** Base success URL */
+  successUrl: string;
+  /** Base cancel URL */
+  cancelUrl: string;
+  /** Default mode if not specified in request */
+  defaultMode?: "subscription" | "payment";
+  /** Additional static metadata */
+  metadata?: Record<string, string>;
+  /** Fields to extract from body to metadata */
+  metadataFields?: string[];
 }
 
 /**
@@ -214,6 +227,76 @@ export function createCreditsCheckoutHandler(
       });
 
       log("Checkout session created", { sessionId: session.id, credits });
+      return successResponse({ url: session.url, session_id: session.id });
+    } catch (error) {
+      log("ERROR", { message: error instanceof Error ? error.message : String(error) });
+      return errorResponse(error);
+    }
+  };
+}
+
+/**
+ * Creates a flexible checkout handler that accepts priceId and optional mode from body
+ * Supports: priceId, tier, isLifetime flags from request body
+ */
+export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig, functionName: string) {
+  const log = createLogger(functionName);
+
+  return async (req: Request): Promise<Response> => {
+    if (req.method === "OPTIONS") {
+      return handleCors();
+    }
+
+    try {
+      log("Function started");
+
+      const { user, userId, email } = await authenticateUser(req);
+      if (!email) throw new Error("User email not available");
+      log("User authenticated", { userId, email });
+
+      const body = await req.json();
+      const { priceId, tier, isLifetime } = body;
+      
+      if (!priceId) throw new Error("Price ID is required");
+      log("Received request", { priceId, tier, isLifetime });
+
+      const stripe = createStripeClient();
+      const customerId = await getStripeCustomer(stripe, email);
+      log("Stripe customer lookup", { customerId: customerId || "new" });
+
+      // Determine mode: isLifetime=true means one-time payment
+      const mode = isLifetime ? "payment" : (config.defaultMode || "subscription");
+      const origin = req.headers.get("origin") || "";
+
+      // Build metadata
+      const metadata: Record<string, string> = {
+        user_id: userId,
+        ...(config.metadata || {}),
+      };
+      
+      if (tier) metadata.tier = tier;
+      if (isLifetime !== undefined) metadata.is_lifetime = String(isLifetime);
+      
+      // Add additional fields from body to metadata
+      if (config.metadataFields) {
+        for (const field of config.metadataFields) {
+          if (body[field] !== undefined) {
+            metadata[field] = String(body[field]);
+          }
+        }
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId || undefined,
+        customer_email: customerId ? undefined : email,
+        line_items: [{ price: priceId, quantity: 1 }],
+        mode,
+        success_url: `${origin}${config.successUrl}`,
+        cancel_url: `${origin}${config.cancelUrl}`,
+        metadata,
+      });
+
+      log("Checkout session created", { sessionId: session.id, mode });
       return successResponse({ url: session.url, session_id: session.id });
     } catch (error) {
       log("ERROR", { message: error instanceof Error ? error.message : String(error) });
