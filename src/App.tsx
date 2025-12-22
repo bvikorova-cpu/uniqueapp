@@ -307,6 +307,7 @@ import AdminPaymentDashboard from "./pages/AdminPaymentDashboard";
 import PaymentDocumentation from "./pages/PaymentDocumentation";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import SkipLink from "./components/SkipLink";
 
 const queryClient = new QueryClient();
 
@@ -325,11 +326,12 @@ const App = () => {
           <AuthProvider>
             <AnimationProvider>
               <TooltipProvider delayDuration={0}>
+              <SkipLink />
               <Toaster />
               <Sonner />
               <div className="flex flex-col min-h-screen">
                 <Navbar />
-                <main className="flex-1">
+                <main id="main-content" className="flex-1">
                 <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/wall" element={<Wall />} />

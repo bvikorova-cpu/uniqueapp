@@ -17,6 +17,7 @@ import NotificationBell from "@/components/notifications/NotificationBell";
 import megatalentLogo from "@/assets/megatalent-logo.png";
 import uniqueLogo from "@/assets/unique-logo.png";
 import { useTranslation } from "react-i18next";
+import GlobalSearch from "@/components/GlobalSearch";
 
 interface NotificationData {
   id: string;
@@ -388,6 +389,9 @@ const Navbar = () => {
           </div>
 
           <div className="hidden lg:flex items-center space-x-2">
+            {/* Global Search */}
+            <GlobalSearch />
+            
             {user ? (
               <>
                 {/* Dark Mode Toggle */}
