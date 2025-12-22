@@ -2,12 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Send, Package, CheckCircle, Truck, Clock } from "lucide-react";
+import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
+import OrderTracker, { OrderStatus } from "./OrderTracker";
+import OrderActions from "./OrderActions";
+import EscrowStatusBadge, { EscrowStatus } from "./EscrowStatusBadge";
 
 interface BazaarOrder {
   id: string;
@@ -18,15 +20,23 @@ interface BazaarOrder {
   commission_amount: number;
   seller_payout: number;
   status: string;
+  escrow_status?: string;
   shipping_address: string | null;
   buyer_notes: string | null;
   created_at: string;
+  paid_at?: string | null;
   shipped_at: string | null;
   delivered_at: string | null;
+  completed_at?: string | null;
   bazaar_items?: {
     title: string;
     image_url: string | null;
   };
+  bazaar_escrow?: Array<{
+    id: string;
+    status: string;
+    auto_release_at: string;
+  }>;
 }
 
 interface Message {
@@ -131,97 +141,12 @@ export default function BazaarOrderChat({ order, currentUserId, onStatusChange }
     }
   };
 
-  const markAsShipped = async () => {
-    setLoading(true);
-    try {
-      const { error } = await supabase
-        .from('bazaar_orders')
-        .update({ 
-          status: 'shipped',
-          shipped_at: new Date().toISOString()
-        })
-        .eq('id', order.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Item Shipped!",
-        description: "Buyer has been notified."
-      });
-      
-      onStatusChange();
-    } catch (error) {
-      console.error('Error marking as shipped:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update status",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const markAsDelivered = async () => {
-    setLoading(true);
-    try {
-      // Update order status to delivered
-      const { error: orderError } = await supabase
-        .from('bazaar_orders')
-        .update({ 
-          status: 'delivered',
-          delivered_at: new Date().toISOString(),
-          completed_at: new Date().toISOString()
-        })
-        .eq('id', order.id);
-
-      if (orderError) throw orderError;
-
-      // Mark item as sold and inactive
-      const { error: itemError } = await supabase
-        .from('bazaar_items')
-        .update({ 
-          is_sold: true,
-          is_active: false
-        })
-        .eq('id', order.item_id);
-
-      if (itemError) throw itemError;
-
-      toast({
-        title: "Item Received!",
-        description: "Transaction completed. Seller will receive their payout."
-      });
-      
-      onStatusChange();
-    } catch (error) {
-      console.error('Error marking as delivered:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update status",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getStatusBadge = () => {
-    switch (order.status) {
-      case 'paid':
-        return <Badge variant="secondary" className="gap-1"><Clock className="h-3 w-3" /> Awaiting Shipment</Badge>;
-      case 'shipped':
-        return <Badge variant="outline" className="gap-1 border-blue-500 text-blue-500"><Truck className="h-3 w-3" /> Shipped</Badge>;
-      case 'delivered':
-        return <Badge variant="default" className="gap-1 bg-green-500"><CheckCircle className="h-3 w-3" /> Delivered</Badge>;
-      default:
-        return <Badge variant="outline">{order.status}</Badge>;
-    }
-  };
+  const escrowData = order.bazaar_escrow?.[0];
+  const escrowStatus = (order.escrow_status || escrowData?.status || 'none') as EscrowStatus;
 
   return (
-    <Card className="flex flex-col h-[600px]">
-      <CardHeader className="border-b pb-4">
+    <Card className="flex flex-col h-[700px]">
+      <CardHeader className="border-b pb-4 space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             {order.bazaar_items?.image_url && (
@@ -238,27 +163,34 @@ export default function BazaarOrderChat({ order, currentUserId, onStatusChange }
               </p>
             </div>
           </div>
-          {getStatusBadge()}
+          <EscrowStatusBadge 
+            status={escrowStatus} 
+            autoReleaseAt={escrowData?.auto_release_at}
+          />
         </div>
+
+        {/* Order Tracker */}
+        <OrderTracker
+          status={order.status as OrderStatus}
+          escrowStatus={escrowStatus}
+          paidAt={order.paid_at}
+          shippedAt={order.shipped_at}
+          deliveredAt={order.delivered_at}
+          completedAt={order.completed_at}
+        />
 
         {/* Action buttons */}
-        <div className="mt-4 flex gap-2">
-          {isSeller && order.status === 'paid' && (
-            <Button onClick={markAsShipped} disabled={loading} className="gap-2">
-              <Package className="h-4 w-4" />
-              Mark as Shipped
-            </Button>
-          )}
-          {isBuyer && order.status === 'shipped' && (
-            <Button onClick={markAsDelivered} disabled={loading} className="gap-2">
-              <CheckCircle className="h-4 w-4" />
-              Confirm Received
-            </Button>
-          )}
-        </div>
+        <OrderActions
+          orderId={order.id}
+          status={order.status}
+          escrowStatus={escrowStatus}
+          isBuyer={isBuyer}
+          isSeller={isSeller}
+          onStatusChange={onStatusChange}
+        />
 
         {order.shipping_address && (
-          <div className="mt-3 p-3 bg-muted rounded-lg text-sm">
+          <div className="p-3 bg-muted rounded-lg text-sm">
             <p className="font-medium">Shipping Address:</p>
             <p className="text-muted-foreground">{order.shipping_address}</p>
           </div>

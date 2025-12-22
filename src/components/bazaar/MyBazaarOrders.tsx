@@ -5,10 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ShoppingBag, Package, Clock, Truck, CheckCircle, MessageCircle } from "lucide-react";
+import { ShoppingBag, Package, Clock, Truck, CheckCircle, MessageCircle, Shield } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import BazaarOrderChat from "./BazaarOrderChat";
+import EscrowStatusBadge, { EscrowStatus } from "./EscrowStatusBadge";
+import OrderTracker, { OrderStatus } from "./OrderTracker";
+import OrderActions from "./OrderActions";
 
 interface BazaarOrder {
   id: string;
@@ -19,15 +22,23 @@ interface BazaarOrder {
   commission_amount: number;
   seller_payout: number;
   status: string;
+  escrow_status: string;
   shipping_address: string | null;
   buyer_notes: string | null;
   created_at: string;
+  paid_at: string | null;
   shipped_at: string | null;
   delivered_at: string | null;
+  completed_at: string | null;
   bazaar_items?: {
     title: string;
     image_url: string | null;
   };
+  bazaar_escrow?: Array<{
+    id: string;
+    status: string;
+    auto_release_at: string;
+  }>;
 }
 
 interface Notification {
@@ -64,7 +75,8 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
       .from('bazaar_orders')
       .select(`
         *,
-        bazaar_items (title, image_url)
+        bazaar_items (title, image_url),
+        bazaar_escrow (id, status, auto_release_at)
       `)
       .eq('buyer_id', userId)
       .neq('status', 'pending')
@@ -75,7 +87,8 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
       .from('bazaar_orders')
       .select(`
         *,
-        bazaar_items (title, image_url)
+        bazaar_items (title, image_url),
+        bazaar_escrow (id, status, auto_release_at)
       `)
       .eq('seller_id', userId)
       .neq('status', 'pending')
@@ -132,43 +145,56 @@ export default function MyBazaarOrders({ userId }: MyBazaarOrdersProps) {
     }
   };
 
-  const OrderCard = ({ order, isSeller }: { order: BazaarOrder; isSeller: boolean }) => (
-    <Card 
-      className="cursor-pointer hover:shadow-md transition-shadow"
-      onClick={() => setSelectedOrder(order)}
-    >
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          {order.bazaar_items?.image_url ? (
-            <img 
-              src={order.bazaar_items.image_url} 
-              alt={order.bazaar_items?.title}
-              className="w-16 h-16 rounded-lg object-cover"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
-              <Package className="h-6 w-6 text-muted-foreground" />
+  const OrderCard = ({ order, isSeller }: { order: BazaarOrder; isSeller: boolean }) => {
+    const escrowData = order.bazaar_escrow?.[0];
+    const escrowStatus = (order.escrow_status || escrowData?.status || 'none') as EscrowStatus;
+    
+    return (
+      <Card 
+        className="cursor-pointer hover:shadow-md transition-shadow"
+        onClick={() => setSelectedOrder(order)}
+      >
+        <CardContent className="p-4">
+          <div className="flex items-start gap-3">
+            {order.bazaar_items?.image_url ? (
+              <img 
+                src={order.bazaar_items.image_url} 
+                alt={order.bazaar_items?.title}
+                className="w-16 h-16 rounded-lg object-cover"
+              />
+            ) : (
+              <div className="w-16 h-16 rounded-lg bg-muted flex items-center justify-center">
+                <Package className="h-6 w-6 text-muted-foreground" />
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <h4 className="font-medium truncate">{order.bazaar_items?.title || 'Item'}</h4>
+              <p className="text-sm text-muted-foreground">
+                {format(new Date(order.created_at), 'MMM d, yyyy')}
+              </p>
+              <div className="flex items-center justify-between mt-2">
+                <span className="font-semibold">
+                  €{isSeller ? order.seller_payout.toFixed(2) : order.amount.toFixed(2)}
+                </span>
+                <div className="flex items-center gap-2">
+                  {getStatusBadge(order.status)}
+                  {escrowStatus === 'held' && (
+                    <Badge variant="outline" className="gap-1 text-blue-500 border-blue-500">
+                      <Shield className="h-3 w-3" />
+                      Protected
+                    </Badge>
+                  )}
+                </div>
+              </div>
             </div>
-          )}
-          <div className="flex-1 min-w-0">
-            <h4 className="font-medium truncate">{order.bazaar_items?.title || 'Item'}</h4>
-            <p className="text-sm text-muted-foreground">
-              {format(new Date(order.created_at), 'MMM d, yyyy')}
-            </p>
-            <div className="flex items-center justify-between mt-2">
-              <span className="font-semibold">
-                €{isSeller ? order.seller_payout.toFixed(2) : order.amount.toFixed(2)}
-              </span>
-              {getStatusBadge(order.status)}
-            </div>
+            <Button variant="ghost" size="icon">
+              <MessageCircle className="h-4 w-4" />
+            </Button>
           </div>
-          <Button variant="ghost" size="icon">
-            <MessageCircle className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <div className="space-y-6">
