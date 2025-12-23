@@ -27,46 +27,46 @@ interface OnboardingStep {
 const onboardingSteps: OnboardingStep[] = [
   {
     id: "welcome",
-    title: "Vitajte v MegaTalent!",
-    description: "Objavte svet talentov, kreativity a zábavy. Prejdime si spolu základy.",
+    title: "Welcome to Unique!",
+    description: "Discover a world of talents, creativity, and fun. Let's go through the basics together.",
     icon: <Sparkles className="h-8 w-8" />,
   },
   {
     id: "profile",
-    title: "Vytvorte si profil",
-    description: "Pridajte profilovú fotku a vyplňte základné informácie o sebe.",
+    title: "Create your profile",
+    description: "Add a profile photo and fill in basic information about yourself.",
     icon: <User className="h-8 w-8" />,
-    action: "Upraviť profil",
+    action: "Edit profile",
     actionUrl: "/profile",
   },
   {
     id: "post",
-    title: "Zdieľajte svoj talent",
-    description: "Vytvorte svoj prvý príspevok - video, fotku alebo text.",
+    title: "Share your talent",
+    description: "Create your first post - video, photo, or text.",
     icon: <Camera className="h-8 w-8" />,
-    action: "Vytvoriť príspevok",
+    action: "Create post",
     actionUrl: "/create",
   },
   {
     id: "interact",
-    title: "Interagujte s komunitou",
-    description: "Lajkujte, komentujte a sledujte ostatných tvorcov.",
+    title: "Interact with the community",
+    description: "Like, comment, and follow other creators.",
     icon: <Heart className="h-8 w-8" />,
-    action: "Preskúmať",
+    action: "Explore",
     actionUrl: "/explore",
   },
   {
     id: "messages",
-    title: "Spojte sa s ostatnými",
-    description: "Posielajte správy a budujte vzťahy s podobne zmýšľajúcimi ľuďmi.",
+    title: "Connect with others",
+    description: "Send messages and build relationships with like-minded people.",
     icon: <MessageCircle className="h-8 w-8" />,
-    action: "Správy",
+    action: "Messages",
     actionUrl: "/messages",
   },
   {
     id: "notifications",
-    title: "Zostaňte informovaní",
-    description: "Povoľte notifikácie, aby vám nič neuniklo.",
+    title: "Stay informed",
+    description: "Enable notifications so you don't miss anything.",
     icon: <Bell className="h-8 w-8" />,
   },
 ];
@@ -157,7 +157,7 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
             <div className="mb-6">
               <Progress value={progress} className="h-2" />
               <p className="text-xs text-muted-foreground mt-2 text-center">
-                Krok {currentStep + 1} z {onboardingSteps.length}
+                Step {currentStep + 1} of {onboardingSteps.length}
               </p>
             </div>
 
@@ -200,7 +200,7 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
                 disabled={currentStep === 0}
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
-                Späť
+                Back
               </Button>
 
               <div className="flex gap-1">
@@ -219,10 +219,10 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
 
               <Button onClick={handleNext}>
                 {currentStep === onboardingSteps.length - 1 ? (
-                  "Dokončiť"
+                  "Finish"
                 ) : (
                   <>
-                    Ďalej
+                    Next
                     <ChevronRight className="h-4 w-4 ml-1" />
                   </>
                 )}
@@ -234,7 +234,7 @@ export const ProgressiveOnboarding = ({ onComplete }: ProgressiveOnboardingProps
               onClick={handleSkip}
               className="w-full mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
-              Preskočiť tutorial
+              Skip tutorial
             </button>
           </Card>
         </motion.div>
