@@ -49,8 +49,8 @@ export function GDPRPanel() {
     localStorage.setItem("gdpr_cookie_preferences", JSON.stringify(newPrefs));
     localStorage.setItem("gdpr_cookie_consent", new Date().toISOString());
     toast({
-      title: "Nastavenia uložené",
-      description: "Vaše preferencie cookies boli aktualizované.",
+      title: "Settings saved",
+      description: "Your cookie preferences have been updated.",
     });
   };
 
@@ -84,13 +84,13 @@ export function GDPRPanel() {
       URL.revokeObjectURL(url);
 
       toast({
-        title: "Export dokončený",
-        description: "Vaše dáta boli stiahnuté.",
+        title: "Export complete",
+        description: "Your data has been downloaded.",
       });
     } catch (error) {
       toast({
-        title: "Chyba exportu",
-        description: "Nepodarilo sa exportovať dáta.",
+        title: "Export error",
+        description: "Failed to export data.",
         variant: "destructive",
       });
     } finally {
@@ -118,15 +118,15 @@ export function GDPRPanel() {
       localStorage.clear();
       
       toast({
-        title: "Účet vymazaný",
-        description: "Váš účet a všetky dáta boli vymazané.",
+        title: "Account deleted",
+        description: "Your account and all data have been deleted.",
       });
 
       window.location.href = "/";
     } catch (error) {
       toast({
-        title: "Chyba",
-        description: "Nepodarilo sa vymazať účet. Kontaktujte podporu.",
+        title: "Error",
+        description: "Failed to delete account. Please contact support.",
         variant: "destructive",
       });
     } finally {
@@ -140,10 +140,10 @@ export function GDPRPanel() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            GDPR a Ochrana súkromia
+            GDPR & Privacy Protection
           </CardTitle>
           <CardDescription>
-            Spravujte vaše osobné údaje a preferencie súkromia
+            Manage your personal data and privacy preferences
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -151,23 +151,23 @@ export function GDPRPanel() {
           <div>
             <h3 className="font-medium flex items-center gap-2 mb-4">
               <Settings className="h-4 w-4" />
-              Nastavenia cookies
+              Cookie settings
             </h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Nevyhnutné cookies</Label>
+                  <Label className="font-medium">Necessary cookies</Label>
                   <p className="text-xs text-muted-foreground">
-                    Potrebné pre základnú funkčnosť
+                    Required for basic functionality
                   </p>
                 </div>
                 <Switch checked disabled />
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Analytické cookies</Label>
+                  <Label className="font-medium">Analytics cookies</Label>
                   <p className="text-xs text-muted-foreground">
-                    Pomáhajú zlepšovať služby
+                    Help improve our services
                   </p>
                 </div>
                 <Switch
@@ -177,9 +177,9 @@ export function GDPRPanel() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Marketingové cookies</Label>
+                  <Label className="font-medium">Marketing cookies</Label>
                   <p className="text-xs text-muted-foreground">
-                    Personalizovaná reklama
+                    Personalized advertising
                   </p>
                 </div>
                 <Switch
@@ -189,9 +189,9 @@ export function GDPRPanel() {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <Label className="font-medium">Personalizačné cookies</Label>
+                  <Label className="font-medium">Personalization cookies</Label>
                   <p className="text-xs text-muted-foreground">
-                    Prispôsobenie obsahu
+                    Content customization
                   </p>
                 </div>
                 <Switch
@@ -208,21 +208,21 @@ export function GDPRPanel() {
           <div>
             <h3 className="font-medium flex items-center gap-2 mb-4">
               <Download className="h-4 w-4" />
-              Export dát
+              Data export
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Stiahnite všetky vaše osobné údaje vo formáte JSON.
+              Download all your personal data in JSON format.
             </p>
             <Button onClick={exportData} disabled={exporting || !user} variant="outline">
               {exporting ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Exportujem...
+                  Exporting...
                 </>
               ) : (
                 <>
                   <Download className="h-4 w-4 mr-2" />
-                  Exportovať moje dáta
+                  Export my data
                 </>
               )}
             </Button>
@@ -234,15 +234,15 @@ export function GDPRPanel() {
           <div>
             <h3 className="font-medium flex items-center gap-2 mb-4">
               <FileText className="h-4 w-4" />
-              Právne dokumenty
+              Legal documents
             </h3>
             <div className="flex flex-wrap gap-2">
               <Button variant="link" className="p-0 h-auto" asChild>
-                <a href="/terms" target="_blank">Podmienky používania</a>
+                <a href="/terms" target="_blank">Terms of Service</a>
               </Button>
               <span className="text-muted-foreground">•</span>
               <Button variant="link" className="p-0 h-auto" asChild>
-                <a href="/terms#privacy" target="_blank">Zásady ochrany súkromia</a>
+                <a href="/terms#privacy" target="_blank">Privacy Policy</a>
               </Button>
             </div>
           </div>
@@ -253,28 +253,28 @@ export function GDPRPanel() {
           <div>
             <h3 className="font-medium flex items-center gap-2 mb-4 text-destructive">
               <Trash2 className="h-4 w-4" />
-              Vymazanie účtu
+              Delete account
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Táto akcia je nevratná. Všetky vaše dáta budú permanentne vymazané.
+              This action is irreversible. All your data will be permanently deleted.
             </p>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" disabled={!user}>
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Vymazať môj účet
+                  Delete my account
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Ste si istí?</AlertDialogTitle>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Táto akcia je nevratná. Všetky vaše príspevky, správy, nasledovatelia
-                    a ďalšie dáta budú permanentne vymazané z našich serverov.
+                    This action is irreversible. All your posts, messages, followers,
+                    and other data will be permanently deleted from our servers.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={deleteAccount}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
@@ -283,10 +283,10 @@ export function GDPRPanel() {
                     {deleting ? (
                       <>
                         <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Mazanie...
+                        Deleting...
                       </>
                     ) : (
-                      "Áno, vymazať účet"
+                      "Yes, delete account"
                     )}
                   </AlertDialogAction>
                 </AlertDialogFooter>

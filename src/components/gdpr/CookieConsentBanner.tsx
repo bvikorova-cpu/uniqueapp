@@ -87,45 +87,45 @@ export function CookieConsentBanner() {
             <div className="flex-1">
               <h3 className="font-semibold text-lg mb-2 flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                Ochrana vášho súkromia
+                Protecting your privacy
               </h3>
               <p className="text-muted-foreground text-sm mb-4">
-                Používame cookies na zlepšenie vašej skúsenosti, personalizáciu obsahu a analýzu návštevnosti. 
-                Môžete si vybrať, ktoré cookies chcete povoliť.
+                We use cookies to improve your experience, personalize content, and analyze traffic. 
+                You can choose which cookies you want to allow.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button onClick={acceptAll} className="gap-2">
-                  Prijať všetko
+                  Accept all
                 </Button>
                 <Button variant="outline" onClick={rejectAll}>
-                  Len nevyhnutné
+                  Only necessary
                 </Button>
                 <Dialog open={showSettings} onOpenChange={setShowSettings}>
                   <DialogTrigger asChild>
                     <Button variant="ghost" className="gap-2">
                       <Settings className="h-4 w-4" />
-                      Nastavenia
+                      Settings
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-md">
                     <DialogHeader>
-                      <DialogTitle>Nastavenia cookies</DialogTitle>
+                      <DialogTitle>Cookie settings</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-6 py-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label className="font-medium">Nevyhnutné cookies</Label>
+                          <Label className="font-medium">Necessary cookies</Label>
                           <p className="text-xs text-muted-foreground">
-                            Potrebné pre základnú funkčnosť webu
+                            Required for basic website functionality
                           </p>
                         </div>
                         <Switch checked disabled />
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label className="font-medium">Analytické cookies</Label>
+                          <Label className="font-medium">Analytics cookies</Label>
                           <p className="text-xs text-muted-foreground">
-                            Pomáhajú nám pochopiť ako používate stránku
+                            Help us understand how you use the site
                           </p>
                         </div>
                         <Switch
@@ -137,9 +137,9 @@ export function CookieConsentBanner() {
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label className="font-medium">Marketingové cookies</Label>
+                          <Label className="font-medium">Marketing cookies</Label>
                           <p className="text-xs text-muted-foreground">
-                            Používané na cielenú reklamu
+                            Used for targeted advertising
                           </p>
                         </div>
                         <Switch
@@ -151,9 +151,9 @@ export function CookieConsentBanner() {
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
-                          <Label className="font-medium">Personalizačné cookies</Label>
+                          <Label className="font-medium">Personalization cookies</Label>
                           <p className="text-xs text-muted-foreground">
-                            Prispôsobujú obsah vašim preferenciám
+                            Customize content to your preferences
                           </p>
                         </div>
                         <Switch
@@ -165,7 +165,7 @@ export function CookieConsentBanner() {
                       </div>
                     </div>
                     <Button onClick={savePreferences} className="w-full">
-                      Uložiť nastavenia
+                      Save settings
                     </Button>
                   </DialogContent>
                 </Dialog>
