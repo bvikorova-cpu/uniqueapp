@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { toast } from 'sonner';
 import type { ShopifyProduct } from '@/config/shopify';
+import { storefrontApiRequest } from '@/config/shopify';
 
 export interface CartItem {
   product: ShopifyProduct;
@@ -57,8 +58,6 @@ const CART_CREATE_MUTATION = `
 `;
 
 async function createStorefrontCheckout(items: CartItem[]): Promise<string> {
-  const { storefrontApiRequest } = await import('@/config/shopify');
-  
   try {
     const lines = items.map(item => ({
       quantity: item.quantity,
@@ -112,8 +111,8 @@ export const useCartStore = create<CartStore>()(
           set({ items: [...items, item] });
         }
         
-        toast.success('Pridané do košíka', {
-          description: `${item.product.node.title} bol pridaný do košíka`,
+        toast.success('Added to cart', {
+          description: `${item.product.node.title} was added to cart`,
           position: 'top-center',
         });
       },
@@ -155,8 +154,8 @@ export const useCartStore = create<CartStore>()(
           setCheckoutUrl(checkoutUrl);
         } catch (error) {
           console.error('Failed to create checkout:', error);
-          toast.error('Checkout sa nepodaril', {
-            description: 'Skúste to prosím znova',
+          toast.error('Checkout failed', {
+            description: 'Please try again',
           });
           throw error;
         } finally {

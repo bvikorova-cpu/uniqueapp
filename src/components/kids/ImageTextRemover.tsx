@@ -5,6 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Download } from "lucide-react";
+import { showImages } from "@/components/kids/ShowImages";
 
 interface ImageInfo {
   name: string;
@@ -49,9 +50,6 @@ export const ImageTextRemover = () => {
     setProcessing(true);
     setProgress(0);
 
-    // Import show images to get actual URLs
-    const { showImages } = await import("@/components/kids/ShowImages");
-    
     // List of all show images that need processing
     const imageUrls = [
       { name: "Alice in Wonderland", url: showImages.alice },
