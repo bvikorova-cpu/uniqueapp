@@ -3,7 +3,7 @@ import { createStripeClient, getStripeCustomer } from "./stripe.ts";
 import { authenticateUser } from "./supabaseClient.ts";
 import { successResponse, errorResponse, handleCors } from "./response.ts";
 import { createLogger } from "./logger.ts";
-
+import { withRateLimit, RATE_LIMITS, addRateLimitHeaders } from "./rateLimit.ts";
 export interface CheckoutConfig {
   /** Function name for logging */
   functionName: string;
@@ -78,10 +78,21 @@ export interface FlexibleCheckoutConfig {
  */
 export function createCheckoutHandler(config: CheckoutConfig) {
   const log = createLogger(config.functionName);
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
       return handleCors();
+    }
+
+    // Rate limiting check
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.checkout, corsHeaders);
+    if (rateLimitResponse) {
+      log("Rate limit exceeded");
+      return rateLimitResponse;
     }
 
     try {
@@ -158,10 +169,21 @@ export function createCheckoutHandler(config: CheckoutConfig) {
 export function createDynamicCheckoutHandler(config: DynamicCheckoutConfig) {
   const log = createLogger(config.functionName);
   const tierKey = config.tierKey || "tier";
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
       return handleCors();
+    }
+
+    // Rate limiting check
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.checkout, corsHeaders);
+    if (rateLimitResponse) {
+      log("Rate limit exceeded");
+      return rateLimitResponse;
     }
 
     try {
@@ -224,10 +246,21 @@ export function createCreditsCheckoutHandler(
   functionName: string
 ) {
   const log = createLogger(functionName);
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
       return handleCors();
+    }
+
+    // Rate limiting check
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.checkout, corsHeaders);
+    if (rateLimitResponse) {
+      log("Rate limit exceeded");
+      return rateLimitResponse;
     }
 
     try {
@@ -280,10 +313,21 @@ export function createCreditsCheckoutHandler(
 export function createFlexibleCheckoutHandler(config: FlexibleCheckoutConfig) {
   const log = createLogger(config.functionName);
   const priceIdKey = config.priceIdFromBody || "priceId";
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
       return handleCors();
+    }
+
+    // Rate limiting check
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.checkout, corsHeaders);
+    if (rateLimitResponse) {
+      log("Rate limit exceeded");
+      return rateLimitResponse;
     }
 
     try {
@@ -361,10 +405,21 @@ export interface ServiceCheckoutConfig {
 export function createServiceCheckoutHandler(config: ServiceCheckoutConfig) {
   const log = createLogger(config.functionName);
   const serviceKey = config.serviceKey || "serviceType";
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
       return handleCors();
+    }
+
+    // Rate limiting check
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.checkout, corsHeaders);
+    if (rateLimitResponse) {
+      log("Rate limit exceeded");
+      return rateLimitResponse;
     }
 
     try {
@@ -434,10 +489,21 @@ export interface PackageCheckoutConfig {
 export function createPackageCheckoutHandler(config: PackageCheckoutConfig) {
   const log = createLogger(config.functionName);
   const packageKey = config.packageKey || "packageType";
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  };
 
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") {
       return handleCors();
+    }
+
+    // Rate limiting check
+    const rateLimitResponse = await withRateLimit(req, RATE_LIMITS.checkout, corsHeaders);
+    if (rateLimitResponse) {
+      log("Rate limit exceeded");
+      return rateLimitResponse;
     }
 
     try {

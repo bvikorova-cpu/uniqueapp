@@ -21851,6 +21851,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          action_type: string
+          created_at: string | null
+          id: string
+          identifier: string
+          request_count: number | null
+          window_start: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string | null
+          id?: string
+          identifier: string
+          request_count?: number | null
+          window_start?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string | null
+          id?: string
+          identifier?: string
+          request_count?: number | null
+          window_start?: string | null
+        }
+        Relationships: []
+      }
       reality_jumps: {
         Row: {
           decision_data: Json | null
@@ -28556,6 +28583,16 @@ export type Database = {
         Args: { p_user_id: string }
         Returns: undefined
       }
+      check_rate_limit: {
+        Args: {
+          p_action: string
+          p_identifier: string
+          p_max_requests: number
+          p_window_minutes: number
+        }
+        Returns: Json
+      }
+      cleanup_rate_limits: { Args: never; Returns: undefined }
       create_notification: {
         Args: {
           p_actor_id: string
