@@ -77,13 +77,14 @@ export async function checkRateLimit(
   }
   
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const windowSeconds = config.windowMinutes * 60;
   
   try {
     const { data, error } = await supabase.rpc('check_rate_limit', {
+      p_action_type: config.action,
       p_identifier: identifier,
-      p_action: config.action,
       p_max_requests: config.maxRequests,
-      p_window_minutes: config.windowMinutes,
+      p_window_seconds: windowSeconds,
     });
     
     if (error) {
@@ -92,7 +93,15 @@ export async function checkRateLimit(
       return { allowed: true, remaining: 999, reset_at: new Date().toISOString(), current_count: 0 };
     }
     
-    return data as RateLimitResult;
+    const allowed = data === true;
+    const resetAt = new Date(Date.now() + windowSeconds * 1000).toISOString();
+    
+    return {
+      allowed,
+      remaining: allowed ? config.maxRequests - 1 : 0,
+      reset_at: resetAt,
+      current_count: allowed ? 1 : config.maxRequests,
+    };
   } catch (err) {
     console.error('Rate limit exception:', err);
     return { allowed: true, remaining: 999, reset_at: new Date().toISOString(), current_count: 0 };

@@ -28585,12 +28585,12 @@ export type Database = {
       }
       check_rate_limit: {
         Args: {
-          p_action: string
+          p_action_type: string
           p_identifier: string
-          p_max_requests: number
-          p_window_minutes: number
+          p_max_requests?: number
+          p_window_seconds?: number
         }
-        Returns: Json
+        Returns: boolean
       }
       cleanup_rate_limits: { Args: never; Returns: undefined }
       create_notification: {
