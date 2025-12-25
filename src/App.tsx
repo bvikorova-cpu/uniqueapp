@@ -310,7 +310,17 @@ import Footer from "./components/Footer";
 import SkipLink from "./components/SkipLink";
 import ProgressiveOnboarding from "./components/onboarding/ProgressiveOnboarding";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes - data stays fresh
+      gcTime: 1000 * 60 * 30, // 30 minutes - cache retention
+      retry: 1, // Single retry on failure
+      refetchOnWindowFocus: false, // Prevent excessive refetches
+      refetchOnMount: false, // Use cached data when component mounts
+    },
+  },
+});
 
 const App = () => {
   const { i18n } = useTranslation();
