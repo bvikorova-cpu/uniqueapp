@@ -56,6 +56,27 @@ export function notFoundResponse(message = "Not found"): Response {
 }
 
 /**
+ * Returns a 429 Rate Limit Exceeded response
+ */
+export function rateLimitResponse(retryAfterSeconds = 60): Response {
+  return new Response(
+    JSON.stringify({
+      error: "Rate limit exceeded",
+      code: "RATE_LIMIT_EXCEEDED",
+      retryAfter: retryAfterSeconds,
+    }),
+    {
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+        "Retry-After": String(retryAfterSeconds),
+      },
+      status: 429,
+    }
+  );
+}
+
+/**
  * Wraps a handler with automatic CORS handling
  */
 export function withCors(handler: (req: Request) => Promise<Response>) {
