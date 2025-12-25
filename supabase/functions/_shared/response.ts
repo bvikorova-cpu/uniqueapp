@@ -56,6 +56,13 @@ export function notFoundResponse(message = "Not found"): Response {
 }
 
 /**
+ * Returns a 403 Forbidden response
+ */
+export function forbiddenResponse(message = "Forbidden"): Response {
+  return errorResponse(message, 403);
+}
+
+/**
  * Returns a 429 Rate Limit Exceeded response
  */
 export function rateLimitResponse(retryAfterSeconds = 60): Response {
@@ -74,6 +81,43 @@ export function rateLimitResponse(retryAfterSeconds = 60): Response {
       status: 429,
     }
   );
+}
+
+/**
+ * Returns a validation error response
+ */
+export function validationErrorResponse(
+  errors: Array<{ field: string; message: string }>
+): Response {
+  return new Response(
+    JSON.stringify({
+      error: "Validation failed",
+      code: "VALIDATION_ERROR",
+      details: errors,
+    }),
+    {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 400,
+    }
+  );
+}
+
+/**
+ * Streaming response for AI endpoints
+ */
+export function streamResponse(
+  body: ReadableStream,
+  extraHeaders: Record<string, string> = {}
+): Response {
+  return new Response(body, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+      ...corsHeaders,
+      ...extraHeaders,
+    },
+  });
 }
 
 /**
