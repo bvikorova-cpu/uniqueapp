@@ -6781,6 +6781,222 @@ export type Database = {
         }
         Relationships: []
       }
+      coupon_escrow: {
+        Row: {
+          amount: number
+          auto_release_at: string
+          commission_amount: number
+          created_at: string | null
+          held_at: string | null
+          id: string
+          order_id: string
+          refunded_at: string | null
+          released_at: string | null
+          seller_payout: number
+          status: string
+          stripe_transfer_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          auto_release_at: string
+          commission_amount?: number
+          created_at?: string | null
+          held_at?: string | null
+          id?: string
+          order_id: string
+          refunded_at?: string | null
+          released_at?: string | null
+          seller_payout: number
+          status?: string
+          stripe_transfer_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          auto_release_at?: string
+          commission_amount?: number
+          created_at?: string | null
+          held_at?: string | null
+          id?: string
+          order_id?: string
+          refunded_at?: string | null
+          released_at?: string | null
+          seller_payout?: number
+          status?: string
+          stripe_transfer_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_escrow_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupon_listings: {
+        Row: {
+          category: string
+          coupon_type: string
+          created_at: string | null
+          description: string | null
+          discount_code: string | null
+          expiry_date: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          is_digital: boolean | null
+          is_sold: boolean | null
+          original_value: number
+          selling_price: number
+          store_name: string
+          terms_conditions: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          coupon_type?: string
+          created_at?: string | null
+          description?: string | null
+          discount_code?: string | null
+          expiry_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_digital?: boolean | null
+          is_sold?: boolean | null
+          original_value: number
+          selling_price: number
+          store_name: string
+          terms_conditions?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          coupon_type?: string
+          created_at?: string | null
+          description?: string | null
+          discount_code?: string | null
+          expiry_date?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          is_digital?: boolean | null
+          is_sold?: boolean | null
+          original_value?: number
+          selling_price?: number
+          store_name?: string
+          terms_conditions?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      coupon_messages: {
+        Row: {
+          coupon_id: string
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          receiver_id: string
+          sender_id: string
+        }
+        Insert: {
+          coupon_id: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          receiver_id: string
+          sender_id: string
+        }
+        Update: {
+          coupon_id?: string
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          receiver_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_messages_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupon_orders: {
+        Row: {
+          amount: number
+          buyer_email: string | null
+          buyer_id: string
+          commission_amount: number
+          coupon_id: string
+          created_at: string | null
+          delivered_at: string | null
+          id: string
+          paid_at: string | null
+          seller_id: string
+          seller_payout: number
+          status: string
+          stripe_session_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          buyer_email?: string | null
+          buyer_id: string
+          commission_amount?: number
+          coupon_id: string
+          created_at?: string | null
+          delivered_at?: string | null
+          id?: string
+          paid_at?: string | null
+          seller_id: string
+          seller_payout: number
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          buyer_email?: string | null
+          buyer_id?: string
+          commission_amount?: number
+          coupon_id?: string
+          created_at?: string | null
+          delivered_at?: string | null
+          id?: string
+          paid_at?: string | null
+          seller_id?: string
+          seller_payout?: number
+          status?: string
+          stripe_session_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupon_orders_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupon_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_certificates: {
         Row: {
           certificate_url: string | null
