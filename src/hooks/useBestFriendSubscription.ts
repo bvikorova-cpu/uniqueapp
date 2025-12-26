@@ -51,6 +51,11 @@ export function useBestFriendSubscription() {
 
   const createCheckout = async () => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Please sign in to subscribe');
+      }
+
       const { data, error } = await supabase.functions.invoke('create-best-friend-checkout');
 
       if (error) throw error;
@@ -84,6 +89,11 @@ export function useBestFriendSubscription() {
 
   const manageSubscription = async () => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Please sign in to manage subscription');
+      }
+
       const { data, error } = await supabase.functions.invoke('best-friend-customer-portal');
 
       if (error) throw error;
