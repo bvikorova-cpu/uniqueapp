@@ -9543,6 +9543,30 @@ export type Database = {
         }
         Relationships: []
       }
+      edge_cache: {
+        Row: {
+          created_at: string | null
+          expires_at: string
+          key: string
+          tags: string[] | null
+          value: Json
+        }
+        Insert: {
+          created_at?: string | null
+          expires_at: string
+          key: string
+          tags?: string[] | null
+          value: Json
+        }
+        Update: {
+          created_at?: string | null
+          expires_at?: string
+          key?: string
+          tags?: string[] | null
+          value?: Json
+        }
+        Relationships: []
+      }
       educational_certificates: {
         Row: {
           average_quiz_score: number
@@ -14233,6 +14257,63 @@ export type Database = {
           title?: string
           updated_at?: string | null
           views_count?: number | null
+        }
+        Relationships: []
+      }
+      job_queue: {
+        Row: {
+          attempts: number | null
+          completed_at: string | null
+          created_at: string | null
+          error_message: string | null
+          failed_at: string | null
+          id: string
+          job_type: string
+          max_attempts: number | null
+          payload: Json
+          priority: number | null
+          result: Json | null
+          scheduled_at: string | null
+          started_at: string | null
+          status: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          failed_at?: string | null
+          id?: string
+          job_type: string
+          max_attempts?: number | null
+          payload?: Json
+          priority?: number | null
+          result?: Json | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          completed_at?: string | null
+          created_at?: string | null
+          error_message?: string | null
+          failed_at?: string | null
+          id?: string
+          job_type?: string
+          max_attempts?: number | null
+          payload?: Json
+          priority?: number | null
+          result?: Json | null
+          scheduled_at?: string | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -28574,6 +28655,17 @@ export type Database = {
         Args: { p_activity_type: string; p_points: number; p_user_id: string }
         Returns: undefined
       }
+      cache_get: { Args: { p_key: string }; Returns: Json }
+      cache_invalidate_by_tag: { Args: { p_tag: string }; Returns: number }
+      cache_set: {
+        Args: {
+          p_key: string
+          p_tags?: string[]
+          p_ttl_seconds?: number
+          p_value: Json
+        }
+        Returns: undefined
+      }
       calculate_exp_for_level: {
         Args: { current_level: number }
         Returns: number
@@ -28592,7 +28684,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      cleanup_expired_cache: { Args: never; Returns: number }
+      cleanup_old_jobs: { Args: never; Returns: number }
       cleanup_rate_limits: { Args: never; Returns: undefined }
+      complete_job: {
+        Args: { p_job_id: string; p_result?: Json }
+        Returns: undefined
+      }
       create_notification: {
         Args: {
           p_actor_id: string
@@ -28611,6 +28709,10 @@ export type Database = {
         Returns: undefined
       }
       expire_featured_listings: { Args: never; Returns: undefined }
+      fail_job: {
+        Args: { p_error?: string; p_job_id: string }
+        Returns: undefined
+      }
       find_skill_matches: { Args: { p_user_id: string }; Returns: undefined }
       generate_certificate_number: { Args: never; Returns: string }
       generate_daily_homework_challenge: { Args: never; Returns: undefined }
@@ -28621,6 +28723,15 @@ export type Database = {
       get_follower_count: { Args: { user_id: string }; Returns: number }
       get_following_count: { Args: { user_id: string }; Returns: number }
       get_next_20_cet: { Args: { is_weekly?: boolean }; Returns: string }
+      get_next_job: {
+        Args: { p_job_types?: string[] }
+        Returns: {
+          attempts: number
+          id: string
+          job_type: string
+          payload: Json
+        }[]
+      }
       get_random_questions: {
         Args: { p_count: number; p_difficulty: string }
         Returns: {
