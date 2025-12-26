@@ -142,22 +142,43 @@ const PetTranslatorPricing = () => {
         })}
       </div>
 
-      <Card className="p-8 max-w-2xl mx-auto bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/20">
-        <div className="text-center">
-          <h3 className="text-2xl font-bold mb-4">🎭 Premium Voice</h3>
-          <p className="text-muted-foreground mb-4">
-            Make your pet sound like a celebrity!
-          </p>
-          <p className="text-3xl font-bold mb-6">€14.99 <span className="text-base font-normal text-muted-foreground">one-time</span></p>
-          <Button
-            size="lg"
-            variant="secondary"
-            onClick={() => handleSubscribe('price_1SQDRRGaXSfGtYFts87Q1N9y')}
-          >
-            Get Premium Voice
-          </Button>
-        </div>
-      </Card>
+      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <Card className="p-6 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border-blue-500/20">
+          <div className="text-center">
+            <h3 className="text-xl font-bold mb-2">🎤 Single Translation</h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Try it once without subscription
+            </p>
+            <p className="text-2xl font-bold mb-4">€2 <span className="text-sm font-normal text-muted-foreground">one-time</span></p>
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full"
+              onClick={() => handleSubscribe('price_1SQDRRGaXSfGtYFts87Q1N9y')}
+            >
+              Get 1 Translation
+            </Button>
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/20">
+          <div className="text-center">
+            <h3 className="text-xl font-bold mb-2">🎭 Premium Voice</h3>
+            <p className="text-sm text-muted-foreground mb-3">
+              Make your pet sound like a celebrity!
+            </p>
+            <p className="text-2xl font-bold mb-4">€14.99 <span className="text-sm font-normal text-muted-foreground">one-time</span></p>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="w-full"
+              onClick={() => handleSubscribe('price_1SQDRRGaXSfGtYFts87Q1N9y')}
+            >
+              Get Premium Voice
+            </Button>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };
