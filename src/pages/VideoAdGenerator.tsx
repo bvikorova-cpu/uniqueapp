@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Video, Download, Sparkles, Star, Zap, Crown, Lock } from "lucide-react";
+import { Loader2, Video, Download, Sparkles, Star, Zap, Crown, Lock, Lightbulb, Target, Film, CheckCircle2, CreditCard, FileText } from "lucide-react";
 import { useVideoAdCredits } from "@/hooks/useVideoAdCredits";
 
 interface VideoAdResult {
@@ -491,6 +491,232 @@ EMOTIONS: ${result.targetEmotions.join(', ')}
                   </div>
                 </div>
               )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* How It Works Section */}
+        <div className="mt-12">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lightbulb className="w-5 h-5 text-primary" />
+                How does it work?
+              </CardTitle>
+              <CardDescription>
+                A complete guide to creating professional video ad scripts with AI
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              {/* Step by Step Guide */}
+              <div className="grid md:grid-cols-4 gap-4">
+                <div className="text-center p-4 rounded-lg bg-primary/5">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-xl font-bold text-primary">1</span>
+                  </div>
+                  <h3 className="font-semibold mb-2">Define Your Product</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Enter your product or service name and describe your target audience.
+                  </p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-primary/5">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-xl font-bold text-primary">2</span>
+                  </div>
+                  <h3 className="font-semibold mb-2">Set Parameters</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Choose ad tone, duration, platform, and enable premium features if needed.
+                  </p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-primary/5">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-xl font-bold text-primary">3</span>
+                  </div>
+                  <h3 className="font-semibold mb-2">Generate Script</h3>
+                  <p className="text-sm text-muted-foreground">
+                    AI creates a complete video script with scenes, voiceovers, and visuals.
+                  </p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-primary/5">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-xl font-bold text-primary">4</span>
+                  </div>
+                  <h3 className="font-semibold mb-2">Download & Use</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Download your script and use it for video production or presentation.
+                  </p>
+                </div>
+              </div>
+
+              {/* Detailed Description */}
+              <div className="space-y-6 pt-6 border-t">
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Video className="w-5 h-5 text-primary" />
+                    What is Video Ad Generator?
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    The Video Ad Generator is a powerful AI-driven tool designed to help marketers, content creators, 
+                    and businesses create professional video advertisement scripts in seconds. Using advanced natural 
+                    language processing, it generates complete scripts including scene breakdowns, voiceover text, 
+                    visual directions, music suggestions, and emotional targeting - everything you need to produce 
+                    compelling video ads for any platform.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Target className="w-5 h-5 text-primary" />
+                    Key Features Explained
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="p-4 rounded-lg border bg-background">
+                      <h4 className="font-semibold mb-2">Basic Settings</h4>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-foreground">Product/Service:</strong> The name of what you are advertising</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-foreground">Target Audience:</strong> Demographics and interests of your ideal customers</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-foreground">Key Message:</strong> The main value proposition or benefit you want to communicate</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="p-4 rounded-lg border bg-background">
+                      <h4 className="font-semibold mb-2">Advanced Options</h4>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-foreground">Ad Tone:</strong> Professional, casual, energetic, emotional, or humorous</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-foreground">Duration:</strong> 15s, 30s, 60s, or 90s depending on your plan</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span><strong className="text-foreground">Platform:</strong> Optimized for YouTube, Instagram, TikTok, Facebook, or TV</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-primary" />
+                    Premium Features (Pro & Agency Plans)
+                  </h3>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30">
+                      <Star className="w-5 h-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-medium">Competitive Analysis</h4>
+                        <p className="text-sm text-muted-foreground">Get insights on how your ad compares to industry competitors</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30">
+                      <Star className="w-5 h-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-medium">A/B Testing Variants</h4>
+                        <p className="text-sm text-muted-foreground">Receive multiple script variations to test performance</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30">
+                      <Star className="w-5 h-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-medium">Voice Actor Suggestions</h4>
+                        <p className="text-sm text-muted-foreground">AI recommends voice styles that match your brand</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30">
+                      <Star className="w-5 h-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-medium">Budget Optimizer</h4>
+                        <p className="text-sm text-muted-foreground">Get production and distribution cost estimates</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30">
+                      <Star className="w-5 h-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-medium">Performance Predictions</h4>
+                        <p className="text-sm text-muted-foreground">AI-powered forecasts for reach, engagement, and conversions</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-secondary/30">
+                      <Star className="w-5 h-5 text-primary mt-0.5" />
+                      <div>
+                        <h4 className="font-medium">Multi-Language Support</h4>
+                        <p className="text-sm text-muted-foreground">Generate scripts in multiple languages for global campaigns</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <Film className="w-5 h-5 text-primary" />
+                    What You Get in the Output
+                  </h3>
+                  <div className="bg-secondary/30 rounded-lg p-4">
+                    <ul className="space-y-2 text-muted-foreground">
+                      <li className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" />
+                        <span><strong className="text-foreground">Complete Script:</strong> Ready-to-use narration text for your video</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" />
+                        <span><strong className="text-foreground">Scene Breakdown:</strong> Detailed descriptions of each scene with timing</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" />
+                        <span><strong className="text-foreground">Voiceover Text:</strong> Word-for-word script for voice recording</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" />
+                        <span><strong className="text-foreground">Visual Directions:</strong> Guidance for videographers and editors</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" />
+                        <span><strong className="text-foreground">Music Suggestions:</strong> Recommended background music style and mood</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-primary" />
+                        <span><strong className="text-foreground">Call-to-Action:</strong> Compelling CTA text to drive conversions</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <CreditCard className="w-5 h-5 text-primary" />
+                    Credit System & Plans
+                  </h3>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="p-4 rounded-lg border text-center">
+                      <Badge variant="outline" className="mb-2">Free Plan</Badge>
+                      <h4 className="font-semibold">1 credit per script</h4>
+                      <p className="text-sm text-muted-foreground mt-2">Basic scripts up to 30 seconds for standard platforms</p>
+                    </div>
+                    <div className="p-4 rounded-lg border bg-primary/5 text-center">
+                      <Badge className="bg-primary mb-2">Pro Plan</Badge>
+                      <h4 className="font-semibold">1+ credits per script</h4>
+                      <p className="text-sm text-muted-foreground mt-2">Up to 60s duration with premium features available</p>
+                    </div>
+                    <div className="p-4 rounded-lg border bg-gradient-to-br from-primary/10 to-accent/10 text-center">
+                      <Badge className="bg-gradient-to-r from-primary to-accent mb-2">Agency</Badge>
+                      <h4 className="font-semibold">All features unlocked</h4>
+                      <p className="text-sm text-muted-foreground mt-2">90s videos, all premium features, priority processing</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
