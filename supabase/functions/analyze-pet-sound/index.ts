@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { encode as base64Encode } from "https://deno.land/std@0.168.0/encoding/base64.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { audio } = await req.json();
+    const { audio, withVoice } = await req.json();
     
     if (!audio) {
       throw new Error('No audio data provided');
@@ -68,7 +69,6 @@ Examples:
     // Parse the JSON response
     let analysis;
     try {
-      // Try to find JSON in the response
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         analysis = JSON.parse(jsonMatch[0]);
@@ -77,12 +77,39 @@ Examples:
       }
     } catch (parseError) {
       console.error('Failed to parse AI response:', content);
-      // Fallback response
       analysis = {
         emotion: 'Curious',
         message: "I'm trying to tell you something!",
         confidence: 0.5
       };
+    }
+
+    // Generate voice audio if requested (Premium Voice feature)
+    if (withVoice && analysis.message) {
+      console.log('Generating TTS for message:', analysis.message);
+      
+      const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'tts-1',
+          input: analysis.message,
+          voice: 'nova', // Friendly, warm voice
+          response_format: 'mp3',
+        }),
+      });
+
+      if (ttsResponse.ok) {
+        const audioBuffer = await ttsResponse.arrayBuffer();
+        const base64Audio = base64Encode(audioBuffer);
+        analysis.audioContent = base64Audio;
+        console.log('TTS audio generated successfully');
+      } else {
+        console.error('TTS generation failed:', await ttsResponse.text());
+      }
     }
 
     return new Response(
