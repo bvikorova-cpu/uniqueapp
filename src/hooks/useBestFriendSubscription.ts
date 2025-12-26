@@ -7,6 +7,7 @@ export interface BestFriendSubscription {
   freeMessagesLimit: number;
   monthlyMessagesUsed: number;
   monthlyMessagesLimit: number;
+  bonusMessages: number;
   loading: boolean;
 }
 
@@ -17,6 +18,7 @@ export function useBestFriendSubscription() {
     freeMessagesLimit: 5,
     monthlyMessagesUsed: 0,
     monthlyMessagesLimit: 1000,
+    bonusMessages: 0,
     loading: true,
   });
 
@@ -38,6 +40,7 @@ export function useBestFriendSubscription() {
         freeMessagesLimit: 5,
         monthlyMessagesUsed: data?.monthly_messages_used || 0,
         monthlyMessagesLimit: 1000,
+        bonusMessages: data?.bonus_messages || 0,
         loading: false,
       });
     } catch (err: any) {
@@ -56,6 +59,20 @@ export function useBestFriendSubscription() {
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
+      throw error;
+    }
+  };
+
+  const purchaseMessages = async () => {
+    try {
+      const { data, error } = await supabase.functions.invoke('purchase-best-friend-messages');
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Error purchasing messages:', error);
       throw error;
     }
   };
@@ -84,6 +101,7 @@ export function useBestFriendSubscription() {
     subscription,
     refresh: checkSubscription,
     createCheckout,
+    purchaseMessages,
     manageSubscription,
   };
 }
