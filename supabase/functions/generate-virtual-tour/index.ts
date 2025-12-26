@@ -47,20 +47,20 @@ serve(async (req) => {
       );
     }
 
-    // Generate tour description using Lovable AI
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    // Generate tour description using OpenAI
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -92,27 +92,23 @@ serve(async (req) => {
     
     for (const prompt of imagePrompts) {
       try {
-        const imgResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        const imgResponse = await fetch('https://api.openai.com/v1/images/generations', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
-            messages: [
-              {
-                role: 'user',
-                content: prompt
-              }
-            ],
-            modalities: ['image', 'text']
+            model: 'dall-e-3',
+            prompt: prompt,
+            n: 1,
+            size: '1024x1024'
           }),
         });
 
         if (imgResponse.ok) {
           const imgData = await imgResponse.json();
-          const imageUrl = imgData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          const imageUrl = imgData.data?.[0]?.url;
           if (imageUrl) {
             imageUrls.push(imageUrl);
           }

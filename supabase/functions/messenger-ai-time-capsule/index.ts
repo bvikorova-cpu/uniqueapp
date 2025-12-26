@@ -56,27 +56,25 @@ serve(async (req) => {
 
     // Generate AI "future you" image if requested
     if (generateImage) {
-      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-      if (LOVABLE_API_KEY) {
-        const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+      if (OPENAI_API_KEY) {
+        const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash-image-preview',
-            messages: [{
-              role: 'user',
-              content: `Generate a beautiful, hopeful artistic image representing a time capsule message being opened in the future. The image should show a warm, nostalgic scene with soft golden light, perhaps showing hands opening a glowing envelope or a magical time capsule. Style: dreamy, ethereal, warm colors, high quality digital art. Include subtle sparkles and light rays to convey the magic of receiving a message from the past.`
-            }],
-            modalities: ['image', 'text']
+            model: 'dall-e-3',
+            prompt: `Generate a beautiful, hopeful artistic image representing a time capsule message being opened in the future. The image should show a warm, nostalgic scene with soft golden light, perhaps showing hands opening a glowing envelope or a magical time capsule. Style: dreamy, ethereal, warm colors, high quality digital art. Include subtle sparkles and light rays to convey the magic of receiving a message from the past.`,
+            n: 1,
+            size: '1024x1024'
           }),
         });
 
         if (imageResponse.ok) {
           const imageData = await imageResponse.json();
-          futureImageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+          futureImageUrl = imageData.data?.[0]?.url;
         }
       }
     }

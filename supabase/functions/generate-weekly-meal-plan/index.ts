@@ -45,7 +45,11 @@ serve(async (req) => {
     const { days, dietary_preferences, calorie_target } = await req.json();
     console.log('Generating meal plan:', { days, dietary_preferences, calorie_target });
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is not configured');
+    }
+    
     const prompt = `Generate a ${days}-day meal plan.
 ${dietary_preferences?.length > 0 ? `Diet preferences: ${dietary_preferences.join(', ')}.` : ''}
 ${calorie_target ? `Calorie target: ${calorie_target} kcal/day.` : ''}
@@ -85,14 +89,14 @@ Return JSON:
   }
 }`;
 
-    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
       }),
     });
