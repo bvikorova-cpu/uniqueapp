@@ -202,11 +202,35 @@ const IQPlatform = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
-        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
-          <TabsTrigger value="tests" className="text-xs sm:text-sm">IQ Tests</TabsTrigger>
-          <TabsTrigger value="analyses" className="text-xs sm:text-sm">AI Analysis</TabsTrigger>
-          <TabsTrigger value="competitions" className="text-xs sm:text-sm">Competitions</TabsTrigger>
-          <TabsTrigger value="results" className="text-xs sm:text-sm">My Results</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-2 h-auto p-2 bg-muted/50 rounded-xl">
+          <TabsTrigger 
+            value="tests" 
+            className="text-xs sm:text-sm py-3 px-4 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all"
+          >
+            <Brain className="h-4 w-4 mr-2" />
+            IQ Tests
+          </TabsTrigger>
+          <TabsTrigger 
+            value="analyses" 
+            className="text-xs sm:text-sm py-3 px-4 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all"
+          >
+            <LineChart className="h-4 w-4 mr-2" />
+            AI Analysis
+          </TabsTrigger>
+          <TabsTrigger 
+            value="competitions" 
+            className="text-xs sm:text-sm py-3 px-4 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all"
+          >
+            <Trophy className="h-4 w-4 mr-2" />
+            Competitions
+          </TabsTrigger>
+          <TabsTrigger 
+            value="results" 
+            className="text-xs sm:text-sm py-3 px-4 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all"
+          >
+            <Users className="h-4 w-4 mr-2" />
+            My Results
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="tests" className="space-y-4 sm:space-y-6">
@@ -342,31 +366,69 @@ const IQPlatform = () => {
         </TabsContent>
       </Tabs>
 
+      {/* How It Works Section */}
       <Card className="bg-gradient-to-r from-primary/10 to-primary/5">
         <CardHeader className="p-4 sm:p-6">
-          <CardTitle className="text-base sm:text-lg">How It Works</CardTitle>
+          <CardTitle className="text-lg sm:text-xl">How It Works</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
+            Your complete guide to using the IQ Platform
+          </CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 p-4 sm:p-6">
-          <div className="text-center space-y-2">
-            <Brain className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
-            <h3 className="font-semibold text-sm sm:text-base">1. Take Tests</h3>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Choose from beginner to expert level IQ tests
-            </p>
+        <CardContent className="space-y-6 p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div className="text-center space-y-2 p-4 bg-background/50 rounded-lg">
+              <Brain className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
+              <h3 className="font-semibold text-sm sm:text-base">1. Take Tests</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Choose from beginner to expert level IQ tests
+              </p>
+            </div>
+            <div className="text-center space-y-2 p-4 bg-background/50 rounded-lg">
+              <LineChart className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
+              <h3 className="font-semibold text-sm sm:text-base">2. Get AI Analysis</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Receive detailed insights about your cognitive abilities
+              </p>
+            </div>
+            <div className="text-center space-y-2 p-4 bg-background/50 rounded-lg">
+              <Trophy className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
+              <h3 className="font-semibold text-sm sm:text-base">3. Compete & Earn</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Join competitions and win credits
+              </p>
+            </div>
           </div>
-          <div className="text-center space-y-2">
-            <LineChart className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
-            <h3 className="font-semibold text-sm sm:text-base">2. Get AI Analysis</h3>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Receive detailed insights about your cognitive abilities
-            </p>
+        </CardContent>
+      </Card>
+
+      {/* Detailed Description Section */}
+      <Card>
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-lg sm:text-xl">About the IQ Platform</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 p-4 sm:p-6 text-sm text-muted-foreground">
+          <p>
+            The IQ Platform is a comprehensive cognitive assessment and improvement tool designed to help you understand and enhance your intellectual abilities. Our scientifically-designed tests measure various aspects of intelligence including logical reasoning, pattern recognition, spatial awareness, and problem-solving skills.
+          </p>
+          
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground">Features:</h4>
+            <ul className="list-disc list-inside space-y-2 pl-2">
+              <li><strong>IQ Tests:</strong> Four difficulty levels from Beginner to Expert. Each test contains 30-60 questions with time limits ranging from 30-75 minutes. Results include detailed score breakdowns and percentile rankings.</li>
+              <li><strong>AI Analysis:</strong> Get personalized cognitive profile analysis, learning style assessment, and improvement plans powered by advanced AI algorithms.</li>
+              <li><strong>Competitions:</strong> Join timed competitions against other users. Pay entry fees with credits and compete for prize pools. Top performers win credit rewards.</li>
+              <li><strong>My Results:</strong> Track your progress over time, view historical test scores, and monitor your cognitive improvement journey.</li>
+            </ul>
           </div>
-          <div className="text-center space-y-2">
-            <Trophy className="h-10 w-10 sm:h-12 sm:w-12 text-primary mx-auto" />
-            <h3 className="font-semibold text-sm sm:text-base">3. Compete & Earn</h3>
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Join competitions and win credits
-            </p>
+
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground">Credit System:</h4>
+            <ul className="list-disc list-inside space-y-2 pl-2">
+              <li>Purchase credits in packages: 10 credits for €5, 20 credits for €7, or 50 credits for €10</li>
+              <li>Tests cost 10-25 credits depending on difficulty level</li>
+              <li>AI analyses range from 20-40 credits based on depth and duration</li>
+              <li>Win credits by placing in competitions</li>
+            </ul>
           </div>
         </CardContent>
       </Card>
