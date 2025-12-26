@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -35,9 +36,9 @@ serve(async (req) => {
     
     const targetLanguage = languageNames[language] || 'English';
 
-    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    if (!LOVABLE_API_KEY) {
-      throw new Error('LOVABLE_API_KEY not configured');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
     }
 
     console.log(`Generating story for theme: ${theme} with ${validSceneCount} scenes in ${targetLanguage}`);
@@ -53,15 +54,15 @@ serve(async (req) => {
     ...
     Scene ${validSceneCount}: [text with rabbit and duck in ${targetLanguage}]`;
 
-    console.log('Calling AI for story generation...');
-    const storyResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    console.log('Calling OpenAI for story generation...');
+    const storyResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: `You are a children's story writer. Write stories in the requested language.` },
             { role: 'user', content: storyPrompt }
@@ -75,9 +76,6 @@ serve(async (req) => {
       
       if (storyResponse.status === 429) {
         throw new Error('Rate limit exceeded. Please try again later.');
-      }
-      if (storyResponse.status === 402) {
-        throw new Error('Not enough Lovable AI credits. Please add credits in Settings → Cloud → AI Usage to continue.');
       }
       
       throw new Error(`Failed to generate story: ${storyResponse.status} - ${errorText}`);
@@ -130,14 +128,14 @@ serve(async (req) => {
     Keep it under 100 words and make it suitable for children's storybook illustration.
     Format: Character 1: [detailed description]. Character 2: [detailed description].`;
     
-    const characterResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    const characterResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: 'You are a children\'s book illustrator who creates detailed character descriptions.' },
           { role: 'user', content: characterPrompt }
@@ -154,7 +152,7 @@ serve(async (req) => {
     const characterDescription = characterData.choices[0].message.content;
     console.log('Character descriptions:', characterDescription);
 
-    // Generate images for each scene - using consistent character descriptions
+    // Generate images for each scene using DALL-E 3
     const images: string[] = [];
     const baseStyle = "Children's storybook illustration, vibrant colors, friendly cartoon style, consistent character design";
     
@@ -162,18 +160,18 @@ serve(async (req) => {
       const imagePrompt = `${baseStyle}. Characters: ${characterDescription}. Scene: ${scenes[i]}`;
       
       console.log(`Generating image ${i + 1}...`);
-      const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash-image-preview',
-          messages: [
-            { role: 'user', content: imagePrompt }
-          ],
-          modalities: ['image', 'text']
+          model: 'dall-e-3',
+          prompt: imagePrompt,
+          n: 1,
+          size: '1024x1024',
+          response_format: 'b64_json'
         }),
       });
 
@@ -183,10 +181,10 @@ serve(async (req) => {
       }
 
       const imageData = await imageResponse.json();
-      const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      const base64Image = imageData.data?.[0]?.b64_json;
       
-      if (imageUrl) {
-        images.push(imageUrl);
+      if (base64Image) {
+        images.push(`data:image/png;base64,${base64Image}`);
         console.log(`Image ${i + 1} generated successfully`);
       }
     }
