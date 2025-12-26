@@ -296,7 +296,7 @@ const Psychology = () => {
                   {messagesLeft} free {messagesLeft === 1 ? 'message' : 'messages'} remaining
                 </span>
               </div>
-              <div className="flex gap-2 flex-wrap justify-center">
+              <div className="flex flex-col sm:flex-row gap-2 justify-center items-center">
                 <Button onClick={handleSubscribe} className="gap-2">
                   <Crown className="w-4 h-4" />
                   Subscribe for €15/month
